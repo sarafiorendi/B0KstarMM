@@ -1,0 +1,21 @@
+<use name=FWCore/Framework>
+<use name=FWCore/PluginManager>
+<use name=FWCore/ParameterSet>
+<flags EDM_PLUGIN=1>
+<use name=DataFormats/TrackReco>
+<export>
+   <lib name=MyCosmicsAnalysisMyCosmAnalyzer>
+   <use name=FWCore/Framework>
+   <use name=FWCore/PluginManager>
+   <use name=FWCore/ParameterSet>
+   <use name=DataFormats/TrackReco>
+</export>
+<use name=root>
+<use name=CommonTools/UtilAlgos>
+<use name=TrackingTools/PatternTools>
+<use name=TrackingTools/TrackFitters>
+<use name=Geometry/CommonTopologies>
+<use name=Geometry/TrackerTopology>
+<use name=Geometry/TrackerGeometryBuilder>
+<use name=CondFormats/L1TObjects>
+<use name=HLTrigger/HLTcore>
