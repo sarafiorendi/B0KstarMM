@@ -1,0 +1,900 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1187\cocoasubrtf370
+\cocoascreenfonts1{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww17660\viewh14220\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\f0\b\fs24 \cf0 @@@@@@@@@@@@@@@@@@@\
+@ B0 --> K*0 (K pi) mu+ mu- analysis @\
+@@@@@@@@@@@@@@@@@@@\
+
+\b0 \
+\
+\
+\
+@@@@@@@@@@@@@@\
+@ 
+\b Possible measurements
+\b0  @\
+@@@@@@@@@@@@@@\
+B0 --> K*0 mu mu vs q2: 
+\b FL
+\b0 , 
+\b AFB
+\b0 , (AT2, ATIM), or (S3, A9), 
+\b BF
+\b0 , CP-asymmetry, zero crossing point\
+B0 --> K*0 J/psi:                
+\b FL
+\b0 , 
+\b AFB
+\b0 , (AT2, ATIM), or (S3, A9), 
+\b FS
+\b0 , 
+\b AS
+\b0 \
+B0 --> K*0 psi(2S):           
+\b FL
+\b0 , 
+\b AFB
+\b0 , (AT2, ATIM), or (S3, A9), 
+\b FS
+\b0 , 
+\b AS
+\b0 \
+\
+\
+\
+\
+@@@@@@@\
+@ 
+\b Matching
+\b0  @\
+@@@@@@@\
+#define RCUTMU 0.033 // [eta-phi]\
+#define RCUTTRK 0.33  // [eta-phi]\
+\
+Dimuon cuts
+\b (*)
+\b0 :\
+- muon eta < 2.2\
+- muon pT > 3 GeV/c\
+- 1 < dimuon inv.mass < 4.8 GeV/c2\
+- dimuon pT > 6.9 GeV/c\
+- hadron eta < 2.5\
+- hadron pT > 0.8 GeV/c\
+\
+Total number of events: 56000\
+Total number of generated B0 --> K*0 (K pi) J/psi (mu+ mu-) within acceptance
+\b (*)
+\b0 : 150\
+\
+Cuts for matching are optimized by trying to match the number of matched events with the number of generated events within acceptance\
+With the current value of the cuts we have 151 matches, out of 150 generated within acceptance
+\b (*)\
+
+\b0 Percentage of retained signal: ~101%\
+- Number of events within +/- 80MeV from B0 PDG mass: 91\
+- Number of events outside +/- 80MeV from B0 PDG mass: 60\
+- S/sqrt(S+B) = ~7.5\
+\
+
+\b Look the B0 invariant mass plot made out of the single candidate events:\
+
+\b0 B0 invariant mass plot for truthMatched events has 41 events in the low tail out of ~1400 (removing events with FSR)\
+We decided to tight the matching:\
+
+\b #define RCUTMU 0.004 // [eta-phi]\
+#define RCUTTRK 0.3   // [eta-phi]\
+
+\b0 Looking the B0 invariant mass plot for truthMatched events we see 13 events in the low tail out of ~1300 (removing events with FSR)\
+and ~9 peaking events in the B0 invariant mass plot for NON truthMatched events.\
+- Efficiency = 98.9 %\
+- Purity = 99.4%\
+\
+\ul To test the systematic uncertainty on the truth-matching criteria:\
+\ulnone #define RCUTMU --> 0.006 --> efficiency 99.3%\
+#define RCUTMU --> 0.003 --> efficiency 97.5%\
+#define RCUTTRK --> 0.9 --> efficiency 99.3%\
+#define RCUTTRK --> 0.05 --> efficiency 98.6%\
+\
+\
+\
+\
+@@@@@@@@@@@\
+@ Dimuon in 
+\b GEN-MC
+\b0  @\
+@@@@@@@@@@@\
+\ul \
+Query whole:\
+\ulnone B0KstMuMuNTuple->Draw("sqrt((sqrt(genMumPx*genMumPx+genMumPy*genMumPy+genMumPz*genMumPz+0.10565837*0.10565837)+sqrt(genMupPx*genMupPx+genMupPy*genMupPy+genMupPz*genMupPz+0.10565837*0.10565837))^2-((genMumPx+genMupPx)*(genMumPx+genMupPx)+(genMumPy+genMupPy)*(genMumPy+genMupPy)+(genMumPz+genMupPz)*(genMumPz+genMupPz)))")\
+\ul \
+Query for psi(2S):\
+\ulnone B0KstMuMuNTuple->Draw("sqrt((sqrt(genMumPx*genMumPx+genMumPy*genMumPy+genMumPz*genMumPz+0.10565837*0.10565837)+sqrt(genMupPx*genMupPx+genMupPy*genMupPy+genMupPz*genMupPz+0.10565837*0.10565837))^2-((genMumPx+genMupPx)*(genMumPx+genMupPx)+(genMumPy+genMupPy)*(genMumPy+genMupPy)+(genMumPz+genMupPz)*(genMumPz+genMupPz)))","sqrt((sqrt(genMumPx*genMumPx+genMumPy*genMumPy+genMumPz*genMumPz+0.10565837*0.10565837)+sqrt(genMupPx*genMupPx+genMupPy*genMupPy+genMupPz*genMupPz+0.10565837*0.10565837))^2-((genMumPx+genMupPx)*(genMumPx+genMupPx)+(genMumPy+genMupPy)*(genMumPy+genMupPy)+(genMumPz+genMupPz)*(genMumPz+genMupPz))) > 3.686-
+\b 6
+\b0 *0.041 && sqrt((sqrt(genMumPx*genMumPx+genMumPy*genMumPy+genMumPz*genMumPz+0.10565837*0.10565837)+sqrt(genMupPx*genMupPx+genMupPy*genMupPy+genMupPz*genMupPz+0.10565837*0.10565837))^2-((genMumPx+genMupPx)*(genMumPx+genMupPx)+(genMumPy+genMupPy)*(genMumPy+genMupPy)+(genMumPz+genMupPz)*(genMumPz+genMupPz))) < 3.686+
+\b 6
+\b0 *0.041")\
+\
+\ul Query for J/psi:\
+\ulnone B0KstMuMuNTuple->Draw("sqrt((sqrt(genMumPx*genMumPx+genMumPy*genMumPy+genMumPz*genMumPz+0.10565837*0.10565837)+sqrt(genMupPx*genMupPx+genMupPy*genMupPy+genMupPz*genMupPz+0.10565837*0.10565837))^2-((genMumPx+genMupPx)*(genMumPx+genMupPx)+(genMumPy+genMupPy)*(genMumPy+genMupPy)+(genMumPz+genMupPz)*(genMumPz+genMupPz)))","sqrt((sqrt(genMumPx*genMumPx+genMumPy*genMumPy+genMumPz*genMumPz+0.10565837*0.10565837)+sqrt(genMupPx*genMupPx+genMupPy*genMupPy+genMupPz*genMupPz+0.10565837*0.10565837))^2-((genMumPx+genMupPx)*(genMumPx+genMupPx)+(genMumPy+genMupPy)*(genMumPy+genMupPy)+(genMumPz+genMupPz)*(genMumPz+genMupPz))) > 3.097-
+\b 6
+\b0 *0.033 && sqrt((sqrt(genMumPx*genMumPx+genMumPy*genMumPy+genMumPz*genMumPz+0.10565837*0.10565837)+sqrt(genMupPx*genMupPx+genMupPy*genMupPy+genMupPz*genMupPz+0.10565837*0.10565837))^2-((genMumPx+genMupPx)*(genMumPx+genMupPx)+(genMumPy+genMupPy)*(genMumPy+genMupPy)+(genMumPz+genMupPz)*(genMumPz+genMupPz))) < 3.097+
+\b 6
+\b0 *0.033")\
+\
+\ul Query for < 1GeV/c2:\
+\ulnone B0KstMuMuNTuple->Draw("sqrt((sqrt(genMumPx*genMumPx+genMumPy*genMumPy+genMumPz*genMumPz+0.10565837*0.10565837)+sqrt(genMupPx*genMupPx+genMupPy*genMupPy+genMupPz*genMupPz+0.10565837*0.10565837))^2-((genMumPx+genMupPx)*(genMumPx+genMupPx)+(genMumPy+genMupPy)*(genMumPy+genMupPy)+(genMumPz+genMupPz)*(genMumPz+genMupPz)))","sqrt((sqrt(genMumPx*genMumPx+genMumPy*genMumPy+genMumPz*genMumPz+0.10565837*0.10565837)+sqrt(genMupPx*genMupPx+genMupPy*genMupPy+genMupPz*genMupPz+0.10565837*0.10565837))^2-((genMumPx+genMupPx)*(genMumPx+genMupPx)+(genMumPy+genMupPy)*(genMumPy+genMupPy)+(genMumPz+genMupPz)*(genMumPz+genMupPz))) < 1")\
+\
+\
+\
+\
+@@@@@@@@@@@@\
+@ Dimuon in 
+\b RECO-MC
+\b0  @\
+@@@@@@@@@@@@\
+\ul \
+Query whole:\
+\ulnone B0KstMuMuSingleCandNTuple->Draw("sqrt((sqrt(mumPx*mumPx+mumPy*mumPy+mumPz*mumPz+0.10565837*0.10565837)+sqrt(mupPx*mupPx+mupPy*mupPy+mupPz*mupPz+0.10565837*0.10565837))^2-((mumPx+mupPx)*(mumPx+mupPx)+(mumPy+mupPy)*(mumPy+mupPy)+(mumPz+mupPz)*(mumPz+mupPz)))")\
+OR\
+\ul Query whole:\
+\ulnone B0KstMuMuNTuple->Draw("mumuMass","(genSignal == 1 || genSignal == 2) && truthMatchSignal == 1")\
+\ul \
+Query for J/psi and psi(2S):\
+\ulnone B0KstMuMuNTuple->Draw("mumuMass","((mumuMass >  (3.096916 - 
+\b 5
+\b0 *mumuMassE) && mumuMass < (3.096916 + 
+\b 3
+\b0 *mumuMassE)) || (mumuMass > (3.68609 - 
+\b 3
+\b0 *mumuMassE) && mumuMass < (3.68609 + 
+\b 3
+\b0 *mumuMassE))) && ((genSignal == 1 || genSignal == 2) && truthMatchSignal == 1)")\
+\
+\ul Query for < 1GeV/c2:\
+\ulnone B0KstMuMuNTuple->Draw("mumuMass","mumuMass < 1 && ((genSignal == 1 || genSignal == 2) && truthMatchSignal == 1)")\
+\
+\
+\
+\
+@@@@@@@@@@@@@\
+@ 
+\b How the decay works
+\b0  @\
+@@@@@@@@@@@@@\
+PYTHIA MSEL = 1 --> generates everything\
+PYTHIA MSEL = 5 --> generates only b-bbar (but it does not take into account all the production processes)\
+\
+
+\b a.
+\b0  Pythia produces the "reality"\
+( what's the chances to produce two B0 in the same event? b --> B0 X is about 40%, so bb --> B0 B0 X is ~16% )\
+
+\b b.
+\b0  The B0 filter selects only the events that contains a B0 (or a B0bar)\
+( it's not possible to purely generate only events with B0 ! )\
+
+\b c.
+\b0  \ul EvtGen\ulnone  forces the decay into K*0 mu mu (or K*0 J/psi | psi(2S) (mu mu) for the control channel)\
+
+\b d.
+\b0  The muon filter selects only events in which the muons pass the criteria (min pT and eta)\
+\
+\
+\
+\
+@@@@@@@@@@@@@@@@\
+@ 
+\b Signal-MC private production 
+\b0 @\
+@@@@@@@@@@@@@@@@\
+pp cross section at 7 TeV: 48.44 mb\
+\
+
+\b @ GEN-MC Filter (Too Tight) @\
+
+\b0 - 10 000 000 000 events\
+- 3 000 jobs\
+Filter:\
+- min muon pT 3.5 GeV/c2\
+- max muon eta: 2.3\
+GEN-MC Filter file size : ~25 Mbytes (OK) 
+\b 2996
+\b0  files\
+Luminosity: 294.52 fb-1\
+\
+\ul Filter efficiency:\
+\ulnone - Number of generated events : 10E9 / 3000 * 2996 = 9 986 666 667\
+- Number of events after the filter : 866 298\
+
+\b - Filter efficiency : 866 298 / (10E9 / 3000 * 2996) = 0.867E-4\
+
+\b0 The filter includes: the muon filter and the B0 filter\
+\
+\
+
+\b @ GEN-MC Filter @\
+
+\b0 - 10 000 000 000 events\
+- 3 000 jobs\
+Filter:\
+- min muon pT 2.8 GeV/c2\
+- max muon eta: 2.3\
+GEN-MC Filter file size : ~50 Mbytes (OK) 
+\b 2983
+\b0  files\
+Luminosity: 293.25 fb-1\
+\
+\ul Filter efficiency:\
+\ulnone - Number of generated events : 10E9 / 3000 * 2983 = 9 943 333 333\
+- Number of events after the filter : 2 513 827\
+
+\b - Filter efficiency : 2 513 827 / (10E9 / 3000 * 2983) = 2.52E-4\
+
+\b0 The filter includes: the muon filter and the B0 filter\
+\
+\
+
+\b @ GEN-MC NoFilter @\
+
+\b0 If :\
+- 10 000 000 000 events\
+- 3 000 jobs\
+GEN-MC NoFilter file size : ~950 Mbytes --> too much\
+then :\
+- 2 500 000 000 events\
+- 3 000 jobs\
+- 4 submissions\
+GEN-MC001 NoFilter file size : ~240 Mbytes --> OK 
+\b 2997
+\b0  files\
+GEN-MC002 NoFilter file size : ~240 Mbytes --> OK 
+\b 3000
+\b0  files\
+GEN-MC003 NoFilter file size : ~240 Mbytes --> OK 
+\b 2991
+\b0  files\
+GEN-MC004 NoFilter file size : ~240 Mbytes --> OK 
+\b 2995
+\b0  files\
+Luminosity: 294.5 fb-1\
+\
+\ul Filter efficiency:\
+\ulnone - Number of generated events : 10E9 / (3000*4) * (2997+3000+2991+2995) = 9 985 833 333\
+- Number of events after the filter : 60 740 105\
+
+\b - Filter efficiency : 60 740 105 / (10E9 / (3000*4) * (2997+3000+2991+2995)) = 6.07E-3\
+
+\b0 The filter includes only the B0 filter\
+\
+\
+
+\b @ GEN-HLT-MC with Filter (Too Tight) @\
+
+\b0 - 15 000 000 000 events\
+- 3 000 jobs\
+- 4 submissions\
+Filter:\
+- min muon pT 3.5 GeV/c2\
+- max muon eta: 2.3\
+GEN-HLT-MC001 Filter file size : ~280 Mbytes --> OK 
+\b 3000
+\b0  files\
+GEN-HLT-MC002 Filter file size : ~280 Mbytes --> OK 
+\b 1754
+\b0  files\
+GEN-HLT-MC003 Filter file size : ~280 Mbytes --> OK 
+\b 1669
+\b0  files\
+GEN-HLT-MC004 Filter file size : ~280 Mbytes --> OK 
+\b 1963
+\b0  files\
+Luminosity: 1 236.581 fb-1\
+\
+\ul Filter efficiency:\
+\ulnone - Number of generated events : 60E9 / (3000*4) * (3000+1754+1669+1963) = 41 930 000 000\
+- Number of events after the filter : 3 631 208\
+
+\b - Filter efficiency : 3 631 208 / (60E9 / (3000*4) * (3000+1754+1669+1963)) = 0.866E-4\
+
+\b0 The filter includes: the muon filter and the B0 filter\
+\
+\
+
+\b @ GEN-HLT-RECO-MC with Filter @\
+
+\b0 - Number of events after the filter : 18 967 661\
+- Number of generated events : 18 967 661 / 2.52E-4 = 75 268 496 000\
+Luminosity: 2 219.8 fb-1\
+\
+\
+
+\b @ GEN-RECO-MC with Filter (Too Tight) @\
+
+\b0 (muon min pT=3.5 GeV/c and max eta=2.3)\
+\
+"B0ToKstMuMu001"\
+- Number of events after the filter : 1 299 089\
+Luminosity: 441 894 pb-1\
+\
+"B0ToKstMuMu002"\
+- Number of events after the filter : 759 755\
+Luminosity: 258 436 pb-1\
+\
+"B0ToKstMuMu003"\
+- Number of events after the filter : 722 710\
+Luminosity: 245 835 pb-1\
+\
+"B0ToKstMuMu004"\
+- Number of events after the filter : 849 654\
+Luminosity: 289 015 pb-1\
+\
+\
+@@@@@@@@@@@@@@@@@@@\
+@ 
+\b Control-MC J/psi private production 
+\b0 @\
+@@@@@@@@@@@@@@@@@@@\
+\
+
+\b @ GEN-MC NoFilter @
+\b0 \
+- 1 500 000 000 events\
+- 3 000 jobs\
+GEN-MC NoFilter file size : ~150 Mbytes --> OK 
+\b 2999
+\b0  files\
+- Number of generated events : 1.5E9 / 3000 * 2999 = 1 499 500 000\
+Luminosity: 588.7 pb-1\
+\
+\ul Filter efficiency:\
+\ulnone - Number of events after the filter : 9 122 980\
+
+\b - Filter efficiency : 9 122 980 / (1.5E9 / 3000 * 2999) = 6.08E-3\
+
+\b0 The filter includes only the B0 filter\
+\
+\
+
+\b @ GEN-MC Filter @\
+
+\b0 - 15 000 000 000 events\
+- 3 000 jobs\
+Filter:\
+- min muon pT 2.8 GeV/c2\
+- max muon eta: 2.3\
+GEN-MC Filter file size : ~65 Mbytes (OK) 
+\b 2999
+\b0  files\
+Luminosity: 5 887 pb-1\
+\
+\ul Filter efficiency:\
+\ulnone - Number of generated events : 15E9 / 3000 * 2999 = 14 995 000 000\
+- Number of events after the filter : 3 609 533\
+
+\b - Filter efficiency : 3 609 533 / (15E9 / 3000 * 2999) = 2.41E-4\
+
+\b0 The filter includes: the muon filter, the B0 filter\
+\
+\
+
+\b @ GEN-HLT-RECO-MC with Filter @\
+
+\b0 - Number of events after the filter : 5 553 714\
+- Number of generated events : 5 553 714 / 2.41E-4 = 23 044 456 432\
+Luminosity: 9 048 pb-1\
+\
+\
+@@@@@@@@@@@@@@@@@@@@\
+@ 
+\b Control-MC psi(2S) private production 
+\b0 @\
+@@@@@@@@@@@@@@@@@@@@\
+\
+
+\b @ GEN-MC NoFilter @
+\b0 \
+- 1 500 000 000 events\
+- 3 000 jobs\
+GEN-MC NoFilter file size : ~140 Mbytes --> OK 
+\b 2998
+\b0  files\
+- Number of generated events : 1.5E9 / 3000 * 2998 = 1 499 000 000\
+Luminosity: 9 883.6 pb-1\
+\
+\ul Filter efficiency:\
+\ulnone - Number of events after the filter : 9 118 094\
+
+\b - Filter efficiency : 9 118 094 / (1.5E9 / 3000 * 2998) = 6.08E-3\
+
+\b0 The filter includes only the B0 filter\
+\
+\
+
+\b @ GEN-MC Filter @\
+
+\b0 - 15 000 000 000 events\
+- 3 000 jobs\
+Filter:\
+- min muon pT 2.8 GeV/c2\
+- max muon eta: 2.3\
+GEN-MC Filter file size : ~80 Mbytes (OK) 
+\b 2997
+\b0  files\
+Luminosity: 98 902 pb-1\
+\
+\ul Filter efficiency:\
+\ulnone - Number of generated events : 15E9 / 3000 * 2997 = 14 985 000 000\
+- Number of events after the filter : 4 359 710\
+
+\b - Filter efficiency : 4 359 710 / (15E9 / 3000 * 2997) = 2.91E-4\
+
+\b0 The filter includes: the muon filter, the B0 filter\
+\
+\
+
+\b @ GEN-HLT-RECO-MC with Filter @\
+
+\b0 - Number of events after the filter : 385 547\
+- Number of generated events : 385 547 / 2.91E-4 = 1 324 903 780\
+Luminosity: 8 736 pb-1\
+\
+\
+\
+\
+@@@@@@@@@@@@@@@@@@@@@\
+@ Tuning the 
+\b n-sgima psi
+\b0  exclusion region @\
+@@@@@@@@@@@@@@@@@@@@@\
+B0 --> J/psi K*0 MC corresponds to 569 pb-1 (yield = 15285)\
+In Data (PromptReco-v4 (958 pb-1)) we measure yield = 14067\
+
+\b N.B. pythia over estimate the cross-section by 33.2 / 49.1 = 67.6% (see B0 paper)\
+
+\b0 Taking this into account we should have measured on Data:\
+- new cross-section = 15285 / 569 * 67.6%\
+- new luminosity = 15285 / (15285 / 569 * 67.6%) = 843 pb-1\
+- new expected events = 15285 / 843 * 958 = 17366\
+- instead we have 14067 events\
+
+\b - Therefore the trigger efficiency is: 14067 / 17366 = ~81%\
+
+\b0 \
+
+\b Scale factor from MC to Data: 0.81 * 958 * 0.676 / 569 = ~0.92\
+
+\b0 \
+B0 --> J/psi (mu mu) K*0 is 
+\b 16.8
+\b0  times bigger than B0 --> psi(2S) (mu mu) K*0\
+- B0 --> J/psi K*0 : 1.33E-3  AND J/psi --> mu mu : 5.93E-2\
+- B0 --> psi(2S) K*0 : 6.1E-4  AND psi(2S) --> mu mu : 7.7E-3\
+\
+B0 mass region: 5.22 --- 5.34 GeV/c2: region from "start-tail" to "end-tail" of Gaussian fit to data\
+\
+(1) 3*sigma --- 3*sigma --> 74 events --> total ev = 74 * 0.92 * 2 * (1 + 1/16.8) = 144\
+(2) 4*sigma --- 3*sigma --> 29 events --> total ev = 29 * 0.92 * 2 * (1 + 1/16.8) = 57\
+
+\b (3) 5*sigma --- 3*sigma --> 17 events --> total ev = 17 * 0.92 * 2 * (1 + 1/16.8) = 33\
+
+\b0 (4) 5*sigma --- 4*sigma --> 14 events --> total ev = 14 * 0.92 * 2 * (1 + 1/16.8) = 27\
+(5) 6*sigma --- 3*sigma --> 14 events --> total ev = 14 * 0.92 * 2 * (1 + 1/16.8) = 27\
+(6) 6*sigma --- 4*sigma --> 11 events --> total ev = 11 * 0.92 * 2 * (1 + 1/16.8) = 21\
+\
+If we have 
+\b 300
+\b0  signal events, we won't tolerate more than 
+\b 30
+\b0  events from B0 --> J/psi K*0, therefore we have to choose the sigma cuts 
+\b (3)
+\b0 \
+\
+\
+\
+\
+@@@@@@@\
+@ 
+\b Datasets
+\b0  @\
+@@@@@@@\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 \
+\ul Data:\
+\ulnone PromptReco_v4A\
+PromptReco_v5A\
+PromptReco_v6A\
+PromptReco_v1B\
+ReRecoA\
+\
+\ul My MC:\
+\ulnone B0ToKstMuMu_MyMCANALYSIS001_NTuples\
+B0ToKstMuMu_MyMCANALYSIS002_NTuples\
+B0ToKstMuMu_MyMCANALYSIS003_NTuples\
+B0ToKstMuMu_MyMCANALYSIS004_NTuples\
+\
+B0ToJPsiKst_GEN_NoFilter\
+B0ToJPsiKst_GEN_Filter\
+\
+B0ToPsi2SKst_GEN_NoFilter\
+B0ToPsi2SKst_GEN_Filter\
+\
+B0ToKstMuMu_GEN_NoFilter_01\
+B0ToKstMuMu_GEN_NoFilter_02\
+B0ToKstMuMu_GEN_NoFilter_03\
+B0ToKstMuMu_GEN_NoFilter_04\
+B0ToKstMuMu_GEN_Filter\
+B0ToKstMuMu_GEN_Filter_TooTight\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 \ul \ulc0 Brian's MC:\
+\ulnone B0ToKstMuMu\
+B0ToJPsiKst\
+B0ToPsi2SKst\
+\
+\ul Official MC:\
+\ulnone B0ToPsiMuMu\
+- filter efficiency 3.114 E-4\
+- PDG BF [B0 --> J/psi K0] 8.71 E-4\
+- DEC file fraction [B0 --> J/psi K0]: 0.0943\
+- n. events  7 197 116 ( out of 7 221 225 )\
+- cross-section = 48 445 000 000 * 8.71 E-4 * [BF J/psi --> mu mu] 0.0593 = 2.502 E6 pb\
+- 
+\b Luminosity
+\b0  = 7 197 116 * 0.0943 / ( 3.114 E-4 * 2.502 E6 pb ) = 
+\b 871.1 pb-1
+\b0  --> 
+\b corrected
+\b0  by pythia / data (49.1 / 33.2) --> 
+\b 1288.3 pb-1 (4.02 data)
+\b0 \
+\
+BpToPsiMuMu\
+- filter efficiency 3.188 E-4\
+- PDG BF [B+ --> J/psi K+] 1.014 E-3\
+- DEC file fraction [B+ --> J/psi K+]: 0.0972\
+- n. events 8 380 592\
+- cross-section = 48 445 000 000 * 1.014 E-3 * [BF J/psi --> mu mu] 0.0593 = 2.913 E6 pb\
+- 
+\b Luminosity
+\b0  = 8 380 592 * 0.0972 / ( 3.188 E-4 * 2.913 E6 pb ) = 
+\b 877.2 pb-1
+\b0  --> 
+\b corrected
+\b0  by pythia / data (48.1 / 28.1) --> 
+\b 1501.5 pb-1 (3.45 data)
+\b0 \
+\
+BsToPsiMuMu\
+- filter efficiency 1.004 E-4\
+- PDG BF [Bs --> J/psi phi] 1.3 E-3\
+- DEC file fraction [Bs --> J/psi phi]: 0.1547\
+- n. events 2 092 273\
+- cross-section = 48 445 000 000 * 1.3 E-3 * [BF J/psi --> mu mu] 0.0593 = 3.735 6 pb\
+- 
+\b Luminosity
+\b0  = 2 092 273 * 0.1547 / ( 1.004 E-4 * 3.735 E6 pb ) = 
+\b 863.2 pb-1
+\b0  --> 
+\b corrected
+\b0  by pythia / data (9.4 / 6.9) --> 
+\b 1176.0 pb-1 (4.41 data)
+\b0 \
+\
+LambdaBToPsiMuMu\
+- filter efficiency 6.4 E-5\
+- PDG BF [/\\b --> J/psi /\\] 5.2 E-4\
+- DEC file fraction [/\\b --> J/psi /\\]: 0.168\
+- n. events 2 184 854\
+- cross-section = 48 445 000 000 * 5.2 E-4 * [BF J/psi --> mu mu] 0.0593 = 1.494 E6 pb\
+- 
+\b Luminosity
+\b0  = 2 184 854 * 0.168 / ( 6.4 E-5 * 1.494 E6 pb ) = 
+\b 3854.9 pb-1
+\b0  --> 
+\b corrected
+\b0  by pythia / data (1.19 / 1.26) --> 
+\b 3640.7 pb-1 (1.42 data)
+\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \
+\
+\
+\
+@@@@@@@@@@@@@@@\
+@ 
+\b HLT and pre-selection cuts
+\b0  @\
+@@@@@@@@@@@@@@@\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b \cf0 \ul \
+HLT-trigger cuts:\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b0 \cf0 \ulnone - mu max eta 2.2\
+- mu DCA w/respect to BS 2.0 [cm]\
+- mu min pT 3.0 [GeV/c]\
+\
+- mu-mu min pT 6.9 [GeV/c]\
+- mu-mu min inv. mass 1.0 [GeV/c2]\
+- mu-mu max inv. mass 4.8 [GeV/c2]\
+- mu-mu Vtx CL  = 0.05\
+- mu-mu L/sigma w/respect to BS 3.0\
+- mu-mu DCA w/respect each other 0.5 [cm]\
+- mu-mu cos(alpha) w/respect to BS 0.9\
+\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b \cf0 \ul Pre-selection cuts:\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b0 \cf0 \ulnone - B0 mass upper limit 6.5 [GeV/c2]\
+- B0 mass lower limit 4.5 [GeV/c2]\
+- B0 Vtx CL 0.01\
+- K*0 (OR K*0bar) mass window sigma 3.0\
+- hadron min pT 0.4 [GeV/c]\
+- hadron DCA/sigma w/respect to BS 1.2\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\i \cf0 \ul \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\i0 \cf0 \ulnone @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\
+@ Test hadron DCA/sigma 
+\b timing
+\b0  with 100 events on BrMC signal @\
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\
+- hadron DCA/sigma 
+\b 1.5
+\b0  AND min pT 0.4 (1m10s) --> delta from below: 5s\
+- hadron DCA/sigma 
+\b 1.4
+\b0  AND min pT 0.4 (1m15s) --> delta from below: 5s\
+- hadron DCA/sigma 
+\b 1.3
+\b0  AND min pT 0.4 (1m20s) --> delta from below: 7s\
+	- hadron DCA/sigma 1.2 AND min pT 
+\b 0.5
+\b0  (1m01s) --> delta from pT 0.4: 26s\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b \cf0 \ul - hadron DCA/sigma 1.2 AND min pT 0.4 (1m27s) --> delta from below: 8s\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b0 \cf0 \ulnone 	- hadron DCA/sigma 1.2 AND min pT 
+\b 0.3
+\b0  (2m09s) --> delta from pT 0.4: 42s\
+- hadron DCA/sigma 
+\b 1.1
+\b0  AND min pT 0.4 (1m35s) --> delta from below: 9s\
+- hadron DCA/sigma 
+\b 1.0
+\b0  AND min pT 0.4 (1m44s) --> delta from below: 34s\
+
+\b -\ul  hadron DCA/sigma 1.0 AND min pT 0.5 (1m10s)\
+
+\b0 \ulnone \
+\
+\
+\
+@@@@@@@@@@@@@@@@@@@\
+@ Analysis software version: 
+\b V00-08-01
+\b0  @\
+@@@@@@@@@@@@@@@@@@@\
+\
+\
+@@@@@@@@@@@@@@@@@@@@\
+@ Data / MC reprocessing characteristics @\
+@@@@@@@@@@@@@@@@@@@@\
+- ReReco			(All 1468 files, 233.393 pb-1)\
+- PromptReco-v4A	(All 1286 files, 984.052 pb-1)\
+- PromptReco-v5A	(All 326 files, 436.660 pb-1)\
+- PromptReco-v6A 	(All 480 files, 722.043 pb-1)\
+- PromptReco-v1B 	(All 1792 files, 2863 pb-1)\
+* Total  luminosity on data : 
+\b 5180.3 pb-1
+\b0 \
+\
+- B0ToKstMuMu-Br	(18 967 661 events) --> 
+\b 2 219.8 fb-1
+\b0 \
+dataset: 2_1	--	(4 746 755 events) n.files ok: 101 / 101\
+dataset: 2_2	--	(1 780 276 events) n.files ok: 100 / 101 (44)\
+dataset: 2_3	--	(4 342 064 events) n.files ok: 101 / 101\
+dataset: 2_4	--	(1 203 319 events) n.files ok: 101 / 101\
+dataset: 2_6	--	(2 110 000 events) n.files ok: 100 / 100\
+dataset: 2_7	--	(2 982 000 events) n.files ok: 100 / 100\
+dataset: 2_8	--	(1 803 247 events) n.files ok: 97 / 101 (8, 60, 61, 94)\
+\
+- B0ToJPsiKst-Br	( 5 553 714 events) --> 
+\b 9 048.0 pb-1
+\b0 \
+n.files ok: all\
+\
+- B0ToPsi2SKst-Br	(385 547 events) --> 
+\b 8 736.0 pb-1
+\b0 \
+n.files ok: all\
+\
+\
+@@@@@@@@@\
+@ Selection cuts @\
+@@@@@@@@@\
+
+\b - B0 vtx CL --> 0.09\
+- B0 L/sigma BS --> 12\
+- B0 cos(alpha) --> 0.9994\
+- had pT --> 0.75\
+- K*0 mass --> 0.08\
+- had DCA/sigma BS --> 1.3\
+
+\b0 \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b \cf0 \ul Single candidate selection algorithm:\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b0 \cf0 \ulnone (A) Search best candidate based on best B0 vtx CL\
+(B) Reject event if both K*0 and K*0bar masses are within 50 MeV from PDG mass and > 150 MeV from PDG mass\
+(C) Compute Fisher-test on distance to mean PDG (currently not performed)\
+(D) If F-test is positive then tag the CP state based on best distance (computed as probability integral of Breit-Wigner)\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul \
+Performance (without step-C):\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - 
+\b Efficiency
+\b0  to catch good events: 
+\b 14%
+\b0  (number of selected truth-matched events / total number of events containing a truth-match)\
+- 
+\b Purity: 99%
+\b0  (number of selected truth-matched events / total number of selected events)\
+- 
+\b CP-tagging efficiency: 92%
+\b0  (number of correctly assigned CP state / total number of CP state in the selected events)\
+\
+\
+\
+\
+@@@@@@@@@@@@@@@@@@\
+@ 
+\b Fit procedure sequence of steps
+\b0   @\
+@@@@@@@@@@@@@@@@@@\
+\
+
+\b ############## Signal MC ##############\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b0 \cf0 \ul \
+All q2 bins (sampled MC)\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Fit mass-FL-AFB --- NO-constraints		[X]\
+\
+Whole mumu spectrum\
+Fit mass --- NO-constraints			[X]\
+\
+\
+
+\b ############## J/psi MC ##############\
+
+\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul J/psi bin (sampled MC)\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Fit mass-FL-AFB --- NO-constraints		[X]\
+\
+Whole mumu spectrum ( the J/psi region yield is used for the dBF/dq2 )\
+Fit mass --- NO-constraints			[X]\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul \
+Bin #2 and #4 (full MC)\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Fit mass-FL-AFB --- NO-constraints		[X]\
+\
+\
+
+\b ############## psi(2S) ##############\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b0 \cf0 \ul psi(2S) bin (sampled MC)\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Fit mass-FL-AFB --- NO-constraints		[X]\
+\
+Whole mumu spectrum ( the psi(2S) region yield is used for the dBF/dq2 )\
+Fit mass --- NO-constraints			[X]\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul \
+Bin #4 and #6 (full MC)\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Fit mass-FL-AFB --- NO-constraints		[X]\
+\
+\
+
+\b ############ peaking bkg ############
+\b0 \
+\
+- Report bin 
+\b #2
+\b0  ( 
+\b #6
+\b0  ) to data config file rescaled by the 
+\b data / full-MC
+\b0  J/psi ( psi(2S) MC ) yield\
+- Rescale the J/psi MC ( psi(2S) MC ) yield by the 
+\b data / full-MC
+\b0  J/psi ( psi(2S) MC ) yield\
+- Rescale and merge bin 
+\b #4
+\b0  from J/psi and psi(2S) MC, report into data config file\
+\
+\
+
+\b ############### data ###############\
+
+\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul J/psi bin\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Fit mass-FL-AFB-FS-AS --- constraints	[X] Multy minima scan\
+- Fit mass-FL-AFB-FS-AS --- constraints	[X]\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone Whole mumu spectrum ( the J/psi region yield is used for the dBF/dq2 )\
+- Fit mass --- constraints				[X]\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul \
+All q2 bins\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Fit mass-FL-AFB-FS-AS --- constraints	[X] Multy minima scan\
+- Fit mass-FL-AFB-FS-AS --- constraints	[X]\
+\
+\
+@@@@@@@@@@@@@@@\
+@ Tag for Approval: 
+\b V00-10-05
+\b0  @\
+@@@@@@@@@@@@@@@\
+\
+\
+@@@@@@@@@@@@\
+@ 
+\b Theoretical aspects
+\b0  @\
+@@@@@@@@@@@@\
+1 = |A0|^2 + |Apar|^2 + |Aort|^2 + |As|^2, As in this case is Fs in the analysis\
+AFB ( = As in the analysis ) = sqrt(3 * |As|^2 * (1 - |Apar|^2 - |Aort|^2 - |As|^2)) * cos (delta_s - delta_0)\
+\
+\
+\
+\
+@@@@@@@@@\
+@ 
+\b For 2012 data
+\b0  @\
+@@@@@@@@@\
+1. See if and how to update EvtGen version 10.0\
+\
+2. Move to CMSSW_5_3 ( implement new variables for "soft" and "tight" muon selection )\
+3. Multiple candidate ntuple and single candidate ntuple must have the same directory name\
+4. Re-define phi angle with folding technique\
+\
+5. Ripulire Colorado da vecchi dataset\
+\
+6. Compute mass shape from 3D-fit to MC\
+\
+7. Add dilution to AFB, AFB'  = (1 - 2m)AFB, and to all other asymmetry terms to account for CP-state mistag (m)\
+8. Correct statistical errors by the sigmas of the Gaussian fits to the pulls\
+9. Test Atlas cut : | ( m(B)RECO - m(B)PDG ) - ( m(mu+mu-)RECO - m(J/psi)PDG ) | <  130 MeV\
+10. Search for Bs --> J/psi K* by restricting to the barrel region\
+11. Check for Bs --> K* mu mu background}
