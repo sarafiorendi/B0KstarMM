@@ -21,21 +21,21 @@ Utils::Utils ()
   pionMass      = 0.13957018;
   kaonMass      = 0.493677;
   kstMass       = 0.896;
-  B0Mass        = 5.27953;
+  B0Mass        = 5.27958;
   JPsiMass      = 3.096916;
-  PsiPrimeMass  = 3.68609;
+  PsiPrimeMass  = 3.686109;
 
-  JPsiBF        = 7.9e-5;    // B0 --> J/psi(mu+mu-) K*0
-  JPsiKpiBF     = 5.2579e-5; // B0 --> J/psi(mu+mu-) K*0(K+pi-)   (1.33+/-0.06 * 5.93+/-0.06 * 2/3)
-  KstMuMuBF     = 1.05e-6;   // B0 --> K*0 mu+mu-
-  KstKpiMuMuBF  = 7e-7;      // B0 --> K*0(K+pi-) mu+mu-          (1.05+0.16/-0.13 * 2/3)
-  PsiPBF        = 46.97e-7;  // B0 --> psi(2S)(mu+mu-) K*0
-  PsiPKpiBF     = 31.31e-7;  // B0 --> psi(2S)(mu+mu-) K*0(K+pi-) (6.1+/-0.5 * 7.7+/-0.8 * 2/3)
+  JPsiBF        =  7.95e-5; // B0 --> J/psi(mu+mu-) K*0          (1.34+/-0.06 * 5.93+/-0.06)
+  JPsiKpiBF     =  5.30e-5; // B0 --> J/psi(mu+mu-) K*0(K+pi-)   (1.34+/-0.06 * 5.93+/-0.06 * 2/3)
+  KstMuMuBF     =  1.06e-6; // B0 --> K*0 mu+mu-
+  KstKpiMuMuBF  =  7.07e-7; // B0 --> K*0(K+pi-) mu+mu-          (1.06+/-0.10 * 2/3)
+  PsiPBF        = 46.97e-7; // B0 --> psi(2S)(mu+mu-) K*0        (6.1+/-0.5 * 7.7+/-0.8)
+  PsiPKpiBF     = 31.31e-7; // B0 --> psi(2S)(mu+mu-) K*0(K+pi-) (6.1+/-0.5 * 7.7+/-0.8 * 2/3)
 
-  muonMassErr   = muonMass*1e-6;
-  pionMassErr   = pionMass*1e-6;
+  muonMassErr   = 0.00000035;
+  pionMassErr   = 0.00000035;
   kaonMassErr   = 0.000016;
-  B0MassErr     = 0.000033;
+  B0MassErr     = 0.00017;
   kstSigma      = 0.05;
 
   nFitParam     = 51;
