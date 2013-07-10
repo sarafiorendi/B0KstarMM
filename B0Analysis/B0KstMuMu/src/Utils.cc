@@ -1694,7 +1694,7 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
 	    }
 	}
         
-      effFuncs->operator[](q2BinIndx)->GetXaxis()->SetTitle("cos(#theta_{K})");
+      effFuncs->operator[](q2BinIndx)->GetXaxis()->SetTitle("cos(#theta_{#font[122]{K}})");
       effFuncs->operator[](q2BinIndx)->GetXaxis()->SetTitleOffset(1.8);
       effFuncs->operator[](q2BinIndx)->GetYaxis()->SetTitle("cos(#theta_{l})");
       effFuncs->operator[](q2BinIndx)->GetYaxis()->SetTitleOffset(1.8);
@@ -1806,7 +1806,7 @@ double Utils::EffMinValue2D (std::vector<double>* cosThetaKBins, std::vector<dou
   return minVal;
 }
 
-void Utils::MakeGraphVar (std::string parFileName, TGraphAsymmErrors** graph, std::string varName, bool allBins)
+void Utils::MakeGraphVar (std::string parFileName, TGraphAsymmErrors** graph, std::string varName, bool allBins, double offset)
 // ######################
 // # varName = "dBFdq2" #
 // # varName = "Fl"     #
@@ -1850,9 +1850,9 @@ void Utils::MakeGraphVar (std::string parFileName, TGraphAsymmErrors** graph, st
 
       if ((allBins == true) || (ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false))
 	{
-	  vxs.push_back((q2Bins[i+1] + q2Bins[i]) / 2.);
-	  vxeh.push_back(q2Bins[i+1] - vxs.back());
-	  vxel.push_back(vxs.back() - q2Bins[i]);
+	  vxs.push_back((q2Bins[i+1] + q2Bins[i]) / 2. + offset);
+	  vxeh.push_back(q2Bins[i+1] - vxs.back() - offset);
+	  vxel.push_back(vxs.back() - q2Bins[i] + offset);
  
 	  rawString >> tmpVar;
 	  vys.push_back(tmpVar);
@@ -2188,7 +2188,7 @@ void Utils::AddConstraint2D (TH2D** histo, double err, double Zval, double errZ,
     }
 
 
-  newHisto->SetXTitle("cos(#theta_{K})");
+  newHisto->SetXTitle("cos(#theta_{#font[122]{K}})");
   newHisto->GetXaxis()->SetTitleOffset(1.8);
   newHisto->SetYTitle("cos(#theta_{l})");
   newHisto->GetYaxis()->SetTitleOffset(1.8);

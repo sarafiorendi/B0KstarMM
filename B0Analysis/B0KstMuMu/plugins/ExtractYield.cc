@@ -374,7 +374,7 @@ void DrawString (double Lumi, RooPlot* myFrame = NULL)
   stringstream myString;
 
   myString.clear(); myString.str("");
-  myString << "CMS preliminary";
+  myString << "CMS";
   TLatex* LumiTex1 = new TLatex(0.1,0.95,myString.str().c_str());
   LumiTex1->SetTextSize(0.04);
   LumiTex1->SetTextColor(kBlack);
@@ -2386,12 +2386,12 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // ##########################################
       // # Define fit variables and pdf for J/psi #
       // ##########################################
-      RooRealVar* meanJPsi1  = new RooRealVar("meanJPsi1","J/psi mean Gaussian-1",Utility->JPsiMass,"GeV/c^{2}");
-      RooRealVar* sigmaJPsi1 = new RooRealVar("sigmaJPsi1","J/psi sigma Gaussian-1",0.02,"GeV/c^{2}");
+      RooRealVar* meanJPsi1  = new RooRealVar("meanJPsi1","J/psi mean Gaussian-1",Utility->JPsiMass,"GeV");
+      RooRealVar* sigmaJPsi1 = new RooRealVar("sigmaJPsi1","J/psi sigma Gaussian-1",0.02,"GeV");
       RooAbsPdf* MassJPsi1   = new RooGaussian("MassJPsi1","J/psi Gaussian-1",*x,*meanJPsi1,*sigmaJPsi1);
 
-      RooRealVar* meanJPsi2  = new RooRealVar("meanJPsi2","J/psi mean Gaussian-2",Utility->JPsiMass,"GeV/c^{2}");
-      RooRealVar* sigmaJPsi2 = new RooRealVar("sigmaJPsi2","J/psi sigma Gaussian-2",0.09,"GeV/c^{2}");
+      RooRealVar* meanJPsi2  = new RooRealVar("meanJPsi2","J/psi mean Gaussian-2",Utility->JPsiMass,"GeV");
+      RooRealVar* sigmaJPsi2 = new RooRealVar("sigmaJPsi2","J/psi sigma Gaussian-2",0.09,"GeV");
       RooAbsPdf* MassJPsi2   = new RooGaussian("MassJPsi2","J/psi Gaussian-2",*x,*meanJPsi2,*sigmaJPsi2);
 
       meanJPsi1->setConstant(false);
@@ -2457,7 +2457,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       RooPlot* myFrameJPsi = x->frame(Range("subRangeJPsi"),Bins(NBins));
       dataSetJPsi->plotOn(myFrameJPsi,Name(dataSetJPsi->GetName()));
       (*TotalPDFJPsi)->plotOn(myFrameJPsi,Name((*TotalPDFJPsi)->getPlotLabel()),LineColor(kBlack));
-      (*TotalPDFJPsi)->plotOn(myFrameJPsi,Components(*JPsi),LineStyle(kDashed),LineColor(kBlue));
+      (*TotalPDFJPsi)->plotOn(myFrameJPsi,Components(*JPsi),LineStyle(7),LineColor(kBlue));
       if (justKeepPsi != true) (*TotalPDFJPsi)->plotOn(myFrameJPsi,Components(*BkgmumuMassJPsi),LineStyle(4),LineColor(kRed));
       (*TotalPDFJPsi)->paramOn(myFrameJPsi,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nJPsiMass,*nBkgMassJPsi)));
 
@@ -2507,12 +2507,12 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // ############################################
       // # Define fit variables and pdf for psi(2S) #
       // ############################################
-      RooRealVar* meanPsiP1  = new RooRealVar("meanPsiP1","psi(2S) mean Gaussian-1",Utility->PsiPrimeMass,"GeV/c^{2}");
-      RooRealVar* sigmaPsiP1 = new RooRealVar("sigmaPsiP1","psi(2S) sigma Gaussian-1",0.02,"GeV/c^{2}");
+      RooRealVar* meanPsiP1  = new RooRealVar("meanPsiP1","psi(2S) mean Gaussian-1",Utility->PsiPrimeMass,"GeV");
+      RooRealVar* sigmaPsiP1 = new RooRealVar("sigmaPsiP1","psi(2S) sigma Gaussian-1",0.02,"GeV");
       RooAbsPdf* MassPsiP1   = new RooGaussian("MassPsiP1","psi(2S) Gaussian-1",*x,*meanPsiP1,*sigmaPsiP1);
 
-      RooRealVar* meanPsiP2  = new RooRealVar("meanPsiP2","psi(2S) mean Gaussian-2",Utility->PsiPrimeMass,"GeV/c^{2}");
-      RooRealVar* sigmaPsiP2 = new RooRealVar("sigmaPsiP2","psi(2S) sigma Gaussian-2",0.09,"GeV/c^{2}");
+      RooRealVar* meanPsiP2  = new RooRealVar("meanPsiP2","psi(2S) mean Gaussian-2",Utility->PsiPrimeMass,"GeV");
+      RooRealVar* sigmaPsiP2 = new RooRealVar("sigmaPsiP2","psi(2S) sigma Gaussian-2",0.09,"GeV");
       RooAbsPdf* MassPsiP2   = new RooGaussian("MassPsiP2","psi(2S) Gaussian-2",*x,*meanPsiP2,*sigmaPsiP2);
 
       meanPsiP1->setConstant(false);
@@ -2578,7 +2578,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       RooPlot* myFramePsiP = x->frame(Range("subRangePsiP"),Bins(NBins));
       dataSetPsiP->plotOn(myFramePsiP,Name(dataSetPsiP->GetName()));
       (*TotalPDFPsiP)->plotOn(myFramePsiP,Name((*TotalPDFPsiP)->getPlotLabel()),LineColor(kBlack));
-      (*TotalPDFPsiP)->plotOn(myFramePsiP,Components(*PsiP),LineStyle(kDashed),LineColor(kBlue));
+      (*TotalPDFPsiP)->plotOn(myFramePsiP,Components(*PsiP),LineStyle(7),LineColor(kBlue));
       if (justKeepPsi != true) (*TotalPDFPsiP)->plotOn(myFramePsiP,Components(*BkgmumuMassPsiP),LineStyle(4),LineColor(kRed));
       (*TotalPDFPsiP)->paramOn(myFramePsiP,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nPsiPMass,*nBkgMassPsiP)));
 
@@ -2713,12 +2713,12 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
   // ###########################
   // # Define useful variables #
   // ###########################
-  B0MassArb          = new RooRealVar("B0MassArb","M(K^{+}#pi^{#font[122]{\55}}#mu^{+}#mu^{#font[122]{\55}})",Utility->B0Mass - Utility->GetGenericParam("B0MassIntervalLeft"),Utility->B0Mass + Utility->GetGenericParam("B0MassIntervalRight"),"GeV/c^{2}");
-  mumuMass           = new RooRealVar("mumuMass","#mu^{+}#mu^{#font[122]{\55}} inv. mass",0.0,6.0,"GeV/c^{2}");
-  mumuMassE          = new RooRealVar("mumuMassE","#mu^{+}#mu^{#font[122]{\55}} inv. mass error",0.0,0.5,"GeV/c^{2}");
-  CosThetaKArb       = new RooRealVar("CosThetaKArb","cos(#theta_{K})",-1.0,1.0,"");
+  B0MassArb          = new RooRealVar("B0MassArb","M(#font[122]{K}^{#font[122]{+}}#pi^{#font[122]{\55}}#mu^{#font[122]{+}}#mu^{#font[122]{\55}})",Utility->B0Mass - Utility->GetGenericParam("B0MassIntervalLeft"),Utility->B0Mass + Utility->GetGenericParam("B0MassIntervalRight"),"GeV");
+  mumuMass           = new RooRealVar("mumuMass","#mu^{#font[122]{+}}#mu^{#font[122]{\55}} inv. mass",0.0,6.0,"GeV");
+  mumuMassE          = new RooRealVar("mumuMassE","#mu^{#font[122]{+}}#mu^{#font[122]{\55}} inv. mass error",0.0,0.5,"GeV");
+  CosThetaKArb       = new RooRealVar("CosThetaKArb","cos(#theta_{#font[122]{K}})",-1.0,1.0,"");
   CosThetaMuArb      = new RooRealVar("CosThetaMuArb","cos(#theta_{l})",-1.0,1.0,"");
-  PhiKstMuMuPlaneArb = new RooRealVar("PhiKstMuMuPlaneArb","Angle (#mu#mu)--(K^{+}#pi^{#font[122]{\55}}) planes",-Utility->PI,Utility->PI,"rad");
+  PhiKstMuMuPlaneArb = new RooRealVar("PhiKstMuMuPlaneArb","Angle (#mu#mu)--(#font[122]{K}^{#font[122]{+}}#pi^{#font[122]{\55}}) planes",-Utility->PI,Utility->PI,"rad");
   truthMatchSignal   = new RooRealVar("truthMatchSignal","Truth matching",0.0,1.0,"bool");
 
 
@@ -2874,12 +2874,12 @@ void InstantiateMassFit (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, ve
   // ################################################
   // # Define mass fit variables and pdf for signal #
   // ################################################
-  meanS   = new RooRealVar("meanS","Signal mean",Utility->B0Mass,"GeV/c^{2}");
+  meanS   = new RooRealVar("meanS","Signal mean",Utility->B0Mass,"GeV");
 
-  sigmaS1 = new RooRealVar("sigmaS1","Signal sigma-1",0.0,"GeV/c^{2}");
+  sigmaS1 = new RooRealVar("sigmaS1","Signal sigma-1",0.0,"GeV");
   MassS1  = new RooGaussian("MassS1","Signal Gaussian-1",*x,*meanS,*sigmaS1);
 
-  sigmaS2 = new RooRealVar("sigmaS2","Signal sigma-2",0.0,"GeV/c^{2}");
+  sigmaS2 = new RooRealVar("sigmaS2","Signal sigma-2",0.0,"GeV");
   MassS2  = new RooGaussian("MassS2","Signal Gaussian-2",*x,*meanS,*sigmaS2);
 
   meanS->setConstant(false);
@@ -2896,12 +2896,12 @@ void InstantiateMassFit (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, ve
   // ##################################################################
   // # Define mass fit variables and pdf for combinatorial background #
   // ##################################################################
-  tau1 = new RooRealVar("tau1","First background time constant",0.0,"GeV/c^{2}");
+  tau1 = new RooRealVar("tau1","First background time constant",0.0,"GeV");
   myString.clear(); myString.str("");
   myString << "exp(-(" << x->getPlotLabel() << "-meanS)/tau1)";
   BkgMassExp1 = new RooGenericPdf("BkgMassExp1",myString.str().c_str(),RooArgSet(*x,*meanS,*tau1));
 
-  tau2 = new RooRealVar("tau2","Second background time constant",0.0,"GeV/c^{2}");
+  tau2 = new RooRealVar("tau2","Second background time constant",0.0,"GeV");
   myString.clear(); myString.str("");
   myString << "exp(-(" << x->getPlotLabel() << "-meanS)/tau2)";
   BkgMassExp2 = new RooGenericPdf("BkgMassExp2",myString.str().c_str(),RooArgSet(*x,*meanS,*tau2));
@@ -2919,23 +2919,23 @@ void InstantiateMassFit (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, ve
   // ############################################################
   // # Define mass fit variables and pdf for peaking background #
   // ############################################################
-  meanR1         = new RooRealVar("meanR1","Bkg right peak mean-1",0.0,"GeV/c^{2}");
-  sigmaR1        = new RooRealVar("sigmaR1","Bkg right peak sigma-1",0.0,"GeV/c^{2}");
+  meanR1         = new RooRealVar("meanR1","Bkg right peak mean-1",0.0,"GeV");
+  sigmaR1        = new RooRealVar("sigmaR1","Bkg right peak sigma-1",0.0,"GeV");
   BkgMassRPeak1  = new RooGaussian("BkgMassRPeak1","Bkg right peak-1",*x,*meanR1,*sigmaR1);
 
-  meanR2         = new RooRealVar("meanR2","Bkg right peak mean-2",0.0,"GeV/c^{2}");
-  sigmaR2        = new RooRealVar("sigmaR2","Bkg right peak sigma-2",0.0,"GeV/c^{2}");
+  meanR2         = new RooRealVar("meanR2","Bkg right peak mean-2",0.0,"GeV");
+  sigmaR2        = new RooRealVar("sigmaR2","Bkg right peak sigma-2",0.0,"GeV");
   BkgMassRPeak2  = new RooGaussian("BkgMassRPeak2","Bkg right peak-2",*x,*meanR2,*sigmaR2);
 
   fracMassBRPeak = new RooRealVar("fracMassBRPeak","Fraction of background right Peak",0.0,0.0,1.0);
   BkgMassRPeak   = new RooAddPdf("BkgMassRPeak","Right peaking bkg mass pdf",RooArgList(*BkgMassRPeak1,*BkgMassRPeak2),RooArgList(*fracMassBRPeak));
 
-  meanL1         = new RooRealVar("meanL1","Bkg left peak mean-1",0.0,"GeV/c^{2}");
-  sigmaL1        = new RooRealVar("sigmaL1","Bkg left peak sigma-1",0.0,"GeV/c^{2}");
+  meanL1         = new RooRealVar("meanL1","Bkg left peak mean-1",0.0,"GeV");
+  sigmaL1        = new RooRealVar("sigmaL1","Bkg left peak sigma-1",0.0,"GeV");
   BkgMassLPeak1  = new RooGaussian("BkgMassLPeak1","Bkg left peak-1",*x,*meanL1,*sigmaL1);
 
-  meanL2         = new RooRealVar("meanL2","Bkg left peak mean-2",0.0,"GeV/c^{2}");
-  sigmaL2        = new RooRealVar("sigmaL2","Bkg left peak sigma-2",0.0,"GeV/c^{2}");
+  meanL2         = new RooRealVar("meanL2","Bkg left peak mean-2",0.0,"GeV");
+  sigmaL2        = new RooRealVar("sigmaL2","Bkg left peak sigma-2",0.0,"GeV");
   BkgMassLPeak2  = new RooGaussian("BkgMassLPeak2","Bkg left peak-2",*x,*meanL2,*sigmaL2);
 
   fracMassBLPeak = new RooRealVar("fracMassBLPeak","Fraction of background left Peak",0.0,0.0,1.0);
@@ -3061,10 +3061,10 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   (*TotalPDF)->plotOn(myFrameX,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack));
   if (fitPSIintru != 1)
     {
-      (*TotalPDF)->plotOn(myFrameX,Components(*MassSignal),LineStyle(kDashed),LineColor(kBlue));
+      (*TotalPDF)->plotOn(myFrameX,Components(*MassSignal),LineStyle(7),LineColor(kBlue));
       (*TotalPDF)->plotOn(myFrameX,Components(*BkgMassComb),LineStyle(4),LineColor(kRed));
     }
-  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameX,Components(*BkgMassPeak),LineStyle(kDotted),LineColor(kViolet));
+  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameX,Components(*BkgMassPeak),LineStyle(3),LineColor(kViolet));
 
   if      (fitPSIintru == 0) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nSig,*nBkgComb)));
   else if (fitPSIintru == 1) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nBkgPeak)));
@@ -3122,7 +3122,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
     }
   legX->SetFillStyle(0);
   legX->SetFillColor(0);
-  legX->SetTextSize(0.04);
+  legX->SetTextSize(0.05);
   legX->SetBorderSize(0);
 
 
@@ -3167,7 +3167,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   DrawString(LUMI,myFrameX);
   if (extText != NULL)
     {
-      if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%.1f%s%.1f","Signal yield: ",GetVar(*TotalPDF,"nSig")->getVal()," #pm ",GetVar(*TotalPDF,"nSig")->getError()));
+      if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%1.f%s%1.f","Signal yield: ",GetVar(*TotalPDF,"nSig")->getVal()," #pm ",GetVar(*TotalPDF,"nSig")->getError()));
       extText->Paint();
       myFrameX->addObject(extText);
     }
@@ -3286,11 +3286,11 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // # Make external text #
       // ######################
       extText[i] = new TPaveText(0.72,0.53,0.97,0.63,"NDC");
-      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q^{2}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," GeV^{2}/c^{4}"));
+      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q^{2}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," (GeV)^{2}"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
       extText[i]->SetFillStyle(0);
-      extText[i]->SetTextSize(0.03);
+      extText[i]->SetTextSize(0.05);
 
 
       fileFitResults << "\nBin[" << i << "]: " << q2Bins->operator[](i) << " <= q^2 < " << q2Bins->operator[](i+1) << endl;
@@ -3755,12 +3755,12 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x,
   // # Re-make all the fits and save the results #
   // #############################################
   TH1D* histoDiff1 = new TH1D("histoDiff1","histoDiff1",60,-30.0,30.0);
-  histoDiff1->SetFillColor(kAzure-4);
+  histoDiff1->SetFillColor(kAzure+6);
   histoDiff1->SetXTitle("(fit - pdf)");
   histoDiff1->SetYTitle("Entries [#]");
 
   TH1D* histoPull1 = new TH1D("histoPull1","histoPull1",30,-5.0,5.0);
-  histoPull1->SetFillColor(kAzure-4);
+  histoPull1->SetFillColor(kAzure+6);
   histoPull1->SetXTitle("(fit - pdf) / #sigma");
   histoPull1->SetYTitle("Entries [#]");
 
@@ -3887,12 +3887,12 @@ void InstantiateMassAngleFit (RooAbsPdf** TotalPDF,
       // ################################################
       // # Define mass fit variables and pdf for signal #
       // ################################################
-      meanS   = new RooRealVar("meanS","Signal mean",Utility->B0Mass,"GeV/c^{2}");
+      meanS   = new RooRealVar("meanS","Signal mean",Utility->B0Mass,"GeV");
 
-      sigmaS1 = new RooRealVar("sigmaS1","Signal sigma-1",0.0,"GeV/c^{2}");
+      sigmaS1 = new RooRealVar("sigmaS1","Signal sigma-1",0.0,"GeV");
       MassS1  = new RooGaussian("MassS1","Signal Gaussian-1",*x,*meanS,*sigmaS1);
 
-      sigmaS2 = new RooRealVar("sigmaS2","Signal sigma-2",0.0,"GeV/c^{2}");
+      sigmaS2 = new RooRealVar("sigmaS2","Signal sigma-2",0.0,"GeV");
       MassS2  = new RooGaussian("MassS2","Signal Gaussian-2",*x,*meanS,*sigmaS2);
 
       meanS->setConstant(false);
@@ -3937,12 +3937,12 @@ void InstantiateMassAngleFit (RooAbsPdf** TotalPDF,
   // ##################################################################
   // # Define mass fit variables and pdf for combinatorial background #
   // ##################################################################
-  tau1 = new RooRealVar("tau1","First background time constant",0.0,"GeV/c^{2}");
+  tau1 = new RooRealVar("tau1","First background time constant",0.0,"GeV");
   myString.clear(); myString.str("");
   myString << "exp(-(" << x->getPlotLabel() << "-meanS)/tau1)";
   BkgMassExp1 = new RooGenericPdf("BkgMassExp1",myString.str().c_str(),RooArgSet(*x,*meanS,*tau1));
 
-  tau2 = new RooRealVar("tau2","Second background time constant",0.0,"GeV/c^{2}");
+  tau2 = new RooRealVar("tau2","Second background time constant",0.0,"GeV");
   myString.clear(); myString.str("");
   myString << "exp(-(" << x->getPlotLabel() << "-meanS)/tau2)";
   BkgMassExp2 = new RooGenericPdf("BkgMassExp2",myString.str().c_str(),RooArgSet(*x,*meanS,*tau2));
@@ -3977,23 +3977,23 @@ void InstantiateMassAngleFit (RooAbsPdf** TotalPDF,
   // ############################################################
   // # Define mass fit variables and pdf for peaking background #
   // ############################################################
-  meanR1         = new RooRealVar("meanR1","Bkg right peak mean-1",0.0,"GeV/c^{2}");
-  sigmaR1        = new RooRealVar("sigmaR1","Bkg right peak sigma-1",0.0,"GeV/c^{2}");
+  meanR1         = new RooRealVar("meanR1","Bkg right peak mean-1",0.0,"GeV");
+  sigmaR1        = new RooRealVar("sigmaR1","Bkg right peak sigma-1",0.0,"GeV");
   BkgMassRPeak1  = new RooGaussian("BkgMassRPeak1","Bkg right peak-1",*x,*meanR1,*sigmaR1);
 
-  meanR2         = new RooRealVar("meanR2","Bkg right peak mean-2",0.0,"GeV/c^{2}");
-  sigmaR2        = new RooRealVar("sigmaR2","Bkg right peak sigma-2",0.0,"GeV/c^{2}");
+  meanR2         = new RooRealVar("meanR2","Bkg right peak mean-2",0.0,"GeV");
+  sigmaR2        = new RooRealVar("sigmaR2","Bkg right peak sigma-2",0.0,"GeV");
   BkgMassRPeak2  = new RooGaussian("BkgMassRPeak2","Bkg right peak-2",*x,*meanR2,*sigmaR2);
 
   fracMassBRPeak = new RooRealVar("fracMassBRPeak","Fraction of background right Peak",0.0,0.0,1.0);
   BkgMassRPeak   = new RooAddPdf("BkgMassRPeak","Right peaking bkg mass pdf",RooArgList(*BkgMassRPeak1,*BkgMassRPeak2),RooArgList(*fracMassBRPeak));
 
-  meanL1         = new RooRealVar("meanL1","Bkg left peak mean-1",0.0,"GeV/c^{2}");
-  sigmaL1        = new RooRealVar("sigmaL1","Bkg left peak sigma-1",0.0,"GeV/c^{2}");
+  meanL1         = new RooRealVar("meanL1","Bkg left peak mean-1",0.0,"GeV");
+  sigmaL1        = new RooRealVar("sigmaL1","Bkg left peak sigma-1",0.0,"GeV");
   BkgMassLPeak1  = new RooGaussian("BkgMassLPeak1","Bkg left peak-1",*x,*meanL1,*sigmaL1);
 
-  meanL2         = new RooRealVar("meanL2","Bkg left peak mean-2",0.0,"GeV/c^{2}");
-  sigmaL2        = new RooRealVar("sigmaL2","Bkg left peak sigma-2",0.0,"GeV/c^{2}");
+  meanL2         = new RooRealVar("meanL2","Bkg left peak mean-2",0.0,"GeV");
+  sigmaL2        = new RooRealVar("sigmaL2","Bkg left peak sigma-2",0.0,"GeV");
   BkgMassLPeak2  = new RooGaussian("BkgMassLPeak2","Bkg left peak-2",*x,*meanL2,*sigmaL2);
 
   fracMassBLPeak = new RooRealVar("fracMassBLPeak","Fraction of background left Peak",0.0,0.0,1.0);
@@ -4121,7 +4121,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	    }
 	  legY->SetFillStyle(0);
 	  legY->SetFillColor(0);
-	  legY->SetTextSize(0.04);
+	  legY->SetTextSize(0.05);
 	  legY->SetBorderSize(0);
  
 
@@ -4256,10 +4256,10 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
       (*TotalPDF)->plotOn(myFrameX,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack));
       if (fitPSIintru != 1)
 	{
-	  (*TotalPDF)->plotOn(myFrameX,Components(*Signal),LineStyle(kDashed),LineColor(kBlue));
+	  (*TotalPDF)->plotOn(myFrameX,Components(*Signal),LineStyle(7),LineColor(kBlue));
 	  (*TotalPDF)->plotOn(myFrameX,Components(*BkgMassAngleComb),LineStyle(4),LineColor(kRed));
 	}
-      if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameX,Components(*BkgMassAnglePeak),LineStyle(kDotted),LineColor(kViolet));
+      if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameX,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet));
       
       if      (fitPSIintru == 0) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nSig,*nBkgComb)));
       else if (fitPSIintru == 1) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nBkgPeak)));
@@ -4286,7 +4286,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
       	}
       legX->SetFillStyle(0);
       legX->SetFillColor(0);
-      legX->SetTextSize(0.04);
+      legX->SetTextSize(0.05);
       legX->SetBorderSize(0);
 
 
@@ -4299,10 +4299,10 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
       (*TotalPDF)->plotOn(myFrameY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack));
       if (fitPSIintru != 1)
 	{
-	  (*TotalPDF)->plotOn(myFrameY,Components(*Signal),LineStyle(kDashed),LineColor(kBlue));
+	  (*TotalPDF)->plotOn(myFrameY,Components(*Signal),LineStyle(7),LineColor(kBlue));
 	  (*TotalPDF)->plotOn(myFrameY,Components(*BkgMassAngleComb),LineStyle(4),LineColor(kRed));
 	}
-      if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameY,Components(*BkgMassAnglePeak),LineStyle(kDotted),LineColor(kViolet));
+      if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameY,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet));
       
       TPaveText* paveTextY = new TPaveText(0.13,0.8,0.4,0.88,"NDC");
       paveTextY->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
@@ -4330,7 +4330,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
       	}
       legY->SetFillStyle(0);
       legY->SetFillColor(0);
-      legY->SetTextSize(0.04);
+      legY->SetTextSize(0.05);
       legY->SetBorderSize(0);
       legY->Draw("same");
 
@@ -4430,7 +4430,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
       DrawString(LUMI,myFrameX);
       if (extText != NULL)
 	{
-	  if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%.1f%s%.1f","Signal yield: ",GetVar(*TotalPDF,"nSig")->getVal()," #pm ",GetVar(*TotalPDF,"nSig")->getError()));
+	  if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%1.f%s%1.f","Signal yield: ",GetVar(*TotalPDF,"nSig")->getVal()," #pm ",GetVar(*TotalPDF,"nSig")->getError()));
 	  extText->Paint();
 	  myFrameX->addObject(extText);
 	}
@@ -4488,10 +4488,10 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	  (*TotalPDF)->plotOn(myFrameLowSideB,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("lowSideband"));
 	  if (fitPSIintru != 1)
 	    {
-	      (*TotalPDF)->plotOn(myFrameLowSideB,Components(*Signal),LineStyle(kDashed),LineColor(kBlue),ProjectionRange("lowSideband"));
+	      (*TotalPDF)->plotOn(myFrameLowSideB,Components(*Signal),LineStyle(7),LineColor(kBlue),ProjectionRange("lowSideband"));
 	      (*TotalPDF)->plotOn(myFrameLowSideB,Components(*BkgMassAngleComb),LineStyle(4),LineColor(kRed),ProjectionRange("lowSideband"));
 	    }
-	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameLowSideB,Components(*BkgMassAnglePeak),LineStyle(kDotted),LineColor(kViolet),ProjectionRange("lowSideband"));
+	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameLowSideB,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet),ProjectionRange("lowSideband"));
 
 	  TPaveText* paveTextLowSideB = new TPaveText(0.13,0.75,0.4,0.89,"NDC");
 	  paveTextLowSideB->AddText("Low sideband");
@@ -4536,10 +4536,10 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	  (*TotalPDF)->plotOn(myFrameSignalRegion,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("signalRegion"));
 	  if (fitPSIintru != 1)
 	    {
-	      (*TotalPDF)->plotOn(myFrameSignalRegion,Components(*Signal),LineStyle(kDashed),LineColor(kBlue),ProjectionRange("signalRegion"));
+	      (*TotalPDF)->plotOn(myFrameSignalRegion,Components(*Signal),LineStyle(7),LineColor(kBlue),ProjectionRange("signalRegion"));
 	      (*TotalPDF)->plotOn(myFrameSignalRegion,Components(*BkgMassAngleComb),LineStyle(4),LineColor(kRed),ProjectionRange("signalRegion"));
 	    }
-	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegion,Components(*BkgMassAnglePeak),LineStyle(kDotted),LineColor(kViolet),ProjectionRange("signalRegion"));
+	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegion,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet),ProjectionRange("signalRegion"));
 
 	  TPaveText* paveTextSignalRegion = new TPaveText(0.13,0.75,0.4,0.89,"NDC");
 	  paveTextSignalRegion->AddText(Form("%s%.1f%s","Signal region: #pm",Utility->GetGenericParam("NSigmaB0S")," < #sigma >"));
@@ -4584,10 +4584,10 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	  (*TotalPDF)->plotOn(myFrameHighSideB,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("highSideband"));
 	  if (fitPSIintru != 1)
 	    {
-	      (*TotalPDF)->plotOn(myFrameHighSideB,Components(*Signal),LineStyle(kDashed),LineColor(kBlue),ProjectionRange("highSideband"));
+	      (*TotalPDF)->plotOn(myFrameHighSideB,Components(*Signal),LineStyle(7),LineColor(kBlue),ProjectionRange("highSideband"));
 	      (*TotalPDF)->plotOn(myFrameHighSideB,Components(*BkgMassAngleComb),LineStyle(4),LineColor(kRed),ProjectionRange("highSideband"));
 	    }
-	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameHighSideB,Components(*BkgMassAnglePeak),LineStyle(kDotted),LineColor(kViolet),ProjectionRange("highSideband"));
+	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameHighSideB,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet),ProjectionRange("highSideband"));
 
 	  TPaveText* paveTextHighSideB = new TPaveText(0.13,0.75,0.4,0.89,"NDC");
 	  paveTextHighSideB->AddText("High sideband");
@@ -4644,7 +4644,12 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
       delete localCanv[0];
       delete localCanv[1];
     }
-  
+  else
+    {
+      localCanv[0]->Update();
+      localCanv[1]->Update();
+    }
+
 
   return fitResult;
 }
@@ -4761,11 +4766,11 @@ void IterativeMassAngleFitq2Bins (RooDataSet* dataSet,
       // # Make external text #
       // ######################
       extText[i] = new TPaveText(0.72,0.53,0.97,0.63,"NDC");
-      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q^{2}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," GeV^{2}/c^{4}"));
+      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q^{2}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," (GeV)^{2}"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
       extText[i]->SetFillStyle(0);
-      extText[i]->SetTextSize(0.03);
+      extText[i]->SetTextSize(0.05);
 
 
       fileFitResults << "\nBin[" << i << "]: " << q2Bins->operator[](i) << " <= q^2 < " << q2Bins->operator[](i+1) << endl;
@@ -5433,12 +5438,12 @@ void MakeMassAngleToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y,
   // # Re-make all the fits and save the results #
   // #############################################
   TH1D* histoDiff1 = new TH1D("histoDiff1","histoDiff1",50,-1.0,1.0);
-  histoDiff1->SetFillColor(kAzure-4);
+  histoDiff1->SetFillColor(kAzure+6);
   histoDiff1->SetXTitle("(fit - pdf)");
   histoDiff1->SetYTitle("Entries [#]");
 
   TH1D* histoPull1 = new TH1D("histoPull1","histoPull1",30,-5.0,5.0);
-  histoPull1->SetFillColor(kAzure-4);
+  histoPull1->SetFillColor(kAzure+6);
   histoPull1->SetXTitle("(fit - pdf) / #sigma");
   histoPull1->SetYTitle("Entries [#]");
 
@@ -5570,12 +5575,12 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
       // ################################################
       // # Define mass fit variables and pdf for signal #
       // ################################################
-      meanS   = new RooRealVar("meanS","Signal mean",Utility->B0Mass,"GeV/c^{2}");
+      meanS   = new RooRealVar("meanS","Signal mean",Utility->B0Mass,"GeV");
 
-      sigmaS1 = new RooRealVar("sigmaS1","Signal sigma-1",0.0,"GeV/c^{2}");
+      sigmaS1 = new RooRealVar("sigmaS1","Signal sigma-1",0.0,"GeV");
       MassS1  = new RooGaussian("MassS1","Signal Gaussian-1",*x,*meanS,*sigmaS1);
       
-      sigmaS2 = new RooRealVar("sigmaS2","Signal sigma-2",0.0,"GeV/c^{2}");
+      sigmaS2 = new RooRealVar("sigmaS2","Signal sigma-2",0.0,"GeV");
       MassS2  = new RooGaussian("MassS2","Signal Gaussian-2",*x,*meanS,*sigmaS2);
 
       meanS->setConstant(false);
@@ -5633,12 +5638,12 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // ##################################################################
   // # Define mass fit variables and pdf for combinatorial background #
   // ##################################################################
-  tau1 = new RooRealVar("tau1","First background time constant",0.0,"GeV/c^{2}");
+  tau1 = new RooRealVar("tau1","First background time constant",0.0,"GeV");
   myString.clear(); myString.str("");
   myString << "exp(-(" << x->getPlotLabel() << "-meanS)/tau1)";
   BkgMassExp1 = new RooGenericPdf("BkgMassExp1",myString.str().c_str(),RooArgSet(*x,*meanS,*tau1));
 
-  tau2 = new RooRealVar("tau2","Second background time constant",0.0,"GeV/c^{2}");
+  tau2 = new RooRealVar("tau2","Second background time constant",0.0,"GeV");
   myString.clear(); myString.str("");
   myString << "exp(-(" << x->getPlotLabel() << "-meanS)/tau2)";
   BkgMassExp2 = new RooGenericPdf("BkgMassExp2",myString.str().c_str(),RooArgSet(*x,*meanS,*tau2));
@@ -5681,23 +5686,23 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // ############################################################
   // # Define mass fit variables and pdf for peaking background #
   // ############################################################
-  meanR1         = new RooRealVar("meanR1","Bkg right peak mean-1",0.0,"GeV/c^{2}");
-  sigmaR1        = new RooRealVar("sigmaR1","Bkg right peak sigma-1",0.0,"GeV/c^{2}");
+  meanR1         = new RooRealVar("meanR1","Bkg right peak mean-1",0.0,"GeV");
+  sigmaR1        = new RooRealVar("sigmaR1","Bkg right peak sigma-1",0.0,"GeV");
   BkgMassRPeak1  = new RooGaussian("BkgMassRPeak1","Bkg right peak-1",*x,*meanR1,*sigmaR1);
 
-  meanR2         = new RooRealVar("meanR2","Bkg right peak mean-2",0.0,"GeV/c^{2}");
-  sigmaR2        = new RooRealVar("sigmaR2","Bkg right peak sigma-2",0.0,"GeV/c^{2}");
+  meanR2         = new RooRealVar("meanR2","Bkg right peak mean-2",0.0,"GeV");
+  sigmaR2        = new RooRealVar("sigmaR2","Bkg right peak sigma-2",0.0,"GeV");
   BkgMassRPeak2  = new RooGaussian("BkgMassRPeak2","Bkg right peak-2",*x,*meanR2,*sigmaR2);
 
   fracMassBRPeak = new RooRealVar("fracMassBRPeak","Fraction of background right Peak",0.0,0.0,1.0);
   BkgMassRPeak   = new RooAddPdf("BkgMassRPeak","Right peaking bkg mass pdf",RooArgList(*BkgMassRPeak1,*BkgMassRPeak2),RooArgList(*fracMassBRPeak));
 
-  meanL1         = new RooRealVar("meanL1","Bkg left peak mean-1",0.0,"GeV/c^{2}");
-  sigmaL1        = new RooRealVar("sigmaL1","Bkg left peak sigma-1",0.0,"GeV/c^{2}");
+  meanL1         = new RooRealVar("meanL1","Bkg left peak mean-1",0.0,"GeV");
+  sigmaL1        = new RooRealVar("sigmaL1","Bkg left peak sigma-1",0.0,"GeV");
   BkgMassLPeak1  = new RooGaussian("BkgMassLPeak1","Bkg left peak-1",*x,*meanL1,*sigmaL1);
 
-  meanL2         = new RooRealVar("meanL2","Bkg left peak mean-2",0.0,"GeV/c^{2}");
-  sigmaL2        = new RooRealVar("sigmaL2","Bkg left peak sigma-2",0.0,"GeV/c^{2}");
+  meanL2         = new RooRealVar("meanL2","Bkg left peak mean-2",0.0,"GeV");
+  sigmaL2        = new RooRealVar("sigmaL2","Bkg left peak sigma-2",0.0,"GeV");
   BkgMassLPeak2  = new RooGaussian("BkgMassLPeak2","Bkg left peak-2",*x,*meanL2,*sigmaL2);
 
   fracMassBLPeak = new RooRealVar("fracMassBLPeak","Fraction of background left Peak",0.0,0.0,1.0);
@@ -5826,7 +5831,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	    }
 	  legY->SetFillStyle(0);
 	  legY->SetFillColor(0);
-	  legY->SetTextSize(0.04);
+	  legY->SetTextSize(0.05);
 	  legY->SetBorderSize(0);
  
 
@@ -5855,7 +5860,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	    }
 	  legZ->SetFillStyle(0);
 	  legZ->SetFillColor(0);
-	  legZ->SetTextSize(0.04);
+	  legZ->SetTextSize(0.05);
 	  legZ->SetBorderSize(0);
 
 
@@ -6008,10 +6013,10 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       (*TotalPDF)->plotOn(myFrameX,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack));
       if (fitPSIintru != 1)
 	{
-	  (*TotalPDF)->plotOn(myFrameX,Components(*Signal),LineStyle(kDashed),LineColor(kBlue));
+	  (*TotalPDF)->plotOn(myFrameX,Components(*Signal),LineStyle(7),LineColor(kBlue));
 	  (*TotalPDF)->plotOn(myFrameX,Components(*BkgMassAngleComb),LineStyle(4),LineColor(kRed));
 	}
-      if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameX,Components(*BkgMassAnglePeak),LineStyle(kDotted),LineColor(kViolet));
+      if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameX,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet));
 
       if      (fitPSIintru == 0) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nSig,*nBkgComb)));
       else if (fitPSIintru == 1) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nBkgPeak)));
@@ -6038,7 +6043,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
   	}
       legX->SetFillStyle(0);
       legX->SetFillColor(0);
-      legX->SetTextSize(0.04);
+      legX->SetTextSize(0.05);
       legX->SetBorderSize(0);
 
 
@@ -6051,10 +6056,10 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       (*TotalPDF)->plotOn(myFrameY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack));
       if (fitPSIintru != 1)
 	{
-	  (*TotalPDF)->plotOn(myFrameY,Components(*Signal),LineStyle(kDashed),LineColor(kBlue));
+	  (*TotalPDF)->plotOn(myFrameY,Components(*Signal),LineStyle(7),LineColor(kBlue));
 	  (*TotalPDF)->plotOn(myFrameY,Components(*BkgMassAngleComb),LineStyle(4),LineColor(kRed));
 	}
-      if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameY,Components(*BkgMassAnglePeak),LineStyle(kDotted),LineColor(kViolet));
+      if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameY,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet));
 
       TPaveText* paveTextY = new TPaveText(0.13,0.8,0.4,0.88,"NDC");
       paveTextY->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
@@ -6082,7 +6087,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
   	}
       legY->SetFillStyle(0);
       legY->SetFillColor(0);
-      legY->SetTextSize(0.04);
+      legY->SetTextSize(0.05);
       legY->SetBorderSize(0);
       legY->Draw("same");
  
@@ -6104,10 +6109,10 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       (*TotalPDF)->plotOn(myFrameZ,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack));
       if (fitPSIintru != 1)
 	{
-	  (*TotalPDF)->plotOn(myFrameZ,Components(*Signal),LineStyle(kDashed),LineColor(kBlue));
+	  (*TotalPDF)->plotOn(myFrameZ,Components(*Signal),LineStyle(7),LineColor(kBlue));
 	  (*TotalPDF)->plotOn(myFrameZ,Components(*BkgMassAngleComb),LineStyle(4),LineColor(kRed));
 	}
-      if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameZ,Components(*BkgMassAnglePeak),LineStyle(kDotted),LineColor(kViolet));
+      if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameZ,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet));
 
       TPaveText* paveTextZ = new TPaveText(0.13,0.8,0.4,0.88,"NDC");
       paveTextZ->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
@@ -6135,7 +6140,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
   	}
       legZ->SetFillStyle(0);
       legZ->SetFillColor(0);
-      legZ->SetTextSize(0.04);
+      legZ->SetTextSize(0.05);
       legZ->SetBorderSize(0);
       legZ->Draw("same");
 
@@ -6197,7 +6202,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       DrawString(LUMI,myFrameX);
       if (extText != NULL)
 	{
-	  if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%.1f%s%.1f","Signal yield: ",GetVar(*TotalPDF,"nSig")->getVal()," #pm ",GetVar(*TotalPDF,"nSig")->getError()));
+	  if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%1.f%s%1.f","Signal yield: ",GetVar(*TotalPDF,"nSig")->getVal()," #pm ",GetVar(*TotalPDF,"nSig")->getError()));
 	  extText->Paint();
 	  myFrameX->addObject(extText);
 	}
@@ -6266,10 +6271,10 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  (*TotalPDF)->plotOn(myFrameLowSideBY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("lowSideband"));
 	  if (fitPSIintru != 1)
 	    {
-	      (*TotalPDF)->plotOn(myFrameLowSideBY,Components(*Signal),LineStyle(kDashed),LineColor(kBlue),ProjectionRange("lowSideband"));
+	      (*TotalPDF)->plotOn(myFrameLowSideBY,Components(*Signal),LineStyle(7),LineColor(kBlue),ProjectionRange("lowSideband"));
 	      (*TotalPDF)->plotOn(myFrameLowSideBY,Components(*BkgMassAngleComb),LineStyle(4),LineColor(kRed),ProjectionRange("lowSideband"));
 	    }
-	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY,Components(*BkgMassAnglePeak),LineStyle(kDotted),LineColor(kViolet),ProjectionRange("lowSideband"));
+	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet),ProjectionRange("lowSideband"));
 
 	  TPaveText* paveTextLowSideBY = new TPaveText(0.13,0.75,0.4,0.89,"NDC");
 	  paveTextLowSideBY->AddText("Low sideband");
@@ -6314,10 +6319,10 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  (*TotalPDF)->plotOn(myFrameSignalRegionY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("signalRegion"));
 	  if (fitPSIintru != 1)
 	    {
-	      (*TotalPDF)->plotOn(myFrameSignalRegionY,Components(*Signal),LineStyle(kDashed),LineColor(kBlue),ProjectionRange("signalRegion"));
+	      (*TotalPDF)->plotOn(myFrameSignalRegionY,Components(*Signal),LineStyle(7),LineColor(kBlue),ProjectionRange("signalRegion"));
 	      (*TotalPDF)->plotOn(myFrameSignalRegionY,Components(*BkgMassAngleComb),LineStyle(4),LineColor(kRed),ProjectionRange("signalRegion"));
 	    }
-	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY,Components(*BkgMassAnglePeak),LineStyle(kDotted),LineColor(kViolet),ProjectionRange("signalRegion"));
+	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet),ProjectionRange("signalRegion"));
 
 	  TPaveText* paveTextSignalRegionY = new TPaveText(0.13,0.75,0.4,0.89,"NDC");
 	  paveTextSignalRegionY->AddText(Form("%s%.1f%s","Signal region: #pm",Utility->GetGenericParam("NSigmaB0S")," < #sigma >"));
@@ -6362,10 +6367,10 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  (*TotalPDF)->plotOn(myFrameHighSideBY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("highSideband"));
 	  if (fitPSIintru != 1)
 	    {
-	      (*TotalPDF)->plotOn(myFrameHighSideBY,Components(*Signal),LineStyle(kDashed),LineColor(kBlue),ProjectionRange("highSideband"));
+	      (*TotalPDF)->plotOn(myFrameHighSideBY,Components(*Signal),LineStyle(7),LineColor(kBlue),ProjectionRange("highSideband"));
 	      (*TotalPDF)->plotOn(myFrameHighSideBY,Components(*BkgMassAngleComb),LineStyle(4),LineColor(kRed),ProjectionRange("highSideband"));
 	    }
-	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY,Components(*BkgMassAnglePeak),LineStyle(kDotted),LineColor(kViolet),ProjectionRange("highSideband"));
+	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet),ProjectionRange("highSideband"));
 
 	  TPaveText* paveTextHighSideBY = new TPaveText(0.13,0.75,0.4,0.89,"NDC");
 	  paveTextHighSideBY->AddText("High sideband");
@@ -6415,10 +6420,10 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  (*TotalPDF)->plotOn(myFrameLowSideBZ,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("lowSideband"));
 	  if (fitPSIintru != 1)
 	    {
-	      (*TotalPDF)->plotOn(myFrameLowSideBZ,Components(*Signal),LineStyle(kDashed),LineColor(kBlue),ProjectionRange("lowSideband"));
+	      (*TotalPDF)->plotOn(myFrameLowSideBZ,Components(*Signal),LineStyle(7),LineColor(kBlue),ProjectionRange("lowSideband"));
 	      (*TotalPDF)->plotOn(myFrameLowSideBZ,Components(*BkgMassAngleComb),LineStyle(4),LineColor(kRed),ProjectionRange("lowSideband"));
 	    }
-	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ,Components(*BkgMassAnglePeak),LineStyle(kDotted),LineColor(kViolet),ProjectionRange("lowSideband"));
+	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet),ProjectionRange("lowSideband"));
 
 	  TPaveText* paveTextLowSideBZ = new TPaveText(0.13,0.75,0.4,0.89,"NDC");
 	  paveTextLowSideBZ->AddText("Low sideband");
@@ -6463,10 +6468,10 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  (*TotalPDF)->plotOn(myFrameSignalRegionZ,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("signalRegion"));
 	  if (fitPSIintru != 1)
 	    {
-	      (*TotalPDF)->plotOn(myFrameSignalRegionZ,Components(*Signal),LineStyle(kDashed),LineColor(kBlue),ProjectionRange("signalRegion"));
+	      (*TotalPDF)->plotOn(myFrameSignalRegionZ,Components(*Signal),LineStyle(7),LineColor(kBlue),ProjectionRange("signalRegion"));
 	      (*TotalPDF)->plotOn(myFrameSignalRegionZ,Components(*BkgMassAngleComb),LineStyle(4),LineColor(kRed),ProjectionRange("signalRegion"));
 	    }
-	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ,Components(*BkgMassAnglePeak),LineStyle(kDotted),LineColor(kViolet),ProjectionRange("signalRegion"));
+	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet),ProjectionRange("signalRegion"));
 
 	  TPaveText* paveTextSignalRegionZ = new TPaveText(0.13,0.75,0.4,0.89,"NDC");
 	  paveTextSignalRegionZ->AddText(Form("%s%.1f%s","Signal region: #pm",Utility->GetGenericParam("NSigmaB0S")," < #sigma >"));
@@ -6511,10 +6516,10 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  (*TotalPDF)->plotOn(myFrameHighSideBZ,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("highSideband"));
 	  if (fitPSIintru != 1)
 	    {
-	      (*TotalPDF)->plotOn(myFrameHighSideBZ,Components(*Signal),LineStyle(kDashed),LineColor(kBlue),ProjectionRange("highSideband"));
+	      (*TotalPDF)->plotOn(myFrameHighSideBZ,Components(*Signal),LineStyle(7),LineColor(kBlue),ProjectionRange("highSideband"));
 	      (*TotalPDF)->plotOn(myFrameHighSideBZ,Components(*BkgMassAngleComb),LineStyle(4),LineColor(kRed),ProjectionRange("highSideband"));
 	    }
-	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ,Components(*BkgMassAnglePeak),LineStyle(kDotted),LineColor(kViolet),ProjectionRange("highSideband"));
+	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet),ProjectionRange("highSideband"));
 
 	  TPaveText* paveTextHighSideBZ = new TPaveText(0.13,0.75,0.4,0.89,"NDC");
 	  paveTextHighSideBZ->AddText("High sideband");
@@ -6571,6 +6576,12 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       delete localCanv[0];
       delete localCanv[1];
       delete localCanv[2];
+    }
+  else
+    {
+      localCanv[0]->Update();
+      localCanv[1]->Update();
+      localCanv[2]->Update();
     }
 
 
@@ -6675,11 +6686,11 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // # Make external text #
       // ######################
       extText[i] = new TPaveText(0.72,0.53,0.97,0.63,"NDC");
-      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q^{2}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," GeV^{2}/c^{4}"));
+      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q^{2}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," (GeV)^{2}"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
       extText[i]->SetFillStyle(0);
-      extText[i]->SetTextSize(0.03);
+      extText[i]->SetTextSize(0.05);
 
 
       fileFitResults << "\nBin[" << i << "]: " << q2Bins->operator[](i) << " <= q^2 < " << q2Bins->operator[](i+1) << endl;
@@ -7278,12 +7289,12 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   // # Re-make all the fits and save the results #
   // #############################################
   TH1D* histoDiff1 = new TH1D("histoDiff1","histoDiff1",50,-1.0,1.0);
-  histoDiff1->SetFillColor(kAzure-4);
+  histoDiff1->SetFillColor(kAzure+6);
   histoDiff1->SetXTitle("(fit - pdf)");
   histoDiff1->SetYTitle("Entries [#]");
 
   TH1D* histoPull1 = new TH1D("histoPull1","histoPull1",30,-5.0,5.0);
-  histoPull1->SetFillColor(kAzure-4);
+  histoPull1->SetFillColor(kAzure+6);
   histoPull1->SetXTitle("(fit - pdf) / #sigma");
   histoPull1->SetYTitle("Entries [#]");
 
@@ -7293,12 +7304,12 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   histoNLL1->SetYTitle("Entries [#]");
 
   TH1D* histoDiff2 = new TH1D("histoDiff2","histoDiff2",50,-1.0,1.0);
-  histoDiff2->SetFillColor(kAzure-4);
+  histoDiff2->SetFillColor(kAzure+6);
   histoDiff2->SetXTitle("(fit - pdf)");
   histoDiff2->SetYTitle("Entries [#]");
 
   TH1D* histoPull2 = new TH1D("histoPull2","histoPull2",30,-5.0,5.0);
-  histoPull2->SetFillColor(kAzure-4);
+  histoPull2->SetFillColor(kAzure+6);
   histoPull2->SetXTitle("(fit - pdf) / #sigma");
   histoPull2->SetYTitle("Entries [#]");
 
@@ -7984,10 +7995,10 @@ int main(int argc, char** argv)
 		      // # 1D-fit to B0 inv. mass per q^2 bin #
 		      // ######################################
 		      vector<TH1D*> VecHistoMeas;
-		      VecHistoMeas.push_back(new TH1D("histoMeas0", "B^{0} \\rightarrow K^{*0}(K^{+}\\pi^{#font[122]{\55}}) \\mu^{+} \\mu^{#font[122]{\55}} / B^{0} \\rightarrow K^{*0}(K^{+}\\pi^{#font[122]{\55}}) J/\\psi(\\mu^{+}\\mu^{#font[122]{\55}}) Branching Fraction",q2Bins.size()-1, q2BinsHisto));
+		      VecHistoMeas.push_back(new TH1D("histoMeas0", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} / B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) J/\\psi(\\mu^{#font[122]{+}}\\mu^{#font[122]{\55}}) Branching Fraction",q2Bins.size()-1, q2BinsHisto));
 		      VecHistoMeas[0]->SetStats(false);
-		      VecHistoMeas[0]->SetXTitle("q^{2} ( GeV/c^{2} )^{2}");
-		      VecHistoMeas[0]->SetYTitle("dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV/c^{2} )^{#font[122]{\55}2} )");
+		      VecHistoMeas[0]->SetXTitle("q^{2} ( GeV )^{2}");
+		      VecHistoMeas[0]->SetYTitle("dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV )^{#font[122]{\55}2} )");
 		      VecHistoMeas[0]->GetYaxis()->SetRangeUser(0.0,1.2);
 
 		      cout << "\n@@@ Now fit to invariant mass per mumu q^2 bins @@@" << endl;
@@ -8050,22 +8061,22 @@ int main(int argc, char** argv)
 		  // # 2D-fit Fl per q^2 bin #
 		  // #########################
 		  vector<TH1D*> VecHistoMeas;
-		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B^{0} \\rightarrow K^{*0}(K^{+}\\pi^{#font[122]{\55}}) \\mu^{+} \\mu^{#font[122]{\55}} : F_{L} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B^{0} \\rightarrow K^{*0}(K^{+}\\pi^{#font[122]{\55}}) \\mu^{+} \\mu^{#font[122]{\55}} : A_{FB} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : F_{L} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : A_{FB} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas.push_back(new TH1D("histoMeas2", "histoMeas2", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas3", "B^{0} \\rightarrow K^{*0}(K^{+}\\pi^{#font[122]{\55}}) \\mu^{+} \\mu^{#font[122]{\55}} : dBF/dq^{2} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas3", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : dBF/dq^{2} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas[0]->SetStats(false);
 		  VecHistoMeas[1]->SetStats(false);
 		  VecHistoMeas[2]->SetStats(false);
 		  VecHistoMeas[3]->SetStats(false);
-		  VecHistoMeas[0]->SetXTitle("q^{2} ( GeV/c^{2} )^{2}");
-		  VecHistoMeas[1]->SetXTitle("q^{2} ( GeV/c^{2} )^{2}");
-		  VecHistoMeas[2]->SetXTitle("q^{2} ( GeV/c^{2} )^{2}");
-		  VecHistoMeas[3]->SetXTitle("q^{2} ( GeV/c^{2} )^{2}");
+		  VecHistoMeas[0]->SetXTitle("q^{2} ( GeV )^{2}");
+		  VecHistoMeas[1]->SetXTitle("q^{2} ( GeV )^{2}");
+		  VecHistoMeas[2]->SetXTitle("q^{2} ( GeV )^{2}");
+		  VecHistoMeas[3]->SetXTitle("q^{2} ( GeV )^{2}");
 		  VecHistoMeas[0]->SetYTitle("F_{L}");
 		  VecHistoMeas[1]->SetYTitle("A_{FB}");
 		  VecHistoMeas[2]->SetYTitle("");
-		  VecHistoMeas[3]->SetYTitle("dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV/c^{2} )^{#font[122]{\55}2} )");
+		  VecHistoMeas[3]->SetYTitle("dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV )^{#font[122]{\55}2} )");
 		  VecHistoMeas[0]->GetYaxis()->SetRangeUser(-0.01,1.01);
 		  VecHistoMeas[1]->GetYaxis()->SetRangeUser(-1.0 - 0.01,1.0 + 0.01);
 		  VecHistoMeas[2]->GetYaxis()->SetRangeUser(0.0,1.0);
@@ -8138,22 +8149,22 @@ int main(int argc, char** argv)
 		  // # 2D-fit Afb-Fl per q^2 bin #
 		  // #############################
 		  vector<TH1D*> VecHistoMeas;
-		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B^{0} \\rightarrow K^{*0}(K^{+}\\pi^{#font[122]{\55}}) \\mu^{+} \\mu^{#font[122]{\55}} : F_{L} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B^{0} \\rightarrow K^{*0}(K^{+}\\pi^{#font[122]{\55}}) \\mu^{+} \\mu^{#font[122]{\55}} : A_{FB} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : F_{L} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : A_{FB} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas.push_back(new TH1D("histoMeas2", "histoMeas2", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas3", "B^{0} \\rightarrow K^{*0}(K^{+}\\pi^{#font[122]{\55}}) \\mu^{+} \\mu^{#font[122]{\55}} : dBF/dq^{2} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas3", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : dBF/dq^{2} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas[0]->SetStats(false);
 		  VecHistoMeas[1]->SetStats(false);
 		  VecHistoMeas[2]->SetStats(false);
 		  VecHistoMeas[3]->SetStats(false);
-		  VecHistoMeas[0]->SetXTitle("q^{2} ( GeV/c^{2} )^{2}");
-		  VecHistoMeas[1]->SetXTitle("q^{2} ( GeV/c^{2} )^{2}");
-		  VecHistoMeas[2]->SetXTitle("q^{2} ( GeV/c^{2} )^{2}");
-		  VecHistoMeas[3]->SetXTitle("q^{2} ( GeV/c^{2} )^{2}");
+		  VecHistoMeas[0]->SetXTitle("q^{2} ( GeV )^{2}");
+		  VecHistoMeas[1]->SetXTitle("q^{2} ( GeV )^{2}");
+		  VecHistoMeas[2]->SetXTitle("q^{2} ( GeV )^{2}");
+		  VecHistoMeas[3]->SetXTitle("q^{2} ( GeV )^{2}");
 		  VecHistoMeas[0]->SetYTitle("F_{L}");
 		  VecHistoMeas[1]->SetYTitle("A_{FB}");
 		  VecHistoMeas[2]->SetYTitle("");
-		  VecHistoMeas[3]->SetYTitle("dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV/c^{2} )^{#font[122]{\55}2} )");
+		  VecHistoMeas[3]->SetYTitle("dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV )^{#font[122]{\55}2} )");
 		  VecHistoMeas[0]->GetYaxis()->SetRangeUser(-0.01,1.01);
 		  VecHistoMeas[1]->GetYaxis()->SetRangeUser(-1.0 - 0.01,1.0 + 0.01);
 		  VecHistoMeas[2]->GetYaxis()->SetRangeUser(0.0,1.0);
@@ -8226,22 +8237,22 @@ int main(int argc, char** argv)
 		  // # 2D-fit Fl-At2-Atim per q^2 bin #
 		  // ##################################
 		  vector<TH1D*> VecHistoMeas;
-		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B^{0} \\rightarrow K^{*0}(K^{+}\\pi^{#font[122]{\55}}) \\mu^{+} \\mu^{#font[122]{\55}} : F_{L} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B^{0} \\rightarrow K^{*0}(K^{+}\\pi^{#font[122]{\55}}) \\mu^{+} \\mu^{#font[122]{\55}} : A_{T}^{(2)} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas2", "B^{0} \\rightarrow K^{*0}(K^{+}\\pi^{#font[122]{\55}}) \\mu^{+} \\mu^{#font[122]{\55}} : A_{T}^{(im)} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas3", "B^{0} \\rightarrow K^{*0}(K^{+}\\pi^{#font[122]{\55}}) \\mu^{+} \\mu^{#font[122]{\55}} : dBF/dq^{2} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : F_{L} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : A_{T}^{(2)} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas2", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : A_{T}^{(im)} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas3", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : dBF/dq^{2} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas[0]->SetStats(false);
 		  VecHistoMeas[1]->SetStats(false);
 		  VecHistoMeas[2]->SetStats(false);
 		  VecHistoMeas[3]->SetStats(false);
-		  VecHistoMeas[0]->SetXTitle("q^{2} ( GeV/c^{2} )^{2}");
-		  VecHistoMeas[1]->SetXTitle("q^{2} ( GeV/c^{2} )^{2}");
-		  VecHistoMeas[2]->SetXTitle("q^{2} ( GeV/c^{2} )^{2}");
-		  VecHistoMeas[3]->SetXTitle("q^{2} ( GeV/c^{2} )^{2}");
+		  VecHistoMeas[0]->SetXTitle("q^{2} ( GeV )^{2}");
+		  VecHistoMeas[1]->SetXTitle("q^{2} ( GeV )^{2}");
+		  VecHistoMeas[2]->SetXTitle("q^{2} ( GeV )^{2}");
+		  VecHistoMeas[3]->SetXTitle("q^{2} ( GeV )^{2}");
 		  VecHistoMeas[0]->SetYTitle("F_{L}");
 		  VecHistoMeas[1]->SetYTitle("A_{T}^{(2)}");
 		  VecHistoMeas[2]->SetYTitle("A_{T}^{(im)}");
-		  VecHistoMeas[3]->SetYTitle("dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV/c^{2} )^{#font[122]{\55}2} )");
+		  VecHistoMeas[3]->SetYTitle("dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV )^{#font[122]{\55}2} )");
 		  VecHistoMeas[0]->GetYaxis()->SetRangeUser(-0.01,1.01);
 		  VecHistoMeas[1]->GetYaxis()->SetRangeUser(-1.01,1.01);
 		  VecHistoMeas[2]->GetYaxis()->SetRangeUser(-1.01,1.01);
@@ -8318,18 +8329,18 @@ int main(int argc, char** argv)
 		  // # 3D-fit Afb-Fl per q^2 bin #
 		  // #############################
 		  vector<TH1D*> VecHistoMeas;
-		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B^{0} \\rightarrow K^{*0}(K^{+}\\pi^{#font[122]{\55}}) \\mu^{+} \\mu^{#font[122]{\55}} : F_{L} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B^{0} \\rightarrow K^{*0}(K^{+}\\pi^{#font[122]{\55}}) \\mu^{+} \\mu^{#font[122]{\55}} : A_{FB} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas2", "B^{0} \\rightarrow K^{*0}(K^{+}\\pi^{#font[122]{\55}}) \\mu^{+} \\mu^{#font[122]{\55}} : dBF/dq^{2} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : F_{L} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : A_{FB} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas2", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : dBF/dq^{2} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas[0]->SetStats(false);
 		  VecHistoMeas[1]->SetStats(false);
 		  VecHistoMeas[2]->SetStats(false);
-		  VecHistoMeas[0]->SetXTitle("q^{2} ( GeV/c^{2} )^{2}");
-		  VecHistoMeas[1]->SetXTitle("q^{2} ( GeV/c^{2} )^{2}");
-		  VecHistoMeas[2]->SetXTitle("q^{2} ( GeV/c^{2} )^{2}");
+		  VecHistoMeas[0]->SetXTitle("q^{2} ( GeV )^{2}");
+		  VecHistoMeas[1]->SetXTitle("q^{2} ( GeV )^{2}");
+		  VecHistoMeas[2]->SetXTitle("q^{2} ( GeV )^{2}");
 		  VecHistoMeas[0]->SetYTitle("F_{L}");
 		  VecHistoMeas[1]->SetYTitle("A_{FB}");
-		  VecHistoMeas[2]->SetYTitle("dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV/c^{2} )^{#font[122]{\55}2} )");
+		  VecHistoMeas[2]->SetYTitle("dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV )^{#font[122]{\55}2} )");
 		  VecHistoMeas[0]->GetYaxis()->SetRangeUser(-0.01,1.01);
 		  VecHistoMeas[1]->GetYaxis()->SetRangeUser(-1.0 - 0.01,1.0 + 0.01);
 		  VecHistoMeas[2]->GetYaxis()->SetRangeUser(0.0,1.2);
@@ -8569,7 +8580,7 @@ int main(int argc, char** argv)
 	    }
 	  else
 	    {
-	      // system("say \"Let's rock and roll !\"");
+	      system("say \"Let's rock and roll !\"");
  	      theApp->Run (); // Eventloop on air
 	    }
 	}

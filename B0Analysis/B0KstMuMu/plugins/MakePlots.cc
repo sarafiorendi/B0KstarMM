@@ -69,7 +69,7 @@ void DrawString (double Lumi)
   stringstream myString;
 
   myString.str("");
-  myString << "CMS preliminary";
+  myString << "CMS";
   TLatex* LumiTex1 = new TLatex(0.1,0.95,myString.str().c_str());
   LumiTex1->SetTextSize(0.04);
   LumiTex1->SetTextColor(kBlack);
@@ -213,7 +213,7 @@ void MakeComparisonDataMC (unsigned int plotType)
   // #########
   else if (plotType == 2)
     {
-      Xtitle = "#mu^{+} p_{T} (GeV/c)";
+      Xtitle = "#mu^{#font[122]{+}} p_{T} (GeV/c)";
       maxX = 40.0;
 
       fileName = "MuppT.pdf";
@@ -227,7 +227,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 4)
     {
-      Xtitle = "#mu^{+} #eta";
+      Xtitle = "#mu^{#font[122]{+}} #eta";
       minX = -2.4;
       maxX = 2.4;
 
@@ -243,7 +243,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 6)
     {
-      Xtitle = "#mu^{+} #phi";
+      Xtitle = "#mu^{#font[122]{+}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -257,7 +257,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 7)
     {
-      Xtitle = "#mu^{+} #phi";
+      Xtitle = "#mu^{#font[122]{+}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -271,7 +271,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 8)
     {
-      Xtitle = "#mu^{+} #phi";
+      Xtitle = "#mu^{#font[122]{+}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -285,7 +285,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 9)
     {
-      Xtitle = "#mu^{+} #phi";
+      Xtitle = "#mu^{#font[122]{+}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -359,21 +359,21 @@ void MakeComparisonDataMC (unsigned int plotType)
   // ###########
   else if (plotType == 14)
     {
-      Xtitle = "K^{*0} trk+ p_{T} (GeV/c)";
+      Xtitle = "#font[122]{K}^{*0} trk#font[122]{+} p_{T} (GeV/c)";
       maxX = 20.0;
 
       fileName = "KstTrkppT.pdf";
     }
   else if (plotType == 15)
     {
-      Xtitle = "K^{*0} trk{#font[122]{\55}} p_{T} (GeV/c)";
+      Xtitle = "#font[122]{K}^{*0} trk{#font[122]{\55}} p_{T} (GeV/c)";
       maxX = 20.0;
 
       fileName = "KstTrkmpT.pdf";
     }
   else if (plotType == 16)
     {
-      Xtitle = "K^{*0} trk+ #eta";
+      Xtitle = "#font[122]{K}^{*0} trk#font[122]{+} #eta";
       minX = -3.0;
       maxX = 3.0;
 
@@ -381,7 +381,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 17)
     {
-      Xtitle = "K^{*0} trk{#font[122]{\55}} #eta";
+      Xtitle = "#font[122]{K}^{*0} trk{#font[122]{\55}} #eta";
       minX = -3.0;
       maxX = 3.0;
 
@@ -389,7 +389,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 18)
     {
-      Xtitle = "K^{*0} trk+ #phi";
+      Xtitle = "#font[122]{K}^{*0} trk#font[122]{+} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -403,7 +403,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 19)
     {
-      Xtitle = "K^{*0} trk+ #phi";
+      Xtitle = "#font[122]{K}^{*0} trk#font[122]{+} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -417,7 +417,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 20)
     {
-      Xtitle = "K^{*0} trk+ #phi";
+      Xtitle = "#font[122]{K}^{*0} trk#font[122]{+} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -431,7 +431,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 21)
     {
-      Xtitle = "K^{*0} trk+ #phi";
+      Xtitle = "#font[122]{K}^{*0} trk#font[122]{+} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -445,7 +445,7 @@ void MakeComparisonDataMC (unsigned int plotType)
    }
   else if (plotType == 22)
     {
-      Xtitle = "K^{*0} trk{#font[122]{\55}} #phi";
+      Xtitle = "#font[122]{K}^{*0} trk{#font[122]{\55}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -459,7 +459,7 @@ void MakeComparisonDataMC (unsigned int plotType)
    }
   else if (plotType == 23)
     {
-      Xtitle = "K^{*0} trk{#font[122]{\55}} #phi";
+      Xtitle = "#font[122]{K}^{*0} trk{#font[122]{\55}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -473,7 +473,7 @@ void MakeComparisonDataMC (unsigned int plotType)
    }
   else if (plotType == 24)
     {
-      Xtitle = "K^{*0} trk{#font[122]{\55}} #phi";
+      Xtitle = "#font[122]{K}^{*0} trk{#font[122]{\55}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -487,7 +487,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 25)
     {
-      Xtitle = "K^{*0} trk{#font[122]{\55}} #phi";
+      Xtitle = "#font[122]{K}^{*0} trk{#font[122]{\55}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -505,7 +505,7 @@ void MakeComparisonDataMC (unsigned int plotType)
   // ##########
   else if (plotType == 26)
     {
-      Xtitle = "cos(#theta_{K})";
+      Xtitle = "cos(#theta_{#font[122]{K}})";
       minX = -1.0;
       maxX = 1.0;
 
@@ -936,7 +936,7 @@ void MakeComparisonDataMC (unsigned int plotType)
   hM1D->SetXTitle(Xtitle.c_str());
   hM1D->SetYTitle("Norm. entries");
   hM1D->SetLineColor(kBlack);
-  hM1D->SetFillColor(kAzure-4);
+  hM1D->SetFillColor(kAzure+6);
 
   for (unsigned int i = 1; i < NHisto; i++) hM1D->Add(h1DVec[i]);
       
@@ -970,7 +970,7 @@ void MakeComparisonDataMC (unsigned int plotType)
   c0->Update();
 
   TPaveStats* stM = (TPaveStats*)hM1D->FindObject("stats");
-  stM->SetFillColor(kAzure-4);
+  stM->SetFillColor(kAzure+6);
   TPaveStats* stD = (TPaveStats*)hDsig1D->FindObject("stats");
   if ((plotType == 0) ||
       (plotType == 2) ||
@@ -1307,21 +1307,23 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetMarkerSize(1.2);
       ge0->SetFillColor(kWhite);
       ge0->SetFillStyle(0);
+      ge0->SetLineColor(kBlack);
+      ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-0.02,1.0);
-      ge0->SetTitle(";q^{2} ( GeV/c^{2} )^{2};F_{L}");
+      ge0->SetTitle(";q^{2} ( GeV )^{2};F_{L}");
 
       Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"Fl",false);
       ge1->SetMarkerColor(kBlue);
       ge1->SetMarkerStyle(20);
       ge1->SetMarkerSize(1.2);
-      ge1->SetFillColor(kWhite);
-      ge1->SetFillStyle(0);
-      ge1->SetLineColor(kBlack);
+      ge1->SetFillColor(kGreen);
+      ge1->SetFillStyle(3001);
+      ge1->SetLineColor(kBlue);
       ge1->SetLineWidth(2);
       ge1->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge1->GetYaxis()->SetRangeUser(-0.02,1.0);
-      ge1->SetTitle(";q^{2} ( GeV/c^{2} )^{2};F_{L}");
+      ge1->SetTitle(";q^{2} ( GeV )^{2};F_{L}");
      }
   else if (PlotType == 1) // Afb
     {
@@ -1331,21 +1333,23 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetMarkerSize(1.2);
       ge0->SetFillColor(kWhite);
       ge0->SetFillStyle(0);
+      ge0->SetLineColor(kBlack);
+      ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-1.04,1.0);
-      ge0->SetTitle(";q^{2} ( GeV/c^{2} )^{2};A_{FB}");
+      ge0->SetTitle(";q^{2} ( GeV )^{2};A_{FB}");
  
       Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"Afb",false);
       ge1->SetMarkerColor(kBlue);
       ge1->SetMarkerStyle(20);
       ge1->SetMarkerSize(1.2);
-      ge1->SetFillColor(kWhite);
-      ge1->SetFillStyle(0);
-      ge1->SetLineColor(kBlack);
+      ge1->SetFillColor(kGreen);
+      ge1->SetFillStyle(3001);
+      ge1->SetLineColor(kBlue);
       ge1->SetLineWidth(2);
       ge1->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge1->GetYaxis()->SetRangeUser(-1.04,1.0);
-      ge1->SetTitle(";q^{2} ( GeV/c^{2} )^{2};A_{FB}");
+      ge1->SetTitle(";q^{2} ( GeV )^{2};A_{FB}");
     }
   else if (PlotType == 2) // Branching fraction
     {
@@ -1355,21 +1359,23 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetMarkerSize(1.2);
       ge0->SetFillColor(kWhite);
       ge0->SetFillStyle(0);
+      ge0->SetLineColor(kBlack);
+      ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(0.0,1.2);
-      ge0->SetTitle(";q^{2} ( GeV/c^{2} )^{2};dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV/c^{2} )^{#font[122]{\55}2} )");
+      ge0->SetTitle(";q^{2} ( GeV )^{2};dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV )^{#font[122]{\55}2} )");
  
       Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"dBFdq2",false);
       ge1->SetMarkerColor(kBlue);
       ge1->SetMarkerStyle(20);
       ge1->SetMarkerSize(1.2);
-      ge1->SetFillColor(kWhite);
-      ge1->SetFillStyle(0);
-      ge1->SetLineColor(kBlack);
+      ge1->SetFillColor(kGreen);
+      ge1->SetFillStyle(3001);
+      ge1->SetLineColor(kBlue);
       ge1->SetLineWidth(2);
       ge1->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge1->GetYaxis()->SetRangeUser(0.0,1.2);
-      ge1->SetTitle(";q^{2} ( GeV/c^{2} )^{2};dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV/c^{2} )^{#font[122]{\55}2} )");
+      ge1->SetTitle(";q^{2} ( GeV )^{2};dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV )^{#font[122]{\55}2} )");
     }
   else if (PlotType == 10) // FL
     {
@@ -1377,13 +1383,13 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetMarkerColor(kBlack);
       ge0->SetMarkerStyle(20);
       ge0->SetMarkerSize(1.2);
-      ge0->SetFillColor(kWhite);
-      ge0->SetFillStyle(0);
-      ge0->SetLineColor(kBlue);
+      ge0->SetFillColor(kGreen);
+      ge0->SetFillStyle(3001);
+      ge0->SetLineColor(kBlack);
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-0.02,1.0);
-      ge0->SetTitle(";q^{2} ( GeV/c^{2} )^{2};F_{L}");
+      ge0->SetTitle(";q^{2} ( GeV )^{2};F_{L}");
     }
   else if (PlotType == 11) // Afb
     {
@@ -1391,13 +1397,13 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetMarkerColor(kBlack);
       ge0->SetMarkerStyle(20);
       ge0->SetMarkerSize(1.2);
-      ge0->SetFillColor(kWhite);
-      ge0->SetFillStyle(0);
-      ge0->SetLineColor(kBlue);
+      ge0->SetFillColor(kGreen);
+      ge0->SetFillStyle(3001);
+      ge0->SetLineColor(kBlack);
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-1.04,1.0);
-      ge0->SetTitle(";q^{2} ( GeV/c^{2} )^{2};A_{FB}");
+      ge0->SetTitle(";q^{2} ( GeV )^{2};A_{FB}");
     }
   else if (PlotType == 12) // Branching fraction
     {
@@ -1405,13 +1411,13 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetMarkerColor(kBlack);
       ge0->SetMarkerStyle(20);
       ge0->SetMarkerSize(1.2);
-      ge0->SetFillColor(kWhite);
-      ge0->SetFillStyle(0);
-      ge0->SetLineColor(kBlue);
+      ge0->SetFillColor(kGreen);
+      ge0->SetFillStyle(3001);
+      ge0->SetLineColor(kBlack);
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(0.0,1.2);
-      ge0->SetTitle(";q^{2} ( GeV/c^{2} )^{2};dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV/c^{2} )^{#font[122]{\55}2} )");
+      ge0->SetTitle(";q^{2} ( GeV )^{2};dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV )^{#font[122]{\55}2} )");
     }
   else
     {
@@ -1427,7 +1433,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   if      ((PlotType == 0) || (PlotType == 10)) geSmoothTh = ReadFromASCII(SMFL,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh); // Fl
   else if ((PlotType == 1) || (PlotType == 11)) geSmoothTh = ReadFromASCII(SMAFB,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh); // Afb
   else if ((PlotType == 2) || (PlotType == 12)) geSmoothTh = ReadFromASCII(SMBF,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh); // Branching fraction
-  geSmoothTh->SetFillColor(kCyan+2);
+  geSmoothTh->SetFillColor(kCyan-4);
   geSmoothTh->SetFillStyle(1001);
   geSmoothTh->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
 
@@ -1441,7 +1447,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   else if ((PlotType == 2) || (PlotType == 12)) geStepTh = ReadFromASCII(SMBINBF,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Branching fraction
   geStepTh->SetMarkerColor(kBlack);
   geStepTh->SetMarkerStyle(1);
-  geStepTh->SetFillColor(kMagenta);
+  geStepTh->SetFillColor(kMagenta-7);
   geStepTh->SetFillStyle(1001);
   geStepTh->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
 
@@ -1461,7 +1467,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge11->SetMarkerStyle(20);
       ge11->SetMarkerSize(1.2);
       ge11->SetFillColor(kGreen);
-      ge11->SetFillStyle(3004);
+      ge11->SetFillStyle(3001);
       ge11->SetLineColor(kBlue);
       ge11->SetLineWidth(2);
 
@@ -1486,7 +1492,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge11->SetMarkerStyle(20);
       ge11->SetMarkerSize(1.2);
       ge11->SetFillColor(kGreen);
-      ge11->SetFillStyle(3004);
+      ge11->SetFillStyle(3001);
       ge11->SetLineColor(kBlue);
       ge11->SetLineWidth(2);
 
@@ -1511,7 +1517,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge11->SetMarkerStyle(20);
       ge11->SetMarkerSize(1.2);
       ge11->SetFillColor(kGreen);
-      ge11->SetFillStyle(3004);
+      ge11->SetFillStyle(3001);
       ge11->SetLineColor(kBlue);
       ge11->SetLineWidth(2);
 
@@ -1529,7 +1535,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   else if (PlotType == 10) // Fl
     {
       geSmoothTh->GetYaxis()->SetRangeUser(-0.02,1.0);
-      geSmoothTh->SetTitle(";q^{2} ( GeV/c^{2} )^{2};F_{L}");
+      geSmoothTh->SetTitle(";q^{2} ( GeV )^{2};F_{L}");
 
 
       // ############################################
@@ -1540,7 +1546,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge00->SetMarkerStyle(20);
       ge00->SetMarkerSize(1.2);
       ge00->SetFillColor(kGreen);
-      ge00->SetFillStyle(3004);
+      ge00->SetFillStyle(3001);
       ge00->SetLineColor(kBlack);
       ge00->SetLineWidth(2);
 
@@ -1551,6 +1557,9 @@ void MakePhysicsPlots (unsigned int PlotType)
       for (int i = 0; i < ge0->GetN(); i++)
 	if (Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false)
 	  {
+	    ge0->SetPointEXlow(i,0.0);
+	    ge0->SetPointEXhigh(i,0.0);
+
 	    ge0->SetPointEYhigh(i,sqrt(ge0->GetErrorYhigh(i)*ge0->GetErrorYhigh(i) + vecObs[0]->operator[](i)*vecObs[0]->operator[](i)));
 	    ge0->SetPointEYlow(i, sqrt(ge0->GetErrorYlow(i)*ge0->GetErrorYlow(i)   + vecObs[1]->operator[](i)*vecObs[1]->operator[](i)));
 	  }
@@ -1558,7 +1567,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   else if (PlotType == 11) // Afb
     {
       geSmoothTh->GetYaxis()->SetRangeUser(-1.04,1.0);
-      geSmoothTh->SetTitle(";q^{2} ( GeV/c^{2} )^{2};A_{FB}");
+      geSmoothTh->SetTitle(";q^{2} ( GeV )^{2};A_{FB}");
 
 
       // ############################################
@@ -1569,7 +1578,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge00->SetMarkerStyle(20);
       ge00->SetMarkerSize(1.2);
       ge00->SetFillColor(kGreen);
-      ge00->SetFillStyle(3004);
+      ge00->SetFillStyle(3001);
       ge00->SetLineColor(kBlack);
       ge00->SetLineWidth(2);
 
@@ -1580,6 +1589,9 @@ void MakePhysicsPlots (unsigned int PlotType)
       for (int i = 0; i < ge0->GetN(); i++)
 	if (Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false)
 	  {
+	    ge0->SetPointEXlow(i,0.0);
+	    ge0->SetPointEXhigh(i,0.0);
+
 	    ge0->SetPointEYhigh(i,sqrt(ge0->GetErrorYhigh(i)*ge0->GetErrorYhigh(i) + vecObs[2]->operator[](i)*vecObs[2]->operator[](i)));
 	    ge0->SetPointEYlow(i, sqrt(ge0->GetErrorYlow(i)*ge0->GetErrorYlow(i)   + vecObs[3]->operator[](i)*vecObs[3]->operator[](i)));
 	  }
@@ -1587,7 +1599,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   else if (PlotType == 12) // Branching fraction
     {
       geSmoothTh->GetYaxis()->SetRangeUser(0.0,1.2);
-      geSmoothTh->SetTitle(";q^{2} ( GeV/c^{2} )^{2};dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV/c^{2} )^{#font[122]{\55}2} )");
+      geSmoothTh->SetTitle(";q^{2} ( GeV )^{2};dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV )^{#font[122]{\55}2} )");
 
 
       // ############################################
@@ -1598,7 +1610,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge00->SetMarkerStyle(20);
       ge00->SetMarkerSize(1.2);
       ge00->SetFillColor(kGreen);
-      ge00->SetFillStyle(3004);
+      ge00->SetFillStyle(3001);
       ge00->SetLineColor(kBlack);
       ge00->SetLineWidth(2);
 
@@ -1609,6 +1621,9 @@ void MakePhysicsPlots (unsigned int PlotType)
       for (int i = 0; i < ge0->GetN(); i++)
 	if (Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false)
 	  {
+	    ge0->SetPointEXlow(i,0.0);
+	    ge0->SetPointEXhigh(i,0.0);
+
 	    ge0->SetPointEYhigh(i,sqrt(ge0->GetErrorYhigh(i)*ge0->GetErrorYhigh(i) + vecObs[8]->operator[](i)*vecObs[8]->operator[](i)));
 	    ge0->SetPointEYlow(i, sqrt(ge0->GetErrorYlow(i)*ge0->GetErrorYlow(i)   + vecObs[9]->operator[](i)*vecObs[9]->operator[](i)));
 	  }
@@ -1645,21 +1660,21 @@ void MakePhysicsPlots (unsigned int PlotType)
   if ((PlotType == 0) || (PlotType == 1) || (PlotType == 2)) // Fl OR Afb OR Branching fraction
     {
       ge0->Draw("ape1");
-      ge1->Draw("same pez");
-      ge11->Draw("same e1");
-      
+      ge1->Draw("same pe1");
+      ge11->Draw("same e2");
+
       leg->AddEntry(ge0,"GEN-MC","PL");
-      leg->AddEntry(ge11,"RECO-MC","PL");
+      leg->AddEntry(ge11,"RECO-MC","EPFL");
     }
   else if ((PlotType == 10) || (PlotType == 11) || (PlotType == 12)) // Fl OR Afb OR Branching fraction
     {
       geSmoothTh->Draw("ae2");
       geStepTh->Draw("same e2");
 
-      ge0->Draw("same pez");
-      ge00->Draw("same e1");
+      ge00->Draw("same e2");
+      ge0->Draw("same pe1");
 
-      leg->AddEntry(ge00,"Data","PL");
+      leg->AddEntry(ge00,"Data","EPFL");
       leg->AddEntry(geSmoothTh,"SM","F");
       leg->AddEntry(geStepTh,"<SM>","F");
     }
@@ -1733,14 +1748,14 @@ void MakePhysicsPlots (unsigned int PlotType)
   cout << "\n@@@ Global chi2 = " << myGlobalChi2 / ((double)DoF) << " (" << myGlobalChi2 << "/" << ((double)DoF) << ") @@@" << endl;
   myGlobalChi2 = myGlobalChi2 / ((double)DoF);
 
-  chi2Histo->SetTitle(";q^{2} ( GeV/c^{2} )^{2};#chi^{2}");
+  chi2Histo->SetTitle(";q^{2} ( GeV )^{2};#chi^{2}");
   chi2Histo->GetXaxis()->SetLabelSize(0.06);
   chi2Histo->GetXaxis()->SetTitleOffset(0.8);
   chi2Histo->GetXaxis()->SetTitleSize(0.07);
   chi2Histo->GetYaxis()->SetLabelSize(0.06);
   chi2Histo->GetYaxis()->SetTitleOffset(0.7);
   chi2Histo->GetYaxis()->SetTitleSize(0.07);
-  chi2Histo->SetFillColor(kAzure-4);
+  chi2Histo->SetFillColor(kAzure+6);
   chi2Histo->SetFillStyle(1001);
   chi2Histo->GetYaxis()->SetRangeUser(0.008,30.0);
   chi2Histo->Draw();
@@ -1782,7 +1797,7 @@ void MakePhysicsPlots (unsigned int PlotType)
     else probHisto->SetBinContent(i+1,0.0);
   probLeg->AddEntry(probHisto,"p-value");
 
-  probHisto->SetTitle(";q^{2} ( GeV/c^{2} )^{2};p-value");
+  probHisto->SetTitle(";q^{2} ( GeV )^{2};p-value");
   probHisto->GetXaxis()->SetLabelSize(0.06);
   probHisto->GetXaxis()->SetTitleOffset(0.8);
   probHisto->GetXaxis()->SetTitleSize(0.07);
@@ -1896,28 +1911,28 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
   TH1D* h1 = new TH1D("h1","h1",nBinsHisto/2.,0.0,1.0);
   h1->GetXaxis()->SetTitle("F_{L}");
   h1->GetYaxis()->SetTitle("Entries");
-  h1->SetFillColor(kAzure-4);
+  h1->SetFillColor(kAzure+6);
 
   TCanvas* c2 = new TCanvas("c2","c2",10,10,700,500);
   c2->cd();
   TH1D* h2 = new TH1D("h2","h2",nBinsHisto,-1.0,1.0);
   h2->GetXaxis()->SetTitle("A_{FB}");
   h2->GetYaxis()->SetTitle("Entries");
-  h2->SetFillColor(kAzure-4);
+  h2->SetFillColor(kAzure+6);
   
   TCanvas* c3 = new TCanvas("c3","c3",10,10,700,500);
   c3->cd();
   TH1D* h3 = new TH1D("h3","h3",nBinsHisto,1.0,-1.0);
-  h3->GetXaxis()->SetTitle("Signal yield OR dBF/dq^{2} (GeV/c^{2})^{#font[122]{\55}2}");
+  h3->GetXaxis()->SetTitle("Signal yield OR dBF/dq^{2} (GeV)^{#font[122]{\55}2}");
   h3->GetYaxis()->SetTitle("Entries");
-  h3->SetFillColor(kAzure-4);
+  h3->SetFillColor(kAzure+6);
 
   TCanvas* c4 = new TCanvas("c4","c4",10,10,700,500);
   c4->cd();
   TH1D* h4 = new TH1D("h4","h4",nBinsHisto,1.0,-1.0);
   h4->GetXaxis()->SetTitle("NLL");
   h4->GetYaxis()->SetTitle("Entries");
-  h4->SetFillColor(kAzure-4);
+  h4->SetFillColor(kAzure+6);
 
   TCanvas* cSc = new TCanvas("cSc","cSc",10,10,700,500);
   cSc->cd();
@@ -1925,7 +1940,7 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
   hSc->GetXaxis()->SetTitle("Parameter Value");
   hSc->GetYaxis()->SetTitle("NLL");
   hSc->GetZaxis()->SetTitle("Entries");
-  hSc->SetFillColor(kAzure-4);
+  hSc->SetFillColor(kAzure+6);
 
 
   // #########################
@@ -1973,7 +1988,7 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
 	    }
 	  else if ((sysType == 12) && (var3 != -2.0))
 	    {
-	      hSc->GetXaxis()->SetTitle("dBF/dq^{2} (GeV/c^{2})^{#font[122]{\55}2}");
+	      hSc->GetXaxis()->SetTitle("dBF/dq^{2} (GeV)^{#font[122]{\55}2}");
 	      hSc->Fill(var3,var4);
 	    }
 	  
@@ -2015,7 +2030,7 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
 		}
 	      else if ((sysType == 12) && (var3 != -2.0))
 		{
-		  hSc->GetXaxis()->SetTitle("dBF/dq^{2} (GeV/c^{2})^{#font[122]{\55}2}");
+		  hSc->GetXaxis()->SetTitle("dBF/dq^{2} (GeV)^{#font[122]{\55}2}");
 		  hSc->Fill(var3,var4);
 		}
 	  
@@ -2147,7 +2162,7 @@ void VerifyEff (string fileNameData, string fileNameMCJPsi, string fileNameMCPsi
   TH1D* hdata = new TH1D("hdata","hdata",angularVec->size()-1,angularBins_);
   hdata->SetMarkerStyle(20);
   hdata->SetMarkerColor(kBlack);
-  if      (angleType == "thetaK") hdata->SetXTitle("cos(#theta_{K})");
+  if      (angleType == "thetaK") hdata->SetXTitle("cos(#theta_{#font[122]{K}})");
   else if (angleType == "thetaL") hdata->SetXTitle("cos(#theta_{l})");
   hdata->SetYTitle("a.u.");
 
@@ -2173,7 +2188,7 @@ void VerifyEff (string fileNameData, string fileNameMCJPsi, string fileNameMCPsi
   TH1D* hMC = new TH1D("hMC","hMC",angularVec->size()-1,angularBins_);
   hMC->SetMarkerStyle(21);
   hMC->SetMarkerColor(kRed);
-  if      (angleType == "thetaK") hMC->SetXTitle("cos(#theta_{K})");
+  if      (angleType == "thetaK") hMC->SetXTitle("cos(#theta_{#font[122]{K}})");
   else if (angleType == "thetaL") hMC->SetXTitle("cos(#theta_{l})");
   hMC->SetYTitle("a.u.");
 
@@ -2187,7 +2202,7 @@ void VerifyEff (string fileNameData, string fileNameMCJPsi, string fileNameMCPsi
       // # Define histogram to fit and extract yields #
       // ##############################################
       TH1D* hMass = new TH1D("hMass","hMass",NBins,Utility->B0Mass - Utility->GetGenericParam("B0MassIntervalLeft"),Utility->B0Mass + Utility->GetGenericParam("B0MassIntervalRight"));
-      hMass->SetXTitle("B^{0} mass (GeV/c^{2})");
+      hMass->SetXTitle("B^{0} mass (GeV)");
       hMass->SetYTitle("a.u.");
 
 
@@ -2395,7 +2410,7 @@ void VerifyEff (string fileNameData, string fileNameMCJPsi, string fileNameMCPsi
   hdata->Sumw2();
   hMC->Sumw2();
   TH1D* hratio = (TH1D*)hdata->Clone("hratio");
-  if      (angleType == "thetaK") hratio->SetXTitle("cos(#theta_{K})");
+  if      (angleType == "thetaK") hratio->SetXTitle("cos(#theta_{#font[122]{K}})");
   else if (angleType == "thetaL") hratio->SetXTitle("cos(#theta_{l})");
   hratio->SetYTitle("a.u.");
   hratio->Divide(hMC);
@@ -2479,13 +2494,13 @@ void PlotMuMu (string fileName, bool bkgSub)
   TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
 
   TH1D* hDsig = new TH1D("hDsig","hDsig",nBins,minX,maxX);
-  hDsig->SetXTitle("M(#mu^{+}#mu^{#font[122]{\55}}) (GeV/c^{2})");
-  hDsig->SetYTitle("Entries / (0.042 GeV/c^{2})");
+  hDsig->SetXTitle("M(#mu^{#font[122]{+}}#mu^{#font[122]{\55}}) (GeV)");
+  hDsig->SetYTitle("Entries / (0.042 GeV)");
   hDsig->SetMarkerStyle(20);
 
   TH1D* hDbkg = new TH1D("hDbkg","hDbkg",nBins,minX,maxX);
-  hDbkg->SetXTitle("M(#mu^{+}#mu^{#font[122]{\55}}) (GeV/c^{2})");
-  hDbkg->SetYTitle("Entries / (0.042 GeV/c^{2})");
+  hDbkg->SetXTitle("M(#mu^{#font[122]{+}}#mu^{#font[122]{\55}}) (GeV)");
+  hDbkg->SetYTitle("Entries / (0.042 GeV)");
   hDbkg->SetMarkerStyle(20);
 
   theTree->Draw("mumuMass>>hDsig",sigMassQuery.c_str(),"goff");
@@ -2569,25 +2584,25 @@ void PlotKst (string fileName, bool bkgSub)
   cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
   TH1D* h1Dsig = new TH1D("h1Dsig","h1Dsig",nBins,minX - extra,maxX + extra+0.01);
-  h1Dsig->SetXTitle("M(K^{*0}) (GeV/c^{2})");
-  h1Dsig->SetYTitle("Entries / (0.002 GeV/c^{2})");
+  h1Dsig->SetXTitle("M(#font[122]{K}^{*0}) (GeV)");
+  h1Dsig->SetYTitle("Entries / (0.002 GeV)");
   h1Dsig->SetMarkerStyle(20);
 
   TH1D* h2Dsig = new TH1D("h2Dsig","h2Dsig",nBins,minX - extra,maxX + extra+0.01);
-  h2Dsig->SetXTitle("M(K^{*0}) (GeV/c^{2})");
-  h2Dsig->SetYTitle("Entries / (0.002 GeV/c^{2})");
+  h2Dsig->SetXTitle("M(#font[122]{K}^{*0}) (GeV)");
+  h2Dsig->SetYTitle("Entries / (0.002 GeV)");
   h2Dsig->SetMarkerStyle(21);
   h2Dsig->SetMarkerColor(kRed);
 
 
   TH1D* h1Dbkg = new TH1D("h1Dbkg","h1Dbkg",nBins,minX - extra,maxX + extra+0.01);
-  h1Dbkg->SetXTitle("M(K^{*0}) (GeV/c^{2})");
-  h1Dbkg->SetYTitle("Entries / (0.002 GeV/c^{2})");
+  h1Dbkg->SetXTitle("M(#font[122]{K}^{*0}) (GeV)");
+  h1Dbkg->SetYTitle("Entries / (0.002 GeV)");
   h1Dbkg->SetMarkerStyle(20);
 
   TH1D* h2Dbkg = new TH1D("h2Dbkg","h2Dbkg",nBins,minX - extra,maxX + extra+0.01);
-  h2Dbkg->SetXTitle("M(K^{*0}) (GeV/c^{2})");
-  h2Dbkg->SetYTitle("Entries / (0.002 GeV/c^{2})");
+  h2Dbkg->SetXTitle("M(#font[122]{K}^{*0}) (GeV)");
+  h2Dbkg->SetYTitle("Entries / (0.002 GeV)");
   h2Dbkg->SetMarkerStyle(21);
   h2Dbkg->SetMarkerColor(kRed);
 
@@ -2596,7 +2611,7 @@ void PlotKst (string fileName, bool bkgSub)
   TF1* f0 = new TF1("f0","fsig + fbkg",minX,maxX);
 
   fsig->SetLineColor(kBlue);
-  fsig->SetFillColor(kAzure-4);
+  fsig->SetFillColor(kAzure+6);
   fsig->SetFillStyle(3345);
 
   fbkg->SetLineColor(kRed);
@@ -2656,8 +2671,8 @@ void PlotKst (string fileName, bool bkgSub)
   theTree->Draw("kstBarMass>>h2Dsig",tmpstring.c_str());
 
   TH1D* h3Dsig = (TH1D*)h1Dsig->Clone("h3Dsig");
-  h3Dsig->SetXTitle("M(K^{*0}) (GeV/c^{2})");
-  h3Dsig->SetYTitle("Entries / (0.002 GeV/c^{2})");
+  h3Dsig->SetXTitle("M(#font[122]{K}^{*0}) (GeV)");
+  h3Dsig->SetYTitle("Entries / (0.002 GeV)");
   h3Dsig->SetMarkerStyle(20);
 
   h3Dsig->Add(h2Dsig, 1.0);
@@ -2672,8 +2687,8 @@ void PlotKst (string fileName, bool bkgSub)
   theTree->Draw("kstBarMass>>h2Dbkg",tmpstring.c_str());
 
   TH1D* h3Dbkg = (TH1D*)h1Dbkg->Clone("h3Dbkg");
-  h3Dbkg->SetXTitle("M(K^{*0}) (GeV/c^{2})");
-  h3Dbkg->SetYTitle("Entries / (0.002 GeV/c^{2})");
+  h3Dbkg->SetXTitle("M(#font[122]{K}^{*0}) (GeV)");
+  h3Dbkg->SetYTitle("Entries / (0.002 GeV)");
   h3Dbkg->SetMarkerStyle(20);
 
   h3Dbkg->Add(h2Dbkg, 1.0);
@@ -2723,8 +2738,8 @@ void PlotKst (string fileName, bool bkgSub)
   h2Dsig->Draw("e1p same");
 
   TLegend* leg1 = new TLegend(0.15, 0.75, 0.4, 0.89, "");
-  leg1->AddEntry(h1Dsig,"K^{*0}");
-  leg1->AddEntry(h2Dsig,"K^{*0}_{bar}");
+  leg1->AddEntry(h1Dsig,"#font[122]{K}^{*0}");
+  leg1->AddEntry(h2Dsig,"#font[122]{K}^{*0}_{bar}");
   leg1->SetFillColor(0);
   leg1->SetBorderSize(0);
   leg1->Draw();
@@ -2787,34 +2802,34 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
   TCanvas* c2 = new TCanvas("c2","c2",30,30,700,500);
 
   TH1D* hKKSig = new TH1D("hKKSig","hKKSig",nBins,KKminX,KKmaxX);
-  hKKSig->SetXTitle("M(K^{+}K^{#font[122]{\55}}) (GeV/c^{2})");
-  hKKSig->SetYTitle("Entries / (0.005 GeV/c^{2})");
-  hKKSig->SetFillColor(kAzure-4);
+  hKKSig->SetXTitle("M(#font[122]{K}^{#font[122]{+}}#font[122]{K}^{#font[122]{\55}}) (GeV)");
+  hKKSig->SetYTitle("Entries / (0.005 GeV)");
+  hKKSig->SetFillColor(kAzure+6);
 
   TH1D* hKKBkg = new TH1D("hKKBkg","hKKBkg",nBins,KKminX,KKmaxX);
-  hKKBkg->SetXTitle("M(K^{+}K^{#font[122]{\55}}) (GeV/c^{2})");
-  hKKBkg->SetYTitle("Entries / (0.005 GeV/c^{2})");
-  hKKBkg->SetFillColor(kAzure-4);
+  hKKBkg->SetXTitle("M(#font[122]{K}^{#font[122]{+}}#font[122]{K}^{#font[122]{\55}}) (GeV)");
+  hKKBkg->SetYTitle("Entries / (0.005 GeV)");
+  hKKBkg->SetFillColor(kAzure+6);
 
   TH1D* hKstSig = new TH1D("hKstSig","hKstSig",nBins,KstminX - Kstextra,KstmaxX + Kstextra);
-  hKstSig->SetXTitle("M(K #pi) (GeV/c^{2})");
-  hKstSig->SetYTitle("Entries / (0.022 GeV/c^{2})");
+  hKstSig->SetXTitle("M(K #pi) (GeV)");
+  hKstSig->SetYTitle("Entries / (0.022 GeV)");
   hKstSig->SetMarkerStyle(20);
 
   TH1D* hKstBkg = new TH1D("hKstBkg","hKstBkg",nBins,KstminX - Kstextra,KstmaxX + Kstextra);
-  hKstBkg->SetXTitle("M(K #pi) (GeV/c^{2})");
-  hKstBkg->SetYTitle("Entries / (0.022 GeV/c^{2})");
+  hKstBkg->SetXTitle("M(K #pi) (GeV)");
+  hKstBkg->SetYTitle("Entries / (0.022 GeV)");
   hKstSig->SetMarkerStyle(20);
 
   TH2D* hDalitzSig = new TH2D("hDalitzSig","hDalitzSig",nBins,DalitzminX,DalitzmaxX,nBins,DalitzminY,DalitzmaxY);
-  hDalitzSig->SetXTitle("M^{2}(K #pi) (GeV/c^{2})^{2}");
-  hDalitzSig->SetYTitle("M^{2}(J/#psi K) (GeV/c^{2})^{2}");
-  hDalitzSig->SetZTitle("Entries / (0.03x0.125 (GeV/c^{2})^{4})");
+  hDalitzSig->SetXTitle("M^{2}(K #pi) (GeV)^{2}");
+  hDalitzSig->SetYTitle("M^{2}(J/#psi K) (GeV)^{2}");
+  hDalitzSig->SetZTitle("Entries / (0.03x0.125 (GeV)^{4})");
 
   TH2D* hDalitzBkg = new TH2D("hDalitzBkg","hDalitzBkg",nBins,DalitzminX,DalitzmaxX,nBins,DalitzminY,DalitzmaxY);
-  hDalitzBkg->SetXTitle("M^{2}(K #pi) (GeV/c^{2})^{2}");
-  hDalitzBkg->SetYTitle("M^{2}(J/#psi K) (GeV/c^{2})^{2}");
-  hDalitzBkg->SetZTitle("Entries / (0.03x0.125 (GeV/c^{2})^{4})");
+  hDalitzBkg->SetXTitle("M^{2}(K #pi) (GeV)^{2}");
+  hDalitzBkg->SetYTitle("M^{2}(J/#psi K) (GeV)^{2}");
+  hDalitzBkg->SetZTitle("Entries / (0.03x0.125 (GeV)^{4})");
 
   for (int entry = 0; entry < nEntries; entry++)
     {
@@ -2959,14 +2974,14 @@ void PlotMuHadMass (string fileName)
   cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
   TH1D* histoK = new TH1D("histoK","histoK",nBins,minX,maxX);
-  histoK->SetXTitle("M(K #mu) (GeV/c^{2})");
-  histoK->SetYTitle("Entries / (0.056 GeV/c^{2})");
-  histoK->SetFillColor(kAzure-4);
+  histoK->SetXTitle("M(K #mu) (GeV)");
+  histoK->SetYTitle("Entries / (0.056 GeV)");
+  histoK->SetFillColor(kAzure+6);
 
   TH1D* histoPi = new TH1D("histoPi","histoPi",nBins,minX,maxX);
-  histoPi->SetXTitle("M(#pi #mu) (GeV/c^{2})");
-  histoPi->SetYTitle("Entries / (0.056 GeV/c^{2})");
-  histoPi->SetFillColor(kAzure-4);
+  histoPi->SetXTitle("M(#pi #mu) (GeV)");
+  histoPi->SetYTitle("Entries / (0.056 GeV)");
+  histoPi->SetFillColor(kAzure+6);
 
   for (int entry = 0; entry < nEntries; entry++)
     {
@@ -3096,7 +3111,7 @@ void MakeupNLLandPvalPlots (string fileName, int specBin, string PlotType)
       myString.clear(); myString.str("");
       myString << "histoPull" << car;
       histoPULL = (TH1D*)pPULL->GetPrimitive(myString.str().c_str());
-      histoPULL->SetFillColor(kAzure-4);
+      histoPULL->SetFillColor(kAzure+6);
 
       c0->Draw();
       c0->Update();
@@ -3154,7 +3169,7 @@ void MakeupNLLandPvalPlots (string fileName, int specBin, string PlotType)
 	   cout << "Adding histogram #" << it << endl;
 
 	   histoDIFF1 = (TH1D*)c0->GetPrimitive("histoDiff1");
-	   histoDIFF1->SetFillColor(kAzure-4);
+	   histoDIFF1->SetFillColor(kAzure+6);
 
 	   c0->Draw();
 	   c0->Update();
@@ -3186,11 +3201,11 @@ void MakeupNLLandPvalPlots (string fileName, int specBin, string PlotType)
 
 	   pDIFF1 = (TPad*)c0->GetPrimitive("cNLL3_1");
 	   histoDIFF1 = (TH1D*)pDIFF1->GetPrimitive("histoDiff1");
-	   histoDIFF1->SetFillColor(kAzure-4);
+	   histoDIFF1->SetFillColor(kAzure+6);
 
 	   pDIFF2 = (TPad*)c0->GetPrimitive("cNLL3_2");
 	   histoDIFF2 = (TH1D*)pDIFF2->GetPrimitive("histoDiff2");
-	   histoDIFF2->SetFillColor(kAzure-4);
+	   histoDIFF2->SetFillColor(kAzure+6);
 
 	   c0->Draw();
 	   c0->Update();
@@ -3279,7 +3294,7 @@ void MakePvaluePlot (string toyMCfileName, int specBin, string PlotType)
   c2->cd();
   TH1D* pval = new TH1D("pval","pval",q2Bins.size()-1,q2Bins_);
   pval->SetMarkerStyle(20);
-  pval->SetXTitle("q^{2} (GeV/c^{2})^{2}");
+  pval->SetXTitle("q^{2} (GeV)^{2}");
   pval->SetYTitle("p-value");
   pval->SetMinimum(0.0);
   pval->SetMaximum(1.05);

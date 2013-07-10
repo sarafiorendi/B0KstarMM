@@ -131,11 +131,11 @@ void TruthMatching (string fileName, bool truthMatch)
   else                    nBins = 40;
 
   TH1D* hb = new TH1D("hb","hb",nBins,minX,maxX);
-  hb->SetXTitle("M(K #pi #mu^{+} #mu^{-}) (GeV/c^{2})");
+  hb->SetXTitle("M(K #pi #mu^{+} #mu^{-}) (GeV)");
   hb->SetYTitle("Entries");
 
   TH1D* hbar = new TH1D("hbar","hbar",nBins,minX,maxX);
-  hbar->SetXTitle("M(K #pi #mu^{+} #mu^{-}) (GeV/c^{2})");
+  hbar->SetXTitle("M(K #pi #mu^{+} #mu^{-}) (GeV)");
   hbar->SetYTitle("Entries");
 
   TF1 *f0, *f1;
@@ -860,9 +860,9 @@ void PlotB0vsMuMu (string fileName, bool rejectPsi)
   vector<double>* vec2 = new vector<double>;
 
   TH2D* histo = new TH2D("histo","histo",100,minX,maxX,100,minY,maxY);
-  histo->SetXTitle("M(K #pi #mu^{+} #mu^{-}) (GeV/c^{2})");
-  histo->SetYTitle("M(#mu^{+} #mu^{-}) (GeV/c^{2})");
-  histo->SetZTitle("Entries / ((0.056 GeV/c^{2})x(0.042 GeV/c^{2}))");
+  histo->SetXTitle("M(K #pi #mu^{+} #mu^{-}) (GeV)");
+  histo->SetYTitle("M(#mu^{+} #mu^{-}) (GeV)");
+  histo->SetZTitle("Entries / ((0.056 GeV)x(0.042 GeV))");
 
   for (int entry = 0; entry < nEntries; entry++)
     {
@@ -920,20 +920,20 @@ void PlotBkgMC (string fileName, bool iFit, double scaleMCdata)
 
   TH1D* h0 = new TH1D("h0","h0",nBins,B0Mass - B0MassIntervalLeft,B0Mass + B0MassIntervalRight);
   h0->Sumw2();
-  h0->SetXTitle("M(K #pi #mu^{+} #mu^{-}) (GeV/c^{2})");
-  h0->SetYTitle("Entries / (0.028 GeV/c^{2})");
+  h0->SetXTitle("M(K #pi #mu^{+} #mu^{-}) (GeV)");
+  h0->SetYTitle("Entries / (0.028 GeV)");
   h0->SetMarkerStyle(20);
 
   TH1D* h1 = new TH1D("h1","h1",nBins,B0Mass - B0MassIntervalLeft,B0Mass + B0MassIntervalRight);
   h1->Sumw2();
-  h1->SetXTitle("M(K #pi #mu^{+} #mu^{-}) (GeV/c^{2})");
-  h1->SetYTitle("Entries / (0.028 GeV/c^{2})");
+  h1->SetXTitle("M(K #pi #mu^{+} #mu^{-}) (GeV)");
+  h1->SetYTitle("Entries / (0.028 GeV)");
   h1->SetMarkerStyle(20);
 
   TH1D* h2 = new TH1D("h2","h2",nBins,B0Mass - B0MassIntervalLeft,B0Mass + B0MassIntervalRight);
   h2->Sumw2();
-  h2->SetXTitle("M(K #pi #mu^{+} #mu^{-}) (GeV/c^{2})");
-  h2->SetYTitle("Entries / (0.028 GeV/c^{2})");
+  h2->SetXTitle("M(K #pi #mu^{+} #mu^{-}) (GeV)");
+  h2->SetYTitle("Entries / (0.028 GeV)");
   h2->SetMarkerStyle(20);
 
   
@@ -1493,7 +1493,7 @@ void DrawString (double Lumi)
   stringstream myString;
 
   myString.str("");
-  myString << "CMS preliminary";
+  myString << "CMS";
   TLatex* LumiTex1 = new TLatex(0.1,0.95,myString.str().c_str());
   LumiTex1->SetTextSize(0.04);
   LumiTex1->SetTextColor(kBlack);
@@ -1563,13 +1563,13 @@ void offsetData (int nBins, TVectorD* V1, TVectorD* V2, TVectorD* V3, double off
 }
 
 
-TGraphAsymmErrors* readData (TString fileName, int dataType, int color, int markerType, bool doFill, bool noBar, double offset)
-// ################################
-// # dataType = 0 --> FL          #
-// # dataType = 1 --> AFB         #
-// # dataType = 2 --> BF          #
-// # noBar: choose horizontal bar #
-// ################################
+TGraphAsymmErrors* readData (TString fileName, int dataType, int color, int markerType, bool doFill, bool noHbar, double offset)
+// #################################
+// # dataType = 0 --> FL           #
+// # dataType = 1 --> AFB          #
+// # dataType = 2 --> BF           #
+// # noHbar: choose horizontal bar #
+// #################################
 {
   int nBins = 5; // Number of q2 bins
 
@@ -1614,7 +1614,7 @@ TGraphAsymmErrors* readData (TString fileName, int dataType, int color, int mark
   // #######################
   for (int i = 0; i < V3.GetNoElements(); i++)
     {
-      if (((noBar == true) && (fileName.Contains("Theory") == false)) || ((V5[i] == 0.0) && (V6[i] == 0.0)))
+      if (((noHbar == true) && (fileName.Contains("Theory") == false)) || ((V5[i] == 0.0) && (V6[i] == 0.0)))
 	{
 	  V2[i] = 0.0;
 	  V3[i] = 0.0;
@@ -1629,9 +1629,9 @@ TGraphAsymmErrors* readData (TString fileName, int dataType, int color, int mark
   printData(nBins,V1,V2,V3,V4,V5,V6);
 
   TGraphAsymmErrors* gra = new TGraphAsymmErrors(V1,V4,V2,V3,V5,V6);
-  if      (dataType == 0) gra->SetTitle(";q^{2} ( GeV/c^{2} )^{2}; F_{L}");
-  else if (dataType == 1) gra->SetTitle(";q^{2} ( GeV/c^{2} )^{2}; A_{FB}");
-  else if (dataType == 2) gra->SetTitle(";q^{2} ( GeV/c^{2} )^{2}; dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV/c^{2} )^{#font[122]{\55}2} )");
+  if      (dataType == 0) gra->SetTitle(";q^{2} ( GeV )^{2}; F_{L}");
+  else if (dataType == 1) gra->SetTitle(";q^{2} ( GeV )^{2}; A_{FB}");
+  else if (dataType == 2) gra->SetTitle(";q^{2} ( GeV )^{2}; dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV )^{#font[122]{\55}2} )");
   if (doFill == true) gra->SetFillColor(color);
   else
     {
@@ -1697,7 +1697,7 @@ TGraphAsymmErrors* worldAverage (vector<TGraphAsymmErrors*>* expReults)
 }
 
 
-void showData (int dataType, double offset, bool noBar, bool doWorlAvg)
+void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
 // #########################
 // # dataType == 0 --> FL  #
 // # dataType == 1 --> AFB #
@@ -1725,17 +1725,17 @@ void showData (int dataType, double offset, bool noBar, bool doWorlAvg)
   if (dataType == 0)
     {
       h0->GetYaxis()->SetRangeUser(0.0,1.0);
-      h0->SetTitle(";q^{2} ( GeV/c^{2} )^{2}; F_{L}");      
+      h0->SetTitle(";q^{2} ( GeV )^{2}; F_{L}");      
     }
   else if (dataType == 1)
     {
       h0->GetYaxis()->SetRangeUser(-1.0,1.0);
-      h0->SetTitle(";q^{2} ( GeV/c^{2} )^{2}; A_{FB}");
+      h0->SetTitle(";q^{2} ( GeV )^{2}; A_{FB}");
     }
   else if (dataType == 2)
     {
       h0->GetYaxis()->SetRangeUser(0.0,1.2);
-      h0->SetTitle(";q^{2} ( GeV/c^{2} )^{2}; dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV/c^{2} )^{#font[122]{\55}2} )");
+      h0->SetTitle(";q^{2} ( GeV )^{2}; dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV )^{#font[122]{\55}2} )");
     }
   h0->SetLineStyle(2);
 
@@ -1743,13 +1743,13 @@ void showData (int dataType, double offset, bool noBar, bool doWorlAvg)
   TCanvas* cData  = new TCanvas("cData","cData",10,10,700,500);
 
   vector<TGraphAsymmErrors*> dVar;
-  dVar.push_back(readData("./ExperimentComparison/CMS.data",  dataType,1,20,false,noBar,0.0*offset));
-  // dVar.push_back(readData("./ExperimentComparison/LHCb_0_37fb.data",dataType,2,21,false,noBar,0.0*offset));
-  dVar.push_back(readData("./ExperimentComparison/LHCb_1fb.data",dataType,2,21,false,noBar,0.0*offset));
-  if (dataType != 2) dVar.push_back(readData("./ExperimentComparison/Atlas.data",dataType,4,22,false,noBar,-3.0*offset));
-  dVar.push_back(readData("./ExperimentComparison/BaBar.data",dataType,6,23,false,noBar,2.0*offset));
-  dVar.push_back(readData("./ExperimentComparison/Belle.data",dataType,8,28,false,noBar,-2.0*offset));
-  dVar.push_back(readData("./ExperimentComparison/CDF.data",  dataType,kGray+1,29,false,noBar,-1.0*offset));
+  dVar.push_back(readData("./ExperimentComparison/CMS.data",  dataType,1,20,false,noHbar,0.0*offset));
+  // dVar.push_back(readData("./ExperimentComparison/LHCb_0_37fb.data",dataType,2,21,false,noHbar,0.0*offset));
+  dVar.push_back(readData("./ExperimentComparison/LHCb_1fb.data",dataType,2,21,false,noHbar,0.0*offset));
+  // if (dataType != 2) dVar.push_back(readData("./ExperimentComparison/Atlas.data",dataType,4,22,false,noHbar,-3.0*offset));
+  dVar.push_back(readData("./ExperimentComparison/BaBar.data",dataType,6,23,false,noHbar,2.0*offset));
+  dVar.push_back(readData("./ExperimentComparison/Belle.data",dataType,8,28,false,noHbar,-2.0*offset));
+  dVar.push_back(readData("./ExperimentComparison/CDF.data",  dataType,kGray+1,29,false,noHbar,-1.0*offset));
 
   TGraphAsymmErrors* worldAverageGr = worldAverage(&dVar);
   worldAverageGr->SetMarkerColor(kRed);
@@ -1758,7 +1758,7 @@ void showData (int dataType, double offset, bool noBar, bool doWorlAvg)
   worldAverageGr->SetLineWidth(1);
   worldAverageGr->SetMarkerStyle(21);
 
-  dVar.push_back(readData("./ExperimentComparison/Theory.data", dataType,7,20,true,noBar,0.0*offset));
+  dVar.push_back(readData("./ExperimentComparison/Theory.data", dataType,kMagenta-7,20,true,noHbar,0.0*offset));
 
 
   cData->cd();
@@ -1789,7 +1789,7 @@ void showData (int dataType, double offset, bool noBar, bool doWorlAvg)
       leg->AddEntry(dVar[dVar.size()-1],"SM","F");
       leg->AddEntry(dVar[it++],"CMS","lp");
       leg->AddEntry(dVar[it++],"LHCb","lp");
-      if (dataType != 2) leg->AddEntry(dVar[it++],"Atlas","lp");
+      // if (dataType != 2) leg->AddEntry(dVar[it++],"Atlas","lp");
       leg->AddEntry(dVar[it++],"BaBar","lp");
       leg->AddEntry(dVar[it++],"Belle","lp");
       leg->AddEntry(dVar[it++],"CDF","lp");

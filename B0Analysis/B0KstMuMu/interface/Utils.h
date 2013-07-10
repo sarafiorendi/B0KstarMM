@@ -216,7 +216,7 @@ class Utils
 
   double EffMinValue2D (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, TF2* effFunc);
   
-  void MakeGraphVar(std::string parFileName, TGraphAsymmErrors** graph, std::string varName, bool allBins);
+  void MakeGraphVar(std::string parFileName, TGraphAsymmErrors** graph, std::string varName, bool allBins, double offset = 0.0);
 
   void InitEffFuncThetaL (TF1* fitFun, unsigned int q2BinIndx);
   

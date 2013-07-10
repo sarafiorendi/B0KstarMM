@@ -152,22 +152,22 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   histoR1->SetXTitle("Cut value");
   histoR1->SetYTitle("S");
   histoR1->SetLineColor(kBlack);
-  histoR1->SetFillColor(kAzure-4);
+  histoR1->SetFillColor(kAzure+6);
   TH1D* histoR2 = new TH1D("histoR2","histoR2",nBins,LowEdge,HighEdge);
   histoR2->SetXTitle("Cut value");
   histoR2->SetYTitle("B");
   histoR2->SetLineColor(kBlack);
-  histoR2->SetFillColor(kAzure-4);
+  histoR2->SetFillColor(kAzure+6);
   TH1D* histoR3 = new TH1D("histoR3","histoR3",nBins,LowEdge,HighEdge);
   histoR3->SetXTitle("Cut value");
   histoR3->SetYTitle("S/#sqrt{B}");
   histoR3->SetLineColor(kBlack);
-  histoR3->SetFillColor(kAzure-4);
+  histoR3->SetFillColor(kAzure+6);
   TH1D* histoR4 = new TH1D("histoR4","histoR4",nBins,LowEdge,HighEdge);
   histoR4->SetXTitle("Cut value");
   histoR4->SetYTitle("S/#sqrt{(S+B)}");
   histoR4->SetLineColor(kBlack);
-  histoR4->SetFillColor(kAzure-4);
+  histoR4->SetFillColor(kAzure+6);
 
 
   cout << "\n@@@ Settings @@@" << endl;

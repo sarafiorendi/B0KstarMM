@@ -312,7 +312,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   cEff->Divide(2,2);
 
   TH1D* Hq2 = new TH1D("Hq2", "Hq2", q2Bins->size()-1, q2Bins_);
-  Hq2->SetXTitle("q^{2} (GeV/c^{2})^{2}");
+  Hq2->SetXTitle("q^{2} (GeV)^{2}");
   Hq2->SetYTitle("Efficiency");
 
   vector<TH1D*> vecHcosThetaK;
@@ -620,7 +620,7 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
       myString.str("");
       myString << "Hq2_" << i;
       Hq2.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), q2Bins->size()-1, q2Bins_));
-      Hq2.back()->SetXTitle("q^{2} (GeV/c^{2})^{2}");
+      Hq2.back()->SetXTitle("q^{2} (GeV)^{2}");
       Hq2.back()->SetYTitle("Efficiency");
     }
 
@@ -872,7 +872,7 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
       for (unsigned int i = 0; i < HstatK.size(); i++)
   	{
   	  cStatK->cd(i+1);
-  	  HstatK[i]->SetFillColor(kAzure-4);
+  	  HstatK[i]->SetFillColor(kAzure+6);
   	  HstatK[i]->Draw();
   	}
 
@@ -883,7 +883,7 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
       for (unsigned int i = 0; i < HstatL.size(); i++)
   	{
   	  cStatL->cd(i+1);
-  	  HstatL[i]->SetFillColor(kAzure-4);
+  	  HstatL[i]->SetFillColor(kAzure+6);
   	  HstatL[i]->Draw();
   	}
 

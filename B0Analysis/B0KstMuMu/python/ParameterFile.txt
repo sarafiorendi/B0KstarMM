@@ -2155,7 +2155,7 @@ HLT_Dimuon6p5_LowMass_Displaced_v
 1
 
 # Luminosity [fb-1]
-5.2
+5.1803
 
 
 ############################
