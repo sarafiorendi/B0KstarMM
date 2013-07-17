@@ -1666,7 +1666,7 @@ HLT_Dimuon6p5_LowMass_Displaced_v
 # Atim
 0.0   0.0
 # Branching-Fraction
-0.076   0.076
+0.079   0.079
 
 # q^2 bin 1; +error --- -error
 # FL
@@ -1678,7 +1678,7 @@ HLT_Dimuon6p5_LowMass_Displaced_v
 # Atim
 0.0   0.0
 # Branching-Fraction
-0.058   0.058
+0.061   0.061
 
 # q^2 bin 2; +error --- -error
 # FL
@@ -1690,7 +1690,7 @@ HLT_Dimuon6p5_LowMass_Displaced_v
 # Atim
 0.0   0.0
 # Branching-Fraction
-0.059   0.059
+0.061   0.061
 
 # q^2 bin 3; +error --- -error
 # FL
@@ -1714,7 +1714,7 @@ HLT_Dimuon6p5_LowMass_Displaced_v
 # Atim
 0.0   0.0
 # Branching-Fraction
-0.116   0.116
+0.119   0.119
 
 # q^2 bin 5; +error --- -error
 # FL
@@ -1738,7 +1738,7 @@ HLT_Dimuon6p5_LowMass_Displaced_v
 # Atim
 0.0   0.0
 # Branching-Fraction
-0.079   0.079
+0.082   0.082
 
 # q^2 bin 7; +error --- -error
 # FL
@@ -1750,7 +1750,7 @@ HLT_Dimuon6p5_LowMass_Displaced_v
 # Atim
 0.0   0.0
 # Branching-Fraction
-0.084   0.084
+0.087   0.087
 
 
 ############################

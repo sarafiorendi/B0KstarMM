@@ -1923,7 +1923,7 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
   TCanvas* c3 = new TCanvas("c3","c3",10,10,700,500);
   c3->cd();
   TH1D* h3 = new TH1D("h3","h3",nBinsHisto,1.0,-1.0);
-  h3->GetXaxis()->SetTitle("Signal yield OR dBF/dq^{2} (GeV)^{#font[122]{\55}2}");
+  h3->GetXaxis()->SetTitle("Signal yield OR dBF/dq^{2} (GeV^{#font[122]{\55}2})");
   h3->GetYaxis()->SetTitle("Entries");
   h3->SetFillColor(kAzure+6);
 
@@ -1988,7 +1988,7 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
 	    }
 	  else if ((sysType == 12) && (var3 != -2.0))
 	    {
-	      hSc->GetXaxis()->SetTitle("dBF/dq^{2} (GeV)^{#font[122]{\55}2}");
+	      hSc->GetXaxis()->SetTitle("dBF/dq^{2} (GeV^{#font[122]{\55}2})");
 	      hSc->Fill(var3,var4);
 	    }
 	  
@@ -2030,7 +2030,7 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
 		}
 	      else if ((sysType == 12) && (var3 != -2.0))
 		{
-		  hSc->GetXaxis()->SetTitle("dBF/dq^{2} (GeV)^{#font[122]{\55}2}");
+		  hSc->GetXaxis()->SetTitle("dBF/dq^{2} (GeV^{#font[122]{\55}2})");
 		  hSc->Fill(var3,var4);
 		}
 	  
@@ -2822,14 +2822,14 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
   hKstSig->SetMarkerStyle(20);
 
   TH2D* hDalitzSig = new TH2D("hDalitzSig","hDalitzSig",nBins,DalitzminX,DalitzmaxX,nBins,DalitzminY,DalitzmaxY);
-  hDalitzSig->SetXTitle("M^{2}(K #pi) (GeV)^{2}");
-  hDalitzSig->SetYTitle("M^{2}(J/#psi K) (GeV)^{2}");
-  hDalitzSig->SetZTitle("Entries / (0.03x0.125 (GeV)^{4})");
+  hDalitzSig->SetXTitle("M^{2}(K #pi) (GeV^{2})");
+  hDalitzSig->SetYTitle("M^{2}(J/#psi K) (GeV^{2})");
+  hDalitzSig->SetZTitle("Entries / (0.03x0.125 (GeV^{4}))");
 
   TH2D* hDalitzBkg = new TH2D("hDalitzBkg","hDalitzBkg",nBins,DalitzminX,DalitzmaxX,nBins,DalitzminY,DalitzmaxY);
-  hDalitzBkg->SetXTitle("M^{2}(K #pi) (GeV)^{2}");
-  hDalitzBkg->SetYTitle("M^{2}(J/#psi K) (GeV)^{2}");
-  hDalitzBkg->SetZTitle("Entries / (0.03x0.125 (GeV)^{4})");
+  hDalitzBkg->SetXTitle("M^{2}(K #pi) (GeV^{2})");
+  hDalitzBkg->SetYTitle("M^{2}(J/#psi K) (GeV^{2})");
+  hDalitzBkg->SetZTitle("Entries / (0.03x0.125 (GeV^{4}))");
 
   for (int entry = 0; entry < nEntries; entry++)
     {
@@ -3294,7 +3294,7 @@ void MakePvaluePlot (string toyMCfileName, int specBin, string PlotType)
   c2->cd();
   TH1D* pval = new TH1D("pval","pval",q2Bins.size()-1,q2Bins_);
   pval->SetMarkerStyle(20);
-  pval->SetXTitle("q^{2} (GeV)^{2}");
+  pval->SetXTitle("q^{2} (GeV^{2})");
   pval->SetYTitle("p-value");
   pval->SetMinimum(0.0);
   pval->SetMaximum(1.05);

@@ -297,17 +297,20 @@ RooArgSet vecConstr;
 
 bool CheckGoodFit (RooFitResult* fitResult, TPaveText* paveText = NULL)
 {
-  if ((fitResult->covQual() == 3) && (fitResult->status() == 0))
+  if (fitResult != NULL)
     {
-      if (paveText != NULL) paveText->AddText("Fit status: GOOD");
-      return true;
+      if ((fitResult->covQual() == 3) && (fitResult->status() == 0))
+	{
+	  if (paveText != NULL) paveText->AddText("Fit status: GOOD");
+	  return true;
+	}
+      else
+	{
+	  if (paveText != NULL) paveText->AddText("Fit status: BAD");
+	  return false;
+	}
     }
-  else
-    {
-      if (paveText != NULL) paveText->AddText("Fit status: BAD");
-      return false;
-    }
-  
+
   return false;
 }
 
@@ -1233,150 +1236,153 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
   RooAbsReal* NLL;
   double signalSigma  = 0.0;
   double signalSigmaE = 0.0;
-  double NLLvalue;
+  double NLLvalue = NULL;
 
-  fileFitResults << "Covariance quality (3=ok): " << fitResult->covQual() << endl;
-  fileFitResults << "Fit status (0=ok): " << fitResult->status() << endl;
-  fileFitResults << "Fit EDM: " << fitResult->edm() << endl;
-  fileFitResults << "FCN(mPDG(B0),ang=0): " << (*TotalPDF)->getVal() << endl;
-  if (ApplyConstr == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
-  else                     NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
-  NLLvalue = NLL->getVal();
-  delete NLL;
-  fileFitResults << "NLL: " << NLLvalue << endl;
-
-
-  if (GetVar(*TotalPDF,"fracMassS") != NULL)
+  if (fitResult != NULL)
     {
-      signalSigma  = sqrt((*TotalPDF)->getVariables()->getRealValue("fracMassS") * pow((*TotalPDF)->getVariables()->getRealValue("sigmaS1"),2.) +
-			  (1.-(*TotalPDF)->getVariables()->getRealValue("fracMassS")) * pow((*TotalPDF)->getVariables()->getRealValue("sigmaS2"),2.));
-      signalSigmaE = 1./(2.*signalSigma) * sqrt( pow((pow((*TotalPDF)->getVariables()->getRealValue("sigmaS1"),2.)-pow((*TotalPDF)->getVariables()->getRealValue("sigmaS2"),2.)) * GetVar(*TotalPDF,"fracMassS")->getError(),2.) +
-						 pow(2.*(*TotalPDF)->getVariables()->getRealValue("fracMassS") * (*TotalPDF)->getVariables()->getRealValue("sigmaS1")*GetVar(*TotalPDF,"sigmaS1")->getError(),2.) +
-						 pow(2.*(1.-(*TotalPDF)->getVariables()->getRealValue("fracMassS")) * (*TotalPDF)->getVariables()->getRealValue("sigmaS2")*GetVar(*TotalPDF,"sigmaS2")->getError(),2.) );
-    }
-  else if (GetVar(*TotalPDF,"sigmaS1") != NULL)
-    {
-      signalSigma  = (*TotalPDF)->getVariables()->getRealValue("sigmaS1");
-      signalSigmaE = GetVar(*TotalPDF,"sigmaS1")->getError();
-    }
+      fileFitResults << "Covariance quality (3=ok): " << fitResult->covQual() << endl;
+      fileFitResults << "Fit status (0=ok): " << fitResult->status() << endl;
+      fileFitResults << "Fit EDM: " << fitResult->edm() << endl;
+      fileFitResults << "FCN(mPDG(B0),ang=0): " << (*TotalPDF)->getVal() << endl;
+      if (ApplyConstr == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
+      else                     NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
+      NLLvalue = NLL->getVal();
+      delete NLL;
+      fileFitResults << "NLL: " << NLLvalue << endl;
+
+
+      if (GetVar(*TotalPDF,"fracMassS") != NULL)
+	{
+	  signalSigma  = sqrt((*TotalPDF)->getVariables()->getRealValue("fracMassS") * pow((*TotalPDF)->getVariables()->getRealValue("sigmaS1"),2.) +
+			      (1.-(*TotalPDF)->getVariables()->getRealValue("fracMassS")) * pow((*TotalPDF)->getVariables()->getRealValue("sigmaS2"),2.));
+	  signalSigmaE = 1./(2.*signalSigma) * sqrt( pow((pow((*TotalPDF)->getVariables()->getRealValue("sigmaS1"),2.)-pow((*TotalPDF)->getVariables()->getRealValue("sigmaS2"),2.)) * GetVar(*TotalPDF,"fracMassS")->getError(),2.) +
+						     pow(2.*(*TotalPDF)->getVariables()->getRealValue("fracMassS") * (*TotalPDF)->getVariables()->getRealValue("sigmaS1")*GetVar(*TotalPDF,"sigmaS1")->getError(),2.) +
+						     pow(2.*(1.-(*TotalPDF)->getVariables()->getRealValue("fracMassS")) * (*TotalPDF)->getVariables()->getRealValue("sigmaS2")*GetVar(*TotalPDF,"sigmaS2")->getError(),2.) );
+	}
+      else if (GetVar(*TotalPDF,"sigmaS1") != NULL)
+	{
+	  signalSigma  = (*TotalPDF)->getVariables()->getRealValue("sigmaS1");
+	  signalSigmaE = GetVar(*TotalPDF,"sigmaS1")->getError();
+	}
   
-  if (GetVar(*TotalPDF,"meanS") != NULL)
-    {
-      fileFitResults << "Mean: " << GetVar(*TotalPDF,"meanS")->getVal() << " +/- " << GetVar(*TotalPDF,"meanS")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"meanS")->getErrorHi() << "/" << GetVar(*TotalPDF,"meanS")->getErrorLo() << ")" << endl;
-    }
-  if (GetVar(*TotalPDF,"sigmaS1") != NULL)
-    {
-      fileFitResults << "Sigma-1: " << GetVar(*TotalPDF,"sigmaS1")->getVal() << " +/- " << GetVar(*TotalPDF,"sigmaS1")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"sigmaS1")->getErrorHi() << "/" << GetVar(*TotalPDF,"sigmaS1")->getErrorLo() << ")" << endl;
-    }
-  if (GetVar(*TotalPDF,"sigmaS2") != NULL)
-    {
-      fileFitResults << "Sigma-2: " << GetVar(*TotalPDF,"sigmaS2")->getVal() << " +/- " << GetVar(*TotalPDF,"sigmaS2")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"sigmaS2")->getErrorHi() << "/" << GetVar(*TotalPDF,"sigmaS2")->getErrorLo() << ")" << endl;
-      fileFitResults << "Fraction: " << GetVar(*TotalPDF,"fracMassS")->getVal() << " +/- " << GetVar(*TotalPDF,"fracMassS")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"fracMassS")->getErrorHi() << "/" << GetVar(*TotalPDF,"fracMassS")->getErrorLo() << ")" << endl;
-    }
-  if (GetVar(*TotalPDF,"sigmaS1") != NULL) fileFitResults << "< Sigma >: " << signalSigma << " +/- " << signalSigmaE << endl;
-  if (GetVar(*TotalPDF,"nSig") != NULL)
-    {
-      fileFitResults << "Signal yield: " << GetVar(*TotalPDF,"nSig")->getVal() << " +/- " << GetVar(*TotalPDF,"nSig")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"nSig")->getErrorHi() << "/" << GetVar(*TotalPDF,"nSig")->getErrorLo() << ")" << endl;
-    }
+      if (GetVar(*TotalPDF,"meanS") != NULL)
+	{
+	  fileFitResults << "Mean: " << GetVar(*TotalPDF,"meanS")->getVal() << " +/- " << GetVar(*TotalPDF,"meanS")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"meanS")->getErrorHi() << "/" << GetVar(*TotalPDF,"meanS")->getErrorLo() << ")" << endl;
+	}
+      if (GetVar(*TotalPDF,"sigmaS1") != NULL)
+	{
+	  fileFitResults << "Sigma-1: " << GetVar(*TotalPDF,"sigmaS1")->getVal() << " +/- " << GetVar(*TotalPDF,"sigmaS1")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"sigmaS1")->getErrorHi() << "/" << GetVar(*TotalPDF,"sigmaS1")->getErrorLo() << ")" << endl;
+	}
+      if (GetVar(*TotalPDF,"sigmaS2") != NULL)
+	{
+	  fileFitResults << "Sigma-2: " << GetVar(*TotalPDF,"sigmaS2")->getVal() << " +/- " << GetVar(*TotalPDF,"sigmaS2")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"sigmaS2")->getErrorHi() << "/" << GetVar(*TotalPDF,"sigmaS2")->getErrorLo() << ")" << endl;
+	  fileFitResults << "Fraction: " << GetVar(*TotalPDF,"fracMassS")->getVal() << " +/- " << GetVar(*TotalPDF,"fracMassS")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"fracMassS")->getErrorHi() << "/" << GetVar(*TotalPDF,"fracMassS")->getErrorLo() << ")" << endl;
+	}
+      if (GetVar(*TotalPDF,"sigmaS1") != NULL) fileFitResults << "< Sigma >: " << signalSigma << " +/- " << signalSigmaE << endl;
+      if (GetVar(*TotalPDF,"nSig") != NULL)
+	{
+	  fileFitResults << "Signal yield: " << GetVar(*TotalPDF,"nSig")->getVal() << " +/- " << GetVar(*TotalPDF,"nSig")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"nSig")->getErrorHi() << "/" << GetVar(*TotalPDF,"nSig")->getErrorLo() << ")" << endl;
+	}
       
 
-  if (GetVar(*TotalPDF,"tau1") != NULL)
-    {
-      fileFitResults << "Background mass tau-1: " << GetVar(*TotalPDF,"tau1")->getVal() << " +/- " << tau1->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"tau1")->getErrorHi() << "/" << GetVar(*TotalPDF,"tau1")->getErrorLo() << ")" << endl;
-    }
-  if (GetVar(*TotalPDF,"tau2") != NULL)
-    {
-      fileFitResults << "Background mass tau-2: " << GetVar(*TotalPDF,"tau2")->getVal() << " +/- " << GetVar(*TotalPDF,"tau2")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"tau2")->getErrorHi() << "/" << GetVar(*TotalPDF,"tau2")->getErrorLo() << ")" << endl;
-      fileFitResults << "Fraction: " << GetVar(*TotalPDF,"fracMassBExp")->getVal() << " +/- " << GetVar(*TotalPDF,"fracMassBExp")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"fracMassBExp")->getErrorHi() << "/" << GetVar(*TotalPDF,"fracMassBExp")->getErrorLo() << ")" << endl;
-    }
-  if (GetVar(*TotalPDF,"nBkgComb") != NULL)
-    {
-      fileFitResults << "Comb. bkg. yield: " << GetVar(*TotalPDF,"nBkgComb")->getVal() << " +/- " << GetVar(*TotalPDF,"nBkgComb")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"nBkgComb")->getErrorHi() << "/" << GetVar(*TotalPDF,"nBkgComb")->getErrorLo() << ")" << endl;
-    }
+      if (GetVar(*TotalPDF,"tau1") != NULL)
+	{
+	  fileFitResults << "Background mass tau-1: " << GetVar(*TotalPDF,"tau1")->getVal() << " +/- " << tau1->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"tau1")->getErrorHi() << "/" << GetVar(*TotalPDF,"tau1")->getErrorLo() << ")" << endl;
+	}
+      if (GetVar(*TotalPDF,"tau2") != NULL)
+	{
+	  fileFitResults << "Background mass tau-2: " << GetVar(*TotalPDF,"tau2")->getVal() << " +/- " << GetVar(*TotalPDF,"tau2")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"tau2")->getErrorHi() << "/" << GetVar(*TotalPDF,"tau2")->getErrorLo() << ")" << endl;
+	  fileFitResults << "Fraction: " << GetVar(*TotalPDF,"fracMassBExp")->getVal() << " +/- " << GetVar(*TotalPDF,"fracMassBExp")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"fracMassBExp")->getErrorHi() << "/" << GetVar(*TotalPDF,"fracMassBExp")->getErrorLo() << ")" << endl;
+	}
+      if (GetVar(*TotalPDF,"nBkgComb") != NULL)
+	{
+	  fileFitResults << "Comb. bkg. yield: " << GetVar(*TotalPDF,"nBkgComb")->getVal() << " +/- " << GetVar(*TotalPDF,"nBkgComb")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"nBkgComb")->getErrorHi() << "/" << GetVar(*TotalPDF,"nBkgComb")->getErrorLo() << ")" << endl;
+	}
 
 
-  if (GetVar(*TotalPDF,"meanR1") != NULL)
-    {
-      fileFitResults << "Background right-peak mean-1: " << GetVar(*TotalPDF,"meanR1")->getVal() << " +/- " << GetVar(*TotalPDF,"meanR1")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"meanR1")->getErrorHi() << "/" << GetVar(*TotalPDF,"meanR1")->getErrorLo() << ")" << endl;
-      fileFitResults << "Background right-peak sigma-1: " << GetVar(*TotalPDF,"sigmaR1")->getVal() << " +/- " << GetVar(*TotalPDF,"sigmaR1")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"sigmaR1")->getErrorHi() << "/" << GetVar(*TotalPDF,"sigmaR1")->getErrorLo() << ")" << endl;
-    }
-  if (GetVar(*TotalPDF,"meanR2") != NULL)
-    {
-      fileFitResults << "Background right-peak mean-2: " << GetVar(*TotalPDF,"meanR2")->getVal() << " +/- " << GetVar(*TotalPDF,"meanR2")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"meanR2")->getErrorHi() << "/" << GetVar(*TotalPDF,"meanR2")->getErrorLo() << ")" << endl;
-      fileFitResults << "Background right-peak sigma-2: " << GetVar(*TotalPDF,"sigmaR2")->getVal() << " +/- " << GetVar(*TotalPDF,"sigmaR2")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"sigmaR2")->getErrorHi() << "/" << GetVar(*TotalPDF,"sigmaR2")->getErrorLo() << ")" << endl;
-      fileFitResults << "Fraction: " << GetVar(*TotalPDF,"fracMassBRPeak")->getVal() << " +/- " << GetVar(*TotalPDF,"fracMassBRPeak")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"fracMassBRPeak")->getErrorHi() << "/" << GetVar(*TotalPDF,"fracMassBRPeak")->getErrorLo() << ")" << endl;
-    }
-  if (GetVar(*TotalPDF,"meanL1") != NULL)
-    {
-      fileFitResults << "Background left-peak mean-1: " << GetVar(*TotalPDF,"meanL1")->getVal() << " +/- " << GetVar(*TotalPDF,"meanL1")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"meanL1")->getErrorHi() << "/" << GetVar(*TotalPDF,"meanL1")->getErrorLo() << ")" << endl;
-      fileFitResults << "Background left-peak sigma-1: " << GetVar(*TotalPDF,"sigmaL1")->getVal() << " +/- " << GetVar(*TotalPDF,"sigmaL1")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"sigmaL1")->getErrorHi() << "/" << GetVar(*TotalPDF,"sigmaL1")->getErrorLo() << ")" << endl;
-    }
-  if (GetVar(*TotalPDF,"meanL2") != NULL)
-    {
-      fileFitResults << "Background left-peak mean-2: " << GetVar(*TotalPDF,"meanL2")->getVal() << " +/- " << GetVar(*TotalPDF,"meanL2")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"meanL2")->getErrorHi() << "/" << GetVar(*TotalPDF,"meanL2")->getErrorLo() << ")" << endl;
-      fileFitResults << "Background left-peak sigma-2: " << GetVar(*TotalPDF,"sigmaL2")->getVal() << " +/- " << GetVar(*TotalPDF,"sigmaL2")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"sigmaL2")->getErrorHi() << "/" << GetVar(*TotalPDF,"sigmaL2")->getErrorLo() << ")" << endl;
-      fileFitResults << "Fraction: " << GetVar(*TotalPDF,"fracMassBLPeak")->getVal() << " +/- " << GetVar(*TotalPDF,"fracMassBLPeak")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"fracMassBLPeak")->getErrorHi() << "/" << GetVar(*TotalPDF,"fracMassBLPeak")->getErrorLo() << ")" << endl;
-    } 
-  if (GetVar(*TotalPDF,"fracMassBPeak") != NULL)
-    {
-      fileFitResults << "Fraction right-left peak: " << GetVar(*TotalPDF,"fracMassBPeak")->getVal() << " +/- " << GetVar(*TotalPDF,"fracMassBPeak")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"fracMassBPeak")->getErrorHi() << "/" << GetVar(*TotalPDF,"fracMassBPeak")->getErrorLo() << ")" << endl;
-    }
-  if (GetVar(*TotalPDF,"nBkgPeak") != NULL)
-    {
-      fileFitResults << "Peaking bkg. yield: " << GetVar(*TotalPDF,"nBkgPeak")->getVal() << " +/- " << GetVar(*TotalPDF,"nBkgPeak")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"nBkgPeak")->getErrorHi() << "/" << GetVar(*TotalPDF,"nBkgPeak")->getErrorLo() << ")" << endl;
-    }
+      if (GetVar(*TotalPDF,"meanR1") != NULL)
+	{
+	  fileFitResults << "Background right-peak mean-1: " << GetVar(*TotalPDF,"meanR1")->getVal() << " +/- " << GetVar(*TotalPDF,"meanR1")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"meanR1")->getErrorHi() << "/" << GetVar(*TotalPDF,"meanR1")->getErrorLo() << ")" << endl;
+	  fileFitResults << "Background right-peak sigma-1: " << GetVar(*TotalPDF,"sigmaR1")->getVal() << " +/- " << GetVar(*TotalPDF,"sigmaR1")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"sigmaR1")->getErrorHi() << "/" << GetVar(*TotalPDF,"sigmaR1")->getErrorLo() << ")" << endl;
+	}
+      if (GetVar(*TotalPDF,"meanR2") != NULL)
+	{
+	  fileFitResults << "Background right-peak mean-2: " << GetVar(*TotalPDF,"meanR2")->getVal() << " +/- " << GetVar(*TotalPDF,"meanR2")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"meanR2")->getErrorHi() << "/" << GetVar(*TotalPDF,"meanR2")->getErrorLo() << ")" << endl;
+	  fileFitResults << "Background right-peak sigma-2: " << GetVar(*TotalPDF,"sigmaR2")->getVal() << " +/- " << GetVar(*TotalPDF,"sigmaR2")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"sigmaR2")->getErrorHi() << "/" << GetVar(*TotalPDF,"sigmaR2")->getErrorLo() << ")" << endl;
+	  fileFitResults << "Fraction: " << GetVar(*TotalPDF,"fracMassBRPeak")->getVal() << " +/- " << GetVar(*TotalPDF,"fracMassBRPeak")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"fracMassBRPeak")->getErrorHi() << "/" << GetVar(*TotalPDF,"fracMassBRPeak")->getErrorLo() << ")" << endl;
+	}
+      if (GetVar(*TotalPDF,"meanL1") != NULL)
+	{
+	  fileFitResults << "Background left-peak mean-1: " << GetVar(*TotalPDF,"meanL1")->getVal() << " +/- " << GetVar(*TotalPDF,"meanL1")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"meanL1")->getErrorHi() << "/" << GetVar(*TotalPDF,"meanL1")->getErrorLo() << ")" << endl;
+	  fileFitResults << "Background left-peak sigma-1: " << GetVar(*TotalPDF,"sigmaL1")->getVal() << " +/- " << GetVar(*TotalPDF,"sigmaL1")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"sigmaL1")->getErrorHi() << "/" << GetVar(*TotalPDF,"sigmaL1")->getErrorLo() << ")" << endl;
+	}
+      if (GetVar(*TotalPDF,"meanL2") != NULL)
+	{
+	  fileFitResults << "Background left-peak mean-2: " << GetVar(*TotalPDF,"meanL2")->getVal() << " +/- " << GetVar(*TotalPDF,"meanL2")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"meanL2")->getErrorHi() << "/" << GetVar(*TotalPDF,"meanL2")->getErrorLo() << ")" << endl;
+	  fileFitResults << "Background left-peak sigma-2: " << GetVar(*TotalPDF,"sigmaL2")->getVal() << " +/- " << GetVar(*TotalPDF,"sigmaL2")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"sigmaL2")->getErrorHi() << "/" << GetVar(*TotalPDF,"sigmaL2")->getErrorLo() << ")" << endl;
+	  fileFitResults << "Fraction: " << GetVar(*TotalPDF,"fracMassBLPeak")->getVal() << " +/- " << GetVar(*TotalPDF,"fracMassBLPeak")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"fracMassBLPeak")->getErrorHi() << "/" << GetVar(*TotalPDF,"fracMassBLPeak")->getErrorLo() << ")" << endl;
+	} 
+      if (GetVar(*TotalPDF,"fracMassBPeak") != NULL)
+	{
+	  fileFitResults << "Fraction right-left peak: " << GetVar(*TotalPDF,"fracMassBPeak")->getVal() << " +/- " << GetVar(*TotalPDF,"fracMassBPeak")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"fracMassBPeak")->getErrorHi() << "/" << GetVar(*TotalPDF,"fracMassBPeak")->getErrorLo() << ")" << endl;
+	}
+      if (GetVar(*TotalPDF,"nBkgPeak") != NULL)
+	{
+	  fileFitResults << "Peaking bkg. yield: " << GetVar(*TotalPDF,"nBkgPeak")->getVal() << " +/- " << GetVar(*TotalPDF,"nBkgPeak")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"nBkgPeak")->getErrorHi() << "/" << GetVar(*TotalPDF,"nBkgPeak")->getErrorLo() << ")" << endl;
+	}
 
 
-  if (GetVar(*TotalPDF,"FlS") != NULL)
-    {
-      fileFitResults << "Fl: " << GetVar(*TotalPDF,"FlS")->getVal() << " +/- " << GetVar(*TotalPDF,"FlS")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"FlS")->getErrorHi() << "/" << GetVar(*TotalPDF,"FlS")->getErrorLo() << ")" << endl;
-    }
-  if (GetVar(*TotalPDF,"AfbS") != NULL)
-    {
-      fileFitResults << "Afb: " << GetVar(*TotalPDF,"AfbS")->getVal() << " +/- ";
-      fileFitResults << GetVar(*TotalPDF,"AfbS")->getError() << " (" << GetVar(*TotalPDF,"AfbS")->getErrorHi() << "/" << GetVar(*TotalPDF,"AfbS")->getErrorLo() << ")" << endl;
-    }
-  if (GetVar(*TotalPDF,"At2S") != NULL)
-    {
-      fileFitResults << "At2: " << GetVar(*TotalPDF,"At2S")->getVal() << " +/- " << GetVar(*TotalPDF,"At2S")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"At2S")->getErrorHi() << "/" <<  GetVar(*TotalPDF,"At2S")->getErrorLo() << ")" << endl;
-    }
-  if (GetVar(*TotalPDF,"AtimS") != NULL)
-    {
-      fileFitResults << "Atim: " << GetVar(*TotalPDF,"AtimS")->getVal() << " +/- " << GetVar(*TotalPDF,"AtimS")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"AtimS")->getErrorHi() << "/" <<  GetVar(*TotalPDF,"AtimS")->getErrorLo() << ")" << endl;
-    }
-  if (GetVar(*TotalPDF,"FsS") != NULL)
-    {
-      fileFitResults << "Fs: " << GetVar(*TotalPDF,"FsS")->getVal() << " +/- " << GetVar(*TotalPDF,"FsS")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"FsS")->getErrorHi() << "/" <<  GetVar(*TotalPDF,"FsS")->getErrorLo() << ")" << endl;
-    }
-  if (GetVar(*TotalPDF,"AsS") != NULL)
-    {
-      fileFitResults << "As: " << GetVar(*TotalPDF,"AsS")->getVal() << " +/- " << GetVar(*TotalPDF,"AsS")->getError();
-      fileFitResults << " (" << GetVar(*TotalPDF,"AsS")->getErrorHi() << "/" <<  GetVar(*TotalPDF,"AsS")->getErrorLo() << ")" << endl;
+      if (GetVar(*TotalPDF,"FlS") != NULL)
+	{
+	  fileFitResults << "Fl: " << GetVar(*TotalPDF,"FlS")->getVal() << " +/- " << GetVar(*TotalPDF,"FlS")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"FlS")->getErrorHi() << "/" << GetVar(*TotalPDF,"FlS")->getErrorLo() << ")" << endl;
+	}
+      if (GetVar(*TotalPDF,"AfbS") != NULL)
+	{
+	  fileFitResults << "Afb: " << GetVar(*TotalPDF,"AfbS")->getVal() << " +/- ";
+	  fileFitResults << GetVar(*TotalPDF,"AfbS")->getError() << " (" << GetVar(*TotalPDF,"AfbS")->getErrorHi() << "/" << GetVar(*TotalPDF,"AfbS")->getErrorLo() << ")" << endl;
+	}
+      if (GetVar(*TotalPDF,"At2S") != NULL)
+	{
+	  fileFitResults << "At2: " << GetVar(*TotalPDF,"At2S")->getVal() << " +/- " << GetVar(*TotalPDF,"At2S")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"At2S")->getErrorHi() << "/" <<  GetVar(*TotalPDF,"At2S")->getErrorLo() << ")" << endl;
+	}
+      if (GetVar(*TotalPDF,"AtimS") != NULL)
+	{
+	  fileFitResults << "Atim: " << GetVar(*TotalPDF,"AtimS")->getVal() << " +/- " << GetVar(*TotalPDF,"AtimS")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"AtimS")->getErrorHi() << "/" <<  GetVar(*TotalPDF,"AtimS")->getErrorLo() << ")" << endl;
+	}
+      if (GetVar(*TotalPDF,"FsS") != NULL)
+	{
+	  fileFitResults << "Fs: " << GetVar(*TotalPDF,"FsS")->getVal() << " +/- " << GetVar(*TotalPDF,"FsS")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"FsS")->getErrorHi() << "/" <<  GetVar(*TotalPDF,"FsS")->getErrorLo() << ")" << endl;
+	}
+      if (GetVar(*TotalPDF,"AsS") != NULL)
+	{
+	  fileFitResults << "As: " << GetVar(*TotalPDF,"AsS")->getVal() << " +/- " << GetVar(*TotalPDF,"AsS")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"AsS")->getErrorHi() << "/" <<  GetVar(*TotalPDF,"AsS")->getErrorLo() << ")" << endl;
+	}
     }
 
 
@@ -3016,7 +3022,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   // # Set p.d.f independent variables to known point #
   // ##################################################
   if (GetVar(*TotalPDF,x->getPlotLabel()) != NULL) (*TotalPDF)->getVariables()->setRealValue(x->getPlotLabel(),Utility->B0Mass);
-  fitResult->Print("v");
+  if (fitResult != NULL) fitResult->Print("v");
   // fitTo parameters:
   // - NumCPU(n)
   // - Hesse(true) OR Minos(true)
@@ -3286,7 +3292,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // # Make external text #
       // ######################
       extText[i] = new TPaveText(0.72,0.53,0.97,0.63,"NDC");
-      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q^{2}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," (GeV)^{2}"));
+      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q^{2}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," (GeV^{2})"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
       extText[i]->SetFillStyle(0);
@@ -4093,7 +4099,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	  // ##################################################
 	  if (GetVar(*TotalPDF,x->getPlotLabel()) != NULL) (*TotalPDF)->getVariables()->setRealValue(x->getPlotLabel(),Utility->B0Mass);
 	  if (GetVar(*TotalPDF,y->getPlotLabel()) != NULL) (*TotalPDF)->getVariables()->setRealValue(y->getPlotLabel(),0.0);
-	  fitResult->Print("v");
+	  if (fitResult != NULL) fitResult->Print("v");
 
 
 	  // ########################
@@ -4199,7 +4205,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	  // ###################
 	  if (ApplyConstr == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebads),Save(true));
 	  else                     fitResult = TmpPDF->fitTo(*sideBands,Save(true));
-	  fitResult->Print("v");
+	  if (fitResult != NULL) fitResult->Print("v");
 
 
 	  // ####################
@@ -4226,8 +4232,8 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
       // ##################################################
       if (GetVar(*TotalPDF,x->getPlotLabel()) != NULL) (*TotalPDF)->getVariables()->setRealValue(x->getPlotLabel(),Utility->B0Mass);
       if (GetVar(*TotalPDF,y->getPlotLabel()) != NULL) (*TotalPDF)->getVariables()->setRealValue(y->getPlotLabel(),0.0);
-      fitResult->Print("v");
-
+      if (fitResult != NULL) fitResult->Print("v");
+      
 
       if (fitPSIintru != 1)
 	{
@@ -4766,7 +4772,7 @@ void IterativeMassAngleFitq2Bins (RooDataSet* dataSet,
       // # Make external text #
       // ######################
       extText[i] = new TPaveText(0.72,0.53,0.97,0.63,"NDC");
-      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q^{2}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," (GeV)^{2}"));
+      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q^{2}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," (GeV^{2})"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
       extText[i]->SetFillStyle(0);
@@ -5803,7 +5809,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  if (GetVar(*TotalPDF,x->getPlotLabel()) != NULL) (*TotalPDF)->getVariables()->setRealValue(x->getPlotLabel(),Utility->B0Mass);
 	  if (GetVar(*TotalPDF,y->getPlotLabel()) != NULL) (*TotalPDF)->getVariables()->setRealValue(y->getPlotLabel(),0.0);
 	  if (GetVar(*TotalPDF,z->getPlotLabel()) != NULL) (*TotalPDF)->getVariables()->setRealValue(z->getPlotLabel(),0.0);
-	  fitResult->Print("v");
+	  if (fitResult != NULL) fitResult->Print("v");
 
 
 	  // ##########################
@@ -5955,7 +5961,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  // ###################
 	  if (ApplyConstr == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebads),Save(true));
 	  else                     fitResult = TmpPDF->fitTo(*sideBands,Save(true));
-	  fitResult->Print("v");
+	  if (fitResult != NULL) fitResult->Print("v");
 
 	  
 	  // ####################
@@ -5983,7 +5989,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       if (GetVar(*TotalPDF,x->getPlotLabel()) != NULL) (*TotalPDF)->getVariables()->setRealValue(x->getPlotLabel(),Utility->B0Mass);
       if (GetVar(*TotalPDF,y->getPlotLabel()) != NULL) (*TotalPDF)->getVariables()->setRealValue(y->getPlotLabel(),0.0);
       if (GetVar(*TotalPDF,z->getPlotLabel()) != NULL) (*TotalPDF)->getVariables()->setRealValue(z->getPlotLabel(),0.0);
-      fitResult->Print("v");
+      if (fitResult != NULL) fitResult->Print("v");
 
 
       if (fitPSIintru != 1)
@@ -6686,7 +6692,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // # Make external text #
       // ######################
       extText[i] = new TPaveText(0.72,0.53,0.97,0.63,"NDC");
-      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q^{2}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," (GeV)^{2}"));
+      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q^{2}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," (GeV^{2})"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
       extText[i]->SetFillStyle(0);
