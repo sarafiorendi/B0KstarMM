@@ -49,6 +49,20 @@ B0KstMuMuSingleCandTreeContent* NTupleOutSingle;
 B0KstMuMuTreeContent* NTupleOutMulti;
 
 
+// #######################
+// # Function Definition #
+// #######################
+void AddRecoVariables (string option);
+void AddGenVariables (string option);
+template<class T> void AddEvWeightPileup (T* NTupleOut, string InputFileType);
+template<class T> void AddEvWeightB0pT (T* NTupleOut);
+template<class T> void AddEvWeightHadpT (T* NTupleOut, string trkSign);
+template<class T> void AddEvWeightThetaK (B0KstMuMuSingleCandTreeContent* NTupleOut);
+
+
+// ###########################
+// # Function Implementation #
+// ###########################
 void AddRecoVariables (string option)
 {
   bool B0notB0bar = true;

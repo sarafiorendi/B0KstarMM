@@ -295,7 +295,96 @@ RooAbsPdf* TotalPDFRejectPsi;
 RooArgSet vecConstr;
 
 
-bool CheckGoodFit (RooFitResult* fitResult, TPaveText* paveText = NULL)
+// #######################
+// # Function Definition #
+// #######################
+bool CheckGoodFit (RooFitResult* fitResult, TPaveText* paveText = NULL);
+RooRealVar* GetVar (RooAbsPdf* pdf, string varName);
+void SetValueAndErrors (RooAbsPdf* pdf, string varName, double multi, stringstream* myString, double* val, double* errLo, double* errHi);
+string MakeName (RooDataSet* data, int ID);
+void DrawString (double Lumi, RooPlot* myFrame = NULL);
+void PrintVariables (RooArgSet* setVar, string type);
+void ClearVars (RooArgSet* vecConstr);
+bool IsInConstraints (RooArgSet* vecConstr, string varName);
+void AddPoissonConstraint (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
+void AddGaussConstraint (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
+void AddPhysicsConstraint (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
+void BuildMassConstraints (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
+void BuildAngularConstraints (RooArgSet* vecConstr, RooAbsPdf* TotalPDF);
+void BuildPhysicsConstraints (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
+string MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* Vars);
+void DeleteFit (RooAbsPdf* TotalPDF, string DeleteType);
+void ResetCombPolyParam (vector<vector<string>*>* fitParam, vector<double>* q2Bins);
+void ResetAngularParam (vector<vector<string>*>* fitParam, vector<double>* q2Bins);
+double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, RooDataSet* dataSet, RooArgSet* vecConstr);
+void StorePolyResultsInFile (RooAbsPdf** TotalPDF);
+vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr);
+unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vector<vector<string>*>* fitParam);
+void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr, string fileName, unsigned int fitParamIndx, vector<double>* q2Bins, unsigned int q2BinIndx);
+void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2Bins, int specBin, vector<vector<string>*>* fitParam, string fileName);
+void MakeGraphicalScan (RooAbsPdf* TotalPDF, TCanvas* Canv, RooRealVar* x, RooRealVar* y, unsigned int NBins = 25);
+void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x, TCanvas* Canv, bool justPlotMuMuMass, bool justKeepPsi, string plotName);
+void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType);
+void InstantiateMassFit (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, vector<vector<unsigned int>*>* configParam, int parIndx);
+RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned int FitType, vector<vector<unsigned int>*>* configParam, int parIndx, RooArgSet* vecConstr, double* NLLvalue, TPaveText* extText, int ID = 0);
+void IterativeMassFitq2Bins (RooDataSet* dataSet,
+			     bool useEffPDF,
+			     double PsiYield, double PsiYieldErr,
+			     RooRealVar* x, RooRealVar* y, RooRealVar* z,
+			     int specBin,
+			     unsigned int FitType,
+			     vector<TH1D*>* VecHistoMeas,
+			     vector<double>* q2Bins,
+			     vector<vector<unsigned int>*>* configParam, vector<vector<string>*>* fitParam,
+			     vector<TF2*>* effFuncs,
+			     RooArgSet* vecConstr,
+			     unsigned int ID = 0);
+void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned int FitType, unsigned int nToy, vector<vector<unsigned int>*>* configParam, int specBin, vector<vector<string>*>* fitParam, RooArgSet* vecConstr, string fileName);
+void InstantiateMassAngleFit (RooAbsPdf** TotalPDF, bool useEffPDF, RooRealVar* x, RooRealVar* y, string fitName, unsigned int FitType, vector<vector<unsigned int>*>* configParam, vector<vector<string>*>* fitParam, unsigned int parIndx, TF2* effFunc, bool isFirstDataset);
+RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar* x, RooRealVar* y, TCanvas* Canv, unsigned int FitType, vector<vector<unsigned int>*>* configParam, unsigned int parIndx, RooArgSet* vecConstr, double* NLLvalue, TPaveText* extText, int ID = 0);
+void IterativeMassAngleFitq2Bins (RooDataSet* dataSet,
+				  bool useEffPDF,
+				  double PsiYield, double PsiYieldErr,
+				  RooRealVar* x, RooRealVar* y, RooRealVar* z,
+				  int specBin,
+				  unsigned int FitType,
+				  vector<TH1D*>* VecHistoMeas,
+				  vector<double>* q2Bins,
+				  vector<vector<unsigned int>*>* configParam, vector<vector<string>*>* fitParam,
+				  vector<TF2*>* effFuncs,
+				  RooArgSet* vecConstr,
+				  unsigned int ID = 0);
+void MakeMassAngleToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, TCanvas* Canv, unsigned int FitType, unsigned int nToy, vector<vector<unsigned int>*>* configParam, int specBin, vector<vector<string>*>* fitParam, RooArgSet* vecConstr, string fileName);
+void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
+				bool useEffPDF,
+				RooRealVar* x, RooRealVar* y, RooRealVar* z,
+				string fitName, unsigned int FitType,
+				vector<vector<unsigned int>*>* configParam,
+				vector<vector<string>*>* fitParam,
+				unsigned int parIndx,
+				TF2* effFunc,
+				bool isFirstDataset);
+RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar* x, RooRealVar* y, RooRealVar* z, TCanvas* Canv, unsigned int FitType, vector<vector<unsigned int>*>* configParam, unsigned int parIndx, RooArgSet* vecConstr, double* NLLvalue, TPaveText* extText, int ID = 0);
+void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
+				    bool useEffPDF,
+				    double PsiYield, double PsiYieldErr,
+				    RooRealVar* x, RooRealVar* y, RooRealVar* z,
+				    int specBin,
+				    unsigned int FitType,
+				    vector<TH1D*>* VecHistoMeas,
+				    vector<double>* q2Bins,
+				    vector<vector<unsigned int>*>* configParam, vector<vector<string>*>* fitParam,
+				    vector<TF2*>* effFuncs,
+				    RooArgSet* vecConstr,
+				    unsigned int ID = 0);
+void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooRealVar* z, TCanvas* Canv, unsigned int FitType, unsigned int nToy, vector<vector<unsigned int>*>* configParam, int specBin, vector<vector<string>*>* fitParam, RooArgSet* vecConstr, string fileName);
+void CloseAllAndQuit (TApplication* theApp, TFile* NtplFile);
+
+
+// ###########################
+// # Function Implementation #
+// ###########################
+bool CheckGoodFit (RooFitResult* fitResult, TPaveText* paveText)
 {
   if (fitResult != NULL)
     {
@@ -372,7 +461,7 @@ string MakeName (RooDataSet* data, int ID)
 }
 
 
-void DrawString (double Lumi, RooPlot* myFrame = NULL)
+void DrawString (double Lumi, RooPlot* myFrame)
 {
   stringstream myString;
 
@@ -2019,14 +2108,7 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vec
 }
 
 
-void GenerateParameterFile (RooAbsPdf* TotalPDF,
-			    vector<vector<string>*>* fitParam,
-			    vector<vector<unsigned int>*>* configParam,
-			    RooArgSet* vecConstr,			    
-			    string fileName,
-			    unsigned int fitParamIndx,
-			    vector<double>* q2Bins,
-			    unsigned int q2BinIndx)
+void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr, string fileName, unsigned int fitParamIndx, vector<double>* q2Bins, unsigned int q2BinIndx)
 {
   unsigned int NCoeffPolyBKGpeak1;
   unsigned int NCoeffPolyBKGcomb1;
@@ -2126,10 +2208,7 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF,
 }
 
 
-void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar,
-		      vector<double>* q2Bins,
-		      int specBin, vector<vector<string>*>* fitParam,
-		      string fileName)
+void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2Bins, int specBin, vector<vector<string>*>* fitParam, string fileName)
 // ################################################################
 // # Use "MULTYIELD" to rescale the entries of the parameter file #
 // ################################################################
@@ -2227,7 +2306,7 @@ void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar,
 }
 
 
-void MakeGraphicalScan (RooAbsPdf* TotalPDF, TCanvas* Canv, RooRealVar* x, RooRealVar* y, unsigned int NBins = 25)
+void MakeGraphicalScan (RooAbsPdf* TotalPDF, TCanvas* Canv, RooRealVar* x, RooRealVar* y, unsigned int NBins)
 // ###################
 // # x: cos(theta_l) #
 // # y: cos(theta_K) #
@@ -2340,10 +2419,7 @@ void MakeGraphicalScan (RooAbsPdf* TotalPDF, TCanvas* Canv, RooRealVar* x, RooRe
 }
 
 
-void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x,
-		       TCanvas* Canv,
-		       bool justPlotMuMuMass, bool justKeepPsi,
-		       string plotName)
+void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x, TCanvas* Canv, bool justPlotMuMuMass, bool justKeepPsi, string plotName)
 {
   stringstream myString;
   double sigmaJPsi, sigmaJPsiE;
@@ -2988,14 +3064,7 @@ void InstantiateMassFit (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, ve
 }
 
 
-RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar* x,
-			   TCanvas* Canv,
-			   unsigned int FitType,
-			   vector<vector<unsigned int>*>* configParam, int parIndx,
-			   RooArgSet* vecConstr,
-			   double* NLLvalue,
-			   TPaveText* extText,
-			   int ID = 0)
+RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned int FitType, vector<vector<unsigned int>*>* configParam, int parIndx, RooArgSet* vecConstr, double* NLLvalue, TPaveText* extText, int ID)
 {
   // ################################
   // # Read configuration variables #
@@ -3208,7 +3277,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 			     vector<vector<unsigned int>*>* configParam, vector<vector<string>*>* fitParam,
 			     vector<TF2*>* effFuncs,
 			     RooArgSet* vecConstr,
-			     unsigned int ID = 0)
+			     unsigned int ID)
 {
   double value, errLo, errHi;
 
@@ -3422,13 +3491,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 }
 
 
-void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x,
-		  TCanvas* Canv,
-		  unsigned int FitType,
-		  unsigned int nToy,
-		  vector<vector<unsigned int>*>* configParam, int specBin, vector<vector<string>*>* fitParam,
-		  RooArgSet* vecConstr,
-		  string fileName)
+void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned int FitType, unsigned int nToy, vector<vector<unsigned int>*>* configParam, int specBin, vector<vector<string>*>* fitParam, RooArgSet* vecConstr, string fileName)
 {
   unsigned int nEntryToy;
   stringstream myString;
@@ -3855,15 +3918,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x,
 // ==================
 
 
-void InstantiateMassAngleFit (RooAbsPdf** TotalPDF,
-			      bool useEffPDF,
-			      RooRealVar* x, RooRealVar* y,
-			      string fitName, unsigned int FitType,
-			      vector<vector<unsigned int>*>* configParam,
-			      vector<vector<string>*>* fitParam,
-			      unsigned int parIndx,
-			      TF2* effFunc,
-			      bool isFirstDataset)
+void InstantiateMassAngleFit (RooAbsPdf** TotalPDF, bool useEffPDF, RooRealVar* x, RooRealVar* y, string fitName, unsigned int FitType, vector<vector<unsigned int>*>* configParam, vector<vector<string>*>* fitParam, unsigned int parIndx, TF2* effFunc, bool isFirstDataset)
 // #########################################
 // # x: mass                               #
 // # y: angle cos(theta_l) OR cos(theta_K) #
@@ -4049,14 +4104,7 @@ void InstantiateMassAngleFit (RooAbsPdf** TotalPDF,
 }
 
 
-RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar* x, RooRealVar* y,
-				TCanvas* Canv,
-				unsigned int FitType,
-				vector<vector<unsigned int>*>* configParam, unsigned int parIndx,
-				RooArgSet* vecConstr,
-				double* NLLvalue,
-				TPaveText* extText,
-				int ID = 0)
+RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar* x, RooRealVar* y, TCanvas* Canv, unsigned int FitType, vector<vector<unsigned int>*>* configParam, unsigned int parIndx, RooArgSet* vecConstr, double* NLLvalue, TPaveText* extText, int ID)
 {
   // ################################
   // # Read configuration variables #
@@ -4672,7 +4720,7 @@ void IterativeMassAngleFitq2Bins (RooDataSet* dataSet,
 				  vector<vector<unsigned int>*>* configParam, vector<vector<string>*>* fitParam,
 				  vector<TF2*>* effFuncs,
 				  RooArgSet* vecConstr,
-				  unsigned int ID = 0)
+				  unsigned int ID)
 {
   double value, errLo, errHi;
 
@@ -4949,13 +4997,7 @@ void IterativeMassAngleFitq2Bins (RooDataSet* dataSet,
 }
 
 
-void MakeMassAngleToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y,
-		       TCanvas* Canv,
-		       unsigned int FitType,
-		       unsigned int nToy,
-		       vector<vector<unsigned int>*>* configParam, int specBin, vector<vector<string>*>* fitParam,
-		       RooArgSet* vecConstr,
-		       string fileName)
+void MakeMassAngleToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, TCanvas* Canv, unsigned int FitType, unsigned int nToy, vector<vector<unsigned int>*>* configParam, int specBin, vector<vector<string>*>* fitParam, RooArgSet* vecConstr, string fileName)
 {
   unsigned int nEntryToy;
   stringstream myString;
@@ -5758,14 +5800,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
 }
 
 
-RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar* x, RooRealVar* y, RooRealVar* z,
-				  TCanvas* Canv,
-				  unsigned int FitType,
-				  vector<vector<unsigned int>*>* configParam, unsigned int parIndx,
-				  RooArgSet* vecConstr,
-				  double* NLLvalue,
-				  TPaveText* extText,
-				  int ID = 0)
+RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar* x, RooRealVar* y, RooRealVar* z, TCanvas* Canv, unsigned int FitType, vector<vector<unsigned int>*>* configParam, unsigned int parIndx, RooArgSet* vecConstr, double* NLLvalue, TPaveText* extText, int ID)
 {
   // ################################
   // # Read configuration variables #
@@ -6606,7 +6641,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 				    vector<vector<unsigned int>*>* configParam, vector<vector<string>*>* fitParam,
 				    vector<TF2*>* effFuncs,
 				    RooArgSet* vecConstr,
-				    unsigned int ID = 0)
+				    unsigned int ID)
 {
   double value, errLo, errHi;
 
@@ -6825,13 +6860,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 }
 
 
-void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooRealVar* z,
-			 TCanvas* Canv,
-			 unsigned int FitType,
-			 unsigned int nToy,
-			 vector<vector<unsigned int>*>* configParam, int specBin, vector<vector<string>*>* fitParam,
-			 RooArgSet* vecConstr,
-			 string fileName)
+void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooRealVar* z, TCanvas* Canv, unsigned int FitType, unsigned int nToy, vector<vector<unsigned int>*>* configParam, int specBin, vector<vector<string>*>* fitParam, RooArgSet* vecConstr, string fileName)
 {
   unsigned int nEntryToy;
   stringstream myString;

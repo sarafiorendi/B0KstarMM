@@ -114,6 +114,24 @@ vector<double> phiBins;
 Utils::effStruct myEff;
 
 
+// #######################
+// # Function Definition #
+// #######################
+void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, double* Vector, double* VectorErr2Pois, double* VectorErr2Weig, unsigned int type,
+			vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins);
+void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff);
+void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
+		       string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool saveHistos, int specBin = -1);
+void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
+			Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut);
+void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
+			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
+void TestEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool saveHistos);
+
+
+// ###########################
+// # Function Implementation #
+// ###########################
 void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, double* Vector, double* VectorErr2Pois, double* VectorErr2Weig, unsigned int type,
 			vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins)
 // ##########################################################
@@ -581,7 +599,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 
 
 void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-		       string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool saveHistos, int specBin = -1)
+		       string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool saveHistos, int specBin)
 {
   // #################
   // Local variables #
@@ -903,7 +921,8 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
 }
 
 
-void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut)
+void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
+			Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut)
 {
   // #################
   // Local variables #
@@ -1081,7 +1100,8 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 }
 
 
-void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut)
+void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
+			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut)
 {
   // #################
   // Local variables #

@@ -47,6 +47,15 @@ vector<double> cosThetaLBins;
 vector<double> phiBins;
 
 
+// #######################
+// # Function Definition #
+// #######################
+void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFile, string DataFile);
+
+
+// ###########################
+// # Function Implementation #
+// ###########################
 void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFile, string DataFile)
 // #####################################
 // # scanType = 0 = "CL"               #

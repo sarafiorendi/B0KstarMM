@@ -50,6 +50,16 @@ B0KstMuMuTreeContent* NTupleIn;
 B0KstMuMuSingleCandTreeContent* NTupleOut;
 
 
+// #######################
+// # Function Definition #
+// #######################
+void SelectBestCand ();
+void BestCandPerformance ();
+
+
+// ###########################
+// # Function Implementation #
+// ###########################
 void SelectBestCand ()
 {
   unsigned int countCands;

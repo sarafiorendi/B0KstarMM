@@ -64,6 +64,28 @@ using namespace std;
 Utils* Utility;
 
 
+// #######################
+// # Function Definition #
+// #######################
+void DrawString (double Lumi);
+void MakeComparisonDataMC (unsigned int plotType);
+TCutG* DrawExclusion (double Xlow, double Xhigh, double Ylow, double Yhigh, string cutName, unsigned int fillStyle, unsigned int color);
+TGraphAsymmErrors* ReadFromASCII (string fileName, unsigned int PlotType, vector<double>* q2Bins, vector<double>* vxs, vector<double>* vys, vector<double>* vxel, vector<double>* vxeh, vector<double>* vyel, vector<double>* vyeh);
+void CheckPhysicsRegion ();
+void MakePhysicsPlots (unsigned int PlotType);
+void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName, double NLLinterval, double NLLlessThan);
+void PlotMuMu (string fileName, bool bkgSub);
+void PlotKst (string fileName, bool bkgSub);
+void PlotKK (string fileName, bool bkgSub, string RECOorGEN);
+void PlotMuHadMass (string fileName);
+void MakeupNLLandPvalPlots (string fileName, int specBin, string PlotType);
+void MakePvaluePlot (string toyMCfileName, int specBin, string PlotType);
+void getHfromToy (string fileNameIn, string fileNameOut, unsigned int intVal);
+
+
+// ###########################
+// # Function Implementation #
+// ###########################
 void DrawString (double Lumi)
 {
   stringstream myString;
@@ -1058,14 +1080,7 @@ TCutG* DrawExclusion (double Xlow, double Xhigh, double Ylow, double Yhigh, stri
 }
 
 
-TGraphAsymmErrors* ReadFromASCII (string fileName, unsigned int PlotType,
-				  vector<double>* q2Bins,
-				  vector<double>* vxs,
-				  vector<double>* vys,
-				  vector<double>* vxel,
-				  vector<double>* vxeh,
-				  vector<double>* vyel,
-				  vector<double>* vyeh)
+TGraphAsymmErrors* ReadFromASCII (string fileName, unsigned int PlotType, vector<double>* q2Bins, vector<double>* vxs, vector<double>* vys, vector<double>* vxel, vector<double>* vxeh, vector<double>* vyel, vector<double>* vyeh)
 {
   ifstream inputFile;
 
@@ -1145,36 +1160,6 @@ TGraphAsymmErrors* ReadFromASCII (string fileName, unsigned int PlotType,
   TGraphAsymmErrors* ge = new TGraphAsymmErrors(vxs->size(), &(*vxs)[0], &(*vys)[0], &(*vxel)[0], &(*vxeh)[0], &(*vyel)[0], &(*vyeh)[0]);
 
   return ge;
-}
-
-
-void SaveHistoVals (TGraphAsymmErrors* gStat, TGraphAsymmErrors* gStatSyst, string fileName)
-// ###########################################################################################
-// # "hStat" contains the vales and the statistical errors                                   #
-// # "hStatSyst" contains the same values as "hStat" and the statistical + systematic errors #
-// ###########################################################################################
-{
-  ofstream out;
-  out.open(fileName.c_str(), ofstream::out);
-  if (out.good() == false)
-    {
-      cout << "[MakePlots::SaveHistoVals]\tError opening file : " << fileName << endl;
-      exit (1);
-    }
-  
-  out << "============================= Final results =============================" << endl;
-  out << "q2bin === val == +stat err == -stat err == +stat+sys err == -stat-sys err" << endl;
-  for (int i = 0; i < gStat->GetN(); i++)
-    {
-      out << gStat->GetX()[i] << "   " << gStat->GetY()[i];
-      out << "   " << gStat->GetErrorYhigh(i) << "   " << gStat->GetErrorYlow(i);
-      out << "   " << gStatSyst->GetErrorYhigh(i) << "   " << gStatSyst->GetErrorYlow(i) << endl;
-    }
-  out << "=========================================================================" << endl;
-
-  cout << "\n@@@ Results have been saved in the file: " << fileName.c_str() << " @@@" << endl;
-
-  out.close();
 }
 
 
@@ -1852,24 +1837,6 @@ void MakePhysicsPlots (unsigned int PlotType)
     }
   
 
-  // ####################################
-  // # Save histogram values and errors #
-  // ####################################
-  string fileName = OutHisto;
-  if (PlotType == 0) // Fl
-    SaveHistoVals(ge11,ge1,fileName+"_FL.txt");
-  else if (PlotType == 1) // Afb
-    SaveHistoVals(ge11,ge1,fileName+"_AFB.txt");
-  else if (PlotType == 2) // Branching fraction
-    SaveHistoVals(ge11,ge1,fileName+"_BF.txt");
-  else if (PlotType == 10) // Fl
-    SaveHistoVals(ge00,ge0,fileName+"_FL.txt");
-  else if (PlotType == 11) // Afb
-    SaveHistoVals(ge00,ge0,fileName+"_AFB.txt");
-  else if (PlotType == 12) // Branching fraction
-    SaveHistoVals(ge00,ge0,fileName+"_BF.txt");
-
-
   canv0->cd();
   canv0->Update();
 }
@@ -2070,359 +2037,6 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
 
 
   inputFile.close();
-}
-
-
-void VerifyEff (string fileNameData, string fileNameMCJPsi, string fileNameMCPsiP, string angleType)
-// #######################
-// # angleType = "thetaK #
-// # angleType = "thetaL #
-// #######################
-{
-  // ##########################
-  // # Set histo layout style #
-  // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetPalette(1);
-  gStyle->SetOptFit(1111);
-  gStyle->SetOptStat(0);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
-
-
-  // ##########################
-  // # Flags for the workflow #
-  // ##########################
-  unsigned int NBins    = 100;
-  unsigned int Psibin   = 0;
-  unsigned int secSleep = 0;
-
-  int nEntries;
-
-  stringstream myCut;
-
-  vector<double> q2Bins;
-  vector<double> cosThetaKBins;
-  vector<double> cosThetaLBins;
-  vector<double> phiBins;
-  Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
-  double* cosThetaKBins_ = Utility->MakeBinning(&cosThetaKBins);
-  double* cosThetaLBins_ = Utility->MakeBinning(&cosThetaLBins);
-  vector<double>* angularVec;
-  double* angularBins_;
-  double num, den;
-
-  if (angleType == "thetaK")
-    {
-      angularVec   = &cosThetaKBins;
-      angularBins_ = cosThetaKBins_;
-    }
-  else if (angleType == "thetaL")
-    {
-      angularVec   = &cosThetaLBins;
-      angularBins_ = cosThetaLBins_;
-    }
-  else
-    {
-      cout << "[MakePlots::VerifyEff]\tWrong angle type: " << angleType.c_str() << endl;
-      exit (1);
-    }
-
-
-  TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
-
-
-  // #################
-  // # Define p.d.f. #
-  // #################
-  TF1* pdfFunc = new TF1("pdfFunc","[6]*exp(-(x-[0])/[5]) + [4]*([3]*TMath::Gaus(x,[0],[1]) + (1-[3])*TMath::Gaus(x,[0],[2]))",
-			 Utility->B0Mass - Utility->GetGenericParam("B0MassIntervalLeft"),Utility->B0Mass + Utility->GetGenericParam("B0MassIntervalRight"));
-
-  pdfFunc->SetParName(0,"Mean");
-  pdfFunc->SetParName(1,"Sigma1");
-  pdfFunc->SetParName(2,"Sigma2");
-  pdfFunc->SetParName(3,"frac");
-  pdfFunc->SetParName(4,"AmpliS");
-  pdfFunc->SetParName(5,"TimeConst");
-  pdfFunc->SetParName(6,"AmpliB");
-
-
-  // ##################
-  // # Open data file #
-  // ##################
-  TFile* filedata = TFile::Open(fileNameData.c_str(),"READ");
-  TTree* theTreeInD = (TTree*)filedata->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
-
-  nEntries = theTreeInD->GetEntries();
-  cout << "\n@@@ Total number of events in data tree: " << nEntries << " @@@" << endl;
-
-  TH1D* hdata = new TH1D("hdata","hdata",angularVec->size()-1,angularBins_);
-  hdata->SetMarkerStyle(20);
-  hdata->SetMarkerColor(kBlack);
-  if      (angleType == "thetaK") hdata->SetXTitle("cos(#theta_{#font[122]{K}})");
-  else if (angleType == "thetaL") hdata->SetXTitle("cos(#theta_{l})");
-  hdata->SetYTitle("a.u.");
-
-
-  // ######################
-  // # Open J/psi MC file #
-  // ######################
-  TFile* fileMCJPsi = TFile::Open(fileNameMCJPsi.c_str(),"READ");
-  TTree* theTreeInMCJPsi = (TTree*)fileMCJPsi->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
-
-  nEntries = theTreeInMCJPsi->GetEntries();
-  cout << "\n@@@ Total number of events in J/psi MC tree: " << nEntries << " @@@" << endl;
-
-  // ########################
-  // # Open psi(2S) MC file #
-  // ########################
-  TFile* fileMCPsiP = TFile::Open(fileNameMCPsiP.c_str(),"READ");
-  TTree* theTreeInMCPsiP = (TTree*)fileMCPsiP->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
-
-  nEntries = theTreeInMCPsiP->GetEntries();
-  cout << "\n@@@ Total number of events in psi(2S) MC tree: " << nEntries << " @@@" << endl;
-
-  TH1D* hMC = new TH1D("hMC","hMC",angularVec->size()-1,angularBins_);
-  hMC->SetMarkerStyle(21);
-  hMC->SetMarkerColor(kRed);
-  if      (angleType == "thetaK") hMC->SetXTitle("cos(#theta_{#font[122]{K}})");
-  else if (angleType == "thetaL") hMC->SetXTitle("cos(#theta_{l})");
-  hMC->SetYTitle("a.u.");
-
-
-  // ################################
-  // # Fit and save yields vs angle #
-  // ################################
-  for (unsigned int i = 0; i < angularVec->size()-1; i++)
-    {
-      // ##############################################
-      // # Define histogram to fit and extract yields #
-      // ##############################################
-      TH1D* hMass = new TH1D("hMass","hMass",NBins,Utility->B0Mass - Utility->GetGenericParam("B0MassIntervalLeft"),Utility->B0Mass + Utility->GetGenericParam("B0MassIntervalRight"));
-      hMass->SetXTitle("B^{0} mass (GeV)");
-      hMass->SetYTitle("a.u.");
-
-
-
-
-      // #####################
-      // # Fitting J/psi bin #
-      // #####################
-      cout << "\n\n@@@ Fitting J/psi bin @@@" << endl;
-
-
-      // ##########################
-      // # Define query to ntuple #
-      // ##########################
-      Psibin = Utility->GetJPsiBin(&q2Bins);
-      myCut.clear();
-      myCut.str("");
-      if (angleType == "thetaK")
-	myCut << "((mumuMass*mumuMass > " << q2Bins[Psibin] << " && mumuMass*mumuMass < " << q2Bins[Psibin+1] << ") && (CosThetaKArb > " << cosThetaKBins[i] <<  " && CosThetaKArb < " << cosThetaKBins[i+1] << "))";
-      else if (angleType == "thetaL")
-	myCut << "((mumuMass*mumuMass > " << q2Bins[Psibin] << " && mumuMass*mumuMass < " << q2Bins[Psibin+1] << ") && (CosThetaMuArb > " << cosThetaLBins[i] <<  " && CosThetaMuArb < " << cosThetaLBins[i+1] << "))";
-      cout << "Cut string: " << myCut.str().c_str() << endl;
-
-
-
-
-      // ########################
-      // # Define p.d.f. for MC #
-      // ########################
-      pdfFunc->ReleaseParameter(0);
-      pdfFunc->ReleaseParameter(1);
-      pdfFunc->ReleaseParameter(2);
-      pdfFunc->ReleaseParameter(3);
-      pdfFunc->ReleaseParameter(4);
-      pdfFunc->ReleaseParameter(5);
-      pdfFunc->ReleaseParameter(6);
-
-      pdfFunc->SetParameter(0,Utility->B0Mass);
-      pdfFunc->SetParameter(1,0.03);
-      pdfFunc->SetParameter(2,0.06);
-      pdfFunc->SetParameter(3,0.5);
-      pdfFunc->SetParameter(4,500.0);
-      pdfFunc->FixParameter(5,0.0);
-      pdfFunc->FixParameter(6,0.0);
-
-
-      cout << "\n@@@ Fitting MC @@@" << endl;
-      theTreeInMCJPsi->Draw("B0MassArb>>hMass",myCut.str().c_str(),"goff");
-      c0->cd();
-      hMass->Fit("pdfFunc","R");
-      hMass->Draw();
-      c0->Update();
-      
-      hMC->SetBinContent(i+1,pdfFunc->Integral(Utility->B0Mass - Utility->GetGenericParam("B0MassIntervalLeft"),Utility->B0Mass + Utility->GetGenericParam("B0MassIntervalRight")) *
-			 NBins / (Utility->GetGenericParam("B0MassIntervalLeft") + Utility->GetGenericParam("B0MassIntervalRight")));
-      hMC->SetBinError(i+1,sqrt(hMC->GetBinContent(i+1)));
-      cout << "Integral: " << hMC->GetBinContent(i+1) << " +/- " << hMC->GetBinError(i+1) << endl;
-      sleep(secSleep);
-
-
-
-
-      // ##########################
-      // # Define p.d.f. for data #
-      // ##########################
-      pdfFunc->ReleaseParameter(0);
-      pdfFunc->ReleaseParameter(1);
-      pdfFunc->ReleaseParameter(2);
-      pdfFunc->ReleaseParameter(3);
-      pdfFunc->ReleaseParameter(4);
-      pdfFunc->ReleaseParameter(5);
-      pdfFunc->ReleaseParameter(6);
-
-      pdfFunc->SetParameter(0,Utility->B0Mass);
-      pdfFunc->FixParameter(1,pdfFunc->GetParameter(1));
-      pdfFunc->FixParameter(2,pdfFunc->GetParameter(2));
-      pdfFunc->FixParameter(3,pdfFunc->GetParameter(3));
-      pdfFunc->SetParameter(5,0.2);
-      pdfFunc->SetParameter(4,150.0);
-      pdfFunc->SetParameter(6,40);
-
-
-      cout << "\n@@@ Fitting data @@@" << endl;
-      theTreeInD->Draw("B0MassArb>>hMass",myCut.str().c_str(),"goff");
-      c0->cd();
-      hMass->Fit("pdfFunc","R");
-      hMass->Draw();
-      c0->Update();
-
-      pdfFunc->FixParameter(5,0.0);
-      pdfFunc->FixParameter(6,0.0);
-      hdata->SetBinContent(i+1,pdfFunc->Integral(Utility->B0Mass - Utility->GetGenericParam("B0MassIntervalLeft"),Utility->B0Mass + Utility->GetGenericParam("B0MassIntervalRight")) *
-			   NBins / (Utility->GetGenericParam("B0MassIntervalLeft") + Utility->GetGenericParam("B0MassIntervalRight")));
-      hdata->SetBinError(i+1,sqrt(hdata->GetBinContent(i+1)));
-      cout << "Integral: " << hdata->GetBinContent(i+1) << " +/- " << hdata->GetBinError(i+1) << endl;
-      sleep(secSleep);
-
-
-
-
-      // #######################
-      // # Fitting psi(2S) bin #
-      // #######################
-      cout << "\n\n@@@ Fitting psi(2S) bin @@@" << endl;
-
-
-      // ##########################
-      // # Define query to ntuple #
-      // ##########################
-      Psibin = Utility->GetPsiPBin(&q2Bins);
-      myCut.clear();
-      myCut.str("");
-      if (angleType == "thetaK")
-      	myCut << "((mumuMass*mumuMass > " << q2Bins[Psibin] << " && mumuMass*mumuMass < " << q2Bins[Psibin+1] << ") && (CosThetaKArb > " << cosThetaKBins[i] <<  " && CosThetaKArb < " << cosThetaKBins[i+1] << "))";
-      else if (angleType == "thetaL")
-      	myCut << "((mumuMass*mumuMass > " << q2Bins[Psibin] << " && mumuMass*mumuMass < " << q2Bins[Psibin+1] << ") && (CosThetaMuArb > " << cosThetaLBins[i] <<  " && CosThetaMuArb < " << cosThetaLBins[i+1] << "))";
-      cout << "Cut string: " << myCut.str().c_str() << endl;
-
-
-
-
-      // ########################
-      // # Define p.d.f. for MC #
-      // ########################
-      pdfFunc->ReleaseParameter(0);
-      pdfFunc->ReleaseParameter(1);
-      pdfFunc->ReleaseParameter(2);
-      pdfFunc->ReleaseParameter(3);
-      pdfFunc->ReleaseParameter(4);
-      pdfFunc->ReleaseParameter(5);
-      pdfFunc->ReleaseParameter(6);
-
-      pdfFunc->SetParameter(0,Utility->B0Mass);
-      pdfFunc->SetParameter(1,0.03);
-      pdfFunc->SetParameter(2,0.06);
-      pdfFunc->SetParameter(3,0.5);
-      pdfFunc->SetParameter(4,50.0);
-      pdfFunc->FixParameter(5,0.0);
-      pdfFunc->FixParameter(6,0.0);
-
-
-      cout << "\n@@@ Fitting MC @@@" << endl;
-      theTreeInMCPsiP->Draw("B0MassArb>>hMass",myCut.str().c_str(),"goff");
-      c0->cd();
-      hMass->Fit("pdfFunc","R");
-      hMass->Draw();
-      c0->Update();
-      
-      num = hMC->GetBinContent(i+1);
-      den = pdfFunc->Integral(Utility->B0Mass - Utility->GetGenericParam("B0MassIntervalLeft"),Utility->B0Mass + Utility->GetGenericParam("B0MassIntervalRight")) *
-	NBins / (Utility->GetGenericParam("B0MassIntervalLeft") + Utility->GetGenericParam("B0MassIntervalRight"));
-      cout << "Integral: " << den << " +/- " << sqrt(den) << endl;
-      hMC->SetBinContent(i+1,num / den);
-      hMC->SetBinError(i+1,num / den * sqrt(1./num + 1./den));
-      cout << "Ratio J/psi / psi(2S): " << hMC->GetBinContent(i+1) << " +/- " << hMC->GetBinError(i+1) << endl;
-      sleep(secSleep);
-
-
-
-
-      // ##########################
-      // # Define p.d.f. for data #
-      // ##########################
-      pdfFunc->ReleaseParameter(0);
-      pdfFunc->ReleaseParameter(1);
-      pdfFunc->ReleaseParameter(2);
-      pdfFunc->ReleaseParameter(3);
-      pdfFunc->ReleaseParameter(4);
-      pdfFunc->ReleaseParameter(5);
-      pdfFunc->ReleaseParameter(6);
-
-      pdfFunc->SetParameter(0,Utility->B0Mass);
-      pdfFunc->FixParameter(1,pdfFunc->GetParameter(1));
-      pdfFunc->FixParameter(2,pdfFunc->GetParameter(2));
-      pdfFunc->FixParameter(3,pdfFunc->GetParameter(3));
-      pdfFunc->SetParameter(5,0.2);
-      pdfFunc->SetParameter(4,20.0);
-      pdfFunc->SetParameter(6,2);
-
-
-      cout << "\n@@@ Fitting data @@@" << endl;
-      theTreeInD->Draw("B0MassArb>>hMass",myCut.str().c_str(),"goff");
-      c0->cd();
-      hMass->Fit("pdfFunc","R");
-      hMass->Draw();
-      c0->Update();
-
-      pdfFunc->FixParameter(5,0.0);
-      pdfFunc->FixParameter(6,0.0);
-      num = hdata->GetBinContent(i+1);
-      den = pdfFunc->Integral(Utility->B0Mass - Utility->GetGenericParam("B0MassIntervalLeft"),Utility->B0Mass + Utility->GetGenericParam("B0MassIntervalRight")) *
-	NBins / (Utility->GetGenericParam("B0MassIntervalLeft") + Utility->GetGenericParam("B0MassIntervalRight"));
-      cout << "Integral: " << den << " +/- " << sqrt(den) << endl;
-      hdata->SetBinContent(i+1,num / den);
-      hdata->SetBinError(i+1,num / den * sqrt(1./num + 1./den));
-      cout << "Ratio J/psi / psi(2S): " << hdata->GetBinContent(i+1) << " +/- " << hdata->GetBinError(i+1) << endl;
-      sleep(secSleep);
-
-
-      delete hMass;
-    }
-
-
-  c0->cd();
-  hdata->Sumw2();
-  hMC->Sumw2();
-  TH1D* hratio = (TH1D*)hdata->Clone("hratio");
-  if      (angleType == "thetaK") hratio->SetXTitle("cos(#theta_{#font[122]{K}})");
-  else if (angleType == "thetaL") hratio->SetXTitle("cos(#theta_{l})");
-  hratio->SetYTitle("a.u.");
-  hratio->Divide(hMC);
-  hratio->Draw("e1p");
-
-  TLegend* leg = new TLegend(0.15, 0.79, 0.55, 0.89, "");
-  leg->AddEntry(hratio,"Double ratio: data(J/#psi/#psi(2S)) / MC(J/#psi/#psi(2S))");
-  leg->SetFillColor(0);
-  leg->SetBorderSize(0);
-  leg->Draw();
-
-  c0->Update();
 }
 
 
@@ -3457,13 +3071,6 @@ int main (int argc, char** argv)
 	  else           realVal2 = 0.0;
 	}
       else if (((option == "Phy") || (option == "DataMC")) && (argc == 3)) intVal = atoi(argv[2]);
-      else if ((option == "VerifyEff") && (argc == 6))
-	{
-	  fileName1 = argv[2];
-	  fileName2 = argv[3];
-	  fileName3 = argv[4];
-	  tmpStr    = argv[5];
-	}
       else if (((option == "Pval") || (option == "makeupNLL")) && (argc == 5))
 	{
 	  fileName1 = argv[2];
@@ -3491,11 +3098,10 @@ int main (int argc, char** argv)
       else if (option != "PhyRegion")
 	{
 	  cout << "Parameter missing:" << endl;
-	  cout << "./MakePlots [Phy EvalMultyRun DataMC VerifyEff PhyRegion Pval makeupNLL MuMuMass KKMass KstMass MuHadMass getHfromToy]" << endl;
+	  cout << "./MakePlots [Phy EvalMultyRun DataMC PhyRegion Pval makeupNLL MuMuMass KKMass KstMass MuHadMass getHfromToy]" << endl;
 	  cout << "[Phy:0-2||10-12]" << endl;
 	  cout << "[EvalMultyRun: 0-3||10-12 q^2 bin index 0-7 [fileName] [NLL interval] [NLL less than]" << endl;
 	  cout << "[DataMC: 0-27]" << endl;
-	  cout << "[VerifyEff: dataFileName JPsiMCfileName PsiPMCfileName angleType]" << endl;
 	  cout << "[Pval or makeupNLL: ToyMCfileName q^2 bin index 0-7 PlotType]" << endl;
 	  cout << "[MuMuMass or KstMass: dataFileName bkgSub]" << endl;
 	  cout << "[KKMass: dataFileName bkgSub RECOorGEN]" << endl;
@@ -3547,7 +3153,6 @@ int main (int argc, char** argv)
       if      (option == "Phy")          MakePhysicsPlots(intVal);
       else if (option == "EvalMultyRun") EvalMultyRun(intVal,q2BinIndx,fileName1,realVal1,realVal2);
       else if (option == "DataMC")       MakeComparisonDataMC(intVal);
-      else if (option == "VerifyEff")    VerifyEff(fileName1,fileName2,fileName3,tmpStr);
       else if (option == "PhyRegion")    CheckPhysicsRegion();
       else if (option == "Pval")         MakePvaluePlot(fileName1,q2BinIndx,tmpStr);
       else if (option == "MuMuMass")     PlotMuMu(fileName1,intVal);
@@ -3558,11 +3163,10 @@ int main (int argc, char** argv)
       else if (option == "getHfromToy")  { getHfromToy(fileName1,fileName2,intVal); exit(0); }
       else
 	{
-	  cout << "./MakePlots [Phy EvalMultyRun DataMC VerifyEff PhyRegion Pval makeupNLL MuMuMass KKMass KstMass MuHadMass getHfromToy]" << endl;
+	  cout << "./MakePlots [Phy EvalMultyRun DataMC PhyRegion Pval makeupNLL MuMuMass KKMass KstMass MuHadMass getHfromToy]" << endl;
 	  cout << "[Phy:0-2||10-12]" << endl;
 	  cout << "[EvalMultyRun: 0-3||10-12 [q^2 bin index 0-7] [fileName] [NLL interval] [NLL less than]" << endl;
 	  cout << "[DataMC: 0-27]" << endl;
-	  cout << "[VerifyEff: dataFileName JPsiMCfileName PsiPMCfileName angleType]" << endl;
 	  cout << "[Pval or makeupNLL: ToyMCfileName q^2 bin index 0-7 PlotType]" << endl;
 	  cout << "[MuMuMass or KstMass: dataFileName bkgSub]" << endl;
 	  cout << "[KKMass: dataFileName bkgSub RECOorGEN]" << endl;
@@ -3649,11 +3253,10 @@ int main (int argc, char** argv)
     }
   else
     {
-      cout << "./MakePlots [Phy EvalMultyRun DataMC VerifyEff PhyRegion Pval makeupNLL MuMuMass KKMass KstMass MuHadMass getHfromToy]" << endl;
+      cout << "./MakePlots [Phy EvalMultyRun DataMC PhyRegion Pval makeupNLL MuMuMass KKMass KstMass MuHadMass getHfromToy]" << endl;
       cout << "[Phy:0-2||10-12]" << endl;
       cout << "[EvalMultyRun: 0-3||10-12 [q^2 bin index 0-7] [fileName] [NLL interval] [NLL less than]" << endl;
       cout << "[DataMC: 0-27]" << endl;
-      cout << "[VerifyEff: dataFileName JPsiMCfileName PsiPMCfileName angleType]" << endl;
       cout << "[Pval or makeupNLL: ToyMCfileName q^2 bin index 0-7 PlotType]" << endl;
       cout << "[MuMuMass or KstMass: dataFileName bkgSub]" << endl;
       cout << "[KKMass: dataFileName bkgSub RECOorGEN]" << endl;
