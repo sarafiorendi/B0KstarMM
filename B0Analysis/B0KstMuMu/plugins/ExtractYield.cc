@@ -467,11 +467,11 @@ void DrawString (double Lumi, RooPlot* myFrame)
 
   myString.clear(); myString.str("");
   myString << "CMS";
-  TLatex* LumiTex1 = new TLatex(0.1,0.95,myString.str().c_str());
+  TLatex* LumiTex1 = new TLatex(0.1,0.96,myString.str().c_str());
   LumiTex1->SetTextSize(0.05);
   LumiTex1->SetTextColor(kBlack);
   LumiTex1->SetNDC(true);
-  if (myFrame == NULL) LumiTex1->DrawLatex(0.1,0.95,myString.str().c_str());
+  if (myFrame == NULL) LumiTex1->DrawLatex(0.1,0.96,myString.str().c_str());
   else
     {
       LumiTex1->Paint();
@@ -480,11 +480,11 @@ void DrawString (double Lumi, RooPlot* myFrame)
 
   myString.clear(); myString.str("");
   myString << "L = " << Lumi <<  " fb^{#font[122]{\55}1}";
-  TLatex* LumiTex2 = new TLatex(0.43,0.95,myString.str().c_str());
+  TLatex* LumiTex2 = new TLatex(0.43,0.94,myString.str().c_str());
   LumiTex2->SetTextSize(0.05);
   LumiTex2->SetTextColor(kBlack);
   LumiTex2->SetNDC(true);
-  if (myFrame == NULL) LumiTex2->DrawLatex(0.43,0.95,myString.str().c_str());
+  if (myFrame == NULL) LumiTex2->DrawLatex(0.43,0.94,myString.str().c_str());
   else
     {
       LumiTex2->Paint();
@@ -493,11 +493,11 @@ void DrawString (double Lumi, RooPlot* myFrame)
 
   myString.str("");
   myString << "#sqrt{  }";
-  TLatex* LumiTex3 = new TLatex(0.82,0.94,myString.str().c_str());
+  TLatex* LumiTex3 = new TLatex(0.82,0.93,myString.str().c_str());
   LumiTex3->SetTextSize(0.053);
   LumiTex3->SetTextColor(kBlack);
   LumiTex3->SetNDC(true);
-  if (myFrame == NULL) LumiTex3->DrawLatex(0.82,0.94,myString.str().c_str());
+  if (myFrame == NULL) LumiTex3->DrawLatex(0.82,0.93,myString.str().c_str());
   else
     {
       LumiTex3->Paint();
@@ -506,11 +506,11 @@ void DrawString (double Lumi, RooPlot* myFrame)
 
   myString.str("");
   myString << "s = 7 TeV";
-  TLatex* LumiTex4 = new TLatex(0.84,0.95,myString.str().c_str());
+  TLatex* LumiTex4 = new TLatex(0.84,0.94,myString.str().c_str());
   LumiTex4->SetTextSize(0.05);
   LumiTex4->SetTextColor(kBlack);
   LumiTex4->SetNDC(true);
-  if (myFrame == NULL) LumiTex4->DrawLatex(0.84,0.95,myString.str().c_str());
+  if (myFrame == NULL) LumiTex4->DrawLatex(0.84,0.94,myString.str().c_str());
   else
     {
       LumiTex4->Paint();
@@ -2299,7 +2299,7 @@ void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2B
   // #############
   NtplFileOut->cd("B0SingleCand");
   theTreeOut->Write();
-  NtplFileOut->Close();
+  NtplFileOut->Close("R");
   NTupleOut->Destroy();
   delete NTupleOut;
   delete NtplFileOut;
@@ -3241,7 +3241,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   paveTextX->SetTextSize(0.03);
   paveTextX->Paint();
   DrawString(LUMI,myFrameX);
-  if (extText != NULL)
+  if ((extText != NULL) && (SETBATCH == false))
     {
       if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%1.f%s%1.f","Signal yield: ",GetVar(*TotalPDF,"nSig")->getVal()," #pm ",GetVar(*TotalPDF,"nSig")->getError()));
       extText->Paint();
@@ -4267,6 +4267,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	  delete TmpPDF;
 	  delete sideBands;
 	  ClearVars(&constrSidebads);
+	  if (fitResult != NULL) delete fitResult;
 	}
 
 
@@ -4369,7 +4370,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
       paveTextY->Paint();
       myFrameY->addObject(paveTextY);
       DrawString(LUMI,myFrameY);
-      if (extText != NULL)
+      if ((extText != NULL) && (SETBATCH == false))
 	{
 	  extText->Paint();
 	  myFrameY->addObject(extText);
@@ -4484,7 +4485,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
       paveTextX->SetTextSize(0.03);
       paveTextX->Paint();
       DrawString(LUMI,myFrameX);
-      if (extText != NULL)
+      if ((extText != NULL) && (SETBATCH == false))
 	{
 	  if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%1.f%s%1.f","Signal yield: ",GetVar(*TotalPDF,"nSig")->getVal()," #pm ",GetVar(*TotalPDF,"nSig")->getError()));
 	  extText->Paint();
@@ -6010,9 +6011,10 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  StorePolyResultsInFile(TotalPDF);
 
 
+	  delete TmpPDF;
 	  delete sideBands;
 	  ClearVars(&constrSidebads);
-	  delete fitResult;
+	  if (fitResult != NULL) delete fitResult;
 	}
 
 
@@ -6116,7 +6118,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       paveTextY->Paint();
       myFrameY->addObject(paveTextY);
       DrawString(LUMI,myFrameY);
-      if (extText != NULL)
+      if ((extText != NULL) && (SETBATCH == false))
 	{
 	  extText->Paint();
 	  myFrameY->addObject(extText);
@@ -6125,12 +6127,12 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       TLegend* legY = new TLegend(0.75, 0.65, 0.97, 0.89, "");
       for (int i = 0; i < nElements; i++)
-  	{
-  	  TString objName = myFrameY->nameOf(i);
-  	  if (objName == "") continue;
-  	  TObject* obj = myFrameY->findObject(objName.Data());
-	  legY->AddEntry(obj,legNames[i],"lp");
-  	}
+      	{
+      	  TString objName = myFrameY->nameOf(i);
+      	  if (objName == "") continue;
+      	  TObject* obj = myFrameY->findObject(objName.Data());
+      	  legY->AddEntry(obj,legNames[i],"lp");
+      	}
       legY->SetFillStyle(0);
       legY->SetFillColor(0);
       legY->SetTextSize(0.05);
@@ -6154,10 +6156,10 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       dataSet->plotOn(myFrameZ,Name(MakeName(dataSet,ID).c_str()));
       (*TotalPDF)->plotOn(myFrameZ,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack));
       if (fitPSIintru != 1)
-	{
-	  (*TotalPDF)->plotOn(myFrameZ,Components(*Signal),LineStyle(7),LineColor(kBlue));
-	  (*TotalPDF)->plotOn(myFrameZ,Components(*BkgMassAngleComb),LineStyle(4),LineColor(kRed));
-	}
+      	{
+      	  (*TotalPDF)->plotOn(myFrameZ,Components(*Signal),LineStyle(7),LineColor(kBlue));
+      	  (*TotalPDF)->plotOn(myFrameZ,Components(*BkgMassAngleComb),LineStyle(4),LineColor(kRed));
+      	}
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameZ,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet));
 
       TPaveText* paveTextZ = new TPaveText(0.13,0.8,0.4,0.88,"NDC");
@@ -6169,21 +6171,21 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       paveTextZ->Paint();
       myFrameZ->addObject(paveTextZ);
       DrawString(LUMI,myFrameZ);
-      if (extText != NULL)
-	{
-	  extText->Paint();
-	  myFrameZ->addObject(extText);
-	}
+      if ((extText != NULL) && (SETBATCH == false))
+      	{
+      	  extText->Paint();
+      	  myFrameZ->addObject(extText);
+      	}
       myFrameZ->Draw();
 
       TLegend* legZ = new TLegend(0.75, 0.65, 0.97, 0.89, "");
       for (int i = 0; i < nElements; i++)
-  	{
-  	  TString objName = myFrameZ->nameOf(i);
-  	  if (objName == "") continue;
-  	  TObject* obj = myFrameZ->findObject(objName.Data());
-	  legZ->AddEntry(obj,legNames[i],"lp");
-  	}
+      	{
+      	  TString objName = myFrameZ->nameOf(i);
+      	  if (objName == "") continue;
+      	  TObject* obj = myFrameZ->findObject(objName.Data());
+      	  legZ->AddEntry(obj,legNames[i],"lp");
+      	}
       legZ->SetFillStyle(0);
       legZ->SetFillColor(0);
       legZ->SetTextSize(0.05);
@@ -6246,12 +6248,12 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       paveTextX->SetTextSize(0.03);
       paveTextX->Paint();
       DrawString(LUMI,myFrameX);
-      if (extText != NULL)
-	{
-	  if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%1.f%s%1.f","Signal yield: ",GetVar(*TotalPDF,"nSig")->getVal()," #pm ",GetVar(*TotalPDF,"nSig")->getError()));
-	  extText->Paint();
-	  myFrameX->addObject(extText);
-	}
+      if ((extText != NULL) && (SETBATCH == false))
+      	{
+      	  if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%1.f%s%1.f","Signal yield: ",GetVar(*TotalPDF,"nSig")->getVal()," #pm ",GetVar(*TotalPDF,"nSig")->getError()));
+      	  extText->Paint();
+      	  myFrameX->addObject(extText);
+      	}
       myFrameX->Draw();
       legX->Draw("same");
 
@@ -7472,8 +7474,8 @@ void CloseAllAndQuit (TApplication* theApp, TFile* NtplFile)
   if (SingleCandNTuple_JPsi != NULL)      delete SingleCandNTuple_JPsi;
   if (SingleCandNTuple_PsiP != NULL)      delete SingleCandNTuple_PsiP;
   if (SingleCandNTuple_RejectPsi != NULL) delete SingleCandNTuple_RejectPsi;
-  if (NtplFile != NULL)                   NtplFile->Close();
-  
+  if (NtplFile != NULL)                   NtplFile->Close("R");
+
   gROOT->CloseFiles();
   theApp->Terminate(0);
 }
@@ -8389,47 +8391,47 @@ int main(int argc, char** argv)
 
 		  cout << "\n@@@ Now fit invariant mass, cos(theta_K) and cos(theta_l) per mumu q^2 bins @@@" << endl;
 		  if ((FitType == 6) || (FitType == 36)) IterativeMass2AnglesFitq2Bins(SingleCandNTuple_RejectPsi,
-										       useEffPDF,
-										       PsiYield,PsiYerr,
-										       B0MassArb,
-										       CosThetaMuArb,
-										       CosThetaKArb,
-										       specBin,
-										       FitType,
-										       &VecHistoMeas,
-										       &q2Bins,
-										       &configParam,&fitParam,
-										       &effFuncs,
-										       &vecConstr,
-										       fileIndx);
+		  								       useEffPDF,
+		  								       PsiYield,PsiYerr,
+		  								       B0MassArb,
+		  								       CosThetaMuArb,
+		  								       CosThetaKArb,
+		  								       specBin,
+		  								       FitType,
+		  								       &VecHistoMeas,
+		  								       &q2Bins,
+		  								       &configParam,&fitParam,
+		  								       &effFuncs,
+		  								       &vecConstr,
+		  								       fileIndx);
 		  else if ((FitType == 46) || (FitType == 56)) IterativeMass2AnglesFitq2Bins(SingleCandNTuple_JPsi,
-											     useEffPDF,
-											     PsiYield,PsiYerr,
-											     B0MassArb,
-											     CosThetaMuArb,
-											     CosThetaKArb,
-											     specBin,
-											     FitType,
-											     &VecHistoMeas,
-											     &q2Bins,
-											     &configParam,&fitParam,
-											     &effFuncs,
-											     &vecConstr,
-											     fileIndx);
+		  									     useEffPDF,
+		  									     PsiYield,PsiYerr,
+		  									     B0MassArb,
+		  									     CosThetaMuArb,
+		  									     CosThetaKArb,
+		  									     specBin,
+		  									     FitType,
+		  									     &VecHistoMeas,
+		  									     &q2Bins,
+		  									     &configParam,&fitParam,
+		  									     &effFuncs,
+		  									     &vecConstr,
+		  									     fileIndx);
 		  else IterativeMass2AnglesFitq2Bins(SingleCandNTuple_PsiP,
-						     useEffPDF,
-						     PsiYield,PsiYerr,
-						     B0MassArb,
-						     CosThetaMuArb,
-						     CosThetaKArb,
-						     specBin,
-						     FitType,
-						     &VecHistoMeas,
-						     &q2Bins,
-						     &configParam,&fitParam,
-						     &effFuncs,
-						     &vecConstr,
-						     fileIndx);
+		  				     useEffPDF,
+		  				     PsiYield,PsiYerr,
+		  				     B0MassArb,
+		  				     CosThetaMuArb,
+		  				     CosThetaKArb,
+		  				     specBin,
+		  				     FitType,
+		  				     &VecHistoMeas,
+		  				     &q2Bins,
+		  				     &configParam,&fitParam,
+		  				     &effFuncs,
+		  				     &vecConstr,
+		  				     fileIndx);
 		  
 		  TCanvas* cHistoMeas = new TCanvas("cHistoMeas","cHistoMeas",10, 10, 900, 600);
 		  cHistoMeas->Divide(2,2);

@@ -93,35 +93,35 @@ void DrawString (double Lumi)
 
   myString.str("");
   myString << "CMS";
-  TLatex* LumiTex1 = new TLatex(0.1,0.95,myString.str().c_str());
+  TLatex* LumiTex1 = new TLatex(0.1,0.96,myString.str().c_str());
   LumiTex1->SetTextSize(0.05);
   LumiTex1->SetTextColor(kBlack);
   LumiTex1->SetNDC(true);
-  LumiTex1->DrawLatex(0.1,0.95,myString.str().c_str());
+  LumiTex1->DrawLatex(0.1,0.96,myString.str().c_str());
 
   myString.str("");
   myString << "L = " << Lumi <<  " fb^{#font[122]{\55}1}";
-  TLatex* LumiTex2 = new TLatex(0.43,0.95,myString.str().c_str());
+  TLatex* LumiTex2 = new TLatex(0.43,0.94,myString.str().c_str());
   LumiTex2->SetTextSize(0.05);
   LumiTex2->SetTextColor(kBlack);
   LumiTex2->SetNDC(true);
-  LumiTex2->DrawLatex(0.43,0.95,myString.str().c_str());
+  LumiTex2->DrawLatex(0.43,0.94,myString.str().c_str());
 
   myString.str("");
   myString << "#sqrt{  }";
-  TLatex* LumiTex3 = new TLatex(0.82,0.94,myString.str().c_str());
+  TLatex* LumiTex3 = new TLatex(0.82,0.93,myString.str().c_str());
   LumiTex3->SetTextSize(0.053);
   LumiTex3->SetTextColor(kBlack);
   LumiTex3->SetNDC(true);
-  LumiTex3->DrawLatex(0.82,0.94,myString.str().c_str());
+  LumiTex3->DrawLatex(0.82,0.93,myString.str().c_str());
 
   myString.str("");
   myString << "s = 7 TeV";
-  TLatex* LumiTex4 = new TLatex(0.84,0.95,myString.str().c_str());
+  TLatex* LumiTex4 = new TLatex(0.84,0.94,myString.str().c_str());
   LumiTex4->SetTextSize(0.05);
   LumiTex4->SetTextColor(kBlack);
   LumiTex4->SetNDC(true);
-  LumiTex4->DrawLatex(0.84,0.95,myString.str().c_str());
+  LumiTex4->DrawLatex(0.84,0.94,myString.str().c_str());
 }
 
 
@@ -1247,7 +1247,12 @@ void MakePhysicsPlots (unsigned int PlotType)
   gStyle->SetOptTitle(0);
   gStyle->SetPadRightMargin(0.02);
   gStyle->SetPadBottomMargin(0.12);
-  gStyle->SetTitleOffset(1.25,"y"); 
+  gStyle->SetTitleOffset(1.1,"x");
+  gStyle->SetTitleOffset(0.9,"y");
+  gStyle->SetTitleSize(0.05,"x");
+  gStyle->SetTitleSize(0.05,"y");
+  gStyle->SetLabelSize(0.05,"x");
+  gStyle->SetLabelSize(0.05,"y");
   gStyle->SetEndErrorSize(10);
   TGaxis::SetMaxDigits(3);
 
@@ -1646,12 +1651,12 @@ void MakePhysicsPlots (unsigned int PlotType)
     {
       geSmoothTh->Draw("ae2");
       geStepTh->Draw("same e2");
-
+      
       ge00->Draw("same pe1");
       TExec* ex = new TExec("ex","gStyle->SetEndErrorSize(5);");
       ex->Draw();
       ge0->Draw("same pe1");
-
+      
       leg->AddEntry(ge00,"Data","EPL");
       leg->AddEntry(geSmoothTh,"SM","F");
       leg->AddEntry(geStepTh,"<SM>","F");
@@ -1856,7 +1861,7 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
   gStyle->SetOptFit(1111);
   gStyle->SetOptStat(1110);
   gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
+  gStyle->SetPadRightMargin(0.1);
   gStyle->SetTitleOffset(1.25,"y");
   TGaxis::SetMaxDigits(3);
 
