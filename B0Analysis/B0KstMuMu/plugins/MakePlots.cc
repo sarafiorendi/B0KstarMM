@@ -19,6 +19,7 @@
 #include <TPaveText.h>
 #include <TLatex.h>
 #include <TPaveStats.h>
+#include <TExec.h>
 #endif
 
 #include <stdlib.h>
@@ -93,34 +94,34 @@ void DrawString (double Lumi)
   myString.str("");
   myString << "CMS";
   TLatex* LumiTex1 = new TLatex(0.1,0.95,myString.str().c_str());
-  LumiTex1->SetTextSize(0.04);
+  LumiTex1->SetTextSize(0.05);
   LumiTex1->SetTextColor(kBlack);
   LumiTex1->SetNDC(true);
   LumiTex1->DrawLatex(0.1,0.95,myString.str().c_str());
 
   myString.str("");
   myString << "L = " << Lumi <<  " fb^{#font[122]{\55}1}";
-  TLatex* LumiTex2 = new TLatex(0.5,0.95,myString.str().c_str());
-  LumiTex2->SetTextSize(0.04);
+  TLatex* LumiTex2 = new TLatex(0.43,0.95,myString.str().c_str());
+  LumiTex2->SetTextSize(0.05);
   LumiTex2->SetTextColor(kBlack);
   LumiTex2->SetNDC(true);
-  LumiTex2->DrawLatex(0.5,0.95,myString.str().c_str());
+  LumiTex2->DrawLatex(0.43,0.95,myString.str().c_str());
 
   myString.str("");
   myString << "#sqrt{  }";
-  TLatex* LumiTex3 = new TLatex(0.85,0.94,myString.str().c_str());
+  TLatex* LumiTex3 = new TLatex(0.82,0.94,myString.str().c_str());
   LumiTex3->SetTextSize(0.053);
   LumiTex3->SetTextColor(kBlack);
   LumiTex3->SetNDC(true);
-  LumiTex3->DrawLatex(0.85,0.94,myString.str().c_str());
+  LumiTex3->DrawLatex(0.82,0.94,myString.str().c_str());
 
   myString.str("");
   myString << "s = 7 TeV";
-  TLatex* LumiTex4 = new TLatex(0.87,0.95,myString.str().c_str());
-  LumiTex4->SetTextSize(0.04);
+  TLatex* LumiTex4 = new TLatex(0.84,0.95,myString.str().c_str());
+  LumiTex4->SetTextSize(0.05);
   LumiTex4->SetTextColor(kBlack);
   LumiTex4->SetNDC(true);
-  LumiTex4->DrawLatex(0.87,0.95,myString.str().c_str());
+  LumiTex4->DrawLatex(0.84,0.95,myString.str().c_str());
 }
 
 
@@ -1183,6 +1184,7 @@ void CheckPhysicsRegion ()
   TGraphAsymmErrors* ge;
   TGraphAsymmErrors* geTMP;
   TH1D* histo = new TH1D("histo","histo",100,-1.0,1.0);
+  histo->GetYaxis()->SetRangeUser(0.0,1.0);
   histo->SetXTitle("A_{FB}");
   histo->SetYTitle("F_{L}");
   TLine* line1;
@@ -1246,6 +1248,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   gStyle->SetPadRightMargin(0.02);
   gStyle->SetPadBottomMargin(0.12);
   gStyle->SetTitleOffset(1.25,"y"); 
+  gStyle->SetEndErrorSize(10);
   TGaxis::SetMaxDigits(3);
 
   
@@ -1368,8 +1371,6 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetMarkerColor(kBlack);
       ge0->SetMarkerStyle(20);
       ge0->SetMarkerSize(1.2);
-      ge0->SetFillColor(kGreen);
-      ge0->SetFillStyle(3001);
       ge0->SetLineColor(kBlack);
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
@@ -1382,8 +1383,6 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetMarkerColor(kBlack);
       ge0->SetMarkerStyle(20);
       ge0->SetMarkerSize(1.2);
-      ge0->SetFillColor(kGreen);
-      ge0->SetFillStyle(3001);
       ge0->SetLineColor(kBlack);
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
@@ -1396,8 +1395,6 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetMarkerColor(kBlack);
       ge0->SetMarkerStyle(20);
       ge0->SetMarkerSize(1.2);
-      ge0->SetFillColor(kGreen);
-      ge0->SetFillStyle(3001);
       ge0->SetLineColor(kBlack);
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
@@ -1415,9 +1412,9 @@ void MakePhysicsPlots (unsigned int PlotType)
   // # Read SM values from ASCII file #
   // ##################################
   TGraphAsymmErrors* geSmoothTh = NULL;
-  if      ((PlotType == 0) || (PlotType == 10)) geSmoothTh = ReadFromASCII(SMFL,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh); // Fl
+  if      ((PlotType == 0) || (PlotType == 10)) geSmoothTh = ReadFromASCII(SMFL,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Fl
   else if ((PlotType == 1) || (PlotType == 11)) geSmoothTh = ReadFromASCII(SMAFB,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh); // Afb
-  else if ((PlotType == 2) || (PlotType == 12)) geSmoothTh = ReadFromASCII(SMBF,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh); // Branching fraction
+  else if ((PlotType == 2) || (PlotType == 12)) geSmoothTh = ReadFromASCII(SMBF,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Branching fraction
   geSmoothTh->SetFillColor(kCyan-4);
   geSmoothTh->SetFillStyle(1001);
   geSmoothTh->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
@@ -1530,8 +1527,6 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge00->SetMarkerColor(kBlack);
       ge00->SetMarkerStyle(20);
       ge00->SetMarkerSize(1.2);
-      ge00->SetFillColor(kGreen);
-      ge00->SetFillStyle(3001);
       ge00->SetLineColor(kBlack);
       ge00->SetLineWidth(2);
 
@@ -1562,8 +1557,6 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge00->SetMarkerColor(kBlack);
       ge00->SetMarkerStyle(20);
       ge00->SetMarkerSize(1.2);
-      ge00->SetFillColor(kGreen);
-      ge00->SetFillStyle(3001);
       ge00->SetLineColor(kBlack);
       ge00->SetLineWidth(2);
 
@@ -1594,8 +1587,6 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge00->SetMarkerColor(kBlack);
       ge00->SetMarkerStyle(20);
       ge00->SetMarkerSize(1.2);
-      ge00->SetFillColor(kGreen);
-      ge00->SetFillStyle(3001);
       ge00->SetLineColor(kBlack);
       ge00->SetLineWidth(2);
 
@@ -1656,10 +1647,12 @@ void MakePhysicsPlots (unsigned int PlotType)
       geSmoothTh->Draw("ae2");
       geStepTh->Draw("same e2");
 
-      ge00->Draw("same e2");
+      ge00->Draw("same pe1");
+      TExec* ex = new TExec("ex","gStyle->SetEndErrorSize(5);");
+      ex->Draw();
       ge0->Draw("same pe1");
 
-      leg->AddEntry(ge00,"Data","EPFL");
+      leg->AddEntry(ge00,"Data","EPL");
       leg->AddEntry(geSmoothTh,"SM","F");
       leg->AddEntry(geStepTh,"<SM>","F");
     }
@@ -1864,7 +1857,7 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
   gStyle->SetOptStat(1110);
   gStyle->SetOptTitle(0);
   gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
+  gStyle->SetTitleOffset(1.25,"y");
   TGaxis::SetMaxDigits(3);
 
 

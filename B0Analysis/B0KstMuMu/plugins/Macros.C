@@ -1530,34 +1530,34 @@ void DrawString (double Lumi)
   myString.str("");
   myString << "CMS";
   TLatex* LumiTex1 = new TLatex(0.1,0.95,myString.str().c_str());
-  LumiTex1->SetTextSize(0.04);
+  LumiTex1->SetTextSize(0.05);
   LumiTex1->SetTextColor(kBlack);
   LumiTex1->SetNDC(true);
   LumiTex1->DrawLatex(0.1,0.95,myString.str().c_str());
 
   myString.str("");
   myString << "L = " << Lumi <<  " fb^{#font[122]{\55}1}";
-  TLatex* LumiTex2 = new TLatex(0.5,0.95,myString.str().c_str());
-  LumiTex2->SetTextSize(0.04);
+  TLatex* LumiTex2 = new TLatex(0.43,0.95,myString.str().c_str());
+  LumiTex2->SetTextSize(0.05);
   LumiTex2->SetTextColor(kBlack);
   LumiTex2->SetNDC(true);
-  LumiTex2->DrawLatex(0.5,0.95,myString.str().c_str());
+  LumiTex2->DrawLatex(0.43,0.95,myString.str().c_str());
 
   myString.str("");
   myString << "#sqrt{  }";
-  TLatex* LumiTex3 = new TLatex(0.85,0.94,myString.str().c_str());
+  TLatex* LumiTex3 = new TLatex(0.82,0.94,myString.str().c_str());
   LumiTex3->SetTextSize(0.053);
   LumiTex3->SetTextColor(kBlack);
   LumiTex3->SetNDC(true);
-  LumiTex3->DrawLatex(0.85,0.94,myString.str().c_str());
+  LumiTex3->DrawLatex(0.82,0.94,myString.str().c_str());
 
   myString.str("");
   myString << "s = 7 TeV";
-  TLatex* LumiTex4 = new TLatex(0.87,0.95,myString.str().c_str());
-  LumiTex4->SetTextSize(0.04);
+  TLatex* LumiTex4 = new TLatex(0.84,0.95,myString.str().c_str());
+  LumiTex4->SetTextSize(0.05);
   LumiTex4->SetTextColor(kBlack);
   LumiTex4->SetNDC(true);
-  LumiTex4->DrawLatex(0.87,0.95,myString.str().c_str());
+  LumiTex4->DrawLatex(0.84,0.95,myString.str().c_str());
 }
 
 

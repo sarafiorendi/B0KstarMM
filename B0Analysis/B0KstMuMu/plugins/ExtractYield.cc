@@ -468,7 +468,7 @@ void DrawString (double Lumi, RooPlot* myFrame)
   myString.clear(); myString.str("");
   myString << "CMS";
   TLatex* LumiTex1 = new TLatex(0.1,0.95,myString.str().c_str());
-  LumiTex1->SetTextSize(0.04);
+  LumiTex1->SetTextSize(0.05);
   LumiTex1->SetTextColor(kBlack);
   LumiTex1->SetNDC(true);
   if (myFrame == NULL) LumiTex1->DrawLatex(0.1,0.95,myString.str().c_str());
@@ -480,11 +480,11 @@ void DrawString (double Lumi, RooPlot* myFrame)
 
   myString.clear(); myString.str("");
   myString << "L = " << Lumi <<  " fb^{#font[122]{\55}1}";
-  TLatex* LumiTex2 = new TLatex(0.5,0.95,myString.str().c_str());
-  LumiTex2->SetTextSize(0.04);
+  TLatex* LumiTex2 = new TLatex(0.43,0.95,myString.str().c_str());
+  LumiTex2->SetTextSize(0.05);
   LumiTex2->SetTextColor(kBlack);
   LumiTex2->SetNDC(true);
-  if (myFrame == NULL) LumiTex2->DrawLatex(0.5,0.95,myString.str().c_str());
+  if (myFrame == NULL) LumiTex2->DrawLatex(0.43,0.95,myString.str().c_str());
   else
     {
       LumiTex2->Paint();
@@ -493,11 +493,11 @@ void DrawString (double Lumi, RooPlot* myFrame)
 
   myString.str("");
   myString << "#sqrt{  }";
-  TLatex* LumiTex3 = new TLatex(0.85,0.94,myString.str().c_str());
+  TLatex* LumiTex3 = new TLatex(0.82,0.94,myString.str().c_str());
   LumiTex3->SetTextSize(0.053);
   LumiTex3->SetTextColor(kBlack);
   LumiTex3->SetNDC(true);
-  if (myFrame == NULL) LumiTex3->DrawLatex(0.85,0.94,myString.str().c_str());
+  if (myFrame == NULL) LumiTex3->DrawLatex(0.82,0.94,myString.str().c_str());
   else
     {
       LumiTex3->Paint();
@@ -506,11 +506,11 @@ void DrawString (double Lumi, RooPlot* myFrame)
 
   myString.str("");
   myString << "s = 7 TeV";
-  TLatex* LumiTex4 = new TLatex(0.87,0.95,myString.str().c_str());
-  LumiTex4->SetTextSize(0.04);
+  TLatex* LumiTex4 = new TLatex(0.84,0.95,myString.str().c_str());
+  LumiTex4->SetTextSize(0.05);
   LumiTex4->SetTextColor(kBlack);
   LumiTex4->SetNDC(true);
-  if (myFrame == NULL) LumiTex4->DrawLatex(0.87,0.95,myString.str().c_str());
+  if (myFrame == NULL) LumiTex4->DrawLatex(0.84,0.95,myString.str().c_str());
   else
     {
       LumiTex4->Paint();
@@ -4118,9 +4118,10 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
   int nElements = 4;
   if (fitPSIintru == 1) nElements = 2;
   else if (GetVar(*TotalPDF,"nBkgPeak") != NULL) nElements = 5;
-  TCanvas* localCanv[2];
+  TCanvas* localCanv[3];
   localCanv[0] = new TCanvas("localCanv0","localCanv0",20,20,700,500);
   localCanv[1] = new TCanvas("localCanv1","localCanv1",20,20,700,500);
+  localCanv[2] = new TCanvas("localCanv2","localCanv2",20,20,700,500);
 
 
   // ###########################
@@ -4402,7 +4403,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
       // ################################
       if (!((FitType >= 21) && (FitType <= 25)) && ((GetVar(*TotalPDF,"FlS") != NULL) || (GetVar(*TotalPDF,"AfbS") != NULL) || (GetVar(*TotalPDF,"At2S") != NULL)))
 	{
-	  Canv->cd(3);
+	  localCanv[2]->cd();
 	  RooAbsReal* NLL;
 	  if (ApplyConstr == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
 	  else                     NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
@@ -4536,7 +4537,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	  // ###########################
 	  // # Background plot results #
 	  // ###########################
-	  Canv->cd(4);
+	  Canv->cd(3);
 	  RooPlot* myFrameLowSideB = y->frame(NBINS);
 	  dataSet->plotOn(myFrameLowSideB,Name(MakeName(dataSet,ID).c_str()),CutRange("lowSideband"));
 	  (*TotalPDF)->plotOn(myFrameLowSideB,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("lowSideband"));
@@ -4584,7 +4585,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	  // ###########################
 	  // # Background plot results #
 	  // ###########################
-	  Canv->cd(5);
+	  Canv->cd(4);
 	  RooPlot* myFrameSignalRegion = y->frame(NBINS);
 	  dataSet->plotOn(myFrameSignalRegion,Name(MakeName(dataSet,ID).c_str()),CutRange("signalRegion"));
 	  (*TotalPDF)->plotOn(myFrameSignalRegion,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("signalRegion"));
@@ -4632,7 +4633,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	  // ###########################
 	  // # Background plot results #
 	  // ###########################
-	  Canv->cd(6);
+	  Canv->cd(5);
 	  RooPlot* myFrameHighSideB = y->frame(NBINS);
 	  dataSet->plotOn(myFrameHighSideB,Name(MakeName(dataSet,ID).c_str()),CutRange("highSideband"));
 	  (*TotalPDF)->plotOn(myFrameHighSideB,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("highSideband"));
@@ -4697,11 +4698,13 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
     {
       delete localCanv[0];
       delete localCanv[1];
+      delete localCanv[2];
     }
   else
     {
       localCanv[0]->Update();
       localCanv[1]->Update();
+      localCanv[2]->Update();
     }
 
 
@@ -5814,10 +5817,11 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
   int nElements = 4;
   if (fitPSIintru == 1) nElements = 2;
   else if (GetVar(*TotalPDF,"nBkgPeak") != NULL) nElements = 5;
-  TCanvas* localCanv[3];
+  TCanvas* localCanv[4];
   localCanv[0] = new TCanvas("localCanv0","localCanv0",20,20,700,500);
   localCanv[1] = new TCanvas("localCanv1","localCanv1",20,20,700,500);
   localCanv[2] = new TCanvas("localCanv2","localCanv2",20,20,700,500);
+  localCanv[3] = new TCanvas("localCanv3","localCanv3",20,20,700,500);
 
 
   // ###########################
@@ -6200,7 +6204,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       if ((FitType != 26) && (GetVar(*TotalPDF,"FlS") != NULL) && (GetVar(*TotalPDF,"AfbS") != NULL))
 	{
 	  // @TMP@
-	  // Canv->cd(10);
+	  // localCanv[3]->cd();
 	  // RooAbsReal* NLL;
 	  // if (ApplyConstr == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
 	  // else                     NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
@@ -6617,12 +6621,14 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       delete localCanv[0];
       delete localCanv[1];
       delete localCanv[2];
+      delete localCanv[3];
     }
   else
     {
       localCanv[0]->Update();
       localCanv[1]->Update();
       localCanv[2]->Update();
+      localCanv[3]->Update();
     }
 
 
