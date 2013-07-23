@@ -3302,7 +3302,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
   double NLLvalue;
 
 
-  if (useEffPDF == true)
+  if ((useEffPDF == true) && (fitParam->operator[](0)->size() > 1))
     {
       // ##############################################################
       // # Compute integral of S*E for resonant channel and its error #
@@ -4762,7 +4762,7 @@ void IterativeMassAngleFitq2Bins (RooDataSet* dataSet,
     }
 
 
-  if (useEffPDF == true)
+  if ((useEffPDF == true) && (fitParam->operator[](0)->size() > 1))
     {
       // ##############################################################
       // # Compute integral of S*E for resonant channel and its error #
@@ -6672,7 +6672,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
   double NLLvalue;
   
 
-  if (useEffPDF == true)
+  if ((useEffPDF == true) && (fitParam->operator[](0)->size() > 1))
     {
       // ##############################################################
       // # Compute integral of S*E for resonant channel and its error #
@@ -8043,7 +8043,7 @@ int main(int argc, char** argv)
 		      VecHistoMeas[0]->SetYTitle("dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV )^{#font[122]{\55}2} )");
 		      VecHistoMeas[0]->GetYaxis()->SetRangeUser(0.0,1.2);
 
-		      cout << "\n@@@ Now fit to invariant mass per mumu q^2 bins @@@" << endl;
+		      cout << "\n@@@ Now fit invariant mass per mumu q^2 bins @@@" << endl;
 		      if (FitType == 1) IterativeMassFitq2Bins(SingleCandNTuple_RejectPsi,
 							       useEffPDF,
 							       PsiYield,PsiYerr,
@@ -8124,7 +8124,7 @@ int main(int argc, char** argv)
 		  VecHistoMeas[2]->GetYaxis()->SetRangeUser(0.0,1.0);
 		  VecHistoMeas[3]->GetYaxis()->SetRangeUser(0.0,1.2);
 
-		  cout << "\n@@@ Now fit to invariant mass and cos(theta_K) per mumu q^2 bins @@@" << endl;
+		  cout << "\n@@@ Now fit invariant mass and cos(theta_K) per mumu q^2 bins @@@" << endl;
 		  if ((FitType == 3) || (FitType == 33)) IterativeMassAngleFitq2Bins(SingleCandNTuple_RejectPsi,
 										     useEffPDF,
 										     PsiYield,PsiYerr,
@@ -8212,7 +8212,7 @@ int main(int argc, char** argv)
 		  VecHistoMeas[2]->GetYaxis()->SetRangeUser(0.0,1.0);
 		  VecHistoMeas[3]->GetYaxis()->SetRangeUser(0.0,1.2);
 		  
-		  cout << "\n@@@ Now fit to invariant mass and cos(theta_l) per mumu q^2 bins @@@" << endl;
+		  cout << "\n@@@ Now fit invariant mass and cos(theta_l) per mumu q^2 bins @@@" << endl;
 		  if ((FitType == 4) || (FitType == 34)) IterativeMassAngleFitq2Bins(SingleCandNTuple_RejectPsi,
 										     useEffPDF,
 										     PsiYield,PsiYerr,
@@ -8300,7 +8300,7 @@ int main(int argc, char** argv)
 		  VecHistoMeas[2]->GetYaxis()->SetRangeUser(-1.01,1.01);
 		  VecHistoMeas[2]->GetYaxis()->SetRangeUser(0.0,1.2);
 		  
-		  cout << "\n@@@ Now fit to invariant mass and phi per mumu q^2 bins @@@" << endl;
+		  cout << "\n@@@ Now fit invariant mass and phi per mumu q^2 bins @@@" << endl;
 		  if ((FitType == 5) || (FitType == 35)) IterativeMassAngleFitq2Bins(SingleCandNTuple_RejectPsi,
 										     useEffPDF,
 										     PsiYield,PsiYerr,
@@ -8387,7 +8387,7 @@ int main(int argc, char** argv)
 		  VecHistoMeas[1]->GetYaxis()->SetRangeUser(-1.0 - 0.01,1.0 + 0.01);
 		  VecHistoMeas[2]->GetYaxis()->SetRangeUser(0.0,1.2);
 
-		  cout << "\n@@@ Now fit to invariant mass, cos(theta_K) and cos(theta_l) per mumu q^2 bins @@@" << endl;
+		  cout << "\n@@@ Now fit invariant mass, cos(theta_K) and cos(theta_l) per mumu q^2 bins @@@" << endl;
 		  if ((FitType == 6) || (FitType == 36)) IterativeMass2AnglesFitq2Bins(SingleCandNTuple_RejectPsi,
 										       useEffPDF,
 										       PsiYield,PsiYerr,

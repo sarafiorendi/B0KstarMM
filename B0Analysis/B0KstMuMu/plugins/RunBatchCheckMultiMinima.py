@@ -1,7 +1,8 @@
-##############################################################
-# Program to fit with different parameter starting values    #
-# Must be run after generating new (random-)parameters files #
-##############################################################
+############################################################
+# Program to fit with different parameter starting values: #
+# 1. generate new (random-)parameters files                #
+# 2. use files at 1. to perform the fits                   #
+############################################################
 
 from os import system
 import sys
