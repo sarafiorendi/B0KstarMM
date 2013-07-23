@@ -114,7 +114,7 @@ using namespace RooFit;
 #define SAVEPLOT      false
 #define MakeMuMuPlots false
 #define MAKEGRAPHSCAN false // Make graphical scan of the physics-pdf*eff or physics-pdf alone (ony valid for GEN fit type options)
-#define USEMINOS      false
+#define USEMINOS      true
 #define UseSPwave     true
 
 // ##################
@@ -2163,26 +2163,27 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
   NCoeffPolyBKGcomb1 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC1"))->operator[](q2BinIndx).c_str());
   NCoeffPolyBKGpeak2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP2"))->operator[](q2BinIndx).c_str());
   NCoeffPolyBKGcomb2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC2"))->operator[](q2BinIndx).c_str());
-  
-  if (GetVar(TotalPDF,"nBkgPeak") != NULL)
-    {
-      for (unsigned int i = 1; i < NCoeffPolyBKGpeak1; i++)
-  	{
-  	  myString.clear(); myString.str("");
-  	  myString << "p1Poly" << i;
-  	  if (GetVar(TotalPDF,myString.str().c_str()) != NULL) TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() *
-  												      (fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorHi()) + fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorLo())) +
-  												      + GetVar(TotalPDF,myString.str().c_str())->getVal() - fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorLo()));
-  	}
-      for (unsigned int i = 1; i < NCoeffPolyBKGpeak2; i++)
-  	{
-  	  myString.clear(); myString.str("");
-  	  myString << "p2Poly" << i;
-  	  if (GetVar(TotalPDF,myString.str().c_str()) != NULL) TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() *
-  												      (fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorHi()) + fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorLo())) +
-  												      + GetVar(TotalPDF,myString.str().c_str())->getVal() - fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorLo()));
-  	}
-    }
+
+  // @TMP@
+  // if (GetVar(TotalPDF,"nBkgPeak") != NULL)
+  //   {
+  //     for (unsigned int i = 1; i < NCoeffPolyBKGpeak1; i++)
+  // 	{
+  // 	  myString.clear(); myString.str("");
+  // 	  myString << "p1Poly" << i;
+  // 	  if (GetVar(TotalPDF,myString.str().c_str()) != NULL) TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() *
+  // 												      (fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorHi()) + fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorLo())) +
+  // 												      + GetVar(TotalPDF,myString.str().c_str())->getVal() - fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorLo()));
+  // 	}
+  //     for (unsigned int i = 1; i < NCoeffPolyBKGpeak2; i++)
+  // 	{
+  // 	  myString.clear(); myString.str("");
+  // 	  myString << "p2Poly" << i;
+  // 	  if (GetVar(TotalPDF,myString.str().c_str()) != NULL) TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() *
+  // 												      (fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorHi()) + fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorLo())) +
+  // 												      + GetVar(TotalPDF,myString.str().c_str())->getVal() - fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorLo()));
+  // 	}
+  //   }
 
   for (unsigned int i = 1; i < NCoeffPolyBKGcomb1; i++)
     {
@@ -8631,8 +8632,8 @@ int main(int argc, char** argv)
 	  cout << "./ExtractYield [FitType] [input/output[if toy-MC]File.root] [noEffCorr EffCorrAnalyPDF EffCorrGenAnalyPDF] [q^2 bin to fit (0 - ...)] [[if EffCorrGenAnalyPDF]effFileName.txt AND indx] [ParameterFile.txt] [indx]" << endl;
 
 	  cout << "\n --> noEffCorr          = no eff. correction" << endl;
-	  cout << " --> EffCorrAnalyPDF    = analytical eff. correction within the p.d.f." << endl;
-	  cout << " --> EffCorrGenAnalyPDF = analytical eff. correction within the p.d.f. to compute systematic error" << endl;
+	  cout << " --> EffCorrAnalyPDF    = analytical eff. correction used in the p.d.f." << endl;
+	  cout << " --> EffCorrGenAnalyPDF = analytical eff. correction used in the p.d.f. to compute systematic error" << endl;
 
 	  cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  Signa  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
 	  cout << "FitType = 1: 1D branching fraction per q^2 bin" << endl;
