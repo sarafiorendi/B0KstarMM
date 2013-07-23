@@ -1,3 +1,7 @@
+####################################################################
+# Program to fit with different pre-generated efficiency functions #
+####################################################################
+
 #!/usr/bin/perl
 
 if (@ARGV == 2)

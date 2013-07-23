@@ -1,3 +1,7 @@
+#################################
+# Program to run toy-MC studies #
+#################################
+
 from os import system, chdir
 import sys
 

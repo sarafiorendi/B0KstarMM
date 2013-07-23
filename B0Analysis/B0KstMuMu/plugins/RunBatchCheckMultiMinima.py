@@ -1,3 +1,7 @@
+###########################################################
+# Program to fit with different parameter starting values #
+###########################################################
+
 from os import system
 import sys
 
