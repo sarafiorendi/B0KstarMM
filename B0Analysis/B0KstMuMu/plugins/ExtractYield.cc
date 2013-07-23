@@ -2167,7 +2167,7 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
   // @TMP@
   // if (GetVar(TotalPDF,"nBkgPeak") != NULL)
   //   {
-  //     for (unsigned int i = 1; i < NCoeffPolyBKGpeak1; i++)
+  //     for (unsigned int i = 0; i < NCoeffPolyBKGpeak1; i++)
   // 	{
   // 	  myString.clear(); myString.str("");
   // 	  myString << "p1Poly" << i;
@@ -2175,7 +2175,7 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
   // 												      (fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorHi()) + fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorLo())) +
   // 												      + GetVar(TotalPDF,myString.str().c_str())->getVal() - fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorLo()));
   // 	}
-  //     for (unsigned int i = 1; i < NCoeffPolyBKGpeak2; i++)
+  //     for (unsigned int i = 0; i < NCoeffPolyBKGpeak2; i++)
   // 	{
   // 	  myString.clear(); myString.str("");
   // 	  myString << "p2Poly" << i;
@@ -2185,13 +2185,13 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
   // 	}
   //   }
 
-  for (unsigned int i = 1; i < NCoeffPolyBKGcomb1; i++)
+  for (unsigned int i = 0; i < NCoeffPolyBKGcomb1; i++)
     {
       myString.clear(); myString.str("");
       myString << "c1Poly" << i;
       if (GetVar(TotalPDF,myString.str().c_str()) != NULL) TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE/2.0);
     }
-  for (unsigned int i = 1; i < NCoeffPolyBKGcomb2; i++)
+  for (unsigned int i = 0; i < NCoeffPolyBKGcomb2; i++)
     {
       myString.clear(); myString.str("");
       myString << "c2Poly" << i;
