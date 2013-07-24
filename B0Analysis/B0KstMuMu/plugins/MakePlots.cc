@@ -20,6 +20,7 @@
 #include <TLatex.h>
 #include <TPaveStats.h>
 #include <TExec.h>
+#include <TGraphBentErrors.h>
 #endif
 
 #include <stdlib.h>
@@ -1246,6 +1247,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
   gStyle->SetPadRightMargin(0.02);
+  gStyle->SetPadTopMargin(0.11);
   gStyle->SetPadBottomMargin(0.12);
   gStyle->SetTitleOffset(1.1,"x");
   gStyle->SetTitleOffset(0.9,"y");
@@ -1253,7 +1255,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   gStyle->SetTitleSize(0.05,"y");
   gStyle->SetLabelSize(0.05,"x");
   gStyle->SetLabelSize(0.05,"y");
-  gStyle->SetEndErrorSize(10);
+  gStyle->SetEndErrorSize(5);
   TGaxis::SetMaxDigits(3);
 
   
@@ -1277,10 +1279,11 @@ void MakePhysicsPlots (unsigned int PlotType)
   else                   canv0 = new TCanvas("canv0","canv0",10,10,700,500);
   TPad *pad1, *pad2, *pad3;
   TPaveText* paveText = NULL;
-  TGraphAsymmErrors* ge0  = NULL;
+  TGraphAsymmErrors* ge0   = NULL;
   TGraphAsymmErrors* ge1  = NULL;
   TGraphAsymmErrors* ge00 = NULL;
   TGraphAsymmErrors* ge11 = NULL;
+  TGraphBentErrors* geb   = NULL;
   TLine* line;
 
 
@@ -1653,10 +1656,30 @@ void MakePhysicsPlots (unsigned int PlotType)
       geStepTh->Draw("same e2");
       
       ge00->Draw("same pe1");
-      TExec* ex = new TExec("ex","gStyle->SetEndErrorSize(5);");
-      ex->Draw();
-      ge0->Draw("same pe1");
-      
+      vector<double> exld;
+      vector<double> exhd;
+      vector<double> eyld;
+      vector<double> eyhd;
+      for (int i = 0; i < ge0->GetN(); i++)
+	{
+	  exld.push_back(0.0);
+	  exhd.push_back(0.0);
+	  eyld.push_back(0.4);
+	  eyhd.push_back(-0.4);
+	}
+      geb = new TGraphBentErrors(ge0->GetN(), ge0->GetX(), ge0->GetY(), ge0->GetEXlow(), ge0->GetEXhigh(), ge0->GetEYlow(), ge0->GetEYhigh(), &exld[0], &exhd[0], &eyld[0], &eyhd[0]);
+      geb->SetMarkerColor(kBlack);
+      geb->SetMarkerStyle(20);
+      geb->SetMarkerSize(1.2);
+      geb->SetLineColor(kBlack);
+      geb->SetLineWidth(2);
+      geb->SetLineStyle(kDashed);
+      exld.clear();
+      exhd.clear();
+      eyld.clear();
+      eyhd.clear();
+      geb->Draw("same pe1");
+
       leg->AddEntry(ge00,"Data","EPL");
       leg->AddEntry(geSmoothTh,"SM","F");
       leg->AddEntry(geStepTh,"<SM>","F");

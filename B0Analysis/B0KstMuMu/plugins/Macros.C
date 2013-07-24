@@ -1749,6 +1749,7 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
   gStyle->SetPadRightMargin(0.02);
+  gStyle->SetPadTopMargin(0.11);
   gStyle->SetPadBottomMargin(0.12);
   gStyle->SetTitleOffset(1.1,"x");
   gStyle->SetTitleOffset(0.9,"y");

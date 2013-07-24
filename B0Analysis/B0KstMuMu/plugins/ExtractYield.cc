@@ -2542,7 +2542,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       (*TotalPDFJPsi)->plotOn(myFrameJPsi,Name((*TotalPDFJPsi)->getPlotLabel()),LineColor(kBlack));
       (*TotalPDFJPsi)->plotOn(myFrameJPsi,Components(*JPsi),LineStyle(7),LineColor(kBlue));
       if (justKeepPsi != true) (*TotalPDFJPsi)->plotOn(myFrameJPsi,Components(*BkgmumuMassJPsi),LineStyle(4),LineColor(kRed));
-      (*TotalPDFJPsi)->paramOn(myFrameJPsi,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nJPsiMass,*nBkgMassJPsi)));
+      (*TotalPDFJPsi)->paramOn(myFrameJPsi,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.88),Parameters(RooArgSet(*nJPsiMass,*nBkgMassJPsi)));
 
       myString.clear(); myString.str("");
       myString << (*TotalPDFJPsi)->getPlotLabel() << "_paramBox";
@@ -2663,7 +2663,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       (*TotalPDFPsiP)->plotOn(myFramePsiP,Name((*TotalPDFPsiP)->getPlotLabel()),LineColor(kBlack));
       (*TotalPDFPsiP)->plotOn(myFramePsiP,Components(*PsiP),LineStyle(7),LineColor(kBlue));
       if (justKeepPsi != true) (*TotalPDFPsiP)->plotOn(myFramePsiP,Components(*BkgmumuMassPsiP),LineStyle(4),LineColor(kRed));
-      (*TotalPDFPsiP)->paramOn(myFramePsiP,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nPsiPMass,*nBkgMassPsiP)));
+      (*TotalPDFPsiP)->paramOn(myFramePsiP,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.88),Parameters(RooArgSet(*nPsiPMass,*nBkgMassPsiP)));
 
       myString.clear(); myString.str("");
       myString << (*TotalPDFPsiP)->getPlotLabel() << "_paramBox";
@@ -3142,9 +3142,9 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
     }
   if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameX,Components(*BkgMassPeak),LineStyle(3),LineColor(kViolet));
 
-  if      (fitPSIintru == 0) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nSig,*nBkgComb)));
-  else if (fitPSIintru == 1) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nBkgPeak)));
-  else                       (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nSig,*nBkgComb,*nBkgPeak)),ShowConstants(true));
+  if      (fitPSIintru == 0) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.88),Parameters(RooArgSet(*nSig,*nBkgComb)));
+  else if (fitPSIintru == 1) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.88),Parameters(RooArgSet(*nBkgPeak)));
+  else                       (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.88),Parameters(RooArgSet(*nSig,*nBkgComb,*nBkgPeak)),ShowConstants(true));
   // Format options:
   // - "N" add name
   // - "E" add error
@@ -3361,7 +3361,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // ######################
       // # Make external text #
       // ######################
-      extText[i] = new TPaveText(0.72,0.53,0.97,0.63,"NDC");
+      extText[i] = new TPaveText(0.63,0.5,0.97,0.63,"NDC");
       extText[i]->AddText(Form("%s%.2f%s%.2f%s","q^{2}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," (GeV^{2})"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
@@ -4160,7 +4160,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	  dataSet->plotOn(myFrameY,Name(MakeName(dataSet,ID).c_str()));
 	  (*TotalPDF)->plotOn(myFrameY,Name((*TotalPDF)->getPlotLabel()));
 
-	  (*TotalPDF)->paramOn(myFrameY,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nSig)));
+	  (*TotalPDF)->paramOn(myFrameY,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.88),Parameters(RooArgSet(*nSig)));
 
 	  myString.clear(); myString.str("");
 	  myString << (*TotalPDF)->getPlotLabel() << "_paramBox";
@@ -4318,9 +4318,9 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	}
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameX,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet));
       
-      if      (fitPSIintru == 0) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nSig,*nBkgComb)));
-      else if (fitPSIintru == 1) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nBkgPeak)));
-      else                       (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nSig,*nBkgComb,*nBkgPeak)),ShowConstants(true));
+      if      (fitPSIintru == 0) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.88),Parameters(RooArgSet(*nSig,*nBkgComb)));
+      else if (fitPSIintru == 1) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.88),Parameters(RooArgSet(*nBkgPeak)));
+      else                       (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.88),Parameters(RooArgSet(*nSig,*nBkgComb,*nBkgPeak)),ShowConstants(true));
 
       myString.clear(); myString.str("");
       myString << (*TotalPDF)->getPlotLabel() << "_paramBox";
@@ -4550,7 +4550,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	    }
 	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameLowSideB,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet),ProjectionRange("lowSideband"));
 
-	  TPaveText* paveTextLowSideB = new TPaveText(0.13,0.75,0.4,0.89,"NDC");
+	  TPaveText* paveTextLowSideB = new TPaveText(0.13,0.75,0.4,0.88,"NDC");
 	  paveTextLowSideB->AddText("Low sideband");
 	  paveTextLowSideB->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameLowSideB->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextLowSideB->SetTextAlign(11);
@@ -4598,7 +4598,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	    }
 	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegion,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet),ProjectionRange("signalRegion"));
 
-	  TPaveText* paveTextSignalRegion = new TPaveText(0.13,0.75,0.4,0.89,"NDC");
+	  TPaveText* paveTextSignalRegion = new TPaveText(0.13,0.75,0.4,0.88,"NDC");
 	  paveTextSignalRegion->AddText(Form("%s%.1f%s","Signal region: #pm",Utility->GetGenericParam("NSigmaB0S")," < #sigma >"));
 	  paveTextSignalRegion->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameSignalRegion->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextSignalRegion->SetTextAlign(11);
@@ -4646,7 +4646,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	    }
 	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameHighSideB,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet),ProjectionRange("highSideband"));
 
-	  TPaveText* paveTextHighSideB = new TPaveText(0.13,0.75,0.4,0.89,"NDC");
+	  TPaveText* paveTextHighSideB = new TPaveText(0.13,0.75,0.4,0.88,"NDC");
 	  paveTextHighSideB->AddText("High sideband");
 	  paveTextHighSideB->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameHighSideB->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextHighSideB->SetTextAlign(11);
@@ -4824,7 +4824,7 @@ void IterativeMassAngleFitq2Bins (RooDataSet* dataSet,
       // ######################
       // # Make external text #
       // ######################
-      extText[i] = new TPaveText(0.72,0.53,0.97,0.63,"NDC");
+      extText[i] = new TPaveText(0.63,0.5,0.97,0.63,"NDC");
       extText[i]->AddText(Form("%s%.2f%s%.2f%s","q^{2}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," (GeV^{2})"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
@@ -5861,7 +5861,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  dataSet->plotOn(myFrameY,Name(MakeName(dataSet,ID).c_str()));
 	  (*TotalPDF)->plotOn(myFrameY,Name((*TotalPDF)->getPlotLabel()));
 
-	  (*TotalPDF)->paramOn(myFrameY,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nSig)));
+	  (*TotalPDF)->paramOn(myFrameY,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.88),Parameters(RooArgSet(*nSig)));
       
 	  myString.clear(); myString.str("");
 	  myString << (*TotalPDF)->getPlotLabel() << "_paramBox";
@@ -5890,7 +5890,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  dataSet->plotOn(myFrameZ,Name(MakeName(dataSet,ID).c_str()));
 	  (*TotalPDF)->plotOn(myFrameZ,Name((*TotalPDF)->getPlotLabel()));
 
-	  (*TotalPDF)->paramOn(myFrameZ,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nSig)));
+	  (*TotalPDF)->paramOn(myFrameZ,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.88),Parameters(RooArgSet(*nSig)));
       
 	  myString.clear(); myString.str("");
 	  myString << (*TotalPDF)->getPlotLabel() << "_paramBox";
@@ -6066,9 +6066,9 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameX,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet));
 
-      if      (fitPSIintru == 0) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nSig,*nBkgComb)));
-      else if (fitPSIintru == 1) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nBkgPeak)));
-      else                       (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.89),Parameters(RooArgSet(*nSig,*nBkgComb,*nBkgPeak)),ShowConstants(true));
+      if      (fitPSIintru == 0) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.88),Parameters(RooArgSet(*nSig,*nBkgComb)));
+      else if (fitPSIintru == 1) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.88),Parameters(RooArgSet(*nBkgPeak)));
+      else                       (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.88),Parameters(RooArgSet(*nSig,*nBkgComb,*nBkgPeak)),ShowConstants(true));
       
       myString.clear(); myString.str("");
       myString << (*TotalPDF)->getPlotLabel() << "_paramBox";
@@ -6109,7 +6109,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameY,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet));
 
-      TPaveText* paveTextY = new TPaveText(0.13,0.8,0.4,0.88,"NDC");
+      TPaveText* paveTextY = new TPaveText(0.13,0.8,0.4,0.86,"NDC");
       paveTextY->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
       paveTextY->SetTextAlign(11);
       paveTextY->SetBorderSize(0.0);
@@ -6162,7 +6162,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	}
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameZ,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet));
 
-      TPaveText* paveTextZ = new TPaveText(0.13,0.8,0.4,0.88,"NDC");
+      TPaveText* paveTextZ = new TPaveText(0.13,0.8,0.4,0.86,"NDC");
       paveTextZ->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
       paveTextZ->SetTextAlign(11);
       paveTextZ->SetBorderSize(0.0);
@@ -6324,7 +6324,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	    }
 	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet),ProjectionRange("lowSideband"));
 
-	  TPaveText* paveTextLowSideBY = new TPaveText(0.13,0.75,0.4,0.89,"NDC");
+	  TPaveText* paveTextLowSideBY = new TPaveText(0.13,0.75,0.4,0.88,"NDC");
 	  paveTextLowSideBY->AddText("Low sideband");
 	  paveTextLowSideBY->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameLowSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextLowSideBY->SetTextAlign(11);
@@ -6372,7 +6372,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	    }
 	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet),ProjectionRange("signalRegion"));
 
-	  TPaveText* paveTextSignalRegionY = new TPaveText(0.13,0.75,0.4,0.89,"NDC");
+	  TPaveText* paveTextSignalRegionY = new TPaveText(0.13,0.75,0.4,0.88,"NDC");
 	  paveTextSignalRegionY->AddText(Form("%s%.1f%s","Signal region: #pm",Utility->GetGenericParam("NSigmaB0S")," < #sigma >"));
 	  paveTextSignalRegionY->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameSignalRegionY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextSignalRegionY->SetTextAlign(11);
@@ -6420,7 +6420,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	    }
 	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet),ProjectionRange("highSideband"));
 
-	  TPaveText* paveTextHighSideBY = new TPaveText(0.13,0.75,0.4,0.89,"NDC");
+	  TPaveText* paveTextHighSideBY = new TPaveText(0.13,0.75,0.4,0.88,"NDC");
 	  paveTextHighSideBY->AddText("High sideband");
 	  paveTextHighSideBY->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameHighSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextHighSideBY->SetTextAlign(11);
@@ -6473,7 +6473,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	    }
 	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet),ProjectionRange("lowSideband"));
 
-	  TPaveText* paveTextLowSideBZ = new TPaveText(0.13,0.75,0.4,0.89,"NDC");
+	  TPaveText* paveTextLowSideBZ = new TPaveText(0.13,0.75,0.4,0.88,"NDC");
 	  paveTextLowSideBZ->AddText("Low sideband");
 	  paveTextLowSideBZ->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameLowSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextLowSideBZ->SetTextAlign(11);
@@ -6521,7 +6521,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	    }
 	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet),ProjectionRange("signalRegion"));
 
-	  TPaveText* paveTextSignalRegionZ = new TPaveText(0.13,0.75,0.4,0.89,"NDC");
+	  TPaveText* paveTextSignalRegionZ = new TPaveText(0.13,0.75,0.4,0.88,"NDC");
 	  paveTextSignalRegionZ->AddText(Form("%s%.1f%s","Signal region: #pm",Utility->GetGenericParam("NSigmaB0S")," < #sigma >"));
 	  paveTextSignalRegionZ->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameSignalRegionZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextSignalRegionZ->SetTextAlign(11);
@@ -6569,7 +6569,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	    }
 	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet),ProjectionRange("highSideband"));
 
-	  TPaveText* paveTextHighSideBZ = new TPaveText(0.13,0.75,0.4,0.89,"NDC");
+	  TPaveText* paveTextHighSideBZ = new TPaveText(0.13,0.75,0.4,0.88,"NDC");
 	  paveTextHighSideBZ->AddText("High sideband");
 	  paveTextHighSideBZ->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameHighSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextHighSideBZ->SetTextAlign(11);
@@ -6735,7 +6735,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // ######################
       // # Make external text #
       // ######################
-      extText[i] = new TPaveText(0.72,0.53,0.97,0.63,"NDC");
+      extText[i] = new TPaveText(0.63,0.5,0.97,0.63,"NDC");
       extText[i]->AddText(Form("%s%.2f%s%.2f%s","q^{2}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," (GeV^{2})"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
@@ -7635,7 +7635,14 @@ int main(int argc, char** argv)
 	  gStyle->SetOptStat(1110);
 	  gStyle->SetOptTitle(0);
 	  gStyle->SetPadRightMargin(0.02);
-	  gStyle->SetTitleOffset(1.25,"y");
+	  gStyle->SetPadTopMargin(0.11);
+	  gStyle->SetPadBottomMargin(0.12);
+	  gStyle->SetTitleOffset(1.05,"x");
+	  gStyle->SetTitleOffset(1.0,"y");
+	  gStyle->SetTitleSize(0.05,"x");
+	  gStyle->SetTitleSize(0.05,"y");
+	  gStyle->SetLabelSize(0.05,"x");
+	  gStyle->SetLabelSize(0.05,"y");
 	  TGaxis::SetMaxDigits(3);
 
 
@@ -8707,8 +8714,8 @@ int main(int argc, char** argv)
       cout << "./ExtractYield [FitType] [input/output[if toy-MC]File.root] [noEffCorr EffCorrAnalyPDF EffCorrGenAnalyPDF] [q^2 bin to fit (0 - ...)] [[if EffCorrGenAnalyPDF]effFileName.txt AND indx] [ParameterFile.txt] [indx]" << endl;
 
       cout << "\n --> noEffCorr          = no eff. correction" << endl;
-      cout << " --> EffCorrAnalyPDF    = analytical eff. correction within the p.d.f." << endl;
-      cout << " --> EffCorrGenAnalyPDF = analytical eff. correction within the p.d.f. to compute systematic error" << endl;
+      cout << " --> EffCorrAnalyPDF    = analytical eff. correction used in the p.d.f." << endl;
+      cout << " --> EffCorrGenAnalyPDF = analytical eff. correction used in the p.d.f. to compute systematic error" << endl;
 
       cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  Signa  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "FitType = 1: 1D branching fraction per q^2 bin" << endl;
