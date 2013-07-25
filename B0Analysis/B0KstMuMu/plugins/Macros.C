@@ -1664,9 +1664,9 @@ TGraphAsymmErrors* readData (TString fileName, int dataType, int color, int mark
   printData(nBins,V1,V2,V3,V4,V5,V6);
 
   TGraphAsymmErrors* gra = new TGraphAsymmErrors(V1,V4,V2,V3,V5,V6);
-  if      (dataType == 0) gra->SetTitle(";q^{2} ( GeV )^{2}; F_{L}");
-  else if (dataType == 1) gra->SetTitle(";q^{2} ( GeV )^{2}; A_{FB}");
-  else if (dataType == 2) gra->SetTitle(";q^{2} ( GeV )^{2}; dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV )^{#font[122]{\55}2} )");
+  if      (dataType == 0) gra->SetTitle(";q^{2} ( GeV^{2} ); F_{L}");
+  else if (dataType == 1) gra->SetTitle(";q^{2} ( GeV^{2} ); A_{FB}");
+  else if (dataType == 2) gra->SetTitle(";q^{2} ( GeV^{2} ); dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV^{#font[122]{\55}2} ))");
   if (doFill == true) gra->SetFillColor(color);
   else
     {
@@ -1757,7 +1757,7 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
   gStyle->SetTitleSize(0.05,"y");
   gStyle->SetLabelSize(0.05,"x");
   gStyle->SetLabelSize(0.05,"y");
-  gStyle->SetEndErrorSize(5);
+  gStyle->SetEndErrorSize(8);
   TGaxis::SetMaxDigits(3);
 
 
@@ -1767,17 +1767,17 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
   if (dataType == 0)
     {
       h0->GetYaxis()->SetRangeUser(0.0,1.0);
-      h0->SetTitle(";q^{2} ( GeV )^{2}; F_{L}");      
+      h0->SetTitle(";q^{2} ( GeV^{2} ); F_{L}");      
     }
   else if (dataType == 1)
     {
       h0->GetYaxis()->SetRangeUser(-1.0,1.0);
-      h0->SetTitle(";q^{2} ( GeV )^{2}; A_{FB}");
+      h0->SetTitle(";q^{2} ( GeV^{2} ); A_{FB}");
     }
   else if (dataType == 2)
     {
       h0->GetYaxis()->SetRangeUser(0.0,1.2);
-      h0->SetTitle(";q^{2} ( GeV )^{2}; dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV )^{#font[122]{\55}2} )");
+      h0->SetTitle(";q^{2} ( GeV^{2} ); dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV^{#font[122]{\55}2} ))");
     }
   h0->SetLineStyle(2);
 

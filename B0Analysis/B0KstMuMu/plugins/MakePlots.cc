@@ -1255,7 +1255,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   gStyle->SetTitleSize(0.05,"y");
   gStyle->SetLabelSize(0.05,"x");
   gStyle->SetLabelSize(0.05,"y");
-  gStyle->SetEndErrorSize(5);
+  gStyle->SetEndErrorSize(8);
   TGaxis::SetMaxDigits(3);
 
   
@@ -1307,7 +1307,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-0.02,1.0);
-      ge0->SetTitle(";q^{2} ( GeV )^{2};F_{L}");
+      ge0->SetTitle(";q^{2} ( GeV^{2} );F_{L}");
 
       Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"Fl",false);
       ge1->SetMarkerColor(kBlue);
@@ -1319,7 +1319,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge1->SetLineWidth(2);
       ge1->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge1->GetYaxis()->SetRangeUser(-0.02,1.0);
-      ge1->SetTitle(";q^{2} ( GeV )^{2};F_{L}");
+      ge1->SetTitle(";q^{2} ( GeV^{2} );F_{L}");
      }
   else if (PlotType == 1) // Afb
     {
@@ -1333,7 +1333,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-1.04,1.0);
-      ge0->SetTitle(";q^{2} ( GeV )^{2};A_{FB}");
+      ge0->SetTitle(";q^{2} ( GeV^{2} );A_{FB}");
  
       Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"Afb",false);
       ge1->SetMarkerColor(kBlue);
@@ -1345,7 +1345,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge1->SetLineWidth(2);
       ge1->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge1->GetYaxis()->SetRangeUser(-1.04,1.0);
-      ge1->SetTitle(";q^{2} ( GeV )^{2};A_{FB}");
+      ge1->SetTitle(";q^{2} ( GeV^{2} );A_{FB}");
     }
   else if (PlotType == 2) // Branching fraction
     {
@@ -1359,7 +1359,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(0.0,1.2);
-      ge0->SetTitle(";q^{2} ( GeV )^{2};dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV )^{#font[122]{\55}2} )");
+      ge0->SetTitle(";q^{2} ( GeV^{2} );dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV^{#font[122]{\55}2} ))");
  
       Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"dBFdq2",false);
       ge1->SetMarkerColor(kBlue);
@@ -1371,7 +1371,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge1->SetLineWidth(2);
       ge1->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge1->GetYaxis()->SetRangeUser(0.0,1.2);
-      ge1->SetTitle(";q^{2} ( GeV )^{2};dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV )^{#font[122]{\55}2} )");
+      ge1->SetTitle(";q^{2} ( GeV^{2} );dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV^{#font[122]{\55}2} ))");
     }
   else if (PlotType == 10) // FL
     {
@@ -1383,7 +1383,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-0.02,1.0);
-      ge0->SetTitle(";q^{2} ( GeV )^{2};F_{L}");
+      ge0->SetTitle(";q^{2} ( GeV^{2} );F_{L}");
     }
   else if (PlotType == 11) // Afb
     {
@@ -1395,7 +1395,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-1.04,1.0);
-      ge0->SetTitle(";q^{2} ( GeV )^{2};A_{FB}");
+      ge0->SetTitle(";q^{2} ( GeV^{2} );A_{FB}");
     }
   else if (PlotType == 12) // Branching fraction
     {
@@ -1407,7 +1407,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(0.0,1.2);
-      ge0->SetTitle(";q^{2} ( GeV )^{2};dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV )^{#font[122]{\55}2} )");
+      ge0->SetTitle(";q^{2} ( GeV^{2} );dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV^{#font[122]{\55}2} ))");
     }
   else
     {
@@ -1525,7 +1525,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   else if (PlotType == 10) // Fl
     {
       geSmoothTh->GetYaxis()->SetRangeUser(-0.02,1.0);
-      geSmoothTh->SetTitle(";q^{2} ( GeV )^{2};F_{L}");
+      geSmoothTh->SetTitle(";q^{2} ( GeV^{2} );F_{L}");
 
 
       // ############################################
@@ -1555,7 +1555,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   else if (PlotType == 11) // Afb
     {
       geSmoothTh->GetYaxis()->SetRangeUser(-1.04,1.0);
-      geSmoothTh->SetTitle(";q^{2} ( GeV )^{2};A_{FB}");
+      geSmoothTh->SetTitle(";q^{2} ( GeV^{2} );A_{FB}");
 
 
       // ############################################
@@ -1585,7 +1585,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   else if (PlotType == 12) // Branching fraction
     {
       geSmoothTh->GetYaxis()->SetRangeUser(0.0,1.2);
-      geSmoothTh->SetTitle(";q^{2} ( GeV )^{2};dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV )^{#font[122]{\55}2} )");
+      geSmoothTh->SetTitle(";q^{2} ( GeV^{2} );dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV^{#font[122]{\55}2} ))");
 
 
       // ############################################
@@ -1656,6 +1656,9 @@ void MakePhysicsPlots (unsigned int PlotType)
       geStepTh->Draw("same e2");
       
       ge00->Draw("same pe1");
+      // ###################################
+      // # Code to make slanted error bars #
+      // ###################################
       vector<double> exld;
       vector<double> exhd;
       vector<double> eyld;
@@ -1678,7 +1681,8 @@ void MakePhysicsPlots (unsigned int PlotType)
       exhd.clear();
       eyld.clear();
       eyhd.clear();
-      geb->Draw("same pe1");
+      // geb->Draw("same pe1");
+      ge0->Draw("same pez");
 
       leg->AddEntry(ge00,"Data","EPL");
       leg->AddEntry(geSmoothTh,"SM","F");
@@ -1754,7 +1758,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   cout << "\n@@@ Global chi2 = " << myGlobalChi2 / ((double)DoF) << " (" << myGlobalChi2 << "/" << ((double)DoF) << ") @@@" << endl;
   myGlobalChi2 = myGlobalChi2 / ((double)DoF);
 
-  chi2Histo->SetTitle(";q^{2} ( GeV )^{2};#chi^{2}");
+  chi2Histo->SetTitle(";q^{2} ( GeV^{2} );#chi^{2}");
   chi2Histo->GetXaxis()->SetLabelSize(0.06);
   chi2Histo->GetXaxis()->SetTitleOffset(0.8);
   chi2Histo->GetXaxis()->SetTitleSize(0.07);
@@ -1803,7 +1807,7 @@ void MakePhysicsPlots (unsigned int PlotType)
     else probHisto->SetBinContent(i+1,0.0);
   probLeg->AddEntry(probHisto,"p-value");
 
-  probHisto->SetTitle(";q^{2} ( GeV )^{2};p-value");
+  probHisto->SetTitle(";q^{2} ( GeV^{2} );p-value");
   probHisto->GetXaxis()->SetLabelSize(0.06);
   probHisto->GetXaxis()->SetTitleOffset(0.8);
   probHisto->GetXaxis()->SetTitleSize(0.07);
