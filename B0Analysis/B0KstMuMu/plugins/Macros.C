@@ -1757,6 +1757,7 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
   gStyle->SetTitleSize(0.05,"y");
   gStyle->SetLabelSize(0.05,"x");
   gStyle->SetLabelSize(0.05,"y");
+  gStyle->SetEndErrorSize(5);
   TGaxis::SetMaxDigits(3);
 
 
@@ -1787,8 +1788,8 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
   dVar.push_back(readData("./ExperimentComparison/CMS.data",  dataType,1,20,false,noHbar,0.0*offset));
   // dVar.push_back(readData("./ExperimentComparison/LHCb_0_37fb.data",dataType,2,21,false,noHbar,0.0*offset));
   dVar.push_back(readData("./ExperimentComparison/LHCb_1fb.data",dataType,2,21,false,noHbar,0.0*offset));
-  // if (dataType != 2) dVar.push_back(readData("./ExperimentComparison/Atlas.data",dataType,4,22,false,noHbar,-3.0*offset));
-  dVar.push_back(readData("./ExperimentComparison/BaBar.data",dataType,6,23,false,noHbar,2.0*offset));
+  // if (dataType != 2) dVar.push_back(readData("./ExperimentComparison/Atlas.data",dataType,9,22,false,noHbar,-3.0*offset));
+  dVar.push_back(readData("./ExperimentComparison/BaBar.data",dataType,4,23,false,noHbar,2.0*offset));
   dVar.push_back(readData("./ExperimentComparison/Belle.data",dataType,8,28,false,noHbar,-2.0*offset));
   dVar.push_back(readData("./ExperimentComparison/CDF.data",  dataType,kGray+1,29,false,noHbar,-1.0*offset));
 
