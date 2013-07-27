@@ -95,7 +95,7 @@ using namespace RooFit;
 #define MULTYIELD 1.0       // Multiplication factor to the number of entry in toy-MC
 #define NCOEFFPOLYBKG 5     // Maximum number of coefficients (= degree+1) of the polynomial describing the background in the angular variables
 #define SLEWRATECONSTR 1e-2 // Fraction of Afb allowed interval for the p.d.f. constraint to transit from 0 to max
-#define NORMBIN 3           // Bin used to normalize the yields to compute dBF/dq2
+#define NORMBIN 3           // Bin used to normalize the yields to compute dBF/dq^2
 #define POLYCOEFRANGE 2.0   // Polynomial coefficients range for parameter regeneration
 
 #define nJPSIS 70000.0
@@ -123,7 +123,7 @@ using namespace RooFit;
 #define PARAMETERFILEIN  "../python/ParameterFile.txt"
 #define PARAMETERFILEOUT "ParameterFile.txt"
 #define FitSysFILEOutput "FitSystematics_q2Bin"
-#define FitSysFILEInput  "../../Efficiency/EffSystematics/FitSystematics_q2Bin" // The protocol for this file is: ID --- FL --- AFB --- dBF/dq2 --- NLL
+#define FitSysFILEInput  "../../Efficiency/EffSystematics/FitSystematics_q2Bin" // The protocol for this file is: ID --- FL --- AFB --- dBF/dq^2 --- NLL
 
 
 // ####################
@@ -467,11 +467,11 @@ void DrawString (double Lumi, RooPlot* myFrame)
 
   myString.clear(); myString.str("");
   myString << "CMS";
-  TLatex* LumiTex1 = new TLatex(0.1,0.96,myString.str().c_str());
+  TLatex* LumiTex1 = new TLatex(0.1,0.95,myString.str().c_str());
   LumiTex1->SetTextSize(0.05);
   LumiTex1->SetTextColor(kBlack);
   LumiTex1->SetNDC(true);
-  if (myFrame == NULL) LumiTex1->DrawLatex(0.1,0.96,myString.str().c_str());
+  if (myFrame == NULL) LumiTex1->DrawLatex(0.1,0.95,myString.str().c_str());
   else
     {
       LumiTex1->Paint();
@@ -479,12 +479,12 @@ void DrawString (double Lumi, RooPlot* myFrame)
     }
 
   myString.clear(); myString.str("");
-  myString << "L = " << Lumi <<  " fb^{#font[122]{\55}1}";
-  TLatex* LumiTex2 = new TLatex(0.43,0.94,myString.str().c_str());
+  myString << "L = " << Lumi <<  " fb#lower[0.4]{^{#font[122]{\55}1}}";
+  TLatex* LumiTex2 = new TLatex(0.43,0.95,myString.str().c_str());
   LumiTex2->SetTextSize(0.05);
   LumiTex2->SetTextColor(kBlack);
   LumiTex2->SetNDC(true);
-  if (myFrame == NULL) LumiTex2->DrawLatex(0.43,0.94,myString.str().c_str());
+  if (myFrame == NULL) LumiTex2->DrawLatex(0.43,0.95,myString.str().c_str());
   else
     {
       LumiTex2->Paint();
@@ -493,11 +493,11 @@ void DrawString (double Lumi, RooPlot* myFrame)
 
   myString.str("");
   myString << "#sqrt{  }";
-  TLatex* LumiTex3 = new TLatex(0.82,0.93,myString.str().c_str());
+  TLatex* LumiTex3 = new TLatex(0.82,0.94,myString.str().c_str());
   LumiTex3->SetTextSize(0.053);
   LumiTex3->SetTextColor(kBlack);
   LumiTex3->SetNDC(true);
-  if (myFrame == NULL) LumiTex3->DrawLatex(0.82,0.93,myString.str().c_str());
+  if (myFrame == NULL) LumiTex3->DrawLatex(0.82,0.94,myString.str().c_str());
   else
     {
       LumiTex3->Paint();
@@ -506,11 +506,11 @@ void DrawString (double Lumi, RooPlot* myFrame)
 
   myString.str("");
   myString << "s = 7 TeV";
-  TLatex* LumiTex4 = new TLatex(0.84,0.94,myString.str().c_str());
+  TLatex* LumiTex4 = new TLatex(0.84,0.95,myString.str().c_str());
   LumiTex4->SetTextSize(0.05);
   LumiTex4->SetTextColor(kBlack);
   LumiTex4->SetNDC(true);
-  if (myFrame == NULL) LumiTex4->DrawLatex(0.84,0.94,myString.str().c_str());
+  if (myFrame == NULL) LumiTex4->DrawLatex(0.84,0.95,myString.str().c_str());
   else
     {
       LumiTex4->Paint();
@@ -1038,8 +1038,8 @@ string MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar
       // # Make 1D signal*efficiency p.d.f.: integral over cos(theta_K) and cos(theta_l) #
       // #################################################################################
       FlS   = new RooRealVar("FlS","F_{L}",0.0,0.0,1.0);
-      At2S  = new RooRealVar("At2S","A_{T}^{2}",0.0,-1.0,1.0);
-      AtimS = new RooRealVar("AtimS","A_{T}^{Im}",0.0,-1.0,1.0);
+      At2S  = new RooRealVar("At2S","A_{T}#lower[0.4]{^{2}}",0.0,-1.0,1.0);
+      AtimS = new RooRealVar("AtimS","A_{T}#lower[0.4]{^{Im}}",0.0,-1.0,1.0);
       FlS->setConstant(false);
       At2S->setConstant(false);
       AtimS->setConstant(false);
@@ -2550,7 +2550,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","#mu1 = ",GetVar(*TotalPDFJPsi,"meanJPsi1")->getVal(),GetVar(*TotalPDFJPsi,"meanJPsi1")->getError()));
       paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","#mu2 = ",GetVar(*TotalPDFJPsi,"meanJPsi2")->getVal(),GetVar(*TotalPDFJPsi,"meanJPsi2")->getError()));
       paveTextJPsi->AddText(Form("%s%.4f#pm%.4f","< #sigma > = ",sigmaJPsi,sigmaJPsiE));
-      paveTextJPsi->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameJPsi->chiSquare((*TotalPDFJPsi)->getPlotLabel(),dataSetJPsi->GetName())));
+      paveTextJPsi->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameJPsi->chiSquare((*TotalPDFJPsi)->getPlotLabel(),dataSetJPsi->GetName())));
       paveTextJPsi->AddText(Form("%s%.3f","p-value = ",TMath::Prob(myFrameJPsi->chiSquare((*TotalPDFJPsi)->getPlotLabel(),dataSetJPsi->GetName())*NBins,NBins)));
       CheckGoodFit(JPsiFitResult,paveTextJPsi);
       paveTextJPsi->SetBorderSize(0.0);
@@ -2671,7 +2671,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","#mu1 = ",GetVar(*TotalPDFPsiP,"meanPsiP1")->getVal(),GetVar(*TotalPDFPsiP,"meanPsiP1")->getError()));
       paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","#mu2 = ",GetVar(*TotalPDFPsiP,"meanPsiP2")->getVal(),GetVar(*TotalPDFPsiP,"meanPsiP2")->getError()));
       paveTextPsiP->AddText(Form("%s%.4f#pm%.4f","< #sigma > = ",sigmaPsiP,sigmaPsiPE));
-      paveTextPsiP->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFramePsiP->chiSquare((*TotalPDFPsiP)->getPlotLabel(),dataSetPsiP->GetName())));
+      paveTextPsiP->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFramePsiP->chiSquare((*TotalPDFPsiP)->getPlotLabel(),dataSetPsiP->GetName())));
       paveTextPsiP->AddText(Form("%s%.3f","p-value = ",TMath::Prob(myFramePsiP->chiSquare((*TotalPDFPsiP)->getPlotLabel(),dataSetPsiP->GetName())*NBins,NBins)));
       CheckGoodFit(PsiPFitResult,paveTextPsiP);
       paveTextPsiP->SetBorderSize(0.0);
@@ -2796,12 +2796,12 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
   // ###########################
   // # Define useful variables #
   // ###########################
-  B0MassArb          = new RooRealVar("B0MassArb","M(#font[122]{K}^{#font[122]{+}}#pi^{#font[122]{\55}}#mu^{#font[122]{+}}#mu^{#font[122]{\55}})",Utility->B0Mass - Utility->GetGenericParam("B0MassIntervalLeft"),Utility->B0Mass + Utility->GetGenericParam("B0MassIntervalRight"),"GeV");
-  mumuMass           = new RooRealVar("mumuMass","#mu^{#font[122]{+}}#mu^{#font[122]{\55}} inv. mass",0.0,6.0,"GeV");
-  mumuMassE          = new RooRealVar("mumuMassE","#mu^{#font[122]{+}}#mu^{#font[122]{\55}} inv. mass error",0.0,0.5,"GeV");
-  CosThetaKArb       = new RooRealVar("CosThetaKArb","cos(#theta_{#font[122]{K}})",-1.0,1.0,"");
-  CosThetaMuArb      = new RooRealVar("CosThetaMuArb","cos(#theta_{l})",-1.0,1.0,"");
-  PhiKstMuMuPlaneArb = new RooRealVar("PhiKstMuMuPlaneArb","Angle (#mu#mu)--(#font[122]{K}^{#font[122]{+}}#pi^{#font[122]{\55}}) planes",-Utility->PI,Utility->PI,"rad");
+  B0MassArb          = new RooRealVar("B0MassArb","M(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{+}}}}#kern[-0.3]{#pi}#kern[-0.3]{#lower[0.6]{^{#font[122]{\55}}}}#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}})",Utility->B0Mass - Utility->GetGenericParam("B0MassIntervalLeft"),Utility->B0Mass + Utility->GetGenericParam("B0MassIntervalRight"),"GeV");
+  mumuMass           = new RooRealVar("mumuMass","#mu#lower[0.4]{^{#font[122]{+}}}#mu#lower[0.4]{^{#font[122]{\55}}} inv. mass",0.0,6.0,"GeV");
+  mumuMassE          = new RooRealVar("mumuMassE","#mu#lower[0.4]{^{#font[122]{+}}}#mu#lower[0.4]{^{#font[122]{\55}}} inv. mass error",0.0,0.5,"GeV");
+  CosThetaKArb       = new RooRealVar("CosThetaKArb","cos(#theta#lower[-0.4]{_{#font[122]{K}}})",-1.0,1.0,"");
+  CosThetaMuArb      = new RooRealVar("CosThetaMuArb","cos(#theta#lower[-0.4]{_{l}})",-1.0,1.0,"");
+  PhiKstMuMuPlaneArb = new RooRealVar("PhiKstMuMuPlaneArb","Angle (#mu#mu)--(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}#pi#lower[0.4]{^{#font[122]{\55}}}) planes",-Utility->PI,Utility->PI,"rad");
   truthMatchSignal   = new RooRealVar("truthMatchSignal","Truth matching",0.0,1.0,"bool");
 
 
@@ -3185,8 +3185,8 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
       paveTextX->AddText(Form("%s%.3f#pm%.3f","#mu = ",GetVar(*TotalPDF,"meanS")->getVal(),GetVar(*TotalPDF,"meanS")->getError()));
       paveTextX->AddText(Form("%s%.4f#pm%.4f","< #sigma > = ",signalSigma,signalSigmaE));
     }
-  paveTextX->AddText(Form("%s%.5f","FCN(m^{B0}_{PDG}) = ",(*TotalPDF)->getVal()));
-  paveTextX->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+  paveTextX->AddText(Form("%s%.5f","FCN(m#lower[0.4]{^{B0}}#lower[-0.4]{_{PDG}}) = ",(*TotalPDF)->getVal()));
+  paveTextX->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
   TLegend* legX = new TLegend(0.75, 0.65, 0.97, 0.89, "");
   for (int i = 0; i < nElements; i++)
@@ -3362,7 +3362,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // # Make external text #
       // ######################
       extText[i] = new TPaveText(0.63,0.5,0.97,0.63,"NDC");
-      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q^{2}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," (GeV^{2})"));
+      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q#lower[0.4]{^{2}}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," (GeV#lower[0.4]{^{2}})"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
       extText[i]->SetFillStyle(0);
@@ -3464,8 +3464,8 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 	  VecHistoMeas->operator[](0)->SetBinContent(i+1,(GetVar(TotalPDFq2Bins[i],"nSig")->getVal() / effMuMu) / (PsiYield / effPsi) * (NORMBIN == 3 ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7);
 	  VecHistoMeas->operator[](0)->SetBinError(i+1,VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getError() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)));
 	  
-	  fileFitResults << "@@@@@@ dBF/dq2 @@@@@@" << endl;
-	  fileFitResults << "dBF/dq2: " << VecHistoMeas->operator[](0)->GetBinContent(i+1) << " -/+ " << VecHistoMeas->operator[](0)->GetBinError(i+1) << " (";
+	  fileFitResults << "@@@@@@ dBF/dq^2 @@@@@@" << endl;
+	  fileFitResults << "dBF/dq^2: " << VecHistoMeas->operator[](0)->GetBinContent(i+1) << " -/+ " << VecHistoMeas->operator[](0)->GetBinError(i+1) << " (";
 	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorLo() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)) << "/";
 	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorHi() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)) << ")" << endl;
 
@@ -4165,7 +4165,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	  myString.clear(); myString.str("");
 	  myString << (*TotalPDF)->getPlotLabel() << "_paramBox";
 	  TPaveText* paveTextY = (TPaveText*)myFrameY->findObject(myString.str().c_str());
-	  paveTextY->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+	  paveTextY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
 	  TLegend* legY = new TLegend(0.75, 0.65, 0.97, 0.89, "");
 	  for (int i = 0; i < 2; i++)
@@ -4330,8 +4330,8 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	  paveTextX->AddText(Form("%s%.3f#pm%.3f","#mu = ",GetVar(*TotalPDF,"meanS")->getVal(),GetVar(*TotalPDF,"meanS")->getError()));
 	  paveTextX->AddText(Form("%s%.4f#pm%.4f","< #sigma > = ",signalSigma,signalSigmaE));
 	}
-      paveTextX->AddText(Form("%s%.5f","FCN(m^{B0}_{PDG},ang=0) = ",(*TotalPDF)->getVal()));
-      paveTextX->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+      paveTextX->AddText(Form("%s%.5f","FCN(m#lower[0.4]{^{B0}}#lower[-0.4]{_{PDG}},ang=0) = ",(*TotalPDF)->getVal()));
+      paveTextX->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
       TLegend* legX = new TLegend(0.75, 0.65, 0.97, 0.89, "");
       for (int i = 0; i < nElements; i++)
@@ -4362,7 +4362,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameY,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet));
       
       TPaveText* paveTextY = new TPaveText(0.13,0.8,0.4,0.88,"NDC");
-      paveTextY->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+      paveTextY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
       paveTextY->SetTextAlign(11);
       paveTextY->SetBorderSize(0.0);
       paveTextY->SetFillStyle(0);
@@ -4552,7 +4552,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 
 	  TPaveText* paveTextLowSideB = new TPaveText(0.13,0.75,0.4,0.88,"NDC");
 	  paveTextLowSideB->AddText("Low sideband");
-	  paveTextLowSideB->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameLowSideB->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+	  paveTextLowSideB->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameLowSideB->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextLowSideB->SetTextAlign(11);
 	  paveTextLowSideB->SetBorderSize(0.0);
 	  paveTextLowSideB->SetFillStyle(0);
@@ -4600,7 +4600,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 
 	  TPaveText* paveTextSignalRegion = new TPaveText(0.13,0.75,0.4,0.88,"NDC");
 	  paveTextSignalRegion->AddText(Form("%s%.1f%s","Signal region: #pm",Utility->GetGenericParam("NSigmaB0S")," < #sigma >"));
-	  paveTextSignalRegion->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameSignalRegion->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+	  paveTextSignalRegion->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameSignalRegion->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextSignalRegion->SetTextAlign(11);
 	  paveTextSignalRegion->SetBorderSize(0.0);
 	  paveTextSignalRegion->SetFillStyle(0);
@@ -4648,7 +4648,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 
 	  TPaveText* paveTextHighSideB = new TPaveText(0.13,0.75,0.4,0.88,"NDC");
 	  paveTextHighSideB->AddText("High sideband");
-	  paveTextHighSideB->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameHighSideB->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+	  paveTextHighSideB->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameHighSideB->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextHighSideB->SetTextAlign(11);
 	  paveTextHighSideB->SetBorderSize(0.0);
 	  paveTextHighSideB->SetFillStyle(0);
@@ -4825,7 +4825,7 @@ void IterativeMassAngleFitq2Bins (RooDataSet* dataSet,
       // # Make external text #
       // ######################
       extText[i] = new TPaveText(0.63,0.5,0.97,0.63,"NDC");
-      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q^{2}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," (GeV^{2})"));
+      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q#lower[0.4]{^{2}}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," (GeV#lower[0.4]{^{2}})"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
       extText[i]->SetFillStyle(0);
@@ -4973,8 +4973,8 @@ void IterativeMassAngleFitq2Bins (RooDataSet* dataSet,
 	      VecHistoMeas->operator[](3)->SetBinContent(i+1,(GetVar(TotalPDFq2Bins[i],"nSig")->getVal() / effMuMu) / (PsiYield / effPsi) * (NORMBIN == 3 ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7);
 	      VecHistoMeas->operator[](3)->SetBinError(i+1,VecHistoMeas->operator[](3)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getError() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)));
 	      
-	      fileFitResults << "@@@@@@ dBF/dq2 @@@@@@" << endl;
-	      fileFitResults << "dBF/dq2: " << VecHistoMeas->operator[](3)->GetBinContent(i+1) << " -/+ " << VecHistoMeas->operator[](3)->GetBinError(i+1) << " (";
+	      fileFitResults << "@@@@@@ dBF/dq^2 @@@@@@" << endl;
+	      fileFitResults << "dBF/dq^2: " << VecHistoMeas->operator[](3)->GetBinContent(i+1) << " -/+ " << VecHistoMeas->operator[](3)->GetBinError(i+1) << " (";
 	      fileFitResults << VecHistoMeas->operator[](3)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorLo() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)) << "/";
 	      fileFitResults << VecHistoMeas->operator[](3)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorHi() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)) << ")" << endl;
 	      
@@ -5866,7 +5866,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  myString.clear(); myString.str("");
 	  myString << (*TotalPDF)->getPlotLabel() << "_paramBox";
 	  TPaveText* paveTextY = (TPaveText*)myFrameY->findObject(myString.str().c_str());
-	  paveTextY->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+	  paveTextY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
 	  TLegend* legY = new TLegend(0.75, 0.65, 0.97, 0.89, "");
 	  for (int i = 0; i < 2; i++)
@@ -5895,7 +5895,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  myString.clear(); myString.str("");
 	  myString << (*TotalPDF)->getPlotLabel() << "_paramBox";
 	  TPaveText* paveTextZ = (TPaveText*)myFrameZ->findObject(myString.str().c_str());
-	  paveTextZ->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+	  paveTextZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
 	  TLegend* legZ = new TLegend(0.75, 0.65, 0.97, 0.89, "");
 	  for (int i = 0; i < 2; i++)
@@ -6078,8 +6078,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  paveTextX->AddText(Form("%s%.3f#pm%.3f","#mu = ",GetVar(*TotalPDF,"meanS")->getVal(),GetVar(*TotalPDF,"meanS")->getError()));
 	  paveTextX->AddText(Form("%s%.4f#pm%.4f","< #sigma > = ",signalSigma,signalSigmaE));
 	}
-      paveTextX->AddText(Form("%s%.5f","FCN(m^{B0}_{PDG},ang=0) = ",(*TotalPDF)->getVal()));
-      paveTextX->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+      paveTextX->AddText(Form("%s%.5f","FCN(m#lower[0.4]{^{B0}}#lower[-0.4]{_{PDG}},ang=0) = ",(*TotalPDF)->getVal()));
+      paveTextX->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
       TLegend* legX = new TLegend(0.75, 0.65, 0.97, 0.89, "");
       for (int i = 0; i < nElements; i++)
@@ -6110,7 +6110,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameY,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet));
 
       TPaveText* paveTextY = new TPaveText(0.13,0.8,0.4,0.86,"NDC");
-      paveTextY->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+      paveTextY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
       paveTextY->SetTextAlign(11);
       paveTextY->SetBorderSize(0.0);
       paveTextY->SetFillStyle(0);
@@ -6163,7 +6163,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameZ,Components(*BkgMassAnglePeak),LineStyle(3),LineColor(kViolet));
 
       TPaveText* paveTextZ = new TPaveText(0.13,0.8,0.4,0.86,"NDC");
-      paveTextZ->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+      paveTextZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
       paveTextZ->SetTextAlign(11);
       paveTextZ->SetBorderSize(0.0);
       paveTextZ->SetFillStyle(0);
@@ -6326,7 +6326,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
 	  TPaveText* paveTextLowSideBY = new TPaveText(0.13,0.75,0.4,0.88,"NDC");
 	  paveTextLowSideBY->AddText("Low sideband");
-	  paveTextLowSideBY->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameLowSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+	  paveTextLowSideBY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameLowSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextLowSideBY->SetTextAlign(11);
 	  paveTextLowSideBY->SetBorderSize(0.0);
 	  paveTextLowSideBY->SetFillStyle(0);
@@ -6374,7 +6374,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
 	  TPaveText* paveTextSignalRegionY = new TPaveText(0.13,0.75,0.4,0.88,"NDC");
 	  paveTextSignalRegionY->AddText(Form("%s%.1f%s","Signal region: #pm",Utility->GetGenericParam("NSigmaB0S")," < #sigma >"));
-	  paveTextSignalRegionY->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameSignalRegionY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+	  paveTextSignalRegionY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameSignalRegionY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextSignalRegionY->SetTextAlign(11);
 	  paveTextSignalRegionY->SetBorderSize(0.0);
 	  paveTextSignalRegionY->SetFillStyle(0);
@@ -6422,7 +6422,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
 	  TPaveText* paveTextHighSideBY = new TPaveText(0.13,0.75,0.4,0.88,"NDC");
 	  paveTextHighSideBY->AddText("High sideband");
-	  paveTextHighSideBY->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameHighSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+	  paveTextHighSideBY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameHighSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextHighSideBY->SetTextAlign(11);
 	  paveTextHighSideBY->SetBorderSize(0.0);
 	  paveTextHighSideBY->SetFillStyle(0);
@@ -6475,7 +6475,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
 	  TPaveText* paveTextLowSideBZ = new TPaveText(0.13,0.75,0.4,0.88,"NDC");
 	  paveTextLowSideBZ->AddText("Low sideband");
-	  paveTextLowSideBZ->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameLowSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+	  paveTextLowSideBZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameLowSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextLowSideBZ->SetTextAlign(11);
 	  paveTextLowSideBZ->SetBorderSize(0.0);
 	  paveTextLowSideBZ->SetFillStyle(0);
@@ -6523,7 +6523,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
 	  TPaveText* paveTextSignalRegionZ = new TPaveText(0.13,0.75,0.4,0.88,"NDC");
 	  paveTextSignalRegionZ->AddText(Form("%s%.1f%s","Signal region: #pm",Utility->GetGenericParam("NSigmaB0S")," < #sigma >"));
-	  paveTextSignalRegionZ->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameSignalRegionZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+	  paveTextSignalRegionZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameSignalRegionZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextSignalRegionZ->SetTextAlign(11);
 	  paveTextSignalRegionZ->SetBorderSize(0.0);
 	  paveTextSignalRegionZ->SetFillStyle(0);
@@ -6571,7 +6571,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
 	  TPaveText* paveTextHighSideBZ = new TPaveText(0.13,0.75,0.4,0.88,"NDC");
 	  paveTextHighSideBZ->AddText("High sideband");
-	  paveTextHighSideBZ->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myFrameHighSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+	  paveTextHighSideBZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameHighSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextHighSideBZ->SetTextAlign(11);
 	  paveTextHighSideBZ->SetBorderSize(0.0);
 	  paveTextHighSideBZ->SetFillStyle(0);
@@ -6736,7 +6736,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // # Make external text #
       // ######################
       extText[i] = new TPaveText(0.63,0.5,0.97,0.63,"NDC");
-      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q^{2}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," (GeV^{2})"));
+      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q#lower[0.4]{^{2}}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," (GeV#lower[0.4]{^{2}})"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
       extText[i]->SetFillStyle(0);
@@ -6840,8 +6840,8 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 	      VecHistoMeas->operator[](2)->SetBinContent(i+1,(GetVar(TotalPDFq2Bins[i],"nSig")->getVal() / effMuMu) / (PsiYield / effPsi) * (NORMBIN == 3 ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7);
 	      VecHistoMeas->operator[](2)->SetBinError(i+1,VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getError() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)));
 	      
-	      fileFitResults << "@@@@@@ dBF/dq2 @@@@@@" << endl;
-	      fileFitResults << "dBF/dq2: " << VecHistoMeas->operator[](2)->GetBinContent(i+1) << " -/+ " << VecHistoMeas->operator[](2)->GetBinError(i+1) << " (";
+	      fileFitResults << "@@@@@@ dBF/dq^2 @@@@@@" << endl;
+	      fileFitResults << "dBF/dq^2: " << VecHistoMeas->operator[](2)->GetBinContent(i+1) << " -/+ " << VecHistoMeas->operator[](2)->GetBinError(i+1) << " (";
 	      fileFitResults << VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorLo() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) +pow(PsiYieldErr / PsiYield,2.)) << "/";
 	      fileFitResults << VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorHi() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)) << ")" << endl;
 	      
@@ -8046,10 +8046,10 @@ int main(int argc, char** argv)
 		      // # 1D-fit to B0 inv. mass per q^2 bin #
 		      // ######################################
 		      vector<TH1D*> VecHistoMeas;
-		      VecHistoMeas.push_back(new TH1D("histoMeas0", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} / B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) J/\\psi(\\mu^{#font[122]{+}}\\mu^{#font[122]{\55}}) Branching Fraction",q2Bins.size()-1, q2BinsHisto));
+		      VecHistoMeas.push_back(new TH1D("histoMeas0", "B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) \\mu#lower[0.4]{^{#font[122]{+}}} \\mu#lower[0.4]{^{#font[122]{\55}}} / B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) J/\\psi(\\mu#lower[0.4]{^{#font[122]{+}}}\\mu#lower[0.4]{^{#font[122]{\55}}}) Branching Fraction",q2Bins.size()-1, q2BinsHisto));
 		      VecHistoMeas[0]->SetStats(false);
-		      VecHistoMeas[0]->SetXTitle("q^{2} ( GeV^{2} )");
-		      VecHistoMeas[0]->SetYTitle("dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV^{#font[122]{\55}2} ))");
+		      VecHistoMeas[0]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		      VecHistoMeas[0]->SetYTitle("dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
 		      VecHistoMeas[0]->GetYaxis()->SetRangeUser(0.0,1.2);
 
 		      cout << "\n@@@ Now fit invariant mass per mumu q^2 bins @@@" << endl;
@@ -8112,22 +8112,22 @@ int main(int argc, char** argv)
 		  // # 2D-fit Fl per q^2 bin #
 		  // #########################
 		  vector<TH1D*> VecHistoMeas;
-		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : F_{L} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : A_{FB} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) \\mu#lower[0.4]{^{#font[122]{+}}} \\mu#lower[0.4]{^{#font[122]{\55}}} : F_{L} vs dimuon q#lower[0.4]{^{2}}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) \\mu#lower[0.4]{^{#font[122]{+}}} \\mu#lower[0.4]{^{#font[122]{\55}}} : A_{FB} vs dimuon q#lower[0.4]{^{2}}", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas.push_back(new TH1D("histoMeas2", "histoMeas2", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas3", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : dBF/dq^{2} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas3", "B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) \\mu#lower[0.4]{^{#font[122]{+}}} \\mu#lower[0.4]{^{#font[122]{\55}}} : dBF/dq#lower[0.4]{^{2}} vs dimuon q#lower[0.4]{^{2}}", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas[0]->SetStats(false);
 		  VecHistoMeas[1]->SetStats(false);
 		  VecHistoMeas[2]->SetStats(false);
 		  VecHistoMeas[3]->SetStats(false);
-		  VecHistoMeas[0]->SetXTitle("q^{2} ( GeV^{2} )");
-		  VecHistoMeas[1]->SetXTitle("q^{2} ( GeV^{2} )");
-		  VecHistoMeas[2]->SetXTitle("q^{2} ( GeV^{2} )");
-		  VecHistoMeas[3]->SetXTitle("q^{2} ( GeV^{2} )");
+		  VecHistoMeas[0]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		  VecHistoMeas[1]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		  VecHistoMeas[2]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		  VecHistoMeas[3]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
 		  VecHistoMeas[0]->SetYTitle("F_{L}");
 		  VecHistoMeas[1]->SetYTitle("A_{FB}");
 		  VecHistoMeas[2]->SetYTitle("");
-		  VecHistoMeas[3]->SetYTitle("dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV^{#font[122]{\55}2} ))");
+		  VecHistoMeas[3]->SetYTitle("dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
 		  VecHistoMeas[0]->GetYaxis()->SetRangeUser(-0.01,1.01);
 		  VecHistoMeas[1]->GetYaxis()->SetRangeUser(-1.0 - 0.01,1.0 + 0.01);
 		  VecHistoMeas[2]->GetYaxis()->SetRangeUser(0.0,1.0);
@@ -8200,22 +8200,22 @@ int main(int argc, char** argv)
 		  // # 2D-fit Afb-Fl per q^2 bin #
 		  // #############################
 		  vector<TH1D*> VecHistoMeas;
-		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : F_{L} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : A_{FB} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) \\mu#lower[0.4]{^{#font[122]{+}}} \\mu#lower[0.4]{^{#font[122]{\55}}} : F_{L} vs dimuon q#lower[0.4]{^{2}}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) \\mu#lower[0.4]{^{#font[122]{+}}} \\mu#lower[0.4]{^{#font[122]{\55}}} : A_{FB} vs dimuon q#lower[0.4]{^{2}}", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas.push_back(new TH1D("histoMeas2", "histoMeas2", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas3", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : dBF/dq^{2} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas3", "B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) \\mu#lower[0.4]{^{#font[122]{+}}} \\mu#lower[0.4]{^{#font[122]{\55}}} : dBF/dq#lower[0.4]{^{2}} vs dimuon q#lower[0.4]{^{2}}", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas[0]->SetStats(false);
 		  VecHistoMeas[1]->SetStats(false);
 		  VecHistoMeas[2]->SetStats(false);
 		  VecHistoMeas[3]->SetStats(false);
-		  VecHistoMeas[0]->SetXTitle("q^{2} ( GeV^{2} )");
-		  VecHistoMeas[1]->SetXTitle("q^{2} ( GeV^{2} )");
-		  VecHistoMeas[2]->SetXTitle("q^{2} ( GeV^{2} )");
-		  VecHistoMeas[3]->SetXTitle("q^{2} ( GeV^{2} )");
+		  VecHistoMeas[0]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		  VecHistoMeas[1]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		  VecHistoMeas[2]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		  VecHistoMeas[3]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
 		  VecHistoMeas[0]->SetYTitle("F_{L}");
 		  VecHistoMeas[1]->SetYTitle("A_{FB}");
 		  VecHistoMeas[2]->SetYTitle("");
-		  VecHistoMeas[3]->SetYTitle("dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV^{#font[122]{\55}2} ))");
+		  VecHistoMeas[3]->SetYTitle("dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
 		  VecHistoMeas[0]->GetYaxis()->SetRangeUser(-0.01,1.01);
 		  VecHistoMeas[1]->GetYaxis()->SetRangeUser(-1.0 - 0.01,1.0 + 0.01);
 		  VecHistoMeas[2]->GetYaxis()->SetRangeUser(0.0,1.0);
@@ -8288,22 +8288,22 @@ int main(int argc, char** argv)
 		  // # 2D-fit Fl-At2-Atim per q^2 bin #
 		  // ##################################
 		  vector<TH1D*> VecHistoMeas;
-		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : F_{L} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : A_{T}^{(2)} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas2", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : A_{T}^{(im)} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas3", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : dBF/dq^{2} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) \\mu#lower[0.4]{^{#font[122]{+}}} \\mu#lower[0.4]{^{#font[122]{\55}}} : F_{L} vs dimuon q#lower[0.4]{^{2}}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) \\mu#lower[0.4]{^{#font[122]{+}}} \\mu#lower[0.4]{^{#font[122]{\55}}} : A_{T}^{(2)} vs dimuon q#lower[0.4]{^{2}}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) \\mu#lower[0.4]{^{#font[122]{+}}} \\mu#lower[0.4]{^{#font[122]{\55}}} : A_{T}^{(im)} vs dimuon q#lower[0.4]{^{2}}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas3", "B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) \\mu#lower[0.4]{^{#font[122]{+}}} \\mu#lower[0.4]{^{#font[122]{\55}}} : dBF/dq#lower[0.4]{^{2}} vs dimuon q#lower[0.4]{^{2}}", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas[0]->SetStats(false);
 		  VecHistoMeas[1]->SetStats(false);
 		  VecHistoMeas[2]->SetStats(false);
 		  VecHistoMeas[3]->SetStats(false);
-		  VecHistoMeas[0]->SetXTitle("q^{2} ( GeV^{2} )");
-		  VecHistoMeas[1]->SetXTitle("q^{2} ( GeV^{2} )");
-		  VecHistoMeas[2]->SetXTitle("q^{2} ( GeV^{2} )");
-		  VecHistoMeas[3]->SetXTitle("q^{2} ( GeV^{2} )");
+		  VecHistoMeas[0]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		  VecHistoMeas[1]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		  VecHistoMeas[2]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		  VecHistoMeas[3]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
 		  VecHistoMeas[0]->SetYTitle("F_{L}");
-		  VecHistoMeas[1]->SetYTitle("A_{T}^{(2)}");
+		  VecHistoMeas[1]->SetYTitle("A_{FB}");
 		  VecHistoMeas[2]->SetYTitle("A_{T}^{(im)}");
-		  VecHistoMeas[3]->SetYTitle("dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV^{#font[122]{\55}2} ))");
+		  VecHistoMeas[3]->SetYTitle("dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
 		  VecHistoMeas[0]->GetYaxis()->SetRangeUser(-0.01,1.01);
 		  VecHistoMeas[1]->GetYaxis()->SetRangeUser(-1.01,1.01);
 		  VecHistoMeas[2]->GetYaxis()->SetRangeUser(-1.01,1.01);
@@ -8380,18 +8380,19 @@ int main(int argc, char** argv)
 		  // # 3D-fit Afb-Fl per q^2 bin #
 		  // #############################
 		  vector<TH1D*> VecHistoMeas;
-		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : F_{L} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : A_{FB} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas2", "B^{0} \\rightarrow #font[122]{K}^{*0}(#font[122]{K}^{#font[122]{+}}\\pi^{#font[122]{\55}}) \\mu^{#font[122]{+}} \\mu^{#font[122]{\55}} : dBF/dq^{2} vs dimuon q^{2}", q2Bins.size()-1, q2BinsHisto));
+
+		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) \\mu#lower[0.4]{^{#font[122]{+}}} \\mu#lower[0.4]{^{#font[122]{\55}}} : F_{L} vs dimuon q#lower[0.4]{^{2}}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) \\mu#lower[0.4]{^{#font[122]{+}}} \\mu#lower[0.4]{^{#font[122]{\55}}} : A_{FB} vs dimuon q#lower[0.4]{^{2}}", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas.push_back(new TH1D("histoMeas2", "B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) \\mu#lower[0.4]{^{#font[122]{+}}} \\mu#lower[0.4]{^{#font[122]{\55}}} : dBF/dq#lower[0.4]{^{2}} vs dimuon q#lower[0.4]{^{2}}", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas[0]->SetStats(false);
 		  VecHistoMeas[1]->SetStats(false);
 		  VecHistoMeas[2]->SetStats(false);
-		  VecHistoMeas[0]->SetXTitle("q^{2} ( GeV^{2} )");
-		  VecHistoMeas[1]->SetXTitle("q^{2} ( GeV^{2} )");
-		  VecHistoMeas[2]->SetXTitle("q^{2} ( GeV^{2} )");
+		  VecHistoMeas[0]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		  VecHistoMeas[1]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		  VecHistoMeas[2]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
 		  VecHistoMeas[0]->SetYTitle("F_{L}");
 		  VecHistoMeas[1]->SetYTitle("A_{FB}");
-		  VecHistoMeas[2]->SetYTitle("dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV^{#font[122]{\55}2} ))");
+		  VecHistoMeas[2]->SetYTitle("dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
 		  VecHistoMeas[0]->GetYaxis()->SetRangeUser(-0.01,1.01);
 		  VecHistoMeas[1]->GetYaxis()->SetRangeUser(-1.0 - 0.01,1.0 + 0.01);
 		  VecHistoMeas[2]->GetYaxis()->SetRangeUser(0.0,1.2);

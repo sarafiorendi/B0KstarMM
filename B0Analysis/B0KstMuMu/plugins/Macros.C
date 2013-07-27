@@ -148,7 +148,7 @@ void TruthMatching (string fileName, bool truthMatch)
   gStyle->SetOptStat(1110);
   gStyle->SetOptTitle(0);
   gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.3,"y"); 
+  gStyle->SetTitleOffset(1.25,"y"); 
   TGaxis::SetMaxDigits(3);
 
 
@@ -328,7 +328,7 @@ void CompareCosMassGENRECO (string fileNameRECO, string fileNameGEN)
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
   gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.3,"y"); 
+  gStyle->SetTitleOffset(1.25,"y"); 
   TGaxis::SetMaxDigits(3);
 
 
@@ -440,7 +440,7 @@ void CompareCosTruth ()
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
   gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.3,"y"); 
+  gStyle->SetTitleOffset(1.25,"y"); 
   TGaxis::SetMaxDigits(3);
 
 
@@ -573,7 +573,7 @@ void PlotVtxWithPileUpW (string fileNameMC, string fileNameData, unsigned int Tr
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
   gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.3,"y"); 
+  gStyle->SetTitleOffset(1.25,"y"); 
   TGaxis::SetMaxDigits(3);
 
 
@@ -688,7 +688,7 @@ void PlotPileUp (string fileNameMC1, string fileNameMC2)
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
   gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.3,"y"); 
+  gStyle->SetTitleOffset(1.25,"y"); 
   TGaxis::SetMaxDigits(3);
 
 
@@ -797,7 +797,7 @@ void PlotB0Scans (string fileName, string type)
   gStyle->SetOptStat(1110);
   gStyle->SetOptTitle(0);
   gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.3,"y"); 
+  gStyle->SetTitleOffset(1.25,"y"); 
   TGaxis::SetMaxDigits(3);
 
 
@@ -871,7 +871,7 @@ void PlotB0vsMuMu (string fileName, bool rejectPsi)
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
   gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.3,"y"); 
+  gStyle->SetTitleOffset(1.25,"y"); 
   TGaxis::SetMaxDigits(3);
 
 
@@ -934,7 +934,7 @@ void PlotBkgMC (string fileName, bool iFit, double scaleMCdata)
   gStyle->SetOptStat(1001100);
   gStyle->SetOptTitle(0);
   gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.3,"y"); 
+  gStyle->SetTitleOffset(1.25,"y"); 
   TGaxis::SetMaxDigits(3);
 
 
@@ -1254,7 +1254,7 @@ void QueryCandidates (string fileName)
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
   gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.3,"y"); 
+  gStyle->SetTitleOffset(1.25,"y"); 
   TGaxis::SetMaxDigits(3);
 
 
@@ -1529,35 +1529,35 @@ void DrawString (double Lumi)
 
   myString.str("");
   myString << "CMS";
-  TLatex* LumiTex1 = new TLatex(0.1,0.96,myString.str().c_str());
+  TLatex* LumiTex1 = new TLatex(0.1,0.95,myString.str().c_str());
   LumiTex1->SetTextSize(0.05);
   LumiTex1->SetTextColor(kBlack);
   LumiTex1->SetNDC(true);
-  LumiTex1->DrawLatex(0.1,0.96,myString.str().c_str());
+  LumiTex1->DrawLatex(0.1,0.95,myString.str().c_str());
 
   myString.str("");
-  myString << "L = " << Lumi <<  " fb^{#font[122]{\55}1}";
-  TLatex* LumiTex2 = new TLatex(0.43,0.94,myString.str().c_str());
+  myString << "L = " << Lumi <<  " fb#lower[0.4]{^{#font[122]{\55}1}}";
+  TLatex* LumiTex2 = new TLatex(0.43,0.95,myString.str().c_str());
   LumiTex2->SetTextSize(0.05);
   LumiTex2->SetTextColor(kBlack);
   LumiTex2->SetNDC(true);
-  LumiTex2->DrawLatex(0.43,0.94,myString.str().c_str());
+  LumiTex2->DrawLatex(0.43,0.95,myString.str().c_str());
 
   myString.str("");
   myString << "#sqrt{  }";
-  TLatex* LumiTex3 = new TLatex(0.82,0.93,myString.str().c_str());
+  TLatex* LumiTex3 = new TLatex(0.82,0.94,myString.str().c_str());
   LumiTex3->SetTextSize(0.053);
   LumiTex3->SetTextColor(kBlack);
   LumiTex3->SetNDC(true);
-  LumiTex3->DrawLatex(0.82,0.93,myString.str().c_str());
+  LumiTex3->DrawLatex(0.82,0.94,myString.str().c_str());
 
   myString.str("");
   myString << "s = 7 TeV";
-  TLatex* LumiTex4 = new TLatex(0.84,0.94,myString.str().c_str());
+  TLatex* LumiTex4 = new TLatex(0.84,0.95,myString.str().c_str());
   LumiTex4->SetTextSize(0.05);
   LumiTex4->SetTextColor(kBlack);
   LumiTex4->SetNDC(true);
-  LumiTex4->DrawLatex(0.84,0.94,myString.str().c_str());
+  LumiTex4->DrawLatex(0.84,0.95,myString.str().c_str());
 }
 
 
@@ -1664,14 +1664,14 @@ TGraphAsymmErrors* readData (TString fileName, int dataType, int color, int mark
   printData(nBins,V1,V2,V3,V4,V5,V6);
 
   TGraphAsymmErrors* gra = new TGraphAsymmErrors(V1,V4,V2,V3,V5,V6);
-  if      (dataType == 0) gra->SetTitle(";q^{2} ( GeV^{2} ); F_{L}");
-  else if (dataType == 1) gra->SetTitle(";q^{2} ( GeV^{2} ); A_{FB}");
-  else if (dataType == 2) gra->SetTitle(";q^{2} ( GeV^{2} ); dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV^{#font[122]{\55}2} ))");
+  if      (dataType == 0) gra->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); F_{L}");
+  else if (dataType == 1) gra->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); A_{FB}");
+  else if (dataType == 2) gra->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
   if (doFill == true) gra->SetFillColor(color);
   else
     {
       gra->SetMarkerColor(color);
-      gra->SetMarkerSize(1.0);
+      gra->SetMarkerSize(1.2);
       gra->SetLineColor(color);
       gra->SetLineWidth(1);
       gra->SetMarkerStyle(markerType);
@@ -1752,7 +1752,7 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
   gStyle->SetPadTopMargin(0.11);
   gStyle->SetPadBottomMargin(0.12);
   gStyle->SetTitleOffset(1.1,"x");
-  gStyle->SetTitleOffset(0.9,"y");
+  gStyle->SetTitleOffset(0.95,"y");
   gStyle->SetTitleSize(0.05,"x");
   gStyle->SetTitleSize(0.05,"y");
   gStyle->SetLabelSize(0.05,"x");
@@ -1767,17 +1767,17 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
   if (dataType == 0)
     {
       h0->GetYaxis()->SetRangeUser(0.0,1.0);
-      h0->SetTitle(";q^{2} ( GeV^{2} ); F_{L}");      
+      h0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); F_{L}");      
     }
   else if (dataType == 1)
     {
       h0->GetYaxis()->SetRangeUser(-1.0,1.0);
-      h0->SetTitle(";q^{2} ( GeV^{2} ); A_{FB}");
+      h0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); A_{FB}");
     }
   else if (dataType == 2)
     {
       h0->GetYaxis()->SetRangeUser(0.0,1.2);
-      h0->SetTitle(";q^{2} ( GeV^{2} ); dBF/dq^{2} ( 10^{#font[122]{\55}7} #times ( GeV^{#font[122]{\55}2} ))");
+      h0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
     }
   h0->SetLineStyle(2);
 
@@ -1795,7 +1795,7 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
 
   TGraphAsymmErrors* worldAverageGr = worldAverage(&dVar);
   worldAverageGr->SetMarkerColor(kRed);
-  worldAverageGr->SetMarkerSize(1.0);
+  worldAverageGr->SetMarkerSize(1.2);
   worldAverageGr->SetLineColor(kRed);
   worldAverageGr->SetLineWidth(1);
   worldAverageGr->SetMarkerStyle(21);
@@ -1819,8 +1819,8 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
 
   unsigned int it = 0;
   TLegend* leg = NULL;
-  if (doWorlAvg == true) leg = new TLegend(0.15, 0.7, 0.4, 0.89, "");
-  else                   leg = new TLegend(0.15, 0.6, 0.3, 0.89, "");
+  if (doWorlAvg == true) leg = new TLegend(0.12, 0.7, 0.37, 0.88, "");
+  else                   leg = new TLegend(0.12, 0.6, 0.27, 0.88, "");
   if (doWorlAvg == true)
     {
       leg->AddEntry(dVar[it++],"CMS","lp");
