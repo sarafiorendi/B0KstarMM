@@ -13,7 +13,7 @@
 # Remove only the mumugenfilter from PYTHIA6_B0dToKstMuMuKPi_7TeV_cff.py
 #cmsDriver.py Configuration/GenProduction/python/PYTHIA6_B0dToKstMuMuKPi_7TeV_cff.py -s GEN --conditions START42_V17::All --datatier GEN-SIM --eventcontent RAWSIM --customise Configuration/GenProduction/customise_SilentMessageLogger.py -n 10000000000 --no_exec
 
-# Create just GEN-SIM-MC for officila production tests
+# Create just GEN-SIM-MC for official production tests
 cmsDriver.py Configuration/GenProduction/python/PYTHIA6_B0dToPsi2SKstMuMuKPi_7TeV_cff.py -s GEN,SIM --conditions START42_V17::All --datatier GEN-SIM --eventcontent RAWSIM --customise Configuration/GenProduction/customise_SilentMessageLogger.py -n 100000 --no_exec
 
 # Create MC up to HLT

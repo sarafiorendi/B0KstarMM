@@ -6,9 +6,6 @@
 #$dirName = "/nfs/data36/cms/dinardo/BpToPsiMuMu_MC_NTuples/" ;
 #$dirName = "/nfs/data36/cms/dinardo/BsToPsiMuMu_MC_NTuples/" ;
 #$dirName = "/nfs/data36/cms/dinardo/LambdaBToPsiMuMu_MC_NTuples/" ;
-### RECO Private MC ###
-#$dirName = "/nfs/data36/cms/dinardo/B0ToKstMuMu_MyMCANALYSIS001_NTuples/" ;
-#$dirName = "/nfs/data36/cms/dinardo/B0ToKstMuMu_BrMC1_NTuples/" ;
 ### GEN MC ###
 #$dirName = "/nfs/data36/cms/dinardo/B0ToKstMuMu_GEN_Filter_MC_NTuples/" ;
 #$dirName = "/nfs/data36/cms/dinardo/B0ToKstMuMu_GEN_NoFilter_01_MC_NTuples/" ;
@@ -39,8 +36,7 @@ for ($count = 0; $count < $nOut; $count++)
 #    $fileOut = "BpToPsiMuMu_MC_NTuples_Merged" ;
 #    $fileOut = "BsToPsiMuMu_MC_NTuples_Merged" ;
 #    $fileOut = "LambdaBToPsiMuMu_MC_NTuples_Merged" ;
-### RECO Private MC ###
-#    $fileOut = "B0ToKstMuMu_MyMC001_NTuples_Merged" ;
+### RECO MC ###
 #    $fileOut = "B0ToKstMuMu_BrMC_NTuples_Merged" ;
 #    $fileOut = "B0ToPsi2SKst_BrMC_NTuples_Merged" ;
 #    $fileOut = "B0ToJPsiKst_BrMC_NTuples_Merged" ;
