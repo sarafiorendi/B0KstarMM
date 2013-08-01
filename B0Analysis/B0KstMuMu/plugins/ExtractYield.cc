@@ -2440,7 +2440,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
  
       Canv->cd();
       RooPlot* myFrameJPsi = x->frame(Range("subRangeJPsi"),Bins(25));
-      dataSetJPsi->plotOn(myFrameJPsi,Name(dataSetJPsi->GetName()));      
+      dataSetJPsi->plotOn(myFrameJPsi,Name(dataSetJPsi->GetName()));
       myFrameJPsi->Draw();
 
       Canv->Update();
@@ -2547,8 +2547,8 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       myString.clear(); myString.str("");
       myString << (*TotalPDFJPsi)->getPlotLabel() << "_paramBox";
       TPaveText* paveTextJPsi = (TPaveText*)myFrameJPsi->findObject(myString.str().c_str());
-      paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","#mu1 = ",GetVar(*TotalPDFJPsi,"meanJPsi1")->getVal(),GetVar(*TotalPDFJPsi,"meanJPsi1")->getError()));
-      paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","#mu2 = ",GetVar(*TotalPDFJPsi,"meanJPsi2")->getVal(),GetVar(*TotalPDFJPsi,"meanJPsi2")->getError()));
+      paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","#mu_{1} = ",GetVar(*TotalPDFJPsi,"meanJPsi1")->getVal(),GetVar(*TotalPDFJPsi,"meanJPsi1")->getError()));
+      paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","#mu_{2} = ",GetVar(*TotalPDFJPsi,"meanJPsi2")->getVal(),GetVar(*TotalPDFJPsi,"meanJPsi2")->getError()));
       paveTextJPsi->AddText(Form("%s%.4f#pm%.4f","< #sigma > = ",sigmaJPsi,sigmaJPsiE));
       paveTextJPsi->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameJPsi->chiSquare((*TotalPDFJPsi)->getPlotLabel(),dataSetJPsi->GetName())));
       paveTextJPsi->AddText(Form("%s%.3f","p-value = ",TMath::Prob(myFrameJPsi->chiSquare((*TotalPDFJPsi)->getPlotLabel(),dataSetJPsi->GetName())*NBins,NBins)));
@@ -2668,8 +2668,8 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       myString.clear(); myString.str("");
       myString << (*TotalPDFPsiP)->getPlotLabel() << "_paramBox";
       TPaveText* paveTextPsiP = (TPaveText*)myFramePsiP->findObject(myString.str().c_str());
-      paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","#mu1 = ",GetVar(*TotalPDFPsiP,"meanPsiP1")->getVal(),GetVar(*TotalPDFPsiP,"meanPsiP1")->getError()));
-      paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","#mu2 = ",GetVar(*TotalPDFPsiP,"meanPsiP2")->getVal(),GetVar(*TotalPDFPsiP,"meanPsiP2")->getError()));
+      paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","#mu_{1} = ",GetVar(*TotalPDFPsiP,"meanPsiP1")->getVal(),GetVar(*TotalPDFPsiP,"meanPsiP1")->getError()));
+      paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","#mu_{2} = ",GetVar(*TotalPDFPsiP,"meanPsiP2")->getVal(),GetVar(*TotalPDFPsiP,"meanPsiP2")->getError()));
       paveTextPsiP->AddText(Form("%s%.4f#pm%.4f","< #sigma > = ",sigmaPsiP,sigmaPsiPE));
       paveTextPsiP->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFramePsiP->chiSquare((*TotalPDFPsiP)->getPlotLabel(),dataSetPsiP->GetName())));
       paveTextPsiP->AddText(Form("%s%.3f","p-value = ",TMath::Prob(myFramePsiP->chiSquare((*TotalPDFPsiP)->getPlotLabel(),dataSetPsiP->GetName())*NBins,NBins)));
@@ -3134,7 +3134,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   Canv->cd();
   RooPlot* myFrameX = x->frame(NBINS);
   dataSet->plotOn(myFrameX,Name(MakeName(dataSet,ID).c_str()));
-  (*TotalPDF)->plotOn(myFrameX,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack));
+  (*TotalPDF)->plotOn(myFrameX,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),VisualizeError(*fitResult,1,true),VLines(),FillColor(kGreen-7));
   if (fitPSIintru != 1)
     {
       (*TotalPDF)->plotOn(myFrameX,Components(*MassSignal),LineStyle(7),LineColor(kBlue));
@@ -4158,7 +4158,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	  Canv->cd(2);
 	  RooPlot* myFrameY = y->frame(NBINS);
 	  dataSet->plotOn(myFrameY,Name(MakeName(dataSet,ID).c_str()));
-	  (*TotalPDF)->plotOn(myFrameY,Name((*TotalPDF)->getPlotLabel()));
+	  (*TotalPDF)->plotOn(myFrameY,Name((*TotalPDF)->getPlotLabel()),VisualizeError(*fitResult,1,true),VLines(),FillColor(kGreen-7));
 
 	  (*TotalPDF)->paramOn(myFrameY,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.88),Parameters(RooArgSet(*nSig)));
 
@@ -4310,7 +4310,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
       Canv->cd(1);
       RooPlot* myFrameX = x->frame(NBINS);
       dataSet->plotOn(myFrameX,Name(MakeName(dataSet,ID).c_str()));
-      (*TotalPDF)->plotOn(myFrameX,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack));
+      (*TotalPDF)->plotOn(myFrameX,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),VisualizeError(*fitResult,1,true),VLines(),FillColor(kGreen-7));
       if (fitPSIintru != 1)
 	{
 	  (*TotalPDF)->plotOn(myFrameX,Components(*Signal),LineStyle(7),LineColor(kBlue));
@@ -4353,7 +4353,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
       Canv->cd(2);
       RooPlot* myFrameY = y->frame(NBINS);
       dataSet->plotOn(myFrameY,Name(MakeName(dataSet,ID).c_str()));
-      (*TotalPDF)->plotOn(myFrameY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack));
+      (*TotalPDF)->plotOn(myFrameY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),VisualizeError(*fitResult,1,true),VLines(),FillColor(kGreen-7));
       if (fitPSIintru != 1)
 	{
 	  (*TotalPDF)->plotOn(myFrameY,Components(*Signal),LineStyle(7),LineColor(kBlue));
@@ -5859,7 +5859,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  Canv->cd(2);
 	  RooPlot* myFrameY = y->frame(NBINS);
 	  dataSet->plotOn(myFrameY,Name(MakeName(dataSet,ID).c_str()));
-	  (*TotalPDF)->plotOn(myFrameY,Name((*TotalPDF)->getPlotLabel()));
+	  (*TotalPDF)->plotOn(myFrameY,Name((*TotalPDF)->getPlotLabel()),VisualizeError(*fitResult,1,true),VLines(),FillColor(kGreen-7));
 
 	  (*TotalPDF)->paramOn(myFrameY,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.88),Parameters(RooArgSet(*nSig)));
       
@@ -5888,7 +5888,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  Canv->cd(3);
 	  RooPlot* myFrameZ = z->frame(NBINS);
 	  dataSet->plotOn(myFrameZ,Name(MakeName(dataSet,ID).c_str()));
-	  (*TotalPDF)->plotOn(myFrameZ,Name((*TotalPDF)->getPlotLabel()));
+	  (*TotalPDF)->plotOn(myFrameZ,Name((*TotalPDF)->getPlotLabel()),VisualizeError(*fitResult,1,true),VLines(),FillColor(kGreen-7));
 
 	  (*TotalPDF)->paramOn(myFrameZ,Format("NEU",AutoPrecision(2)),Layout(0.13,0.42,0.88),Parameters(RooArgSet(*nSig)));
       
@@ -6058,7 +6058,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       Canv->cd(1);
       RooPlot* myFrameX = x->frame(NBINS);
       dataSet->plotOn(myFrameX,Name(MakeName(dataSet,ID).c_str()));
-      (*TotalPDF)->plotOn(myFrameX,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack));
+      (*TotalPDF)->plotOn(myFrameX,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),VisualizeError(*fitResult,1,true),VLines(),FillColor(kGreen-7));
       if (fitPSIintru != 1)
 	{
 	  (*TotalPDF)->plotOn(myFrameX,Components(*Signal),LineStyle(7),LineColor(kBlue));
@@ -6101,7 +6101,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       Canv->cd(2);
       RooPlot* myFrameY = y->frame(NBINS);
       dataSet->plotOn(myFrameY,Name(MakeName(dataSet,ID).c_str()));
-      (*TotalPDF)->plotOn(myFrameY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack));
+      (*TotalPDF)->plotOn(myFrameY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),VisualizeError(*fitResult,1,true),VLines(),FillColor(kGreen-7));
       if (fitPSIintru != 1)
 	{
 	  (*TotalPDF)->plotOn(myFrameY,Components(*Signal),LineStyle(7),LineColor(kBlue));
@@ -6154,7 +6154,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       Canv->cd(3);
       RooPlot* myFrameZ = z->frame(NBINS);
       dataSet->plotOn(myFrameZ,Name(MakeName(dataSet,ID).c_str()));
-      (*TotalPDF)->plotOn(myFrameZ,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack));
+      (*TotalPDF)->plotOn(myFrameZ,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),VisualizeError(*fitResult,1,true),VLines(),FillColor(kGreen-7));
       if (fitPSIintru != 1)
       	{
       	  (*TotalPDF)->plotOn(myFrameZ,Components(*Signal),LineStyle(7),LineColor(kBlue));
