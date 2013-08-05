@@ -467,11 +467,11 @@ void DrawString (double Lumi, RooPlot* myFrame)
 
   myString.clear(); myString.str("");
   myString << "CMS";
-  TLatex* LumiTex1 = new TLatex(0.1,0.945,myString.str().c_str());
+  TLatex* LumiTex1 = new TLatex(0.1,0.91,myString.str().c_str());
   LumiTex1->SetTextSize(0.05);
   LumiTex1->SetTextColor(kBlack);
   LumiTex1->SetNDC(true);
-  if (myFrame == NULL) LumiTex1->DrawLatex(0.1,0.945,myString.str().c_str());
+  if (myFrame == NULL) LumiTex1->DrawLatex(0.1,0.91,myString.str().c_str());
   else
     {
       LumiTex1->Paint();
@@ -480,37 +480,77 @@ void DrawString (double Lumi, RooPlot* myFrame)
 
   myString.clear(); myString.str("");
   myString << "L = " << Lumi <<  " fb#lower[0.4]{^{#font[122]{\55}1}}";
-  TLatex* LumiTex2 = new TLatex(0.43,0.945,myString.str().c_str());
+  TLatex* LumiTex2 = new TLatex(0.43,0.91,myString.str().c_str());
   LumiTex2->SetTextSize(0.05);
   LumiTex2->SetTextColor(kBlack);
   LumiTex2->SetNDC(true);
-  if (myFrame == NULL) LumiTex2->DrawLatex(0.43,0.945,myString.str().c_str());
+  if (myFrame == NULL) LumiTex2->DrawLatex(0.43,0.91,myString.str().c_str());
   else
     {
       LumiTex2->Paint();
       myFrame->addObject(LumiTex2);
     }
 
-  myString.str("");
-  myString << "#sqrt{  }";
-  TLatex* LumiTex3 = new TLatex(0.82,0.935,myString.str().c_str());
-  LumiTex3->SetTextSize(0.053);
-  LumiTex3->SetTextColor(kBlack);
-  LumiTex3->SetNDC(true);
-  if (myFrame == NULL) LumiTex3->DrawLatex(0.82,0.935,myString.str().c_str());
+  // ##################
+  // # Custom method: #
+  // ##################
+  double startNDCx = 0.828;
+  double startNDCy = 0.935;
+  TLine* line1 = new TLine(startNDCx-0.004, startNDCy, startNDCx, startNDCy);
+  line1->SetBit(TLine::kLineNDC,true);
+  if (myFrame == NULL) line1->Draw();
   else
     {
-      LumiTex3->Paint();
-      myFrame->addObject(LumiTex3);
+      line1->Paint();
+      myFrame->addObject(line1);
     }
+  TLine* line2 = new TLine(startNDCx, startNDCy, startNDCx+0.005, startNDCy-0.03);
+  line2->SetBit(TLine::kLineNDC,true);
+  if (myFrame == NULL) line2->Draw();
+  else
+    {
+      line2->Paint();
+      myFrame->addObject(line2);
+    }
+  TLine* line3 = new TLine(startNDCx+0.005, startNDCy-0.03, startNDCx+0.010, startNDCy+0.01);
+  line3->SetBit(TLine::kLineNDC,true);
+  if (myFrame == NULL) line3->Draw();
+  else
+    {
+      line3->Paint();
+      myFrame->addObject(line3);
+    }
+  TLine* line4 = new TLine(startNDCx+0.010, startNDCy+0.01, startNDCx+0.030, startNDCy+0.01);
+  line4->SetBit(TLine::kLineNDC,true);
+  if (myFrame == NULL) line4->Draw();
+  else
+    {
+      line4->Paint();
+      myFrame->addObject(line4);
+    }
+  // ###################
+  // # Nominal method: #
+  // ###################
+  // myString.str("");
+  // myString << "#sqrt{  }";
+  // TLatex* LumiTex3 = new TLatex(0.82,0.9,myString.str().c_str());
+  // LumiTex3->SetTextSize(0.053);
+  // LumiTex3->SetTextColor(kBlack);
+  // LumiTex3->SetNDC(true);
+  // if (myFrame == NULL) LumiTex3->DrawLatex(0.82,0.9,myString.str().c_str());
+  // else
+  //   {
+  //     LumiTex3->Paint();
+  //     myFrame->addObject(LumiTex3);
+  //   }
 
   myString.str("");
   myString << "s = 7 TeV";
-  TLatex* LumiTex4 = new TLatex(0.84,0.945,myString.str().c_str());
+  TLatex* LumiTex4 = new TLatex(0.84,0.91,myString.str().c_str());
   LumiTex4->SetTextSize(0.05);
   LumiTex4->SetTextColor(kBlack);
   LumiTex4->SetNDC(true);
-  if (myFrame == NULL) LumiTex4->DrawLatex(0.84,0.945,myString.str().c_str());
+  if (myFrame == NULL) LumiTex4->DrawLatex(0.84,0.91,myString.str().c_str());
   else
     {
       LumiTex4->Paint();

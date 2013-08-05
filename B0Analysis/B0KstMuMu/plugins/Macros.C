@@ -87,7 +87,7 @@ void DrawString (double Lumi);
 TCutG* DrawExclusion (double Xlow, double Xhigh, double Ylow, double Yhigh, string cutName, unsigned int fillStyle, unsigned int color);
 void printData (int nBins, TVectorD V1, TVectorD V2, TVectorD V3, TVectorD V4, TVectorD V5, TVectorD V6);
 void offsetData (int nBins, TVectorD* V1, TVectorD* V2, TVectorD* V3, double offset);
-TGraphAsymmErrors* readData (TString fileName, int dataType, int color, int markerType, bool doFill, bool noHbar, double offset);
+TGraphAsymmErrors* readData (TString fileName, int dataType, int color, int markerType, bool doFill, int fillStyle, bool noHbar, double offset);
 TGraphAsymmErrors* worldAverage (vector<TGraphAsymmErrors*>* expReults);
 void showData (int dataType, double offset, bool noHbar, bool doWorlAvg);
 
@@ -1529,35 +1529,55 @@ void DrawString (double Lumi)
 
   myString.str("");
   myString << "CMS";
-  TLatex* LumiTex1 = new TLatex(0.1,0.945,myString.str().c_str());
+  TLatex* LumiTex1 = new TLatex(0.1,0.91,myString.str().c_str());
   LumiTex1->SetTextSize(0.05);
   LumiTex1->SetTextColor(kBlack);
   LumiTex1->SetNDC(true);
-  LumiTex1->DrawLatex(0.1,0.945,myString.str().c_str());
+  LumiTex1->DrawLatex(0.1,0.91,myString.str().c_str());
 
   myString.str("");
   myString << "L = " << Lumi <<  " fb#lower[0.4]{^{#font[122]{\55}1}}";
-  TLatex* LumiTex2 = new TLatex(0.43,0.945,myString.str().c_str());
+  TLatex* LumiTex2 = new TLatex(0.43,0.91,myString.str().c_str());
   LumiTex2->SetTextSize(0.05);
   LumiTex2->SetTextColor(kBlack);
   LumiTex2->SetNDC(true);
-  LumiTex2->DrawLatex(0.43,0.945,myString.str().c_str());
+  LumiTex2->DrawLatex(0.43,0.91,myString.str().c_str());
 
-  myString.str("");
-  myString << "#sqrt{  }";
-  TLatex* LumiTex3 = new TLatex(0.82,0.935,myString.str().c_str());
-  LumiTex3->SetTextSize(0.053);
-  LumiTex3->SetTextColor(kBlack);
-  LumiTex3->SetNDC(true);
-  LumiTex3->DrawLatex(0.82,0.935,myString.str().c_str());
+  // ##################
+  // # Custom method: #
+  // ##################
+  double startNDCx = 0.828;
+  double startNDCy = 0.935;
+  TLine* line1 = new TLine(startNDCx-0.004, startNDCy, startNDCx, startNDCy);
+  line1->SetBit(TLine::kLineNDC,true);
+  line1->Draw();
+  TLine* line2 = new TLine(startNDCx, startNDCy, startNDCx+0.005, startNDCy-0.03);
+  line2->SetBit(TLine::kLineNDC,true);
+  line2->Draw();
+  TLine* line3 = new TLine(startNDCx+0.005, startNDCy-0.03, startNDCx+0.010, startNDCy+0.01);
+  line3->SetBit(TLine::kLineNDC,true);
+  line3->Draw();
+  TLine* line4 = new TLine(startNDCx+0.010, startNDCy+0.01, startNDCx+0.030, startNDCy+0.01);
+  line4->SetBit(TLine::kLineNDC,true);
+  line4->Draw();
+  // ###################
+  // # Nominal method: #
+  // ###################
+  // myString.str("");
+  // myString << "#sqrt{  }";
+  // TLatex* LumiTex3 = new TLatex(0.82,0.9,myString.str().c_str());
+  // LumiTex3->SetTextSize(0.053);
+  // LumiTex3->SetTextColor(kBlack);
+  // LumiTex3->SetNDC(true);
+  // LumiTex3->DrawLatex(0.82,0.9,myString.str().c_str());
 
   myString.str("");
   myString << "s = 7 TeV";
-  TLatex* LumiTex4 = new TLatex(0.84,0.945,myString.str().c_str());
+  TLatex* LumiTex4 = new TLatex(0.84,0.91,myString.str().c_str());
   LumiTex4->SetTextSize(0.05);
   LumiTex4->SetTextColor(kBlack);
   LumiTex4->SetNDC(true);
-  LumiTex4->DrawLatex(0.84,0.945,myString.str().c_str());
+  LumiTex4->DrawLatex(0.84,0.91,myString.str().c_str());
 }
 
 
@@ -1598,7 +1618,7 @@ void offsetData (int nBins, TVectorD* V1, TVectorD* V2, TVectorD* V3, double off
 }
 
 
-TGraphAsymmErrors* readData (TString fileName, int dataType, int color, int markerType, bool doFill, bool noHbar, double offset)
+TGraphAsymmErrors* readData (TString fileName, int dataType, int color, int markerType, bool doFill, int fillStyle, bool noHbar, double offset)
 // #################################
 // # dataType = 0 --> FL           #
 // # dataType = 1 --> AFB          #
@@ -1667,7 +1687,11 @@ TGraphAsymmErrors* readData (TString fileName, int dataType, int color, int mark
   if      (dataType == 0) gra->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); F_{L}");
   else if (dataType == 1) gra->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); A_{FB}");
   else if (dataType == 2) gra->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
-  if (doFill == true) gra->SetFillColor(color);
+  if (doFill == true)
+    {
+      gra->SetFillColor(color);
+      gra->SetFillStyle(fillStyle);
+    }
   else
     {
       gra->SetMarkerColor(color);
@@ -1785,13 +1809,13 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
   TCanvas* cData  = new TCanvas("cData","cData",10,10,700,500);
 
   vector<TGraphAsymmErrors*> dVar;
-  dVar.push_back(readData("./ExperimentComparison/CMS.data",  dataType,1,20,false,noHbar,0.0*offset));
-  // dVar.push_back(readData("./ExperimentComparison/LHCb_0_37fb.data",dataType,2,21,false,noHbar,0.0*offset));
-  dVar.push_back(readData("./ExperimentComparison/LHCb_1fb.data",dataType,2,21,false,noHbar,0.0*offset));
-  // if (dataType != 2) dVar.push_back(readData("./ExperimentComparison/Atlas.data",dataType,9,22,false,noHbar,-3.0*offset));
-  dVar.push_back(readData("./ExperimentComparison/BaBar.data",dataType,4,23,false,noHbar,2.0*offset));
-  dVar.push_back(readData("./ExperimentComparison/Belle.data",dataType,8,28,false,noHbar,-2.0*offset));
-  dVar.push_back(readData("./ExperimentComparison/CDF.data",  dataType,kGray+1,29,false,noHbar,-1.0*offset));
+  dVar.push_back(readData("./ExperimentComparison/CMS.data",  dataType,1,20,false,0,noHbar,0.0*offset));
+  // dVar.push_back(readData("./ExperimentComparison/LHCb_0_37fb.data",dataType,2,21,false,0,noHbar,0.0*offset));
+  dVar.push_back(readData("./ExperimentComparison/LHCb_1fb.data",dataType,2,21,false,0,noHbar,0.0*offset));
+  // if (dataType != 2) dVar.push_back(readData("./ExperimentComparison/Atlas.data",dataType,9,22,false,0,noHbar,-3.0*offset));
+  dVar.push_back(readData("./ExperimentComparison/BaBar.data",dataType,4,23,false,0,noHbar,2.0*offset));
+  dVar.push_back(readData("./ExperimentComparison/Belle.data",dataType,8,28,false,0,noHbar,-2.0*offset));
+  dVar.push_back(readData("./ExperimentComparison/CDF.data",  dataType,kGray+1,29,false,0,noHbar,-1.0*offset));
 
   TGraphAsymmErrors* worldAverageGr = worldAverage(&dVar);
   worldAverageGr->SetMarkerColor(kRed);
@@ -1800,7 +1824,7 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
   worldAverageGr->SetLineWidth(1);
   worldAverageGr->SetMarkerStyle(21);
 
-  dVar.push_back(readData("./ExperimentComparison/Theory.data", dataType,kMagenta-7,20,true,noHbar,0.0*offset));
+  dVar.push_back(readData("./ExperimentComparison/Theory.data", dataType,kBlue,20,true,3001,noHbar,0.0*offset));
 
 
   cData->cd();
@@ -1828,7 +1852,7 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
     }
   else  
     {
-      leg->AddEntry(dVar[dVar.size()-1],"SM","F");
+      leg->AddEntry(dVar[dVar.size()-1],"<SM>","F");
       leg->AddEntry(dVar[it++],"CMS","lp");
       leg->AddEntry(dVar[it++],"LHCb","lp");
       // if (dataType != 2) leg->AddEntry(dVar[it++],"Atlas","lp");

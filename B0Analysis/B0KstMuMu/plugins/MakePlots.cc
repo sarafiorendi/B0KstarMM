@@ -94,35 +94,55 @@ void DrawString (double Lumi)
 
   myString.str("");
   myString << "CMS";
-  TLatex* LumiTex1 = new TLatex(0.1,0.945,myString.str().c_str());
+  TLatex* LumiTex1 = new TLatex(0.1,0.91,myString.str().c_str());
   LumiTex1->SetTextSize(0.05);
   LumiTex1->SetTextColor(kBlack);
   LumiTex1->SetNDC(true);
-  LumiTex1->DrawLatex(0.1,0.945,myString.str().c_str());
+  LumiTex1->DrawLatex(0.1,0.91,myString.str().c_str());
 
   myString.str("");
   myString << "L = " << Lumi <<  " fb#lower[0.4]{^{#font[122]{\55}1}}";
-  TLatex* LumiTex2 = new TLatex(0.43,0.945,myString.str().c_str());
+  TLatex* LumiTex2 = new TLatex(0.43,0.91,myString.str().c_str());
   LumiTex2->SetTextSize(0.05);
   LumiTex2->SetTextColor(kBlack);
   LumiTex2->SetNDC(true);
-  LumiTex2->DrawLatex(0.43,0.945,myString.str().c_str());
+  LumiTex2->DrawLatex(0.43,0.91,myString.str().c_str());
 
-  myString.str("");
-  myString << "#sqrt{  }";
-  TLatex* LumiTex3 = new TLatex(0.82,0.935,myString.str().c_str());
-  LumiTex3->SetTextSize(0.053);
-  LumiTex3->SetTextColor(kBlack);
-  LumiTex3->SetNDC(true);
-  LumiTex3->DrawLatex(0.82,0.935,myString.str().c_str());
+  // ##################
+  // # Custom method: #
+  // ##################
+  double startNDCx = 0.828;
+  double startNDCy = 0.935;
+  TLine* line1 = new TLine(startNDCx-0.004, startNDCy, startNDCx, startNDCy);
+  line1->SetBit(TLine::kLineNDC,true);
+  line1->Draw();
+  TLine* line2 = new TLine(startNDCx, startNDCy, startNDCx+0.005, startNDCy-0.03);
+  line2->SetBit(TLine::kLineNDC,true);
+  line2->Draw();
+  TLine* line3 = new TLine(startNDCx+0.005, startNDCy-0.03, startNDCx+0.010, startNDCy+0.01);
+  line3->SetBit(TLine::kLineNDC,true);
+  line3->Draw();
+  TLine* line4 = new TLine(startNDCx+0.010, startNDCy+0.01, startNDCx+0.030, startNDCy+0.01);
+  line4->SetBit(TLine::kLineNDC,true);
+  line4->Draw();
+  // ###################
+  // # Nominal method: #
+  // ###################
+  // myString.str("");
+  // myString << "#sqrt{  }";
+  // TLatex* LumiTex3 = new TLatex(0.82,0.9,myString.str().c_str());
+  // LumiTex3->SetTextSize(0.053);
+  // LumiTex3->SetTextColor(kBlack);
+  // LumiTex3->SetNDC(true);
+  // LumiTex3->DrawLatex(0.82,0.9,myString.str().c_str());
 
   myString.str("");
   myString << "s = 7 TeV";
-  TLatex* LumiTex4 = new TLatex(0.84,0.945,myString.str().c_str());
+  TLatex* LumiTex4 = new TLatex(0.84,0.91,myString.str().c_str());
   LumiTex4->SetTextSize(0.05);
   LumiTex4->SetTextColor(kBlack);
   LumiTex4->SetNDC(true);
-  LumiTex4->DrawLatex(0.84,0.945,myString.str().c_str());
+  LumiTex4->DrawLatex(0.84,0.91,myString.str().c_str());
 }
 
 
@@ -1423,7 +1443,8 @@ void MakePhysicsPlots (unsigned int PlotType)
   if      ((PlotType == 0) || (PlotType == 10)) geSmoothTh = ReadFromASCII(SMFL,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Fl
   else if ((PlotType == 1) || (PlotType == 11)) geSmoothTh = ReadFromASCII(SMAFB,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh); // Afb
   else if ((PlotType == 2) || (PlotType == 12)) geSmoothTh = ReadFromASCII(SMBF,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Branching fraction
-  geSmoothTh->SetFillColor(kCyan-4);
+  // geSmoothTh->SetFillColor(kCyan-4);
+  geSmoothTh->SetFillColor(kRed-9);
   geSmoothTh->SetFillStyle(1001);
   geSmoothTh->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
 
@@ -1437,8 +1458,8 @@ void MakePhysicsPlots (unsigned int PlotType)
   else if ((PlotType == 2) || (PlotType == 12)) geStepTh = ReadFromASCII(SMBINBF,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Branching fraction
   geStepTh->SetMarkerColor(kBlack);
   geStepTh->SetMarkerStyle(1);
-  geStepTh->SetFillColor(kMagenta-7);
-  geStepTh->SetFillStyle(1001);
+  geStepTh->SetFillColor(kBlue);
+  geStepTh->SetFillStyle(3001);
   geStepTh->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
 
 
