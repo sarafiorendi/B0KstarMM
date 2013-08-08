@@ -494,7 +494,7 @@ void DrawString (double Lumi, RooPlot* myFrame)
   // ##################
   // # Custom method: #
   // ##################
-  double startNDCx = 0.828;
+  double startNDCx = 0.826;
   double startNDCy = 0.935;
   TLine* line1 = new TLine(startNDCx-0.004, startNDCy, startNDCx, startNDCy);
   line1->SetBit(TLine::kLineNDC,true);
@@ -520,7 +520,7 @@ void DrawString (double Lumi, RooPlot* myFrame)
       line3->Paint();
       myFrame->addObject(line3);
     }
-  TLine* line4 = new TLine(startNDCx+0.010, startNDCy+0.01, startNDCx+0.030, startNDCy+0.01);
+  TLine* line4 = new TLine(startNDCx+0.010, startNDCy+0.01, startNDCx+0.032, startNDCy+0.01);
   line4->SetBit(TLine::kLineNDC,true);
   if (myFrame == NULL) line4->Draw();
   else

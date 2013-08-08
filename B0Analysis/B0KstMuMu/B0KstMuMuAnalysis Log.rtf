@@ -17,31 +17,31 @@
 \b Possible measurements
 \b0  @\
 @@@@@@@@@@@@@@\
-B0 --> K*0 mu mu vs q2: 
+B0 --> K*0 mu mu vs q2: (
 \b FL
 \b0 , 
 \b AFB
-\b0 , (AT2, ATIM), or (S3, A9), 
+\b0 , 7 CP-averaged observables), 9 CP-violating observables, 
 \b BF
 \b0 , CP-asymmetry, zero crossing point\
-B0 --> K*0 J/psi:                
+B0 --> K*0 J/psi:                (
 \b FL
 \b0 , 
 \b AFB
-\b0 , (AT2, ATIM), or (S3, A9), 
+\b0 , 7 CP-averaged observables), 9 CP-violating observables, (
 \b FS
 \b0 , 
 \b AS
-\b0 \
-B0 --> K*0 psi(2S):           
+\b0 , 4 CP-averaged observables), 6 CP-violating observables\
+B0 --> K*0 psi(2S):           (
 \b FL
 \b0 , 
 \b AFB
-\b0 , (AT2, ATIM), or (S3, A9), 
+\b0 , 7 CP-averaged observables), 9 CP-violating observables, (
 \b FS
 \b0 , 
 \b AS
-\b0 \
+\b0 , 4 CP-averaged observables), 6 CP-violating observables\
 \
 \
 \
@@ -798,13 +798,12 @@ By contrast, the mistagging variation that we had (from 8% to 12.2%) changed the
 @@@@@@@@@\
 1. See if and how to update EvtGen version 10.0\
 \
-2. Move to CMSSW_5_3 (implement new variables for "soft" and "tight" muon selection)\
-3. Multiple candidate ntuple and single candidate ntuple must have the same directory name\
+2. Test Atlas cut : | ( m(B)RECO - m(B)PDG ) - ( m(mu+mu-)RECO - m(J/psi)PDG ) | <  130 MeV\
+3. Move to CMSSW_5_3_11 (implement new variables for "soft" and "tight" muon selection)\
+4. Multiple candidate ntuple and single candidate ntuple must have the same directory name\
+5. Re-define phi angle with folding technique\
 \
-4. Re-define phi angle with folding technique\
-5. Compute mass shape from 3D-fit to MC\
-6. Test Atlas cut : | ( m(B)RECO - m(B)PDG ) - ( m(mu+mu-)RECO - m(J/psi)PDG ) | <  130 MeV\
-\
+6. Compute mass shape from 3D-fit to MC\
 7. Add dilution to AFB, AFB'  = (1 - 2m)AFB, and to all other asymmetry terms to account for CP-state mistag (m)\
 8. Correct statistical errors by the sigmas of the Gaussian fits to the pulls\
 9. Search for Bs --> J/psi K* by restricting to the barrel region\

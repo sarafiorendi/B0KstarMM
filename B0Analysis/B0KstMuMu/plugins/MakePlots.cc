@@ -111,7 +111,7 @@ void DrawString (double Lumi)
   // ##################
   // # Custom method: #
   // ##################
-  double startNDCx = 0.828;
+  double startNDCx = 0.826;
   double startNDCy = 0.935;
   TLine* line1 = new TLine(startNDCx-0.004, startNDCy, startNDCx, startNDCy);
   line1->SetBit(TLine::kLineNDC,true);
@@ -122,7 +122,7 @@ void DrawString (double Lumi)
   TLine* line3 = new TLine(startNDCx+0.005, startNDCy-0.03, startNDCx+0.010, startNDCy+0.01);
   line3->SetBit(TLine::kLineNDC,true);
   line3->Draw();
-  TLine* line4 = new TLine(startNDCx+0.010, startNDCy+0.01, startNDCx+0.030, startNDCy+0.01);
+  TLine* line4 = new TLine(startNDCx+0.010, startNDCy+0.01, startNDCx+0.032, startNDCy+0.01);
   line4->SetBit(TLine::kLineNDC,true);
   line4->Draw();
   // ###################
