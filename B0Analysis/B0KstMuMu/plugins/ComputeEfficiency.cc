@@ -347,7 +347,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
       myString.str("");
       myString << "vecHcosThetaL_" << i;
       vecHcosThetaL.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), cosThetaLBins->size()-1, cosThetaLBins_));
-      vecHcosThetaL.back()->SetXTitle("cos(#theta_{l})");
+      vecHcosThetaL.back()->SetXTitle("cos(#theta_{#font[12]{l}})");
       vecHcosThetaL.back()->SetYTitle("Efficiency");
 
       myString.str("");
@@ -502,7 +502,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 	  myString.str("");
 	  myString << "vecHq2ANDcosThetaK_" << i << "_" << j;
 	  vecHq2ANDcosThetaK.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), cosThetaLBins->size()-1, cosThetaLBins_));
-	  vecHq2ANDcosThetaK.back()->SetXTitle("cos(#theta_{l})");
+	  vecHq2ANDcosThetaK.back()->SetXTitle("cos(#theta_{#font[12]{l}})");
 	  vecHq2ANDcosThetaK.back()->SetYTitle("Numerator single cand. [#]");
 
 	  legHq2ANDcosThetaK.push_back(new TLegend(0.88, 0.6, 0.97, 0.89, ""));
@@ -658,7 +658,7 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
       myString.str("");
       myString << "HcosThetaL_" << i;
       HcosThetaL.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), cosThetaLBins->size()-1, cosThetaLBins_));
-      HcosThetaL.back()->SetXTitle("cos(#theta_{l})");
+      HcosThetaL.back()->SetXTitle("cos(#theta_{#font[12]{l}})");
       HcosThetaL.back()->SetYTitle("Efficiency");
     }
 
@@ -991,7 +991,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  // # Save results #
 	  // ################
 	  histFit.back()->SetMarkerStyle(20);
-	  histFit.back()->SetXTitle("cos(#theta_{l})");
+	  histFit.back()->SetXTitle("cos(#theta_{#font[12]{l}})");
 	  histFit.back()->SetYTitle("Efficiency");
 	  histFit.back()->GetYaxis()->SetRangeUser(-YaxesThetaL,YaxesThetaL);
 
@@ -1122,7 +1122,7 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   TH2D* Histo = new TH2D(myString.str().c_str(), myString.str().c_str(), cosThetaKBins->size()-1, cosThetaKBins_, cosThetaLBins->size()-1, cosThetaLBins_);
   Histo->SetXTitle("cos(#theta_{K})");
   Histo->GetXaxis()->SetTitleOffset(1.8);
-  Histo->SetYTitle("cos(#theta_{l})");
+  Histo->SetYTitle("cos(#theta_{#font[12]{l}})");
   Histo->GetYaxis()->SetTitleOffset(1.8);
   Histo->SetZTitle("Efficiency");
 
@@ -1255,7 +1255,7 @@ void TestEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vect
   TH2D* Histo = new TH2D(myString.str().c_str(), myString.str().c_str(), cosThetaKBins->size()-1, cosThetaKBins_, cosThetaLBins->size()-1, cosThetaLBins_);
   Histo->SetXTitle("cos(#theta_{K})");
   Histo->GetXaxis()->SetTitleOffset(1.8);
-  Histo->SetYTitle("cos(#theta_{l})");
+  Histo->SetYTitle("cos(#theta_{#font[12]{l}})");
   Histo->GetYaxis()->SetTitleOffset(1.8);
   Histo->SetZTitle("Efficiency");
   Histo->GetZaxis()->SetTitleOffset(1.25);
@@ -1329,7 +1329,7 @@ void TestEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vect
       myString.str("");
       myString << "effFuncSlice_binK_" << binIndx;
       effFuncSlice.push_back(new TF12(myString.str().c_str(),EffFuncRef,(cosThetaKBins->operator[](binIndx)+cosThetaKBins->operator[](binIndx+1))/2.,"y"));
-      effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta_{l})");
+      effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta_{#font[12]{l}})");
       effFuncSlice.back()->GetYaxis()->SetTitle("Efficiency");
       effFuncSlice.back()->GetYaxis()->SetRangeUser(0.0,Zaxes);
       effFuncSlice.back()->Draw();
@@ -1337,7 +1337,7 @@ void TestEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vect
       myString.str("");
       myString << "histoSlice_binK_" << binIndx;
       histoSlice.push_back(Histo->ProjectionY(myString.str().c_str(),binIndx+1,binIndx+1));
-      histoSlice.back()->SetXTitle("cos(#theta_{l})");
+      histoSlice.back()->SetXTitle("cos(#theta_{#font[12]{l}})");
       histoSlice.back()->SetMarkerStyle(20);
       histoSlice.back()->SetYTitle("Efficiency");
       histoSlice.back()->GetYaxis()->SetRangeUser(0.0,Zaxes);

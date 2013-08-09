@@ -1696,7 +1696,7 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
         
       effFuncs->operator[](q2BinIndx)->GetXaxis()->SetTitle("cos(#theta_{#font[122]{K}})");
       effFuncs->operator[](q2BinIndx)->GetXaxis()->SetTitleOffset(1.8);
-      effFuncs->operator[](q2BinIndx)->GetYaxis()->SetTitle("cos(#theta_{l})");
+      effFuncs->operator[](q2BinIndx)->GetYaxis()->SetTitle("cos(#theta_{#font[12]{l}})");
       effFuncs->operator[](q2BinIndx)->GetYaxis()->SetTitleOffset(1.8);
       effFuncs->operator[](q2BinIndx)->GetZaxis()->SetTitle("Efficiency");
     }
@@ -2190,7 +2190,7 @@ void Utils::AddConstraint2D (TH2D** histo, double err, double Zval, double errZ,
 
   newHisto->SetXTitle("cos(#theta_{#font[122]{K}})");
   newHisto->GetXaxis()->SetTitleOffset(1.8);
-  newHisto->SetYTitle("cos(#theta_{l})");
+  newHisto->SetYTitle("cos(#theta_{#font[12]{l}})");
   newHisto->GetYaxis()->SetTitleOffset(1.8);
   newHisto->SetZTitle("Efficiency");
 

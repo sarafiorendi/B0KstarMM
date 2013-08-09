@@ -559,7 +559,7 @@ void MakeComparisonDataMC (unsigned int plotType)
    }
   else if (plotType == 27)
     {
-      Xtitle = "cos(#theta_{l})";
+      Xtitle = "cos(#theta_{#font[12]{l}})";
       minX = -1.0;
       maxX = 1.0;
 
