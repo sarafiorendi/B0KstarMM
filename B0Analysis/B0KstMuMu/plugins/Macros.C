@@ -1812,7 +1812,7 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
   dVar.push_back(readData("./ExperimentComparison/CMS.data",  dataType,1,20,false,0,noHbar,0.0*offset));
   // dVar.push_back(readData("./ExperimentComparison/LHCb_0_37fb.data",dataType,2,21,false,0,noHbar,0.0*offset));
   dVar.push_back(readData("./ExperimentComparison/LHCb_1fb.data",dataType,2,21,false,0,noHbar,0.0*offset));
-  // if (dataType != 2) dVar.push_back(readData("./ExperimentComparison/Atlas.data",dataType,9,22,false,0,noHbar,-3.0*offset));
+  // if (dataType != 2) dVar.push_back(readData("./ExperimentComparison/Atlas.data",dataType,6,22,false,0,noHbar,-3.0*offset));
   dVar.push_back(readData("./ExperimentComparison/BaBar.data",dataType,4,23,false,0,noHbar,2.0*offset));
   dVar.push_back(readData("./ExperimentComparison/Belle.data",dataType,8,28,false,0,noHbar,-2.0*offset));
   dVar.push_back(readData("./ExperimentComparison/CDF.data",  dataType,kGray+1,29,false,0,noHbar,-1.0*offset));

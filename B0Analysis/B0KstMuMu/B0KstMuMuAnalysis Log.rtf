@@ -799,15 +799,20 @@ By contrast, the mistagging variation that we had (from 8% to 12.2%) changed the
 1. Test Atlas cut : | ( m(B)RECO - m(B)PDG ) - ( m(mu+mu-)RECO - m(J/psi)PDG ) | <  130 MeV\
 2. Move to CMSSW_5_3_11 (implement new variables for "soft" and "tight" muon selection)\
 3. Multiple candidate ntuple and single candidate ntuple must have the same directory name\
-4. Re-define the angular variables\
+\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 5. Re-define phi angle with folding technique\
+\cf0 4. Use XML for configuration file\
+5. Add dilution to AFB, AFB'  = (1 - 2m)AFB, and to all other asymmetry terms to account for CP-state mistag (m)\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 6. Re-define fit variables: mass, theta_K, theta_l, phi\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 7. Re-define efficiency: theta_K, theta_l, phi\
+8. Define PDF classes + virtual PDF class: implement PDF + save/load parameters + toy + folding --> efficiency\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \
-6. Compute mass shape from 3D-fit to MC\
-7. Add dilution to AFB, AFB'  = (1 - 2m)AFB, and to all other asymmetry terms to account for CP-state mistag (m)\
-8. Correct statistical errors by the sigmas of the Gaussian fits to the pulls\
-9. Search for Bs --> J/psi K* by restricting to the barrel region\
+9. Compute mass shape from 4D-fit to MC\
+10. Correct statistical errors by the sigmas of the Gaussian fits to the pulls\
+11. Search for Bs --> J/psi K* by restricting to the barrel region\
 \
 \
 \
