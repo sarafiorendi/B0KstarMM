@@ -14,7 +14,7 @@ if (@ARGV == 2)
     $parFile      = "../python/ParameterFile.txt" ;
     ############################
 
-    print "Directory for randomly generated efficiencies: $dirEffRndGen \n" ;
+    print "Directory with randomly generated efficiencies: $dirEffRndGen \n" ;
     print "Data (or MC) file: $dataFile \n" ;
     print "Parameter file: $parFile \n" ;
 

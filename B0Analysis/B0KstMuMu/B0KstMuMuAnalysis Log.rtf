@@ -800,16 +800,12 @@ By contrast, the mistagging variation that we had (from 8% to 12.2%) changed the
 2. Move to CMSSW_5_3_11 (implement new variables for "soft" and "tight" muon selection)\
 3. Multiple candidate ntuple and single candidate ntuple must have the same directory name\
 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 4. Use XML for configuration file\
+4. Use XML for configuration file\
 5. Add dilution to AFB, AFB'  = (1 - 2m)AFB, and to all other asymmetry terms to account for CP-state mistag (m)\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 6. Re-define fit variables: mass, theta_K, theta_l, phi\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 7. Re-define efficiency: theta_K, theta_l, phi\
+6. Re-define fit variables: mass, theta_K, theta_l, phi\
+7. Re-define efficiency: theta_K, theta_l, phi\
 8. Define PDF classes + virtual PDF class: implement PDF + save/load parameters + toy + folding --> efficiency\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \
+\
 9. Compute mass shape from 4D-fit to MC\
 10. Correct statistical errors by the sigmas of the Gaussian fits to the pulls\
 11. Search for Bs --> J/psi K* by restricting to the barrel region\
@@ -830,6 +826,32 @@ pp cross section at 7 TeV: 49.59 mb\
 /MuOniaParked/Run2012B-22Jan2013-v1/AOD: run range 193833 - 196531, lumi: 7E33\
 /MuOniaParked/Run2012C-22Jan2013-v1/AOD: run range 198022 - 203742, lumi: 7E33\
 /MuOniaParked/Run2012D-22Jan2013-v1/AOD: run range 203777 - 208686, lumi: 8E33\
+\ul \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 \ulnone @@@@@@@@@@@\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 @ 
+\b Run-dependent MC
+\b0  @\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 @@@@@@@@@@@\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 ( A ) Pileup\
+( B ) Muon detector configuration GT, DT, CSC (L1 IOVs)\
+( C ) dimuon DZ configuration change after run #199648\
+http://dl.dropboxusercontent.com/u/6901242/dzfilter_inefficiency_fix.pdf\
+hltESPTrajectoryCleanerBySharedHits ("TrajectoryCleanerESProducer")\
+	Parametri: \
+	ValidHitBonus = cms.double( 100.0 ) # before run 199648 it was 5.0\
+	MissingHitPenalty = cms.double( 0.0 ) # before run 199648 it was 20.0\
+hltDiMuonMerging ("SimpleTrackListMerger")\
+	Parametri:\
+	FoundHitBonus = cms.double( 100.0 ) # before run 199648 it was 5.0\
+	LostHitPenalty = cms.double( 0.0 ) # before run 199648 it was 20.0\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 ( D ) HLT to be conformal to ( B ) and ( C )\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 ( E ) Tracker AlCa: november 2012 BPIX movement along z of ~120 um\
 \
 \ul Private MC:\
 \ulnone B0ToKstMuMu_GEN_NoFilter ...\

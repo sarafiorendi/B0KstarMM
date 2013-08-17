@@ -22,6 +22,7 @@
 #include <TLine.h>
 #include <TLatex.h>
 #include <TCutG.h>
+#include <TKey.h>
 
 #include <math.h>
 #include <sstream>
@@ -36,6 +37,8 @@ using namespace std;
 // ####################
 // # Global constants #
 // ####################
+#define DIREXPTCOMP "./ExperimentComparison/"
+
 #define ordinateRange 2.2e-3
 
 #define B0MassIntervalLeft  0.28 // [GeV/c2]
@@ -70,7 +73,6 @@ TH1D* ComputeCumulative(TH1D* hIN, string hCumulName);
 void TruthMatching (string fileName, bool truthMatch);
 void dBFfromGEN (string fileName);
 void CompareCosMassGENRECO (string fileNameRECO, string fileNameGEN);
-void CompareCosTruth ();
 void ComputePileUp (string fileName);
 void PlotVtxWithPileUpW (string fileNameMC, string fileNameData, unsigned int TrigCat, bool withWeights);
 void PlotPileUp (string fileNameMC1, string fileNameMC2);
@@ -266,8 +268,8 @@ void TruthMatching (string fileName, bool truthMatch)
 void dBFfromGEN (string fileName)
 {
   TFile* _file0 = TFile::Open(fileName.c_str(),"READ");
-  TCanvas* c1   = (TCanvas*)_file0->Get("cHistoMeas");
-  TH1D* h1      = (TH1D*)c1->GetPrimitive("histoMeas");
+  TList* myList = _file0->GetListOfKeys();
+  TH1D* h1 = (TH1D*)((dynamic_cast<TKey*>(myList->At(0)))->ReadObj());
 
 
   double GENMClumi = 294500.0;
@@ -350,13 +352,13 @@ void CompareCosMassGENRECO (string fileNameRECO, string fileNameGEN)
   TH1D* h2 = new TH1D("h2","h2",400,-0.5,0.5);
   h0->SetXTitle("RECO-GEN");
   h0->SetYTitle("Entries");
-  h0->SetFillColor(kAzure-4);
+  h0->SetFillColor(kAzure+6);
   h1->SetXTitle("RECO-GEN");
   h1->SetYTitle("Entries");
-  h1->SetFillColor(kAzure-4);
+  h1->SetFillColor(kAzure+6);
   h2->SetXTitle("RECO-GEN");
   h2->SetYTitle("Entries");
-  h2->SetFillColor(kAzure-4);
+  h2->SetFillColor(kAzure+6);
 
   vector<double>* vec1 = new vector<double>;
   vector<double>* vec2 = new vector<double>;
@@ -422,89 +424,6 @@ void CompareCosMassGENRECO (string fileNameRECO, string fileNameGEN)
   h2->Fit("f0");
   c2->Update();
   cout << "Sigma mumuMass^2: " << sqrt((f0->GetParameter(3)*f0->GetParameter(1)*f0->GetParameter(1) + f0->GetParameter(4)*f0->GetParameter(2)*f0->GetParameter(2))/(f0->GetParameter(3)+f0->GetParameter(4))) << endl;
-}
-
-
-// ################################################################################################
-// # Sub-program to compare cos(theta_K) and cos(theta_l) among different truth-matching criteria #
-// ################################################################################################
-void CompareCosTruth ()
-{
-  // ##########################
-  // # Set histo layout style #
-  // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetPalette(1);
-  gStyle->SetOptFit(0);
-  gStyle->SetOptStat(0);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
-
-
-  // ####################################
-  // # Plot the cos(theta_K) projection #
-  // ####################################
-  TFile* _file0 = TFile::Open("Efficiency4D_pT3_0_CL05_1x_thetaK.root","READ");
-  TFile* _file1 = TFile::Open("EffBin_RHad_05_thetaK.root","READ");
-  TFile* _file2 = TFile::Open("EffBin_RHad_90_thetaK.root","READ");
-  TFile* _file3 = TFile::Open("EffBin_RMuMu_003_thetaK.root","READ");
-  TFile* _file4 = TFile::Open("EffBin_RMuMu_006_thetaK.root","READ");
-
-  TH1D* h0 = (TH1D*)_file0->Get("HcosThetaK_0");
-  TH1D* h1 = (TH1D*)_file1->Get("HcosThetaK_0");
-  TH1D* h2 = (TH1D*)_file2->Get("HcosThetaK_0");
-  TH1D* h3 = (TH1D*)_file3->Get("HcosThetaK_0");
-  TH1D* h4 = (TH1D*)_file4->Get("HcosThetaK_0");
-
-
-  // ####################################
-  // # Plot the cos(theta_l) projection #
-  // ####################################
-  // TFile* _file0 = TFile::Open("Efficiency4D_pT3_0_CL05_1x_thetaL.root","READ");
-  // TFile* _file1 = TFile::Open("EffBin_RHad_05_thetaL.root","READ");
-  // TFile* _file2 = TFile::Open("EffBin_RHad_90_thetaL.root","READ");
-  // TFile* _file3 = TFile::Open("EffBin_RMuMu_003_thetaL.root","READ");
-  // TFile* _file4 = TFile::Open("EffBin_RMuMu_006_thetaL.root","READ");
-
-  // TH1D* h0 = (TH1D*)_file0->Get("HcosThetaL_0");
-  // TH1D* h1 = (TH1D*)_file1->Get("HcosThetaL_0");
-  // TH1D* h2 = (TH1D*)_file2->Get("HcosThetaL_0");
-  // TH1D* h3 = (TH1D*)_file3->Get("HcosThetaL_0");
-  // TH1D* h4 = (TH1D*)_file4->Get("HcosThetaL_0");
-
-
-  h0->SetLineColor(kBlack);
-  h1->SetLineColor(kBlue);
-  h2->SetLineColor(kRed);
-  h3->SetLineColor(kGreen);
-  h4->SetLineColor(kMagenta);
-
-  h0->Draw();
-  h1->Draw("same");
-  h2->Draw("same");
-  h3->Draw("same");
-  h4->Draw("same");
-
-  TLegend* leg = new TLegend(0.7, 0.79, 0.89, 0.89, "");
-  leg->AddEntry(h0,"Ref (deltaR Had = 0.3; deltaR Mu = 0.004)");
-  leg->AddEntry(h1,"deltaR Had = 0.05");
-  leg->AddEntry(h2,"deltaR Had = 0.9");
-  leg->AddEntry(h3,"deltaR Mu = 0.003");
-  leg->AddEntry(h4,"deltaR Mu = 0.006");
-  leg->SetFillColor(0);
-  leg->SetBorderSize(0);
-  leg->Draw();
-
-  for (int i = 0; i < h0->GetNbinsX(); i++)
-    {
-      cout << "Histo 1; bin #" << i << " : " << (h1->GetBinContent(i+1)-h0->GetBinContent(i+1))/h0->GetBinContent(i+1)*100.0 << endl;
-      cout << "Histo 2; bin #" << i << " : " << (h2->GetBinContent(i+1)-h0->GetBinContent(i+1))/h0->GetBinContent(i+1)*100.0 << endl;
-      cout << "Histo 3; bin #" << i << " : " << (h3->GetBinContent(i+1)-h0->GetBinContent(i+1))/h0->GetBinContent(i+1)*100.0 << endl;
-      cout << "Histo 4; bin #" << i << " : " << (h4->GetBinContent(i+1)-h0->GetBinContent(i+1))/h0->GetBinContent(i+1)*100.0 << endl;
-    }
 }
 
 
@@ -598,7 +517,7 @@ void PlotVtxWithPileUpW (string fileNameMC, string fileNameData, unsigned int Tr
 
   TH1D* hMC = new TH1D("hMC","hMC",50,0,50);
   hMC->Sumw2();
-  hMC->SetFillColor(kAzure-4);
+  hMC->SetFillColor(kAzure+6);
   hMC->SetXTitle("Vtx[#]");
   hMC->SetYTitle("a.u.");
   hMC->GetXaxis()->SetRangeUser(0.0,30.0);
@@ -733,7 +652,7 @@ void PlotPileUp (string fileNameMC1, string fileNameMC2)
 
   TH1D* hMC2 = new TH1D("hMC2","hMC2",50,0,50);
   hMC2->Sumw2();
-  hMC2->SetFillColor(kAzure-4);
+  hMC2->SetFillColor(kAzure+6);
   hMC2->SetXTitle("pileup[#]");
   hMC2->SetYTitle("a.u.");
   hMC2->GetXaxis()->SetRangeUser(0.0,35.0);
@@ -1527,6 +1446,7 @@ void DrawString (double Lumi)
 {
   stringstream myString;
 
+  myString.clear();
   myString.str("");
   myString << "CMS";
   TLatex* LumiTex1 = new TLatex(0.1,0.91,myString.str().c_str());
@@ -1535,6 +1455,7 @@ void DrawString (double Lumi)
   LumiTex1->SetNDC(true);
   LumiTex1->DrawLatex(0.1,0.91,myString.str().c_str());
 
+  myString.clear();
   myString.str("");
   myString << "L = " << Lumi <<  " fb#lower[0.4]{^{#font[122]{\55}1}}";
   TLatex* LumiTex2 = new TLatex(0.43,0.91,myString.str().c_str());
@@ -1563,6 +1484,7 @@ void DrawString (double Lumi)
   // ###################
   // # Nominal method: #
   // ###################
+  // myString.clear();
   // myString.str("");
   // myString << "#sqrt{  }";
   // TLatex* LumiTex3 = new TLatex(0.82,0.9,myString.str().c_str());
@@ -1571,6 +1493,7 @@ void DrawString (double Lumi)
   // LumiTex3->SetNDC(true);
   // LumiTex3->DrawLatex(0.82,0.9,myString.str().c_str());
 
+  myString.clear();
   myString.str("");
   myString << "s = 7 TeV";
   TLatex* LumiTex4 = new TLatex(0.84,0.91,myString.str().c_str());
@@ -1785,9 +1708,15 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
   TGaxis::SetMaxDigits(3);
 
 
-  TFile* binningFile = TFile::Open("./ExperimentComparison/BinningFile.root","READ");
-  TCanvas* c0 = (TCanvas*)binningFile->Get("cEff0");
-  TH1D* h0    = (TH1D*)c0->GetPrimitive("Hq2_0");
+  stringstream myString;
+
+  myString.clear(); myString.str("");
+  myString << DIREXPTCOMP << "BinningFile.root";
+  TFile* binningFile = TFile::Open(myString.str().c_str(),"READ");
+  TList* myList = binningFile->GetListOfKeys();
+  TCanvas* myCanv = (TCanvas*)((dynamic_cast<TKey*>(myList->At(0)))->ReadObj());
+  myList = myCanv->GetListOfPrimitives();
+  TH1D* h0 = (TH1D*)(myList->At(1));
   if (dataType == 0)
     {
       h0->GetYaxis()->SetRangeUser(0.0,1.0);
@@ -1807,15 +1736,35 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
 
 
   TCanvas* cData  = new TCanvas("cData","cData",10,10,700,500);
-
   vector<TGraphAsymmErrors*> dVar;
-  dVar.push_back(readData("./ExperimentComparison/CMS.data",  dataType,1,20,false,0,noHbar,0.0*offset));
-  // dVar.push_back(readData("./ExperimentComparison/LHCb_0_37fb.data",dataType,2,21,false,0,noHbar,0.0*offset));
-  dVar.push_back(readData("./ExperimentComparison/LHCb_1fb.data",dataType,2,21,false,0,noHbar,0.0*offset));
-  // if (dataType != 2) dVar.push_back(readData("./ExperimentComparison/Atlas.data",dataType,6,22,false,0,noHbar,-3.0*offset));
-  dVar.push_back(readData("./ExperimentComparison/BaBar.data",dataType,4,23,false,0,noHbar,2.0*offset));
-  dVar.push_back(readData("./ExperimentComparison/Belle.data",dataType,8,28,false,0,noHbar,-2.0*offset));
-  dVar.push_back(readData("./ExperimentComparison/CDF.data",  dataType,kGray+1,29,false,0,noHbar,-1.0*offset));
+
+  myString.clear(); myString.str("");
+  myString << DIREXPTCOMP << "CMS.data";
+  dVar.push_back(readData(myString.str().c_str(),dataType,1,20,false,0,noHbar,0.0*offset));
+
+  // myString.clear(); myString.str("");
+  // myString << DIREXPTCOMP << "LHCb_0_37fb.data";
+  // dVar.push_back(readData(myString.str().c_str(),dataType,2,21,false,0,noHbar,0.0*offset));
+
+  myString.clear(); myString.str("");
+  myString << DIREXPTCOMP << "LHCb_1fb.data";
+  dVar.push_back(readData(myString.str().c_str(),dataType,2,21,false,0,noHbar,0.0*offset));
+
+  // myString.clear(); myString.str("");
+  // myString << DIREXPTCOMP << "Atlas.data";
+  // if (dataType != 2) dVar.push_back(readData(myString.str().c_str(),dataType,6,22,false,0,noHbar,-3.0*offset));
+
+  myString.clear(); myString.str("");
+  myString << DIREXPTCOMP << "BaBar.data";
+  dVar.push_back(readData(myString.str().c_str(),dataType,4,23,false,0,noHbar,2.0*offset));
+
+  myString.clear(); myString.str("");
+  myString << DIREXPTCOMP << "Belle.data";
+  dVar.push_back(readData(myString.str().c_str(),dataType,8,28,false,0,noHbar,-2.0*offset));
+
+  myString.clear(); myString.str("");
+  myString << DIREXPTCOMP << "CDF.data";
+  dVar.push_back(readData(myString.str().c_str(),dataType,kGray+1,29,false,0,noHbar,-1.0*offset));
 
   TGraphAsymmErrors* worldAverageGr = worldAverage(&dVar);
   worldAverageGr->SetMarkerColor(kRed);
@@ -1824,7 +1773,9 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
   worldAverageGr->SetLineWidth(1);
   worldAverageGr->SetMarkerStyle(21);
 
-  dVar.push_back(readData("./ExperimentComparison/Theory.data", dataType,kBlue,20,true,3001,noHbar,0.0*offset));
+  myString.clear(); myString.str("");
+  myString << DIREXPTCOMP << "Theory.data";
+  dVar.push_back(readData(myString.str().c_str(),dataType,kBlue,20,true,3001,noHbar,0.0*offset));
 
 
   cData->cd();

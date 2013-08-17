@@ -1514,7 +1514,7 @@ void Utils::ReadFitSystematics (std::string fileName, std::vector<std::vector<do
   delete ParameterFile;
 }
 
-void Utils::ReadNLL (std::string fileName, std::vector<std::vector<double>*>* vecParam)
+void Utils::ReadNLLval (std::string fileName, std::vector<std::vector<double>*>* vecParam)
 // vecParam[0] --> Fl
 // vecParam[1] --> Afb
 // vecParam[2] --> At2
@@ -1526,9 +1526,9 @@ void Utils::ReadNLL (std::string fileName, std::vector<std::vector<double>*>* ve
   ReadParameters* ParameterFile = new ReadParameters(fileName.c_str());
 
 
-  // #########################################
-  // # Read fit-observable systematic errors #
-  // #########################################
+  // ###################
+  // # Read NLL values #
+  // ###################
   ParameterFile->ReadFromFile(ParFileBlockN("fitNLL"),&ParVector);
 
   for (unsigned int j = 0; j < nFitObserv*2; j++) vecParam->push_back(new std::vector<double>);
@@ -1550,6 +1550,27 @@ void Utils::ReadNLL (std::string fileName, std::vector<std::vector<double>*>* ve
   
   ParVector.clear();
   delete ParameterFile;
+}
+
+double Utils::GetNLLval (std::vector<std::vector<double>*>* NLLvals, std::string varName, unsigned int q2BinIndx)
+// ####################
+// # varName = "Fl"   #
+// # varName = "Afb"  #
+// # varName = "At2"  #
+// # varName = "Atim" #
+// # varName = "BF"   #
+// ####################
+{
+  if      (varName == "Fl")   return (*NLLvals)[0]->operator[](q2BinIndx);
+  else if (varName == "Afb")  return (*NLLvals)[1]->operator[](q2BinIndx);
+  else if (varName == "At2")  return (*NLLvals)[2]->operator[](q2BinIndx);
+  else if (varName == "Atim") return (*NLLvals)[3]->operator[](q2BinIndx);
+  else if (varName == "BF")   return (*NLLvals)[4]->operator[](q2BinIndx);
+  else
+    {
+      std::cout << "[Utils::GetNLLval]\tNLL parameter not valid : " << varName << std::endl;
+      exit (1);
+    }
 }
 
 double Utils::ReadLumi (std::string fileName)
@@ -1807,13 +1828,13 @@ double Utils::EffMinValue2D (std::vector<double>* cosThetaKBins, std::vector<dou
 }
 
 void Utils::MakeGraphVar (std::string parFileName, TGraphAsymmErrors** graph, std::string varName, bool allBins, double offset)
-// ######################
-// # varName = "dBFdq2" #
-// # varName = "Fl"     #
-// # varName = "Afb"    #
-// # varName = "At2"    #
-// # varName = "Atim"   #
-// ######################
+// ####################
+// # varName = "Fl"   #
+// # varName = "Afb"  #
+// # varName = "At2"  #
+// # varName = "Atim" #
+// # varName = "BF"   #
+// ####################
 {
   double tmpVar;
 
@@ -1835,17 +1856,17 @@ void Utils::MakeGraphVar (std::string parFileName, TGraphAsymmErrors** graph, st
   Readq2Bins(parFileName,&q2Bins);
   ReadFitStartingValues(parFileName,&vecParam,&configParam,ParFileBlockN("fitValBins"));
   ReadParameters* ParameterFile = new ReadParameters(parFileName.c_str());
-  ParameterFile->ReadFromFile(ParFileBlockN("dBFdq2"),&ParVector);
+  ParameterFile->ReadFromFile(ParFileBlockN("BF"),&ParVector);
 
 
   for (unsigned int i = 0; i < q2Bins.size()-1; i++)
     {
       std::stringstream rawString;
-      if      (varName == "dBFdq2") rawString << ParVector[i];
-      else if (varName == "Fl")     rawString << vecParam[GetFitParamIndx("FlS")]->operator[](i);
-      else if (varName == "Afb")    rawString << vecParam[GetFitParamIndx("AfbS")]->operator[](i);
-      else if (varName == "At2")    rawString << vecParam[GetFitParamIndx("At2S")]->operator[](i);
-      else if (varName == "Atim")   rawString << vecParam[GetFitParamIndx("AtimS")]->operator[](i);
+      if      (varName == "BF")   rawString << ParVector[i];
+      else if (varName == "Fl")   rawString << vecParam[GetFitParamIndx("FlS")]->operator[](i);
+      else if (varName == "Afb")  rawString << vecParam[GetFitParamIndx("AfbS")]->operator[](i);
+      else if (varName == "At2")  rawString << vecParam[GetFitParamIndx("At2S")]->operator[](i);
+      else if (varName == "Atim") rawString << vecParam[GetFitParamIndx("AtimS")]->operator[](i);
       else { std::cout << "[Utils::MakeGraphVar]\tVariable name unknown: " << varName << std::endl; exit(1); }
 
       if ((allBins == true) || (ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false))
@@ -2295,7 +2316,7 @@ unsigned int Utils::ParFileBlockN (std::string blockName)
   else if (blockName == "HLTcuts")     return 8;
   else if (blockName == "fitValGlob")  return 9;
   else if (blockName == "fitValBins")  return 10;
-  else if (blockName == "dBFdq2")      return 11;
+  else if (blockName == "BF")          return 11;
   else if (blockName == "fitSyst")     return 12;
   else if (blockName == "fitNLL")      return 13;
 
@@ -2683,7 +2704,7 @@ double Utils::GetSeleCut (std::string cutName)
     }
 }
 
-void Utils::ReadPreselectionCuts (std::string fileName)
+void Utils::ReadPreselectionCut (std::string fileName)
 // ################################
 // # MuMuVtxCL      = PreCuts[0]  #
 // # MuMuLsBS       = PreCuts[1]  #
@@ -2838,7 +2859,7 @@ double Utils::GetGenericParam (std::string parName)
   else if (parName == "FRACMASSS")           return GenericPars[9];
   else
     {
-      std::cout << "[Utils::GetGenericParam]\tPre-selection cut not valid : " << parName << std::endl;
+      std::cout << "[Utils::GetGenericParam]\tGeneric parameter not valid : " << parName << std::endl;
       exit (1);
     }
 }

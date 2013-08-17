@@ -321,7 +321,7 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
 void StorePolyResultsInFile (RooAbsPdf** TotalPDF);
 vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr);
 unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vector<vector<string>*>* fitParam);
-void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr, string fileName, unsigned int fitParamIndx, vector<double>* q2Bins, unsigned int q2BinIndx);
+void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr, string fileName, unsigned int fileIndx, vector<double>* q2Bins, unsigned int q2BinIndx);
 void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2Bins, int specBin, vector<vector<string>*>* fitParam, string fileName);
 void MakeGraphicalScan (RooAbsPdf* TotalPDF, TCanvas* Canv, RooRealVar* x, RooRealVar* y, unsigned int NBins = 25);
 void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x, TCanvas* Canv, bool justPlotMuMuMass, bool justKeepPsi, string plotName);
@@ -532,7 +532,7 @@ void DrawString (double Lumi, RooPlot* myFrame)
   // ###################
   // # Nominal method: #
   // ###################
-  // myString.str("");
+  // myString.clear(); myString.str("");
   // myString << "#sqrt{  }";
   // TLatex* LumiTex3 = new TLatex(0.82,0.9,myString.str().c_str());
   // LumiTex3->SetTextSize(0.053);
@@ -545,7 +545,7 @@ void DrawString (double Lumi, RooPlot* myFrame)
   //     myFrame->addObject(LumiTex3);
   //   }
 
-  myString.str("");
+  myString.clear(); myString.str("");
   myString << "s = 7 TeV";
   TLatex* LumiTex4 = new TLatex(0.84,0.91,myString.str().c_str());
   LumiTex4->SetTextSize(0.05);
@@ -2149,7 +2149,7 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vec
 }
 
 
-void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr, string fileName, unsigned int fitParamIndx, vector<double>* q2Bins, unsigned int q2BinIndx)
+void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr, string fileName, unsigned int fileIndx, vector<double>* q2Bins, unsigned int q2BinIndx)
 {
   unsigned int NCoeffPolyBKGpeak1;
   unsigned int NCoeffPolyBKGcomb1;
@@ -2161,7 +2161,7 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
 
   CopyFitResults(TotalPDF,q2BinIndx,fitParam);
 
-  RooRandom::randomGenerator()->SetSeed(fitParamIndx*q2Bins->size() + q2BinIndx);
+  RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins->size()-1) + q2BinIndx + 1);
   cout << "\n@@@ Random seed for parameter file generation set to: " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
   
   if (GetVar(TotalPDF,"FlS") != NULL)
@@ -2242,7 +2242,7 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
   vecParStr = SaveFitResults(TotalPDF,q2BinIndx,fitParam,configParam,vecConstr);
 
   myString.clear(); myString.str("");
-  myString << "_" << q2BinIndx << "_" << fitParamIndx << ".txt";
+  myString << "_" << q2BinIndx << "_" << fileIndx << ".txt";
   fileName.replace(fileName.find(".root"),5,myString.str());
   Utility->SaveFitValues(fileName,vecParStr,q2BinIndx);
 
@@ -3275,7 +3275,6 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   // #######################
   // # Add NLL to the plot #
   // #######################
-  Canv->cd();
   paveTextX->AddText(Form("%s%.1f","NLL = ",*NLLvalue));
   CheckGoodFit(fitResult,paveTextX);
   paveTextX->SetBorderSize(0.0);
@@ -3868,17 +3867,17 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   // #############################################
   TH1D* histoDiff1 = new TH1D("histoDiff1","histoDiff1",60,-30.0,30.0);
   histoDiff1->SetFillColor(kAzure+6);
-  histoDiff1->SetXTitle("(fit - pdf)");
+  histoDiff1->SetXTitle("(fit #font[122]{\55} pdf)");
   histoDiff1->SetYTitle("Entries [#]");
 
   TH1D* histoPull1 = new TH1D("histoPull1","histoPull1",30,-5.0,5.0);
   histoPull1->SetFillColor(kAzure+6);
-  histoPull1->SetXTitle("(fit - pdf) / #sigma");
+  histoPull1->SetXTitle("(fit #font[122]{\55} pdf) / #sigma");
   histoPull1->SetYTitle("Entries [#]");
 
   TH1D* histoNLL1 = new TH1D("histoNLL1","histoNLL1",30,1.0,-1.0);
   histoNLL1->SetFillColor(kGreen-7);
-  histoNLL1->SetXTitle("-log(Likelihood)");
+  histoNLL1->SetXTitle("NLL");
   histoNLL1->SetYTitle("Entries [#]");
 
   TCanvas* cB0Toy = new TCanvas("cB0Toy","cB0Toy", 20, 20, 700, 500);
@@ -3915,18 +3914,15 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
     }
 
 
-  TCanvas* cNLL1 = new TCanvas("cNLL1","cNLL1",10,10,900,500);
-  cNLL1->Divide(2,1);
+  TCanvas* cNLL1 = new TCanvas("cNLL1","cNLL1",10,10,1000,500);
+  cNLL1->Divide(3,1);
   cNLL1->cd(1);
-  histoNLL1->Draw();
+  histoDiff1->Draw();
   cNLL1->cd(2);
+  histoNLL1->Draw();
+  cNLL1->cd(3);
   histoPull1->Draw();
   cNLL1->Update();
-
-  TCanvas* cNLL3 = new TCanvas("cNLL3","cNLL3",10,10,900,500);
-  cNLL3->cd();
-  histoDiff1->Draw();
-  cNLL3->Update();
 
 
   // ##############
@@ -3934,22 +3930,33 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   // ##############
   if (SAVEPLOT == true)
     {
-      Canv->Print(fileName.c_str());
-      Canv->Print(fileName.replace(fileName.find(".root"),5,".pdf").c_str());
+      TFile* fNLL;
 
-      myString.clear(); myString.str("");
-      myString << "_NLL.root";
-      cNLL1->Print(fileName.replace(fileName.find(".pdf"),4,myString.str()).c_str());
-      myString.clear(); myString.str("");
-      myString << "_NLL.pdf";
-      cNLL1->Print(fileName.replace(fileName.find("_NLL.root"),9,myString.str()).c_str());
+      Canv->Print(fileName.c_str());
 
       myString.clear(); myString.str("");
       myString << "_DIFF.root";
-      cNLL3->Print(fileName.replace(fileName.find("_NLL.pdf"),8,myString.str()).c_str());
+      fNLL = new TFile(fileName.replace(fileName.find(".root"),5,myString.str()).c_str(),"RECREATE");
+      fNLL->cd();
+      histoDiff1->Write();
+      fNLL->Close();
+      delete fNLL;
+
       myString.clear(); myString.str("");
-      myString << "_DIFF.pdf";
-      cNLL3->Print(fileName.replace(fileName.find("_DIFF.root"),10,myString.str()).c_str());
+      myString << "_PULL.root";
+      fNLL = new TFile(fileName.replace(fileName.find("_DIFF.root"),10,myString.str()).c_str(),"RECREATE");
+      fNLL->cd();
+      histoPull1->Write();
+      fNLL->Close();
+      delete fNLL;
+
+      myString.clear(); myString.str("");
+      myString << "_NLL.root";
+      fNLL = new TFile(fileName.replace(fileName.find("_PULL.root"),10,myString.str()).c_str(),"RECREATE");
+      fNLL->cd();
+      histoNLL1->Write();
+      fNLL->Close();
+      delete fNLL;
    }
 }
 
@@ -4455,7 +4462,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	  if (ApplyConstr == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
 	  else                     NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
 	  RooPlot* myFrameNLL = NULL;
-	  if (((FitType == 3) || (FitType == 23) || (FitType == 43) || (FitType == 63)) && (GetVar(*TotalPDF,"FlS") != NULL)) // Fl-Afb-fit
+	  if (((FitType == 3) || (FitType == 43) || (FitType == 63)) && (GetVar(*TotalPDF,"FlS") != NULL)) // Fl-Afb-fit
 	    {
 	      myFrameNLL = GetVar(*TotalPDF,"FlS")->frame();
 	      NLL->plotOn(myFrameNLL,ShiftToZero());
@@ -4464,7 +4471,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	      myFrameNLL->SetMinimum(0);
 	      myFrameNLL->SetMaximum(5);
 	    }
-	  else if (((FitType == 4) || (FitType == 24) || (FitType == 44) || (FitType == 64)) && (GetVar(*TotalPDF,"AfbS") != NULL)) // Afb-Fl-fit
+	  else if (((FitType == 4) || (FitType == 44) || (FitType == 64)) && (GetVar(*TotalPDF,"AfbS") != NULL)) // Afb-Fl-fit
 	    {
 	      myFrameNLL = GetVar(*TotalPDF,"AfbS")->frame();
 	      NLL->plotOn(myFrameNLL,ShiftToZero());
@@ -4473,7 +4480,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
 	      myFrameNLL->SetMinimum(0);
 	      myFrameNLL->SetMaximum(5);
 	    }
-	  else if (((FitType == 5) || (FitType == 25) || (FitType == 45) || (FitType == 65)) && (GetVar(*TotalPDF,"At2S") != NULL)) // Fl-At2-Atim-fit
+	  else if (((FitType == 5) || (FitType == 45) || (FitType == 65)) && (GetVar(*TotalPDF,"At2S") != NULL)) // Fl-At2-Atim-fit
 	    {
 	      myFrameNLL = GetVar(*TotalPDF,"At2S")->frame();
 	      NLL->plotOn(myFrameNLL,ShiftToZero());
@@ -5537,17 +5544,17 @@ void MakeMassAngleToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, TCanva
   // #############################################
   TH1D* histoDiff1 = new TH1D("histoDiff1","histoDiff1",50,-1.0,1.0);
   histoDiff1->SetFillColor(kAzure+6);
-  histoDiff1->SetXTitle("(fit - pdf)");
+  histoDiff1->SetXTitle("(fit #font[122]{\55} pdf)");
   histoDiff1->SetYTitle("Entries [#]");
 
   TH1D* histoPull1 = new TH1D("histoPull1","histoPull1",30,-5.0,5.0);
   histoPull1->SetFillColor(kAzure+6);
-  histoPull1->SetXTitle("(fit - pdf) / #sigma");
+  histoPull1->SetXTitle("(fit #font[122]{\55} pdf) / #sigma");
   histoPull1->SetYTitle("Entries [#]");
 
   TH1D* histoNLL1 = new TH1D("histoNLL1","histoNLL1",30,1.0,-1.0);
   histoNLL1->SetFillColor(kGreen-7);
-  histoNLL1->SetXTitle("-log(Likelihood)");
+  histoNLL1->SetXTitle("NLL");
   histoNLL1->SetYTitle("Entries [#]");
 
   TCanvas* cB0Toy = new TCanvas("cB0Toy","cB0Toy", 20, 20, 1800, 700);
@@ -5586,18 +5593,15 @@ void MakeMassAngleToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, TCanva
     }
 
 
-  TCanvas* cNLL1 = new TCanvas("cNLL1","cNLL1",10,10,900,500);
-  cNLL1->Divide(2,1);
+  TCanvas* cNLL1 = new TCanvas("cNLL1","cNLL1",10,10,1000,500);
+  cNLL1->Divide(3,1);
   cNLL1->cd(1);
-  histoNLL1->Draw();
+  histoDiff1->Draw();
   cNLL1->cd(2);
+  histoNLL1->Draw();
+  cNLL1->cd(3);
   histoPull1->Draw();
   cNLL1->Update();
-
-  TCanvas* cNLL3 = new TCanvas("cNLL3","cNLL3",10,10,900,500);
-  cNLL3->cd();
-  histoDiff1->Draw();
-  cNLL3->Update();
 
 
   // ##############
@@ -5605,22 +5609,33 @@ void MakeMassAngleToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, TCanva
   // ##############
   if (SAVEPLOT == true)
     {
+      TFile* fNLL;
+
       Canv->Print(fileName.c_str());
-      Canv->Print(fileName.replace(fileName.find(".root"),5,".pdf").c_str());
-      
-      myString.clear(); myString.str("");
-      myString << "_NLL.root";
-      cNLL1->Print(fileName.replace(fileName.find(".pdf"),4,myString.str()).c_str());
-      myString.clear(); myString.str("");
-      myString << "_NLL.pdf";
-      cNLL1->Print(fileName.replace(fileName.find("_NLL.root"),9,myString.str()).c_str());
 
       myString.clear(); myString.str("");
       myString << "_DIFF.root";
-      cNLL3->Print(fileName.replace(fileName.find("_NLL.pdf"),8,myString.str()).c_str());
+      fNLL = new TFile(fileName.replace(fileName.find(".root"),5,myString.str()).c_str(),"RECREATE");
+      fNLL->cd();
+      histoDiff1->Write();
+      fNLL->Close();
+      delete fNLL;
+
       myString.clear(); myString.str("");
-      myString << "_DIFF.pdf";
-      cNLL3->Print(fileName.replace(fileName.find("_DIFF.root"),10,myString.str()).c_str());
+      myString << "_PULL.root";
+      fNLL = new TFile(fileName.replace(fileName.find("_DIFF.root"),10,myString.str()).c_str(),"RECREATE");
+      fNLL->cd();
+      histoPull1->Write();
+      fNLL->Close();
+      delete fNLL;
+
+      myString.clear(); myString.str("");
+      myString << "_NLL.root";
+      fNLL = new TFile(fileName.replace(fileName.find("_PULL.root"),10,myString.str()).c_str(),"RECREATE");
+      fNLL->cd();
+      histoNLL1->Write();
+      fNLL->Close();
+      delete fNLL;
     }
 }
 
@@ -6256,16 +6271,15 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // ################################
       if ((FitType != 26) && (GetVar(*TotalPDF,"FlS") != NULL) && (GetVar(*TotalPDF,"AfbS") != NULL))
 	{
-	  // @TMP@
-	  // localCanv[3]->cd();
-	  // RooAbsReal* NLL;
-	  // if (ApplyConstr == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
-	  // else                     NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
-	  // RooMinuit RooMin(*NLL);
-	  // RooPlot* myFrameNLL = RooMin.contour(*GetVar(*TotalPDF,"AfbS"),*GetVar(*TotalPDF,"FlS"),1.0,2.0,3.0);
-	  // DrawString(LUMI,myFrameY);
-	  // myFrameNLL->Draw();
- 	  // delete NLL;
+	  localCanv[3]->cd();
+	  RooAbsReal* NLL;
+	  if (ApplyConstr == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
+	  else                     NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
+	  RooMinuit RooMin(*NLL);
+	  RooPlot* myFrameNLL = RooMin.contour(*GetVar(*TotalPDF,"AfbS"),*GetVar(*TotalPDF,"FlS"),1.0,2.0,3.0);
+	  DrawString(LUMI,myFrameY);
+	  myFrameNLL->Draw();
+ 	  delete NLL;
 	}
 
 
@@ -7384,32 +7398,32 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   // #############################################
   TH1D* histoDiff1 = new TH1D("histoDiff1","histoDiff1",50,-1.0,1.0);
   histoDiff1->SetFillColor(kAzure+6);
-  histoDiff1->SetXTitle("(fit - pdf)");
+  histoDiff1->SetXTitle("(fit #font[122]{\55} pdf)");
   histoDiff1->SetYTitle("Entries [#]");
 
   TH1D* histoPull1 = new TH1D("histoPull1","histoPull1",30,-5.0,5.0);
   histoPull1->SetFillColor(kAzure+6);
-  histoPull1->SetXTitle("(fit - pdf) / #sigma");
+  histoPull1->SetXTitle("(fit #font[122]{\55} pdf) / #sigma");
   histoPull1->SetYTitle("Entries [#]");
 
   TH1D* histoNLL1 = new TH1D("histoNLL1","histoNLL1",30,1.0,-1.0);
   histoNLL1->SetFillColor(kGreen-7);
-  histoNLL1->SetXTitle("-log(Likelihood)");
+  histoNLL1->SetXTitle("NLL");
   histoNLL1->SetYTitle("Entries [#]");
 
   TH1D* histoDiff2 = new TH1D("histoDiff2","histoDiff2",50,-1.0,1.0);
   histoDiff2->SetFillColor(kAzure+6);
-  histoDiff2->SetXTitle("(fit - pdf)");
+  histoDiff2->SetXTitle("(fit #font[122]{\55} pdf)");
   histoDiff2->SetYTitle("Entries [#]");
 
   TH1D* histoPull2 = new TH1D("histoPull2","histoPull2",30,-5.0,5.0);
   histoPull2->SetFillColor(kAzure+6);
-  histoPull2->SetXTitle("(fit - pdf) / #sigma");
+  histoPull2->SetXTitle("(fit #font[122]{\55} pdf) / #sigma");
   histoPull2->SetYTitle("Entries [#]");
 
   TH1D* histoNLL2 = new TH1D("histoNLL2","histoNLL2",30,1.0,-1.0);
   histoNLL2->SetFillColor(kGreen-7);
-  histoNLL2->SetXTitle("-log(Likelihood)");
+  histoNLL2->SetXTitle("NLL");
   histoNLL2->SetYTitle("Entries [#]");
 
   TCanvas* cB0Toy = new TCanvas("cB0Toy","cB0Toy", 20, 20, 1800, 1800);
@@ -7457,28 +7471,24 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 
 
   TCanvas* cNLL1 = new TCanvas("cNLL1","cNLL1",10,10,900,500);
-  cNLL1->Divide(2,1);
+  cNLL1->Divide(3,1);
   cNLL1->cd(1);
-  histoNLL1->Draw();
+  histoDiff1->Draw();
   cNLL1->cd(2);
+  histoNLL1->Draw();
+  cNLL1->cd(3);
   histoPull1->Draw();
   cNLL1->Update();
 
   TCanvas* cNLL2 = new TCanvas("cNLL2","cNLL2",10,10,900,500);
-  cNLL2->Divide(2,1);
+  cNLL2->Divide(3,1);
   cNLL2->cd(1);
-  histoNLL2->Draw();
+  histoDiff2->Draw();
   cNLL2->cd(2);
+  histoNLL2->Draw();
+  cNLL2->cd(3);
   histoPull2->Draw();
   cNLL2->Update();
-
-  TCanvas* cNLL3 = new TCanvas("cNLL3","cNLL3",10,10,900,500);
-  cNLL3->Divide(2,1);
-  cNLL3->cd(1);
-  histoDiff1->Draw();
-  cNLL3->cd(2);
-  histoDiff2->Draw();
-  cNLL3->Update();
 
   
   // ##############
@@ -7486,29 +7496,57 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   // ##############
   if (SAVEPLOT == true)
     {
+      TFile* fNLL;
+
       Canv->Print(fileName.c_str());
-      Canv->Print(fileName.replace(fileName.find(".root"),5,".pdf").c_str());
-      
+
       myString.clear(); myString.str("");
-      myString << "FL_" << specBin << "_NLL.root";
-      cNLL1->Print(fileName.replace(fileName.find(".pdf")-1,5,myString.str()).c_str());
+      myString << "FL_" << specBin << "_DIFF.root";
+      fNLL = new TFile(fileName.replace(fileName.find(".root")-1,6,myString.str()).c_str(),"RECREATE");
+      fNLL->cd();
+      histoDiff1->Write();
+      fNLL->Close();
+      delete fNLL;
+
       myString.clear(); myString.str("");
-      myString << "_FL_" << specBin << "_NLL.pdf";
-      cNLL1->Print(fileName.replace(fileName.find("_FL_"),14,myString.str()).c_str());
+      myString << "_FL_" << specBin << "_PULL.root";
+      fNLL = new TFile(fileName.replace(fileName.find("_FL_"),15,myString.str()).c_str(),"RECREATE");
+      fNLL->cd();
+      histoPull1->Write();
+      fNLL->Close();
+      delete fNLL;
+
+      myString.clear(); myString.str("");
+      myString << "_FL_" << specBin << "_NLL.root";
+      fNLL = new TFile(fileName.replace(fileName.find("_FL_"),15,myString.str()).c_str(),"RECREATE");
+      fNLL->cd();
+      histoNLL1->Write();
+      fNLL->Close();
+      delete fNLL;
+
+      myString.clear(); myString.str("");
+      myString << "_AFB_" << specBin << "_DIFF.root";
+      fNLL = new TFile(fileName.replace(fileName.find("_FL_"),14,myString.str()).c_str(),"RECREATE");
+      fNLL->cd();
+      histoDiff2->Write();
+      fNLL->Close();
+      delete fNLL;
+
+      myString.clear(); myString.str("");
+      myString << "_AFB_" << specBin << "_PULL.root";
+      fNLL = new TFile(fileName.replace(fileName.find("_AFB_"),16,myString.str()).c_str(),"RECREATE");
+      fNLL->cd();
+      histoPull2->Write();
+      fNLL->Close();
+      delete fNLL;
 
       myString.clear(); myString.str("");
       myString << "_AFB_" << specBin << "_NLL.root";
-      cNLL2->Print(fileName.replace(fileName.find("_FL_"),13,myString.str()).c_str());
-      myString.clear(); myString.str("");
-      myString << "_AFB_" << specBin << "_NLL.pdf";
-      cNLL2->Print(fileName.replace(fileName.find("_AFB_"),15,myString.str()).c_str());
-
-      myString.clear(); myString.str("");
-      myString << "_" << specBin << "_DIFF.root";
-      cNLL3->Print(fileName.replace(fileName.find("_AFB_"),14,myString.str()).c_str());
-      myString.clear(); myString.str("");
-      myString << "_DIFF.pdf";
-      cNLL3->Print(fileName.replace(fileName.find("_DIFF.root"),10,myString.str()).c_str());
+      fNLL = new TFile(fileName.replace(fileName.find("_AFB_"),16,myString.str()).c_str(),"RECREATE");
+      fNLL->cd();
+      histoNLL2->Write();
+      fNLL->Close();
+      delete fNLL;
     }
 }
 
@@ -7561,7 +7599,7 @@ int main(int argc, char** argv)
 	    ((FitType >= 61) && (FitType <= 66)) ||
 	    ((FitType >= 81) && (FitType <= 86))) && (argc >= 4)) ||
 	  ((FitType >= 93) && (FitType <= 96) && (argc == 6)) ||
-	  ((FitType >= 21) && (FitType <= 26) && (argc == 7)) ||
+	  ((FitType >= 21) && (FitType <= 26) && (argc == 8)) ||
 	  ((((FitType >= 53) && (FitType <= 56)) || ((FitType >= 73) && (FitType <= 76))) && (argc == 4)))
 	{
 	  ParameterFILE = PARAMETERFILEIN;
@@ -7613,12 +7651,13 @@ int main(int argc, char** argv)
 	      if (argc >= 6) tmpFileName = argv[5];
 	      if (argc == 7) fileIndx    = atoi(argv[6]);
 	    }
-	  else if ((FitType >= 93) && (FitType <= 96)) fileIndx = atoi(argv[5]);
-	  else if ((FitType >= 21) && (FitType <= 26) && (argc == 7))
+	  else if ((FitType >= 21) && (FitType <= 26))
 	    {
 	      nToy          = atoi(argv[5]);
 	      ParameterFILE = argv[6];
+	      fileIndx      = atoi(argv[7]);
 	    }
+	  else if ((FitType >= 93) && (FitType <= 96)) fileIndx = atoi(argv[5]);
 
 
 	  cout << "@@@ Input variables from command line @@@" << endl;
@@ -7694,12 +7733,13 @@ int main(int argc, char** argv)
 	  gStyle->SetLabelSize(0.05,"x");
 	  gStyle->SetLabelSize(0.05,"y");
 	  TGaxis::SetMaxDigits(3);
+	  gStyle->SetStatY(0.9);
 
 
 	  // ##############################
 	  // # Initialize fit output file #
 	  // ##############################
-	  fileName.replace(fileName.find(".root"),5,".txt").c_str();
+	  fileName.replace(fileName.find(".root"),5,".txt");
 	  fileFitResults.open(fileName.c_str(),ios_base::out);
 	  if (fileFitResults.good() == false)
 	    {
@@ -7708,7 +7748,7 @@ int main(int argc, char** argv)
 	    }
 	  fileFitResults << "@@@@@@@@@@@@@@@@@ Fit results : B0 --> K*0 mu+ mu- @@@@@@@@@@@@@@@@@" << endl;
 	  fileFitResults << "Fit ID: " << fileIndx << endl;
-	  fileName.replace(fileName.find(".txt"),4,".root").c_str();
+	  fileName.replace(fileName.find(".txt"),4,".root");
 
 
  	  // ###################
@@ -8522,7 +8562,7 @@ int main(int argc, char** argv)
 	      // # Set seed for random number generator   #
 	      // # in case the toy-MC studies are splited #
 	      // ##########################################
-	      RooRandom::randomGenerator()->SetSeed(time(NULL));
+	      RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins.size()-1) + specBin + 1);
 	      cout << "\n@@@ Random seed for toy-MC set to: " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
 
@@ -8688,73 +8728,17 @@ int main(int argc, char** argv)
 	}
       else
 	{
-	  cout << "Parameter missing: " << endl;
-	  cout << "./ExtractYield [FitType] [input/output[if toy-MC]File.root] [noEffCorr EffCorrAnalyPDF EffCorrGenAnalyPDF] [q^2 bin to fit (0 - ...)] [[if EffCorrGenAnalyPDF]effFileName.txt AND indx] [ParameterFile.txt] [indx]" << endl;
+	  cout << "Wrong parameter: " << endl;
+	  cout << "./ExtractYield [FitType] [input/output[if toy-MC]File.root] [noEffCorr EffCorrAnalyPDF EffCorrGenAnalyPDF]" << endl;
+	  cout << "               [q^2 bin to fit (0 - ...)]" << endl;
+	  cout << "               [[if EffCorrGenAnalyPDF]effFileName.txt AND indx]" << endl;
+	  cout << "               [[if toy-MC]nToy AND ParameterFile.txt AND indx] " << endl;
+	  cout << "               [[if 93-96]indx]" << endl;
+	  cout << "               [ParameterFile.txt] [indx]" << endl;
 
 	  cout << "\n --> noEffCorr          = no eff. correction" << endl;
 	  cout << " --> EffCorrAnalyPDF    = analytical eff. correction used in the p.d.f." << endl;
-	  cout << " --> EffCorrGenAnalyPDF = analytical eff. correction used in the p.d.f. to compute systematic error" << endl;
-
-	  cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  Signa  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-	  cout << "FitType = 1: 1D branching fraction per q^2 bin" << endl;
-	  cout << "FitType = 2: 1D B0 inv. mass peak" << endl;
-	  cout << "FitType = 3: 2D Fl (B0Mass, cos(theta_K)) per q^2 bin" << endl;
-	  cout << "FitType = 4: 2D Afb-Fl (B0Mass, cos(theta_l)) per q^2 bin" << endl;
-	  cout << "FitType = 5: 2D Fl-At2-Atim (B0Mass, phi) per q^2 bin" << endl;
-	  cout << "FitType = 6: 3D Afb-Fl (B0Mass, cos(theta_K), cos(theta_l)) per q^2 bin" << endl;
-	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-	  cout << "FitType = 21: toy-MC 1D B0 inv. mass peak per q^2 bin" << endl;
-	  cout << "FitType = 23: toy-MC 2D Fl (B0Mass, cos(theta_K)) per q^2 bin" << endl;
-	  cout << "FitType = 24: toy-MC 2D Afb-Fl (B0Mass, cos(theta_l)) per q^2 bin" << endl;
-	  cout << "FitType = 25: toy-MC 2D Fl-At2-Atim (B0Mass, phi) per q^2 bin" << endl;
-	  cout << "FitType = 26: toy-MC 3D Afb-Fl (B0Mass, cos(theta_K), cos(theta_l)) per q^2 bin" << endl;
-	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-	  cout << "FitType = 33: 1D Fl cos(theta_K) per q^2 bin on GEN variables" << endl;
-	  cout << "FitType = 34: 1D Afb-Fl cos(theta_l) per q^2 bin on GEN variables" << endl;
-	  cout << "FitType = 35: 1D Fl-At2-Atim phi per q^2 bin on GEN variables" << endl;
-	  cout << "FitType = 36: 2D Afb-Fl (cos(theta_K), cos(theta_l)) per q^2 bin on GEN variables" << endl;
-	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-
-	  cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  J/psi  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-	  cout << "FitType = 41: 1D B0 inv. mass peak for B0 --> J/psi(mumu) K*0 in appropriate q^2 bin" << endl;
-	  cout << "FitType = 43: 2D Fl (B0Mass, cos(theta_K)) for B0 --> J/psi(mumu) K*0" << endl;
-	  cout << "FitType = 44: 2D Afb-Fl (B0Mass, cos(theta_l)) for B0 --> J/psi(mumu) K*0" << endl;
-	  cout << "FitType = 45: 2D Fl-At2-Atim (B0Mass, phi) for B0 --> J/psi(mumu) K*0" << endl;
-	  cout << "FitType = 46: 3D Afb-Fl (B0Mass, cos(theta_K), cos(theta_l)) for B0 --> J/psi(mumu) K*0" << endl;
-	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-	  cout << "FitType = 53: 1D Fl cos(theta_K) for B0 --> J/psi(mumu) K*0 on GEN variables" << endl;
-	  cout << "FitType = 54: 1D Afb-Fl cos(theta_l) for B0 --> J/psi(mumu) K*0 on GEN variables" << endl;
-	  cout << "FitType = 55: 1D Fl-At2-Atim phi for B0 --> J/psi(mumu) K*0 on GEN variables" << endl;
-	  cout << "FitType = 56: 2D Afb-Fl (cos(theta_K), cos(theta_l)) for B0 --> J/psi(mumu) K*0 on GEN variables" << endl;
-	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-
-	  cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Psi(2S) @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-	  cout << "FitType = 61: 1D B0 inv. mass peak for B0 --> psi(2S)(mumu) K*0 in appropriate q^2 bin" << endl;
-	  cout << "FitType = 63: 2D Fl (B0Mass, cos(theta_K)) for B0 --> psi(2S)(mumu) K*0" << endl;
-	  cout << "FitType = 64: 2D Afb-Fl (B0Mass, cos(theta_l)) for B0 --> psi(2S)(mumu) K*0" << endl;
-	  cout << "FitType = 65: 2D Fl-At2-Atim (B0Mass, phi) for B0 --> psi(2S)(mumu) K*0" << endl;
-	  cout << "FitType = 66: 3D Afb-Fl (B0Mass, cos(theta_K), cos(theta_l)) for B0 --> psi(2S)(mumu) K*0" << endl;
-	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-	  cout << "FitType = 73: 1D Fl cos(theta_K) for B0 --> psi(2S)(mumu) K*0 on GEN variables" << endl;
-	  cout << "FitType = 74: 1D Afb-Fl cos(theta_l) for B0 --> psi(2S)(mumu) K*0 on GEN variables" << endl;
-	  cout << "FitType = 75: 1D Fl-At2-Atim phi for B0 --> psi(2S)(mumu) K*0 on GEN variables" << endl;
-	  cout << "FitType = 76: 2D Afb-Fl (cos(theta_K), cos(theta_l)) for B0 --> psi(2S)(mumu) K*0 on GEN variables" << endl;
-	  cout << "  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-
-	  cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Genera dataset @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-	  cout << "FitType = 81: 1D generate dataset with B0 inv. mass distribution from pdf" << endl;
-	  cout << "FitType = 83: 2D generate dataset with (B0Mass, cos(theta_K)) distribution from pdf" << endl;
-	  cout << "FitType = 84: 2D generate dataset with (B0Mass, cos(theta_l)) distribution from pdf" << endl;
-	  cout << "FitType = 85: 2D generate dataset with (B0Mass, phi) distribution from pdf" << endl;
-	  cout << "FitType = 86: 3D generate dataset with (B0Mass, cos(theta_K), cos(theta_l)) distribution from pdf" << endl;
-	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-
-	  cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Genera parameter @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-	  cout << "FitType = 93: 2D generate paramter with (B0Mass, cos(theta_K)) distribution from pdf" << endl;
-	  cout << "FitType = 94: 2D generate paramter with (B0Mass, cos(theta_l)) distribution from pdf" << endl;
-	  cout << "FitType = 95: 2D generate paramter with (B0Mass, phi) distribution from pdf" << endl;
-	  cout << "FitType = 96: 3D generate paramter with (B0Mass, cos(theta_K), cos(theta_l)) distribution from pdf" << endl;
-	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+	  cout << " --> EffCorrGenAnalyPDF = compute systematic error realted to analytical eff. correction used in the p.d.f." << endl;
 
 	  return 1;
 	}
@@ -8762,11 +8746,16 @@ int main(int argc, char** argv)
   else
     {
       cout << "Parameter missing: " << endl;
-      cout << "./ExtractYield [FitType] [input/output[if toy-MC]File.root] [noEffCorr EffCorrAnalyPDF EffCorrGenAnalyPDF] [q^2 bin to fit (0 - ...)] [[if EffCorrGenAnalyPDF]effFileName.txt AND indx] [ParameterFile.txt] [indx]" << endl;
+      cout << "./ExtractYield [FitType] [input/output[if toy-MC]File.root] [noEffCorr EffCorrAnalyPDF EffCorrGenAnalyPDF]" << endl;
+      cout << "               [q^2 bin to fit (0 - ...)]" << endl;
+      cout << "               [[if EffCorrGenAnalyPDF]effFileName.txt AND indx]" << endl;
+      cout << "               [[if toy-MC]nToy AND ParameterFile.txt AND indx] " << endl;
+      cout << "               [[if 93-96]indx]" << endl;
+      cout << "               [ParameterFile.txt] [indx]" << endl;
 
       cout << "\n --> noEffCorr          = no eff. correction" << endl;
       cout << " --> EffCorrAnalyPDF    = analytical eff. correction used in the p.d.f." << endl;
-      cout << " --> EffCorrGenAnalyPDF = analytical eff. correction used in the p.d.f. to compute systematic error" << endl;
+      cout << " --> EffCorrGenAnalyPDF = compute systematic error realted to analytical eff. correction used in the p.d.f." << endl;
 
       cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  Signa  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "FitType = 1: 1D branching fraction per q^2 bin" << endl;

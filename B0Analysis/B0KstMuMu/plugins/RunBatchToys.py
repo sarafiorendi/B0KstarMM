@@ -1,11 +1,12 @@
 #################################
 # Program to run toy-MC studies #
-#################################
+############################################################
+# This program must be in a directory below "ExtractYield" #
+############################################################
 
 from os import system, chdir
 import sys
 
-# Synopsis: python RunBatchToy.py type[BF,FLAFB] nBins[0-7,-1] nJobs[> 0]
 # This program must be in a directory below "ExtractYield"
 
 if len(sys.argv) < 4:
@@ -56,7 +57,7 @@ for i in binList:
         chdir(dir)
 
         toRun = "Qsub -l lnxfarm -e -o toyMC_" + par + "_" + str(nJobs) + "_" + str(i) + ".log -N T" + str(nJobs) + par + str(i) + " ./ExtractYield " + str(fitType)
-        toRun = toRun + " toyMC_" + par + "_" + str(nJobs) + "_" + str(i) + ".root EffCorrAnalyPDF " + str(i) + " " + str(nToys) + " ../../../python/ParameterFile.txt"
+        toRun = toRun + " toyMC_" + par + "_" + str(nJobs) + "_" + str(i) + ".root EffCorrAnalyPDF " + str(i) + " " + str(nToys) + " ../../../python/ParameterFile.txt " + str(nJobs)
         print toRun
         system(toRun)
 

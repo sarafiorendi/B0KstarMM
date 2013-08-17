@@ -633,9 +633,9 @@ template<class T> void AddEvWeightB0pT (T* NTupleOut)
 
 
   TFile* fileDataMC = TFile::Open(B0pTFileName,"READ");
-  TCanvas* cTmp = (TCanvas*)fileDataMC->Get("c0");
-  TH1D* hMC   = (TH1D*)cTmp->GetPrimitive("hM1D");
-  TH1D* hData = (TH1D*)cTmp->GetPrimitive("hDsig1D");
+  TCanvas* cTmp     = (TCanvas*)fileDataMC->Get("c0");
+  TH1D* hMC         = (TH1D*)cTmp->GetPrimitive("hM1D");
+  TH1D* hData       = (TH1D*)cTmp->GetPrimitive("hDsig1D");
  
   TH1D* hW = (TH1D*)hData->Clone();
   hW->SetName("B0pTWeights");
@@ -694,8 +694,8 @@ template<class T> void AddEvWeightHadpT (T* NTupleOut, string trkSign)
       exit(1);
     }
   TCanvas* cTmp = (TCanvas*)fileDataMC->Get("c0");
-  TH1D* hMC   = (TH1D*)cTmp->GetPrimitive("hM1D");
-  TH1D* hData = (TH1D*)cTmp->GetPrimitive("hDsig1D");
+  TH1D* hMC     = (TH1D*)cTmp->GetPrimitive("hM1D");
+  TH1D* hData   = (TH1D*)cTmp->GetPrimitive("hDsig1D");
   
   TH1D* hW = (TH1D*)hData->Clone();
   hW->SetName("HadpTWeights");
@@ -744,9 +744,9 @@ template<class T> void AddEvWeightThetaK (B0KstMuMuSingleCandTreeContent* NTuple
 
 
   TFile* fileDataMC = TFile::Open(ThetaKFileName,"READ");
-  TCanvas* cTmp = (TCanvas*)fileDataMC->Get("c0");
-  TH1D* hMC   = (TH1D*)cTmp->GetPrimitive("hM1D");
-  TH1D* hData = (TH1D*)cTmp->GetPrimitive("hDsig1D");
+  TCanvas* cTmp     = (TCanvas*)fileDataMC->Get("c0");
+  TH1D* hMC         = (TH1D*)cTmp->GetPrimitive("hM1D");
+  TH1D* hData       = (TH1D*)cTmp->GetPrimitive("hDsig1D");
  
   TH1D* hW = (TH1D*)hData->Clone();
   hW->SetName("ThetaKWeights");

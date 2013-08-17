@@ -2198,7 +2198,7 @@ void B0KstMuMu::beginJob ()
   // ############################
   // # Loading HLT-trigger cuts #
   // ############################
-  Utility->ReadPreselectionCuts(parameterFile_.c_str());
+  Utility->ReadPreselectionCut(parameterFile_.c_str());
   if (PrintMsg == true) std::cout << "\n" << __LINE__ << " : Pre-selection cuts" << std::endl;
   CLMUMUVTX      = Utility->GetPreCut("MuMuVtxCL");      if (PrintMsg == true) std::cout << __LINE__ << " : CLMUMUVTX      = " << CLMUMUVTX << std::endl;
   LSMUMUBS       = Utility->GetPreCut("MuMuLsBS");       if (PrintMsg == true) std::cout << __LINE__ << " : LSMUMUBS       = " << LSMUMUBS << std::endl;

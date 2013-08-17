@@ -147,38 +147,24 @@ class Utils
   int SearchBin (double val2Search, std::vector<double>* bins);
 
   int GetJPsiBin (std::vector<double>* q2Bins);
-
   int GetPsiPBin (std::vector<double>* q2Bins);
 
   bool ValIsInPsi (std::vector<double>* q2Bins, double q2Val);
-
   bool ValIsBetweenJPsiAndPsiP (std::vector<double>* q2Bins, double q2Val);
-
   bool IsGoodq2CosThetaKCosThetaLBin (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins,
 				      double mumuMass2, double cosThetaK, double cosThetaMu, bool PrintMsg);
 
   void IntegrateEffAll (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, effStruct myEff, double* Eff, double* EffErr);
-
   void IntegrateEffButPsi (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, effStruct myEff, double* Eff, double* EffErr);
-
   void IntegrateEffInJPsi (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, effStruct myEff, double* Eff, double* EffErr);
-
   void IntegrateEffInPsiP (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, effStruct myEff, double* Eff, double* EffErr);
-
   void IntegrateEffButq2 (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff, double* Eff, double* EffErr);
-
   void IntegrateEffButCosThetaK (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int cosThetaKBinIndx, effStruct myEff, double* Eff, double* EffErr);
-  
   void IntegrateEffButCosThetaL (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int cosThetaMuBinIndx, effStruct myEff, double* Eff, double* EffErr);
-  
   void IntegrateEffButPhi (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int phiIndx, effStruct myEff, double* Eff, double* EffErr);
-
   void IntegrateEffPhiCosThetaL (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int cosThetaKBinIndx, effStruct myEff, double* Eff, double* EffErr);
-
   void IntegrateEffPhiCosThetaK (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int cosThetaLBinIndx, effStruct myEff, double* Eff, double* EffErr);
-
   void IntegrateEffCosThetaKCosThetaL (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int phiIndx, effStruct myEff, double* Eff, double* EffErr);
-
   bool IntegrateEffPhi (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, double mumuMass2, double cosThetaK, double cosThetaMu, effStruct myEff, double* Eff, double* EffErr, bool PrintMsg);
 
   unsigned int HLTpathForEvFraction (double evtFrac);
@@ -186,16 +172,14 @@ class Utils
   unsigned int IsInTriggerTable (B0KstMuMuTreeContent* NTupleIn, double* HLTCutVar1, double* HLTCutVar2, int index = 0, double evtFrac = -1.0);
 
   double GetHLTentries (unsigned int HLTindx);
-
   unsigned int GetNHLTCat ();
 
   void ReadTriggerPathsANDCutsANDEntries (std::string fileName);
-
   void ReadFitStartingValues (std::string fileName, std::vector<std::vector<std::string>*>* vecParam, std::vector<std::vector<unsigned int>*>* configParam, const unsigned int dataBlockN);
-
   void ReadFitSystematics (std::string fileName, std::vector<std::vector<double>*>* vecParam);
 
-  void ReadNLL (std::string fileName, std::vector<std::vector<double>*>* vecParam);
+  void ReadNLLval (std::string fileName, std::vector<std::vector<double>*>* vecParam);
+  double GetNLLval (std::vector<std::vector<double>*>* NLLvals, std::string varName, unsigned int q2BinIndx);
 
   double ReadLumi (std::string fileName);
 
@@ -213,23 +197,18 @@ class Utils
   void ReadAnalyticalEffFullCovariance (std::string fileNameEffParams, std::vector<TMatrixTSym<double>*>* covMatrices, const unsigned int dataBlockN);
 
   double EffMinValue1D (double minX, double maxX, TF1* effFunc);
-
   double EffMinValue2D (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, TF2* effFunc);
   
   void MakeGraphVar(std::string parFileName, TGraphAsymmErrors** graph, std::string varName, bool allBins, double offset = 0.0);
 
   void InitEffFuncThetaL (TF1* fitFun, unsigned int q2BinIndx);
-  
   void InitEffFuncThetaK (TF1* fitFun, unsigned int q2BinIndx);
 
   void AddConstraint1D (TH1D** histo, std::string constrType, double errX, double Yval, double errY, unsigned int ID);
-
   void AddConstraintThetaL (TH1D** histo,
 			    unsigned int q2BinIndx, unsigned int cosThetaLBinIndx,
 			    double constrXerr, double constrYval, double constrYerr, unsigned int ID);
-
   void AddConstraint2D (TH2D** histo, double err, double Zval, double errZ, unsigned int ID, std::string toBeConstr, std::vector<std::string>* toBeAdded = NULL);
-
   void AddConstraintThetaK (TH2D** histo, std::vector<double>* cosThetaKBins,
 			    unsigned int q2BinIndx,
 			    double constrXerr, double constrZval, double constrZerr, unsigned int ID);
@@ -253,13 +232,14 @@ class Utils
   bool SetSeleCut (std::string cutName, double val);
   double GetSeleCut (std::string cutName);
 
-  void ReadPreselectionCuts (std::string fileName);
+  void ReadPreselectionCut (std::string fileName);
   bool SetPreCut (std::string cutName, double val);
   double GetPreCut (std::string cutName);
 
   void ReadGenericParam (std::string fileName);
   bool SetGenericParam (std::string parName, double val);
   double GetGenericParam (std::string parName);
+
   double GetB0Width ();
 
   double* MakeBinning (std::vector<double>* STLvec);

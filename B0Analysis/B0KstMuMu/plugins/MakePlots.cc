@@ -21,6 +21,7 @@
 #include <TPaveStats.h>
 #include <TExec.h>
 #include <TGraphBentErrors.h>
+#include <TKey.h>
 #endif
 
 #include <stdlib.h>
@@ -80,9 +81,8 @@ void PlotMuMu (string fileName, bool bkgSub);
 void PlotKst (string fileName, bool bkgSub);
 void PlotKK (string fileName, bool bkgSub, string RECOorGEN);
 void PlotMuHadMass (string fileName);
-void MakeupNLLandPvalPlots (string fileName, int specBin, string PlotType);
-void MakePvaluePlot (string toyMCfileName, int specBin, string PlotType);
-void getHfromToy (string fileNameIn, string fileNameOut, unsigned int intVal);
+void MakeupNLLandPULLplots (string fileName, string plotType);
+void MakePvaluePlot (string fileName, string plotType, int specBin);
 
 
 // ###########################
@@ -92,6 +92,7 @@ void DrawString (double Lumi)
 {
   stringstream myString;
 
+  myString.clear();
   myString.str("");
   myString << "CMS";
   TLatex* LumiTex1 = new TLatex(0.1,0.91,myString.str().c_str());
@@ -100,6 +101,7 @@ void DrawString (double Lumi)
   LumiTex1->SetNDC(true);
   LumiTex1->DrawLatex(0.1,0.91,myString.str().c_str());
 
+  myString.clear();
   myString.str("");
   myString << "L = " << Lumi <<  " fb#lower[0.4]{^{#font[122]{\55}1}}";
   TLatex* LumiTex2 = new TLatex(0.43,0.91,myString.str().c_str());
@@ -136,6 +138,7 @@ void DrawString (double Lumi)
   // LumiTex3->SetNDC(true);
   // LumiTex3->DrawLatex(0.82,0.9,myString.str().c_str());
 
+  myString.clear();
   myString.str("");
   myString << "s = 7 TeV";
   TLatex* LumiTex4 = new TLatex(0.84,0.91,myString.str().c_str());
@@ -150,7 +153,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 // #############################################
 // # plotType =  0 --> B0 pT                   #
 // # plotType =  1 --> B0 eta                  #
-
+// #############################################
 // # plotType =  2 --> mu+ pT                  #
 // # plotType =  3 --> mu- pT                  #
 // # plotType =  4 --> mu+ eta                 #
@@ -163,7 +166,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 // # plotType = 11 --> mu- phi, eta range      #
 // # plotType = 12 --> mu- phi, eta range      #
 // # plotType = 13 --> mu- phi, eta range      #
-
+// #############################################
 // # plotType = 14 --> K*0 trk+ pT             #
 // # plotType = 15 --> K*0 trk- pT             #
 // # plotType = 16 --> K*0 trk+ eta            #
@@ -176,7 +179,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 // # plotType = 23 --> K*0 trk- phi, eta range #
 // # plotType = 24 --> K*0 trk- phi, eta range #
 // # plotType = 25 --> K*0 trk- phi, eta range #
-
+// #############################################
 // # plotType = 26 --> cos(theta_K)            #
 // # plotType = 27 --> cos(theta_l)            #
 // #############################################
@@ -1333,7 +1336,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge1->SetMarkerColor(kBlue);
       ge1->SetMarkerStyle(20);
       ge1->SetMarkerSize(1.2);
-      ge1->SetFillColor(kGreen);
+      ge1->SetFillColor(kGreen-7);
       ge1->SetFillStyle(3001);
       ge1->SetLineColor(kBlue);
       ge1->SetLineWidth(2);
@@ -1359,7 +1362,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge1->SetMarkerColor(kBlue);
       ge1->SetMarkerStyle(20);
       ge1->SetMarkerSize(1.2);
-      ge1->SetFillColor(kGreen);
+      ge1->SetFillColor(kGreen-7);
       ge1->SetFillStyle(3001);
       ge1->SetLineColor(kBlue);
       ge1->SetLineWidth(2);
@@ -1369,7 +1372,7 @@ void MakePhysicsPlots (unsigned int PlotType)
     }
   else if (PlotType == 2) // Branching fraction
     {
-      Utility->MakeGraphVar(ParameterFILE_MCGEN,&ge0,"dBFdq2",false);
+      Utility->MakeGraphVar(ParameterFILE_MCGEN,&ge0,"BF",false);
       ge0->SetMarkerColor(kBlack);
       ge0->SetMarkerStyle(22);
       ge0->SetMarkerSize(1.2);
@@ -1381,11 +1384,11 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->GetYaxis()->SetRangeUser(0.0,1.2);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
  
-      Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"dBFdq2",false);
+      Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"BF",false);
       ge1->SetMarkerColor(kBlue);
       ge1->SetMarkerStyle(20);
       ge1->SetMarkerSize(1.2);
-      ge1->SetFillColor(kGreen);
+      ge1->SetFillColor(kGreen-7);
       ge1->SetFillStyle(3001);
       ge1->SetLineColor(kBlue);
       ge1->SetLineWidth(2);
@@ -1393,7 +1396,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge1->GetYaxis()->SetRangeUser(0.0,1.2);
       ge1->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
     }
-  else if (PlotType == 10) // FL
+  else if (PlotType == 10) // Fl
     {
       Utility->MakeGraphVar(ParameterFILE,&ge0,"Fl",false);
       ge0->SetMarkerColor(kBlack);
@@ -1419,7 +1422,7 @@ void MakePhysicsPlots (unsigned int PlotType)
     }
   else if (PlotType == 12) // Branching fraction
     {
-      Utility->MakeGraphVar(ParameterFILE,&ge0,"dBFdq2",false);
+      Utility->MakeGraphVar(ParameterFILE,&ge0,"BF",false);
       ge0->SetMarkerColor(kBlack);
       ge0->SetMarkerStyle(20);
       ge0->SetMarkerSize(1.2);
@@ -1443,7 +1446,6 @@ void MakePhysicsPlots (unsigned int PlotType)
   if      ((PlotType == 0) || (PlotType == 10)) geSmoothTh = ReadFromASCII(SMFL,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Fl
   else if ((PlotType == 1) || (PlotType == 11)) geSmoothTh = ReadFromASCII(SMAFB,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh); // Afb
   else if ((PlotType == 2) || (PlotType == 12)) geSmoothTh = ReadFromASCII(SMBF,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Branching fraction
-  // geSmoothTh->SetFillColor(kCyan-4);
   geSmoothTh->SetFillColor(kRed-9);
   geSmoothTh->SetFillStyle(1001);
   geSmoothTh->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
@@ -1477,7 +1479,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge11->SetMarkerColor(kBlue);
       ge11->SetMarkerStyle(20);
       ge11->SetMarkerSize(1.2);
-      ge11->SetFillColor(kGreen);
+      ge11->SetFillColor(kGreen-7);
       ge11->SetFillStyle(3001);
       ge11->SetLineColor(kBlue);
       ge11->SetLineWidth(2);
@@ -1502,7 +1504,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge11->SetMarkerColor(kBlue);
       ge11->SetMarkerStyle(20);
       ge11->SetMarkerSize(1.2);
-      ge11->SetFillColor(kGreen);
+      ge11->SetFillColor(kGreen-7);
       ge11->SetFillStyle(3001);
       ge11->SetLineColor(kBlue);
       ge11->SetLineWidth(2);
@@ -1527,7 +1529,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge11->SetMarkerColor(kBlue);
       ge11->SetMarkerStyle(20);
       ge11->SetMarkerSize(1.2);
-      ge11->SetFillColor(kGreen);
+      ge11->SetFillColor(kGreen-7);
       ge11->SetFillStyle(3001);
       ge11->SetLineColor(kBlue);
       ge11->SetLineWidth(2);
@@ -1779,7 +1781,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   cout << "\n@@@ Global chi2 = " << myGlobalChi2 / ((double)DoF) << " (" << myGlobalChi2 << "/" << ((double)DoF) << ") @@@" << endl;
   myGlobalChi2 = myGlobalChi2 / ((double)DoF);
 
-  chi2Histo->SetTitle(";q^{2} (GeV^{2});#chi^{2}");
+  chi2Histo->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});#chi^{2}");
   chi2Histo->GetXaxis()->SetLabelSize(0.06);
   chi2Histo->GetXaxis()->SetTitleOffset(0.8);
   chi2Histo->GetXaxis()->SetTitleSize(0.07);
@@ -1828,7 +1830,7 @@ void MakePhysicsPlots (unsigned int PlotType)
     else probHisto->SetBinContent(i+1,0.0);
   probLeg->AddEntry(probHisto,"p-value");
 
-  probHisto->SetTitle(";q^{2} (GeV^{2});p-value");
+  probHisto->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});p-value");
   probHisto->GetXaxis()->SetLabelSize(0.06);
   probHisto->GetXaxis()->SetTitleOffset(0.8);
   probHisto->GetXaxis()->SetTitleSize(0.07);
@@ -1850,7 +1852,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   // ########################
   DrawExclusion(q2Bins[JPsibin],q2Bins[JPsibin+1],1e-3,1.13,"RejectJPsi3",3001,kGray);
   DrawExclusion(q2Bins[PsiPbin],q2Bins[PsiPbin+1],1e-3,1.13,"RejectPsiP3",3001,kGray);
-  DrawExclusion(q2Bins[0],q2Bins[q2Bins.size()-1],1e-3,0.05,"CL95",3001,kRed-7);
+  DrawExclusion(q2Bins[0],q2Bins[q2Bins.size()-1],1e-3,0.05,"CL95",3001,kRed-9);
 
 
   // #################################
@@ -1891,10 +1893,12 @@ void MakePhysicsPlots (unsigned int PlotType)
 void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName, double NLLinterval, double NLLlessThan)
 // #########################
 // # sysType:              #
+// #########################
 // # 0 = Fl                #
 // # 1 = Afb               #
 // # 2 = BF                #
 // # 3 = All               #
+// #########################
 // # 10 = Fl multy minima  #
 // # 11 = Afb multy minima #
 // # 12 = BF multy minima  #
@@ -1915,8 +1919,8 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
 
 
   unsigned int nBinsHisto = 50;
-  ifstream inputFile;
   stringstream myString;
+  ifstream inputFile;
 
 
   TCanvas* c1 = new TCanvas("c1","c1",10,10,700,500);
@@ -2015,7 +2019,7 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
   // #####################################
   // # Rebin NLL scatter plot and refill #
   // #####################################
-  if (sysType == 10)      hSc->SetBins(nBinsHisto,0.0,1.0,20,hSc->GetMean(2) - NLLinterval,hSc->GetMean(2) + NLLinterval);
+  if      (sysType == 10) hSc->SetBins(nBinsHisto,0.0,1.0,20,hSc->GetMean(2) - NLLinterval,hSc->GetMean(2) + NLLinterval);
   else if (sysType == 11) hSc->SetBins(nBinsHisto*2,-1.0,1.0,20,hSc->GetMean(2) - NLLinterval,hSc->GetMean(2) + NLLinterval);
   else if (sysType == 12) hSc->SetBins(nBinsHisto,1.0,-1.0,20,hSc->GetMean(2) - NLLinterval,hSc->GetMean(2) + NLLinterval);
   if ((sysType >= 10) && (sysType <= 12))
@@ -2491,6 +2495,7 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
   hDalitzBkg->SetYTitle("M^{2}(J/#psi K) (GeV^{2})");
   hDalitzBkg->SetZTitle("Entries / (0.03x0.125 (GeV^{4}))");
 
+
   for (int entry = 0; entry < nEntries; entry++)
     {
       theTree->GetEntry(entry);
@@ -2686,11 +2691,16 @@ void PlotMuHadMass (string fileName)
 }
 
 
-void MakeupNLLandPvalPlots (string fileName, int specBin, string PlotType)
-// #################################################
-// # If specBin = -1  --> read difference plot     #
-// # If specBin != -1 --> read NLL and PULLs plots #
-// #################################################
+void MakeupNLLandPULLplots (string fileName, string plotType, int specBin)
+// ###############################################
+// # fileName must of be of the form: *_NLL.root #
+// ###############################################
+// # plotType = "Fl"                             #
+// # plotType = "Afb"                            #
+// # plotType = "At2"                            #
+// # plotType = "Atim"                           #
+// # plotType = "BF"                             #
+// ###############################################
 {
   // ##########################
   // # Set histo layout style #
@@ -2704,220 +2714,88 @@ void MakeupNLLandPvalPlots (string fileName, int specBin, string PlotType)
   gStyle->SetPadRightMargin(0.02);
   gStyle->SetTitleOffset(1.25,"y"); 
   TGaxis::SetMaxDigits(3);
-
   gStyle->SetStatY(0.9);
-  gStyle->SetStatX(0.9);
-  gStyle->SetStatW(0.3);
-  gStyle->SetStatH(0.3);
 
 
-  unsigned int it = 1;
   stringstream myString;
-  string car;
   double val;
-  TFile* fileID;
-  TCanvas *c0, *c1;
-  TPad* pNLL;
+  vector<TFile*> fileID;
+  TList* myList;
   TH1D* histoNLL;
-  TPad* pPULL;
   TH1D* histoPULL;
-  TPad* pDIFF1;
-  TH1D* histoDIFF1;
-  TPad* pDIFF2;
-  TH1D* histoDIFF2;
+  TH1D* histoDIFF;
+
   vector<vector<double>*> vecNLL;
-  Utility->ReadNLL(ParameterFILE,&vecNLL);
-  if      (PlotType == "FL")   { val = vecNLL[0]->operator[](specBin); car = "1"; }
-  else if (PlotType == "AFB")  { val = vecNLL[1]->operator[](specBin); car = "2"; }
-  else if (PlotType == "AT2")  { val = vecNLL[2]->operator[](specBin); car = "1"; }
-  else if (PlotType == "ATIM") { val = vecNLL[3]->operator[](specBin); car = "1"; }
-  else if (PlotType == "BF")   { val = vecNLL[4]->operator[](specBin); car = "1"; }
-  else
-    {
-      cout << "[MakePlots::MakeupNLLandPvalPlots]\tWrong parameter: " << PlotType.c_str() << endl;
-      exit (1);
-    }
+  Utility->ReadNLLval(ParameterFILE,&vecNLL);
+  val = Utility->GetNLLval(&vecNLL,plotType,specBin);
+
+  TCanvas* c0 = new TCanvas("c0","c0",10,10,1500,500);
+  c0->Divide(3,1);
+
+  
+  myString << fileName.c_str();
+  cout << "\n\nReading NLL distribution from file: " << myString.str().c_str() << endl;
+  fileID.push_back(new TFile(fileName.c_str(),"READ"));
+
+  myList = fileID.back()->GetListOfKeys();
+  histoNLL = (TH1D*)((dynamic_cast<TKey*>(myList->At(0)))->ReadObj());
+  histoNLL->SetFillColor(kGreen-7);
 
 
-  if (specBin != -1)
-    {
-      // ################################
-      // # Read NLL and pulls from file #
-      // ################################
+  myString.clear();
+  myString.str("");
+  myString << "_PULL.root";
+  fileName.replace(fileName.find("_NLL.root"),9,myString.str());
+  cout << "\nReading PULL distribution from file: " << fileName.c_str() << endl;
+  fileID.push_back(new TFile(fileName.c_str(),"READ"));
 
-      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-      cout << "@ Appended ID to histogram names: " << car.c_str() << " @" << endl;
-      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-      
-      fileID = TFile::Open(fileName.c_str(),"READ");
+  myList = fileID.back()->GetListOfKeys();
+  histoPULL = (TH1D*)((dynamic_cast<TKey*>(myList->At(0)))->ReadObj());
+  histoPULL->SetFillColor(kAzure+6);
 
-      myString.clear(); myString.str("");
-      myString << "cNLL" << car << ";" << it;
-      c0 = (TCanvas*)fileID->Get(myString.str().c_str());
 
-      myString.clear(); myString.str("");
-      myString << "cNLL" << car << "_1";
-      pNLL = (TPad*)c0->GetPrimitive(myString.str().c_str());
+  myString.clear();
+  myString.str("");
+  myString << "_DIFF.root";
+  fileName.replace(fileName.find("_PULL.root"),10,myString.str());
+  cout << "\nReading DIFF distribution from file: " << fileName.c_str() << endl;
+  fileID.push_back(new TFile(fileName.c_str(),"READ"));
 
-      myString.clear(); myString.str("");
-      myString << "histoNLL" << car;
-      histoNLL = (TH1D*)pNLL->GetPrimitive(myString.str().c_str());
-      histoNLL->SetFillColor(kGreen-7);
+  myList = fileID.back()->GetListOfKeys();
+  histoDIFF = (TH1D*)((dynamic_cast<TKey*>(myList->At(0)))->ReadObj());
+  histoDIFF->SetFillColor(kRed-9);
 
-      myString.clear(); myString.str("");
-      myString << "cNLL" << car << "_2";
-      pPULL = (TPad*)c0->GetPrimitive(myString.str().c_str());
 
-      myString.clear(); myString.str("");
-      myString << "histoPull" << car;
-      histoPULL = (TH1D*)pPULL->GetPrimitive(myString.str().c_str());
-      histoPULL->SetFillColor(kAzure+6);
+  c0->cd(1);
+  histoNLL->Draw();
+  DrawExclusion(val,histoNLL->GetBinLowEdge(histoNLL->GetNbinsX())+histoNLL->GetBinWidth(1),0.0,histoNLL->GetMaximum()*1.1,"NLL",3001,kGray);
 
-      c0->Draw();
-      c0->Update();
+  c0->cd(2);
+  histoPULL->Draw();
+  histoPULL->Fit("gaus","0");
+  histoPULL->GetFunction("gaus")->Draw("same");
 
-      c1 = NULL;
-      it++;
-      myString.clear(); myString.str("");
-      myString << "cNLL" << car << ";" << it;
-      c1 = (TCanvas*)fileID->Get(myString.str().c_str());
-      while (c1 != NULL)
-	{
-	  cout << "Adding histogram #" << it << endl;
-
-	  myString.clear(); myString.str("");
-	  myString << "cNLL" << car << "_1";
-	  pNLL = (TPad*)c1->GetPrimitive(myString.str().c_str());
-
-	  myString.clear(); myString.str("");
-	  myString << "histoNLL" << car;
-	  histoNLL->Add((TH1D*)pNLL->GetPrimitive(myString.str().c_str()));
-
-	  myString.clear(); myString.str("");
-	  myString << "cNLL" << car << "_2";
-	  pPULL = (TPad*)c1->GetPrimitive(myString.str().c_str());
-
-	  myString.clear(); myString.str("");
-	  myString << "histoPull" << car;
-	  histoPULL->Add((TH1D*)pPULL->GetPrimitive(myString.str().c_str()));
-
-	  c1 = NULL;
-	  it++;
-	  myString.clear(); myString.str("");
-	  myString << "cNLL" << car << ";" << it;
-	  c1 = (TCanvas*)fileID->Get(myString.str().c_str());
-	}
-
-      c0->cd(1);
-      histoNLL->Draw();
-      DrawExclusion(val,histoNLL->GetBinLowEdge(histoNLL->GetNbinsX())+histoNLL->GetBinWidth(1),0.0,histoNLL->GetMaximum()*1.1,"NLL",3001,kGray);
-
-      c0->cd(2);
-      histoPULL->Draw();
-      histoPULL->Fit("gaus","0");
-      histoPULL->GetFunction("gaus")->Draw("same");
-    }
-  else
-    {
-      // ##############################
-      // # Read differences from file #
-      // ##############################
-      fileID = TFile::Open(fileName.c_str(),"READ");
-      c0 = (TCanvas*)fileID->Get("cNLL3;1");
-       if (PlotType != "AFB")
-	 {
-	   cout << "Adding histogram #" << it << endl;
-
-	   histoDIFF1 = (TH1D*)c0->GetPrimitive("histoDiff1");
-	   histoDIFF1->SetFillColor(kAzure+6);
-
-	   c0->Draw();
-	   c0->Update();
-
-	   c1 = NULL;
-	   it++;
-	   myString.clear(); myString.str("");
-	   myString << "cNLL3;" << it;
-	   c1 = (TCanvas*)fileID->Get(myString.str().c_str());
-	   while (c1 != NULL)
-	     {
-	       histoDIFF1->Add((TH1D*)c1->GetPrimitive("histoDiff1"));
-
-	       c1 = NULL;
-	       it++;
-	       myString.clear(); myString.str("");
-	       myString << "cNLL3;" << it;
-	       c1 = (TCanvas*)fileID->Get(myString.str().c_str());
-	     }
-
-	   c0->cd();
-	   histoDIFF1->Draw();
- 	   histoDIFF1->Fit("gaus","0");
-	   histoDIFF1->GetFunction("gaus")->Draw("same");
-	 }
-       else
-	 {
-	   cout << "Adding histogram #" << it << endl;
-
-	   pDIFF1 = (TPad*)c0->GetPrimitive("cNLL3_1");
-	   histoDIFF1 = (TH1D*)pDIFF1->GetPrimitive("histoDiff1");
-	   histoDIFF1->SetFillColor(kAzure+6);
-
-	   pDIFF2 = (TPad*)c0->GetPrimitive("cNLL3_2");
-	   histoDIFF2 = (TH1D*)pDIFF2->GetPrimitive("histoDiff2");
-	   histoDIFF2->SetFillColor(kAzure+6);
-
-	   c0->Draw();
-	   c0->Update();
-
-	   c1 = NULL;
-	   it++;
-	   myString.clear(); myString.str("");
-	   myString << "cNLL3;" << it;
-	   c1 = (TCanvas*)fileID->Get(myString.str().c_str());
-	   while (c1 != NULL)
-	     {
-	       pDIFF1 = (TPad*)c1->GetPrimitive("cNLL3_1");
-	       histoDIFF1->Add((TH1D*)pDIFF1->GetPrimitive("histoDiff1"));
-
-	       pDIFF2 = (TPad*)c1->GetPrimitive("cNLL3_2");
-	       histoDIFF2->Add((TH1D*)pDIFF2->GetPrimitive("histoDiff2"));
-
-	       c1 = NULL;
-	       it++;
-	       myString.clear(); myString.str("");
-	       myString << "cNLL3;" << it;
-	       c1 = (TCanvas*)fileID->Get(myString.str().c_str());
-	     }
-
-	   c0->cd(1);
-	   histoDIFF1->Draw();
-	   histoDIFF1->Fit("gaus","0");
-	   histoDIFF1->GetFunction("gaus")->Draw("same");
-
-	   c0->cd(2);
-	   histoDIFF2->Draw();
-	   histoDIFF2->Fit("gaus","0");
-	   histoDIFF2->GetFunction("gaus")->Draw("same");
-	 }
-    }
+  c0->cd(3);
+  histoDIFF->Draw();
+  histoDIFF->Fit("gaus","0");
+  histoDIFF->GetFunction("gaus")->Draw("same");
 
   c0->Update();
 }
 
 
-void MakePvaluePlot (string toyMCfileName, int specBin, string PlotType)
+void MakePvaluePlot (string fileName, string plotType, int specBin)
+// ################################################
+// # fileName must of be of the form: *n_NLL.root #
+// ################################################
+// # plotType = "Fl"                              #
+// # plotType = "Afb"                             #
+// # plotType = "At2"                             #
+// # plotType = "Atim"                            #
+// # plotType = "BF"                              #
 // ################################################
 // # If specBin == -1 then loop over all q^2 bins #
 // ################################################
-// # PlotType: #
-// #############
-// # FL        #
-// # AFB       #
-// # AT2       #
-// # ATIM      #
-// # BF        #
-// #############
 {
   // ##########################
   // # Set histo layout style #
@@ -2933,13 +2811,10 @@ void MakePvaluePlot (string toyMCfileName, int specBin, string PlotType)
   TGaxis::SetMaxDigits(3);
 
 
-  unsigned int it = 1;
   stringstream myString;
-  string car;
   double val;
-  TFile* fileToy;
-  TCanvas *c0, *c1;
-  TPad* pNLL;
+  TFile* fileID;
+  TList* myList;
   TH1D* histoNLL;
 
   vector<double> q2Bins;
@@ -2947,148 +2822,52 @@ void MakePvaluePlot (string toyMCfileName, int specBin, string PlotType)
   double* q2Bins_ = Utility->MakeBinning(&q2Bins);
 
   vector<vector<double>*> vecNLL;
-  Utility->ReadNLL(ParameterFILE,&vecNLL);
+  Utility->ReadNLLval(ParameterFILE,&vecNLL);
 
-
-  TCanvas* c2 = new TCanvas("c2","c2",10,10,700,500);
-  c2->cd();
+  TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
+  c0->cd();
   TH1D* pval = new TH1D("pval","pval",q2Bins.size()-1,q2Bins_);
   pval->SetMarkerStyle(20);
-  pval->SetXTitle("q^{2} (GeV^{2})");
+  pval->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
   pval->SetYTitle("p-value");
   pval->SetMinimum(0.0);
   pval->SetMaximum(1.05);
 
-  cout << "\n@@@ Computaion of the p-value from profile likelihood for NLL from paramter file: " << ParameterFILE << " @@@" << endl;
-  toyMCfileName.replace(toyMCfileName.find("_NLL.root")-1,10,"");
+
+  cout << "\n\n@@@ p-value computaion of NLL distribution from paramter file: " << ParameterFILE << " @@@" << endl;
 
   for (int i = (specBin == -1 ? 0 : specBin); i < (specBin == -1 ? (int)(q2Bins.size()-1) : specBin+1); i++)
     {
-      if ((PlotType == "BF") && ((i == Utility->GetJPsiBin(&q2Bins)) || (i == Utility->GetPsiPBin(&q2Bins)))) continue;
+      if ((i == Utility->GetJPsiBin(&q2Bins)) || (i == Utility->GetPsiPBin(&q2Bins))) continue;
+
+      val = Utility->GetNLLval(&vecNLL,plotType,i);
 
       myString.clear();
       myString.str("");
-      myString << toyMCfileName << i << "_NLL.root";
-      cout << "\nReading NLL distribution from file: " << myString.str().c_str() << endl;
-      fileToy = new TFile(myString.str().c_str(),"READ");
-      if (fileToy->IsZombie() == false)
+      myString << i << "_NLL.root";
+      fileName.replace(fileName.find("_NLL.root")-1,10,myString.str());
+      cout << "\nReading NLL distribution from file: " << fileName.c_str() << endl;
+      fileID = new TFile(fileName.c_str(),"READ");
+      if (fileID->IsZombie() == false)
 	{
-	  if      (PlotType == "FL")   { val = vecNLL[0]->operator[](i); car = "1"; }
-	  else if (PlotType == "AFB")  { val = vecNLL[1]->operator[](i); car = "2"; }
-	  else if (PlotType == "AT2")  { val = vecNLL[2]->operator[](i); car = "1"; }
-	  else if (PlotType == "ATIM") { val = vecNLL[3]->operator[](i); car = "1"; }
-	  else if (PlotType == "BF")   { val = vecNLL[4]->operator[](i); car = "1"; }
-	  else
-	    {
-	      cout << "[MakePlots::MakePvaluePlot]\tWrong parameter: " << PlotType.c_str() << endl;
-	      exit (1);
-	    }
-
-	  myString.clear(); myString.str("");
-	  myString << "cNLL" << car;
-	  c0 = (TCanvas*)fileToy->Get(myString.str().c_str());
-
-	  myString.clear(); myString.str("");
-	  myString << "cNLL" << car << "_1";
-	  pNLL = (TPad*)c0->GetPrimitive(myString.str().c_str());
-
-	  myString.clear(); myString.str("");
-	  myString << "histoNLL" << car;
-	  histoNLL = (TH1D*)pNLL->GetPrimitive(myString.str().c_str());
-
-	  c1 = NULL;
-	  it++;
-	  myString.clear(); myString.str("");
-	  myString << "cNLL" << car << ";" << it;
-	  c1 = (TCanvas*)fileToy->Get(myString.str().c_str());
-	  while (c1 != NULL)
-	    {
-	      cout << "Adding histogram #" << it << endl;
-	      
-	      myString.clear(); myString.str("");
-	      myString << "cNLL" << car << "_1";
-	      pNLL = (TPad*)c1->GetPrimitive(myString.str().c_str());
-	      
-	      myString.clear(); myString.str("");
-	      myString << "histoNLL" << car;
-	      histoNLL->Add((TH1D*)pNLL->GetPrimitive(myString.str().c_str()));
-
-	      c1 = NULL;
-	      it++;
-	      myString.clear(); myString.str("");
-	      myString << "cNLL" << car << ";" << it;
-	      c1 = (TCanvas*)fileToy->Get(myString.str().c_str());
-	    }
-
+	  myList = fileID->GetListOfKeys();
+	  histoNLL = (TH1D*)((dynamic_cast<TKey*>(myList->At(0)))->ReadObj());
 	  histoNLL->Scale(1./histoNLL->Integral());
+
 	  pval->SetBinContent(i+1,(isnan(histoNLL->Integral(1,histoNLL->FindBin(val))) == false ? histoNLL->Integral(histoNLL->FindBin(val),histoNLL->GetNbinsX()) : 0.0));
 	  pval->SetBinError(i+1,pval->GetBinContent(i+1)*1e-3);
-	  cout << "p-value for " << PlotType << " q^2 bin #" << i << " --> " << pval->GetBinContent(i+1) << endl;
+	  cout << "p-value for q^2 bin #" << i << " --> " << pval->GetBinContent(i+1) << endl;
 
-	  fileToy->Close();
+	  fileID->Close();
+	  delete fileID;
 	}
     }
   
-  c2->cd();
+
+  c0->cd();
   pval->Draw("e1p");
-  DrawExclusion(pval->GetBinLowEdge(1),pval->GetBinLowEdge(pval->GetNbinsX())+pval->GetBinWidth(pval->GetNbinsX()),0.0,0.05,"p-val",3001,kRed-7);
-  c2->Update();
-}
-
-
-void getHfromToy (string fileNameIn, string fileNameOut, unsigned int intVal)
-{
-  stringstream myString;
-
-  TFile* fIn = new TFile(fileNameIn.c_str(),"READ");
-  myString.clear(); myString.str("");
-  myString << "cNLL" << intVal;
-  TCanvas* c0 = (TCanvas*)fIn->Get(myString.str().c_str());
-
-
-  myString.clear(); myString.str("");
-  myString << "cNLL" << intVal << "_1";
-  TPad* p0 = (TPad*)c0->GetPrimitive(myString.str().c_str());
-
-  myString.clear(); myString.str("");
-  if      (intVal == 1) myString << "histoNLL1";
-  else if (intVal == 2) myString << "histoNLL2";
-  else if (intVal == 3) myString << "histoDiff1";
-  else
-    {
-      cout << "[MakePlots::getHfromToy]\tWrong parameter: " << intVal << endl;
-      exit (1);
-    }
-  TH1D* h0 = (TH1D*)p0->GetPrimitive(myString.str().c_str());
-
-
-  myString.clear(); myString.str("");
-  myString << "cNLL" << intVal << "_2";
-  TPad* p1 = (TPad*)c0->GetPrimitive(myString.str().c_str());
-
-  myString.clear(); myString.str("");
-  if      (intVal == 1) myString << "histoPull1";
-  else if (intVal == 2) myString << "histoPull2";
-  else if (intVal == 3) myString << "histoDiff2";
-  else
-    {
-      cout << "[MakePlots::getHfromToy]\tWrong parameter: " << intVal << endl;
-      exit (1);
-    }
-  TH1D* h1 = (TH1D*)p1->GetPrimitive(myString.str().c_str());
-
-
-  TFile* fOut = new TFile(fileNameOut.c_str(),"RECREATE");
-  fOut->cd();
-  h0->Write();
-  h1->Write();
-  fOut->Close();
-  fIn->Close();
-
-  delete fIn;
-  delete fOut;
-
-  cout << "@@@ Histogram extraction done @@@" << endl;
+  DrawExclusion(pval->GetBinLowEdge(1),pval->GetBinLowEdge(pval->GetNbinsX())+pval->GetBinWidth(pval->GetNbinsX()),0.0,0.05,"p-val",3001,kRed-9);
+  c0->Update();
 }
 
 
@@ -3101,16 +2880,16 @@ int main (int argc, char** argv)
       unsigned int q2BinIndx = 0;
       double realVal1 = 0;
       double realVal2 = 0;
-      string fileName1;
-      string fileName2;
-      string fileName3;
+      string fileName;
       string tmpStr;
+
+
       if ((option == "EvalMultyRun") && (argc >= 4))
 	{
 	  intVal = atoi(argv[2]);
 	  q2BinIndx = atoi(argv[3]);
-	  if (argc >= 5) fileName1 = argv[4];
-	  else           fileName1 = FitSysFILE;
+	  if (argc >= 5) fileName = argv[4];
+	  else           fileName = FitSysFILE;
 	  if (argc >= 6) realVal1 = atof(argv[5]);
 	  else           realVal1 = 0.0;
 	  if (argc == 7) realVal2 = atof(argv[6]);
@@ -3119,40 +2898,33 @@ int main (int argc, char** argv)
       else if (((option == "Phy") || (option == "DataMC")) && (argc == 3)) intVal = atoi(argv[2]);
       else if (((option == "Pval") || (option == "makeupNLL")) && (argc == 5))
 	{
-	  fileName1 = argv[2];
-	  q2BinIndx = atoi(argv[3]);
-	  tmpStr    = argv[4];
+	  fileName  = argv[2];
+	  tmpStr    = argv[3];
+	  q2BinIndx = atoi(argv[4]);
+
 	}
       else if (((option == "MuMuMass") || (option == "KstMass")) && (argc == 4))
 	{
-	  fileName1 = argv[2];
-	  intVal    = atoi(argv[3]);
+	  fileName = argv[2];
+	  intVal   = atoi(argv[3]);
 	}
       else if ((option == "KKMass") && (argc == 5))
 	{
-	  fileName1 = argv[2];
-	  intVal    = atoi(argv[3]);
-	  tmpStr    = argv[4];
+	  fileName = argv[2];
+	  intVal   = atoi(argv[3]);
+	  tmpStr   = argv[4];
 	}
-      else if ((option == "getHfromToy") && (argc == 5))
-	{
-	  fileName1 = argv[2];
-	  fileName2 = argv[3];
-	  intVal    = atoi(argv[4]);
-	}
-      else if ((option == "MuHadMass") && (argc == 3)) fileName1 = argv[2];
+      else if ((option == "MuHadMass") && (argc == 3)) fileName = argv[2];
       else if (option != "PhyRegion")
 	{
-	  cout << "Parameter missing:" << endl;
-	  cout << "./MakePlots [Phy EvalMultyRun DataMC PhyRegion Pval makeupNLL MuMuMass KKMass KstMass MuHadMass getHfromToy]" << endl;
-	  cout << "[Phy:0-2||10-12]" << endl;
-	  cout << "[EvalMultyRun: 0-3||10-12 q^2 bin index 0-7 [fileName] [NLL interval] [NLL less than]" << endl;
-	  cout << "[DataMC: 0-27]" << endl;
-	  cout << "[Pval or makeupNLL: ToyMCfileName q^2 bin index 0-7 PlotType]" << endl;
-	  cout << "[MuMuMass or KstMass: dataFileName bkgSub]" << endl;
-	  cout << "[KKMass: dataFileName bkgSub RECOorGEN]" << endl;
-	  cout << "[MuHadMass: dataFileName]" << endl;
-	  cout << "[getHfromToy: ToyMCfileName OutputFileName canvas# [1-3]]" << endl;
+	  cout << "./MakePlots [Phy EvalMultyRun DataMC PhyRegion Pval makeupNLL MuMuMass KKMass KstMass MuHadMass]" << endl;
+	  cout << "            [Phy:0-2||10-12]" << endl;
+	  cout << "            [EvalMultyRun: 0-3||10-12 [q^2 bin index 0-7] [fileName] [NLL interval] [NLL less than]" << endl;
+	  cout << "            [DataMC: 0-27]" << endl;
+	  cout << "            [Pval OR makeupNLL: fileName plotType q^2_bin_index 0-7]" << endl;
+	  cout << "            [MuMuMass OR KstMass: dataFileName bkgSub]" << endl;
+	  cout << "            [KKMass: dataFileName bkgSub RECOorGEN]" << endl;
+	  cout << "            [MuHadMass: dataFileName]" << endl;
 
 	  return 1;
 	}
@@ -3184,9 +2956,7 @@ int main (int argc, char** argv)
       cout << "q2BinIndx: " << q2BinIndx << endl;
       cout << "realVal1: "  << realVal1 << endl;
       cout << "realVal2: "  << realVal2 << endl;
-      cout << "fileName1: " << fileName1 << endl;
-      cout << "fileName2: " << fileName2 << endl;
-      cout << "fileName3: " << fileName3 << endl;
+      cout << "fileName: "  << fileName << endl;
       cout << "tmpStr: "    << tmpStr << endl; 
 
       if (option == "getHfromToy") gROOT->SetBatch(true);
@@ -3197,34 +2967,32 @@ int main (int argc, char** argv)
       Utility->ReadGenericParam(ParameterFILE);
 
       if      (option == "Phy")          MakePhysicsPlots(intVal);
-      else if (option == "EvalMultyRun") EvalMultyRun(intVal,q2BinIndx,fileName1,realVal1,realVal2);
+      else if (option == "EvalMultyRun") EvalMultyRun(intVal,q2BinIndx,fileName,realVal1,realVal2);
       else if (option == "DataMC")       MakeComparisonDataMC(intVal);
       else if (option == "PhyRegion")    CheckPhysicsRegion();
-      else if (option == "Pval")         MakePvaluePlot(fileName1,q2BinIndx,tmpStr);
-      else if (option == "MuMuMass")     PlotMuMu(fileName1,intVal);
-      else if (option == "KKMass")       PlotKK(fileName1,intVal,tmpStr);
-      else if (option == "KstMass")      PlotKst(fileName1,intVal);
-      else if (option == "MuHadMass")    PlotMuHadMass(fileName1);
-      else if (option == "makeupNLL")    MakeupNLLandPvalPlots(fileName1,q2BinIndx,tmpStr);
-      else if (option == "getHfromToy")  { getHfromToy(fileName1,fileName2,intVal); exit(0); }
+      else if (option == "Pval")         MakePvaluePlot(fileName,tmpStr,q2BinIndx);
+      else if (option == "makeupNLL")    MakeupNLLandPULLplots(fileName,tmpStr,q2BinIndx);
+      else if (option == "MuMuMass")     PlotMuMu(fileName,intVal);
+      else if (option == "KKMass")       PlotKK(fileName,intVal,tmpStr);
+      else if (option == "KstMass")      PlotKst(fileName,intVal);
+      else if (option == "MuHadMass")    PlotMuHadMass(fileName);
       else
 	{
-	  cout << "./MakePlots [Phy EvalMultyRun DataMC PhyRegion Pval makeupNLL MuMuMass KKMass KstMass MuHadMass getHfromToy]" << endl;
-	  cout << "[Phy:0-2||10-12]" << endl;
-	  cout << "[EvalMultyRun: 0-3||10-12 [q^2 bin index 0-7] [fileName] [NLL interval] [NLL less than]" << endl;
-	  cout << "[DataMC: 0-27]" << endl;
-	  cout << "[Pval or makeupNLL: ToyMCfileName q^2 bin index 0-7 PlotType]" << endl;
-	  cout << "[MuMuMass or KstMass: dataFileName bkgSub]" << endl;
-	  cout << "[KKMass: dataFileName bkgSub RECOorGEN]" << endl;
-	  cout << "[MuHadMass: dataFileName]" << endl;
-	  cout << "[getHfromToy: ToyMCfileName OutputFileName canvas# [1-3]]" << endl;
+	  cout << "./MakePlots [Phy EvalMultyRun DataMC PhyRegion Pval makeupNLL MuMuMass KKMass KstMass MuHadMass]" << endl;
+	  cout << "            [Phy:0-2||10-12]" << endl;
+	  cout << "            [EvalMultyRun: 0-3||10-12 [q^2_bin_index 0-7] [fileName] [NLL interval] [NLL less than]" << endl;
+	  cout << "            [DataMC: 0-27]" << endl;
+	  cout << "            [Pval OR makeupNLL: fileName plotType q^2_bin_index 0-7]" << endl;
+	  cout << "            [MuMuMass OR KstMass: dataFileName bkgSub]" << endl;
+	  cout << "            [KKMass: dataFileName bkgSub RECOorGEN]" << endl;
+	  cout << "            [MuHadMass: dataFileName]" << endl;
 
 	  cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
 	  cout << "For [MuMuMass KKMass KstMass]:" << endl;
 	  cout << "bkgSub = 0 (do not subtract background)" << endl;
 	  cout << "bkgSub = 1 (subtract background)" << endl;
 
-	  cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
 	  cout << "For [KKMass]:" << endl;
 	  cout << "RECOorGEN = RECO (use RECO information)" << endl;
 	  cout << "RECOorGEN = GEN (use GEN information)" << endl;
@@ -3247,6 +3015,14 @@ int main (int argc, char** argv)
 	  cout << "10 = Fl multy minima" << endl;
 	  cout << "11 = Afb multy minima" << endl;
 	  cout << "12 = BF multy minima" << endl;
+
+	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+	  cout << "For [Pval OR makeupNLL]:" << endl;
+	  cout << "Fl" << endl;
+	  cout << "Afb" << endl;
+	  cout << "At2" << endl;
+	  cout << "Atim" << endl;
+	  cout << "BF" << endl;
 
 	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
 	  cout << "For [DataMC]:" << endl;
@@ -3282,14 +3058,6 @@ int main (int argc, char** argv)
 	  cout << "26 = cos(theta_K)" << endl;
 	  cout << "27 = cos(theta_l)" << endl;
 
-	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-	  cout << "For [Pval makeupNLL]:" << endl;
-	  cout << "- FL" << endl;
-	  cout << "- AFB" << endl;
-	  cout << "- AT2" << endl;
-	  cout << "- ATIM" << endl;
-	  cout << "- BF" << endl;
-
 	  return 1;
 	}
 
@@ -3299,22 +3067,21 @@ int main (int argc, char** argv)
     }
   else
     {
-      cout << "./MakePlots [Phy EvalMultyRun DataMC PhyRegion Pval makeupNLL MuMuMass KKMass KstMass MuHadMass getHfromToy]" << endl;
-      cout << "[Phy:0-2||10-12]" << endl;
-      cout << "[EvalMultyRun: 0-3||10-12 [q^2 bin index 0-7] [fileName] [NLL interval] [NLL less than]" << endl;
-      cout << "[DataMC: 0-27]" << endl;
-      cout << "[Pval or makeupNLL: ToyMCfileName q^2 bin index 0-7 PlotType]" << endl;
-      cout << "[MuMuMass or KstMass: dataFileName bkgSub]" << endl;
-      cout << "[KKMass: dataFileName bkgSub RECOorGEN]" << endl;
-      cout << "[MuHadMass: dataFileName]" << endl;
-      cout << "[getHfromToy: ToyMCfileName OutputFileName canvas# [1-3]]" << endl;
-
+      cout << "./MakePlots [Phy EvalMultyRun DataMC PhyRegion Pval makeupNLL MuMuMass KKMass KstMass MuHadMass]" << endl;
+      cout << "            [Phy:0-2||10-12]" << endl;
+      cout << "            [EvalMultyRun: 0-3||10-12 [q^2_bin_index 0-7] [fileName] [NLL interval] [NLL less than]" << endl;
+      cout << "            [DataMC: 0-27]" << endl;
+      cout << "            [Pval OR makeupNLL: fileName plotType q^2_bin_index 0-7]" << endl;
+      cout << "            [MuMuMass OR KstMass: dataFileName bkgSub]" << endl;
+      cout << "            [KKMass: dataFileName bkgSub RECOorGEN]" << endl;
+      cout << "            [MuHadMass: dataFileName]" << endl;
+      
       cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "For [MuMuMass KKMass KstMass]:" << endl;
       cout << "bkgSub = 0 (do not subtract background)" << endl;
       cout << "bkgSub = 1 (subtract background)" << endl;
 
-      cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "For [KKMass]:" << endl;
       cout << "RECOorGEN = RECO (use RECO information)" << endl;
       cout << "RECOorGEN = GEN (use GEN information)" << endl;
@@ -3337,6 +3104,14 @@ int main (int argc, char** argv)
       cout << "10 = Fl multy minima" << endl;
       cout << "11 = Afb multy minima" << endl;
       cout << "12 = BF multy minima" << endl;
+
+      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+      cout << "For [Pval OR makeupNLL]:" << endl;
+      cout << "Fl" << endl;
+      cout << "Afb" << endl;
+      cout << "At2" << endl;
+      cout << "Atim" << endl;
+      cout << "BF" << endl;
 
       cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "For [DataMC]:" << endl;
@@ -3371,14 +3146,6 @@ int main (int argc, char** argv)
 
       cout << "26 = cos(theta_K)" << endl;
       cout << "27 = cos(theta_l)" << endl;
-
-      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-      cout << "For [Pval makeupNLL]:" << endl;
-      cout << "- FL" << endl;
-      cout << "- AFB" << endl;
-      cout << "- AT2" << endl;
-      cout << "- ATIM" << endl;
-      cout << "- BF" << endl;
 
       return 1;
     }
