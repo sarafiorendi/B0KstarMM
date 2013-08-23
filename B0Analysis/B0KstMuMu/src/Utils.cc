@@ -32,7 +32,7 @@ Utils::Utils ()
   PsiPBF        = 46.97e-7; // B0 --> psi(2S)(mu+mu-) K*0        (6.1+/-0.5 * 7.7+/-0.8)
   PsiPKpiBF     = 31.31e-7; // B0 --> psi(2S)(mu+mu-) K*0(K+pi-) (6.1+/-0.5 * 7.7+/-0.8 * 2/3)
 
-  muonMassErr   = 0.00000035;
+  muonMassErr   = 0.0000000035;
   pionMassErr   = 0.00000035;
   kaonMassErr   = 0.000016;
   B0MassErr     = 0.00017;
