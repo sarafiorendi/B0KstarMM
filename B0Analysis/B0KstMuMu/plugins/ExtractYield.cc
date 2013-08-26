@@ -2302,7 +2302,7 @@ void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2B
 	}
       else if (specBin == Utility->GetPsiPBin(q2Bins))
 	{
-	  NTupleOut->mumuMass->push_back(Utility->PsiPrimeMass);
+	  NTupleOut->mumuMass->push_back(Utility->PsiPMass);
 	  NTupleOut->mumuMassE->push_back(1e-3);
 	}
       else
@@ -2631,11 +2631,11 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // ############################################
       // # Define fit variables and pdf for psi(2S) #
       // ############################################
-      RooRealVar* meanPsiP1  = new RooRealVar("meanPsiP1","psi(2S) mean Gaussian-1",Utility->PsiPrimeMass,"GeV");
+      RooRealVar* meanPsiP1  = new RooRealVar("meanPsiP1","psi(2S) mean Gaussian-1",Utility->PsiPMass,"GeV");
       RooRealVar* sigmaPsiP1 = new RooRealVar("sigmaPsiP1","psi(2S) sigma Gaussian-1",0.02,"GeV");
       RooAbsPdf* MassPsiP1   = new RooGaussian("MassPsiP1","psi(2S) Gaussian-1",*x,*meanPsiP1,*sigmaPsiP1);
 
-      RooRealVar* meanPsiP2  = new RooRealVar("meanPsiP2","psi(2S) mean Gaussian-2",Utility->PsiPrimeMass,"GeV");
+      RooRealVar* meanPsiP2  = new RooRealVar("meanPsiP2","psi(2S) mean Gaussian-2",Utility->PsiPMass,"GeV");
       RooRealVar* sigmaPsiP2 = new RooRealVar("sigmaPsiP2","psi(2S) sigma Gaussian-2",0.09,"GeV");
       RooAbsPdf* MassPsiP2   = new RooGaussian("MassPsiP2","psi(2S) Gaussian-2",*x,*meanPsiP2,*sigmaPsiP2);
 
@@ -2921,11 +2921,11 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 
       myString.clear(); myString.str("");
       if ((FitType >= 33) && (FitType <= 36))
-	myString << "truthMatchSignal == 1 && (mumuMass > (" << Utility->PsiPrimeMass << "-" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE) && mumuMass < ("
-		 << Utility->PsiPrimeMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE))";
+	myString << "truthMatchSignal == 1 && (mumuMass > (" << Utility->PsiPMass << "-" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE) && mumuMass < ("
+		 << Utility->PsiPMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE))";
       else if (((FitType >= 53) && (FitType <= 56)) || ((FitType >= 73) && (FitType <= 76))) myString << "truthMatchSignal == 1";
-      else myString << "(mumuMass > (" << Utility->PsiPrimeMass << "-" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE) && mumuMass < ("
-		    << Utility->PsiPrimeMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE))";
+      else myString << "(mumuMass > (" << Utility->PsiPMass << "-" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE) && mumuMass < ("
+		    << Utility->PsiPMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE))";
       cout << "Cut for B0 --> psi(2S) K*0: " << myString.str().c_str() << endl;
       SingleCandNTuple_PsiP = (RooDataSet*)SingleCandNTuple->reduce(myString.str().c_str());
 
@@ -2935,9 +2935,9 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
       // # J/psi and psi(2S) rejection based on the event-by-event dimuon mass error #
       // #############################################################################
       myString << "(mumuMass < (" << Utility->JPsiMass << "-" << Utility->GetGenericParam("NSigmaPsiBig") << "*mumuMassE)";
-      myString << " || mumuMass > (" << Utility->PsiPrimeMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)";
+      myString << " || mumuMass > (" << Utility->PsiPMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)";
       myString << " || (mumuMass > (" << Utility->JPsiMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)";
-      myString << " && mumuMass < (" << Utility->PsiPrimeMass << "-" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)))";
+      myString << " && mumuMass < (" << Utility->PsiPMass << "-" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)))";
       cout << "Cut for B0 --> mu+ mu- K*0 (outside Psi-region): " << myString.str().c_str() << endl;
       if (!((FitType >= 33) && (FitType <= 36)) && !((FitType >= 53) && (FitType <= 56)) && !((FitType >= 73) && (FitType <= 76))) SingleCandNTuple_RejectPsi = (RooDataSet*)SingleCandNTuple->reduce(myString.str().c_str());
       else SingleCandNTuple_RejectPsi = (RooDataSet*)SingleCandNTuple->reduce("mumuMass > 0");
@@ -2949,8 +2949,8 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
       // ###########################################################################
       myString << "((mumuMass > (" << Utility->JPsiMass << "-" << Utility->GetGenericParam("NSigmaPsiBig") << "*mumuMassE)";
       myString << " && mumuMass < (" << Utility->JPsiMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)) ||";
-      myString << " (mumuMass > (" << Utility->PsiPrimeMass << "-" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)";
-      myString << " && mumuMass < (" << Utility->PsiPrimeMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)))";
+      myString << " (mumuMass > (" << Utility->PsiPMass << "-" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)";
+      myString << " && mumuMass < (" << Utility->PsiPMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)))";
       cout << "Cut for B0 --> mu+ mu- K*0 (inside Psi-region): " << myString.str().c_str() << endl;
       SingleCandNTuple_KeepPsi = (RooDataSet*)SingleCandNTuple->reduce(myString.str().c_str());
 
@@ -3326,8 +3326,8 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
   vector<string>* vecParStr;
   stringstream myString;
 
-  double effPsi  = 0.0;
-  double effMuMu = 0.0;
+  double effPsi  = 1.0;
+  double effMuMu = 1.0;
 
   RooArgSet   Vars;
   TCanvas*    cq2Bins[q2Bins->size()-1];
@@ -4784,8 +4784,8 @@ void IterativeMassAngleFitq2Bins (RooDataSet* dataSet,
   vector<string>* vecParStr;
   stringstream myString;
 
-  double effPsi  = 0.0;
-  double effMuMu = 0.0;
+  double effPsi  = 1.0;
+  double effMuMu = 1.0;
 
   RooArgSet   Vars;
   TCanvas*    cq2Bins[q2Bins->size()-1];
@@ -6721,8 +6721,8 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
   vector<string>* vecParStr;
   stringstream myString;
 
-  double effPsi  = 0.0;
-  double effMuMu = 0.0;
+  double effPsi  = 1.0;
+  double effMuMu = 1.0;
 
   RooArgSet   Vars;
   TCanvas*    cq2Bins[q2Bins->size()-1];

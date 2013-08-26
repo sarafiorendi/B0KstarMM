@@ -234,9 +234,9 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
 	      (NTupleS->genSignal == true) && (NTupleS->truthMatchSignal->at(BestCandIndx) == true) &&
 	      
 	      ((NTupleS->mumuMass->at(BestCandIndx) < (Utility->JPsiMass - Utility->GetGenericParam("NSigmaPsiBig")*NTupleS->mumuMassE->at(BestCandIndx))) ||
-	       (NTupleS->mumuMass->at(BestCandIndx) > (Utility->PsiPrimeMass + Utility->GetGenericParam("NSigmaPsiSmall")*NTupleS->mumuMassE->at(BestCandIndx))) ||
+	       (NTupleS->mumuMass->at(BestCandIndx) > (Utility->PsiPMass + Utility->GetGenericParam("NSigmaPsiSmall")*NTupleS->mumuMassE->at(BestCandIndx))) ||
 	       ((NTupleS->mumuMass->at(BestCandIndx) > (Utility->JPsiMass + Utility->GetGenericParam("NSigmaPsiSmall")*NTupleS->mumuMassE->at(BestCandIndx))) &&
-		(NTupleS->mumuMass->at(BestCandIndx) < (Utility->PsiPrimeMass - Utility->GetGenericParam("NSigmaPsiSmall")*NTupleS->mumuMassE->at(BestCandIndx))))) &&
+		(NTupleS->mumuMass->at(BestCandIndx) < (Utility->PsiPMass - Utility->GetGenericParam("NSigmaPsiSmall")*NTupleS->mumuMassE->at(BestCandIndx))))) &&
 	      
 	      ((((q2Region == 0) || (q2Region == 2) || (q2Region == 3) || (q2Region == 5)) &&
 		(NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) > q2Bins[0]) && (NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) < q2Bins[2])) ||
@@ -304,9 +304,9 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
 		  (NTupleB->bBarMass->at(BestCandIndx) > Utility->B0Mass+Utility->GetGenericParam("NSigmaB0B")*signalSigma))))) &&
 
 	      ((NTupleB->mumuMass->at(BestCandIndx) < (Utility->JPsiMass - Utility->GetGenericParam("NSigmaPsiBig")*NTupleB->mumuMassE->at(BestCandIndx))) ||
-	       (NTupleB->mumuMass->at(BestCandIndx) > (Utility->PsiPrimeMass + Utility->GetGenericParam("NSigmaPsiSmall")*NTupleB->mumuMassE->at(BestCandIndx))) ||
+	       (NTupleB->mumuMass->at(BestCandIndx) > (Utility->PsiPMass + Utility->GetGenericParam("NSigmaPsiSmall")*NTupleB->mumuMassE->at(BestCandIndx))) ||
 	       ((NTupleB->mumuMass->at(BestCandIndx) > (Utility->JPsiMass + Utility->GetGenericParam("NSigmaPsiSmall")*NTupleB->mumuMassE->at(BestCandIndx))) &&
-		(NTupleB->mumuMass->at(BestCandIndx) < (Utility->PsiPrimeMass - Utility->GetGenericParam("NSigmaPsiSmall")*NTupleB->mumuMassE->at(BestCandIndx))))) &&
+		(NTupleB->mumuMass->at(BestCandIndx) < (Utility->PsiPMass - Utility->GetGenericParam("NSigmaPsiSmall")*NTupleB->mumuMassE->at(BestCandIndx))))) &&
 	      
 	      ((((q2Region == 0) || (q2Region == 2) || (q2Region == 3) || (q2Region == 5)) &&
 		(NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) > q2Bins[0]) && (NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) < q2Bins[2])) ||

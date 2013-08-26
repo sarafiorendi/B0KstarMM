@@ -613,7 +613,7 @@ void MakeComparisonDataMC (unsigned int plotType)
   myString.str("");
   myString << "((abs(B0MassArb - " << Utility->B0Mass << ") < " << Utility->GetGenericParam("NSigmaB0S")*signalSigma << ") && ";
   myString << "((mumuMass > " << Utility->JPsiMass << "-" << Utility->GetGenericParam("NSigmaPsiBig") << "*mumuMassE && mumuMass < " << Utility->JPsiMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE) || ";
-  myString << "(abs(mumuMass - " << Utility->PsiPrimeMass << ") < " << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)))";
+  myString << "(abs(mumuMass - " << Utility->PsiPMass << ") < " << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)))";
   sigMassQuery = myString.str();
 
   myString.clear();
@@ -624,7 +624,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 	   << Utility->B0Mass - (Utility->GetGenericParam("NSigmaB0B") + Utility->GetGenericParam("NSigmaB0S"))*signalSigma << ")) && ";
   myString << "((mumuMass > " << Utility->JPsiMass << "-" << Utility->GetGenericParam("NSigmaPsiBig") << "*mumuMassE && mumuMass < "
 	   << Utility->JPsiMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE) || ";
-  myString << "(abs(mumuMass - " << Utility->PsiPrimeMass << ") < " << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)))";
+  myString << "(abs(mumuMass - " << Utility->PsiPMass << ") < " << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)))";
   bkgMassQuery = myString.str();
   if (plotType == 0)
     query = "B0pT"; // B0 pT

@@ -17,33 +17,33 @@
 
 Utils::Utils ()
 {
-  muonMass      = 0.10565837;
-  pionMass      = 0.13957018;
-  kaonMass      = 0.493677;
-  kstMass       = 0.896;
-  B0Mass        = 5.27958;
-  JPsiMass      = 3.096916;
-  PsiPrimeMass  = 3.686109;
+  muonMass     = 0.10565837;
+  pionMass     = 0.13957018;
+  kaonMass     = 0.493677;
+  kstMass      = 0.896;
+  B0Mass       = 5.27958;
+  JPsiMass     = 3.096916;
+  PsiPMass     = 3.686109;
 
-  JPsiBF        =  7.95e-5; // B0 --> J/psi(mu+mu-) K*0          (1.34+/-0.06 * 5.93+/-0.06)
-  JPsiKpiBF     =  5.30e-5; // B0 --> J/psi(mu+mu-) K*0(K+pi-)   (1.34+/-0.06 * 5.93+/-0.06 * 2/3)
-  KstMuMuBF     =  1.06e-6; // B0 --> K*0 mu+mu-
-  KstKpiMuMuBF  =  7.07e-7; // B0 --> K*0(K+pi-) mu+mu-          (1.06+/-0.10 * 2/3)
-  PsiPBF        = 46.97e-7; // B0 --> psi(2S)(mu+mu-) K*0        (6.1+/-0.5 * 7.7+/-0.8)
-  PsiPKpiBF     = 31.31e-7; // B0 --> psi(2S)(mu+mu-) K*0(K+pi-) (6.1+/-0.5 * 7.7+/-0.8 * 2/3)
+  JPsiBF       =  7.95e-5; // B0 --> J/psi(mu+mu-) K*0          (1.34+/-0.06 * 5.93+/-0.06)
+  JPsiKpiBF    =  5.30e-5; // B0 --> J/psi(mu+mu-) K*0(K+pi-)   (1.34+/-0.06 * 5.93+/-0.06 * 2/3)
+  KstMuMuBF    =  1.06e-6; // B0 --> K*0 mu+mu-
+  KstKpiMuMuBF =  7.07e-7; // B0 --> K*0(K+pi-) mu+mu-          (1.06+/-0.10 * 2/3)
+  PsiPBF       = 46.97e-7; // B0 --> psi(2S)(mu+mu-) K*0        (6.1+/-0.5 * 7.7+/-0.8)
+  PsiPKpiBF    = 31.31e-7; // B0 --> psi(2S)(mu+mu-) K*0(K+pi-) (6.1+/-0.5 * 7.7+/-0.8 * 2/3)
 
-  muonMassErr   = 3.5e-9;
-  pionMassErr   = 3.5e-7;
-  kaonMassErr   = 1.6e-5;
-  B0MassErr     = 1.7e-4;
-  kstSigma      = 0.05;
+  muonMassErr  = 3.5e-9;
+  pionMassErr  = 3.5e-7;
+  kaonMassErr  = 1.6e-5;
+  B0MassErr    = 1.7e-4;
+  kstSigma     = 0.05;
 
-  nFitParam     = 51;
-  nConfigParam  = 4;
-  nFitObserv    = 5;
+  nFitParam    = 51;
+  nConfigParam = 4;
+  nFitObserv   = 5;
 
-  NcoeffThetaL  = 5;
-  NcoeffThetaK  = 4;
+  NcoeffThetaL = 5;
+  NcoeffThetaK = 4;
 
   PI = 3.141592653589793;
 
@@ -480,7 +480,7 @@ int Utils::GetJPsiBin (std::vector<double>* q2Bins)
 int Utils::GetPsiPBin (std::vector<double>* q2Bins)
 {
   for (unsigned int i = 0; i < q2Bins->size()-1; i++)
-    if ((q2Bins->operator[](i) < (PsiPrimeMass*PsiPrimeMass)) && (q2Bins->operator[](i+1) > (PsiPrimeMass*PsiPrimeMass)))
+    if ((q2Bins->operator[](i) < (PsiPMass*PsiPMass)) && (q2Bins->operator[](i+1) > (PsiPMass*PsiPMass)))
       return i;
   
   return -1;
@@ -601,7 +601,7 @@ void Utils::IntegrateEffButPsi (std::vector<double>* q2Bins, std::vector<double>
       for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
 	for (unsigned int l = 0; l < phiBins->size()-1; l++)
 	  if (!(((q2Bins->operator[](i) < (JPsiMass*JPsiMass)) && (q2Bins->operator[](i+1) > (JPsiMass*JPsiMass))) ||
-		((q2Bins->operator[](i) < (PsiPrimeMass*PsiPrimeMass)) && (q2Bins->operator[](i+1) > (PsiPrimeMass*PsiPrimeMass)))))
+		((q2Bins->operator[](i) < (PsiPMass*PsiPMass)) && (q2Bins->operator[](i+1) > (PsiPMass*PsiPMass)))))
 	    {
 	      myEffVal.Num1 = myEffVal.Num1 + myEff.Num1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	      myEffVal.Num2 = myEffVal.Num2 + myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
@@ -721,7 +721,7 @@ void Utils::IntegrateEffInPsiP (std::vector<double>* q2Bins, std::vector<double>
     for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
       for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
 	for (unsigned int l = 0; l < phiBins->size()-1; l++)
-	  if ((q2Bins->operator[](i) < (PsiPrimeMass*PsiPrimeMass)) && (q2Bins->operator[](i+1) > (PsiPrimeMass*PsiPrimeMass)))
+	  if ((q2Bins->operator[](i) < (PsiPMass*PsiPMass)) && (q2Bins->operator[](i+1) > (PsiPMass*PsiPMass)))
 	    {
 	      myEffVal.Num1 = myEffVal.Num1 + myEff.Num1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	      myEffVal.Num2 = myEffVal.Num2 + myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
