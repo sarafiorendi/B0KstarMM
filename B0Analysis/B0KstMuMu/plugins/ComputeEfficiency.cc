@@ -1489,22 +1489,22 @@ int main (int argc, char** argv)
 
       
 	  TFile* NtplFileGenCandidatesNoFilter = new TFile(fileNameGenCandidatesNoFilter.c_str(), "READ");
-	  theTreeGenCandidatesNoFilter         = (TTree*) NtplFileGenCandidatesNoFilter->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+	  theTreeGenCandidatesNoFilter         = (TTree*) NtplFileGenCandidatesNoFilter->Get("B0KstMuMu/B0KstMuMuNTuple");
 	  NTupleGenCandidatesNoFilter          = new B0KstMuMuSingleCandTreeContent();
 	  NTupleGenCandidatesNoFilter->Init();
 
 	  TFile* NtplFileGenCandidatesFilter = new TFile(fileNameGenCandidatesFilter.c_str(), "READ");
-	  theTreeGenCandidatesFilter         = (TTree*) NtplFileGenCandidatesFilter->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+	  theTreeGenCandidatesFilter         = (TTree*) NtplFileGenCandidatesFilter->Get("B0KstMuMu/B0KstMuMuNTuple");
 	  NTupleGenCandidatesFilter          = new B0KstMuMuSingleCandTreeContent();
 	  NTupleGenCandidatesFilter->Init();
 
 	  TFile* NtplFileRecoCandidates = new TFile(fileNameRecoCandidates.c_str(), "READ");
-	  theTreeRecoCandidates         = (TTree*) NtplFileRecoCandidates->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+	  theTreeRecoCandidates         = (TTree*) NtplFileRecoCandidates->Get("B0KstMuMu/B0KstMuMuNTuple");
 	  NTupleRecoCandidates          = new B0KstMuMuSingleCandTreeContent();
 	  NTupleRecoCandidates->Init();
 
 	  TFile* NtplFileSingleCand = new TFile(fileNameSingleCand.c_str(), "READ");
-	  theTreeSingleCand         = (TTree*) NtplFileSingleCand->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+	  theTreeSingleCand         = (TTree*) NtplFileSingleCand->Get("B0KstMuMu/B0KstMuMuNTuple");
 	  NTupleSingleCand          = new B0KstMuMuSingleCandTreeContent();
 	  NTupleSingleCand->Init();
 

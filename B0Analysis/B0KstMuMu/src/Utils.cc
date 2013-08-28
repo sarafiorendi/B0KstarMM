@@ -1333,6 +1333,9 @@ bool Utils::IntegrateEffPhi (std::vector<double>* q2Bins, std::vector<double>* c
 }
 
 unsigned int Utils::HLTpathForEvFraction (double evtFrac)
+//######################
+// Returned value >= 1 #
+//######################
 {
   // #####################################################################################
   // # This method is used together with the method: "ReadTriggerPathsANDCutsANDEntries" #
@@ -1350,7 +1353,7 @@ unsigned int Utils::HLTpathForEvFraction (double evtFrac)
       countLumi = countLumi + VecHLTentries[it];
     }
 
-  return (it < HLTpath.size()-1 ? it+1 : 1); // @TMP@: this is done in order to consider "HLT_Dimuon6p5_LowMass_Displaced" like "HLT_Dimuon7_LowMass_Displaced"
+  return it+1;
 }
 
 unsigned int Utils::IsInTriggerTable (B0KstMuMuTreeContent* NTupleIn, double* HLTCutVar1, double* HLTCutVar2, int index, double evtFrac)
@@ -1379,11 +1382,11 @@ unsigned int Utils::IsInTriggerTable (B0KstMuMuTreeContent* NTupleIn, double* HL
       if ((it < NTupleIn->TrigTable->size()) &&
 	  (NTupleIn->mumTrig->at(index).find(HLTpath[HLTpathIndx].c_str()) != std::string::npos) &&
 	  (NTupleIn->mupTrig->at(index).find(HLTpath[HLTpathIndx].c_str()) != std::string::npos))
-	return (j < HLTpath.size()-1 ? HLTpathIndx+1 : 1); // @TMP@: this is done in order to consider "HLT_Dimuon6p5_LowMass_Displaced" like "HLT_Dimuon7_LowMass_Displaced"
-
+	return HLTpathIndx+1;
+      
       if (evtFrac >= 0.0) break;
     }
-
+  
   return 0;
 }
 
@@ -1401,7 +1404,7 @@ unsigned int Utils::GetNHLTCat ()
   // #####################################################################################
   // # This method is used together with the method: "ReadTriggerPathsANDCutsANDEntries" #
   // #####################################################################################
-  return (HLTpath.size() > 0 ? HLTpath.size()-1 : 0); // @TMP@: this is done in order to consider "HLT_Dimuon6p5_LowMass_Displaced" like "HLT_Dimuon7_LowMass_Displaced"
+  return HLTpath.size();
 }
 
 void Utils::ReadTriggerPathsANDCutsANDEntries (std::string fileName)
@@ -2447,14 +2450,14 @@ bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigChe
 	  // #####################
 	  // # Choose good muons #
 	  // #####################
-	  (NTuple->mumNTrkHits->at(i) > int(rint(GetSeleCut("NTrkHits")))) &&
+	  (NTuple->mumNTrkLayers->at(i) > int(rint(GetSeleCut("NTrkLayers")))) &&
 	  (NTuple->mumNPixLayers->at(i) > int(rint(GetSeleCut("NPixLayers")))) &&
 	  (NTuple->mumNormChi2->at(i) < GetSeleCut("NormChi2")) &&
 	  (fabs(NTuple->mumdxyVtx->at(i)) < GetSeleCut("dxyVtx")) &&
 	  (fabs(NTuple->mumdzVtx->at(i)) < GetSeleCut("dzVtx")) &&
 	  (NTuple->mumCat->at(i).find("TMOneStationTight") != std::string::npos) &&
 	  
-	  (NTuple->mupNTrkHits->at(i) > int(rint(GetSeleCut("NTrkHits")))) &&
+	  (NTuple->mupNTrkLayers->at(i) > int(rint(GetSeleCut("NTrkLayers")))) &&
 	  (NTuple->mupNPixLayers->at(i) > int(rint(GetSeleCut("NPixLayers")))) &&
 	  (NTuple->mupNormChi2->at(i) < GetSeleCut("NormChi2")) &&
 	  (fabs(NTuple->mupdxyVtx->at(i)) < GetSeleCut("dxyVtx")) &&
@@ -2628,7 +2631,7 @@ void Utils::ReadSelectionCuts (std::string fileName)
 // # HadpT      = SeleCuts[8]  #
 // # KstMass    = SeleCuts[9]  #
 // # KKMass     = SeleCuts[10] #
-// # NTrkHits   = SeleCuts[11] #
+// # NTrkLayers = SeleCuts[11] #
 // # NPixLayers = SeleCuts[12] #
 // # NormChi2   = SeleCuts[13] #
 // # dxyVtx     = SeleCuts[14] #
@@ -2669,7 +2672,7 @@ bool Utils::SetSeleCut (std::string cutName, double val)
   else if (cutName == "HadpT")      SeleCuts[8]  = val;
   else if (cutName == "KstMass")    SeleCuts[9]  = val;
   else if (cutName == "KKMass")     SeleCuts[10] = val;
-  else if (cutName == "NTrkHits")   SeleCuts[11] = val;
+  else if (cutName == "NTrkLayers") SeleCuts[11] = val;
   else if (cutName == "NPixLayers") SeleCuts[12] = val;
   else if (cutName == "NormChi2")   SeleCuts[13] = val;
   else if (cutName == "dxyVtx")     SeleCuts[14] = val;
@@ -2692,7 +2695,7 @@ double Utils::GetSeleCut (std::string cutName)
   else if (cutName == "HadpT")      return SeleCuts[8];
   else if (cutName == "KstMass")    return SeleCuts[9];
   else if (cutName == "KKMass")     return SeleCuts[10];
-  else if (cutName == "NTrkHits")   return SeleCuts[11];
+  else if (cutName == "NTrkLayers") return SeleCuts[11];
   else if (cutName == "NPixLayers") return SeleCuts[12];
   else if (cutName == "NormChi2")   return SeleCuts[13];
   else if (cutName == "dxyVtx")     return SeleCuts[14];

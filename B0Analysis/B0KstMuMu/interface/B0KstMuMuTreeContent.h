@@ -108,7 +108,6 @@ class B0KstMuMuTreeContent
   std::vector<std::string>  *mumCat;
   std::vector<int>          *mumNPixHits, *mumNPixLayers, *mumNTrkHits, *mumNTrkLayers, *mumNMuonHits, *mumNMatchStation;
   std::vector<std::string>  *mumTrig;
-  std::vector<bool>         *mum2LastTrigFilter;
 
   // #######
   // # mu+ #
@@ -120,7 +119,6 @@ class B0KstMuMuTreeContent
   std::vector<std::string>  *mupCat;
   std::vector<int>          *mupNPixHits, *mupNPixLayers, *mupNTrkHits, *mupNTrkLayers, *mupNMuonHits, *mupNMatchStation;
   std::vector<std::string>  *mupTrig;
-  std::vector<bool>         *mup2LastTrigFilter;
 
   // ##############
   // # K*0 track- #

@@ -7,22 +7,10 @@
 # 1st block of parameters #
 ###########################
 # Number of HLT paths
-5
+1
 
 # HLT path:
-HLT_Dimuon6p5_LowMass_Displaced_v
-
-# HLT path:
-HLT_Dimuon7_LowMass_Displaced_v
-
-# HLT path:
-HLT_DoubleMu4_LowMass_Displaced_v
-
-# HLT path:
-HLT_DoubleMu4p5_LowMass_Displaced_v
-
-# HLT path:
-HLT_DoubleMu5_LowMass_Displaced_v
+HLT_DoubleMu3p5_LowMass_Displaced_v
 
 
 ###########################
@@ -48,7 +36,7 @@ HLT_DoubleMu5_LowMass_Displaced_v
 0.9
 
 # mu min pT [3.0 GeV/c]
-3.0
+3.5
 
 # mu max eta [2.2]
 2.2
@@ -92,7 +80,7 @@ HLT_DoubleMu5_LowMass_Displaced_v
 0.05
 
 # mu min pT [3.0 GeV/c]
-3.0
+3.5
 
 # B0 L/sigma w/respect to BS [12.0]
 12.0
@@ -121,8 +109,9 @@ HLT_DoubleMu5_LowMass_Displaced_v
 # KK mass [1.035 GeV/c2]
 1.035
 
-# Muon selection: n. tracker hits [10.0]
-10.0
+### Muon identification cuts ###
+# Muon selection: n. tracker layers [5.0]
+5.0
 
 # Muon selection: n. pixel layers [1.0]
 1.0
@@ -250,50 +239,14 @@ HLT_DoubleMu5_LowMass_Displaced_v
 # 8th block of parameters #
 ###########################
 # Number of HLT paths and relative cuts for efficiency computation
-20
+4
 
 # HLT path:
-HLT_Dimuon7_LowMass_Displaced_v
+HLT_DoubleMu3p5_LowMass_Displaced_v
 # mu-mu Vtx CL
-0.05
+0.10
 # mu min pT [GeV/c]
-3.0
-# Number of entries in Data
-1.1588
-
-# HLT path:
-HLT_DoubleMu4_LowMass_Displaced_v
-# mu-mu Vtx CL
-0.15
-# mu min pT [GeV/c]
-4.0
-# Number of entries in Data
-0.8844
-
-# HLT path:
-HLT_DoubleMu4p5_LowMass_Displaced_v
-# mu-mu Vtx CL
-0.15
-# mu min pT [GeV/c]
-4.5
-# Number of entries in Data
-2.7384
-
-# HLT path:
-HLT_DoubleMu5_LowMass_Displaced_v
-# mu-mu Vtx CL
-0.15
-# mu min pT [GeV/c]
-5.0
-# Number of entries in Data
-0.3987
-
-# HLT path:
-HLT_Dimuon6p5_LowMass_Displaced_v
-# mu-mu Vtx CL
-0.05
-# mu min pT [GeV/c]
-3.0
+3.5
 # Number of entries in Data
 0.0
 

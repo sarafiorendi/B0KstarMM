@@ -26,33 +26,24 @@ while loopy:
 
 nJobsToRun = 200
 nSecToWait =  60
-sample = 'B0KS1_'
+sample = 'BKSMM_'
 
-# RECO Central MC:
-#from B0ToPsiMuMu_MC_cff import readFiles
-#from BpToPsiMuMu_MC_cff import readFiles
-#from BsToPsiMuMu_MC_cff import readFiles
-#from LambdaBToPsiMuMu_MC_cff import readFiles
-# RECO Private MC:
-#from B0ToKstMuMu_MyMCRECO001_cff import readFiles
-from B0ToKstMuMu_BrMC1_cff import readFiles
-# GEN MC:
+### GEN MC ###
 #from B0ToKstMuMu_GEN_Filter_MC_cff import readFiles
 #from B0ToKstMuMu_GEN_NoFilter_01_MC_cff import readFiles
+
 #from B0ToJPsiKst_GEN_Filter_MC_cff import readFiles
 #from B0ToJPsiKst_GEN_NoFilter_MC_cff import readFiles
+
 #from B0ToPsi2SKst_GEN_Filter_MC_cff import readFiles
 #from B0ToPsi2SKst_GEN_NoFilter_MC_cff import readFiles
-# GEN MC to become RECO:
-#from B0ToKstMuMu_MyMCGEN001_cff import readFiles
 files = readFiles
 listStart = 0
 listEnd = len(files)
 
 ## preamble is the Qsub command
 preamble = "Qsub -l lnxfarm -e -o "
-command = " cmsRun B0KstMuMu_01.py "
-#command = " cmsRun PYTHIA6_B0dToKstMuMuKPi_7TeV_cff_RAW2DIGI_RECO.py "
+command = " cmsRun B0KstMuMu.py "
 
 ## List holding jobs. You can create multiple ones and then append
 ## their contents to the final queue, useful for doing multiple
@@ -61,7 +52,7 @@ command = " cmsRun B0KstMuMu_01.py "
 myjobs = []
 job = listStart
 for jobnum in files[job:listEnd]:
-    jobstr = preamble + 'j1b' + str(job) + '.out -N ' + sample + str(job) + command + jobnum
+    jobstr = preamble + 'job' + str(job) + '.out -N ' + sample + str(job) + command + jobnum
     myjobs.append([jobstr, sample+str(job)])
     job += 1
 

@@ -2268,9 +2268,9 @@ void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2B
   // # Create output tree #
   // ######################
   NtplFileOut = new TFile(fileName.c_str(), "RECREATE");
-  NtplFileOut->mkdir("B0SingleCand");
-  NtplFileOut->cd("B0SingleCand");
-  theTreeOut = new TTree("B0KstMuMuSingleCandNTuple","B0KstMuMuSingleCandNTuple");
+  NtplFileOut->mkdir("B0KstMuMu");
+  NtplFileOut->cd("B0KstMuMu");
+  theTreeOut = new TTree("B0KstMuMuNTuple","B0KstMuMuNTuple");
   NTupleOut  = new B0KstMuMuSingleCandTreeContent();
   NTupleOut->Init();
   NTupleOut->ClearNTuple();
@@ -8032,7 +8032,7 @@ int main(int argc, char** argv)
 	      ((FitType >= 73) && (FitType <= 76)))
 	    {
 	      NtplFile = new TFile(fileName.c_str(), "READ");
-	      theTree  = (TTree*) NtplFile->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+	      theTree  = (TTree*) NtplFile->Get("B0KstMuMu/B0KstMuMuNTuple");
 	      NTuple   = new B0KstMuMuSingleCandTreeContent();
 	      NTuple->Init();
 	    

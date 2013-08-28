@@ -201,7 +201,7 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   // # Signal ntuple #
   // #################
   TFile* NtplFileInS = new TFile(MCFile.c_str(),"READ");
-  TTree* theTreeInS = (TTree*)NtplFileInS->Get("B0Cand/B0KstMuMuNTuple");
+  TTree* theTreeInS = (TTree*)NtplFileInS->Get("B0KstMuMu/B0KstMuMuNTuple");
   B0KstMuMuTreeContent* NTupleS = new B0KstMuMuTreeContent();
   NTupleS->Init();
   NTupleS->ClearNTuple();
@@ -264,7 +264,7 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   // # Background ntuple #
   // #####################
   TFile* NtplFileInB = new TFile(DataFile.c_str(),"READ");
-  TTree* theTreeInB = (TTree*)NtplFileInB->Get("B0Cand/B0KstMuMuNTuple");
+  TTree* theTreeInB = (TTree*)NtplFileInB->Get("B0KstMuMu/B0KstMuMuNTuple");
   B0KstMuMuTreeContent* NTupleB = new B0KstMuMuTreeContent();
   NTupleB->Init();
   NTupleB->ClearNTuple();

@@ -65,8 +65,11 @@
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "MagneticField/Engine/interface/MagneticField.h"
+
 #include "TMath.h"
+
 #include <sstream>
+
 #include <utility>
 
 
@@ -97,7 +100,7 @@ B0KstMuMu::B0KstMuMu (const edm::ParameterSet& iConfig) :
   trackType_         ( iConfig.getUntrackedParameter<std::string>("TrackType",        std::string("cleanPatTrackCands")) ),
   parameterFile_     ( iConfig.getUntrackedParameter<std::string>("ParameterFile",    std::string("ParameterFile.txt")) ),
   doGenReco_         ( iConfig.getUntrackedParameter<unsigned int>("doGenReco",       1) ),
-  PrintMsg           ( iConfig.getUntrackedParameter<bool>("printMsg",                false) ),
+  printMsg           ( iConfig.getUntrackedParameter<bool>("printMsg",                false) ),
   
   theTree(0)
 {
@@ -143,13 +146,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
   bool trigMum = false;
   bool trigMup = false;
 
-
-  // ###########################################
-  // # @TMP@: Special case for May10-2011 data #
-  // ###########################################
-  bool May10Code = false;
-
-
   double chi;
   double ndf;
 
@@ -187,7 +183,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
   TrajectoryStateClosestToPoint theDCAXBS;
 
 
-  if (PrintMsg == true) std::cout << "\n\n" << __LINE__ << " : @@@@@@ Start Analyzer @@@@@@" << std::endl;
+  if (printMsg == true) std::cout << "\n\n" << __LINE__ << " : @@@@@@ Start Analyzer @@@@@@" << std::endl;
 
 
   // Get Gen-Particles
@@ -206,7 +202,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
     }
   catch ( ... )
     {
-      if (PrintMsg == true) std::cout << __LINE__ << " : couldn't get handle on HLT Trigger" << std::endl;
+      if (printMsg == true) std::cout << __LINE__ << " : couldn't get handle on HLT Trigger" << std::endl;
     }
   
 
@@ -216,7 +212,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
   HLTConfigProvider hltConfig_;
   bool changed = true;
   if (((hltTriggerResults.isValid() == false) || (hltConfig_.init(iEvent.getRun(), iSetup, hltTriggerResults_, changed) == false)) &&
-      (PrintMsg == true)) std::cout << __LINE__ << " : no trigger results" << std::endl;
+      (printMsg == true)) std::cout << __LINE__ << " : no trigger results" << std::endl;
   else
     {
       // Get hold of trigger names - based on TriggerResults object
@@ -229,7 +225,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      std::string trigName = triggerNames_.triggerName(itrig);
 	      int trigPrescale = hltConfig_.prescaleValue(itrig, trigName);
 	      
-	      if (PrintMsg == true) std::cout << __LINE__ << " : Trigger name in the event: "  << trigName << "\twith prescale: " << trigPrescale << std::endl;
+	      if (printMsg == true) std::cout << __LINE__ << " : Trigger name in the event: "  << trigName << "\twith prescale: " << trigPrescale << std::endl;
 	      
 	      
 	      // ################################
@@ -238,14 +234,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      for (unsigned int it = 0; it < TrigTable.size(); it++)
 		if (trigName.find(TrigTable[it]) != std::string::npos)
 		  {
-		    
-		    
-		    // ####################################
-		    // # Special case for May10-2011 data #
-		    // ####################################
-		    if (trigName.find("HLT_Dimuon6p5_LowMass_Displaced_v") != std::string::npos) May10Code = true;
-		    
-		    
 		    NTuple->TrigTable->push_back(trigName);
 		    NTuple->TrigPrescales->push_back(trigPrescale);
 		    
@@ -259,7 +247,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	  NTuple->TrigPrescales->push_back(-1);
 	}
       
-      if (PrintMsg == true)
+      if (printMsg == true)
 	{
 	  if (NTuple->TrigTable->size() > 0) std::cout << __LINE__ << " : some trigger paths in " << parameterFile_ << " have been found in the event" << std::endl;
 	  else std::cout << __LINE__ << " : no trigger path in " << parameterFile_ << " have been found in the event" << std::endl;
@@ -289,7 +277,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
       iEvent.getByLabel(trackType_, thePATTrackHandle);
 
 
-      if (PrintMsg == true) std::cout << __LINE__ << " : the event has: " << thePATMuonHandle->size() << " muons AND " << thePATTrackHandle->size() << " tracks" << std::endl;
+      if (printMsg == true) std::cout << __LINE__ << " : the event has: " << thePATMuonHandle->size() << " muons AND " << thePATTrackHandle->size() << " tracks" << std::endl;
 
 
       // #############################################################################
@@ -303,19 +291,11 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      else if (iMuon->charge() == -1) accMum = true;
 	      
 	      unsigned int it = 0;
-	      if (May10Code == false)
+	      for (it = 0; it < TrigTable.size(); it++)
 		{
-		  for (it = 0; it < TrigTable.size(); it++)
-		    {
-		      myString.clear(); myString.str(""); myString << TrigTable[it].c_str() << "*";
-		      if (iMuon->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) break;
-		    }
+		  myString.clear(); myString.str(""); myString << TrigTable[it].c_str() << "*";
+		  if (iMuon->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) break;
 		}
-	      else
-		{
-		  if ((iMuon->triggerObjectMatchesByPath("HLT_Dimuon6p5_LowMass_Displaced_v*",(unsigned int)0,(unsigned int)0).empty() == false) &&
-		      (iMuon->triggerObjectMatchesByFilter("hltDimuon6p5LowMassL3FilteredDisplaced").empty() == false)) it++;
- 		}
 	      if (it != TrigTable.size())
 		{
 		  if      (iMuon->charge() ==  1) trigMup = true;
@@ -353,14 +333,14 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      theDCAXBS = muTrackmTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
 	      if (theDCAXBS.isValid() == false)
 		{
-		  if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for mu-" << std::endl;
+		  if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for mu-" << std::endl;
 		  continue;
 		}
 	      double DCAmumBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
 	      double DCAmumBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
 	      if (DCAmumBS > DCAMUBS)
 		{
-		  if (PrintMsg == true) std::cout << __LINE__ << " : continue --> bad absolute impact parameter 2D for mu- : " << DCAmumBS << std::endl;
+		  if (printMsg == true) std::cout << __LINE__ << " : continue --> bad absolute impact parameter 2D for mu- : " << DCAmumBS << std::endl;
 		  continue;
 		}
 
@@ -385,19 +365,19 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  theDCAXBS = muTrackpTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
 		  if (theDCAXBS.isValid() == false)
 		    {
-		      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for mu+" << std::endl;
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for mu+" << std::endl;
 		      continue;
 		    }
 		  double DCAmupBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
 		  double DCAmupBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
 		  if (DCAmupBS > DCAMUBS)
 		    {
-		      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> bad absolute impact parameter 2D for mu+: " << DCAmupBS << std::endl;
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad absolute impact parameter 2D for mu+: " << DCAmupBS << std::endl;
 		      continue;
 		    }
 
 
-		  if (PrintMsg == true) std::cout << "\n" << __LINE__ << " : @@@ I have 2 good oppositely-charged muons. I'm trying to vertex them @@@" << std::endl;
+		  if (printMsg == true) std::cout << "\n" << __LINE__ << " : @@@ I have 2 good oppositely-charged muons. I'm trying to vertex them @@@" << std::endl;
 
 
 		  // ############################################
@@ -406,13 +386,13 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  ClosestApp.calculate(muTrackpTT.initialFreeState(),muTrackmTT.initialFreeState());
 		  if (ClosestApp.status() == false)
 		    {
-		      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> bad status of closest approach" << std::endl;
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad status of closest approach" << std::endl;
 		      continue;
 		    }
 		  XingPoint = ClosestApp.crossingPoint();
 		  if ((sqrt(XingPoint.x()*XingPoint.x() + XingPoint.y()*XingPoint.y()) > TRKMAXR) || (fabs(XingPoint.z()) > TRKMAXZ))
 		    {
-		      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> closest approach crossing point outside the tracker volume" << std::endl;
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> closest approach crossing point outside the tracker volume" << std::endl;
 		      continue;
 		    }
 
@@ -423,7 +403,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  double DCAmumu = ClosestApp.distance();
 		  if (DCAmumu > DCAMUMU)
 		    {
-		      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> bad 3D-DCA of mu+(-) with respect to mu-(+): " << DCAmumu << std::endl;
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad 3D-DCA of mu+(-) with respect to mu-(+): " << DCAmumu << std::endl;
 		      continue;
 		    }
 
@@ -440,7 +420,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  RefCountedKinematicTree mumuVertexFitTree = PartVtxFitter.fit(muonParticles);
 		  if (mumuVertexFitTree->isValid() == false)
 		    {
-		      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the mu+ mu- vertex fit" << std::endl;
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the mu+ mu- vertex fit" << std::endl;
 		      continue; 
 		    }
 	  
@@ -449,13 +429,13 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  RefCountedKinematicVertex mumu_KV   = mumuVertexFitTree->currentDecayVertex();
 		  if (mumu_KV->vertexIsValid() == false)
 		    {
-		      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the mu+ mu- vertex fit" << std::endl;
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the mu+ mu- vertex fit" << std::endl;
 		      continue;
 		    }
 	  
 		  if (TMath::Prob((double)mumu_KV->chiSquared(), int(rint(mumu_KV->degreesOfFreedom()))) < CLMUMUVTX)
 		    {
-		      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> bad vtx CL from mu+ mu- fit: " << TMath::Prob((double)mumu_KV->chiSquared(),int(rint(mumu_KV->degreesOfFreedom()))) << std::endl;
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad vtx CL from mu+ mu- fit: " << TMath::Prob((double)mumu_KV->chiSquared(),int(rint(mumu_KV->degreesOfFreedom()))) << std::endl;
 		      continue;
 		    }
 
@@ -483,7 +463,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 							    refitMupTT.track().momentum().x(),refitMupTT.track().momentum().y(),refitMupTT.track().momentum().z(),Utility->muonMass);
  		  if ((pTpair < MINMUMUPT) || (invMass < MINMUMUINVMASS) || (invMass > MAXMUMUINVMASS))
 		    {
-		      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> no good mumu pair pT: " << pTpair << "\tinvMass: " << invMass << std::endl;
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> no good mumu pair pT: " << pTpair << "\tinvMass: " << invMass << std::endl;
 		      continue;
 		    }
 
@@ -502,7 +482,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 				      &MuMuLSBS,&MuMuLSBSErr);
 		  if (MuMuLSBS/MuMuLSBSErr < LSMUMUBS)
 		    {
-		      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> bad mumu L/sigma with respect to BeamSpot: " << MuMuLSBS << "+/-" << MuMuLSBSErr << std::endl;
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad mumu L/sigma with respect to BeamSpot: " << MuMuLSBS << "+/-" << MuMuLSBSErr << std::endl;
 		      continue;
 		    }
 	  
@@ -521,7 +501,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 					    &MuMuCosAlphaBS,&MuMuCosAlphaBSErr);
 		  if (MuMuCosAlphaBS < COSALPHAMUMUBS)
 		    {
-		      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> bad mumu cos(alpha) with respect to BeamSpot: " << MuMuCosAlphaBS << "+/-" << MuMuCosAlphaBSErr << std::endl;
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad mumu cos(alpha) with respect to BeamSpot: " << MuMuCosAlphaBS << "+/-" << MuMuCosAlphaBSErr << std::endl;
 		      continue;
 		    }
 
@@ -551,7 +531,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    {
 			      MuMCat.clear();
 			      MuMCat.append(getMuCat(*iMuon));
-			      if (PrintMsg == true) std::cout << __LINE__ << " : negative charged hadron is actually a muon (momentum: " << Trackm->p() << ") whose category is: " << MuMCat.c_str() << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : negative charged hadron is actually a muon (momentum: " << Trackm->p() << ") whose category is: " << MuMCat.c_str() << std::endl;
 			      break;
 			    }
 			}
@@ -565,14 +545,14 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		      theDCAXBS = TrackmTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
 		      if (theDCAXBS.isValid() == false)
 			{
-			  if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for track-" << std::endl;
+			  if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for track-" << std::endl;
 			  continue;
 			}
 		      double DCAKstTrkmBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
 		      double DCAKstTrkmBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
 		      if (fabs(DCAKstTrkmBS/DCAKstTrkmBSErr) < HADDCASBS)
 			{
-			  if (PrintMsg == true) std::cout << __LINE__ << " : continue --> track- DCA/sigma with respect to BeamSpot is too small: " << DCAKstTrkmBS << "+/-" << DCAKstTrkmBSErr << std::endl;
+			  if (printMsg == true) std::cout << __LINE__ << " : continue --> track- DCA/sigma with respect to BeamSpot is too small: " << DCAKstTrkmBS << "+/-" << DCAKstTrkmBSErr << std::endl;
 			  continue;
 			}
 
@@ -602,7 +582,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 				{
 				  MuPCat.clear();
 				  MuPCat.append(getMuCat(*iMuon));
-				  if (PrintMsg == true) std::cout << __LINE__ << " : positive charged hadron is actually a muon (momentum: " << Trackp->p() << ") whose category is: " << MuPCat.c_str() << std::endl;
+				  if (printMsg == true) std::cout << __LINE__ << " : positive charged hadron is actually a muon (momentum: " << Trackp->p() << ") whose category is: " << MuPCat.c_str() << std::endl;
 				  break;
 				}
 			    }
@@ -616,19 +596,19 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  theDCAXBS = TrackpTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
 			  if (theDCAXBS.isValid() == false)
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for track+" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for track+" << std::endl;
 			      continue;
 			    }
 			  double DCAKstTrkpBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
 			  double DCAKstTrkpBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
 			  if (fabs(DCAKstTrkpBS/DCAKstTrkpBSErr) < HADDCASBS)
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> track+ DCA/sigma with respect to BeamSpot is too small: " << DCAKstTrkpBS << "+/-" << DCAKstTrkpBSErr << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> track+ DCA/sigma with respect to BeamSpot is too small: " << DCAKstTrkpBS << "+/-" << DCAKstTrkpBSErr << std::endl;
 			      continue;
 			    }
 
 
-			  if (PrintMsg == true) std::cout << "\n" << __LINE__ << " : @@@ I have 2 good oppositely charged tracks. I'm trying to vertex them @@@" << std::endl;
+			  if (printMsg == true) std::cout << "\n" << __LINE__ << " : @@@ I have 2 good oppositely charged tracks. I'm trying to vertex them @@@" << std::endl;
 
 
 			  // ##############################################
@@ -637,13 +617,13 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  ClosestApp.calculate(TrackpTT.initialFreeState(),TrackmTT.initialFreeState());
 			  if (ClosestApp.status() == false)
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> bad status of closest approach" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad status of closest approach" << std::endl;
 			      continue;
 			    }
 			  XingPoint = ClosestApp.crossingPoint();
 			  if ((sqrt(XingPoint.x()*XingPoint.x() + XingPoint.y()*XingPoint.y()) > TRKMAXR) || (fabs(XingPoint.z()) > TRKMAXZ))
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> closest approach crossing point outside the tracker volume" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> closest approach crossing point outside the tracker volume" << std::endl;
 			      continue;
 			    }
 
@@ -660,7 +640,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  RefCountedKinematicTree kstVertexFitTree = PartVtxFitter.fit(kstParticles);
 			  if (kstVertexFitTree->isValid() == false)
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the K*0 vertex fit" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the K*0 vertex fit" << std::endl;
 			      continue;
 			    }
 			  
@@ -669,7 +649,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  RefCountedKinematicVertex kst_KV   = kstVertexFitTree->currentDecayVertex();
 			  if (kst_KV->vertexIsValid() == false)
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the K*0 vertex fit" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the K*0 vertex fit" << std::endl;
 			      continue;
 			    }
 
@@ -686,7 +666,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  RefCountedKinematicTree kstBarVertexFitTree = PartVtxFitter.fit(kstBarParticles);
 			  if (kstBarVertexFitTree->isValid() == false)
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the K*0bar vertex fit" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the K*0bar vertex fit" << std::endl;
 			      continue;
 			    }
 			  
@@ -695,7 +675,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  RefCountedKinematicVertex kstBar_KV   = kstBarVertexFitTree->currentDecayVertex();
 			  if (kstBar_KV->vertexIsValid() == false)
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the K*0bar vertex fit" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the K*0bar vertex fit" << std::endl;
 			      continue;
 			    }
 		
@@ -705,7 +685,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  // ######################################################
 			  if ((fabs(kst_KP->currentState().mass() - Utility->kstMass) > KSTMASSWINDOW*Utility->kstSigma) && (fabs(kstBar_KP->currentState().mass() - Utility->kstMass) > KSTMASSWINDOW*Utility->kstSigma))
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> bad K*0 mass: " << kst_KP->currentState().mass() << " AND K*0bar mass: " << kstBar_KP->currentState().mass() << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad K*0 mass: " << kst_KP->currentState().mass() << " AND K*0bar mass: " << kstBar_KP->currentState().mass() << std::endl;
 			      continue;
 			    }
 
@@ -729,7 +709,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  // ####################################################
 			  // # @@@ Make B0 and implement pre-selection cuts @@@ #
 			  // ####################################################
-			  if (PrintMsg == true) std::cout << "\n" << __LINE__ << " : @@@ I have 4 good charged tracks. I'm trying to vertex them @@@" << std::endl;
+			  if (printMsg == true) std::cout << "\n" << __LINE__ << " : @@@ I have 4 good charged tracks. I'm trying to vertex them @@@" << std::endl;
 
 
 			  chi = 0.;
@@ -746,7 +726,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  RefCountedKinematicTree bVertexFitTree = PartVtxFitter.fit(bParticles);
 			  if (bVertexFitTree->isValid() == false)
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the B0 vertex fit" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the B0 vertex fit" << std::endl;
 			      continue;
 			    }
 
@@ -755,7 +735,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  RefCountedKinematicVertex b_KV   = bVertexFitTree->currentDecayVertex();
 			  if (b_KV->vertexIsValid() == false)
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the B0 vertex fit" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the B0 vertex fit" << std::endl;
 			      continue;
 			    }
 
@@ -774,7 +754,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  RefCountedKinematicTree bBarVertexFitTree = PartVtxFitter.fit(bBarParticles);
 			  if (bBarVertexFitTree->isValid() == false)
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the B0bar vertex fit" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the B0bar vertex fit" << std::endl;
 			      continue;
 			    }
 
@@ -783,7 +763,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  RefCountedKinematicVertex bBar_KV   = bBarVertexFitTree->currentDecayVertex();
 			  if (bBar_KV->vertexIsValid() == false)
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the B0bar vertex fit" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the B0bar vertex fit" << std::endl;
 			      continue;
 			    }
 
@@ -794,13 +774,13 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  if (((b_KP->currentState().mass() < B0MASSLOWLIMIT) || (b_KP->currentState().mass() > B0MASSUPLIMIT)) &&
 			      ((bBar_KP->currentState().mass() < B0MASSLOWLIMIT) || (bBar_KP->currentState().mass() > B0MASSUPLIMIT)))
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> bad B0 mass: " << b_KP->currentState().mass() << " AND B0bar mass: " << bBar_KP->currentState().mass() << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad B0 mass: " << b_KP->currentState().mass() << " AND B0bar mass: " << bBar_KP->currentState().mass() << std::endl;
 			      continue;
 			    }
 			  if ((TMath::Prob((double)b_KV->chiSquared(), int(rint(b_KV->degreesOfFreedom()))) < CLB0VTX) &&
 			      (TMath::Prob((double)bBar_KV->chiSquared(), int(rint(bBar_KV->degreesOfFreedom()))) < CLB0VTX))
 			    {
-			      if (PrintMsg == true)
+			      if (printMsg == true)
 				{
 				  std::cout << __LINE__ << " : continue --> bad vtx CL from B0 fit: " << TMath::Prob((double)b_KV->chiSquared(), int(rint(b_KV->degreesOfFreedom())));
 				  std::cout << " AND bad vtx CL from B0bar fit: " << TMath::Prob((double)bBar_KV->chiSquared(), int(rint(bBar_KV->degreesOfFreedom()))) << std::endl;
@@ -827,7 +807,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  theDCAXBS = b_KP->refittedTransientTrack().trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
 			  if (theDCAXBS.isValid() == false)
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for B0" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for B0" << std::endl;
 			      continue;
 			    }
 			  double DCAB0BS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
@@ -862,19 +842,19 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 				  reco::TransientTrack TT(trackRef, &(*bFieldHandle));
 				  vertexTracks.push_back(TT);
 				}
-			      else if (PrintMsg == true) std::cout << __LINE__ << " : some of the B0 reco candidate tracks belong to the Pri.Vtx" << std::endl;
+			      else if (printMsg == true) std::cout << __LINE__ << " : some of the B0 reco candidate tracks belong to the Pri.Vtx" << std::endl;
 			    }
 
 			  if (vertexTracks.size() < 2)
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> number of tracks of the new Pri.Vtx is too small: " << vertexTracks.size() << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> number of tracks of the new Pri.Vtx is too small: " << vertexTracks.size() << std::endl;
 			      continue;
 			    }
 				      
 			  TransientVertex bestTransVtx = theVtxFitter.vertex(vertexTracks);
 			  if (bestTransVtx.isValid() == false)
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid new Pri.Vtx" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid new Pri.Vtx" << std::endl;
 			      continue;
 			    }
 			  bestVtxReFit = (reco::Vertex)bestTransVtx;
@@ -888,7 +868,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  theDCAXVtx = IPTools::absoluteImpactParameter3D(muTrackmTT, bestVtxReFit);
 			  if (theDCAXVtx.first == false)
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for mu-" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for mu-" << std::endl;
 			      continue;
 			    }
 			  double DCAmumVtx    = theDCAXVtx.second.value();
@@ -901,7 +881,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  theDCAXVtx = IPTools::absoluteImpactParameter3D(muTrackpTT, bestVtxReFit);
 			  if (theDCAXVtx.first == false)
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for mu+" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for mu+" << std::endl;
 			      continue;
 			    }
 			  double DCAmupVtx    = theDCAXVtx.second.value();
@@ -914,7 +894,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  theDCAXVtx = IPTools::absoluteImpactParameter3D(TrackmTT, bestVtxReFit);
 			  if (theDCAXVtx.first == false)
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for track-" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for track-" << std::endl;
 			      continue;
 			    }
 			  double DCAKstTrkmVtx    = theDCAXVtx.second.value();
@@ -927,7 +907,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  theDCAXVtx = IPTools::absoluteImpactParameter3D(TrackpTT, bestVtxReFit);
 			  if (theDCAXVtx.first == false)
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for track+" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for track+" << std::endl;
 			      continue;
 			    }
 			  double DCAKstTrkpVtx    = theDCAXVtx.second.value();
@@ -940,7 +920,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  theDCAXVtx = IPTools::absoluteImpactParameter3D(b_KP->refittedTransientTrack(), bestVtxReFit);
 			  if (theDCAXVtx.first == false)
 			    {
-			      if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for B0" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for B0" << std::endl;
 			      continue;
 			    }
 			  double DCAB0Vtx    = theDCAXVtx.second.value();
@@ -1019,7 +999,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  // #######################################
 			  // # @@@ Fill B0-candidate variables @@@ #
 			  // #######################################
-			  if (PrintMsg == true) std::cout << __LINE__ << " : @@@ Filling B0 candidate variables @@@\n\n" << std::endl;
+			  if (printMsg == true) std::cout << __LINE__ << " : @@@ Filling B0 candidate variables @@@\n\n" << std::endl;
 
 
 			  // ############
@@ -1136,20 +1116,10 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 			  tmpString.clear();
 			  const pat::Muon* patMuonM = &(*iMuonM);
-			  if (May10Code == false)
+			  for (unsigned int i = 0; i < TrigTable.size(); i++)
 			    {
-			      for (unsigned int i = 0; i < TrigTable.size(); i++)
-				{
-				  myString.clear(); myString.str(""); myString << TrigTable[i].c_str() << "*";
-				  if (patMuonM->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString.append(TrigTable[i]+" ");
-				}
-			      NTuple->mum2LastTrigFilter->push_back(!patMuonM->triggerObjectMatchesByFilter("hltDoubleMu4p5LowMassDisplacedL3Filtered").empty());
-			    }
-			  else
-			    {
-			      if ((patMuonM->triggerObjectMatchesByPath("HLT_Dimuon6p5_LowMass_Displaced_v*",(unsigned int)0,(unsigned int)0).empty() == false) &&
-				  (patMuonM->triggerObjectMatchesByFilter("hltDimuon6p5LowMassL3FilteredDisplaced").empty() == false)) tmpString.append("HLT_Dimuon6p5_LowMass_Displaced_v ");
-			      NTuple->mum2LastTrigFilter->push_back(false);
+			      myString.clear(); myString.str(""); myString << TrigTable[i].c_str() << "*";
+			      if (patMuonM->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString.append(TrigTable[i]+" ");
 			    }
 			  if (tmpString.size() == 0) tmpString.append("NotInTable");
 			  NTuple->mumTrig->push_back(tmpString);
@@ -1191,20 +1161,10 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
  			  tmpString.clear();
 			  const pat::Muon* patMuonP = &(*iMuonP);
-			  if (May10Code == false)
+			  for (unsigned int i = 0; i < TrigTable.size(); i++)
 			    {
-			      for (unsigned int i = 0; i < TrigTable.size(); i++)
-				{
-				  myString.clear(); myString.str(""); myString << TrigTable[i].c_str() << "*";
-				  if (patMuonP->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString.append(TrigTable[i]+" ");
-				}
-			      NTuple->mup2LastTrigFilter->push_back(!patMuonP->triggerObjectMatchesByFilter("hltDoubleMu4p5LowMassDisplacedL3Filtered").empty());
-			    }
-			  else
-			    {
-			      if ((patMuonP->triggerObjectMatchesByPath("HLT_Dimuon6p5_LowMass_Displaced_v*",(unsigned int)0,(unsigned int)0).empty() == false) &&
-				  (patMuonP->triggerObjectMatchesByFilter("hltDimuon6p5LowMassL3FilteredDisplaced").empty() == false)) tmpString.append("HLT_Dimuon6p5_LowMass_Displaced_v ");
-			      NTuple->mup2LastTrigFilter->push_back(false);
+			      myString.clear(); myString.str(""); myString << TrigTable[i].c_str() << "*";
+			      if (patMuonP->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString.append(TrigTable[i]+" ");
 			    }
 			  if (tmpString.size() == 0) tmpString.append("NotInTable");
 			  NTuple->mupTrig->push_back(tmpString);
@@ -1288,7 +1248,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		} // End for mu+
 	    } // End for mu-
 	} // End if bestVtx is true
-      else if (PrintMsg == true) std::cout << __LINE__ << " : continue --> invalid Pri.Vtx" << std::endl;
+      else if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid Pri.Vtx" << std::endl;
       if (B0MassConstraint != NULL) delete B0MassConstraint;
 
 
@@ -1298,8 +1258,8 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	  NTuple->eventN = iEvent.id().event();
 	  for (std::vector<reco::Vertex>::const_iterator iVertex = recVtx->begin(); iVertex != recVtx->end(); iVertex++)
 	    {
-	      if(iVertex->ndof() < PRIVTXNDOF) continue;
-	      if(fabs(iVertex->z()) > PRIVTXMAXZ) continue;
+	      if(iVertex->ndof() < PRIVTXNDOF)                 continue;
+	      if(fabs(iVertex->z()) > PRIVTXMAXZ)              continue;
 	      if(fabs(iVertex->position().rho()) > PRIVTXMAXR) continue;
 	      NTuple->recoVtxN++;
 	  }
@@ -1315,7 +1275,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	  NTuple->bsX      = beamSpot.position().x();
 	  NTuple->bsY      = beamSpot.position().y();
 	}
-      else if (PrintMsg == true) std::cout << __LINE__ << " : @@@ No B0 --> K*0 (K pi) mu+ mu- candidate were found in the event @@@" << std::endl;
+      else if (printMsg == true) std::cout << __LINE__ << " : @@@ No B0 --> K*0 (K pi) mu+ mu- candidate were found in the event @@@" << std::endl;
     } // End if doGenReco_ == 1 || doGenReco_ == 2
 
 
@@ -1383,7 +1343,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	  // ##########################
 	  if ((abs(FirstPart->pdgId()) == 511) || (abs(FirstPart->pdgId()) == 531) || (abs(FirstPart->pdgId()) == 5122) || (abs(FirstPart->pdgId()) == 521))
 	    {	     
-	      if (PrintMsg == true) std::cout << "\n" << __LINE__ << " : @@@ Found B0/B0bar OR Bs/Bsbar OR Lambda_b/Lambda_bbar OR B+/B- in MC @@@" << std::endl;
+	      if (printMsg == true) std::cout << "\n" << __LINE__ << " : @@@ Found B0/B0bar OR Bs/Bsbar OR Lambda_b/Lambda_bbar OR B+/B- in MC @@@" << std::endl;
 
 
 	      // ########################################################
@@ -1421,26 +1381,26 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		      if (genDau->pdgId() == 22)
 			{
 			  PhotonB0 = true;
-			  if (PrintMsg == true) std::cout << __LINE__ << " : found B0/B0bar photon" << std::endl;
+			  if (printMsg == true) std::cout << __LINE__ << " : found B0/B0bar photon" << std::endl;
 			  continue;
 			}
 		      if (genDau->pdgId() == 13)
 			{
 			  imum = i;
-			  if (PrintMsg == true) std::cout << __LINE__ << " : found mu-" << std::endl;
+			  if (printMsg == true) std::cout << __LINE__ << " : found mu-" << std::endl;
 			  continue;
 			}
 		      if (genDau->pdgId() == -13)
 			{
 			  imup = i;
-			  if (PrintMsg == true) std::cout << __LINE__ << " : found mu+" << std::endl;
+			  if (printMsg == true) std::cout << __LINE__ << " : found mu+" << std::endl;
 			  continue;
 			}
 		      if (abs(genDau->pdgId()) == 313)
 			{
 			  ikst = i;
 
-			  if (PrintMsg == true) std::cout << __LINE__ << " : found K*0/K*0bar" << std::endl;
+			  if (printMsg == true) std::cout << __LINE__ << " : found K*0/K*0bar" << std::endl;
 
 			  for (unsigned int j = 0; j < genDau->numberOfDaughters(); j++)
 			    {
@@ -1449,19 +1409,19 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			      if (genDau2->pdgId() == 22)
 				{
 				  PhotonKst = true;
-				  if (PrintMsg == true) std::cout << __LINE__ << " : found K*0/K*0bar photon" << std::endl;
+				  if (printMsg == true) std::cout << __LINE__ << " : found K*0/K*0bar photon" << std::endl;
 				  continue;
 				}
 			      if ((genDau2->pdgId() == -211) || (genDau2->pdgId() == -321))
 				{
 				  ikst_trkm = j;
-				  if (PrintMsg == true) std::cout << __LINE__ << " : found K*0/K*0bar track-" << std::endl;
+				  if (printMsg == true) std::cout << __LINE__ << " : found K*0/K*0bar track-" << std::endl;
 				  continue;
 				}
 			      if ((genDau2->pdgId() == 211) || (genDau2->pdgId() == 321))
 				{
 				  ikst_trkp = j;
-				  if (PrintMsg == true) std::cout << __LINE__ << " : found K*0/K*0bar track+" << std::endl;
+				  if (printMsg == true) std::cout << __LINE__ << " : found K*0/K*0bar track+" << std::endl;
 				  continue;
 				}
 			      isSignal = false;
@@ -1476,7 +1436,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 			  ipsi = i;
 		      
-			  if (PrintMsg == true) std::cout << __LINE__ << " : found J/psi or psi(2S)" << std::endl;
+			  if (printMsg == true) std::cout << __LINE__ << " : found J/psi or psi(2S)" << std::endl;
 
 			  for (unsigned int j = 0; j < genDau->numberOfDaughters(); j++)
 			    {
@@ -1485,19 +1445,19 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			      if (genDau2->pdgId() == 22)
 				{
 				  PhotonPsi = true;
-				  if (PrintMsg == true) std::cout << __LINE__ << " : found J/psi or psi(2S) photon" << std::endl;
+				  if (printMsg == true) std::cout << __LINE__ << " : found J/psi or psi(2S) photon" << std::endl;
 				  continue;
 				}
 			      if (genDau2->pdgId() == 13)
 				{
 				  ipsi_mum = j;
-				  if (PrintMsg == true) std::cout << __LINE__ << " : found J/psi or psi(2S) mu-" << std::endl;
+				  if (printMsg == true) std::cout << __LINE__ << " : found J/psi or psi(2S) mu-" << std::endl;
 				  continue;
 				}
 			      if (genDau2->pdgId() == -13)
 				{
 				  ipsi_mup = j;
-				  if (PrintMsg == true) std::cout << __LINE__ << " : found J/psi or psi(2S) mu+" << std::endl;
+				  if (printMsg == true) std::cout << __LINE__ << " : found J/psi or psi(2S) mu+" << std::endl;
 				  continue;
 				}
 			      isSignal = false;
@@ -1535,7 +1495,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 		  if ((imum != -1) && (imup != -1) && (ikst != -1) && (ikst_trkm != -1) && (ikst_trkp != -1))
 		    {
-		      if (PrintMsg == true) std::cout << __LINE__ << " : @@@ Found B0/B0bar --> K*0/K*0bar (K pi) mu+ mu- @@@" << std::endl;
+		      if (printMsg == true) std::cout << __LINE__ << " : @@@ Found B0/B0bar --> K*0/K*0bar (K pi) mu+ mu- @@@" << std::endl;
 		      
 		      if      (FirstPart->daughter(ikst)->pdgId() == 313)  NTuple->genSignal = 1;
 		      else if (FirstPart->daughter(ikst)->pdgId() == -313) NTuple->genSignal = 2;
@@ -1547,14 +1507,14 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		    {
 		      if (isPsi2SnotJPsi == false)
 			{
-			  if (PrintMsg == true) std::cout << __LINE__ << " : @@@ Found B0/B0bar --> K*0/K*0bar (K pi) J/psi (mu+mu-) @@@" << std::endl;
+			  if (printMsg == true) std::cout << __LINE__ << " : @@@ Found B0/B0bar --> K*0/K*0bar (K pi) J/psi (mu+mu-) @@@" << std::endl;
 		      
 			  if      (FirstPart->daughter(ikst)->pdgId() == 313)  NTuple->genSignal = 3;
 			  else if (FirstPart->daughter(ikst)->pdgId() == -313) NTuple->genSignal = 4;
 			}
 		      else
 			{
-			  if (PrintMsg == true) std::cout << __LINE__ << " : @@@ Found B0/B0bar --> K*0/K*0bar (K pi) psi(2S) (mu+mu-) @@@" << std::endl;
+			  if (printMsg == true) std::cout << __LINE__ << " : @@@ Found B0/B0bar --> K*0/K*0bar (K pi) psi(2S) (mu+mu-) @@@" << std::endl;
 		      
 			  if      (FirstPart->daughter(ikst)->pdgId() == 313)  NTuple->genSignal = 5;
 			  else if (FirstPart->daughter(ikst)->pdgId() == -313) NTuple->genSignal = 6;
@@ -1583,7 +1543,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		} // End if B0/B0bar signal
 	      else
 		{
-		  if (PrintMsg == true) std::cout << __LINE__ << " : @@@ Start particle decay-tree scan for opposite charged stable particles for background search @@@" << std::endl;
+		  if (printMsg == true) std::cout << __LINE__ << " : @@@ Start particle decay-tree scan for opposite charged stable particles for background search @@@" << std::endl;
 		  searchForStableChargedDaughters (FirstPart, itGen, &posDau, &negDau);
 
 
@@ -1607,7 +1567,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 				  genMup = findDaughter (genParticles, &posDau, j);
 				  if (genMup->pdgId() == -13)
 				    {
-				      if (PrintMsg == true) std::cout << __LINE__ << " : found dimuons for possible background" << std::endl;
+				      if (printMsg == true) std::cout << __LINE__ << " : found dimuons for possible background" << std::endl;
 				      doMatching = true;
 				      break;
 				    }
@@ -1629,7 +1589,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 				  NTuple->genMuMuBG = FirstPart->pdgId();
 				  NTuple->genMuMuBGnTrksp = 1;
 				  doMatching = true;
-				  if (PrintMsg == true) std::cout << __LINE__ << " : get background positive track: " << genKst_trkp->pdgId() << "\tfrom mother: " << genKst_trkp->mother()->pdgId() << std::endl;
+				  if (printMsg == true) std::cout << __LINE__ << " : get background positive track: " << genKst_trkp->pdgId() << "\tfrom mother: " << genKst_trkp->mother()->pdgId() << std::endl;
 				}
 			    }
 			}
@@ -1646,7 +1606,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 				  NTuple->genMuMuBG = FirstPart->pdgId();			  
 				  NTuple->genMuMuBGnTrksm = 1;
 				  doMatching = true;
-				  if (PrintMsg == true) std::cout << __LINE__ << " : get background negative track: " << genKst_trkm->pdgId() << "\tfrom mother: " << genKst_trkm->mother()->pdgId() << std::endl;
+				  if (printMsg == true) std::cout << __LINE__ << " : get background negative track: " << genKst_trkm->pdgId() << "\tfrom mother: " << genKst_trkm->mother()->pdgId() << std::endl;
 				}
 			    }
 			}
@@ -1669,7 +1629,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 					  NTuple->genMuMuBGnTrksp = 1;
 					  NTuple->genMuMuBGnTrksm = 1;
 					  doMatching = true;
-					  if (PrintMsg == true)
+					  if (printMsg == true)
 					    {
 					      std::cout << __LINE__ << " : get background negative track: " << genKst_trkm->pdgId() << "\tfrom mother: " << genKst_trkm->mother()->pdgId();
 					      std::cout << "\tand positive track: " << genKst_trkp->pdgId() << "\tfrom mother: " << genKst_trkp->mother()->pdgId() << std::endl;
@@ -1722,7 +1682,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			      NTuple->genMuMuBGnTrksp = 1;
 			      NTuple->genMuMuBGnTrksm = 1;
 			      doMatching = true;
-			      if (PrintMsg == true)
+			      if (printMsg == true)
 				{
 				  std::cout << __LINE__ << " : get background negative track: " << genKst_trkm->pdgId() << "\tfrom mother: " << genKst_trkm->mother()->pdgId();
 				  std::cout << "\tand positive track: " << genKst_trkp->pdgId() << "\tfrom mother: " << genKst_trkp->mother()->pdgId() << std::endl;
@@ -1732,10 +1692,10 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		      else
 			{
 			  doMatching = false;
-			  if (PrintMsg == true) std::cout << __LINE__ << " : @@@ No background found @@@" << std::endl;
+			  if (printMsg == true) std::cout << __LINE__ << " : @@@ No background found @@@" << std::endl;
 			}
 		    }
-		  else if (PrintMsg == true) std::cout << __LINE__ << " : @@@ No possible background found @@@" << std::endl;
+		  else if (printMsg == true) std::cout << __LINE__ << " : @@@ No possible background found @@@" << std::endl;
 		} // End else background
 
 
@@ -1744,7 +1704,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      // ########################
 	      if (doMatching == true)
 		{
-		  if (PrintMsg == true) std::cout << __LINE__ << " : @@@ Saving signal OR background compatible with signal @@@" << std::endl;
+		  if (printMsg == true) std::cout << __LINE__ << " : @@@ Saving signal OR background compatible with signal @@@" << std::endl;
 
 
 		  // #############################
@@ -1910,7 +1870,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		      if (deltaEtaPhi < RCUTMU)
 			{
 			  NTuple->truthMatchMum->push_back(true);
-			  if (PrintMsg == true) std::cout << __LINE__ << " : found matched mu-" << std::endl;
+			  if (printMsg == true) std::cout << __LINE__ << " : found matched mu-" << std::endl;
 			}
 		      else NTuple->truthMatchMum->push_back(false);
 		      
@@ -1922,7 +1882,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		      if (deltaEtaPhi < RCUTMU)
 			{
 			  NTuple->truthMatchMup->push_back(true);
-			  if (PrintMsg == true) std::cout << __LINE__ << " : found matched mu+" << std::endl;
+			  if (printMsg == true) std::cout << __LINE__ << " : found matched mu+" << std::endl;
 			}
 		      else NTuple->truthMatchMup->push_back(false);
 		      
@@ -1936,7 +1896,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  if (deltaEtaPhi < RCUTTRK)
 			    {
 			      NTuple->truthMatchTrkm->push_back(true);
-			      if (PrintMsg == true) std::cout << __LINE__ << " : found matched track-" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : found matched track-" << std::endl;
 			    }
 			  else NTuple->truthMatchTrkm->push_back(false);
 			}
@@ -1952,7 +1912,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  if (deltaEtaPhi < RCUTTRK) 
 			    {
 			      NTuple->truthMatchTrkp->push_back(true);
-			      if (PrintMsg == true) std::cout << __LINE__ << " : found matched track+" << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : found matched track+" << std::endl;
 			    }
 			  else NTuple->truthMatchTrkp->push_back(false);
 			}
@@ -1966,7 +1926,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  (NTuple->truthMatchMum->back() == true) && (NTuple->truthMatchMup->back() == true))
 			{
 			  NTuple->truthMatchSignal->push_back(true);
-			  if (PrintMsg == true) std::cout << __LINE__ << " : @@@ Found matched B0 --> track+ track- mu+ mu- @@@" << std::endl;
+			  if (printMsg == true) std::cout << __LINE__ << " : @@@ Found matched B0 --> track+ track- mu+ mu- @@@" << std::endl;
 			}
 		      else NTuple->truthMatchSignal->push_back(false);
 
@@ -2025,7 +1985,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      if (isPrompt == true)
 		{
 		  NTuple->genPsiPrompt = 1;
-		  if (PrintMsg == true) std::cout << __LINE__ << " : found prompt J/psi or psi(2S)" << std::endl;
+		  if (printMsg == true) std::cout << __LINE__ << " : found prompt J/psi or psi(2S)" << std::endl;
 		}
 	      continue;
 	    }
@@ -2060,7 +2020,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
     }
 
 
-  if (PrintMsg == true) std::cout << __LINE__ << " : @@@ Filling the tree @@@" << std::endl;
+  if (printMsg == true) std::cout << __LINE__ << " : @@@ Filling the tree @@@" << std::endl;
   theTree->Fill();
   NTuple->ClearNTuple();
 }
@@ -2106,7 +2066,7 @@ const reco::Candidate* B0KstMuMu::skipOscillations (const reco::Candidate* Mothe
     for (unsigned int i = 0; i < Mother->numberOfDaughters(); i++)
       if ((abs(Mother->daughter(i)->pdgId()) == 511) || (abs(Mother->daughter(i)->pdgId()) == 531) || (abs(Mother->daughter(i)->pdgId()) == 5122))
 	{
-	  if (PrintMsg == true) std::cout << __LINE__ << " : @@@ Found oscillating B0/B0bar OR Bs/Bsbar OR Lambda_b/Lambda_bbar @@@" << std::endl;
+	  if (printMsg == true) std::cout << __LINE__ << " : @@@ Found oscillating B0/B0bar OR Bs/Bsbar OR Lambda_b/Lambda_bbar @@@" << std::endl;
 	  Mother = Mother->daughter(i);
 	}
 
@@ -2142,7 +2102,7 @@ void B0KstMuMu::searchForStableChargedDaughters (const reco::Candidate* Mother,
     {
       genDau = Mother->daughter(i);
 
-      if (PrintMsg == true) std::cout << __LINE__ << " : start exploring daughter: " << genDau->pdgId() << "\tindex: " << i << "\tof mother: " << Mother->pdgId() << std::endl;
+      if (printMsg == true) std::cout << __LINE__ << " : start exploring daughter: " << genDau->pdgId() << "\tindex: " << i << "\tof mother: " << Mother->pdgId() << std::endl;
 
       if ((genDau->pdgId() == 11) ||
 	  (genDau->pdgId() == 13) ||
@@ -2153,7 +2113,7 @@ void B0KstMuMu::searchForStableChargedDaughters (const reco::Candidate* Mother,
 	  std::vector<unsigned int>* vecDau = new std::vector<unsigned int>;
 	  vecDau->push_back(i);
 	  negDau->push_back(vecDau);
-	  if (PrintMsg == true) std::cout << __LINE__ << " : found possible background negative track: " << genDau->pdgId() << "\tfrom mother: " << genDau->mother()->pdgId() << std::endl;
+	  if (printMsg == true) std::cout << __LINE__ << " : found possible background negative track: " << genDau->pdgId() << "\tfrom mother: " << genDau->mother()->pdgId() << std::endl;
 	}
       else if ((genDau->pdgId() == -11) ||
 	       (genDau->pdgId() == -13) ||
@@ -2164,7 +2124,7 @@ void B0KstMuMu::searchForStableChargedDaughters (const reco::Candidate* Mother,
 	  std::vector<unsigned int>* vecDau = new std::vector<unsigned int>;
 	  vecDau->push_back(i);
 	  posDau->push_back(vecDau);
-	  if (PrintMsg == true) std::cout << __LINE__ << " : found possible background positive track: " << genDau->pdgId() << "\tfrom mother: " << genDau->mother()->pdgId() << std::endl;
+	  if (printMsg == true) std::cout << __LINE__ << " : found possible background positive track: " << genDau->pdgId() << "\tfrom mother: " << genDau->mother()->pdgId() << std::endl;
 	}
       else if ((abs(genDau->pdgId()) != 311) &&
 	       (abs(genDau->pdgId()) != 310) &&
@@ -2174,7 +2134,7 @@ void B0KstMuMu::searchForStableChargedDaughters (const reco::Candidate* Mother,
 	       (abs(genDau->pdgId()) != 14) &&
 	       (abs(genDau->pdgId()) != 16))
 	searchForStableChargedDaughters (genDau, i, posDau, negDau);
-      else if (PrintMsg == true) std::cout << __LINE__ << " : found long living neutral particle: " << genDau->pdgId() << std::endl;
+      else if (printMsg == true) std::cout << __LINE__ << " : found long living neutral particle: " << genDau->pdgId() << std::endl;
     }
 
   for (unsigned int it = negDau->size(); it > sizeNegVec; it--) negDau->operator[](it-1)->insert(negDau->operator[](it-1)->begin(), motherIndex);
@@ -2199,27 +2159,27 @@ void B0KstMuMu::beginJob ()
   // # Loading HLT-trigger cuts #
   // ############################
   Utility->ReadPreselectionCut(parameterFile_.c_str());
-  if (PrintMsg == true) std::cout << "\n" << __LINE__ << " : Pre-selection cuts" << std::endl;
-  CLMUMUVTX      = Utility->GetPreCut("MuMuVtxCL");      if (PrintMsg == true) std::cout << __LINE__ << " : CLMUMUVTX      = " << CLMUMUVTX << std::endl;
-  LSMUMUBS       = Utility->GetPreCut("MuMuLsBS");       if (PrintMsg == true) std::cout << __LINE__ << " : LSMUMUBS       = " << LSMUMUBS << std::endl;
-  DCAMUMU        = Utility->GetPreCut("DCAMuMu");        if (PrintMsg == true) std::cout << __LINE__ << " : DCAMUMU        = " << DCAMUMU << std::endl;
-  DCAMUBS        = Utility->GetPreCut("DCAMuBS");        if (PrintMsg == true) std::cout << __LINE__ << " : DCAMUBS        = " << DCAMUBS << std::endl;
-  COSALPHAMUMUBS = Utility->GetPreCut("cosAlphaMuMuBS"); if (PrintMsg == true) std::cout << __LINE__ << " : COSALPHAMUMUBS = " << COSALPHAMUMUBS << std::endl;
-  MUMINPT        = Utility->GetPreCut("MupT");           if (PrintMsg == true) std::cout << __LINE__ << " : MUMINPT        = " << MUMINPT << std::endl;
-  MUMAXETA       = Utility->GetPreCut("MuEta");          if (PrintMsg == true) std::cout << __LINE__ << " : MUMAXETA       = " << MUMAXETA << std::endl;
-  MINMUMUPT      = Utility->GetPreCut("MuMupT");         if (PrintMsg == true) std::cout << __LINE__ << " : MINMUMUPT      = " << MINMUMUPT << std::endl;
-  MINMUMUINVMASS = Utility->GetPreCut("MinMuMuMass");    if (PrintMsg == true) std::cout << __LINE__ << " : MINMUMUINVMASS = " << MINMUMUINVMASS << std::endl;
-  MAXMUMUINVMASS = Utility->GetPreCut("MaxMuMuMass");    if (PrintMsg == true) std::cout << __LINE__ << " : MAXMUMUINVMASS = " << MAXMUMUINVMASS << std::endl;
+  if (printMsg == true) std::cout << "\n" << __LINE__ << " : Pre-selection cuts" << std::endl;
+  CLMUMUVTX      = Utility->GetPreCut("MuMuVtxCL");      if (printMsg == true) std::cout << __LINE__ << " : CLMUMUVTX      = " << CLMUMUVTX << std::endl;
+  LSMUMUBS       = Utility->GetPreCut("MuMuLsBS");       if (printMsg == true) std::cout << __LINE__ << " : LSMUMUBS       = " << LSMUMUBS << std::endl;
+  DCAMUMU        = Utility->GetPreCut("DCAMuMu");        if (printMsg == true) std::cout << __LINE__ << " : DCAMUMU        = " << DCAMUMU << std::endl;
+  DCAMUBS        = Utility->GetPreCut("DCAMuBS");        if (printMsg == true) std::cout << __LINE__ << " : DCAMUBS        = " << DCAMUBS << std::endl;
+  COSALPHAMUMUBS = Utility->GetPreCut("cosAlphaMuMuBS"); if (printMsg == true) std::cout << __LINE__ << " : COSALPHAMUMUBS = " << COSALPHAMUMUBS << std::endl;
+  MUMINPT        = Utility->GetPreCut("MupT");           if (printMsg == true) std::cout << __LINE__ << " : MUMINPT        = " << MUMINPT << std::endl;
+  MUMAXETA       = Utility->GetPreCut("MuEta");          if (printMsg == true) std::cout << __LINE__ << " : MUMAXETA       = " << MUMAXETA << std::endl;
+  MINMUMUPT      = Utility->GetPreCut("MuMupT");         if (printMsg == true) std::cout << __LINE__ << " : MINMUMUPT      = " << MINMUMUPT << std::endl;
+  MINMUMUINVMASS = Utility->GetPreCut("MinMuMuMass");    if (printMsg == true) std::cout << __LINE__ << " : MINMUMUINVMASS = " << MINMUMUINVMASS << std::endl;
+  MAXMUMUINVMASS = Utility->GetPreCut("MaxMuMuMass");    if (printMsg == true) std::cout << __LINE__ << " : MAXMUMUINVMASS = " << MAXMUMUINVMASS << std::endl;
   
   // ##############################
   // # Loading pre-selection cuts #
   // ##############################
-  B0MASSUPLIMIT  = Utility->GetPreCut("MinB0Mass"); if (PrintMsg == true) std::cout << __LINE__ << " : B0MASSUPLIMIT  = " << B0MASSUPLIMIT << std::endl;
-  B0MASSLOWLIMIT = Utility->GetPreCut("MaxB0Mass"); if (PrintMsg == true) std::cout << __LINE__ << " : B0MASSLOWLIMIT = " << B0MASSLOWLIMIT << std::endl;
-  CLB0VTX        = Utility->GetPreCut("B0VtxCL");   if (PrintMsg == true) std::cout << __LINE__ << " : CLB0VTX        = " << CLB0VTX << std::endl;
-  KSTMASSWINDOW  = Utility->GetPreCut("KstMass");   if (PrintMsg == true) std::cout << __LINE__ << " : KSTMASSWINDOW  = " << KSTMASSWINDOW << std::endl;
-  HADDCASBS      = Utility->GetPreCut("HadDCASBS"); if (PrintMsg == true) std::cout << __LINE__ << " : HADDCASBS      = " << HADDCASBS << std::endl;
-  MINHADPT       = Utility->GetPreCut("HadpT");     if (PrintMsg == true) std::cout << __LINE__ << " : MINHADPT       = " << MINHADPT << std::endl;
+  B0MASSUPLIMIT  = Utility->GetPreCut("MinB0Mass"); if (printMsg == true) std::cout << __LINE__ << " : B0MASSUPLIMIT  = " << B0MASSUPLIMIT << std::endl;
+  B0MASSLOWLIMIT = Utility->GetPreCut("MaxB0Mass"); if (printMsg == true) std::cout << __LINE__ << " : B0MASSLOWLIMIT = " << B0MASSLOWLIMIT << std::endl;
+  CLB0VTX        = Utility->GetPreCut("B0VtxCL");   if (printMsg == true) std::cout << __LINE__ << " : CLB0VTX        = " << CLB0VTX << std::endl;
+  KSTMASSWINDOW  = Utility->GetPreCut("KstMass");   if (printMsg == true) std::cout << __LINE__ << " : KSTMASSWINDOW  = " << KSTMASSWINDOW << std::endl;
+  HADDCASBS      = Utility->GetPreCut("HadDCASBS"); if (printMsg == true) std::cout << __LINE__ << " : HADDCASBS      = " << HADDCASBS << std::endl;
+  MINHADPT       = Utility->GetPreCut("HadpT");     if (printMsg == true) std::cout << __LINE__ << " : MINHADPT       = " << MINHADPT << std::endl;
 }
 
 

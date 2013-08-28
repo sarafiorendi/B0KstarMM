@@ -99,7 +99,6 @@ void B0KstMuMuTreeContent::Init ()
   mumNMuonHits = new std::vector<int>;
   mumNMatchStation = new std::vector<int>;
   mumTrig = new std::vector<std::string>;
-  mum2LastTrigFilter = new std::vector<bool>;
 
   // ### mu+ ###
   mupHighPurity = new std::vector<bool>;
@@ -124,7 +123,6 @@ void B0KstMuMuTreeContent::Init ()
   mupNMuonHits = new std::vector<int>;
   mupNMatchStation = new std::vector<int>;
   mupTrig = new std::vector<std::string>;
-  mup2LastTrigFilter = new std::vector<bool>;
 
   // ### K*0 track- ###
   kstTrkmHighPurity = new std::vector<bool>;
@@ -272,7 +270,6 @@ void B0KstMuMuTreeContent::Destroy ()
   delete mumNMuonHits;
   delete mumNMatchStation;
   delete mumTrig;
-  delete mum2LastTrigFilter;
 
   // ### mu+ ###
   delete mupHighPurity;
@@ -297,7 +294,6 @@ void B0KstMuMuTreeContent::Destroy ()
   delete mupNMuonHits;
   delete mupNMatchStation;
   delete mupTrig;
-  delete mup2LastTrigFilter;
       
   // ### K*0 track- ###
   delete kstTrkmHighPurity;
@@ -464,7 +460,6 @@ void B0KstMuMuTreeContent::ClearNTuple ()
   mumNMuonHits->clear();
   mumNMatchStation->clear();
   mumTrig->clear();
-  mum2LastTrigFilter->clear();
 
   // ### mu+ ###
   mupHighPurity->clear();
@@ -489,7 +484,6 @@ void B0KstMuMuTreeContent::ClearNTuple ()
   mupNMuonHits->clear();
   mupNMatchStation->clear();
   mupTrig->clear();
-  mup2LastTrigFilter->clear();
 
   // ### K*0 track- ###
   kstTrkmHighPurity->clear();
@@ -703,7 +697,6 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("mumNMuonHits", &mumNMuonHits);
   theTree->Branch("mumNMatchStation", &mumNMatchStation);
   theTree->Branch("mumTrig", &mumTrig);
-  theTree->Branch("mum2LastTrigFilter", &mum2LastTrigFilter);
 
   // ### mu+ ###  
   theTree->Branch("mupHighPurity", &mupHighPurity);
@@ -728,7 +721,6 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("mupNMuonHits", &mupNMuonHits);
   theTree->Branch("mupNMatchStation", &mupNMatchStation);
   theTree->Branch("mupTrig", &mupTrig);
-  theTree->Branch("mup2LastTrigFilter", &mup2LastTrigFilter);
 
   // ### K*0 track- ###
   theTree->Branch("kstTrkmHighPurity", &kstTrkmHighPurity);
@@ -966,7 +958,6 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("mumNMuonHits", &mumNMuonHits);
   theTree->SetBranchAddress("mumNMatchStation", &mumNMatchStation);
   theTree->SetBranchAddress("mumTrig", &mumTrig);
-  theTree->SetBranchAddress("mum2LastTrigFilter", &mum2LastTrigFilter);
 
   // ### mu+ ###  
   theTree->SetBranchAddress("mupHighPurity", &mupHighPurity);
@@ -991,7 +982,6 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("mupNMuonHits", &mupNMuonHits);
   theTree->SetBranchAddress("mupNMatchStation", &mupNMatchStation);
   theTree->SetBranchAddress("mupTrig", &mupTrig);
-  theTree->SetBranchAddress("mup2LastTrigFilter", &mup2LastTrigFilter);
 
   // ### K*0 track- ###
   theTree->SetBranchAddress("kstTrkmHighPurity", &kstTrkmHighPurity);
@@ -1323,7 +1313,6 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       mumNMuonHits->push_back(NTupleIn->mumNMuonHits->at(index));
       mumNMatchStation->push_back(NTupleIn->mumNMatchStation->at(index));
       mumTrig->push_back(NTupleIn->mumTrig->at(index));
-      mum2LastTrigFilter->push_back(NTupleIn->mum2LastTrigFilter->at(index));
 
       // ### mu+ ###  
       mupHighPurity->push_back(NTupleIn->mupHighPurity->at(index));
@@ -1348,7 +1337,6 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       mupNMuonHits->push_back(NTupleIn->mupNMuonHits->at(index));
       mupNMatchStation->push_back(NTupleIn->mupNMatchStation->at(index));
       mupTrig->push_back(NTupleIn->mupTrig->at(index));
-      mup2LastTrigFilter->push_back(NTupleIn->mup2LastTrigFilter->at(index));
 
       // ### K*0 track- ###
       kstTrkmHighPurity->push_back(NTupleIn->kstTrkmHighPurity->at(index));
@@ -1488,7 +1476,6 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (mumNMuonHits->size() < upTo)       for (unsigned int i = mumNMuonHits->size(); i < upTo; i++)       mumNMuonHits->push_back(0);
   if (mumNMatchStation->size() < upTo)   for (unsigned int i = mumNMatchStation->size(); i < upTo; i++)   mumNMatchStation->push_back(0);
   if (mumTrig->size() < upTo)            for (unsigned int i = mumTrig->size(); i < upTo; i++)            mumTrig->push_back("");
-  if (mum2LastTrigFilter->size() < upTo) for (unsigned int i = mum2LastTrigFilter->size(); i < upTo; i++) mum2LastTrigFilter->push_back(0);
 
   // ### mu+ ###  
   if (mupHighPurity->size() < upTo)      for (unsigned int i = mupHighPurity->size(); i < upTo; i++)      mupHighPurity->push_back(0);
@@ -1513,7 +1500,6 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (mupNMuonHits->size() < upTo)       for (unsigned int i = mupNMuonHits->size(); i < upTo; i++)       mupNMuonHits->push_back(0);
   if (mupNMatchStation->size() < upTo)   for (unsigned int i = mupNMatchStation->size(); i < upTo; i++)   mupNMatchStation->push_back(0);
   if (mupTrig->size() < upTo)            for (unsigned int i = mupTrig->size(); i < upTo; i++)            mupTrig->push_back("");
-  if (mup2LastTrigFilter->size() < upTo) for (unsigned int i = mup2LastTrigFilter->size(); i < upTo; i++) mup2LastTrigFilter->push_back(0);
 
   // ### K*0 track- ###
   if (kstTrkmHighPurity->size() < upTo) for (unsigned int i = kstTrkmHighPurity->size(); i < upTo; i++) kstTrkmHighPurity->push_back(0);

@@ -45,8 +45,7 @@ TTree* theTreeIn;
 TTree* theTreeOut;
 Utils* Utility;
 B0KstMuMuSingleCandTreeContent* NTupleIn;
-B0KstMuMuSingleCandTreeContent* NTupleOutSingle;
-B0KstMuMuTreeContent* NTupleOutMulti;
+B0KstMuMuSingleCandTreeContent* NTupleOut;
 
 
 // #######################
@@ -54,7 +53,7 @@ B0KstMuMuTreeContent* NTupleOutMulti;
 // #######################
 void AddRecoVariables (string option);
 void AddGenVariables (string option);
-template<class T> void AddEvWeightPileup (T* NTupleOut, string InputFileType);
+template<class T> void AddEvWeightPileup (T* NTupleOut);
 template<class T> void AddEvWeightB0pT (T* NTupleOut);
 template<class T> void AddEvWeightHadpT (T* NTupleOut, string trkSign);
 template<class T> void AddEvWeightThetaK (B0KstMuMuSingleCandTreeContent* NTupleOut);
@@ -67,8 +66,8 @@ void AddRecoVariables (string option)
 {
   bool B0notB0bar = true;
 
-  NTupleOutSingle->ClearNTuple();
-  NTupleOutSingle->MakeTreeBranches(theTreeOut);
+  NTupleOut->ClearNTuple();
+  NTupleOut->MakeTreeBranches(theTreeOut);
 
   NTupleIn->ClearNTuple();
   NTupleIn->SetBranchAddresses(theTreeIn);
@@ -84,7 +83,7 @@ void AddRecoVariables (string option)
 	{
 	  if (((option == "nvTruthMatchReco") && ((NTupleIn->genSignal == SignalType) || (NTupleIn->genSignal == SignalType+1)) && (NTupleIn->truthMatchSignal->at(i) == true)) || (option == "nvAllReco"))
 	    {
-	      NTupleOutSingle->CopyData(NTupleIn, i);
+	      NTupleOut->CopyData(NTupleIn, i);
 
 
 	      // ########################
@@ -177,10 +176,10 @@ void AddRecoVariables (string option)
 		  else phiKstMuMuPlane = -MuMuPlane.Angle(KstPlane);
 
 
-		  NTupleOutSingle->B0MassArb          = NTupleIn->bMass->at(i);
-		  NTupleOutSingle->CosThetaMuArb      = cosThetaMup;
-		  NTupleOutSingle->CosThetaKArb       = cosThetaK;
-		  NTupleOutSingle->PhiKstMuMuPlaneArb = phiKstMuMuPlane;
+		  NTupleOut->B0MassArb          = NTupleIn->bMass->at(i);
+		  NTupleOut->CosThetaMuArb      = cosThetaMup;
+		  NTupleOut->CosThetaKArb       = cosThetaK;
+		  NTupleOut->PhiKstMuMuPlaneArb = phiKstMuMuPlane;
 		}
 	      else if (NTupleIn->genSignal == SignalType+1)
 		{
@@ -269,19 +268,19 @@ void AddRecoVariables (string option)
 		  else phiKstMuMuPlane = -MuMuPlane.Angle(KstPlane);
 
 
-		  NTupleOutSingle->B0MassArb          = NTupleIn->bBarMass->at(i);
-		  NTupleOutSingle->CosThetaMuArb      = cosThetaMum;
-		  NTupleOutSingle->CosThetaKArb       = cosThetaK;
-		  NTupleOutSingle->PhiKstMuMuPlaneArb = phiKstMuMuPlane;
+		  NTupleOut->B0MassArb          = NTupleIn->bBarMass->at(i);
+		  NTupleOut->CosThetaMuArb      = cosThetaMum;
+		  NTupleOut->CosThetaKArb       = cosThetaK;
+		  NTupleOut->PhiKstMuMuPlaneArb = phiKstMuMuPlane;
 		}
 
-	      NTupleOutSingle->B0notB0bar = B0notB0bar;
-	      NTupleOutSingle->B0pT       = sqrt(NTupleIn->bPx->at(i)*NTupleIn->bPx->at(i) + NTupleIn->bPy->at(i)*NTupleIn->bPy->at(i));
-	      NTupleOutSingle->B0Eta      = Utility->computeEta (NTupleIn->bPx->at(i),NTupleIn->bPy->at(i),NTupleIn->bPz->at(i));
-	      NTupleOutSingle->B0Phi      = Utility->computePhi (NTupleIn->bPx->at(i),NTupleIn->bPy->at(i),NTupleIn->bPz->at(i));
+	      NTupleOut->B0notB0bar = B0notB0bar;
+	      NTupleOut->B0pT       = sqrt(NTupleIn->bPx->at(i)*NTupleIn->bPx->at(i) + NTupleIn->bPy->at(i)*NTupleIn->bPy->at(i));
+	      NTupleOut->B0Eta      = Utility->computeEta (NTupleIn->bPx->at(i),NTupleIn->bPy->at(i),NTupleIn->bPz->at(i));
+	      NTupleOut->B0Phi      = Utility->computePhi (NTupleIn->bPx->at(i),NTupleIn->bPy->at(i),NTupleIn->bPz->at(i));
 
 	      theTreeOut->Fill();
-	      NTupleOutSingle->ClearNTuple();
+	      NTupleOut->ClearNTuple();
 
 	      if (option == "nvTruthMatchReco") break;
 	    }
@@ -294,13 +293,14 @@ void AddGenVariables (string option)
 {
   bool B0notB0bar = true;
 
-  NTupleOutSingle->ClearNTuple();
-  NTupleOutSingle->MakeTreeBranches(theTreeOut);
+  NTupleOut->ClearNTuple();
+  NTupleOut->MakeTreeBranches(theTreeOut);
 
   NTupleIn->ClearNTuple();
   NTupleIn->SetBranchAddresses(theTreeIn);
   int nEntries = theTreeIn->GetEntries();
   cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
+
 
   for (int entry = 0; entry < nEntries; entry++)
     {
@@ -308,11 +308,11 @@ void AddGenVariables (string option)
 
       if ((NTupleIn->genSignal == SignalType) || (NTupleIn->genSignal == SignalType+1))
 	{
-	  if (option == "nvGen") NTupleOutSingle->CopyData(NTupleIn, -1);
+	  if (option == "nvGen") NTupleOut->CopyData(NTupleIn, -1);
 	  else if (option == "nvGen2SingleCand")
 	    {
-	      NTupleOutSingle->CopyData(NTupleIn, 0);
-	      NTupleOutSingle->B0MassArb = NTupleIn->B0MassArb;
+	      NTupleOut->CopyData(NTupleIn, 0);
+	      NTupleOut->B0MassArb = NTupleIn->B0MassArb;
 	    }
 	  else 
 	    {
@@ -413,9 +413,9 @@ void AddGenVariables (string option)
 	      else phiKstMuMuPlane = -MuMuPlane.Angle(KstPlane);
 
 
-	      NTupleOutSingle->CosThetaMuArb      = cosThetaMup;
-	      NTupleOutSingle->CosThetaKArb       = cosThetaK;
-	      NTupleOutSingle->PhiKstMuMuPlaneArb = phiKstMuMuPlane;
+	      NTupleOut->CosThetaMuArb      = cosThetaMup;
+	      NTupleOut->CosThetaKArb       = cosThetaK;
+	      NTupleOut->PhiKstMuMuPlaneArb = phiKstMuMuPlane;
 	    }
 	  else if (NTupleIn->genSignal == SignalType+1)
 	    {
@@ -506,43 +506,39 @@ void AddGenVariables (string option)
 	      else phiKstMuMuPlane = -MuMuPlane.Angle(KstPlane);
 
 
-	      NTupleOutSingle->CosThetaMuArb      = cosThetaMum;
-	      NTupleOutSingle->CosThetaKArb       = cosThetaK;
-	      NTupleOutSingle->PhiKstMuMuPlaneArb = phiKstMuMuPlane;
+	      NTupleOut->CosThetaMuArb      = cosThetaMum;
+	      NTupleOut->CosThetaKArb       = cosThetaK;
+	      NTupleOut->PhiKstMuMuPlaneArb = phiKstMuMuPlane;
 	    }
 
-	  NTupleOutSingle->B0notB0bar = B0notB0bar;
-	  NTupleOutSingle->B0pT       = sqrt(NTupleIn->genB0Px*NTupleIn->genB0Px + NTupleIn->genB0Py*NTupleIn->genB0Py);
-	  NTupleOutSingle->B0Eta      = Utility->computeEta (NTupleIn->genB0Px,NTupleIn->genB0Py,NTupleIn->genB0Pz);
-	  NTupleOutSingle->B0Phi      = Utility->computePhi (NTupleIn->genB0Px,NTupleIn->genB0Py,NTupleIn->genB0Pz);
+	  NTupleOut->B0notB0bar = B0notB0bar;
+	  NTupleOut->B0pT       = sqrt(NTupleIn->genB0Px*NTupleIn->genB0Px + NTupleIn->genB0Py*NTupleIn->genB0Py);
+	  NTupleOut->B0Eta      = Utility->computeEta (NTupleIn->genB0Px,NTupleIn->genB0Py,NTupleIn->genB0Pz);
+	  NTupleOut->B0Phi      = Utility->computePhi (NTupleIn->genB0Px,NTupleIn->genB0Py,NTupleIn->genB0Pz);
 
-	  NTupleOutSingle->mumuMass->push_back(Utility->computeInvMass(NTupleIn->genMumPx,NTupleIn->genMumPy,NTupleIn->genMumPz,Utility->muonMass,
-								       NTupleIn->genMupPx,NTupleIn->genMupPy,NTupleIn->genMupPz,Utility->muonMass));
-	  NTupleOutSingle->mumuMassE->push_back(0.0);
+	  NTupleOut->mumuMass->push_back(Utility->computeInvMass(NTupleIn->genMumPx,NTupleIn->genMumPy,NTupleIn->genMumPz,Utility->muonMass,
+								 NTupleIn->genMupPx,NTupleIn->genMupPy,NTupleIn->genMupPz,Utility->muonMass));
+	  NTupleOut->mumuMassE->push_back(0.0);
 
-	  NTupleOutSingle->kstTrkmPx->push_back(NTupleIn->genKstTrkmPx);
-	  NTupleOutSingle->kstTrkmPy->push_back(NTupleIn->genKstTrkmPy);
-	  NTupleOutSingle->kstTrkmPz->push_back(NTupleIn->genKstTrkmPz);
+	  NTupleOut->kstTrkmPx->push_back(NTupleIn->genKstTrkmPx);
+	  NTupleOut->kstTrkmPy->push_back(NTupleIn->genKstTrkmPy);
+	  NTupleOut->kstTrkmPz->push_back(NTupleIn->genKstTrkmPz);
 
-	  NTupleOutSingle->kstTrkpPx->push_back(NTupleIn->genKstTrkpPx);
-	  NTupleOutSingle->kstTrkpPy->push_back(NTupleIn->genKstTrkpPy);
-	  NTupleOutSingle->kstTrkpPz->push_back(NTupleIn->genKstTrkpPz);
+	  NTupleOut->kstTrkpPx->push_back(NTupleIn->genKstTrkpPx);
+	  NTupleOut->kstTrkpPy->push_back(NTupleIn->genKstTrkpPy);
+	  NTupleOut->kstTrkpPz->push_back(NTupleIn->genKstTrkpPz);
 
-	  NTupleOutSingle->truthMatchSignal->push_back(true);
+	  NTupleOut->truthMatchSignal->push_back(true);
 
-	  NTupleOutSingle->FillWithNull(NTupleOutSingle->mumuMass->size());
+	  NTupleOut->FillWithNull(NTupleOut->mumuMass->size());
 	  theTreeOut->Fill();
-	  NTupleOutSingle->ClearNTuple();
+	  NTupleOut->ClearNTuple();
 	}
     }
 }
 
 
-template<class T> void AddEvWeightPileup (T* NTupleOut, string InputFileType)
-// ############################
-// # InputFileType = "single" #
-// # InputFileType = "multi"  #
-// ############################
+template<class T> void AddEvWeightPileup (T* NTupleOut)
 {
   stringstream myString;
   double value = 0.0;
@@ -587,8 +583,8 @@ template<class T> void AddEvWeightPileup (T* NTupleOut, string InputFileType)
       theTreeIn->GetEntry(entry);      
       NTupleOut->CopyWholeNTuple(NTupleIn);
 
-      if ((InputFileType == "single") && (typeid(T) == typeid(B0KstMuMuSingleCandTreeContent))) HLTpathIndx = ((B0KstMuMuSingleCandTreeContent*)NTupleOut)->TrigCat;
-      else HLTpathIndx = Utility->HLTpathForEvFraction(((double)entry)/((double)nEntries));
+      if (typeid(T) == typeid(B0KstMuMuSingleCandTreeContent)) HLTpathIndx = ((B0KstMuMuSingleCandTreeContent*)NTupleOut)->TrigCat;
+      else                                                     HLTpathIndx = Utility->HLTpathForEvFraction(((double)entry)/((double)nEntries));
 
       for (unsigned int i = 0; i < NTupleOut->bunchXingMC->size(); i++)
 	{
@@ -613,10 +609,6 @@ template<class T> void AddEvWeightPileup (T* NTupleOut, string InputFileType)
 
 
 template<class T> void AddEvWeightB0pT (T* NTupleOut)
-// ############################
-// # InputFileType = "single" #
-// # InputFileType = "multi"  #
-// ############################
 {
   stringstream myString;
   double value = 0.0;
@@ -786,25 +778,24 @@ int main (int argc, char** argv)
 	{
 	  string fileNameIn  = argv[2];
 	  string fileNameOut = argv[3];
-	  string fileType;
+	  string fileType = "";
 	  if ((option == "pileupW") || (option == "HadpTW")) fileType = argv[4];
 
 	  Utility = new Utils();
 	  Utility->ReadTriggerPathsANDCutsANDEntries(ParameterFILE);
 
 	  TFile* NtplFileIn = new TFile(fileNameIn.c_str(), "READ");
-	  if (((option == "pileupW") && (fileType == "single")) ||
-	      (option == "B0pTW") ||
-	      (option == "HadpTW") ||
-	      (option == "thetaKW") ||
-	      (option == "nvGen2SingleCand")) theTreeIn = (TTree*) NtplFileIn->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
-	  else theTreeIn = (TTree*) NtplFileIn->Get("B0Cand/B0KstMuMuNTuple");
+	  theTreeIn = (TTree*) NtplFileIn->Get("B0KstMuMu/B0KstMuMuNTuple");
 	  NTupleIn = new B0KstMuMuSingleCandTreeContent();
 	  NTupleIn->Init();
 
 	  TFile* NtplFileOut = new TFile(fileNameOut.c_str(), "RECREATE");
-	  NTupleOutSingle = NULL;
-	  NTupleOutMulti  = NULL;
+	  NTupleOut = NULL;
+	  NtplFileOut->mkdir("B0KstMuMu");
+	  NtplFileOut->cd("B0KstMuMu");
+	  theTreeOut = new TTree("B0KstMuMuNTuple","B0KstMuMuNTuple");
+	  NTupleOut = new B0KstMuMuSingleCandTreeContent();
+	  NTupleOut->Init();
 
 
 	  cout << "\n@@@ Settings @@@" << endl;
@@ -820,94 +811,27 @@ int main (int argc, char** argv)
 
 	  if (option == "pileupW")
 	    {
-	      if (fileType == "single")
-		{
-		  NtplFileOut->mkdir("B0SingleCand");
-		  NtplFileOut->cd("B0SingleCand");
-		  theTreeOut = new TTree("B0KstMuMuSingleCandNTuple","B0KstMuMuSingleCandNTuple");
-		  
-		  NTupleOutSingle = new B0KstMuMuSingleCandTreeContent();
-		  NTupleOutSingle->Init();
-
-		  AddEvWeightPileup<B0KstMuMuSingleCandTreeContent>(NTupleOutSingle,fileType);
-
-		  NtplFileOut->cd("B0SingleCand");
-		}
-	      else if (fileType == "multi")
-		{
-		  NtplFileOut->mkdir("B0Cand");
-		  NtplFileOut->cd("B0Cand");
-		  theTreeOut = new TTree("B0KstMuMuNTuple","B0KstMuMuNTuple");
-
-		  NTupleOutMulti = new B0KstMuMuTreeContent();
-		  NTupleOutMulti->Init();
-
-		  AddEvWeightPileup<B0KstMuMuTreeContent>(NTupleOutMulti,fileType);
-
-		  NtplFileOut->cd("B0Cand");
-		}
-	      else
-		{
-		  cout << "[AddVars2Candidates::main]\tWrong parameter: " << fileType << endl;
-		  exit(1);
-		}
-
+	      if (fileType == "single") AddEvWeightPileup<B0KstMuMuSingleCandTreeContent>(NTupleOut);
+	      else                      AddEvWeightPileup<B0KstMuMuTreeContent>(NTupleOut);
 	      cout << "\n@@@ Added new event weight from pileup @@@" << endl;
 	    }
 	  else if (option == "B0pTW")
 	    {
-	      NtplFileOut->mkdir("B0SingleCand");
-	      NtplFileOut->cd("B0SingleCand");
-	      theTreeOut = new TTree("B0KstMuMuSingleCandNTuple","B0KstMuMuSingleCandNTuple");
-	      
-	      NTupleOutSingle = new B0KstMuMuSingleCandTreeContent();
-	      NTupleOutSingle->Init();
-
-	      AddEvWeightB0pT<B0KstMuMuSingleCandTreeContent>(NTupleOutSingle);
-
-	      NtplFileOut->cd("B0SingleCand");
-	      
+	      AddEvWeightB0pT<B0KstMuMuSingleCandTreeContent>(NTupleOut);
 	      cout << "\n@@@ Added new event weight from B0 pT @@@" << endl;
 	    }
 	  else if (option == "HadpTW")
 	    {
-	      NtplFileOut->mkdir("B0SingleCand");
-	      NtplFileOut->cd("B0SingleCand");
-	      theTreeOut = new TTree("B0KstMuMuSingleCandNTuple","B0KstMuMuSingleCandNTuple");
-	      
-	      NTupleOutSingle = new B0KstMuMuSingleCandTreeContent();
-	      NTupleOutSingle->Init();
-
-	      AddEvWeightHadpT<B0KstMuMuSingleCandTreeContent>(NTupleOutSingle,fileType);
-
-	      NtplFileOut->cd("B0SingleCand");
-	      
+	      AddEvWeightHadpT<B0KstMuMuSingleCandTreeContent>(NTupleOut,fileType);
 	      cout << "\n@@@ Added new event weight from hadron pT @@@" << endl;
 	    }
 	  else if (option == "thetaKW")
 	    {
-	      NtplFileOut->mkdir("B0SingleCand");
-	      NtplFileOut->cd("B0SingleCand");
-	      theTreeOut = new TTree("B0KstMuMuSingleCandNTuple","B0KstMuMuSingleCandNTuple");
-	      
-	      NTupleOutSingle = new B0KstMuMuSingleCandTreeContent();
-	      NTupleOutSingle->Init();
-
-	      AddEvWeightThetaK<B0KstMuMuSingleCandTreeContent>(NTupleOutSingle);
-
-	      NtplFileOut->cd("B0SingleCand");
-	      
+	      AddEvWeightThetaK<B0KstMuMuSingleCandTreeContent>(NTupleOut);
 	      cout << "\n@@@ Added new event weight from cos(theta_K) @@@" << endl;
 	    }
 	  else if ((option == "nvAllReco") || (option == "nvTruthMatchReco") || (option == "nvGen") || (option == "nvGen2SingleCand"))
 	    {
-	      NtplFileOut->mkdir("B0SingleCand");
-	      NtplFileOut->cd("B0SingleCand");
-	      theTreeOut = new TTree("B0KstMuMuSingleCandNTuple","B0KstMuMuSingleCandNTuple");
-
-	      NTupleOutSingle = new B0KstMuMuSingleCandTreeContent();
-	      NTupleOutSingle->Init();
-	      
 	      if ((option == "nvAllReco") || (option == "nvTruthMatchReco"))
 		{
 		  AddRecoVariables(option);
@@ -918,44 +842,34 @@ int main (int argc, char** argv)
 		  AddGenVariables(option);
 		  cout << "\n@@@ Added new variables to gen-events @@@" << endl;
 		}
-
-	      NtplFileOut->cd("B0SingleCand");
 	    }
 
 
+	  NtplFileOut->cd("B0KstMuMu");
 	  theTreeOut->Write();
 	  NtplFileOut->Close();
+	  NTupleOut->Destroy();
+	  delete NTupleOut;
+
 	  NtplFileIn->Close();
-
-	  if (NTupleOutSingle != NULL)
-	    {
-	      NTupleOutSingle->Destroy();
-	      delete NTupleOutSingle;
-	    }
-	  if (NTupleOutMulti != NULL)
-	    {
-	      NTupleOutMulti->Destroy();
-	      delete NTupleOutMulti;
-	    }
-
-      
 	  NTupleIn->Destroy();
 	  delete Utility;
 	  delete NTupleIn;
+
 	  return 0;
 	}
       else
 	{
 	  cout << "Parameter missing: " << endl;
-	  cout << "./AddVars2Candidates [pileupW B0pTW HadpTW thetaKW nvAllReco nvTruthMatchReco nvGen nvGen2SingleCand] inputFile.root outputFile.root [[if pileupW]file-type(single/multi)] [[if HadpT]pos/neg]" << endl;
+	  cout << "./AddVars2Candidates [pileupW B0pTW HadpTW thetaKW nvAllReco nvTruthMatchReco nvGen nvGen2SingleCand] inputFile.root outputFile.root [[if pileupW]outputFile-type(single/multi)] [[if HadpT]pos/neg]" << endl;
 	  cout << "- pileupW          : change the weight to all single/multiple candidates according to pileup weight" << endl;
 	  cout << "- B0pTW            : change the weight to all single candidates according to B0 pT weight" << endl;
 	  cout << "- HadpTW           : change the weight to all single candidates according to hadron pT weight" << endl;
 	  cout << "- thetaKW          : change the weight to all single candidates according to cos(theta_K) weight" << endl;
-	  cout << "- nvAllReco        : generate new NTupleOutSingle giveing to each candidate in NTupleIn a new TTree entry and adding the RECO single candidate variables" << endl;
-	  cout << "- nvTruthMatchReco : generate new NTupleOutSingle adding the RECO single candidate variables only for the first truth matched candidate in a signal event, discarding the other candidates" << endl;
-	  cout << "- nvGen            : generate new NTupleOutSingle adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC (NoFilter,Filter,Multi-candidates)" << endl;
-	  cout << "- nvGen2SingleCand : generate new NTupleOutSingle adding the GEN single candidate variables to each gen-event to an NTuple computed from a GEN-RECO-MC (Single-candidate)" << endl;
+	  cout << "- nvAllReco        : generate new NTupleOut giveing to each candidate in NTupleIn a new TTree entry and adding the RECO single candidate variables" << endl;
+	  cout << "- nvTruthMatchReco : generate new NTupleOut adding the RECO single candidate variables only for the first truth matched candidate in a signal event, discarding the other candidates" << endl;
+	  cout << "- nvGen            : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC (NoFilter,Filter,Multi-candidates)" << endl;
+	  cout << "- nvGen2SingleCand : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from a GEN-RECO-MC (Single-candidate)" << endl;
 
 	  return 1;
 	}
@@ -963,15 +877,15 @@ int main (int argc, char** argv)
   else
     {
       cout << "Parameter missing: " << endl;
-      cout << "./AddVars2Candidates [pileupW B0pTW HadpTW thetaKW nvAllReco nvTruthMatchReco nvGen nvGen2SingleCand] inputFile.root outputFile.root [[if pileupW]file-type(single/multi)] [[if HadpT]pos/neg]" << endl;
+      cout << "./AddVars2Candidates [pileupW B0pTW HadpTW thetaKW nvAllReco nvTruthMatchReco nvGen nvGen2SingleCand] inputFile.root outputFile.root [[if pileupW]outputFile-type(single/multi)] [[if HadpT]pos/neg]" << endl;
       cout << "- pileupW          : change the weight to all single/multiple candidates according to pileup weight" << endl;
       cout << "- B0pTW            : change the weight to all single candidates according to B0 pT weight" << endl;
       cout << "- HadpTW           : change the weight to all single candidates according to hadron pT weight" << endl;
       cout << "- thetaKW          : change the weight to all single candidates according to cos(theta_K) weight" << endl;
-      cout << "- nvAllReco        : generate new NTupleOutSingle giveing to each candidate in NTupleIn a new TTree entry and adding the RECO single candidate variables" << endl;
-      cout << "- nvTruthMatchReco : generate new NTupleOutSingle adding the RECO single candidate variables only for the first truth matched candidate in a signal event, discarding the other candidates" << endl;
-      cout << "- nvGen            : generate new NTupleOutSingle adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC (NoFilter,Filter,Multi-candidates)" << endl;
-      cout << "- nvGen2SingleCand : generate new NTupleOutSingle adding the GEN single candidate variables to each gen-event to an NTuple computed from a GEN-RECO-MC (Single-candidate)" << endl;
+      cout << "- nvAllReco        : generate new NTupleOut giveing to each candidate in NTupleIn a new TTree entry and adding the RECO single candidate variables" << endl;
+      cout << "- nvTruthMatchReco : generate new NTupleOut adding the RECO single candidate variables only for the first truth matched candidate in a signal event, discarding the other candidates" << endl;
+      cout << "- nvGen            : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC (NoFilter,Filter,Multi-candidates)" << endl;
+      cout << "- nvGen2SingleCand : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from a GEN-RECO-MC (Single-candidate)" << endl;
       
       return 1;
     }

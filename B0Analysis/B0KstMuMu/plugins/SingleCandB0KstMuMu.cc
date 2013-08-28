@@ -561,16 +561,16 @@ int main (int argc, char** argv)
 
 	  TFile* NtplFileIn  = new TFile(fileNameIn.c_str(), "READ");
 	  TFile* NtplFileOut = NULL;
-	  theTreeIn          = (TTree*) NtplFileIn->Get("B0Cand/B0KstMuMuNTuple");
+	  theTreeIn          = (TTree*) NtplFileIn->Get("B0KstMuMu/B0KstMuMuNTuple");
 	  NTupleIn           = new B0KstMuMuTreeContent();
 	  NTupleIn->Init();
 
 	  if (option == "singlecand")
 	    {
 	      NtplFileOut = new TFile(fileNameOut.c_str(), "RECREATE");
-	      NtplFileOut->mkdir("B0SingleCand");
-	      NtplFileOut->cd("B0SingleCand");
-	      theTreeOut  = new TTree("B0KstMuMuSingleCandNTuple","B0KstMuMuSingleCandNTuple");
+	      NtplFileOut->mkdir("B0KstMuMu");
+	      NtplFileOut->cd("B0KstMuMu");
+	      theTreeOut  = new TTree("B0KstMuMuNTuple","B0KstMuMuNTuple");
 	      NTupleOut   = new B0KstMuMuSingleCandTreeContent();
 	      NTupleOut->Init();
 
@@ -590,11 +590,11 @@ int main (int argc, char** argv)
 	  // #############
 	  if (option == "singlecand")
 	    {
-	      NtplFileOut->cd("B0SingleCand");
+	      NtplFileOut->cd("B0KstMuMu");
 	      theTreeOut->Write();
 	      NtplFileOut->Close();
 	      NtplFileIn->Close();
-	  
+
 	      NTupleOut->Destroy();
 	      delete NTupleOut;
 	    }

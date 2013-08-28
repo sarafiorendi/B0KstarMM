@@ -199,14 +199,14 @@ void MakeComparisonDataMC (unsigned int plotType)
   // # Read the trees #
   // ##################
   Vfiles.push_back(TFile::Open(SingleCand_MCkstJPsi,"READ"));
-  TreeMC.push_back((TTree*)Vfiles.back()->Get("B0SingleCand/B0KstMuMuSingleCandNTuple"));
+  TreeMC.push_back((TTree*)Vfiles.back()->Get("B0KstMuMu/B0KstMuMuNTuple"));
 
   Vfiles.push_back(TFile::Open(SingleCand_MCkstPsi2S,"READ"));
-  TreeMC.push_back((TTree*)Vfiles.back()->Get("B0SingleCand/B0KstMuMuSingleCandNTuple"));
+  TreeMC.push_back((TTree*)Vfiles.back()->Get("B0KstMuMu/B0KstMuMuNTuple"));
 
 
   Vfiles.push_back(TFile::Open(SingleCand_Data,"READ"));
-  TTree* TreeData = (TTree*)Vfiles.back()->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+  TTree* TreeData = (TTree*)Vfiles.back()->Get("B0KstMuMu/B0KstMuMuNTuple");
 
 
   // ##########################
@@ -2149,7 +2149,7 @@ void PlotMuMu (string fileName, bool bkgSub)
 
 
   TFile* file0 = TFile::Open(fileName.c_str(),"READ");
-  TTree* theTree = (TTree*)file0->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+  TTree* theTree = (TTree*)file0->Get("B0KstMuMu/B0KstMuMuNTuple");
 
   nEntries = theTree->GetEntries();
   cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
@@ -2242,7 +2242,7 @@ void PlotKst (string fileName, bool bkgSub)
   TCanvas* c1 = new TCanvas("c1","c1",20,20,700,500);
 
   TFile* file0 = TFile::Open(fileName.c_str(),"READ");
-  TTree* theTree = (TTree*)file0->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+  TTree* theTree = (TTree*)file0->Get("B0KstMuMu/B0KstMuMuNTuple");
 
   nEntries = theTree->GetEntries();
   cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
@@ -2450,7 +2450,7 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
 
 
   TFile* file0 = TFile::Open(fileName.c_str(),"READ");
-  TTree* theTree = (TTree*)file0->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+  TTree* theTree = (TTree*)file0->Get("B0KstMuMu/B0KstMuMuNTuple");
 
   B0KstMuMuSingleCandTreeContent* NTuple = new B0KstMuMuSingleCandTreeContent();
   NTuple->Init();
@@ -2628,7 +2628,7 @@ void PlotMuHadMass (string fileName)
 
 
   TFile* file0 = TFile::Open(fileName.c_str(),"READ");
-  TTree* theTree = (TTree*)file0->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+  TTree* theTree = (TTree*)file0->Get("B0KstMuMu/B0KstMuMuNTuple");
 
   B0KstMuMuSingleCandTreeContent* NTuple = new B0KstMuMuSingleCandTreeContent();
   NTuple->Init();

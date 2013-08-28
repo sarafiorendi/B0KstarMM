@@ -68,7 +68,6 @@ using namespace std;
 // #######################
 // # Function Definition #
 // #######################
-TTree* GetTheTree(string fileName, string fileType);
 TH1D* ComputeCumulative(TH1D* hIN, string hCumulName);
 void TruthMatching (string fileName, bool truthMatch);
 void dBFfromGEN (string fileName);
@@ -76,7 +75,7 @@ void CompareCosMassGENRECO (string fileNameRECO, string fileNameGEN);
 void ComputePileUp (string fileName);
 void PlotVtxWithPileUpW (string fileNameMC, string fileNameData, unsigned int TrigCat, bool withWeights);
 void PlotPileUp (string fileNameMC1, string fileNameMC2);
-void PlotB0Scans (string fileName, string type);
+void PlotCutScans (string fileName, string type);
 void PlotEffPlots (string fileName, unsigned int plotN, unsigned int binN);
 void PlotB0vsMuMu (string fileName, bool rejectPsi);
 void PlotBkgMC (string fileName, bool iFit, double scaleMCdata);
@@ -97,19 +96,6 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg);
 // ###########################
 // # Function Implementation #
 // ###########################
-
-
-// ##############################################################
-// # Sub-program to obtain a pointer to the tree in a root file #
-// ##############################################################
-TTree* GetTheTree(string fileName, string fileType)
-{
-  TFile* _file0 = TFile::Open(fileName.c_str(),"READ");
-  if      (fileType == "single") return (TTree*)_file0->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
-  else if (fileType == "multi")  return (TTree*)_file0->Get("B0Cand/B0KstMuMuNTuple");
-  else cout << "Wrong file type: " << fileType << " --> correct file types are: single or multi" << endl;
-  return NULL;
-}
 
 
 // ######################################################################
@@ -158,7 +144,7 @@ void TruthMatching (string fileName, bool truthMatch)
   // # Read the tree #
   // #################
   TFile* _file0 = TFile::Open(fileName.c_str(),"READ");
-  TTree* B0KstMuMuSingleCandNTuple = (TTree*)_file0->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+  TTree* B0KstMuMuNTuple = (TTree*)_file0->Get("B0KstMuMu/B0KstMuMuNTuple");
 
 
   double minX = 4.0;
@@ -180,8 +166,8 @@ void TruthMatching (string fileName, bool truthMatch)
 
   if (truthMatch == true)
     {
-      B0KstMuMuSingleCandNTuple->Draw("bMass>>hb","genSignal == 1 && truthMatchSignal == 1 && genSignHasFSR == 0");
-      B0KstMuMuSingleCandNTuple->Draw("bBarMass>>hbar","genSignal == 2 && truthMatchSignal == 1 && genSignHasFSR == 0");
+      B0KstMuMuNTuple->Draw("bMass>>hb","genSignal == 1 && truthMatchSignal == 1 && genSignHasFSR == 0");
+      B0KstMuMuNTuple->Draw("bBarMass>>hbar","genSignal == 2 && truthMatchSignal == 1 && genSignHasFSR == 0");
       hb->Add(hbar);
 
       f0 = new TF1("f0","[3]*TMath::Gaus(x,[0],[1]) + [4]*TMath::Gaus(x,[0],[2])",minX,maxX);
@@ -200,8 +186,8 @@ void TruthMatching (string fileName, bool truthMatch)
     }
   else
     {
-      B0KstMuMuSingleCandNTuple->Draw("bMass>>hb","genSignal == 1 && truthMatchSignal == 0 && genSignHasFSR == 0");
-      B0KstMuMuSingleCandNTuple->Draw("bBarMass>>hbar","genSignal == 2 && truthMatchSignal == 0 && genSignHasFSR == 0");
+      B0KstMuMuNTuple->Draw("bMass>>hb","genSignal == 1 && truthMatchSignal == 0 && genSignHasFSR == 0");
+      B0KstMuMuNTuple->Draw("bBarMass>>hbar","genSignal == 2 && truthMatchSignal == 0 && genSignHasFSR == 0");
       hb->Add(hbar);
 
       f0 = new TF1("f0","[2]*TMath::Gaus(x,[0],[1]) + [4]*TMath::Gaus(x,[0],[3]) + ([5]+[6]*x)",minX,maxX);
@@ -335,10 +321,10 @@ void CompareCosMassGENRECO (string fileNameRECO, string fileNameGEN)
 
 
   TFile* NtplFileIn1 = TFile::Open(fileNameRECO.c_str(),"READ");
-  TTree* theTreeIn1 = (TTree*)NtplFileIn1->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+  TTree* theTreeIn1 = (TTree*)NtplFileIn1->Get("B0KstMuMu/B0KstMuMuNTuple");
 
   TFile* NtplFileIn2 = TFile::Open(fileNameGEN.c_str(),"READ");
-  TTree* theTreeIn2 = (TTree*)NtplFileIn2->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+  TTree* theTreeIn2 = (TTree*)NtplFileIn2->Get("B0KstMuMu/B0KstMuMuNTuple");
 
   cout << "n entry: " << theTreeIn1->GetEntries() << endl;
   cout << "n entry: " << theTreeIn2->GetEntries() << endl;
@@ -433,7 +419,7 @@ void CompareCosMassGENRECO (string fileNameRECO, string fileNameGEN)
 void ComputePileUp (string fileName)
 {
   TFile* NtplFileIn = TFile::Open(fileName.c_str(),"READ");
-  TTree* theTreeIn = (TTree*)NtplFileIn->Get("B0Cand/B0KstMuMuNTuple");
+  TTree* theTreeIn = (TTree*)NtplFileIn->Get("B0KstMuMu/B0KstMuMuNTuple");
 
   vector<double>* vec1 = new vector<double>;
   vector<double>* vec2 = new vector<double>;
@@ -498,15 +484,13 @@ void PlotVtxWithPileUpW (string fileNameMC, string fileNameData, unsigned int Tr
 
   int nEntries;
 
-
   TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
 
-
   TFile* NtplFileInMC = TFile::Open(fileNameMC.c_str(),"READ");
-  TTree* theTreeInMC = (TTree*)NtplFileInMC->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+  TTree* theTreeInMC = (TTree*)NtplFileInMC->Get("B0KstMuMu/B0KstMuMuNTuple");
 
   TFile* NtplFileInData = TFile::Open(fileNameData.c_str(),"READ");
-  TTree* theTreeInData = (TTree*)NtplFileInData->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+  TTree* theTreeInData = (TTree*)NtplFileInData->Get("B0KstMuMu/B0KstMuMuNTuple");
 
 
   // ################
@@ -613,12 +597,10 @@ void PlotPileUp (string fileNameMC1, string fileNameMC2)
 
   int nEntries;
 
-
   TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
 
-
   TFile* fileMC1 = TFile::Open(fileNameMC1.c_str(),"READ");
-  TTree* theTreeInMC1 = (TTree*)fileMC1->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+  TTree* theTreeInMC1 = (TTree*)fileMC1->Get("B0KstMuMu/B0KstMuMuNTuple");
 
   nEntries = theTreeInMC1->GetEntries();
   cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
@@ -645,7 +627,7 @@ void PlotPileUp (string fileNameMC1, string fileNameMC2)
 
 
   TFile* fileMC2 = TFile::Open(fileNameMC2.c_str(),"READ");
-  TTree* theTreeInMC2 = (TTree*)fileMC2->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+  TTree* theTreeInMC2 = (TTree*)fileMC2->Get("B0KstMuMu/B0KstMuMuNTuple");
 
   nEntries = theTreeInMC2->GetEntries();
   cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
@@ -681,7 +663,7 @@ void PlotPileUp (string fileNameMC1, string fileNameMC2)
 // #################################
 // # Sub-program to plot cut scans #
 // #################################
-void PlotB0Scans (string fileName, string type)
+void PlotCutScans (string fileName, string type)
 {
   stringstream myString;
 
@@ -800,12 +782,10 @@ void PlotB0vsMuMu (string fileName, bool rejectPsi)
   double minY = 0.8;
   double maxY = 5.0;
 
-
   TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
 
-
   TFile* file0 = TFile::Open(fileName.c_str(),"READ");
-  TTree* theTree = (TTree*)file0->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+  TTree* theTree = (TTree*)file0->Get("B0KstMuMu/B0KstMuMuNTuple");
 
   nEntries = theTree->GetEntries();
   cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
@@ -859,9 +839,8 @@ void PlotBkgMC (string fileName, bool iFit, double scaleMCdata)
 
   unsigned int nBins = 20;
 
-
   TFile* fileIn = TFile::Open(fileName.c_str(),"READ");
-  TTree* theTree = (TTree*)fileIn->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+  TTree* theTree = (TTree*)fileIn->Get("B0KstMuMu/B0KstMuMuNTuple");
   unsigned int nEntries = theTree->GetEntries();
   cout << "\n@@@ Total number of events in the input tree: " << nEntries << " @@@" << endl;
 
@@ -1048,7 +1027,7 @@ void ReduceTree (string fileNameIn, string fileNameOut)
   int nEntries;
 
   TFile* fileIn = TFile::Open(fileNameIn.c_str(),"READ");
-  TTree* theTreeIn = (TTree*)fileIn->Get("B0Cand/B0KstMuMuNTuple");
+  TTree* theTreeIn = (TTree*)fileIn->Get("B0KstMuMu/B0KstMuMuNTuple");
 
   nEntries = theTreeIn->GetEntries();
   cout << "\n@@@ Total number of events in the input tree: " << nEntries << " @@@" << endl;
@@ -1102,7 +1081,7 @@ void ReduceTree (string fileNameIn, string fileNameOut)
   theTreeIn->SetBranchStatus("mumdzVtx",1);
   theTreeIn->SetBranchStatus("mumTrig",1);
   theTreeIn->SetBranchStatus("mumNPixLayers",1);
-  theTreeIn->SetBranchStatus("mumNTrkHits",1);
+  theTreeIn->SetBranchStatus("mumNTrkLayers",1);
 
   // #######
   // # mu+ #
@@ -1118,7 +1097,7 @@ void ReduceTree (string fileNameIn, string fileNameOut)
   theTreeIn->SetBranchStatus("mupdzVtx",1);
   theTreeIn->SetBranchStatus("mupTrig",1);
   theTreeIn->SetBranchStatus("mupNPixLayers",1);
-  theTreeIn->SetBranchStatus("mupNTrkHits",1);
+  theTreeIn->SetBranchStatus("mupNTrkLayers",1);
 
   // ##############
   // # K*0 track- #
@@ -1144,8 +1123,8 @@ void ReduceTree (string fileNameIn, string fileNameOut)
   theTreeIn->SetBranchStatus("truthMatchSignal",1);
 
   TFile* fileOut = TFile::Open(fileNameOut.c_str(),"RECREATE");
-  fileOut->mkdir("B0Cand");
-  fileOut->cd("B0Cand");
+  fileOut->mkdir("B0KstMuMu");
+  fileOut->cd("B0KstMuMu");
   TTree* theTreeOut = theTreeIn->CloneTree();
 
   nEntries = theTreeOut->GetEntries();
@@ -1179,9 +1158,8 @@ void QueryCandidates (string fileName)
 
   string TrigQuery = "HLT DoubleMu4p5 LowMass Displaced";
  
-
   TFile* NtplFileIn = TFile::Open(fileName.c_str(),"READ");
-  TTree* theTreeIn = (TTree*)NtplFileIn->Get("B0Cand/B0KstMuMuNTuple");
+  TTree* theTreeIn = (TTree*)NtplFileIn->Get("B0KstMuMu/B0KstMuMuNTuple");
 
   vector<string>* vec1 = new vector<string>;
   vector<double>* vec2 = new vector<double>;
@@ -1235,15 +1213,15 @@ void SampleMCforPileup (string fileNameIn, string fileNameOut)
   TRandom3* myRandom = new TRandom3();
 
   TFile* fileIn = TFile::Open(fileNameIn.c_str(),"READ");
-  TTree* theTreeIn = (TTree*)fileIn->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+  TTree* theTreeIn = (TTree*)fileIn->Get("B0KstMuMu/B0KstMuMuNTuple");
 
   int nEntries = theTreeIn->GetEntries();
   cout << "\n@@@ Total number of events in the input tree: " << nEntries << " @@@" << endl;
 
 
   TFile* fileOut = TFile::Open(fileNameOut.c_str(),"RECREATE");
-  fileOut->mkdir("B0SingleCand");
-  fileOut->cd("B0SingleCand");
+  fileOut->mkdir("B0KstMuMu");
+  fileOut->cd("B0KstMuMu");
   TTree* theTreeOut = theTreeIn->CloneTree(0);
 
 
@@ -1301,9 +1279,8 @@ void DivideNTuple (string fileNameIn, string fileNameOut, unsigned int n)
   TTree* theTreeOut;
   TList* listOfTrees = new TList();
 
-
   TFile* fileIn = TFile::Open(fileNameIn.c_str(),"READ");
-  TTree* theTreeIn = (TTree*)fileIn->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+  TTree* theTreeIn = (TTree*)fileIn->Get("B0KstMuMu/B0KstMuMuNTuple");
 
 
   // ###################################################
@@ -1311,8 +1288,8 @@ void DivideNTuple (string fileNameIn, string fileNameOut, unsigned int n)
   // ###################################################
   cout << "\n@@@ Dividing the input tree in the HLT sub-categories @@@" << endl;
   TFile* fileTmp = TFile::Open("fileTmp.root","RECREATE");
-  fileTmp->mkdir("B0SingleCand");
-  fileTmp->cd("B0SingleCand");
+  fileTmp->mkdir("B0KstMuMu");
+  fileTmp->cd("B0KstMuMu");
   theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 1"));
   theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 2"));
   theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 3"));
@@ -1328,8 +1305,8 @@ void DivideNTuple (string fileNameIn, string fileNameOut, unsigned int n)
       cout << "\n@@@ Making file n #" << i << " --> " << myString.str().c_str() << " @@@" << endl;
 
       fileOut = TFile::Open(myString.str().c_str(),"RECREATE");
-      fileOut->mkdir("B0SingleCand");
-      fileOut->cd("B0SingleCand");
+      fileOut->mkdir("B0KstMuMu");
+      fileOut->cd("B0KstMuMu");
 
       for (unsigned int j = 0; j <theTreeInCat.size(); j++)
 	{	  
@@ -1388,15 +1365,15 @@ void SampleNTuple (string fileNameIn, string fileNameOut, double fraction)
 
 
   TFile* fileIn = TFile::Open(fileNameIn.c_str(),"READ");
-  TTree* theTreeIn = (TTree*)fileIn->Get("B0SingleCand/B0KstMuMuSingleCandNTuple");
+  TTree* theTreeIn = (TTree*)fileIn->Get("B0KstMuMu/B0KstMuMuNTuple");
 
   nEntries = theTreeIn->GetEntries();
   cout << "\n@@@ Total number of events in the input tree: " << nEntries << " @@@" << endl;
 
 
   TFile* fileOut = TFile::Open(fileNameOut.c_str(),"RECREATE");
-  fileOut->mkdir("B0SingleCand");
-  fileOut->cd("B0SingleCand");
+  fileOut->mkdir("B0KstMuMu");
+  fileOut->cd("B0KstMuMu");
 
 
   // ###################################################

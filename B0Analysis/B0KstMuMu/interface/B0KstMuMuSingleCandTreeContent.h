@@ -37,8 +37,7 @@ class B0KstMuMuSingleCandTreeContent : public B0KstMuMuTreeContent
   // ####################
   // # Angular anaylsis #
   // ####################
-  double CosThetaKArb, CosThetaMuArb;
-  double PhiKstMuMuPlaneArb;
+  double CosThetaKArb, CosThetaMuArb, PhiKstMuMuPlaneArb;
 
  private:
   

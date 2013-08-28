@@ -796,18 +796,18 @@ By contrast, the mistagging variation that we had (from 8% to 12.2%) changed the
 \b For 2012 data
 \b0  @\
 @@@@@@@@@\
-1. Move to CMSSW_5_3_11 (implement new variables for "soft" and "tight" muon selection)\
-2. Multiple candidate ntuple and single candidate ntuple must have the same directory name\
+1. Re-define variables: cos(theta_K) --> theta_K, cos(theta_l) --> theta_l\
 \
-3. Use XML for configuration file\
-4. Add dilution to AFB, AFB'  = (1 - 2m)AFB, and to all other asymmetry terms to account for CP-state mistag (m)\
-5. Re-define fit variables: mass, theta_K, theta_l, phi\
-6. Re-define efficiency: theta_K, theta_l, phi\
-7. Define PDF classes + virtual PDF class: implement PDF + save/load parameters + toy + folding --> efficiency\
+2. Re-define 3D efficiency: theta_K, theta_l, phi\
+3. Define PDF classes + virtual PDF class: implement PDF + save/load parameters + toy + folding --> efficiency\
+4. Re-define 4D fit variables: mass, theta_K, theta_l, phi\
 \
-8. Compute mass shape from 4D-fit to MC\
-9. Correct statistical errors by the sigmas of the Gaussian fits to the pulls\
-10. Search for Bs --> J/psi K* by restricting to the barrel region\
+5. Use XML for configuration file (?)\
+\
+6. Add dilution to AFB, AFB'  = (1 - 2m)AFB, and to all other asymmetry terms to account for CP-state mistag (m)\
+7. Compute mass shape from 4D-fit to MC\
+8. Correct statistical errors by the sigmas of the Gaussian fits to the pulls\
+9. Search for Bs --> J/psi K* by restricting to the barrel region\
 \
 \
 \
