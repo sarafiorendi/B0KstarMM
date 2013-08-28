@@ -37,7 +37,7 @@ import sys
 if (len(sys.argv) > 2):
     readFiles = sys.argv[2]
 ### GEN MC ###
-#    path = 'file:/bestman/storage/cms/store/user/dinardo/PYTHIA6_B0dToKstMuMuKPi_7TeV_cff_GEN_Filter/'
+    path = 'file:/bestman/storage/cms/store/user/dinardo/PYTHIA6_B0dToKstMuMuKPi_7TeV_cff_GEN_Filter/'
 #    path = 'file:/bestman/storage/cms/store/user/dinardo/PYTHIA6_B0dToKstMuMuKPi_7TeV_cff_GEN_NoFilter_01/'
 
 #    path = 'file:/bestman/storage/cms/store/user/dinardo/PYTHIA6_B0dToJPsiKstMuMuKPi_7TeV_cff_GEN_Filter/'
@@ -48,7 +48,7 @@ if (len(sys.argv) > 2):
     file = readFiles.replace(path, '')
 else:
 ### GEN MC ###
-#    from B0ToKstMuMu_GEN_Filter_MC_cff import readFiles
+    from B0ToKstMuMu_GEN_Filter_MC_cff import readFiles
 #    from B0ToKstMuMu_GEN_NoFilter_01_MC_cff import readFiles
 
 #    from B0ToJPsiKst_GEN_Filter_MC_cff import readFiles
@@ -61,8 +61,8 @@ process.source = cms.Source('PoolSource',
                             skipEvents = cms.untracked.uint32(0),
                             fileNames = cms.untracked.vstring(
 #    'rfio:/castor/cern.ch/user/d/dinardo/MyJPsiKstpMC/MyJPsiKstpSkim_1_1_yR4.root'
-    readFiles
-    ))
+                                readFiles
+                            ))
 
 
 ##################################
