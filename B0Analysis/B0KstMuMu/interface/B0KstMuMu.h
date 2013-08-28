@@ -96,7 +96,7 @@ private:
   std::string trackType_;
   std::string parameterFile_;
   unsigned int doGenReco_;
-  bool PrintMsg;
+  bool printMsg;
   
   ReadParameters* ParameterFile;
   std::vector<std::string> TrigTable;

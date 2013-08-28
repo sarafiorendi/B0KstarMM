@@ -1366,7 +1366,7 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
   RooAbsReal* NLL;
   double signalSigma  = 0.0;
   double signalSigmaE = 0.0;
-  double NLLvalue = NULL;
+  double NLLvalue     = 0.0;
 
   if (fitResult != NULL)
     {
