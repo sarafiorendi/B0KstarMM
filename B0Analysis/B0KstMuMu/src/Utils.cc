@@ -2493,6 +2493,9 @@ bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigChe
 	  // #########################
 	  // # Hadron selection cuts #
 	  // #########################
+	  (NTuple->kstTrkmHighPurity->at(i) == true) &&
+	  (NTuple->kstTrkpHighPurity->at(i) == true) &&
+
 	  (fabs(NTuple->kstTrkmDCABS->at(i)/NTuple->kstTrkmDCABSE->at(i)) > GetSeleCut("HadDCASBS")) &&
 	  (fabs(NTuple->kstTrkpDCABS->at(i)/NTuple->kstTrkpDCABSE->at(i)) > GetSeleCut("HadDCASBS")) &&
 
