@@ -138,7 +138,7 @@ else:
                         mcAs         = None                           # replicate MC match as the one used for Muons
                         )
     
-    removeMCMatching(process, ['All'], outputInProcess = False)
+    removeMCMatching(process, ['All'], outputModules = [])
 
 
 #####################################
