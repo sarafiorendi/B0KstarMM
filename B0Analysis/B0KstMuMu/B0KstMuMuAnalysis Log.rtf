@@ -147,7 +147,7 @@ PYTHIA MSEL = 5 --> generates only b-bbar (but it does not take into account all
 ( it's not possible to purely generate only events with B0 ! )\
 
 \b c.
-\b0  \ul EvtGen\ulnone  forces the decay into K*0 mu mu (or K*0 J/psi | psi(2S) (mu mu) for the control channel)\
+\b0  \ul EvtGen\ulnone  forces the decay into K*0 mu mu ( or K*0 J/psi | psi(2S) (mu mu) )\
 
 \b d.
 \b0  The muon filter selects only events in which the muons pass the criteria (min pT and eta)\
@@ -797,7 +797,6 @@ By contrast, the mistagging variation that we had (from 8% to 12.2%) changed the
 \b0  @\
 @@@@@@@@@\
 1. Re-define variables: cos(theta_K) --> theta_K, cos(theta_l) --> theta_l\
-\
 2. Re-define 3D efficiency: theta_K, theta_l, phi\
 3. Define PDF classes + virtual PDF class: implement PDF + save/load parameters + toy + folding --> efficiency\
 4. Re-define 4D fit variables: mass, theta_K, theta_l, phi\
@@ -821,19 +820,26 @@ pp cross section at 7 TeV: 49.59 mb\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 \cf0 \
 \ul Data:\
-\ulnone /DoubleMuParked/Run2012A-22Jan2013-v1/AOD: run range 190450 - 193621, lumi: 5E33\
+\ulnone /DoubleMuParked/Run2012A-22Jan2013-v1/AOD: run range 190645 - 193621, lumi: 5E33\
 /MuOniaParked/Run2012B-22Jan2013-v1/AOD: run range 193833 - 196531, lumi: 7E33\
 /MuOniaParked/Run2012C-22Jan2013-v1/AOD: run range 198022 - 203742, lumi: 7E33\
 /MuOniaParked/Run2012D-22Jan2013-v1/AOD: run range 203777 - 208686, lumi: 8E33\
 \ul \
+\
 \ulnone @@@@@@@@@@@\
 @ 
 \b Run-dependent MC
 \b0  @\
 @@@@@@@@@@@\
-( A ) Pileup\
-( B ) Muon detector configuration GT, DT, CSC (L1 IOVs)\
-( C ) dimuon DZ configuration change after run #199648\
+
+\b ( A )
+\b0  Pileup\
+
+\b ( B )
+\b0  Muon detector configuration GT, DT, CSC (L1 IOVs)\
+
+\b ( C )
+\b0  dimuon DZ configuration change after run #199648\
 http://dl.dropboxusercontent.com/u/6901242/dzfilter_inefficiency_fix.pdf\
 hltESPTrajectoryCleanerBySharedHits ("TrajectoryCleanerESProducer")\
 	Parametri: \
@@ -843,18 +849,27 @@ hltDiMuonMerging ("SimpleTrackListMerger")\
 	Parametri:\
 	FoundHitBonus = cms.double( 100.0 ) # before run 199648 it was 5.0\
 	LostHitPenalty = cms.double( 0.0 ) # before run 199648 it was 20.0\
-( D ) HLT to be conformal to ( B ) and ( C )\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
-\cf0 ( E ) CMSSW_5_3 has loopers reconstruction while CMSSW_5_2 doesn't\
-( F ) Tracker AlCa: november 2012 BPIX movement along z of ~120 um\
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
-\cf0 \
-\ul Private MC:\
+
+\b ( D )
+\b0  HLT to be conformal to 
+\b ( B )
+\b0  and 
+\b ( C )
+\b0 \
+
+\b ( E )
+\b0  CMSSW_5_3 has loopers reconstruction while CMSSW_5_2 doesn't\
+
+\b ( F )
+\b0  Tracker AlCa: november 2012 BPIX movement along z of ~120 um\
+\
+\
+\ul Private signal MC:\
 \ulnone B0ToKstMuMu_GEN_NoFilter ...\
 B0ToJPsiKst_GEN_NoFilter \'85\
 B0ToPsi2SKst_GEN_NoFilter \'85\
 \
-\ul Official MCs:\
+\ul Official signal MCs:\
 \ulnone B0ToKstMuMu ...\
 B0ToJPsiKst ...\
 B0ToPsi2SKst ...\
@@ -937,4 +952,42 @@ LambdaBToPsiMuMu\
 \b0  by pythia / data (1.19 / 1.26) --> 
 \b 3640.7 pb-1 (1.42 data)
 \b0 \
+\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 @@@@@@@@@@@@@@@\
+@ 
+\b HLT and pre-selection cuts
+\b0  @\
+@@@@@@@@@@@@@@@\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b \cf0 \ul \ulc0 \
+HLT-trigger cuts:\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b0 \cf0 \ulnone - mu max eta 2.2\
+- mu DCA w/respect to BS 2.0 [cm]\
+- mu min pT 3.5 [GeV/c]\
+\
+- mu-mu min pT 6.9 [GeV/c]\
+- mu-mu min inv. mass 1.0 [GeV/c2]\
+- mu-mu max inv. mass 4.8 [GeV/c2]\
+- mu-mu Vtx CL  = 0.10\
+- mu-mu L/sigma w/respect to BS 3.0\
+- mu-mu DCA w/respect each other 0.5 [cm]\
+- mu-mu cos(alpha) w/respect to BS 0.9\
+\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b \cf0 \ul \ulc0 Pre-selection cuts:\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b0 \cf0 \ulnone - B0 mass upper limit 6.5 [GeV/c2]\
+- B0 mass lower limit 4.5 [GeV/c2]\
+- B0 Vtx CL 0.01\
+- K*0 (OR K*0bar) mass window sigma 3.0\
+- hadron min pT 0.4 [GeV/c]\
+- hadron DCA/sigma w/respect to BS 1.0\
 }
