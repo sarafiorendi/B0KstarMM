@@ -25,7 +25,7 @@ process.MessageLogger.suppressWarning = cms.untracked.vstring('B0KstMuMu')
 ### GlobalTag ###
 #################
 if (runDataMC != 1):
-    process.GlobalTag.globaltag = cms.string('START53_V19F::All')
+    process.GlobalTag.globaltag = cms.string('START53_V7G::All') # Signal MC: START53_V19F; J/psi X MC: START53_V7G
 else:
     process.GlobalTag.globaltag = cms.string('FT53_V21A_AN6::All')
 
