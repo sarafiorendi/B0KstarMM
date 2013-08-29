@@ -12,7 +12,7 @@
 #$dirName = "/nfs/data36/cms/dinardo/B0ToPsi2SKst_GEN_NoFilter_MC_NTuples/" ;
 
 ### Data ###
-$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_ReRecoA_01/" ;
+$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_Data2012A_01/" ;
 
 
 $listcmd = "ls " . $dirName ;
@@ -40,7 +40,7 @@ for ($count = 0; $count < $nOut; $count++)
 #    $fileOut = "B0ToPsi2SKst_GEN_NoFilter_MC_NTuples" ;
 
 ### Data ###
-    $fileOut = "B0ToKstMuMu_DataRRA_NTuples_Merged" ;
+    $fileOut = "B0ToKstMuMu_Data2012A_NTuples_Merged" ;
 
 
     $cmd = "hadd " . $fileOut . "_" . $count . ".root " ;
