@@ -105,6 +105,7 @@ class B0KstMuMuTreeContent
   std::vector<double>       *mumCL, *mumNormChi2, *mumPx, *mumPy, *mumPz;
   std::vector<double>       *mumDCAVtx, *mumDCAVtxE, *mumDCABS, *mumDCABSE, *mumKinkChi2, *mumFracHits;
   std::vector<double>       *mumdxyVtx, *mumdzVtx;
+  std::vector<double>       *mumDeltaRwithMC;
   std::vector<std::string>  *mumCat;
   std::vector<int>          *mumNPixHits, *mumNPixLayers, *mumNTrkHits, *mumNTrkLayers, *mumNMuonHits, *mumNMatchStation;
   std::vector<std::string>  *mumTrig;
@@ -116,6 +117,7 @@ class B0KstMuMuTreeContent
   std::vector<double>       *mupCL, *mupNormChi2, *mupPx, *mupPy, *mupPz;
   std::vector<double>       *mupDCAVtx, *mupDCAVtxE, *mupDCABS, *mupDCABSE, *mupKinkChi2, *mupFracHits;
   std::vector<double>       *mupdxyVtx, *mupdzVtx;
+  std::vector<double>       *mupDeltaRwithMC;
   std::vector<std::string>  *mupCat;
   std::vector<int>          *mupNPixHits, *mupNPixLayers, *mupNTrkHits, *mupNTrkLayers, *mupNMuonHits, *mupNMatchStation;
   std::vector<std::string>  *mupTrig;
@@ -127,6 +129,7 @@ class B0KstMuMuTreeContent
   std::vector<double>       *kstTrkmCL, *kstTrkmNormChi2, *kstTrkmPx, *kstTrkmPy, *kstTrkmPz;
   std::vector<double>       *kstTrkmDCAVtx, *kstTrkmDCAVtxE, *kstTrkmDCABS, *kstTrkmDCABSE, *kstTrkmFracHits;
   std::vector<double>       *kstTrkmdxyVtx, *kstTrkmdzVtx;
+  std::vector<double>       *kstTrkmDeltaRwithMC;
   std::vector<int>          *kstTrkmNPixHits, *kstTrkmNPixLayers, *kstTrkmNTrkHits, *kstTrkmNTrkLayers;
   std::vector<std::string>  *kstTrkmMuMatch;
 
@@ -137,6 +140,7 @@ class B0KstMuMuTreeContent
   std::vector<double>       *kstTrkpCL, *kstTrkpNormChi2, *kstTrkpPx, *kstTrkpPy, *kstTrkpPz;
   std::vector<double>       *kstTrkpDCAVtx, *kstTrkpDCAVtxE, *kstTrkpDCABS, *kstTrkpDCABSE, *kstTrkpFracHits;
   std::vector<double>       *kstTrkpdxyVtx, *kstTrkpdzVtx;
+  std::vector<double>       *kstTrkpDeltaRwithMC;
   std::vector<int>          *kstTrkpNPixHits, *kstTrkpNPixLayers, *kstTrkpNTrkHits, *kstTrkpNTrkLayers;
   std::vector<std::string>  *kstTrkpMuMatch;
 

@@ -1262,7 +1262,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      if(fabs(iVertex->z()) > PRIVTXMAXZ)              continue;
 	      if(fabs(iVertex->position().rho()) > PRIVTXMAXR) continue;
 	      NTuple->recoVtxN++;
-	  }
+	    }
 
 
 	  // #####################################
@@ -1479,7 +1479,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      const reco::Candidate* genKst_trkp = NULL;
 
 
-	      bool doMatching = false;
+	      bool foundSomething = false;
 	      if ((abs(FirstPart->pdgId()) == 511) && (isSignal == true) &&
 		  (((imum != -1) && (imup != -1) && (ikst != -1) && (ikst_trkm != -1) && (ikst_trkp != -1)) ||
 		   ((NTuple->genSignal != 1) && (NTuple->genSignal != 2) &&
@@ -1539,7 +1539,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  NTuple->genSignKstHasFSR = PhotonKst;
 
 
-		  doMatching = true;
+		  foundSomething = true;
 		} // End if B0/B0bar signal
 	      else
 		{
@@ -1568,17 +1568,17 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 				  if (genMup->pdgId() == -13)
 				    {
 				      if (printMsg == true) std::cout << __LINE__ << " : found dimuons for possible background" << std::endl;
-				      doMatching = true;
+				      foundSomething = true;
 				      break;
 				    }
 				}
-			      if (doMatching == true) break;
+			      if (foundSomething == true) break;
 			    }
 			}
 
-		      if ((doMatching == true) && (posDau.size() == 2) && (negDau.size() == 1))
+		      if ((foundSomething == true) && (posDau.size() == 2) && (negDau.size() == 1))
 			{
-			  doMatching = false;
+			  foundSomething = false;
 			  for (unsigned int i = 0; i < posDau.size(); i++)
 			    {
 			      genKst_trkp = findDaughter (genParticles, &posDau, i);
@@ -1588,14 +1588,14 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 				  NTuple->genMuMuBG = FirstPart->pdgId();
 				  NTuple->genMuMuBGnTrksp = 1;
-				  doMatching = true;
+				  foundSomething = true;
 				  if (printMsg == true) std::cout << __LINE__ << " : get background positive track: " << genKst_trkp->pdgId() << "\tfrom mother: " << genKst_trkp->mother()->pdgId() << std::endl;
 				}
 			    }
 			}
-		      else if ((doMatching == true) && (posDau.size() == 1) && (negDau.size() == 2))
+		      else if ((foundSomething == true) && (posDau.size() == 1) && (negDau.size() == 2))
 			{
-			  doMatching = false;
+			  foundSomething = false;
 			  for (unsigned int i = 0; i < negDau.size(); i++)
 			    {
 			      genKst_trkm = findDaughter (genParticles, &negDau, i);
@@ -1605,14 +1605,14 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 				  NTuple->genMuMuBG = FirstPart->pdgId();			  
 				  NTuple->genMuMuBGnTrksm = 1;
-				  doMatching = true;
+				  foundSomething = true;
 				  if (printMsg == true) std::cout << __LINE__ << " : get background negative track: " << genKst_trkm->pdgId() << "\tfrom mother: " << genKst_trkm->mother()->pdgId() << std::endl;
 				}
 			    }
 			}
-		      else if ((doMatching == true) && (posDau.size() == 2) && (negDau.size() == 2))
+		      else if ((foundSomething == true) && (posDau.size() == 2) && (negDau.size() == 2))
 			{
-			  doMatching = false;
+			  foundSomething = false;
 			  for (unsigned int i = 0; i < negDau.size(); i++)
 			    {
 			      genKst_trkm = findDaughter (genParticles, &negDau, i);
@@ -1628,7 +1628,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 					  NTuple->genMuMuBG = FirstPart->pdgId();
 					  NTuple->genMuMuBGnTrksp = 1;
 					  NTuple->genMuMuBGnTrksm = 1;
-					  doMatching = true;
+					  foundSomething = true;
 					  if (printMsg == true)
 					    {
 					      std::cout << __LINE__ << " : get background negative track: " << genKst_trkm->pdgId() << "\tfrom mother: " << genKst_trkm->mother()->pdgId();
@@ -1639,9 +1639,9 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 				}
 			    }
 			}
-		      else if ((doMatching == true) && (posDau.size() >= 2) && (negDau.size() >= 2))
+		      else if ((foundSomething == true) && (posDau.size() >= 2) && (negDau.size() >= 2))
 			{
-			  doMatching = false;
+			  foundSomething = false;
 
 			  double bestMass = 0.;
 			  unsigned int negDauIndx = 0;
@@ -1681,7 +1681,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			      NTuple->genMuMuBG = FirstPart->pdgId();
 			      NTuple->genMuMuBGnTrksp = 1;
 			      NTuple->genMuMuBGnTrksm = 1;
-			      doMatching = true;
+			      foundSomething = true;
 			      if (printMsg == true)
 				{
 				  std::cout << __LINE__ << " : get background negative track: " << genKst_trkm->pdgId() << "\tfrom mother: " << genKst_trkm->mother()->pdgId();
@@ -1691,7 +1691,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			}
 		      else
 			{
-			  doMatching = false;
+			  foundSomething = false;
 			  if (printMsg == true) std::cout << __LINE__ << " : @@@ No background found @@@" << std::endl;
 			}
 		    }
@@ -1702,7 +1702,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      // ########################
 	      // # Save gen information #
 	      // ########################
-	      if (doMatching == true)
+	      if (foundSomething == true)
 		{
 		  if (printMsg == true) std::cout << __LINE__ << " : @@@ Saving signal OR background compatible with signal @@@" << std::endl;
 
@@ -1860,78 +1860,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		      NTuple->genKstTrkpPz = genKst_trkp->pz();
 		    }
 
-
-		  for (unsigned int i = 0; i < NTuple->nB; i++)
-		    {
-		      // ###########################
-		      // # Check matching with mu- #
-		      // ###########################
-		      deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genMumPx,NTuple->genMumPy,NTuple->genMumPz, NTuple->mumPx->at(i),NTuple->mumPy->at(i),NTuple->mumPz->at(i));
-		      if (deltaEtaPhi < RCUTMU)
-			{
-			  NTuple->truthMatchMum->push_back(true);
-			  if (printMsg == true) std::cout << __LINE__ << " : found matched mu-" << std::endl;
-			}
-		      else NTuple->truthMatchMum->push_back(false);
-		      
-
-		      // ###########################
-		      // # Check matching with mu+ #
-		      // ###########################
-		      deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genMupPx,NTuple->genMupPy,NTuple->genMupPz, NTuple->mupPx->at(i),NTuple->mupPy->at(i),NTuple->mupPz->at(i));
-		      if (deltaEtaPhi < RCUTMU)
-			{
-			  NTuple->truthMatchMup->push_back(true);
-			  if (printMsg == true) std::cout << __LINE__ << " : found matched mu+" << std::endl;
-			}
-		      else NTuple->truthMatchMup->push_back(false);
-		      
-
-		      // ##################################
-		      // # Check matching with K*0 track- #
-		      // ##################################
-		      if ((NTuple->genSignal != 0) || (NTuple->genMuMuBGnTrksm != 0))
-			{
-			  deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genKstTrkmPx,NTuple->genKstTrkmPy,NTuple->genKstTrkmPz, NTuple->kstTrkmPx->at(i),NTuple->kstTrkmPy->at(i),NTuple->kstTrkmPz->at(i));
-			  if (deltaEtaPhi < RCUTTRK)
-			    {
-			      NTuple->truthMatchTrkm->push_back(true);
-			      if (printMsg == true) std::cout << __LINE__ << " : found matched track-" << std::endl;
-			    }
-			  else NTuple->truthMatchTrkm->push_back(false);
-			}
-		      else NTuple->truthMatchTrkm->push_back(false);
-		      
-
-		      // ##################################
-		      // # Check matching with K*0 track+ #
-		      // ##################################
-		      if ((NTuple->genSignal != 0) || (NTuple->genMuMuBGnTrksp != 0))
-			{
-			  deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genKstTrkpPx,NTuple->genKstTrkpPy,NTuple->genKstTrkpPz, NTuple->kstTrkpPx->at(i),NTuple->kstTrkpPy->at(i),NTuple->kstTrkpPz->at(i));
-			  if (deltaEtaPhi < RCUTTRK) 
-			    {
-			      NTuple->truthMatchTrkp->push_back(true);
-			      if (printMsg == true) std::cout << __LINE__ << " : found matched track+" << std::endl;
-			    }
-			  else NTuple->truthMatchTrkp->push_back(false);
-			}
-		      else NTuple->truthMatchTrkp->push_back(false);
-
-
-		      // ####################################################
-		      // # Check matching with B0 --> track+ track- mu+ mu- #
-		      // ####################################################
-		      if ((NTuple->truthMatchTrkm->back() == true) && (NTuple->truthMatchTrkp->back() == true) &&
-			  (NTuple->truthMatchMum->back() == true) && (NTuple->truthMatchMup->back() == true))
-			{
-			  NTuple->truthMatchSignal->push_back(true);
-			  if (printMsg == true) std::cout << __LINE__ << " : @@@ Found matched B0 --> track+ track- mu+ mu- @@@" << std::endl;
-			}
-		      else NTuple->truthMatchSignal->push_back(false);
-
-		    } // End for nB
-		} // End if doMatching
+		} // End if foundSomething
 	    } // End if B0/B0bar OR Bs/Bsbar OR Lambda_b/Lambda_bbar OR B+/B-
 
 
@@ -2007,19 +1936,121 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
     } // End if doGenReco_ == 2 || doGenReco_ == 3
 
 
-  if ((NTuple->nB > 0) && (NTuple->truthMatchSignal->size() == 0))
+
+
+  // ####################################
+  // # Perform matching with candidates #
+  // ####################################
+  if (NTuple->nB > 0)
     {
-      for (unsigned int i = 0; i < NTuple->nB; i++)
+      if (NTuple->truthMatchSignal->size() == 0)
 	{
-	  NTuple->truthMatchMum->push_back(false);
-	  NTuple->truthMatchMup->push_back(false);
-	  NTuple->truthMatchTrkm->push_back(false);
-	  NTuple->truthMatchTrkp->push_back(false);
-	  NTuple->truthMatchSignal->push_back(false);
+	  for (unsigned int i = 0; i < NTuple->nB; i++)
+	    {
+	      mumDeltaRwithMC->push_back(-1.0);
+	      mupDeltaRwithMC->push_back(-1.0);
+	      kstTrkmDeltaRwithMC->push_back(-1.0);
+	      kstTrkpDeltaRwithMC->push_back(-1.0);
+	    
+	      NTuple->truthMatchMum->push_back(false);
+	      NTuple->truthMatchMup->push_back(false);
+	      NTuple->truthMatchTrkm->push_back(false);
+	      NTuple->truthMatchTrkp->push_back(false);
+	      NTuple->truthMatchSignal->push_back(false);
+	    }
+	}
+      else
+	{
+	  for (unsigned int i = 0; i < NTuple->nB; i++)
+	    {
+	      // ###########################
+	      // # Check matching with mu- #
+	      // ###########################
+	      deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genMumPx,NTuple->genMumPy,NTuple->genMumPz, NTuple->mumPx->at(i),NTuple->mumPy->at(i),NTuple->mumPz->at(i));
+	      mumDeltaRwithMC->push_back(deltaEtaPhi);
+	      if (deltaEtaPhi < RCUTMU)
+		{
+		  NTuple->truthMatchMum->push_back(true);
+		  if (printMsg == true) std::cout << __LINE__ << " : found matched mu-" << std::endl;
+		}
+	      else NTuple->truthMatchMum->push_back(false);
+		      
+
+	      // ###########################
+	      // # Check matching with mu+ #
+	      // ###########################
+	      deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genMupPx,NTuple->genMupPy,NTuple->genMupPz, NTuple->mupPx->at(i),NTuple->mupPy->at(i),NTuple->mupPz->at(i));
+	      mupDeltaRwithMC->push_back(deltaEtaPhi);
+	      if (deltaEtaPhi < RCUTMU)
+		{
+		  NTuple->truthMatchMup->push_back(true);
+		  if (printMsg == true) std::cout << __LINE__ << " : found matched mu+" << std::endl;
+		}
+	      else NTuple->truthMatchMup->push_back(false);
+		      
+
+	      // ##################################
+	      // # Check matching with K*0 track- #
+	      // ##################################
+	      if ((NTuple->genSignal != 0) || (NTuple->genMuMuBGnTrksm != 0))
+		{
+		  deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genKstTrkmPx,NTuple->genKstTrkmPy,NTuple->genKstTrkmPz, NTuple->kstTrkmPx->at(i),NTuple->kstTrkmPy->at(i),NTuple->kstTrkmPz->at(i));
+		  kstTrkmDeltaRwithMC->push_back(deltaEtaPhi);
+		  if (deltaEtaPhi < RCUTTRK)
+		    {
+		      NTuple->truthMatchTrkm->push_back(true);
+		      if (printMsg == true) std::cout << __LINE__ << " : found matched track-" << std::endl;
+		    }
+		  else NTuple->truthMatchTrkm->push_back(false);
+		}
+	      else
+		{
+		  NTuple->truthMatchTrkm->push_back(false);
+		  kstTrkmDeltaRwithMC->push_back(-1.0);
+		}
+
+
+	      // ##################################
+	      // # Check matching with K*0 track+ #
+	      // ##################################
+	      if ((NTuple->genSignal != 0) || (NTuple->genMuMuBGnTrksp != 0))
+		{
+		  deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genKstTrkpPx,NTuple->genKstTrkpPy,NTuple->genKstTrkpPz, NTuple->kstTrkpPx->at(i),NTuple->kstTrkpPy->at(i),NTuple->kstTrkpPz->at(i));
+		  kstTrkpDeltaRwithMC->push_back(deltaEtaPhi);
+		  if (deltaEtaPhi < RCUTTRK) 
+		    {
+		      NTuple->truthMatchTrkp->push_back(true);
+		      if (printMsg == true) std::cout << __LINE__ << " : found matched track+" << std::endl;
+		    }
+		  else NTuple->truthMatchTrkp->push_back(false);
+		}
+	      else
+		{
+		  NTuple->truthMatchTrkp->push_back(false);
+		  kstTrkpDeltaRwithMC->push_back(-1.0);
+		}
+
+
+	      // ####################################################
+	      // # Check matching with B0 --> track+ track- mu+ mu- #
+	      // ####################################################
+	      if ((NTuple->truthMatchTrkm->back() == true) && (NTuple->truthMatchTrkp->back() == true) &&
+		  (NTuple->truthMatchMum->back() == true) && (NTuple->truthMatchMup->back() == true))
+		{
+		  NTuple->truthMatchSignal->push_back(true);
+		  if (printMsg == true) std::cout << __LINE__ << " : @@@ Found matched B0 --> track+ track- mu+ mu- @@@" << std::endl;
+		}
+	      else NTuple->truthMatchSignal->push_back(false);
+	    }
 	}
     }
 
 
+
+
+  // ###################
+  // # Fill the ntuple #
+  // ###################
   if (printMsg == true) std::cout << __LINE__ << " : @@@ Filling the tree @@@" << std::endl;
   theTree->Fill();
   NTuple->ClearNTuple();

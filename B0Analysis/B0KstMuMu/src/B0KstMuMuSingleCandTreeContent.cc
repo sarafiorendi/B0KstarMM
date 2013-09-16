@@ -35,18 +35,18 @@ void B0KstMuMuSingleCandTreeContent::MakeTreeBranches (TTree* theTree)
   B0KstMuMuTreeContent::MakeTreeBranches(theTree);
 
   // ### B0 variables ###
-  theTree->Branch("B0MassArb", &B0MassArb, "B0MassArb/D");
-  theTree->Branch("B0pT", &B0pT, "B0pT/D");
-  theTree->Branch("B0Eta", &B0Eta, "B0Eta/D");
-  theTree->Branch("B0Phi", &B0Phi, "B0Phi/D");
+  theTree->Branch("B0MassArb",  &B0MassArb,  "B0MassArb/D");
+  theTree->Branch("B0pT",       &B0pT,       "B0pT/D");
+  theTree->Branch("B0Eta",      &B0Eta,      "B0Eta/D");
+  theTree->Branch("B0Phi",      &B0Phi,      "B0Phi/D");
   theTree->Branch("B0notB0bar", &B0notB0bar, "B0notB0bar/O");
 
   // ### Trigger category ###
   theTree->Branch("TrigCat", &TrigCat, "TrigCat/I");
 
   // ### Angular anaylsis ###
-  theTree->Branch("CosThetaKArb", &CosThetaKArb, "CosThetaKArb/D");
-  theTree->Branch("CosThetaMuArb", &CosThetaMuArb, "CosThetaMuArb/D");
+  theTree->Branch("CosThetaKArb",       &CosThetaKArb,       "CosThetaKArb/D");
+  theTree->Branch("CosThetaMuArb",      &CosThetaMuArb,      "CosThetaMuArb/D");
   theTree->Branch("PhiKstMuMuPlaneArb", &PhiKstMuMuPlaneArb, "PhiKstMuMuPlaneArb/D");
 }
 
@@ -55,18 +55,18 @@ void B0KstMuMuSingleCandTreeContent::SetBranchAddresses (TTree* theTree)
   B0KstMuMuTreeContent::SetBranchAddresses(theTree);
 
   // ### B0 variables ###
-  theTree->SetBranchAddress("B0MassArb", &B0MassArb);
-  theTree->SetBranchAddress("B0pT", &B0pT);
-  theTree->SetBranchAddress("B0Eta", &B0Eta);
-  theTree->SetBranchAddress("B0Phi", &B0Phi);
+  theTree->SetBranchAddress("B0MassArb",  &B0MassArb);
+  theTree->SetBranchAddress("B0pT",       &B0pT);
+  theTree->SetBranchAddress("B0Eta",      &B0Eta);
+  theTree->SetBranchAddress("B0Phi",      &B0Phi);
   theTree->SetBranchAddress("B0notB0bar", &B0notB0bar);
 
   // ### Trigger category ###
   theTree->SetBranchAddress("TrigCat", &TrigCat);
 
   // ### Angular anaylsis ###
-  theTree->SetBranchAddress("CosThetaKArb", &CosThetaKArb);
-  theTree->SetBranchAddress("CosThetaMuArb", &CosThetaMuArb);
+  theTree->SetBranchAddress("CosThetaKArb",       &CosThetaKArb);
+  theTree->SetBranchAddress("CosThetaMuArb",      &CosThetaMuArb);
   theTree->SetBranchAddress("PhiKstMuMuPlaneArb", &PhiKstMuMuPlaneArb);
 }
 

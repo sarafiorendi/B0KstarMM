@@ -4,172 +4,176 @@
 void B0KstMuMuTreeContent::Init ()
 {
   // ### Trigger ###
-  TrigTable = new std::vector<std::string>;
+  TrigTable     = new std::vector<std::string>;
   TrigPrescales = new std::vector<int>;
 
   // ### B0 Mass ###
-  bMass = new std::vector<double>;
-  bMassE = new std::vector<double>;
-  bBarMass = new std::vector<double>;
-  bBarMassE = new std::vector<double>;
-  bPx = new std::vector<double>;
-  bPy = new std::vector<double>;
-  bPz = new std::vector<double>;
+  bMass      = new std::vector<double>;
+  bMassE     = new std::vector<double>;
+  bBarMass   = new std::vector<double>;
+  bBarMassE  = new std::vector<double>;
+  bPx        = new std::vector<double>;
+  bPy        = new std::vector<double>;
+  bPz        = new std::vector<double>;
 
   // ### Pileup information in MC ###
-  bunchXingMC = new std::vector<double>;
-  numInteractionsMC = new std::vector<double>;
+  bunchXingMC           = new std::vector<double>;
+  numInteractionsMC     = new std::vector<double>;
   trueNumInteractionsMC = new std::vector<double>;
 
   // ### B0 Vtx ###
-  bVtxCL = new std::vector<double>;
-  bVtxX = new std::vector<double>;
-  bVtxY = new std::vector<double>;
-  bVtxZ = new std::vector<double>;
-  bCosAlphaVtx = new std::vector<double>;
+  bVtxCL        = new std::vector<double>;
+  bVtxX         = new std::vector<double>;
+  bVtxY         = new std::vector<double>;
+  bVtxZ         = new std::vector<double>;
+  bCosAlphaVtx  = new std::vector<double>;
   bCosAlphaVtxE = new std::vector<double>;
-  bCosAlphaBS = new std::vector<double>;
-  bCosAlphaBSE = new std::vector<double>;
-  bLVtx = new std::vector<double>;
-  bLVtxE = new std::vector<double>;
-  bLBS = new std::vector<double>;
-  bLBSE = new std::vector<double>;
-  bDCAVtx = new std::vector<double>;
-  bDCAVtxE = new std::vector<double>;
-  bDCABS = new std::vector<double>;
-  bDCABSE = new std::vector<double>;
+  bCosAlphaBS   = new std::vector<double>;
+  bCosAlphaBSE  = new std::vector<double>;
+  bLVtx         = new std::vector<double>;
+  bLVtxE        = new std::vector<double>;
+  bLBS          = new std::vector<double>;
+  bLBSE         = new std::vector<double>;
+  bDCAVtx       = new std::vector<double>;
+  bDCAVtxE      = new std::vector<double>;
+  bDCABS        = new std::vector<double>;
+  bDCABSE       = new std::vector<double>;
 
   // ### B0 ctau ###
-  bctauPVBS = new std::vector<double>;
+  bctauPVBS  = new std::vector<double>;
   bctauPVBSE = new std::vector<double>;
 
   // ### K*0 Mass ###
-  kstMass = new std::vector<double>;
-  kstMassE = new std::vector<double>;
-  kstBarMass = new std::vector<double>;
+  kstMass     = new std::vector<double>;
+  kstMassE    = new std::vector<double>;
+  kstBarMass  = new std::vector<double>;
   kstBarMassE = new std::vector<double>;
-  kstPx = new std::vector<double>;
-  kstPy = new std::vector<double>;
-  kstPz = new std::vector<double>;
+  kstPx       = new std::vector<double>;
+  kstPy       = new std::vector<double>;
+  kstPz       = new std::vector<double>;
 
   // ### K*0 Vtx ###
   kstVtxCL = new std::vector<double>;
-  kstVtxX = new std::vector<double>;
-  kstVtxY = new std::vector<double>;
-  kstVtxZ = new std::vector<double>;
+  kstVtxX  = new std::vector<double>;
+  kstVtxY  = new std::vector<double>;
+  kstVtxZ  = new std::vector<double>;
 
   // ### mu+ mu- Mass ###
-  mumuMass = new std::vector<double>;
+  mumuMass  = new std::vector<double>;
   mumuMassE = new std::vector<double>;
-  mumuPx = new std::vector<double>;
-  mumuPy = new std::vector<double>;
-  mumuPz = new std::vector<double>;
+  mumuPx    = new std::vector<double>;
+  mumuPy    = new std::vector<double>;
+  mumuPz    = new std::vector<double>;
 
   // ### mu+ mu- Vtx ###
-  mumuVtxCL = new std::vector<double>;
-  mumuVtxX = new std::vector<double>;
-  mumuVtxY = new std::vector<double>;
-  mumuVtxZ = new std::vector<double>;
-  mumuCosAlphaBS = new std::vector<double>;
+  mumuVtxCL       = new std::vector<double>;
+  mumuVtxX        = new std::vector<double>;
+  mumuVtxY        = new std::vector<double>;
+  mumuVtxZ        = new std::vector<double>;
+  mumuCosAlphaBS  = new std::vector<double>;
   mumuCosAlphaBSE = new std::vector<double>; 
-  mumuLBS = new std::vector<double>;
-  mumuLBSE = new std::vector<double>;
-  mumuDCA = new std::vector<double>;
+  mumuLBS         = new std::vector<double>;
+  mumuLBSE        = new std::vector<double>;
+  mumuDCA         = new std::vector<double>;
 
   // ### mu- ###
-  mumHighPurity = new std::vector<bool>;
-  mumCL = new std::vector<double>;
-  mumNormChi2 = new std::vector<double>;
-  mumPx = new std::vector<double>;
-  mumPy = new std::vector<double>;
-  mumPz = new std::vector<double>;
-  mumDCAVtx = new std::vector<double>;
-  mumDCAVtxE = new std::vector<double>;
-  mumDCABS = new std::vector<double>;
-  mumDCABSE = new std::vector<double>;
-  mumKinkChi2 = new std::vector<double>;
-  mumFracHits = new std::vector<double>;
-  mumdxyVtx = new std::vector<double>;
-  mumdzVtx = new std::vector<double>;
-  mumCat = new std::vector<std::string>;
-  mumNPixHits = new std::vector<int>;
-  mumNPixLayers = new std::vector<int>;
-  mumNTrkHits = new std::vector<int>;
-  mumNTrkLayers = new std::vector<int>;
-  mumNMuonHits = new std::vector<int>;
+  mumHighPurity    = new std::vector<bool>;
+  mumCL            = new std::vector<double>;
+  mumNormChi2      = new std::vector<double>;
+  mumPx            = new std::vector<double>;
+  mumPy            = new std::vector<double>;
+  mumPz            = new std::vector<double>;
+  mumDCAVtx        = new std::vector<double>;
+  mumDCAVtxE       = new std::vector<double>;
+  mumDCABS         = new std::vector<double>;
+  mumDCABSE        = new std::vector<double>;
+  mumKinkChi2      = new std::vector<double>;
+  mumFracHits      = new std::vector<double>;
+  mumdxyVtx        = new std::vector<double>;
+  mumdzVtx         = new std::vector<double>;
+  mumDeltaRwithMC  = new std::vector<double>;
+  mumCat           = new std::vector<std::string>;
+  mumNPixHits      = new std::vector<int>;
+  mumNPixLayers    = new std::vector<int>;
+  mumNTrkHits      = new std::vector<int>;
+  mumNTrkLayers    = new std::vector<int>;
+  mumNMuonHits     = new std::vector<int>;
   mumNMatchStation = new std::vector<int>;
-  mumTrig = new std::vector<std::string>;
+  mumTrig          = new std::vector<std::string>;
 
   // ### mu+ ###
-  mupHighPurity = new std::vector<bool>;
-  mupCL = new std::vector<double>; 
-  mupNormChi2 = new std::vector<double>;
-  mupPx = new std::vector<double>;
-  mupPy = new std::vector<double>;
-  mupPz = new std::vector<double>;
-  mupDCAVtx = new std::vector<double>;
-  mupDCAVtxE = new std::vector<double>;
-  mupDCABS = new std::vector<double>;
-  mupDCABSE = new std::vector<double>;
-  mupKinkChi2 = new std::vector<double>;
-  mupFracHits = new std::vector<double>;
-  mupdxyVtx = new std::vector<double>;
-  mupdzVtx = new std::vector<double>;
-  mupCat = new std::vector<std::string>;
-  mupNPixHits = new std::vector<int>;
-  mupNPixLayers = new std::vector<int>;
-  mupNTrkHits = new std::vector<int>;
-  mupNTrkLayers = new std::vector<int>;
-  mupNMuonHits = new std::vector<int>;
+  mupHighPurity    = new std::vector<bool>;
+  mupCL            = new std::vector<double>; 
+  mupNormChi2      = new std::vector<double>;
+  mupPx            = new std::vector<double>;
+  mupPy            = new std::vector<double>;
+  mupPz            = new std::vector<double>;
+  mupDCAVtx        = new std::vector<double>;
+  mupDCAVtxE       = new std::vector<double>;
+  mupDCABS         = new std::vector<double>;
+  mupDCABSE        = new std::vector<double>;
+  mupKinkChi2      = new std::vector<double>;
+  mupFracHits      = new std::vector<double>;
+  mupdxyVtx        = new std::vector<double>;
+  mupdzVtx         = new std::vector<double>;
+  mupDeltaRwithMC  = new std::vector<double>;
+  mupCat           = new std::vector<std::string>;
+  mupNPixHits      = new std::vector<int>;
+  mupNPixLayers    = new std::vector<int>;
+  mupNTrkHits      = new std::vector<int>;
+  mupNTrkLayers    = new std::vector<int>;
+  mupNMuonHits     = new std::vector<int>;
   mupNMatchStation = new std::vector<int>;
-  mupTrig = new std::vector<std::string>;
+  mupTrig          = new std::vector<std::string>;
 
   // ### K*0 track- ###
-  kstTrkmHighPurity = new std::vector<bool>;
-  kstTrkmCL = new std::vector<double>;
-  kstTrkmNormChi2 = new std::vector<double>;
-  kstTrkmPx = new std::vector<double>;
-  kstTrkmPy = new std::vector<double>;
-  kstTrkmPz = new std::vector<double>;
-  kstTrkmDCAVtx = new std::vector<double>;
-  kstTrkmDCAVtxE = new std::vector<double>;
-  kstTrkmDCABS = new std::vector<double>;
-  kstTrkmDCABSE = new std::vector<double>;
-  kstTrkmFracHits = new std::vector<double>;
-  kstTrkmdxyVtx = new std::vector<double>;
-  kstTrkmdzVtx = new std::vector<double>;
-  kstTrkmNPixHits = new std::vector<int>;
-  kstTrkmNPixLayers = new std::vector<int>;
-  kstTrkmNTrkHits = new std::vector<int>;
-  kstTrkmNTrkLayers = new std::vector<int>;
-  kstTrkmMuMatch = new std::vector<std::string>;
+  kstTrkmHighPurity   = new std::vector<bool>;
+  kstTrkmCL           = new std::vector<double>;
+  kstTrkmNormChi2     = new std::vector<double>;
+  kstTrkmPx           = new std::vector<double>;
+  kstTrkmPy           = new std::vector<double>;
+  kstTrkmPz           = new std::vector<double>;
+  kstTrkmDCAVtx       = new std::vector<double>;
+  kstTrkmDCAVtxE      = new std::vector<double>;
+  kstTrkmDCABS        = new std::vector<double>;
+  kstTrkmDCABSE       = new std::vector<double>;
+  kstTrkmFracHits     = new std::vector<double>;
+  kstTrkmdxyVtx       = new std::vector<double>;
+  kstTrkmdzVtx        = new std::vector<double>;
+  kstTrkmDeltaRwithMC = new std::vector<double>;
+  kstTrkmNPixHits     = new std::vector<int>;
+  kstTrkmNPixLayers   = new std::vector<int>;
+  kstTrkmNTrkHits     = new std::vector<int>;
+  kstTrkmNTrkLayers   = new std::vector<int>;
+  kstTrkmMuMatch      = new std::vector<std::string>;
 
   // ### K*0 track+ ###
-  kstTrkpHighPurity = new std::vector<bool>;
-  kstTrkpCL = new std::vector<double>;
-  kstTrkpNormChi2 = new std::vector<double>;
-  kstTrkpPx = new std::vector<double>;
-  kstTrkpPy = new std::vector<double>;
-  kstTrkpPz = new std::vector<double>;
-  kstTrkpDCAVtx = new std::vector<double>;
-  kstTrkpDCAVtxE = new std::vector<double>;
-  kstTrkpDCABS = new std::vector<double>;
-  kstTrkpDCABSE = new std::vector<double>;
-  kstTrkpFracHits = new std::vector<double>;
-  kstTrkpdxyVtx = new std::vector<double>;
-  kstTrkpdzVtx = new std::vector<double>;
-  kstTrkpNPixHits = new std::vector<int>;
-  kstTrkpNPixLayers = new std::vector<int>;
-  kstTrkpNTrkHits = new std::vector<int>;
-  kstTrkpNTrkLayers = new std::vector<int>;
-  kstTrkpMuMatch = new std::vector<std::string>;
+  kstTrkpHighPurity   = new std::vector<bool>;
+  kstTrkpCL           = new std::vector<double>;
+  kstTrkpNormChi2     = new std::vector<double>;
+  kstTrkpPx           = new std::vector<double>;
+  kstTrkpPy           = new std::vector<double>;
+  kstTrkpPz           = new std::vector<double>;
+  kstTrkpDCAVtx       = new std::vector<double>;
+  kstTrkpDCAVtxE      = new std::vector<double>;
+  kstTrkpDCABS        = new std::vector<double>;
+  kstTrkpDCABSE       = new std::vector<double>;
+  kstTrkpFracHits     = new std::vector<double>;
+  kstTrkpdxyVtx       = new std::vector<double>;
+  kstTrkpdzVtx        = new std::vector<double>;
+  kstTrkpDeltaRwithMC = new std::vector<double>;
+  kstTrkpNPixHits     = new std::vector<int>;
+  kstTrkpNPixLayers   = new std::vector<int>;
+  kstTrkpNTrkHits     = new std::vector<int>;
+  kstTrkpNTrkLayers   = new std::vector<int>;
+  kstTrkpMuMatch      = new std::vector<std::string>;
 
   // ### Matching Between Reconstructed and Generated ###
   truthMatchSignal = new std::vector<bool>;
-  truthMatchMum = new std::vector<bool>;
-  truthMatchMup = new std::vector<bool>;
-  truthMatchTrkm = new std::vector<bool>;
-  truthMatchTrkp = new std::vector<bool>;
+  truthMatchMum    = new std::vector<bool>;
+  truthMatchMup    = new std::vector<bool>;
+  truthMatchTrkm   = new std::vector<bool>;
+  truthMatchTrkp   = new std::vector<bool>;
 }
 
 void B0KstMuMuTreeContent::Destroy ()
@@ -262,6 +266,7 @@ void B0KstMuMuTreeContent::Destroy ()
   delete mumFracHits;
   delete mumdxyVtx;
   delete mumdzVtx;
+  delete mumDeltaRwithMC;
   delete mumCat;
   delete mumNPixHits;
   delete mumNPixLayers;
@@ -286,6 +291,7 @@ void B0KstMuMuTreeContent::Destroy ()
   delete mupFracHits;
   delete mupdxyVtx;
   delete mupdzVtx;
+  delete mupDeltaRwithMC;
   delete mupCat;
   delete mupNPixHits;
   delete mupNPixLayers;
@@ -309,6 +315,7 @@ void B0KstMuMuTreeContent::Destroy ()
   delete kstTrkmFracHits;
   delete kstTrkmdxyVtx;
   delete kstTrkmdzVtx;
+  delete kstTrkmDeltaRwithMC;
   delete kstTrkmNPixHits;
   delete kstTrkmNPixLayers;
   delete kstTrkmNTrkHits;
@@ -329,6 +336,7 @@ void B0KstMuMuTreeContent::Destroy ()
   delete kstTrkpFracHits;
   delete kstTrkpdxyVtx;
   delete kstTrkpdzVtx;
+  delete kstTrkpDeltaRwithMC;
   delete kstTrkpNPixHits;
   delete kstTrkpNPixLayers;
   delete kstTrkpNTrkHits;
@@ -348,10 +356,10 @@ void B0KstMuMuTreeContent::ClearNTuple ()
   // ########################################################
   // # Run Number, event number, #reco vtx and event weight #
   // ########################################################
-  runN = 0;
-  eventN = 0;
-  recoVtxN = 0;
-  evWeight = 1;
+  runN       = 0;
+  eventN     = 0;
+  recoVtxN   = 0;
+  evWeight   = 1;
   evWeightE2 = 0;
 
   // ### Trigger ###
@@ -362,11 +370,11 @@ void B0KstMuMuTreeContent::ClearNTuple ()
   
   // ### Primary Vertex and Beam Spot ###
   priVtxCL = 0;
-  priVtxX = 0;
-  priVtxY = 0;
-  priVtxZ = 0;
-  bsX = 0;
-  bsY = 0;
+  priVtxX  = 0;
+  priVtxY  = 0;
+  priVtxZ  = 0;
+  bsX      = 0;
+  bsY      = 0;
 
   // ### B0 Mass ###
   bMass->clear();
@@ -452,6 +460,7 @@ void B0KstMuMuTreeContent::ClearNTuple ()
   mumFracHits->clear();
   mumdxyVtx->clear();
   mumdzVtx->clear();
+  mumDeltaRwithMC->clear();
   mumCat->clear();
   mumNPixHits->clear();
   mumNPixLayers->clear();
@@ -476,6 +485,7 @@ void B0KstMuMuTreeContent::ClearNTuple ()
   mupFracHits->clear();
   mupdxyVtx->clear();
   mupdzVtx->clear();
+  mupDeltaRwithMC->clear();
   mupCat->clear();
   mupNPixHits->clear();
   mupNPixLayers->clear();
@@ -498,7 +508,8 @@ void B0KstMuMuTreeContent::ClearNTuple ()
   kstTrkmDCABSE->clear();
   kstTrkmFracHits->clear();
   kstTrkmdxyVtx->clear();
-  kstTrkmdzVtx->clear();
+  kstTrkmdzVtx->clear(); 
+  kstTrkmDeltaRwithMC->clear();
   kstTrkmNPixHits->clear();
   kstTrkmNPixLayers->clear();
   kstTrkmNTrkHits->clear();
@@ -519,6 +530,7 @@ void B0KstMuMuTreeContent::ClearNTuple ()
   kstTrkpFracHits->clear();
   kstTrkpdxyVtx->clear();
   kstTrkpdzVtx->clear();
+  kstTrkpDeltaRwithMC->clear();
   kstTrkpNPixHits->clear();
   kstTrkpNPixLayers->clear();
   kstTrkpNTrkHits->clear();
@@ -531,46 +543,75 @@ void B0KstMuMuTreeContent::ClearNTuple ()
 void B0KstMuMuTreeContent::ClearMonteCarlo ()
 {
   // ### Generated Observables ###
-  genSignal = 0;
-  genMuMuBG = 0; genMuMuBGnTrksm = 0; genMuMuBGnTrksp = 0;
-  genPsiPrompt = false;
-  genSignHasFSR = false; genSignKstHasFSR = false; genSignPsiHasFSR = false;
+  genSignal       = 0;
+  genMuMuBG       = 0;
+  genMuMuBGnTrksm = 0;
+  genMuMuBGnTrksp = 0;
+  genPsiPrompt     = false;
+  genSignHasFSR    = false;
+  genSignKstHasFSR = false;
+  genSignPsiHasFSR = false;
 
   // # Generated Primary Vertex #
-  genPriVtxX = 0; genPriVtxY = 0; genPriVtxZ = 0;
+  genPriVtxX = 0;
+  genPriVtxY = 0;
+  genPriVtxZ = 0;
 
   // ### Generated B0 Mass ###
-  genB0Mass = 0; genB0Px = 0; genB0Py = 0; genB0Pz = 0;
+  genB0Mass = 0;
+  genB0Px   = 0;
+  genB0Py   = 0;
+  genB0Pz   = 0;
 
   // ### Generated B0 Vtx ###
-  genB0VtxX = 0; genB0VtxY = 0; genB0VtxZ = 0;
+  genB0VtxX = 0;
+  genB0VtxY = 0;
+  genB0VtxZ = 0;
 
   // ### Generated K*0 Mass ###
-  genKstMass = 0; genKstPx = 0; genKstPy = 0; genKstPz = 0;
+  genKstMass = 0;
+  genKstPx   = 0;
+  genKstPy   = 0;
+  genKstPz   = 0;
 
   // ### Generated K*0 Vtx ###
-  genKstVtxX = 0; genKstVtxY = 0; genKstVtxZ = 0;
+  genKstVtxX = 0;
+  genKstVtxY = 0;
+  genKstVtxZ = 0;
 
   // ### Generated J/psi or psi(2S) Mass and Vtx ###
-  genPsiMass = 0; genPsiVtxX = 0; genPsiVtxY = 0; genPsiVtxZ = 0;
+  genPsiMass = 0;
+  genPsiVtxX = 0;
+  genPsiVtxY = 0;
+  genPsiVtxZ = 0;
 
   // ### Generated mu- ###
   genMumMother = 0;
-  genMumPx = 0; genMumPy = 0; genMumPz = 0;
-  trueMumTriggered = false; trueMumInAcceptance = false;
+  genMumPx     = 0;
+  genMumPy     = 0;
+  genMumPz     = 0;
+  trueMumTriggered    = false;
+  trueMumInAcceptance = false;
 
   // ### Generated mu+ ###
   genMupMother = 0;
-  genMupPx = 0; genMupPy = 0; genMupPz = 0;
-  trueMupTriggered = false; trueMupInAcceptance = false;
+  genMupPx     = 0;
+  genMupPy     = 0;
+  genMupPz     = 0;
+  trueMupTriggered    = false;
+  trueMupInAcceptance = false;
 
   // ### Generated K*0 track- ###
   genKstTrkmMother = 0;
-  genKstTrkmPx = 0; genKstTrkmPy = 0; genKstTrkmPz = 0;
+  genKstTrkmPx     = 0;
+  genKstTrkmPy     = 0;
+  genKstTrkmPz     = 0;
 
   // ### Generated K*0 track+ ###
   genKstTrkpMother = 0;
-  genKstTrkpPx = 0; genKstTrkpPy = 0; genKstTrkpPz = 0;
+  genKstTrkpPx     = 0;
+  genKstTrkpPy     = 0;
+  genKstTrkpPz     = 0;
 
   // ### Matching Between Reconstructed and Generated ###
   truthMatchSignal->clear();
@@ -585,190 +626,194 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   // ########################################################
   // # Run Number, event number, #reco vtx and event weight #
   // ########################################################
-  theTree->Branch("runN", &runN, "runN/i");
-  theTree->Branch("eventN", &eventN, "eventN/i");
-  theTree->Branch("recoVtxN", &recoVtxN, "recoVtxN/i");
-  theTree->Branch("evWeight", &evWeight, "evWeight/D");
+  theTree->Branch("runN",       &runN,       "runN/i");
+  theTree->Branch("eventN",     &eventN,     "eventN/i");
+  theTree->Branch("recoVtxN",   &recoVtxN,   "recoVtxN/i");
+  theTree->Branch("evWeight",   &evWeight,   "evWeight/D");
   theTree->Branch("evWeightE2", &evWeightE2, "evWeightE2/D");
 
   // ### Trigger ###
-  theTree->Branch("TrigTable", &TrigTable);
+  theTree->Branch("TrigTable",     &TrigTable);
   theTree->Branch("TrigPrescales", &TrigPrescales);
 
   theTree->Branch("nB", &nB, "nB/i");
 
   // ### Primary Vertex and Beam Spot ###
   theTree->Branch("priVtxCL", &priVtxCL, "priVtxCL/D");
-  theTree->Branch("priVtxX", &priVtxX, "priVtxX/D");
-  theTree->Branch("priVtxY", &priVtxY, "priVtxY/D");
-  theTree->Branch("priVtxZ", &priVtxZ, "priVtxZ/D");
-  theTree->Branch("bsX", &bsX, "bsX/D");
-  theTree->Branch("bsY", &bsY, "bsY/D");
+  theTree->Branch("priVtxX",  &priVtxX,  "priVtxX/D");
+  theTree->Branch("priVtxY",  &priVtxY,  "priVtxY/D");
+  theTree->Branch("priVtxZ",  &priVtxZ,  "priVtxZ/D");
+  theTree->Branch("bsX",      &bsX,      "bsX/D");
+  theTree->Branch("bsY",      &bsY,      "bsY/D");
 
    // ### B0 Mass ###  
-  theTree->Branch("bMass", &bMass);
-  theTree->Branch("bMassE", &bMassE);
-  theTree->Branch("bBarMass", &bBarMass);
+  theTree->Branch("bMass",     &bMass);
+  theTree->Branch("bMassE",    &bMassE);
+  theTree->Branch("bBarMass",  &bBarMass);
   theTree->Branch("bBarMassE", &bBarMassE);
-  theTree->Branch("bPx", &bPx);
-  theTree->Branch("bPy", &bPy);
-  theTree->Branch("bPz", &bPz);
+  theTree->Branch("bPx",       &bPx);
+  theTree->Branch("bPy",       &bPy);
+  theTree->Branch("bPz",       &bPz);
 
   // ### Pileup information in MC ###
-  theTree->Branch("bunchXingMC", &bunchXingMC);
-  theTree->Branch("numInteractionsMC", &numInteractionsMC);
+  theTree->Branch("bunchXingMC",           &bunchXingMC);
+  theTree->Branch("numInteractionsMC",     &numInteractionsMC);
   theTree->Branch("trueNumInteractionsMC", &trueNumInteractionsMC);
 
   // ### B0 Vtx ###
-  theTree->Branch("bVtxCL", &bVtxCL);
-  theTree->Branch("bVtxX", &bVtxX);
-  theTree->Branch("bVtxY", &bVtxY);
-  theTree->Branch("bVtxZ", &bVtxZ);
-  theTree->Branch("bCosAlphaVtx", &bCosAlphaVtx);
+  theTree->Branch("bVtxCL",        &bVtxCL);
+  theTree->Branch("bVtxX",         &bVtxX);
+  theTree->Branch("bVtxY",         &bVtxY);
+  theTree->Branch("bVtxZ",         &bVtxZ);
+  theTree->Branch("bCosAlphaVtx",  &bCosAlphaVtx);
   theTree->Branch("bCosAlphaVtxE", &bCosAlphaVtxE);
-  theTree->Branch("bCosAlphaBS", &bCosAlphaBS);
-  theTree->Branch("bCosAlphaBSE", &bCosAlphaBSE);
-  theTree->Branch("bLVtx", &bLVtx);
-  theTree->Branch("bLVtxE", &bLVtxE);
-  theTree->Branch("bLBS", &bLBS);
-  theTree->Branch("bLBSE", &bLBSE);
-  theTree->Branch("bDCAVtx", &bDCAVtx);
-  theTree->Branch("bDCAVtxE", &bDCAVtxE);
-  theTree->Branch("bDCABS", &bDCABS);
-  theTree->Branch("bDCABSE", &bDCABSE);
+  theTree->Branch("bCosAlphaBS",   &bCosAlphaBS);
+  theTree->Branch("bCosAlphaBSE",  &bCosAlphaBSE);
+  theTree->Branch("bLVtx",         &bLVtx);
+  theTree->Branch("bLVtxE",        &bLVtxE);
+  theTree->Branch("bLBS",          &bLBS);
+  theTree->Branch("bLBSE",         &bLBSE);
+  theTree->Branch("bDCAVtx",       &bDCAVtx);
+  theTree->Branch("bDCAVtxE",      &bDCAVtxE);
+  theTree->Branch("bDCABS",        &bDCABS);
+  theTree->Branch("bDCABSE",       &bDCABSE);
 
   // ### B0 ctau ###
-  theTree->Branch("bctauPVBS", &bctauPVBS);
+  theTree->Branch("bctauPVBS",  &bctauPVBS);
   theTree->Branch("bctauPVBSE", &bctauPVBSE);
 
    // ### K*0 Mass ###
-  theTree->Branch("kstMass", &kstMass);
-  theTree->Branch("kstMassE", &kstMassE);
-  theTree->Branch("kstBarMass", &kstBarMass);
+  theTree->Branch("kstMass",     &kstMass);
+  theTree->Branch("kstMassE",    &kstMassE);
+  theTree->Branch("kstBarMass",  &kstBarMass);
   theTree->Branch("kstBarMassE", &kstBarMassE);
-  theTree->Branch("kstPx", &kstPx);
-  theTree->Branch("kstPy", &kstPy);
-  theTree->Branch("kstPz", &kstPz);
+  theTree->Branch("kstPx",       &kstPx);
+  theTree->Branch("kstPy",       &kstPy);
+  theTree->Branch("kstPz",       &kstPz);
 
   // ### K*0 Vtx ###
   theTree->Branch("kstVtxCL", &kstVtxCL);
-  theTree->Branch("kstVtxX", &kstVtxX);
-  theTree->Branch("kstVtxY", &kstVtxY);
-  theTree->Branch("kstVtxZ", &kstVtxZ);
+  theTree->Branch("kstVtxX",  &kstVtxX);
+  theTree->Branch("kstVtxY",  &kstVtxY);
+  theTree->Branch("kstVtxZ",  &kstVtxZ);
   
   // ### mu+ mu- Mass ###
-  theTree->Branch("mumuMass", &mumuMass);
+  theTree->Branch("mumuMass",  &mumuMass);
   theTree->Branch("mumuMassE", &mumuMassE);
-  theTree->Branch("mumuPx", &mumuPx);
-  theTree->Branch("mumuPy", &mumuPy);
-  theTree->Branch("mumuPz", &mumuPz);
+  theTree->Branch("mumuPx",    &mumuPx);
+  theTree->Branch("mumuPy",    &mumuPy);
+  theTree->Branch("mumuPz",    &mumuPz);
 
   // ### mu+ mu- Vtx ###
-  theTree->Branch("mumuVtxCL", &mumuVtxCL);
-  theTree->Branch("mumuVtxX", &mumuVtxX);
-  theTree->Branch("mumuVtxY", &mumuVtxY);
-  theTree->Branch("mumuVtxZ", &mumuVtxZ);
-  theTree->Branch("mumuCosAlphaBS", &mumuCosAlphaBS);
+  theTree->Branch("mumuVtxCL",       &mumuVtxCL);
+  theTree->Branch("mumuVtxX",        &mumuVtxX);
+  theTree->Branch("mumuVtxY",        &mumuVtxY);
+  theTree->Branch("mumuVtxZ",        &mumuVtxZ);
+  theTree->Branch("mumuCosAlphaBS",  &mumuCosAlphaBS);
   theTree->Branch("mumuCosAlphaBSE", &mumuCosAlphaBSE);
-  theTree->Branch("mumuLBS", &mumuLBS);
-  theTree->Branch("mumuLBSE", &mumuLBSE);
-  theTree->Branch("mumuDCA", &mumuDCA);
+  theTree->Branch("mumuLBS",         &mumuLBS);
+  theTree->Branch("mumuLBSE",        &mumuLBSE);
+  theTree->Branch("mumuDCA",         &mumuDCA);
 
   // ### mu- ###  
-  theTree->Branch("mumHighPurity", &mumHighPurity);
-  theTree->Branch("mumCL", &mumCL);
-  theTree->Branch("mumNormChi2", &mumNormChi2);
-  theTree->Branch("mumPx", &mumPx);
-  theTree->Branch("mumPy", &mumPy);
-  theTree->Branch("mumPz", &mumPz);
-  theTree->Branch("mumDCAVtx", &mumDCAVtx);
-  theTree->Branch("mumDCAVtxE", &mumDCAVtxE);
-  theTree->Branch("mumDCABS", &mumDCABS);
-  theTree->Branch("mumDCABSE", &mumDCABSE);
-  theTree->Branch("mumKinkChi2", &mumKinkChi2);
-  theTree->Branch("mumFracHits", &mumFracHits);
-  theTree->Branch("mumdxyVtx", &mumdxyVtx);
-  theTree->Branch("mumdzVtx", &mumdzVtx);
-  theTree->Branch("mumCat", &mumCat);
-  theTree->Branch("mumNPixHits", &mumNPixHits);
-  theTree->Branch("mumNPixLayers", &mumNPixLayers);
-  theTree->Branch("mumNTrkHits", &mumNTrkHits);
-  theTree->Branch("mumNTrkLayers", &mumNTrkLayers);
-  theTree->Branch("mumNMuonHits", &mumNMuonHits);
+  theTree->Branch("mumHighPurity",    &mumHighPurity);
+  theTree->Branch("mumCL",            &mumCL);
+  theTree->Branch("mumNormChi2",      &mumNormChi2);
+  theTree->Branch("mumPx",            &mumPx);
+  theTree->Branch("mumPy",            &mumPy);
+  theTree->Branch("mumPz",            &mumPz);
+  theTree->Branch("mumDCAVtx",        &mumDCAVtx);
+  theTree->Branch("mumDCAVtxE",       &mumDCAVtxE);
+  theTree->Branch("mumDCABS",         &mumDCABS);
+  theTree->Branch("mumDCABSE",        &mumDCABSE);
+  theTree->Branch("mumKinkChi2",      &mumKinkChi2);
+  theTree->Branch("mumFracHits",      &mumFracHits);
+  theTree->Branch("mumdxyVtx",        &mumdxyVtx);
+  theTree->Branch("mumdzVtx",         &mumdzVtx);
+  theTree->Branch("mumDeltaRwithMC",  &mumDeltaRwithMC);
+  theTree->Branch("mumCat",           &mumCat);
+  theTree->Branch("mumNPixHits",      &mumNPixHits);
+  theTree->Branch("mumNPixLayers",    &mumNPixLayers);
+  theTree->Branch("mumNTrkHits",      &mumNTrkHits);
+  theTree->Branch("mumNTrkLayers",    &mumNTrkLayers);
+  theTree->Branch("mumNMuonHits",     &mumNMuonHits);
   theTree->Branch("mumNMatchStation", &mumNMatchStation);
-  theTree->Branch("mumTrig", &mumTrig);
+  theTree->Branch("mumTrig",          &mumTrig);
 
   // ### mu+ ###  
-  theTree->Branch("mupHighPurity", &mupHighPurity);
-  theTree->Branch("mupCL", &mupCL);
-  theTree->Branch("mupNormChi2", &mupNormChi2);
-  theTree->Branch("mupPx", &mupPx);
-  theTree->Branch("mupPy", &mupPy);
-  theTree->Branch("mupPz", &mupPz);
-  theTree->Branch("mupDCAVtx", &mupDCAVtx);
-  theTree->Branch("mupDCAVtxE", &mupDCAVtxE);
-  theTree->Branch("mupDCABS", &mupDCABS);
-  theTree->Branch("mupDCABSE", &mupDCABSE);
-  theTree->Branch("mupKinkChi2", &mupKinkChi2);
-  theTree->Branch("mupFracHits", &mupFracHits);
-  theTree->Branch("mupdxyVtx", &mupdxyVtx);
-  theTree->Branch("mupdzVtx", &mupdzVtx);
-  theTree->Branch("mupCat", &mupCat);
-  theTree->Branch("mupNPixHits", &mupNPixHits);
-  theTree->Branch("mupNPixLayers", &mupNPixLayers);
-  theTree->Branch("mupNTrkHits", &mupNTrkHits);
-  theTree->Branch("mupNTrkLayers", &mupNTrkLayers);
-  theTree->Branch("mupNMuonHits", &mupNMuonHits);
+  theTree->Branch("mupHighPurity",    &mupHighPurity);
+  theTree->Branch("mupCL",            &mupCL);
+  theTree->Branch("mupNormChi2",      &mupNormChi2);
+  theTree->Branch("mupPx",            &mupPx);
+  theTree->Branch("mupPy",            &mupPy);
+  theTree->Branch("mupPz",            &mupPz);
+  theTree->Branch("mupDCAVtx",        &mupDCAVtx);
+  theTree->Branch("mupDCAVtxE",       &mupDCAVtxE);
+  theTree->Branch("mupDCABS",         &mupDCABS);
+  theTree->Branch("mupDCABSE",        &mupDCABSE);
+  theTree->Branch("mupKinkChi2",      &mupKinkChi2);
+  theTree->Branch("mupFracHits",      &mupFracHits);
+  theTree->Branch("mupdxyVtx",        &mupdxyVtx);
+  theTree->Branch("mupdzVtx",         &mupdzVtx);
+  theTree->Branch("mupDeltaRwithMC",  &mupDeltaRwithMC);
+  theTree->Branch("mupCat",           &mupCat);
+  theTree->Branch("mupNPixHits",      &mupNPixHits);
+  theTree->Branch("mupNPixLayers",    &mupNPixLayers);
+  theTree->Branch("mupNTrkHits",      &mupNTrkHits);
+  theTree->Branch("mupNTrkLayers",    &mupNTrkLayers);
+  theTree->Branch("mupNMuonHits",     &mupNMuonHits);
   theTree->Branch("mupNMatchStation", &mupNMatchStation);
-  theTree->Branch("mupTrig", &mupTrig);
+  theTree->Branch("mupTrig",          &mupTrig);
 
   // ### K*0 track- ###
-  theTree->Branch("kstTrkmHighPurity", &kstTrkmHighPurity);
-  theTree->Branch("kstTrkmCL", &kstTrkmCL);
-  theTree->Branch("kstTrkmNormChi2", &kstTrkmNormChi2);
-  theTree->Branch("kstTrkmPx", &kstTrkmPx);
-  theTree->Branch("kstTrkmPy", &kstTrkmPy);
-  theTree->Branch("kstTrkmPz", &kstTrkmPz);
-  theTree->Branch("kstTrkmDCAVtx", &kstTrkmDCAVtx);
-  theTree->Branch("kstTrkmDCAVtxE", &kstTrkmDCAVtxE);
-  theTree->Branch("kstTrkmDCABS", &kstTrkmDCABS);
-  theTree->Branch("kstTrkmDCABSE", &kstTrkmDCABSE);
-  theTree->Branch("kstTrkmFracHits", &kstTrkmFracHits);
-  theTree->Branch("kstTrkmdxyVtx", &kstTrkmdxyVtx);
-  theTree->Branch("kstTrkmdzVtx", &kstTrkmdzVtx);
-  theTree->Branch("kstTrkmNPixHits", &kstTrkmNPixHits);
-  theTree->Branch("kstTrkmNPixLayers", &kstTrkmNPixLayers);
-  theTree->Branch("kstTrkmNTrkHits", &kstTrkmNTrkHits);
-  theTree->Branch("kstTrkmNTrkLayers", &kstTrkmNTrkLayers);
-  theTree->Branch("kstTrkmMuMatch", &kstTrkmMuMatch);
+  theTree->Branch("kstTrkmHighPurity",   &kstTrkmHighPurity);
+  theTree->Branch("kstTrkmCL",           &kstTrkmCL);
+  theTree->Branch("kstTrkmNormChi2",     &kstTrkmNormChi2);
+  theTree->Branch("kstTrkmPx",           &kstTrkmPx);
+  theTree->Branch("kstTrkmPy",           &kstTrkmPy);
+  theTree->Branch("kstTrkmPz",           &kstTrkmPz);
+  theTree->Branch("kstTrkmDCAVtx",       &kstTrkmDCAVtx);
+  theTree->Branch("kstTrkmDCAVtxE",      &kstTrkmDCAVtxE);
+  theTree->Branch("kstTrkmDCABS",        &kstTrkmDCABS);
+  theTree->Branch("kstTrkmDCABSE",       &kstTrkmDCABSE);
+  theTree->Branch("kstTrkmFracHits",     &kstTrkmFracHits);
+  theTree->Branch("kstTrkmdxyVtx",       &kstTrkmdxyVtx);
+  theTree->Branch("kstTrkmdzVtx",        &kstTrkmdzVtx);
+  theTree->Branch("kstTrkmDeltaRwithMC", &kstTrkmDeltaRwithMC);
+  theTree->Branch("kstTrkmNPixHits",     &kstTrkmNPixHits);
+  theTree->Branch("kstTrkmNPixLayers",   &kstTrkmNPixLayers);
+  theTree->Branch("kstTrkmNTrkHits",     &kstTrkmNTrkHits);
+  theTree->Branch("kstTrkmNTrkLayers",   &kstTrkmNTrkLayers);
+  theTree->Branch("kstTrkmMuMatch",      &kstTrkmMuMatch);
 
   // ### K*0 track+ ### 
-  theTree->Branch("kstTrkpHighPurity", &kstTrkpHighPurity);
-  theTree->Branch("kstTrkpCL", &kstTrkpCL);
-  theTree->Branch("kstTrkpNormChi2", &kstTrkpNormChi2);
-  theTree->Branch("kstTrkpPx", &kstTrkpPx);
-  theTree->Branch("kstTrkpPy", &kstTrkpPy);
-  theTree->Branch("kstTrkpPz", &kstTrkpPz);
-  theTree->Branch("kstTrkpDCAVtx", &kstTrkpDCAVtx);
-  theTree->Branch("kstTrkpDCAVtxE", &kstTrkpDCAVtxE);
-  theTree->Branch("kstTrkpDCABS", &kstTrkpDCABS);
-  theTree->Branch("kstTrkpDCABSE", &kstTrkpDCABSE);
-  theTree->Branch("kstTrkpFracHits", &kstTrkpFracHits);
-  theTree->Branch("kstTrkpdxyVtx", &kstTrkpdxyVtx);
-  theTree->Branch("kstTrkpdzVtx", &kstTrkpdzVtx);
-  theTree->Branch("kstTrkpNPixHits", &kstTrkpNPixHits);
-  theTree->Branch("kstTrkpNPixLayers", &kstTrkpNPixLayers);
-  theTree->Branch("kstTrkpNTrkHits", &kstTrkpNTrkHits);
-  theTree->Branch("kstTrkpNTrkLayers", &kstTrkpNTrkLayers);
-  theTree->Branch("kstTrkpMuMatch", &kstTrkpMuMatch);
+  theTree->Branch("kstTrkpHighPurity",   &kstTrkpHighPurity);
+  theTree->Branch("kstTrkpCL",           &kstTrkpCL);
+  theTree->Branch("kstTrkpNormChi2",     &kstTrkpNormChi2);
+  theTree->Branch("kstTrkpPx",           &kstTrkpPx);
+  theTree->Branch("kstTrkpPy",           &kstTrkpPy);
+  theTree->Branch("kstTrkpPz",           &kstTrkpPz);
+  theTree->Branch("kstTrkpDCAVtx",       &kstTrkpDCAVtx);
+  theTree->Branch("kstTrkpDCAVtxE",      &kstTrkpDCAVtxE);
+  theTree->Branch("kstTrkpDCABS",        &kstTrkpDCABS);
+  theTree->Branch("kstTrkpDCABSE",       &kstTrkpDCABSE);
+  theTree->Branch("kstTrkpFracHits",     &kstTrkpFracHits);
+  theTree->Branch("kstTrkpdxyVtx",       &kstTrkpdxyVtx);
+  theTree->Branch("kstTrkpdzVtx",        &kstTrkpdzVtx);
+  theTree->Branch("kstTrkpDeltaRwithMC", &kstTrkpDeltaRwithMC);
+  theTree->Branch("kstTrkpNPixHits",     &kstTrkpNPixHits);
+  theTree->Branch("kstTrkpNPixLayers",   &kstTrkpNPixLayers);
+  theTree->Branch("kstTrkpNTrkHits",     &kstTrkpNTrkHits);
+  theTree->Branch("kstTrkpNTrkLayers",   &kstTrkpNTrkLayers);
+  theTree->Branch("kstTrkpMuMatch",      &kstTrkpMuMatch);
   
   // ### Generated Observables ###
-  theTree->Branch("genSignal", &genSignal, "genSignal/I");
-  theTree->Branch("genMuMuBG", &genMuMuBG, "genMuMuBG/I");
-  theTree->Branch("genMuMuBGnTrksm", &genMuMuBGnTrksm, "genMuMuBGnTrksm/I");
-  theTree->Branch("genMuMuBGnTrksp", &genMuMuBGnTrksp, "genMuMuBGnTrksp/I");
-  theTree->Branch("genPsiPrompt", &genPsiPrompt, "genPsiPrompt/O");
-  theTree->Branch("genSignHasFSR", &genSignHasFSR, "genSignHasFSR/O");
+  theTree->Branch("genSignal",        &genSignal,        "genSignal/I");
+  theTree->Branch("genMuMuBG",        &genMuMuBG,        "genMuMuBG/I");
+  theTree->Branch("genMuMuBGnTrksm",  &genMuMuBGnTrksm,  "genMuMuBGnTrksm/I");
+  theTree->Branch("genMuMuBGnTrksp",  &genMuMuBGnTrksp,  "genMuMuBGnTrksp/I");
+  theTree->Branch("genPsiPrompt",     &genPsiPrompt,     "genPsiPrompt/O");
+  theTree->Branch("genSignHasFSR",    &genSignHasFSR,    "genSignHasFSR/O");
   theTree->Branch("genSignKstHasFSR", &genSignKstHasFSR, "genSignKstHasFSR/O");
   theTree->Branch("genSignPsiHasFSR", &genSignPsiHasFSR, "genSignPsiHasFSR/O");
 
@@ -779,9 +824,9 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
 
   // ### Generated B0 Mass ###
   theTree->Branch("genB0Mass", &genB0Mass, "genB0Mass/D");
-  theTree->Branch("genB0Px", &genB0Px, "genB0Px/D");
-  theTree->Branch("genB0Py", &genB0Py, "genB0Py/D");
-  theTree->Branch("genB0Pz", &genB0Pz, "genB0Pz/D");
+  theTree->Branch("genB0Px",   &genB0Px,   "genB0Px/D");
+  theTree->Branch("genB0Py",   &genB0Py,   "genB0Py/D");
+  theTree->Branch("genB0Pz",   &genB0Pz,   "genB0Pz/D");
 
   // ### Generated B0 Vtx ###
   theTree->Branch("genB0VtxX", &genB0VtxX, "genB0VtxX/D");
@@ -790,9 +835,9 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
 
   // ### Generated K*0 Mass ###
   theTree->Branch("genKstMass", &genKstMass, "genKstMass/D");
-  theTree->Branch("genKstPx", &genKstPx, "genKstPx/D");
-  theTree->Branch("genKstPy", &genKstPy, "genKstPy/D");
-  theTree->Branch("genKstPz", &genKstPz, "genKstPz/D");
+  theTree->Branch("genKstPx",   &genKstPx,   "genKstPx/D");
+  theTree->Branch("genKstPy",   &genKstPy,   "genKstPy/D");
+  theTree->Branch("genKstPz",   &genKstPz,   "genKstPz/D");
 
   // ### Generated K*0 Vtx ###
   theTree->Branch("genKstVtxX", &genKstVtxX, "genKstVtxX/D");
@@ -806,39 +851,39 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("genPsiVtxZ", &genPsiVtxZ, "genPsiVtxZ/D");
 
   // ### Generated mu- ###
-  theTree->Branch("genMumMother", &genMumMother, "genMumMother/I");
-  theTree->Branch("genMumPx", &genMumPx, "genMumPx/D");
-  theTree->Branch("genMumPy", &genMumPy, "genMumPy/D");
-  theTree->Branch("genMumPz", &genMumPz, "genMumPz/D");
-  theTree->Branch("trueMumTriggered", &trueMumTriggered, "trueMumTriggered/O"); 
+  theTree->Branch("genMumMother",        &genMumMother,        "genMumMother/I");
+  theTree->Branch("genMumPx",            &genMumPx,            "genMumPx/D");
+  theTree->Branch("genMumPy",            &genMumPy,            "genMumPy/D");
+  theTree->Branch("genMumPz",            &genMumPz,            "genMumPz/D");
+  theTree->Branch("trueMumTriggered",    &trueMumTriggered,    "trueMumTriggered/O"); 
   theTree->Branch("trueMumInAcceptance", &trueMumInAcceptance, "trueMumInAcceptance/O"); 
 
   // ### Generated mu+ ###
-  theTree->Branch("genMupMother", &genMupMother, "genMupMother/I");
-  theTree->Branch("genMupPx", &genMupPx, "genMupPx/D");
-  theTree->Branch("genMupPy", &genMupPy, "genMupPy/D");
-  theTree->Branch("genMupPz", &genMupPz, "genMupPz/D");
-  theTree->Branch("trueMupTriggered", &trueMupTriggered, "trueMupTriggered/O"); 
+  theTree->Branch("genMupMother",        &genMupMother,        "genMupMother/I");
+  theTree->Branch("genMupPx",            &genMupPx,            "genMupPx/D");
+  theTree->Branch("genMupPy",            &genMupPy,            "genMupPy/D");
+  theTree->Branch("genMupPz",            &genMupPz,            "genMupPz/D");
+  theTree->Branch("trueMupTriggered",    &trueMupTriggered,    "trueMupTriggered/O"); 
   theTree->Branch("trueMupInAcceptance", &trueMupInAcceptance, "trueMupInAcceptance/O"); 
 
   // ### Generated K*0 track- ###
   theTree->Branch("genKstTrkmMother", &genKstTrkmMother, "genKstTrkmMother/I");
-  theTree->Branch("genKstTrkmPx", &genKstTrkmPx, "genKstTrkmPx/D");
-  theTree->Branch("genKstTrkmPy", &genKstTrkmPy, "genKstTrkmPy/D");
-  theTree->Branch("genKstTrkmPz", &genKstTrkmPz, "genKstTrkmPz/D");
+  theTree->Branch("genKstTrkmPx",     &genKstTrkmPx,     "genKstTrkmPx/D");
+  theTree->Branch("genKstTrkmPy",     &genKstTrkmPy,     "genKstTrkmPy/D");
+  theTree->Branch("genKstTrkmPz",     &genKstTrkmPz,     "genKstTrkmPz/D");
 
   // ### Generated K*0 track+ ###
   theTree->Branch("genKstTrkpMother", &genKstTrkpMother, "genKstTrkpMother/I");
-  theTree->Branch("genKstTrkpPx", &genKstTrkpPx, "genKstTrkpPx/D");
-  theTree->Branch("genKstTrkpPy", &genKstTrkpPy, "genKstTrkpPy/D");
-  theTree->Branch("genKstTrkpPz", &genKstTrkpPz, "genKstTrkpPz/D");
+  theTree->Branch("genKstTrkpPx",     &genKstTrkpPx,     "genKstTrkpPx/D");
+  theTree->Branch("genKstTrkpPy",     &genKstTrkpPy,     "genKstTrkpPy/D");
+  theTree->Branch("genKstTrkpPz",     &genKstTrkpPz,     "genKstTrkpPz/D");
 
   // ### Matching Between Reconstructed and Generated ###
   theTree->Branch("truthMatchSignal", &truthMatchSignal);
-  theTree->Branch("truthMatchMum", &truthMatchMum);
-  theTree->Branch("truthMatchMup", &truthMatchMup);
-  theTree->Branch("truthMatchTrkm", &truthMatchTrkm);
-  theTree->Branch("truthMatchTrkp", &truthMatchTrkp);
+  theTree->Branch("truthMatchMum",    &truthMatchMum);
+  theTree->Branch("truthMatchMup",    &truthMatchMup);
+  theTree->Branch("truthMatchTrkm",   &truthMatchTrkm);
+  theTree->Branch("truthMatchTrkp",   &truthMatchTrkp);
 }
 
 void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
@@ -846,190 +891,194 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   // ########################################################
   // # Run Number, event number, #reco vtx and event weight #
   // ########################################################
-  theTree->SetBranchAddress("runN", &runN);
-  theTree->SetBranchAddress("eventN", &eventN);
-  theTree->SetBranchAddress("recoVtxN", &recoVtxN);
-  theTree->SetBranchAddress("evWeight", &evWeight);
+  theTree->SetBranchAddress("runN",       &runN);
+  theTree->SetBranchAddress("eventN",     &eventN);
+  theTree->SetBranchAddress("recoVtxN",   &recoVtxN);
+  theTree->SetBranchAddress("evWeight",   &evWeight);
   theTree->SetBranchAddress("evWeightE2", &evWeightE2);
 
   // ### Trigger ###
-  theTree->SetBranchAddress("TrigTable", &TrigTable);
+  theTree->SetBranchAddress("TrigTable",     &TrigTable);
   theTree->SetBranchAddress("TrigPrescales", &TrigPrescales);
 
   theTree->SetBranchAddress("nB", &nB);
 
   // ### Primary Vertex and Beam Spot ###
   theTree->SetBranchAddress("priVtxCL", &priVtxCL);
-  theTree->SetBranchAddress("priVtxX", &priVtxX);
-  theTree->SetBranchAddress("priVtxY", &priVtxY);
-  theTree->SetBranchAddress("priVtxZ", &priVtxZ);
-  theTree->SetBranchAddress("bsX", &bsX);
-  theTree->SetBranchAddress("bsY", &bsY);
+  theTree->SetBranchAddress("priVtxX",  &priVtxX);
+  theTree->SetBranchAddress("priVtxY",  &priVtxY);
+  theTree->SetBranchAddress("priVtxZ",  &priVtxZ);
+  theTree->SetBranchAddress("bsX",      &bsX);
+  theTree->SetBranchAddress("bsY",      &bsY);
 
   // ### B0 Mass ###  
-  theTree->SetBranchAddress("bMass", &bMass);
-  theTree->SetBranchAddress("bMassE", &bMassE);
-  theTree->SetBranchAddress("bBarMass", &bBarMass);
+  theTree->SetBranchAddress("bMass",     &bMass);
+  theTree->SetBranchAddress("bMassE",    &bMassE);
+  theTree->SetBranchAddress("bBarMass",  &bBarMass);
   theTree->SetBranchAddress("bBarMassE", &bBarMassE);
-  theTree->SetBranchAddress("bPx", &bPx);
-  theTree->SetBranchAddress("bPy", &bPy);
-  theTree->SetBranchAddress("bPz", &bPz);
+  theTree->SetBranchAddress("bPx",       &bPx);
+  theTree->SetBranchAddress("bPy",       &bPy);
+  theTree->SetBranchAddress("bPz",       &bPz);
 
   // ### Pileup information in MC ###
-  theTree->SetBranchAddress("bunchXingMC", &bunchXingMC);
-  theTree->SetBranchAddress("numInteractionsMC", &numInteractionsMC);
+  theTree->SetBranchAddress("bunchXingMC",           &bunchXingMC);
+  theTree->SetBranchAddress("numInteractionsMC",     &numInteractionsMC);
   theTree->SetBranchAddress("trueNumInteractionsMC", &trueNumInteractionsMC);
 
   // ### B0 Vtx ###
-  theTree->SetBranchAddress("bVtxCL", &bVtxCL);
-  theTree->SetBranchAddress("bVtxX", &bVtxX);
-  theTree->SetBranchAddress("bVtxY", &bVtxY);
-  theTree->SetBranchAddress("bVtxZ", &bVtxZ);
-  theTree->SetBranchAddress("bCosAlphaVtx", &bCosAlphaVtx);
+  theTree->SetBranchAddress("bVtxCL",        &bVtxCL);
+  theTree->SetBranchAddress("bVtxX",         &bVtxX);
+  theTree->SetBranchAddress("bVtxY",         &bVtxY);
+  theTree->SetBranchAddress("bVtxZ",         &bVtxZ);
+  theTree->SetBranchAddress("bCosAlphaVtx",  &bCosAlphaVtx);
   theTree->SetBranchAddress("bCosAlphaVtxE", &bCosAlphaVtxE);
-  theTree->SetBranchAddress("bCosAlphaBS", &bCosAlphaBS);
-  theTree->SetBranchAddress("bCosAlphaBSE", &bCosAlphaBSE);
-  theTree->SetBranchAddress("bLVtx", &bLVtx);
-  theTree->SetBranchAddress("bLVtxE", &bLVtxE);
-  theTree->SetBranchAddress("bLBS", &bLBS);
-  theTree->SetBranchAddress("bLBSE", &bLBSE);
-  theTree->SetBranchAddress("bDCAVtx", &bDCAVtx);
-  theTree->SetBranchAddress("bDCAVtxE", &bDCAVtxE);
-  theTree->SetBranchAddress("bDCABS", &bDCABS);
-  theTree->SetBranchAddress("bDCABSE", &bDCABSE);
+  theTree->SetBranchAddress("bCosAlphaBS",   &bCosAlphaBS);
+  theTree->SetBranchAddress("bCosAlphaBSE",  &bCosAlphaBSE);
+  theTree->SetBranchAddress("bLVtx",         &bLVtx);
+  theTree->SetBranchAddress("bLVtxE",        &bLVtxE);
+  theTree->SetBranchAddress("bLBS",          &bLBS);
+  theTree->SetBranchAddress("bLBSE",         &bLBSE);
+  theTree->SetBranchAddress("bDCAVtx",       &bDCAVtx);
+  theTree->SetBranchAddress("bDCAVtxE",      &bDCAVtxE);
+  theTree->SetBranchAddress("bDCABS",        &bDCABS);
+  theTree->SetBranchAddress("bDCABSE",       &bDCABSE);
 
   // ### B0 ctau ###
-  theTree->SetBranchAddress("bctauPVBS", &bctauPVBS);
+  theTree->SetBranchAddress("bctauPVBS",  &bctauPVBS);
   theTree->SetBranchAddress("bctauPVBSE", &bctauPVBSE);
 
   // ### K*0 Mass ###
-  theTree->SetBranchAddress("kstMass", &kstMass);
-  theTree->SetBranchAddress("kstMassE", &kstMassE);
-  theTree->SetBranchAddress("kstBarMass", &kstBarMass);
+  theTree->SetBranchAddress("kstMass",     &kstMass);
+  theTree->SetBranchAddress("kstMassE",    &kstMassE);
+  theTree->SetBranchAddress("kstBarMass",  &kstBarMass);
   theTree->SetBranchAddress("kstBarMassE", &kstBarMassE);
-  theTree->SetBranchAddress("kstPx", &kstPx);
-  theTree->SetBranchAddress("kstPy", &kstPy);
-  theTree->SetBranchAddress("kstPz", &kstPz);
+  theTree->SetBranchAddress("kstPx",       &kstPx);
+  theTree->SetBranchAddress("kstPy",       &kstPy);
+  theTree->SetBranchAddress("kstPz",       &kstPz);
 
   // ### K*0 Vtx ###
   theTree->SetBranchAddress("kstVtxCL", &kstVtxCL);
-  theTree->SetBranchAddress("kstVtxX", &kstVtxX);
-  theTree->SetBranchAddress("kstVtxY", &kstVtxY);
-  theTree->SetBranchAddress("kstVtxZ", &kstVtxZ);
+  theTree->SetBranchAddress("kstVtxX",  &kstVtxX);
+  theTree->SetBranchAddress("kstVtxY",  &kstVtxY);
+  theTree->SetBranchAddress("kstVtxZ",  &kstVtxZ);
 
   // ### mu+ mu- Mass ###
-  theTree->SetBranchAddress("mumuMass", &mumuMass);
+  theTree->SetBranchAddress("mumuMass",  &mumuMass);
   theTree->SetBranchAddress("mumuMassE", &mumuMassE);
-  theTree->SetBranchAddress("mumuPx", &mumuPx);
-  theTree->SetBranchAddress("mumuPy", &mumuPy);
-  theTree->SetBranchAddress("mumuPz", &mumuPz);
+  theTree->SetBranchAddress("mumuPx",    &mumuPx);
+  theTree->SetBranchAddress("mumuPy",    &mumuPy);
+  theTree->SetBranchAddress("mumuPz",    &mumuPz);
 
   // ### mu+ mu- Vtx ###
-  theTree->SetBranchAddress("mumuVtxCL", &mumuVtxCL);
-  theTree->SetBranchAddress("mumuVtxX", &mumuVtxX);
-  theTree->SetBranchAddress("mumuVtxY", &mumuVtxY);
-  theTree->SetBranchAddress("mumuVtxZ", &mumuVtxZ);
-  theTree->SetBranchAddress("mumuCosAlphaBS", &mumuCosAlphaBS);
+  theTree->SetBranchAddress("mumuVtxCL",       &mumuVtxCL);
+  theTree->SetBranchAddress("mumuVtxX",        &mumuVtxX);
+  theTree->SetBranchAddress("mumuVtxY",        &mumuVtxY);
+  theTree->SetBranchAddress("mumuVtxZ",        &mumuVtxZ);
+  theTree->SetBranchAddress("mumuCosAlphaBS",  &mumuCosAlphaBS);
   theTree->SetBranchAddress("mumuCosAlphaBSE", &mumuCosAlphaBSE);
-  theTree->SetBranchAddress("mumuLBS", &mumuLBS);
-  theTree->SetBranchAddress("mumuLBSE", &mumuLBSE);
-  theTree->SetBranchAddress("mumuDCA", &mumuDCA);
+  theTree->SetBranchAddress("mumuLBS",         &mumuLBS);
+  theTree->SetBranchAddress("mumuLBSE",        &mumuLBSE);
+  theTree->SetBranchAddress("mumuDCA",         &mumuDCA);
 
   // ### mu- ###  
-  theTree->SetBranchAddress("mumHighPurity", &mumHighPurity);
-  theTree->SetBranchAddress("mumCL", &mumCL);
-  theTree->SetBranchAddress("mumNormChi2", &mumNormChi2);
-  theTree->SetBranchAddress("mumPx", &mumPx);
-  theTree->SetBranchAddress("mumPy", &mumPy);
-  theTree->SetBranchAddress("mumPz", &mumPz);
-  theTree->SetBranchAddress("mumDCAVtx", &mumDCAVtx);
-  theTree->SetBranchAddress("mumDCAVtxE", &mumDCAVtxE);
-  theTree->SetBranchAddress("mumDCABS", &mumDCABS);
-  theTree->SetBranchAddress("mumDCABSE", &mumDCABSE);
-  theTree->SetBranchAddress("mumKinkChi2", &mumKinkChi2);
-  theTree->SetBranchAddress("mumFracHits", &mumFracHits);
-  theTree->SetBranchAddress("mumdxyVtx", &mumdxyVtx);
-  theTree->SetBranchAddress("mumdzVtx", &mumdzVtx);
-  theTree->SetBranchAddress("mumCat", &mumCat);
-  theTree->SetBranchAddress("mumNPixHits", &mumNPixHits);
-  theTree->SetBranchAddress("mumNPixLayers", &mumNPixLayers);
-  theTree->SetBranchAddress("mumNTrkHits", &mumNTrkHits);
-  theTree->SetBranchAddress("mumNTrkLayers", &mumNTrkLayers);
-  theTree->SetBranchAddress("mumNMuonHits", &mumNMuonHits);
+  theTree->SetBranchAddress("mumHighPurity",    &mumHighPurity);
+  theTree->SetBranchAddress("mumCL",            &mumCL);
+  theTree->SetBranchAddress("mumNormChi2",      &mumNormChi2);
+  theTree->SetBranchAddress("mumPx",            &mumPx);
+  theTree->SetBranchAddress("mumPy",            &mumPy);
+  theTree->SetBranchAddress("mumPz",            &mumPz);
+  theTree->SetBranchAddress("mumDCAVtx",        &mumDCAVtx);
+  theTree->SetBranchAddress("mumDCAVtxE",       &mumDCAVtxE);
+  theTree->SetBranchAddress("mumDCABS",         &mumDCABS);
+  theTree->SetBranchAddress("mumDCABSE",        &mumDCABSE);
+  theTree->SetBranchAddress("mumKinkChi2",      &mumKinkChi2);
+  theTree->SetBranchAddress("mumFracHits",      &mumFracHits);
+  theTree->SetBranchAddress("mumdxyVtx",        &mumdxyVtx);
+  theTree->SetBranchAddress("mumdzVtx",         &mumdzVtx);
+  theTree->SetBranchAddress("mumDeltaRwithMC",  &mumDeltaRwithMC);
+  theTree->SetBranchAddress("mumCat",           &mumCat);
+  theTree->SetBranchAddress("mumNPixHits",      &mumNPixHits);
+  theTree->SetBranchAddress("mumNPixLayers",    &mumNPixLayers);
+  theTree->SetBranchAddress("mumNTrkHits",      &mumNTrkHits);
+  theTree->SetBranchAddress("mumNTrkLayers",    &mumNTrkLayers);
+  theTree->SetBranchAddress("mumNMuonHits",     &mumNMuonHits);
   theTree->SetBranchAddress("mumNMatchStation", &mumNMatchStation);
-  theTree->SetBranchAddress("mumTrig", &mumTrig);
+  theTree->SetBranchAddress("mumTrig",          &mumTrig);
 
   // ### mu+ ###  
-  theTree->SetBranchAddress("mupHighPurity", &mupHighPurity);
-  theTree->SetBranchAddress("mupCL", &mupCL);
-  theTree->SetBranchAddress("mupNormChi2", &mupNormChi2);
-  theTree->SetBranchAddress("mupPx", &mupPx);
-  theTree->SetBranchAddress("mupPy", &mupPy);
-  theTree->SetBranchAddress("mupPz", &mupPz);
-  theTree->SetBranchAddress("mupDCAVtx", &mupDCAVtx);
-  theTree->SetBranchAddress("mupDCAVtxE", &mupDCAVtxE);
-  theTree->SetBranchAddress("mupDCABS", &mupDCABS);
-  theTree->SetBranchAddress("mupDCABSE", &mupDCABSE);
-  theTree->SetBranchAddress("mupKinkChi2", &mupKinkChi2);
-  theTree->SetBranchAddress("mupFracHits", &mupFracHits);
-  theTree->SetBranchAddress("mupdxyVtx", &mupdxyVtx);
-  theTree->SetBranchAddress("mupdzVtx", &mupdzVtx);
-  theTree->SetBranchAddress("mupCat", &mupCat);
-  theTree->SetBranchAddress("mupNPixHits", &mupNPixHits);
-  theTree->SetBranchAddress("mupNPixLayers", &mupNPixLayers);
-  theTree->SetBranchAddress("mupNTrkHits", &mupNTrkHits);
-  theTree->SetBranchAddress("mupNTrkLayers", &mupNTrkLayers);
-  theTree->SetBranchAddress("mupNMuonHits", &mupNMuonHits);
+  theTree->SetBranchAddress("mupHighPurity",    &mupHighPurity);
+  theTree->SetBranchAddress("mupCL",            &mupCL);
+  theTree->SetBranchAddress("mupNormChi2",      &mupNormChi2);
+  theTree->SetBranchAddress("mupPx",            &mupPx);
+  theTree->SetBranchAddress("mupPy",            &mupPy);
+  theTree->SetBranchAddress("mupPz",            &mupPz);
+  theTree->SetBranchAddress("mupDCAVtx",        &mupDCAVtx);
+  theTree->SetBranchAddress("mupDCAVtxE",       &mupDCAVtxE);
+  theTree->SetBranchAddress("mupDCABS",         &mupDCABS);
+  theTree->SetBranchAddress("mupDCABSE",        &mupDCABSE);
+  theTree->SetBranchAddress("mupKinkChi2",      &mupKinkChi2);
+  theTree->SetBranchAddress("mupFracHits",      &mupFracHits);
+  theTree->SetBranchAddress("mupdxyVtx",        &mupdxyVtx);
+  theTree->SetBranchAddress("mupdzVtx",         &mupdzVtx);
+  theTree->SetBranchAddress("mupDeltaRwithMC",  &mupDeltaRwithMC);
+  theTree->SetBranchAddress("mupCat",           &mupCat);
+  theTree->SetBranchAddress("mupNPixHits",      &mupNPixHits);
+  theTree->SetBranchAddress("mupNPixLayers",    &mupNPixLayers);
+  theTree->SetBranchAddress("mupNTrkHits",      &mupNTrkHits);
+  theTree->SetBranchAddress("mupNTrkLayers",    &mupNTrkLayers);
+  theTree->SetBranchAddress("mupNMuonHits",     &mupNMuonHits);
   theTree->SetBranchAddress("mupNMatchStation", &mupNMatchStation);
-  theTree->SetBranchAddress("mupTrig", &mupTrig);
+  theTree->SetBranchAddress("mupTrig",          &mupTrig);
 
   // ### K*0 track- ###
-  theTree->SetBranchAddress("kstTrkmHighPurity", &kstTrkmHighPurity);
-  theTree->SetBranchAddress("kstTrkmCL", &kstTrkmCL);
-  theTree->SetBranchAddress("kstTrkmNormChi2", &kstTrkmNormChi2);
-  theTree->SetBranchAddress("kstTrkmPx", &kstTrkmPx);
-  theTree->SetBranchAddress("kstTrkmPy", &kstTrkmPy);
-  theTree->SetBranchAddress("kstTrkmPz", &kstTrkmPz);
-  theTree->SetBranchAddress("kstTrkmDCAVtx", &kstTrkmDCAVtx);
-  theTree->SetBranchAddress("kstTrkmDCAVtxE", &kstTrkmDCAVtxE);
-  theTree->SetBranchAddress("kstTrkmDCABS", &kstTrkmDCABS);
-  theTree->SetBranchAddress("kstTrkmDCABSE", &kstTrkmDCABSE);
-  theTree->SetBranchAddress("kstTrkmFracHits", &kstTrkmFracHits);
-  theTree->SetBranchAddress("kstTrkmdxyVtx", &kstTrkmdxyVtx);
-  theTree->SetBranchAddress("kstTrkmdzVtx", &kstTrkmdzVtx);
-  theTree->SetBranchAddress("kstTrkmNPixHits", &kstTrkmNPixHits);
-  theTree->SetBranchAddress("kstTrkmNPixLayers", &kstTrkmNPixLayers);
-  theTree->SetBranchAddress("kstTrkmNTrkHits", &kstTrkmNTrkHits);
-  theTree->SetBranchAddress("kstTrkmNTrkLayers", &kstTrkmNTrkLayers);
-  theTree->SetBranchAddress("kstTrkmMuMatch", &kstTrkmMuMatch);
+  theTree->SetBranchAddress("kstTrkmHighPurity",   &kstTrkmHighPurity);
+  theTree->SetBranchAddress("kstTrkmCL",           &kstTrkmCL);
+  theTree->SetBranchAddress("kstTrkmNormChi2",     &kstTrkmNormChi2);
+  theTree->SetBranchAddress("kstTrkmPx",           &kstTrkmPx);
+  theTree->SetBranchAddress("kstTrkmPy",           &kstTrkmPy);
+  theTree->SetBranchAddress("kstTrkmPz",           &kstTrkmPz);
+  theTree->SetBranchAddress("kstTrkmDCAVtx",       &kstTrkmDCAVtx);
+  theTree->SetBranchAddress("kstTrkmDCAVtxE",      &kstTrkmDCAVtxE);
+  theTree->SetBranchAddress("kstTrkmDCABS",        &kstTrkmDCABS);
+  theTree->SetBranchAddress("kstTrkmDCABSE",       &kstTrkmDCABSE);
+  theTree->SetBranchAddress("kstTrkmFracHits",     &kstTrkmFracHits);
+  theTree->SetBranchAddress("kstTrkmdxyVtx",       &kstTrkmdxyVtx);
+  theTree->SetBranchAddress("kstTrkmdzVtx",        &kstTrkmdzVtx);
+  theTree->SetBranchAddress("kstTrkmDeltaRwithMC", &kstTrkmDeltaRwithMC);
+  theTree->SetBranchAddress("kstTrkmNPixHits",     &kstTrkmNPixHits);
+  theTree->SetBranchAddress("kstTrkmNPixLayers",   &kstTrkmNPixLayers);
+  theTree->SetBranchAddress("kstTrkmNTrkHits",     &kstTrkmNTrkHits);
+  theTree->SetBranchAddress("kstTrkmNTrkLayers",   &kstTrkmNTrkLayers);
+  theTree->SetBranchAddress("kstTrkmMuMatch",      &kstTrkmMuMatch);
 
   // ### K*0 track+ ### 
-  theTree->SetBranchAddress("kstTrkpHighPurity", &kstTrkpHighPurity);
-  theTree->SetBranchAddress("kstTrkpCL", &kstTrkpCL);
-  theTree->SetBranchAddress("kstTrkpNormChi2", &kstTrkpNormChi2);
-  theTree->SetBranchAddress("kstTrkpPx", &kstTrkpPx);
-  theTree->SetBranchAddress("kstTrkpPy", &kstTrkpPy);
-  theTree->SetBranchAddress("kstTrkpPz", &kstTrkpPz);
-  theTree->SetBranchAddress("kstTrkpDCAVtx", &kstTrkpDCAVtx);
-  theTree->SetBranchAddress("kstTrkpDCAVtxE", &kstTrkpDCAVtxE);
-  theTree->SetBranchAddress("kstTrkpDCABS", &kstTrkpDCABS);
-  theTree->SetBranchAddress("kstTrkpDCABSE", &kstTrkpDCABSE);
-  theTree->SetBranchAddress("kstTrkpFracHits", &kstTrkpFracHits);
-  theTree->SetBranchAddress("kstTrkpdxyVtx", &kstTrkpdxyVtx);
-  theTree->SetBranchAddress("kstTrkpdzVtx", &kstTrkpdzVtx);
-  theTree->SetBranchAddress("kstTrkpNPixHits", &kstTrkpNPixHits);
-  theTree->SetBranchAddress("kstTrkpNPixLayers", &kstTrkpNPixLayers);
-  theTree->SetBranchAddress("kstTrkpNTrkHits", &kstTrkpNTrkHits);
-  theTree->SetBranchAddress("kstTrkpNTrkLayers", &kstTrkpNTrkLayers);
-  theTree->SetBranchAddress("kstTrkpMuMatch", &kstTrkpMuMatch);
+  theTree->SetBranchAddress("kstTrkpHighPurity",   &kstTrkpHighPurity);
+  theTree->SetBranchAddress("kstTrkpCL",           &kstTrkpCL);
+  theTree->SetBranchAddress("kstTrkpNormChi2",     &kstTrkpNormChi2);
+  theTree->SetBranchAddress("kstTrkpPx",           &kstTrkpPx);
+  theTree->SetBranchAddress("kstTrkpPy",           &kstTrkpPy);
+  theTree->SetBranchAddress("kstTrkpPz",           &kstTrkpPz);
+  theTree->SetBranchAddress("kstTrkpDCAVtx",       &kstTrkpDCAVtx);
+  theTree->SetBranchAddress("kstTrkpDCAVtxE",      &kstTrkpDCAVtxE);
+  theTree->SetBranchAddress("kstTrkpDCABS",        &kstTrkpDCABS);
+  theTree->SetBranchAddress("kstTrkpDCABSE",       &kstTrkpDCABSE);
+  theTree->SetBranchAddress("kstTrkpFracHits",     &kstTrkpFracHits);
+  theTree->SetBranchAddress("kstTrkpdxyVtx",       &kstTrkpdxyVtx);
+  theTree->SetBranchAddress("kstTrkpdzVtx",        &kstTrkpdzVtx);
+  theTree->SetBranchAddress("kstTrkpDeltaRwithMC", &kstTrkpDeltaRwithMC);
+  theTree->SetBranchAddress("kstTrkpNPixHits",     &kstTrkpNPixHits);
+  theTree->SetBranchAddress("kstTrkpNPixLayers",   &kstTrkpNPixLayers);
+  theTree->SetBranchAddress("kstTrkpNTrkHits",     &kstTrkpNTrkHits);
+  theTree->SetBranchAddress("kstTrkpNTrkLayers",   &kstTrkpNTrkLayers);
+  theTree->SetBranchAddress("kstTrkpMuMatch",      &kstTrkpMuMatch);
 
   // ### Generated Observables ###
-  theTree->SetBranchAddress("genSignal", &genSignal);
-  theTree->SetBranchAddress("genMuMuBG", &genMuMuBG);
-  theTree->SetBranchAddress("genMuMuBGnTrksm", &genMuMuBGnTrksm);
-  theTree->SetBranchAddress("genMuMuBGnTrksp", &genMuMuBGnTrksp);
-  theTree->SetBranchAddress("genPsiPrompt", &genPsiPrompt);
-  theTree->SetBranchAddress("genSignHasFSR", &genSignHasFSR);
+  theTree->SetBranchAddress("genSignal",        &genSignal);
+  theTree->SetBranchAddress("genMuMuBG",        &genMuMuBG);
+  theTree->SetBranchAddress("genMuMuBGnTrksm",  &genMuMuBGnTrksm);
+  theTree->SetBranchAddress("genMuMuBGnTrksp",  &genMuMuBGnTrksp);
+  theTree->SetBranchAddress("genPsiPrompt",     &genPsiPrompt);
+  theTree->SetBranchAddress("genSignHasFSR",    &genSignHasFSR);
   theTree->SetBranchAddress("genSignKstHasFSR", &genSignKstHasFSR);
   theTree->SetBranchAddress("genSignPsiHasFSR", &genSignPsiHasFSR);
 
@@ -1040,9 +1089,9 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
 
   // ### Generated B0 Mass ###
   theTree->SetBranchAddress("genB0Mass", &genB0Mass);
-  theTree->SetBranchAddress("genB0Px", &genB0Px);
-  theTree->SetBranchAddress("genB0Py", &genB0Py);
-  theTree->SetBranchAddress("genB0Pz", &genB0Pz);
+  theTree->SetBranchAddress("genB0Px",   &genB0Px);
+  theTree->SetBranchAddress("genB0Py",   &genB0Py);
+  theTree->SetBranchAddress("genB0Pz",   &genB0Pz);
 
   // ### Generated B0 Vtx ###
   theTree->SetBranchAddress("genB0VtxX", &genB0VtxX);
@@ -1051,9 +1100,9 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
 
   // ### Generated K*0 Mass ###
   theTree->SetBranchAddress("genKstMass", &genKstMass);
-  theTree->SetBranchAddress("genKstPx", &genKstPx);
-  theTree->SetBranchAddress("genKstPy", &genKstPy);
-  theTree->SetBranchAddress("genKstPz", &genKstPz);
+  theTree->SetBranchAddress("genKstPx",   &genKstPx);
+  theTree->SetBranchAddress("genKstPy",   &genKstPy);
+  theTree->SetBranchAddress("genKstPz",   &genKstPz);
 
   // ### Generated K*0 Vtx ###
   theTree->SetBranchAddress("genKstVtxX", &genKstVtxX);
@@ -1067,39 +1116,39 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("genPsiVtxZ", &genPsiVtxZ);
 
   // ### Generated mu- ###
-  theTree->SetBranchAddress("genMumMother", &genMumMother);
-  theTree->SetBranchAddress("genMumPx", &genMumPx);
-  theTree->SetBranchAddress("genMumPy", &genMumPy);
-  theTree->SetBranchAddress("genMumPz", &genMumPz);
-  theTree->SetBranchAddress("trueMumTriggered", &trueMumTriggered);
+  theTree->SetBranchAddress("genMumMother",        &genMumMother);
+  theTree->SetBranchAddress("genMumPx",            &genMumPx);
+  theTree->SetBranchAddress("genMumPy",            &genMumPy);
+  theTree->SetBranchAddress("genMumPz",            &genMumPz);
+  theTree->SetBranchAddress("trueMumTriggered",    &trueMumTriggered);
   theTree->SetBranchAddress("trueMumInAcceptance", &trueMumInAcceptance);
 
   // ### Generated mu+ ###
-  theTree->SetBranchAddress("genMupMother", &genMupMother);
-  theTree->SetBranchAddress("genMupPx", &genMupPx);
-  theTree->SetBranchAddress("genMupPy", &genMupPy);
-  theTree->SetBranchAddress("genMupPz", &genMupPz);
-  theTree->SetBranchAddress("trueMupTriggered", &trueMupTriggered);
+  theTree->SetBranchAddress("genMupMother",        &genMupMother);
+  theTree->SetBranchAddress("genMupPx",            &genMupPx);
+  theTree->SetBranchAddress("genMupPy",            &genMupPy);
+  theTree->SetBranchAddress("genMupPz",            &genMupPz);
+  theTree->SetBranchAddress("trueMupTriggered",    &trueMupTriggered);
   theTree->SetBranchAddress("trueMupInAcceptance", &trueMupInAcceptance);
 
   // ### Generated K*0 track- ###
   theTree->SetBranchAddress("genKstTrkmMother", &genKstTrkmMother);
-  theTree->SetBranchAddress("genKstTrkmPx", &genKstTrkmPx);
-  theTree->SetBranchAddress("genKstTrkmPy", &genKstTrkmPy);
-  theTree->SetBranchAddress("genKstTrkmPz", &genKstTrkmPz);
+  theTree->SetBranchAddress("genKstTrkmPx",     &genKstTrkmPx);
+  theTree->SetBranchAddress("genKstTrkmPy",     &genKstTrkmPy);
+  theTree->SetBranchAddress("genKstTrkmPz",     &genKstTrkmPz);
 
   // ### Generated K*0 track+ ###
   theTree->SetBranchAddress("genKstTrkpMother", &genKstTrkpMother);
-  theTree->SetBranchAddress("genKstTrkpPx", &genKstTrkpPx);
-  theTree->SetBranchAddress("genKstTrkpPy", &genKstTrkpPy);
-  theTree->SetBranchAddress("genKstTrkpPz", &genKstTrkpPz);
+  theTree->SetBranchAddress("genKstTrkpPx",     &genKstTrkpPx);
+  theTree->SetBranchAddress("genKstTrkpPy",     &genKstTrkpPy);
+  theTree->SetBranchAddress("genKstTrkpPz",     &genKstTrkpPz);
 
   // ### Matching Between Reconstructed and Generated ###
   theTree->SetBranchAddress("truthMatchSignal", &truthMatchSignal);
-  theTree->SetBranchAddress("truthMatchMum", &truthMatchMum);
-  theTree->SetBranchAddress("truthMatchMup", &truthMatchMup);
-  theTree->SetBranchAddress("truthMatchTrkm", &truthMatchTrkm);
-  theTree->SetBranchAddress("truthMatchTrkp", &truthMatchTrkp);
+  theTree->SetBranchAddress("truthMatchMum",    &truthMatchMum);
+  theTree->SetBranchAddress("truthMatchMup",    &truthMatchMup);
+  theTree->SetBranchAddress("truthMatchTrkm",   &truthMatchTrkm);
+  theTree->SetBranchAddress("truthMatchTrkp",   &truthMatchTrkp);
 }
 
 void B0KstMuMuTreeContent::CopyData (B0KstMuMuTreeContent* NTupleIn, int index)
@@ -1119,10 +1168,10 @@ void B0KstMuMuTreeContent::CopyScalars (B0KstMuMuTreeContent* NTupleIn)
   // ########################################################
   // # Run Number, event number, #reco vtx and event weight #
   // ########################################################
-  runN = NTupleIn->runN;
-  eventN = NTupleIn->eventN;
-  recoVtxN = NTupleIn->recoVtxN;
-  evWeight = NTupleIn->evWeight;
+  runN       = NTupleIn->runN;
+  eventN     = NTupleIn->eventN;
+  recoVtxN   = NTupleIn->recoVtxN;
+  evWeight   = NTupleIn->evWeight;
   evWeightE2 = NTupleIn->evWeightE2;
 
   // ### Trigger ###
@@ -1136,11 +1185,11 @@ void B0KstMuMuTreeContent::CopyScalars (B0KstMuMuTreeContent* NTupleIn)
   
   // ### Primary Vertex and Beam Spot ###
   priVtxCL = NTupleIn->priVtxCL;
-  priVtxX = NTupleIn->priVtxX;
-  priVtxY = NTupleIn->priVtxY;
-  priVtxZ = NTupleIn->priVtxZ;
-  bsX = NTupleIn->bsX;
-  bsY = NTupleIn->bsY;
+  priVtxX  = NTupleIn->priVtxX;
+  priVtxY  = NTupleIn->priVtxY;
+  priVtxZ  = NTupleIn->priVtxZ;
+  bsX      = NTupleIn->bsX;
+  bsY      = NTupleIn->bsY;
 
   // ### Pileup information in MC ###
   for (unsigned int i = 0; i < NTupleIn->bunchXingMC->size(); i++)
@@ -1167,9 +1216,9 @@ void B0KstMuMuTreeContent::CopyScalars (B0KstMuMuTreeContent* NTupleIn)
 
   // ### Generated B0 Mass ####
   genB0Mass = NTupleIn->genB0Mass;
-  genB0Px = NTupleIn->genB0Px;
-  genB0Py = NTupleIn->genB0Py;
-  genB0Pz = NTupleIn->genB0Pz;
+  genB0Px   = NTupleIn->genB0Px;
+  genB0Py   = NTupleIn->genB0Py;
+  genB0Pz   = NTupleIn->genB0Pz;
 
   // ### Generated B0 Vtx ####
   genB0VtxX = NTupleIn->genB0VtxX;
@@ -1178,9 +1227,9 @@ void B0KstMuMuTreeContent::CopyScalars (B0KstMuMuTreeContent* NTupleIn)
 
   // ### Generated K*0 Mass ###
   genKstMass = NTupleIn->genKstMass;
-  genKstPx = NTupleIn->genKstPx;
-  genKstPy = NTupleIn->genKstPy;
-  genKstPz = NTupleIn->genKstPz;
+  genKstPx   = NTupleIn->genKstPx;
+  genKstPy   = NTupleIn->genKstPy;
+  genKstPz   = NTupleIn->genKstPz;
 
   // ### Generated K*0 Vtx ###
   genKstVtxX = NTupleIn->genKstVtxX;
@@ -1194,32 +1243,32 @@ void B0KstMuMuTreeContent::CopyScalars (B0KstMuMuTreeContent* NTupleIn)
   genPsiVtxZ = NTupleIn->genPsiVtxZ;
 
   // ### Generated mu- ###
-  genMumMother = NTupleIn->genMumMother;
-  genMumPx = NTupleIn->genMumPx;
-  genMumPy = NTupleIn->genMumPy;
-  genMumPz = NTupleIn->genMumPz;
-  trueMumTriggered = NTupleIn->trueMumTriggered;
+  genMumMother        = NTupleIn->genMumMother;
+  genMumPx            = NTupleIn->genMumPx;
+  genMumPy            = NTupleIn->genMumPy;
+  genMumPz            = NTupleIn->genMumPz;
+  trueMumTriggered    = NTupleIn->trueMumTriggered;
   trueMumInAcceptance = NTupleIn->trueMumInAcceptance;
 
   // ### Generated mu+ ###
-  genMupMother = NTupleIn->genMupMother;
-  genMupPx = NTupleIn->genMupPx;
-  genMupPy = NTupleIn->genMupPy;
-  genMupPz = NTupleIn->genMupPz;
-  trueMupTriggered = NTupleIn->trueMupTriggered;
+  genMupMother        = NTupleIn->genMupMother;
+  genMupPx            = NTupleIn->genMupPx;
+  genMupPy            = NTupleIn->genMupPy;
+  genMupPz            = NTupleIn->genMupPz;
+  trueMupTriggered    = NTupleIn->trueMupTriggered;
   trueMupInAcceptance = NTupleIn->trueMupInAcceptance;
 
   // ### Generated K*0 track- ###
   genKstTrkmMother = NTupleIn->genKstTrkmMother;
-  genKstTrkmPx = NTupleIn->genKstTrkmPx;
-  genKstTrkmPy = NTupleIn->genKstTrkmPy;
-  genKstTrkmPz = NTupleIn->genKstTrkmPz;
+  genKstTrkmPx     = NTupleIn->genKstTrkmPx;
+  genKstTrkmPy     = NTupleIn->genKstTrkmPy;
+  genKstTrkmPz     = NTupleIn->genKstTrkmPz;
 
   // ### Generated K*0 track+ ###
   genKstTrkpMother = NTupleIn->genKstTrkpMother;
-  genKstTrkpPx = NTupleIn->genKstTrkpPx;
-  genKstTrkpPy = NTupleIn->genKstTrkpPy;
-  genKstTrkpPz = NTupleIn->genKstTrkpPz;
+  genKstTrkpPx     = NTupleIn->genKstTrkpPx;
+  genKstTrkpPy     = NTupleIn->genKstTrkpPy;
+  genKstTrkpPz     = NTupleIn->genKstTrkpPz;
 }
 
 void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int index)
@@ -1305,6 +1354,7 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       mumFracHits->push_back(NTupleIn->mumFracHits->at(index));
       mumdxyVtx->push_back(NTupleIn->mumdxyVtx->at(index));
       mumdzVtx->push_back(NTupleIn->mumdzVtx->at(index));
+      mumDeltaRwithMC->push_back(NTupleIn->mumDeltaRwithMC->at(index));
       mumCat->push_back(NTupleIn->mumCat->at(index));
       mumNPixHits->push_back(NTupleIn->mumNPixHits->at(index));
       mumNPixLayers->push_back(NTupleIn->mumNPixLayers->at(index));
@@ -1329,6 +1379,7 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       mupFracHits->push_back(NTupleIn->mupFracHits->at(index));
       mupdxyVtx->push_back(NTupleIn->mupdxyVtx->at(index));
       mupdzVtx->push_back(NTupleIn->mupdzVtx->at(index));
+      mupDeltaRwithMC->push_back(NTupleIn->mupDeltaRwithMC->at(index));
       mupCat->push_back(NTupleIn->mupCat->at(index));
       mupNPixHits->push_back(NTupleIn->mupNPixHits->at(index));
       mupNPixLayers->push_back(NTupleIn->mupNPixLayers->at(index));
@@ -1352,6 +1403,7 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       kstTrkmFracHits->push_back(NTupleIn->kstTrkmFracHits->at(index));
       kstTrkmdxyVtx->push_back(NTupleIn->kstTrkmdxyVtx->at(index));
       kstTrkmdzVtx->push_back(NTupleIn->kstTrkmdzVtx->at(index));
+      kstTrkmDeltaRwithMC->push_back(NTupleIn->kstTrkmDeltaRwithMC->at(index));
       kstTrkmNPixHits->push_back(NTupleIn->kstTrkmNPixHits->at(index));
       kstTrkmNPixLayers->push_back(NTupleIn->kstTrkmNPixLayers->at(index));
       kstTrkmNTrkHits->push_back(NTupleIn->kstTrkmNTrkHits->at(index));
@@ -1372,6 +1424,7 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       kstTrkpFracHits->push_back(NTupleIn->kstTrkpFracHits->at(index));
       kstTrkpdxyVtx->push_back(NTupleIn->kstTrkpdxyVtx->at(index));
       kstTrkpdzVtx->push_back(NTupleIn->kstTrkpdzVtx->at(index));
+      kstTrkpDeltaRwithMC->push_back(NTupleIn->kstTrkpDeltaRwithMC->at(index));
       kstTrkpNPixHits->push_back(NTupleIn->kstTrkpNPixHits->at(index));
       kstTrkpNPixLayers->push_back(NTupleIn->kstTrkpNPixLayers->at(index));
       kstTrkpNTrkHits->push_back(NTupleIn->kstTrkpNTrkHits->at(index));
@@ -1467,7 +1520,8 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (mumKinkChi2->size() < upTo)        for (unsigned int i = mumKinkChi2->size(); i < upTo; i++)        mumKinkChi2->push_back(0);
   if (mumFracHits->size() < upTo)        for (unsigned int i = mumFracHits->size(); i < upTo; i++)        mumFracHits->push_back(0);
   if (mumdxyVtx->size() < upTo)          for (unsigned int i = mumdxyVtx->size(); i < upTo; i++)          mumdxyVtx->push_back(0);
-  if (mumdzVtx->size() < upTo)           for (unsigned int i = mumdzVtx ->size(); i < upTo; i++)           mumdzVtx->push_back(0);
+  if (mumdzVtx->size() < upTo)           for (unsigned int i = mumdzVtx->size(); i < upTo; i++)           mumdzVtx->push_back(0);
+  if (mumDeltaRwithMC->size() < upTo)    for (unsigned int i = mumDeltaRwithMC->size(); i < upTo; i++)    mumDeltaRwithMC->push_back(0);
   if (mumCat->size() < upTo)             for (unsigned int i = mumCat->size(); i < upTo; i++)             mumCat->push_back("");
   if (mumNPixHits->size() < upTo)        for (unsigned int i = mumNPixHits->size(); i < upTo; i++)        mumNPixHits->push_back(0);
   if (mumNPixLayers->size() < upTo)      for (unsigned int i = mumNPixLayers->size(); i < upTo; i++)      mumNPixLayers->push_back(0);
@@ -1491,7 +1545,8 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (mupKinkChi2->size() < upTo)        for (unsigned int i = mupKinkChi2->size(); i < upTo; i++)        mupKinkChi2->push_back(0);
   if (mupFracHits->size() < upTo)        for (unsigned int i = mupFracHits->size(); i < upTo; i++)        mupFracHits->push_back(0);
   if (mupdxyVtx->size() < upTo)          for (unsigned int i = mupdxyVtx->size(); i < upTo; i++)          mupdxyVtx->push_back(0);
-  if (mupdzVtx->size() < upTo)           for (unsigned int i = mupdzVtx ->size(); i < upTo; i++)          mupdzVtx->push_back(0);
+  if (mupdzVtx->size() < upTo)           for (unsigned int i = mupdzVtx->size(); i < upTo; i++)           mupdzVtx->push_back(0);
+  if (mupDeltaRwithMC->size() < upTo)    for (unsigned int i = mupDeltaRwithMC->size(); i < upTo; i++)    mupDeltaRwithMC->push_back(0);
   if (mupCat->size() < upTo)             for (unsigned int i = mupCat->size(); i < upTo; i++)             mupCat->push_back("");
   if (mupNPixHits->size() < upTo)        for (unsigned int i = mupNPixHits->size(); i < upTo; i++)        mupNPixHits->push_back(0);
   if (mupNPixLayers->size() < upTo)      for (unsigned int i = mupNPixLayers->size(); i < upTo; i++)      mupNPixLayers->push_back(0);
@@ -1502,44 +1557,46 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (mupTrig->size() < upTo)            for (unsigned int i = mupTrig->size(); i < upTo; i++)            mupTrig->push_back("");
 
   // ### K*0 track- ###
-  if (kstTrkmHighPurity->size() < upTo) for (unsigned int i = kstTrkmHighPurity->size(); i < upTo; i++) kstTrkmHighPurity->push_back(0);
-  if (kstTrkmCL->size() < upTo)         for (unsigned int i = kstTrkmCL->size(); i < upTo; i++)         kstTrkmCL->push_back(0);
-  if (kstTrkmNormChi2->size() < upTo)   for (unsigned int i = kstTrkmNormChi2->size(); i < upTo; i++)   kstTrkmNormChi2->push_back(0);
-  if (kstTrkmPx->size() < upTo)         for (unsigned int i = kstTrkmPx->size(); i < upTo; i++)         kstTrkmPx->push_back(0);
-  if (kstTrkmPy->size() < upTo)         for (unsigned int i = kstTrkmPy->size(); i < upTo; i++)         kstTrkmPy->push_back(0);
-  if (kstTrkmPz->size() < upTo)         for (unsigned int i = kstTrkmPz->size(); i < upTo; i++)         kstTrkmPz->push_back(0);
-  if (kstTrkmDCAVtx->size() < upTo)     for (unsigned int i = kstTrkmDCAVtx->size(); i < upTo; i++)     kstTrkmDCAVtx->push_back(0);
-  if (kstTrkmDCAVtxE->size() < upTo)    for (unsigned int i = kstTrkmDCAVtxE->size(); i < upTo; i++)    kstTrkmDCAVtxE->push_back(0);
-  if (kstTrkmDCABS->size() < upTo)      for (unsigned int i = kstTrkmDCABS->size(); i < upTo; i++)      kstTrkmDCABS->push_back(0);
-  if (kstTrkmDCABSE->size() < upTo)     for (unsigned int i = kstTrkmDCABSE->size(); i < upTo; i++)     kstTrkmDCABSE->push_back(0);
-  if (kstTrkmFracHits->size() < upTo)   for (unsigned int i = kstTrkmFracHits->size(); i < upTo; i++)   kstTrkmFracHits->push_back(0);
-  if (kstTrkmdxyVtx->size() < upTo)     for (unsigned int i = kstTrkmdxyVtx->size(); i < upTo; i++)     kstTrkmdxyVtx->push_back(0);
-  if (kstTrkmdzVtx->size() < upTo)      for (unsigned int i = kstTrkmdzVtx->size(); i < upTo; i++)      kstTrkmdzVtx->push_back(0);
-  if (kstTrkmNPixHits->size() < upTo)   for (unsigned int i = kstTrkmNPixHits->size(); i < upTo; i++)   kstTrkmNPixHits->push_back(0);
-  if (kstTrkmNPixLayers->size() < upTo) for (unsigned int i = kstTrkmNPixLayers->size(); i < upTo; i++) kstTrkmNPixLayers->push_back(0);
-  if (kstTrkmNTrkHits->size() < upTo)   for (unsigned int i = kstTrkmNTrkHits->size(); i < upTo; i++)   kstTrkmNTrkHits->push_back(0);
-  if (kstTrkmNTrkLayers->size() < upTo) for (unsigned int i = kstTrkmNTrkLayers->size(); i < upTo; i++) kstTrkmNTrkLayers->push_back(0);
-  if (kstTrkmMuMatch->size() < upTo)    for (unsigned int i = kstTrkmMuMatch->size(); i < upTo; i++)    kstTrkmMuMatch->push_back("");
+  if (kstTrkmHighPurity->size() < upTo)   for (unsigned int i = kstTrkmHighPurity->size(); i < upTo; i++)   kstTrkmHighPurity->push_back(0);
+  if (kstTrkmCL->size() < upTo)           for (unsigned int i = kstTrkmCL->size(); i < upTo; i++)           kstTrkmCL->push_back(0);
+  if (kstTrkmNormChi2->size() < upTo)     for (unsigned int i = kstTrkmNormChi2->size(); i < upTo; i++)     kstTrkmNormChi2->push_back(0);
+  if (kstTrkmPx->size() < upTo)           for (unsigned int i = kstTrkmPx->size(); i < upTo; i++)           kstTrkmPx->push_back(0);
+  if (kstTrkmPy->size() < upTo)           for (unsigned int i = kstTrkmPy->size(); i < upTo; i++)           kstTrkmPy->push_back(0);
+  if (kstTrkmPz->size() < upTo)           for (unsigned int i = kstTrkmPz->size(); i < upTo; i++)           kstTrkmPz->push_back(0);
+  if (kstTrkmDCAVtx->size() < upTo)       for (unsigned int i = kstTrkmDCAVtx->size(); i < upTo; i++)       kstTrkmDCAVtx->push_back(0);
+  if (kstTrkmDCAVtxE->size() < upTo)      for (unsigned int i = kstTrkmDCAVtxE->size(); i < upTo; i++)      kstTrkmDCAVtxE->push_back(0);
+  if (kstTrkmDCABS->size() < upTo)        for (unsigned int i = kstTrkmDCABS->size(); i < upTo; i++)        kstTrkmDCABS->push_back(0);
+  if (kstTrkmDCABSE->size() < upTo)       for (unsigned int i = kstTrkmDCABSE->size(); i < upTo; i++)       kstTrkmDCABSE->push_back(0);
+  if (kstTrkmFracHits->size() < upTo)     for (unsigned int i = kstTrkmFracHits->size(); i < upTo; i++)     kstTrkmFracHits->push_back(0);
+  if (kstTrkmdxyVtx->size() < upTo)       for (unsigned int i = kstTrkmdxyVtx->size(); i < upTo; i++)       kstTrkmdxyVtx->push_back(0);
+  if (kstTrkmdzVtx->size() < upTo)        for (unsigned int i = kstTrkmdzVtx->size(); i < upTo; i++)        kstTrkmdzVtx->push_back(0);
+  if (kstTrkmDeltaRwithMC->size() < upTo) for (unsigned int i = kstTrkmDeltaRwithMC->size(); i < upTo; i++) kstTrkmDeltaRwithMC->push_back(0);
+  if (kstTrkmNPixHits->size() < upTo)     for (unsigned int i = kstTrkmNPixHits->size(); i < upTo; i++)     kstTrkmNPixHits->push_back(0);
+  if (kstTrkmNPixLayers->size() < upTo)   for (unsigned int i = kstTrkmNPixLayers->size(); i < upTo; i++)   kstTrkmNPixLayers->push_back(0);
+  if (kstTrkmNTrkHits->size() < upTo)     for (unsigned int i = kstTrkmNTrkHits->size(); i < upTo; i++)     kstTrkmNTrkHits->push_back(0);
+  if (kstTrkmNTrkLayers->size() < upTo)   for (unsigned int i = kstTrkmNTrkLayers->size(); i < upTo; i++)   kstTrkmNTrkLayers->push_back(0);
+  if (kstTrkmMuMatch->size() < upTo)      for (unsigned int i = kstTrkmMuMatch->size(); i < upTo; i++)      kstTrkmMuMatch->push_back("");
  
   // ### K*0 track+ ###
-  if (kstTrkpHighPurity->size() < upTo) for (unsigned int i = kstTrkpHighPurity->size(); i < upTo; i++) kstTrkpHighPurity->push_back(0);
-  if (kstTrkpCL->size() < upTo)         for (unsigned int i = kstTrkpCL->size(); i < upTo; i++)         kstTrkpCL->push_back(0);
-  if (kstTrkpNormChi2->size() < upTo)   for (unsigned int i = kstTrkpNormChi2->size(); i < upTo; i++)   kstTrkpNormChi2->push_back(0);
-  if (kstTrkpPx->size() < upTo)         for (unsigned int i = kstTrkpPx->size(); i < upTo; i++)         kstTrkpPx->push_back(0);
-  if (kstTrkpPy->size() < upTo)         for (unsigned int i = kstTrkpPy->size(); i < upTo; i++)         kstTrkpPy->push_back(0);
-  if (kstTrkpPz->size() < upTo)         for (unsigned int i = kstTrkpPz->size(); i < upTo; i++)         kstTrkpPz->push_back(0);
-  if (kstTrkpDCAVtx->size() < upTo)     for (unsigned int i = kstTrkpDCAVtx->size(); i < upTo; i++)     kstTrkpDCAVtx->push_back(0);
-  if (kstTrkpDCAVtxE->size() < upTo)    for (unsigned int i = kstTrkpDCAVtxE->size(); i < upTo; i++)    kstTrkpDCAVtxE->push_back(0);
-  if (kstTrkpDCABS->size() < upTo)      for (unsigned int i = kstTrkpDCABS->size(); i < upTo; i++)      kstTrkpDCABS->push_back(0);
-  if (kstTrkpDCABSE->size() < upTo)     for (unsigned int i = kstTrkpDCABSE->size(); i < upTo; i++)     kstTrkpDCABSE->push_back(0);
-  if (kstTrkpFracHits->size() < upTo)   for (unsigned int i = kstTrkpFracHits->size(); i < upTo; i++)   kstTrkpFracHits->push_back(0);
-  if (kstTrkpdxyVtx->size() < upTo)     for (unsigned int i = kstTrkpdxyVtx->size(); i < upTo; i++)     kstTrkpdxyVtx->push_back(0);
-  if (kstTrkpdzVtx->size() < upTo)      for (unsigned int i = kstTrkpdzVtx->size(); i < upTo; i++)      kstTrkpdzVtx->push_back(0);
-  if (kstTrkpNPixHits->size() < upTo)   for (unsigned int i = kstTrkpNPixHits->size(); i < upTo; i++)   kstTrkpNPixHits->push_back(0);
-  if (kstTrkpNPixLayers->size() < upTo) for (unsigned int i = kstTrkpNPixLayers->size(); i < upTo; i++) kstTrkpNPixLayers->push_back(0);
-  if (kstTrkpNTrkHits->size() < upTo)   for (unsigned int i = kstTrkpNTrkHits->size(); i < upTo; i++)   kstTrkpNTrkHits->push_back(0);
-  if (kstTrkpNTrkLayers->size() < upTo) for (unsigned int i = kstTrkpNTrkLayers->size(); i < upTo; i++) kstTrkpNTrkLayers->push_back(0);
-  if (kstTrkpMuMatch->size() < upTo)    for (unsigned int i = kstTrkpMuMatch->size(); i < upTo; i++)    kstTrkpMuMatch->push_back("");
+  if (kstTrkpHighPurity->size() < upTo)   for (unsigned int i = kstTrkpHighPurity->size(); i < upTo; i++)   kstTrkpHighPurity->push_back(0);
+  if (kstTrkpCL->size() < upTo)           for (unsigned int i = kstTrkpCL->size(); i < upTo; i++)           kstTrkpCL->push_back(0);
+  if (kstTrkpNormChi2->size() < upTo)     for (unsigned int i = kstTrkpNormChi2->size(); i < upTo; i++)     kstTrkpNormChi2->push_back(0);
+  if (kstTrkpPx->size() < upTo)           for (unsigned int i = kstTrkpPx->size(); i < upTo; i++)           kstTrkpPx->push_back(0);
+  if (kstTrkpPy->size() < upTo)           for (unsigned int i = kstTrkpPy->size(); i < upTo; i++)           kstTrkpPy->push_back(0);
+  if (kstTrkpPz->size() < upTo)           for (unsigned int i = kstTrkpPz->size(); i < upTo; i++)           kstTrkpPz->push_back(0);
+  if (kstTrkpDCAVtx->size() < upTo)       for (unsigned int i = kstTrkpDCAVtx->size(); i < upTo; i++)       kstTrkpDCAVtx->push_back(0);
+  if (kstTrkpDCAVtxE->size() < upTo)      for (unsigned int i = kstTrkpDCAVtxE->size(); i < upTo; i++)      kstTrkpDCAVtxE->push_back(0);
+  if (kstTrkpDCABS->size() < upTo)        for (unsigned int i = kstTrkpDCABS->size(); i < upTo; i++)        kstTrkpDCABS->push_back(0);
+  if (kstTrkpDCABSE->size() < upTo)       for (unsigned int i = kstTrkpDCABSE->size(); i < upTo; i++)       kstTrkpDCABSE->push_back(0);
+  if (kstTrkpFracHits->size() < upTo)     for (unsigned int i = kstTrkpFracHits->size(); i < upTo; i++)     kstTrkpFracHits->push_back(0);
+  if (kstTrkpdxyVtx->size() < upTo)       for (unsigned int i = kstTrkpdxyVtx->size(); i < upTo; i++)       kstTrkpdxyVtx->push_back(0);
+  if (kstTrkpdzVtx->size() < upTo)        for (unsigned int i = kstTrkpdzVtx->size(); i < upTo; i++)        kstTrkpdzVtx->push_back(0);
+  if (kstTrkpDeltaRwithMC->size() < upTo) for (unsigned int i = kstTrkpDeltaRwithMC->size(); i < upTo; i++) kstTrkpDeltaRwithMC->push_back(0);
+  if (kstTrkpNPixHits->size() < upTo)     for (unsigned int i = kstTrkpNPixHits->size(); i < upTo; i++)     kstTrkpNPixHits->push_back(0);
+  if (kstTrkpNPixLayers->size() < upTo)   for (unsigned int i = kstTrkpNPixLayers->size(); i < upTo; i++)   kstTrkpNPixLayers->push_back(0);
+  if (kstTrkpNTrkHits->size() < upTo)     for (unsigned int i = kstTrkpNTrkHits->size(); i < upTo; i++)     kstTrkpNTrkHits->push_back(0);
+  if (kstTrkpNTrkLayers->size() < upTo)   for (unsigned int i = kstTrkpNTrkLayers->size(); i < upTo; i++)   kstTrkpNTrkLayers->push_back(0);
+  if (kstTrkpMuMatch->size() < upTo)      for (unsigned int i = kstTrkpMuMatch->size(); i < upTo; i++)      kstTrkpMuMatch->push_back("");
   
   // ### Matching Between Reconstructed and Generated ###
   if (truthMatchSignal->size() < upTo) for (unsigned int i = truthMatchSignal->size(); i < upTo; i++) truthMatchSignal->push_back(0);
