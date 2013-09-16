@@ -104,7 +104,7 @@ process.load("PhysicsTools.PatAlgos.patSequences_cff")
 ### Add track candidates ###
 ############################
 process.load("PhysicsTools.PatAlgos.cleaningLayer1.genericTrackCleaner_cfi")
-# Here we require NOT to check overlap with muons and electrons
+# Require NOT to check overlap with muons and electrons
 process.cleanPatTracks.checkOverlaps.muons.requireNoOverlaps = cms.bool(False)
 process.cleanPatTracks.checkOverlaps.electrons.requireNoOverlaps = cms.bool(False)
 
