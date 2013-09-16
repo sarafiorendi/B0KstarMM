@@ -1947,10 +1947,10 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	{
 	  for (unsigned int i = 0; i < NTuple->nB; i++)
 	    {
-	      mumDeltaRwithMC->push_back(-1.0);
-	      mupDeltaRwithMC->push_back(-1.0);
-	      kstTrkmDeltaRwithMC->push_back(-1.0);
-	      kstTrkpDeltaRwithMC->push_back(-1.0);
+	      NTuple->mumDeltaRwithMC->push_back(-1.0);
+	      NTuple->mupDeltaRwithMC->push_back(-1.0);
+	      NTuple->kstTrkmDeltaRwithMC->push_back(-1.0);
+	      NTuple->kstTrkpDeltaRwithMC->push_back(-1.0);
 	    
 	      NTuple->truthMatchMum->push_back(false);
 	      NTuple->truthMatchMup->push_back(false);
@@ -1967,7 +1967,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      // # Check matching with mu- #
 	      // ###########################
 	      deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genMumPx,NTuple->genMumPy,NTuple->genMumPz, NTuple->mumPx->at(i),NTuple->mumPy->at(i),NTuple->mumPz->at(i));
-	      mumDeltaRwithMC->push_back(deltaEtaPhi);
+	      NTuple->mumDeltaRwithMC->push_back(deltaEtaPhi);
 	      if (deltaEtaPhi < RCUTMU)
 		{
 		  NTuple->truthMatchMum->push_back(true);
@@ -1980,7 +1980,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      // # Check matching with mu+ #
 	      // ###########################
 	      deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genMupPx,NTuple->genMupPy,NTuple->genMupPz, NTuple->mupPx->at(i),NTuple->mupPy->at(i),NTuple->mupPz->at(i));
-	      mupDeltaRwithMC->push_back(deltaEtaPhi);
+	      NTuple->mupDeltaRwithMC->push_back(deltaEtaPhi);
 	      if (deltaEtaPhi < RCUTMU)
 		{
 		  NTuple->truthMatchMup->push_back(true);
@@ -1995,7 +1995,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      if ((NTuple->genSignal != 0) || (NTuple->genMuMuBGnTrksm != 0))
 		{
 		  deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genKstTrkmPx,NTuple->genKstTrkmPy,NTuple->genKstTrkmPz, NTuple->kstTrkmPx->at(i),NTuple->kstTrkmPy->at(i),NTuple->kstTrkmPz->at(i));
-		  kstTrkmDeltaRwithMC->push_back(deltaEtaPhi);
+		  NTuple->kstTrkmDeltaRwithMC->push_back(deltaEtaPhi);
 		  if (deltaEtaPhi < RCUTTRK)
 		    {
 		      NTuple->truthMatchTrkm->push_back(true);
@@ -2006,7 +2006,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      else
 		{
 		  NTuple->truthMatchTrkm->push_back(false);
-		  kstTrkmDeltaRwithMC->push_back(-1.0);
+		  NTuple->kstTrkmDeltaRwithMC->push_back(-1.0);
 		}
 
 
@@ -2016,7 +2016,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      if ((NTuple->genSignal != 0) || (NTuple->genMuMuBGnTrksp != 0))
 		{
 		  deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genKstTrkpPx,NTuple->genKstTrkpPy,NTuple->genKstTrkpPz, NTuple->kstTrkpPx->at(i),NTuple->kstTrkpPy->at(i),NTuple->kstTrkpPz->at(i));
-		  kstTrkpDeltaRwithMC->push_back(deltaEtaPhi);
+		  NTuple->kstTrkpDeltaRwithMC->push_back(deltaEtaPhi);
 		  if (deltaEtaPhi < RCUTTRK) 
 		    {
 		      NTuple->truthMatchTrkp->push_back(true);
@@ -2027,7 +2027,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      else
 		{
 		  NTuple->truthMatchTrkp->push_back(false);
-		  kstTrkpDeltaRwithMC->push_back(-1.0);
+		  NTuple->kstTrkpDeltaRwithMC->push_back(-1.0);
 		}
 
 
