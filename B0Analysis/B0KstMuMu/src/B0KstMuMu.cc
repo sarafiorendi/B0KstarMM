@@ -141,11 +141,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
   float pionMassErr           = Utility->pionMassErr;
   float kaonMassErr           = Utility->kaonMassErr;
   
-  bool accMum  = false;
-  bool accMup  = false;
-  bool trigMum = false;
-  bool trigMup = false;
-
   double chi;
   double ndf;
 
@@ -278,31 +273,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 
       if (printMsg == true) std::cout << __LINE__ << " : the event has: " << thePATMuonHandle->size() << " muons AND " << thePATTrackHandle->size() << " tracks" << std::endl;
-
-
-      // #############################################################################
-      // # Check for two reconstructed muons: within acceptance + match the triggers #
-      // #############################################################################
-      for (std::vector<pat::Muon>::const_iterator iMuon = thePATMuonHandle->begin(); iMuon != thePATMuonHandle->end(); iMuon++)
-	{
-	  if (!((iMuon->pt() < MUMINPT) || (fabs(iMuon->eta()) > MUMAXETA)))
-	    {
-	      if      (iMuon->charge() ==  1) accMup = true;
-	      else if (iMuon->charge() == -1) accMum = true;
-	      
-	      unsigned int it = 0;
-	      for (it = 0; it < TrigTable.size(); it++)
-		{
-		  myString.clear(); myString.str(""); myString << TrigTable[it].c_str() << "*";
-		  if (iMuon->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) break;
-		}
-	      if (it != TrigTable.size())
-		{
-		  if      (iMuon->charge() ==  1) trigMup = true;
-		  else if (iMuon->charge() == -1) trigMum = true;
-		}
-	    }
-	}
 
 
       // #################################
@@ -446,11 +416,11 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  mumuVertexFitTree->movePointerToTheTop();
 
                   mumuVertexFitTree->movePointerToTheFirstChild();
-                  RefCountedKinematicParticle refitMum = mumuVertexFitTree->currentParticle();
+                  RefCountedKinematicParticle refitMum  = mumuVertexFitTree->currentParticle();
                   const reco::TransientTrack refitMumTT = refitMum->refittedTransientTrack();
 
                   mumuVertexFitTree->movePointerToTheNextChild();
-                  RefCountedKinematicParticle refitMup = mumuVertexFitTree->currentParticle();
+                  RefCountedKinematicParticle refitMup  = mumuVertexFitTree->currentParticle();
                   const reco::TransientTrack refitMupTT = refitMup->refittedTransientTrack();
 
 
@@ -696,11 +666,11 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  kstVertexFitTree->movePointerToTheTop();
 
 			  kstVertexFitTree->movePointerToTheNextChild();
-			  RefCountedKinematicParticle refitTrkm = kstVertexFitTree->currentParticle();
+			  RefCountedKinematicParticle refitTrkm  = kstVertexFitTree->currentParticle();
 			  const reco::TransientTrack refitTrkmTT = refitTrkm->refittedTransientTrack();
 
 			  kstVertexFitTree->movePointerToTheNextChild();
-			  RefCountedKinematicParticle refitTrkp = kstVertexFitTree->currentParticle();
+			  RefCountedKinematicParticle refitTrkp  = kstVertexFitTree->currentParticle();
 			  const reco::TransientTrack refitTrkpTT = refitTrkp->refittedTransientTrack();
 
 
@@ -1714,15 +1684,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  while (PVtx->numberOfMothers() > 0) PVtx = PVtx->mother(0);
 
 
-		  // #############################################################
-		  // # Save whether we had two triggered muons within acceptance #
-		  // #############################################################
-		  NTuple->trueMumInAcceptance = accMum;
-		  NTuple->trueMupInAcceptance = accMup;
-		  NTuple->trueMumTriggered = trigMum;
-		  NTuple->trueMupTriggered = trigMup;
-
-
 		  // ############################
 		  // # Generated Primary Vertex #
 		  // ############################
@@ -1859,7 +1820,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		      NTuple->genKstTrkpPy = genKst_trkp->py();
 		      NTuple->genKstTrkpPz = genKst_trkp->pz();
 		    }
-
 		} // End if foundSomething
 	    } // End if B0/B0bar OR Bs/Bsbar OR Lambda_b/Lambda_bbar OR B+/B-
 
@@ -1931,7 +1891,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      delete negDau[i];
 	    }
 	  negDau.clear();
-	  
 	} // End for genParticles
     } // End if doGenReco_ == 2 || doGenReco_ == 3
 

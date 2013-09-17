@@ -192,14 +192,12 @@ class B0KstMuMuTreeContent
   // #################
   int                       genMumMother;
   double                    genMumPx, genMumPy, genMumPz;
-  bool                      trueMumTriggered, trueMumInAcceptance;
 
   // #################
   // # Generated mu+ #
   // #################
   int                       genMupMother;
   double                    genMupPx, genMupPy, genMupPz;
-  bool                      trueMupTriggered, trueMupInAcceptance;
 
   // ########################
   // # Generated K*0 track- #

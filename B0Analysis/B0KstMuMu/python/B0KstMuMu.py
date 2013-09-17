@@ -4,7 +4,7 @@
 runDataMC = 1 # 1 = Data; 2 = MC (Reco + Gen); 3 = MC (Gen)
 useJSON   = False
 printMsg  = False
-triggerProcessName = 'HLT' # 'GEN' or 'HLT' or 'RECO' or 'TEST' or 'REDIGI36X'
+triggerProcessName = 'HLT' # 'GEN' or 'HLT' or 'RECO' or 'TEST' or ...
 
 
 #####################
@@ -105,18 +105,18 @@ process.load("PhysicsTools.PatAlgos.patSequences_cff")
 ############################
 process.load("PhysicsTools.PatAlgos.cleaningLayer1.genericTrackCleaner_cfi")
 # Require NOT to check overlap with muons and electrons
-process.cleanPatTracks.checkOverlaps.muons.requireNoOverlaps = cms.bool(False)
+process.cleanPatTracks.checkOverlaps.muons.requireNoOverlaps     = cms.bool(False)
 process.cleanPatTracks.checkOverlaps.electrons.requireNoOverlaps = cms.bool(False)
 
 from PhysicsTools.PatAlgos.tools.trackTools import *
-from PhysicsTools.PatAlgos.tools.coreTools import *
+from PhysicsTools.PatAlgos.tools.coreTools  import *
 if (runDataMC != 1):
     makeTrackCandidates(process,
                         label        = 'TrackCands',                  # output collection
                         tracks       = cms.InputTag('generalTracks'), # input track collection
                         particleType = 'pi+',                         # particle type (for assigning a mass)
                         preselection = 'pt > 0.1',                    # preselection cut on candidates
-                        selection    = 'pt > 0.1',                    # selection on PAT Layer 1 objects
+                        selection    = 'pt > 0.1',                    # selection cut on candidates
                         isolation    = {},                            # isolations to use (set to {} for None)
                         isoDeposits  = [],
                         mcAs         = 'muon'                         # replicate MC match as the one used for Muons
@@ -133,7 +133,7 @@ else:
                         tracks       = cms.InputTag('generalTracks'), # input track collection
                         particleType = 'pi+',                         # particle type (for assigning a mass)
                         preselection = 'pt > 0.1',                    # preselection cut on candidates
-                        selection    = 'pt > 0.1',                    # selection on PAT Layer 1 objects
+                        selection    = 'pt > 0.1',                    # selection cut on candidates
                         isolation    = {},                            # isolations to use (set to {} for None)
                         isoDeposits  = [],
                         mcAs         = None                           # replicate MC match as the one used for Muons
@@ -152,7 +152,7 @@ process.cleanMuonTriggerMatchHLT = cms.EDProducer(
     matchedCuts           = cms.string('path("HLT_DoubleMu3p5_LowMass_Displaced_v*")'),
     maxDeltaR             = cms.double(0.1),
     resolveAmbiguities    = cms.bool(True),
-    resolveByMatchQuality = cms.bool(False))
+    resolveByMatchQuality = cms.bool(True))
 
 
 ##################################

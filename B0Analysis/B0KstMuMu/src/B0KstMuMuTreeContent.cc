@@ -590,16 +590,12 @@ void B0KstMuMuTreeContent::ClearMonteCarlo ()
   genMumPx     = 0;
   genMumPy     = 0;
   genMumPz     = 0;
-  trueMumTriggered    = false;
-  trueMumInAcceptance = false;
 
   // ### Generated mu+ ###
   genMupMother = 0;
   genMupPx     = 0;
   genMupPy     = 0;
   genMupPz     = 0;
-  trueMupTriggered    = false;
-  trueMupInAcceptance = false;
 
   // ### Generated K*0 track- ###
   genKstTrkmMother = 0;
@@ -851,20 +847,16 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("genPsiVtxZ", &genPsiVtxZ, "genPsiVtxZ/D");
 
   // ### Generated mu- ###
-  theTree->Branch("genMumMother",        &genMumMother,        "genMumMother/I");
-  theTree->Branch("genMumPx",            &genMumPx,            "genMumPx/D");
-  theTree->Branch("genMumPy",            &genMumPy,            "genMumPy/D");
-  theTree->Branch("genMumPz",            &genMumPz,            "genMumPz/D");
-  theTree->Branch("trueMumTriggered",    &trueMumTriggered,    "trueMumTriggered/O"); 
-  theTree->Branch("trueMumInAcceptance", &trueMumInAcceptance, "trueMumInAcceptance/O"); 
+  theTree->Branch("genMumMother", &genMumMother, "genMumMother/I");
+  theTree->Branch("genMumPx",     &genMumPx,     "genMumPx/D");
+  theTree->Branch("genMumPy",     &genMumPy,     "genMumPy/D");
+  theTree->Branch("genMumPz",     &genMumPz,     "genMumPz/D");
 
   // ### Generated mu+ ###
-  theTree->Branch("genMupMother",        &genMupMother,        "genMupMother/I");
-  theTree->Branch("genMupPx",            &genMupPx,            "genMupPx/D");
-  theTree->Branch("genMupPy",            &genMupPy,            "genMupPy/D");
-  theTree->Branch("genMupPz",            &genMupPz,            "genMupPz/D");
-  theTree->Branch("trueMupTriggered",    &trueMupTriggered,    "trueMupTriggered/O"); 
-  theTree->Branch("trueMupInAcceptance", &trueMupInAcceptance, "trueMupInAcceptance/O"); 
+  theTree->Branch("genMupMother", &genMupMother, "genMupMother/I");
+  theTree->Branch("genMupPx",     &genMupPx,     "genMupPx/D");
+  theTree->Branch("genMupPy",     &genMupPy,     "genMupPy/D");
+  theTree->Branch("genMupPz",     &genMupPz,     "genMupPz/D");
 
   // ### Generated K*0 track- ###
   theTree->Branch("genKstTrkmMother", &genKstTrkmMother, "genKstTrkmMother/I");
@@ -1116,20 +1108,16 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("genPsiVtxZ", &genPsiVtxZ);
 
   // ### Generated mu- ###
-  theTree->SetBranchAddress("genMumMother",        &genMumMother);
-  theTree->SetBranchAddress("genMumPx",            &genMumPx);
-  theTree->SetBranchAddress("genMumPy",            &genMumPy);
-  theTree->SetBranchAddress("genMumPz",            &genMumPz);
-  theTree->SetBranchAddress("trueMumTriggered",    &trueMumTriggered);
-  theTree->SetBranchAddress("trueMumInAcceptance", &trueMumInAcceptance);
+  theTree->SetBranchAddress("genMumMother", &genMumMother);
+  theTree->SetBranchAddress("genMumPx",     &genMumPx);
+  theTree->SetBranchAddress("genMumPy",     &genMumPy);
+  theTree->SetBranchAddress("genMumPz",     &genMumPz);
 
   // ### Generated mu+ ###
-  theTree->SetBranchAddress("genMupMother",        &genMupMother);
-  theTree->SetBranchAddress("genMupPx",            &genMupPx);
-  theTree->SetBranchAddress("genMupPy",            &genMupPy);
-  theTree->SetBranchAddress("genMupPz",            &genMupPz);
-  theTree->SetBranchAddress("trueMupTriggered",    &trueMupTriggered);
-  theTree->SetBranchAddress("trueMupInAcceptance", &trueMupInAcceptance);
+  theTree->SetBranchAddress("genMupMother", &genMupMother);
+  theTree->SetBranchAddress("genMupPx",     &genMupPx);
+  theTree->SetBranchAddress("genMupPy",     &genMupPy);
+  theTree->SetBranchAddress("genMupPz",     &genMupPz);
 
   // ### Generated K*0 track- ###
   theTree->SetBranchAddress("genKstTrkmMother", &genKstTrkmMother);
@@ -1243,20 +1231,16 @@ void B0KstMuMuTreeContent::CopyScalars (B0KstMuMuTreeContent* NTupleIn)
   genPsiVtxZ = NTupleIn->genPsiVtxZ;
 
   // ### Generated mu- ###
-  genMumMother        = NTupleIn->genMumMother;
-  genMumPx            = NTupleIn->genMumPx;
-  genMumPy            = NTupleIn->genMumPy;
-  genMumPz            = NTupleIn->genMumPz;
-  trueMumTriggered    = NTupleIn->trueMumTriggered;
-  trueMumInAcceptance = NTupleIn->trueMumInAcceptance;
+  genMumMother = NTupleIn->genMumMother;
+  genMumPx     = NTupleIn->genMumPx;
+  genMumPy     = NTupleIn->genMumPy;
+  genMumPz     = NTupleIn->genMumPz;
 
   // ### Generated mu+ ###
-  genMupMother        = NTupleIn->genMupMother;
-  genMupPx            = NTupleIn->genMupPx;
-  genMupPy            = NTupleIn->genMupPy;
-  genMupPz            = NTupleIn->genMupPz;
-  trueMupTriggered    = NTupleIn->trueMupTriggered;
-  trueMupInAcceptance = NTupleIn->trueMupInAcceptance;
+  genMupMother = NTupleIn->genMupMother;
+  genMupPx     = NTupleIn->genMupPx;
+  genMupPy     = NTupleIn->genMupPy;
+  genMupPz     = NTupleIn->genMupPz;
 
   // ### Generated K*0 track- ###
   genKstTrkmMother = NTupleIn->genKstTrkmMother;
