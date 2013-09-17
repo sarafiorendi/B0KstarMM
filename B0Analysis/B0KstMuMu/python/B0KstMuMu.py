@@ -69,7 +69,7 @@ process.source = cms.Source('PoolSource',
 ### Use JSON file interatively ###
 ##################################
 if (runDataMC == 1 and useJSON == True):
-    import PhysicsTools.PythonAnalysis.LumiList as LumiList
+    import FWCore.PythonUtilities.LumiList as LumiList
     import FWCore.ParameterSet.Types as CfgTypes
     myLumis = LumiList.LumiList(filename = 'Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON_MuonPhys.txt').getCMSSWString().split(',')
     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())
