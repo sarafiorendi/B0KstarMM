@@ -2323,15 +2323,11 @@ unsigned int Utils::ParFileBlockN (std::string blockName)
   else if (blockName == "fitSyst")     return 12;
   else if (blockName == "fitNLL")      return 13;
 
-  else if (blockName == "analyEff1")   return 14;
-  else if (blockName == "analyEff2")   return 15;
-  else if (blockName == "analyEff3")   return 16;
-  else if (blockName == "analyEff4")   return 17;
-  else if (blockName == "analyEffAvg") return 18;
+  else if (blockName == "analyEffAvg") return 14;
 
-  else if (blockName == "genericpar")  return 19;
-  else if (blockName == "lumi")        return 20;
-  else if (blockName == "dtype")       return 21;
+  else if (blockName == "genericpar")  return 15;
+  else if (blockName == "lumi")        return 16;
+  else if (blockName == "dtype")       return 17;
 
   std::cout << "[Utils::ParFileBlockN]\tError wrong index name : " << blockName << std::endl;
   exit (1);
