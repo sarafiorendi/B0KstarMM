@@ -110,36 +110,18 @@ process.cleanPatTracks.checkOverlaps.electrons.requireNoOverlaps = cms.bool(Fals
 
 from PhysicsTools.PatAlgos.tools.trackTools import *
 from PhysicsTools.PatAlgos.tools.coreTools  import *
-if (runDataMC != 1):
-    makeTrackCandidates(process,
-                        label        = 'TrackCands',                  # output collection
-                        tracks       = cms.InputTag('generalTracks'), # input track collection
-                        particleType = 'pi+',                         # particle type (for assigning a mass)
-                        preselection = 'pt > 0.1',                    # preselection cut on candidates
-                        selection    = 'pt > 0.1',                    # selection cut on candidates
-                        isolation    = {},                            # isolations to use (set to {} for None)
-                        isoDeposits  = [],
-                        mcAs         = 'muon'                         # replicate MC match as the one used for Muons
-                        )
+makeTrackCandidates(process,
+                    label        = 'TrackCands',                  # output collection
+                    tracks       = cms.InputTag('generalTracks'), # input track collection
+                    particleType = 'pi+',                         # particle type (for assigning a mass)
+                    preselection = 'pt > 0.1',                    # preselection cut on candidates
+                    selection    = 'pt > 0.1',                    # selection cut on candidates
+                    isolation    = {},                            # isolations to use (set to {} for None)
+                    isoDeposits  = [],
+                    mcAs         = None                           # replicate MC match as the one used for Muons
+                )
     
-    process.patTrackCandsMCMatch.mcPdgId               = cms.vint32(211) # = pi+
-    process.patTrackCandsMCMatch.mcStatus              = cms.vint32(1)
-    process.patTrackCandsMCMatch.maxDeltaR             = cms.double(0.02)
-    process.patTrackCandsMCMatch.resolveAmbiguities    = cms.bool(True)
-    process.patTrackCandsMCMatch.resolveByMatchQuality = cms.bool(True)
-else:
-    makeTrackCandidates(process,
-                        label        = 'TrackCands',                  # output collection
-                        tracks       = cms.InputTag('generalTracks'), # input track collection
-                        particleType = 'pi+',                         # particle type (for assigning a mass)
-                        preselection = 'pt > 0.1',                    # preselection cut on candidates
-                        selection    = 'pt > 0.1',                    # selection cut on candidates
-                        isolation    = {},                            # isolations to use (set to {} for None)
-                        isoDeposits  = [],
-                        mcAs         = None                           # replicate MC match as the one used for Muons
-                        )
-    
-    removeMCMatching(process, ['All'], outputModules = [])
+removeMCMatching(process, ['All'], outputModules = [])
 
 
 #####################################
