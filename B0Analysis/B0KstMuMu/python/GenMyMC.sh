@@ -2,7 +2,7 @@
 # Instructions #
 ################
 
-# 1. Copy PYTHIA6_B0dToKstMuMuKPi_7TeV_cff.py in Configuration/Generator/python/
+# 1. Copy GEN-Fragment.py in Configuration/Generator/python/
 # 2. If not in repository copy name.dec in GeneratorInterface/ExternalDecays/data/
 # 3. scram b
 # 4. source GenMyMC.sh
