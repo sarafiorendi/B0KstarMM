@@ -240,13 +240,10 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	{
 	  NTuple->TrigTable->push_back("NotInTable");
 	  NTuple->TrigPrescales->push_back(-1);
+	  
+	  if (printMsg == true) std::cout << __LINE__ << " : no trigger path in " << parameterFile_ << " have been found in the event" << std::endl;
 	}
-      
-      if (printMsg == true)
-	{
-	  if (NTuple->TrigTable->size() > 0) std::cout << __LINE__ << " : some trigger paths in " << parameterFile_ << " have been found in the event" << std::endl;
-	  else std::cout << __LINE__ << " : no trigger path in " << parameterFile_ << " have been found in the event" << std::endl;
-	}
+      else if (printMsg == true) std::cout << __LINE__ << " : some trigger paths in " << parameterFile_ << " have been found in the event" << std::endl;
     }
 
 
