@@ -108,6 +108,10 @@ process.load("PhysicsTools.PatAlgos.cleaningLayer1.genericTrackCleaner_cfi")
 process.cleanPatTracks.checkOverlaps.muons.requireNoOverlaps     = cms.bool(False)
 process.cleanPatTracks.checkOverlaps.electrons.requireNoOverlaps = cms.bool(False)
 
+
+#########################
+### Set up PAT tracks ###
+#########################
 from PhysicsTools.PatAlgos.tools.trackTools import *
 from PhysicsTools.PatAlgos.tools.coreTools  import *
 makeTrackCandidates(process,
@@ -120,7 +124,7 @@ makeTrackCandidates(process,
                     isoDeposits  = [],
                     mcAs         = None                           # replicate MC match as the one used for Muons
                 )
-    
+
 removeMCMatching(process, ['All'], outputModules = [])
 
 
@@ -144,9 +148,9 @@ from PhysicsTools.PatAlgos.tools.trigTools import *
 switchOnTriggerMatchEmbedding(process, triggerMatchers = ['cleanMuonTriggerMatchHLT'], hltProcess = triggerProcessName, outputModule = '')
 
 
-###########################
-### Remove not used PAT ###
-###########################
+#########################
+### Remove unused PAT ###
+#########################
 process.patDefaultSequence.remove(process.patJetCorrFactors)
 process.patDefaultSequence.remove(process.patJetCharge)
 process.patDefaultSequence.remove(process.patJetPartonMatch)
