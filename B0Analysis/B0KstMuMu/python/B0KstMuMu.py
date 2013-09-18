@@ -122,9 +122,7 @@ makeTrackCandidates(process,
                     selection    = 'pt > 0.1',                    # selection cut on candidates
                     isolation    = {},                            # isolations to use (set to {} for None)
                     isoDeposits  = [],
-                    mcAs         = None                           # replicate MC match as the one used for Muons
-                )
-
+                    mcAs         = None)                          # replicate MC match as the one used for Muons
 removeMCMatching(process, ['All'], outputModules = [])
 
 
