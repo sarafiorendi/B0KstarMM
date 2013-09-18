@@ -2161,8 +2161,8 @@ void B0KstMuMu::beginJob ()
   // ##############################
   // # Loading pre-selection cuts #
   // ##############################
-  B0MASSUPLIMIT  = Utility->GetPreCut("MinB0Mass"); if (printMsg == true) std::cout << __LINE__ << " : B0MASSUPLIMIT  = " << B0MASSUPLIMIT << std::endl;
-  B0MASSLOWLIMIT = Utility->GetPreCut("MaxB0Mass"); if (printMsg == true) std::cout << __LINE__ << " : B0MASSLOWLIMIT = " << B0MASSLOWLIMIT << std::endl;
+  B0MASSLOWLIMIT = Utility->GetPreCut("MinB0Mass"); if (printMsg == true) std::cout << __LINE__ << " : B0MASSLOWLIMIT = " << B0MASSLOWLIMIT << std::endl;
+  B0MASSUPLIMIT  = Utility->GetPreCut("MaxB0Mass"); if (printMsg == true) std::cout << __LINE__ << " : B0MASSUPLIMIT  = " << B0MASSUPLIMIT << std::endl;
   CLB0VTX        = Utility->GetPreCut("B0VtxCL");   if (printMsg == true) std::cout << __LINE__ << " : CLB0VTX        = " << CLB0VTX << std::endl;
   KSTMASSWINDOW  = Utility->GetPreCut("KstMass");   if (printMsg == true) std::cout << __LINE__ << " : KSTMASSWINDOW  = " << KSTMASSWINDOW << std::endl;
   HADDCASBS      = Utility->GetPreCut("HadDCASBS"); if (printMsg == true) std::cout << __LINE__ << " : HADDCASBS      = " << HADDCASBS << std::endl;
