@@ -2060,8 +2060,8 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vec
   NCoeffPolyBKGcomb1 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC1"))->operator[](fitParamIndx).c_str());
   NCoeffPolyBKGpeak2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP2"))->operator[](fitParamIndx).c_str());
   NCoeffPolyBKGcomb2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC2"))->operator[](fitParamIndx).c_str());
-  if ((NCoeffPolyBKGpeak1 < 0) || (NCoeffPolyBKGcomb1 < 0) || (NCoeffPolyBKGpeak1 > NCOEFFPOLYBKG) || (NCoeffPolyBKGcomb1 > NCOEFFPOLYBKG) ||
-      (NCoeffPolyBKGpeak2 < 0) || (NCoeffPolyBKGcomb2 < 0) || (NCoeffPolyBKGpeak2 > NCOEFFPOLYBKG) || (NCoeffPolyBKGcomb2 > NCOEFFPOLYBKG))
+  if ((NCoeffPolyBKGpeak1 > NCOEFFPOLYBKG) || (NCoeffPolyBKGcomb1 > NCOEFFPOLYBKG) ||
+      (NCoeffPolyBKGpeak2 > NCOEFFPOLYBKG) || (NCoeffPolyBKGcomb2 > NCOEFFPOLYBKG))
     {
       cout << "[ExtractYield::CopyFitResults]\tDegree of poly bkg is not within allowed limits: " << NCoeffPolyBKGpeak1 << "\t" << NCoeffPolyBKGcomb1 << "\t" << NCoeffPolyBKGpeak1 << "\t" << NCoeffPolyBKGcomb2 << endl;
       exit(1);
