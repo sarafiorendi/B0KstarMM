@@ -962,7 +962,7 @@ LambdaBToPsiMuMu\
 @@@@@@@@@@@@@@@\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\b \cf0 \ul \ulc0 \
+\b \cf0 \ul \
 HLT-trigger cuts:\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
@@ -981,13 +981,33 @@ HLT-trigger cuts:\
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\b \cf0 \ul \ulc0 Pre-selection cuts:\
+\b \cf0 \ul Pre-selection cuts:\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
 \b0 \cf0 \ulnone - B0 mass upper limit 6.5 [GeV/c2]\
 - B0 mass lower limit 4.5 [GeV/c2]\
 - B0 Vtx CL 0.01\
 - K*0 (OR K*0bar) mass window sigma 3.0\
-- hadron min pT 0.4 [GeV/c]\
-- hadron DCA/sigma w/respect to BS 1.0\
+- hadron min pT 0.5 [GeV/c]\
+- hadron DCA/sigma w/respect to BS 0.9\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul Tested pre-selection cut values against CRAB error 50664 ("using too much Wall Clock time")\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b \cf0 \ulnone run #	05	06	07	08	09	10	11	12	13	14\
+DCA/s
+\b0 	0.9	1.2	1.2	1.0	0.8	0.7	
+\b 0.9
+\b0 	0.9	1.0	1.1\
+
+\b h-pT
+\b0 		0.4	0.4	0.6	0.6	0.4	0.4	
+\b 0.5
+\b0 	0.6	0.5	0.5\
+
+\b 50664
+\b0 	YES	YES	NO	NO	YES	YES	
+\b NO
+\b0 	NO	NO	NO\
 }
