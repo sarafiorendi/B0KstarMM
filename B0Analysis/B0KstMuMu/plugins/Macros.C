@@ -1472,7 +1472,7 @@ void DrawString (double Lumi)
 
   myString.clear();
   myString.str("");
-  myString << "s = 7 TeV";
+  myString << "s = 8 TeV";
   TLatex* LumiTex4 = new TLatex(0.84,0.91,myString.str().c_str());
   LumiTex4->SetTextSize(0.05);
   LumiTex4->SetTextColor(kBlack);

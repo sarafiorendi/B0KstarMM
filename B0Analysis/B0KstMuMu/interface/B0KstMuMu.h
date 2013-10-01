@@ -1,19 +1,9 @@
-// -*- C++ -*-
-//
-// Package:    B0KstMuMu
-// Class:      B0KstMuMu
-// 
-/**\class B0KstMuMu B0KstMuMu.cc B0Analysis/B0KstMuMu/src/B0KstMuMu.cc
-   
-   Description:
-   Make rootTuple for b --> s mu+ mu- analyses
-   
-*/
-//
-// Original Author:  Mauro Dinardo
-//         Created:  Mon Apr 27 09:53:19 MDT 2011
-// $Id: B0KstMuMu.h,v 1.30 2012/12/01 14:15:11 dinardo Exp $
-
+// ##################################################
+// # Description:                                   #
+// # Make rootTuple for b --> s mu+ mu- analysis    #
+// # Original Author:  Mauro Dinardo                #
+// #         Created:  Mon Apr 27 09:53:19 MDT 2011 #
+// ##################################################
 
 #ifndef _B0KSTMUMU
 #define _B0KSTMUMU

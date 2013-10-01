@@ -113,7 +113,7 @@ using namespace RooFit;
 #define TESTeffFUNC   false // Check whether efficiency goes negative
 #define SAVEPLOT      false
 #define FUNCERRBAND   false // Show the p.d.f. error band
-#define MakeMuMuPlots false
+#define MakeMuMuPlots true
 #define MAKEGRAPHSCAN false // Make graphical scan of the physics-pdf*eff or physics-pdf alone (ony valid for GEN fit type options)
 #define USEMINOS      true
 #define UseSPwave     true
@@ -546,7 +546,7 @@ void DrawString (double Lumi, RooPlot* myFrame)
   //   }
 
   myString.clear(); myString.str("");
-  myString << "s = 7 TeV";
+  myString << "s = 8 TeV";
   TLatex* LumiTex4 = new TLatex(0.84,0.91,myString.str().c_str());
   LumiTex4->SetTextSize(0.05);
   LumiTex4->SetTextColor(kBlack);
@@ -2838,8 +2838,8 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
   // # Define useful variables #
   // ###########################
   B0MassArb          = new RooRealVar("B0MassArb","M(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{+}}}}#kern[-0.3]{#pi}#kern[-0.3]{#lower[0.6]{^{#font[122]{\55}}}}#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}})",Utility->B0Mass - Utility->GetGenericParam("B0MassIntervalLeft"),Utility->B0Mass + Utility->GetGenericParam("B0MassIntervalRight"),"GeV");
-  mumuMass           = new RooRealVar("mumuMass","#mu#lower[0.4]{^{#font[122]{+}}}#mu#lower[0.4]{^{#font[122]{\55}}} inv. mass",0.0,6.0,"GeV");
-  mumuMassE          = new RooRealVar("mumuMassE","#mu#lower[0.4]{^{#font[122]{+}}}#mu#lower[0.4]{^{#font[122]{\55}}} inv. mass error",0.0,0.5,"GeV");
+  mumuMass           = new RooRealVar("mumuMass","#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}} inv. mass",0.0,6.0,"GeV");
+  mumuMassE          = new RooRealVar("mumuMassE","#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}} inv. mass error",0.0,0.5,"GeV");
   CosThetaKArb       = new RooRealVar("CosThetaKArb","cos(#theta#lower[-0.4]{_{#font[122]{K}}})",-1.0,1.0,"");
   CosThetaMuArb      = new RooRealVar("CosThetaMuArb","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",-1.0,1.0,"");
   PhiKstMuMuPlaneArb = new RooRealVar("PhiKstMuMuPlaneArb","Angle (#mu#mu)--(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}#pi#lower[0.4]{^{#font[122]{\55}}}) planes",-Utility->PI,Utility->PI,"rad");

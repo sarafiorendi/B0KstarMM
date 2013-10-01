@@ -1,19 +1,9 @@
-// -*- C++ -*-
-//
-// Package:    B0KstMuMu
-// Class:      B0KstMuMu
-// 
-/**\class B0KstMuMu B0KstMuMu.cc B0Analysis/B0KstMuMu/src/B0KstMuMu.cc
-   
-   Description:
-   Make rootTuple for b --> s mu+ mu- analysis
-   
-*/
-//
-// Original Author:  Mauro Dinardo
-//         Created:  Mon Apr 27 09:53:19 MDT 2011
-// $Id: B0KstMuMu.cc,v 1.152 2013/02/06 18:04:12 dinardo Exp $
-
+// ##################################################
+// # Description:                                   #
+// # Make rootTuple for b --> s mu+ mu- analysis    #
+// # Original Author:  Mauro Dinardo                #
+// #         Created:  Mon Apr 27 09:53:19 MDT 2011 #
+// ##################################################
 
 // System include files
 #include <memory>
@@ -305,7 +295,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		}
 	      double DCAmumBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
 	      double DCAmumBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
-	      if (DCAmumBS > DCAMUBS)
+	      if (fabs(DCAmumBS) > DCAMUBS)
 		{
 		  if (printMsg == true) std::cout << __LINE__ << " : continue --> bad absolute impact parameter 2D for mu- : " << DCAmumBS << std::endl;
 		  continue;
@@ -337,7 +327,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		    }
 		  double DCAmupBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
 		  double DCAmupBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
-		  if (DCAmupBS > DCAMUBS)
+		  if (fabs(DCAmupBS) > DCAMUBS)
 		    {
 		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad absolute impact parameter 2D for mu+: " << DCAmupBS << std::endl;
 		      continue;
