@@ -662,7 +662,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  // ###########################################################
 			  kstVertexFitTree->movePointerToTheTop();
 
-			  kstVertexFitTree->movePointerToTheNextChild();
+			  kstVertexFitTree->movePointerToTheFirstChild();
 			  RefCountedKinematicParticle refitTrkm  = kstVertexFitTree->currentParticle();
 			  const reco::TransientTrack refitTrkmTT = refitTrkm->refittedTransientTrack();
 
