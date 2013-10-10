@@ -164,6 +164,8 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
   reco::TrackRef muTrackTmp;
   reco::TrackRef muTrackm;
   reco::TrackRef muTrackp;
+
+  reco::TrackRef TrackTmp;
   reco::TrackRef Trackm;
   reco::TrackRef Trackp;
 
@@ -281,10 +283,10 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      double DCAmuBS    = 0.0;
 	      double DCAmuBSErr = 0.0;
 
-	      muTrack = iMuon->innerTrack();
-	      if (muTrack.isNull() != true)
+	      muTrackTmp = iMuon->innerTrack();
+	      if (muTrackTmp.isNull() != true)
 		{
-		  const reco::TransientTrack muTrackTT(muTrack, &(*bFieldHandle));
+		  const reco::TransientTrack muTrackTT(muTrackTmp, &(*bFieldHandle));
 			  
 		  // ##############################
 		  // # Compute mu DCA to BeamSpot #
@@ -300,24 +302,24 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	    }
 
 
-	  // ####################
-	  // # Save hTrack info #
-	  // ####################
+	  // ##########################
+	  // # Save hadron Track info #
+	  // ##########################
 	  for (std::vector<pat::GenericParticle>::const_iterator iTrack = thePATTrackHandle->begin(); iTrack != thePATTrackHandle->end(); iTrack++)
 	    {
 	      double DCAKstTrkBS    = 0.0;
 	      double DCAKstTrkBSErr = 0.0;
 
- 	      hTrack = iTrack->track();
-	      if (hTrack.isNull() != true)
+ 	      TrackTmp = iTrack->track();
+	      if (TrackTmp.isNull() != true)
 		{
-		  const reco::TransientTrack hTrackTT(hTrack, &(*bFieldHandle));
+		  const reco::TransientTrack TrackTT(TrackTmp, &(*bFieldHandle));
 
 
 		  // #####################################
 		  // # Compute K*0 track DCA to BeamSpot #
 		  // #####################################
-		  theDCAXBS = hTrackTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
+		  theDCAXBS = TrackTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
 		  if (theDCAXBS.isValid() != false)
 		    {
 		      DCAKstTrkBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
@@ -1232,11 +1234,11 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  bBarParticles.clear();
 			  kstParticles.clear();
 			  kstBarParticles.clear();
-			} // End for Track+
-		    } // End for Track-
-		  muonParticles.clear(); 
-		} // End for mu+
-	    } // End for mu-
+			  muonParticles.clear(); 
+			} // End for mu+
+		    } // End for mu-
+		} // End for Track+
+	    } // End for Track-
 	} // End if bestVtx is true
       else if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid Pri.Vtx" << std::endl;
       if (B0MassConstraint != NULL) delete B0MassConstraint;
