@@ -303,7 +303,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 
 	  // ##########################
-	  // # Save hadron Track info #
+	  // # Save hadron track info #
 	  // ##########################
 	  for (std::vector<pat::GenericParticle>::const_iterator iTrack = thePATTrackHandle->begin(); iTrack != thePATTrackHandle->end(); iTrack++)
 	    {
@@ -339,7 +339,8 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      // # Check Track- kinematics #
 	      // ###########################
 	      Trackm = iTrackM->track();
-	      if ((Trackm.isNull() == true) || (Trackm->charge() != -1) || (Trackm->pt() < MINHADPT)) continue;
+	      if ((Trackm.isNull() == true) || (Trackm->charge() != -1)) continue;
+	      if (Trackm->pt() < MINHADPT) break; // Tracks are sorted by decreasing pT
 
 
 	      // ####################################
@@ -363,7 +364,8 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  // # Check Track+ kinematics #
 		  // ###########################
 		  Trackp = iTrackP->track();
-		  if ((Trackp.isNull() == true) || (Trackp->charge() != 1) || (Trackp->pt() < MINHADPT)) continue;
+		  if ((Trackp.isNull() == true) || (Trackp->charge() != 1)) continue;
+		  if (Trackp->pt() < MINHADPT) break; // Tracks are sorted by decreasing pT
 
 		  
 		  // ####################################
@@ -387,7 +389,8 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		      // # Check mu- kinematics #
 		      // ########################
 		      muTrackm = iMuonM->innerTrack();
-		      if ((muTrackm.isNull() == true) || (muTrackm->charge() != -1) || (muTrackm->pt() < MUMINPT) || (fabs(muTrackm->eta()) > MUMAXETA)) continue;
+		      if ((muTrackm.isNull() == true) || (muTrackm->charge() != -1) || (fabs(muTrackm->eta()) > MUMAXETA)) continue;
+		      if (muTrackm->pt() < MUMINPT) break; // Tracks are sorted by decreasing pT
 
 
 		      // #############################
@@ -411,7 +414,8 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  // # Check mu+ kinematics #
 			  // ########################
 			  muTrackp = iMuonP->innerTrack();
-			  if ((muTrackp.isNull() == true) || (muTrackp->charge() != 1) || (muTrackp->pt() < MUMINPT) || (fabs(muTrackp->eta()) > MUMAXETA)) continue;
+			  if ((muTrackp.isNull() == true) || (muTrackp->charge() != 1) || (fabs(muTrackp->eta()) > MUMAXETA)) continue;
+			  if (muTrackp->pt() < MUMINPT) break; // Tracks are sorted by decreasing pT
 
 
 			  // #############################
