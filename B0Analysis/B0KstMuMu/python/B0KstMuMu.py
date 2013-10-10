@@ -80,6 +80,7 @@ if (runDataMC == 1 and useJSON == True):
 ### Output file ###
 ###################
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
+process.maxLuminosityBlocks = cms.untracked.PSet(input = cms.untracked.int32(-1))
 process.TFileService = cms.Service('TFileService', fileName = cms.string(
     'B0ToKstMuMu.root'
 ### GEN MC ###
