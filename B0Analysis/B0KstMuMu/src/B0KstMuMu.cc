@@ -485,7 +485,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		      // ###########################
 		      Trackm = iTrackM->track();
 		      // Tracks are sorted by decreasing pT
-		      if ((Trackm.isNull() == false) && (Trackm->pt() < MUMINPT))
+		      if ((Trackm.isNull() == false) && (Trackm->pt() < MINHADPT))
 			{
 			  if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track- : " << Trackm->pt() << std::endl;
 			  break;
@@ -523,7 +523,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  // ###########################
 			  Trackp = iTrackP->track();
 			  // Tracks are sorted by decreasing pT
-			  if ((Trackp.isNull() == false) && (Trackp->pt() < MUMINPT))
+			  if ((Trackp.isNull() == false) && (Trackp->pt() < MINHADPT))
 			    {
 			      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track+ : " << Trackp->pt() << std::endl;
 			      break;
