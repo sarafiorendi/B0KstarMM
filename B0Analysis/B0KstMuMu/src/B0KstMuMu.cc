@@ -609,6 +609,20 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    }
 
 
+			  // ######################################################
+			  // # Check if K*0 (OR K*0bar) mass is within acceptance #
+			  // ######################################################
+			  double kstInvMass = Utility->computeInvMass (TrackmTT.track().momentum().x(),TrackmTT.track().momentum().y(),TrackmTT.track().momentum().z(),Utility->pionMass,
+								       TrackpTT.track().momentum().x(),TrackpTT.track().momentum().y(),TrackpTT.track().momentum().z(),Utility->kaonMass);
+			  double kstBarInvMass = Utility->computeInvMass (TrackmTT.track().momentum().x(),TrackmTT.track().momentum().y(),TrackmTT.track().momentum().z(),Utility->kaonMass,
+									  TrackpTT.track().momentum().x(),TrackpTT.track().momentum().y(),TrackpTT.track().momentum().z(),Utility->pionMass);
+			  if ((fabs(kstInvMass - Utility->kstMass) > KSTMASSWINDOW*Utility->kstSigma) && (fabs(kstBarInvMass - Utility->kstMass) > KSTMASSWINDOW*Utility->kstSigma))
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad K*0 mass: " << kstInvMass << " AND K*0bar mass: " << kstBarInvMass << std::endl;
+			      continue;
+			    }
+
+
 			  chi = 0.;
 			  ndf = 0.;
 			  // ##############################################################################
@@ -661,16 +675,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    }
 		
 			  
-			  // ######################################################
-			  // # Check if K*0 (OR K*0bar) mass is within acceptance #
-			  // ######################################################
-			  if ((fabs(kst_KP->currentState().mass() - Utility->kstMass) > KSTMASSWINDOW*Utility->kstSigma) && (fabs(kstBar_KP->currentState().mass() - Utility->kstMass) > KSTMASSWINDOW*Utility->kstSigma))
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad K*0 mass: " << kst_KP->currentState().mass() << " AND K*0bar mass: " << kstBar_KP->currentState().mass() << std::endl;
-			      continue;
-			    }
-
-
 			  // ###########################################################
 			  // # Extract the re-fitted tracks after the dihadron vtx fit #
 			  // ###########################################################
@@ -683,6 +687,12 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  kstVertexFitTree->movePointerToTheNextChild();
 			  RefCountedKinematicParticle refitTrkp  = kstVertexFitTree->currentParticle();
 			  const reco::TransientTrack refitTrkpTT = refitTrkp->refittedTransientTrack();
+
+
+
+
+			  std::cout << "K* mass : " << kst_KP->currentState().mass() << "\t" << kstInvMass << std::endl;
+			  std::cout << "K*bar mass : " << kstBar_KP->currentState().mass() << "\t" << kstBarInvMass << std::endl;
 
 
 
