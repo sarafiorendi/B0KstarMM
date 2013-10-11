@@ -281,7 +281,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      muTrackm = iMuonM->innerTrack();
 	      if ((muTrackm.isNull() == true) || (muTrackm->charge() != -1) || (fabs(muTrackm->eta()) > MUMAXETA)) continue;
 	      // Tracks are sorted by decreasing pT
-	      if (muTrackm->pt() < MUMINPT) { std::cout << __LINE__ << " : break --> too low pT of mu- : " << muTrackm->pt() << std::endl; break; }
+	      if (muTrackm->pt() < MUMINPT) { if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu- : " << muTrackm->pt() << std::endl; break; }
  
 	      const reco::TransientTrack muTrackmTT(muTrackm, &(*bFieldHandle));
 
@@ -315,7 +315,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  muTrackp = iMuonP->innerTrack();
 		  if ((muTrackp.isNull() == true) || (muTrackp->charge() != 1) || (fabs(muTrackp->eta()) > MUMAXETA)) continue;
 		  // Tracks are sorted by decreasing pT
-		  if (muTrackp->pt() < MUMINPT) { std::cout << __LINE__ << " : break --> too low pT of mu+ : " << muTrackp->pt() << std::endl; break; }
+		  if (muTrackp->pt() < MUMINPT) { if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu+ : " << muTrackp->pt() << std::endl; break; }
 
 		  const reco::TransientTrack muTrackpTT(muTrackp, &(*bFieldHandle));
 
@@ -478,7 +478,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		      Trackm = iTrackM->track();
 		      if ((Trackm.isNull() == true) || (Trackm->charge() != -1)) continue;
 		      // Tracks are sorted by decreasing pT
-		      if (Trackm->pt() < MUMINPT) { std::cout << __LINE__ << " : break --> too low pT of track- : " << Trackm->pt() << std::endl; break; }
+		      if (Trackm->pt() < MUMINPT) { if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track- : " << Trackm->pt() << std::endl; break; }
 
 		      const reco::TransientTrack TrackmTT(Trackm, &(*bFieldHandle));
 
@@ -512,7 +512,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  Trackp = iTrackP->track();
 			  if ((Trackp.isNull() == true) || (Trackp->charge() != 1)) continue;
 			  // Tracks are sorted by decreasing pT
-			  if (Trackp->pt() < MUMINPT) { std::cout << __LINE__ << " : break --> too low pT of track+ : " << Trackp->pt() << std::endl; break; }
+			  if (Trackp->pt() < MUMINPT) { if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track+ : " << Trackp->pt() << std::endl; break; }
 
 			  const reco::TransientTrack TrackpTT(Trackp, &(*bFieldHandle));
 
