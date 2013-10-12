@@ -346,135 +346,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		    }
 
 
-		  if (printMsg == true) std::cout << "\n" << __LINE__ << " : @@@ I have 2 good oppositely-charged muons. I'm trying to vertex them @@@" << std::endl;
-
-
-		  // ############################################
-		  // # Check goodness of muons closest approach #
-		  // ############################################
-		  ClosestApp.calculate(muTrackpTT.initialFreeState(),muTrackmTT.initialFreeState());
-		  if (ClosestApp.status() == false)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad status of closest approach" << std::endl;
-		      continue;
-		    }
-		  XingPoint = ClosestApp.crossingPoint();
-		  if ((sqrt(XingPoint.x()*XingPoint.x() + XingPoint.y()*XingPoint.y()) > TRKMAXR) || (fabs(XingPoint.z()) > TRKMAXZ))
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> closest approach crossing point outside the tracker volume" << std::endl;
-		      continue;
-		    }
-
-
-		  // #####################################################
-		  // # Cut on the mumu 3D-DCA with respect to each other #
-		  // #####################################################
-		  double DCAmumu = ClosestApp.distance();
-		  if (DCAmumu > DCAMUMU)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad 3D-DCA of mu+(-) with respect to mu-(+): " << DCAmumu << std::endl;
-		      continue;
-		    }
-
-
-		  chi = 0.;
-		  ndf = 0.;
-		  // ####################################################
-		  // # Try to vertex the two muons to get dimuon vertex #
-		  // ####################################################
-		  std::vector<RefCountedKinematicParticle> muonParticles;
-		  muonParticles.push_back(partFactory.particle(muTrackmTT,muonMass,chi,ndf,muonMassErr));
-		  muonParticles.push_back(partFactory.particle(muTrackpTT,muonMass,chi,ndf,muonMassErr));
-	  
-		  RefCountedKinematicTree mumuVertexFitTree = PartVtxFitter.fit(muonParticles);
-		  if (mumuVertexFitTree->isValid() == false)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the mu+ mu- vertex fit" << std::endl;
-		      continue; 
-		    }
-	  
-		  mumuVertexFitTree->movePointerToTheTop();
-		  RefCountedKinematicParticle mumu_KP = mumuVertexFitTree->currentParticle();
-		  RefCountedKinematicVertex mumu_KV   = mumuVertexFitTree->currentDecayVertex();
-		  if (mumu_KV->vertexIsValid() == false)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the mu+ mu- vertex fit" << std::endl;
-		      continue;
-		    }
-	  
-		  if (TMath::Prob((double)mumu_KV->chiSquared(), int(rint(mumu_KV->degreesOfFreedom()))) < CLMUMUVTX)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad vtx CL from mu+ mu- fit: " << TMath::Prob((double)mumu_KV->chiSquared(),int(rint(mumu_KV->degreesOfFreedom()))) << std::endl;
-		      continue;
-		    }
-
-
-		  // #########################################################
-		  // # Extract the re-fitted tracks after the dimuon vtx fit #
-		  // #########################################################
-		  mumuVertexFitTree->movePointerToTheTop();
-
-                  mumuVertexFitTree->movePointerToTheFirstChild();
-                  RefCountedKinematicParticle refitMum  = mumuVertexFitTree->currentParticle();
-                  const reco::TransientTrack refitMumTT = refitMum->refittedTransientTrack();
-
-                  mumuVertexFitTree->movePointerToTheNextChild();
-                  RefCountedKinematicParticle refitMup  = mumuVertexFitTree->currentParticle();
-                  const reco::TransientTrack refitMupTT = refitMup->refittedTransientTrack();
-
-
-		  // ############################################
-		  // # Cut on the dimuon inviariant mass and pT #
-		  // ############################################
-		  double pTpair = sqrt((refitMumTT.track().momentum().x() + refitMupTT.track().momentum().x()) * (refitMumTT.track().momentum().x() + refitMupTT.track().momentum().x()) +
-				       (refitMumTT.track().momentum().y() + refitMupTT.track().momentum().y()) * (refitMumTT.track().momentum().y() + refitMupTT.track().momentum().y()));
-		  double invMass = Utility->computeInvMass (refitMumTT.track().momentum().x(),refitMumTT.track().momentum().y(),refitMumTT.track().momentum().z(),Utility->muonMass,
-							    refitMupTT.track().momentum().x(),refitMupTT.track().momentum().y(),refitMupTT.track().momentum().z(),Utility->muonMass);
- 		  if ((pTpair < MINMUMUPT) || (invMass < MINMUMUINVMASS) || (invMass > MAXMUMUINVMASS))
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> no good mumu pair pT: " << pTpair << "\tinvMass: " << invMass << std::endl;
-		      continue;
-		    }
-
-
-		  // ######################################################
-		  // # Compute the distance between mumu vtx and BeamSpot #
-		  // ######################################################
-		  double MuMuLSBS;
-		  double MuMuLSBSErr;
-		  Utility->computeLS (mumu_KV->position().x(),mumu_KV->position().y(),0.0,
-				      beamSpot.position().x(),beamSpot.position().y(),0.0,
-				      mumu_KV->error().cxx(),mumu_KV->error().cyy(),0.0,
-				      mumu_KV->error().matrix()(0,1),0.0,0.0,
-				      beamSpot.covariance()(0,0),beamSpot.covariance()(1,1),0.0,
-				      beamSpot.covariance()(0,1),0.0,0.0,
-				      &MuMuLSBS,&MuMuLSBSErr);
-		  if (MuMuLSBS/MuMuLSBSErr < LSMUMUBS)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad mumu L/sigma with respect to BeamSpot: " << MuMuLSBS << "+/-" << MuMuLSBSErr << std::endl;
-		      continue;
-		    }
-	  
-
-		  // ###################################################################
-		  // # Compute cos(alpha) between mumu momentum and mumuVtx - BeamSpot #
-		  // ###################################################################
-		  double MuMuCosAlphaBS;
-		  double MuMuCosAlphaBSErr;
-		  Utility->computeCosAlpha (mumu_KP->currentState().globalMomentum().x(),mumu_KP->currentState().globalMomentum().y(),0.0,
-					    mumu_KV->position().x() - beamSpot.position().x(),mumu_KV->position().y() - beamSpot.position().y(),0.0,
-					    mumu_KP->currentState().kinematicParametersError().matrix()(3,3),mumu_KP->currentState().kinematicParametersError().matrix()(4,4),0.0,
-					    mumu_KP->currentState().kinematicParametersError().matrix()(3,4),0.0,0.0,
-					    mumu_KV->error().cxx() + beamSpot.covariance()(0,0),mumu_KV->error().cyy() + beamSpot.covariance()(1,1),0.0,
-					    mumu_KV->error().matrix()(0,1) + beamSpot.covariance()(0,1),0.0,0.0,
-					    &MuMuCosAlphaBS,&MuMuCosAlphaBSErr);
-		  if (MuMuCosAlphaBS < COSALPHAMUMUBS)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad mumu cos(alpha) with respect to BeamSpot: " << MuMuCosAlphaBS << "+/-" << MuMuCosAlphaBSErr << std::endl;
-		      continue;
-		    }
-
-
 		  // ##############
 		  // # Get Track- #
 		  // ##############
@@ -551,7 +422,135 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    }
 
 
-			  if (printMsg == true) std::cout << "\n" << __LINE__ << " : @@@ I have 2 good oppositely charged tracks. I'm trying to vertex them @@@" << std::endl;
+			  if (printMsg == true) std::cout << "\n" << __LINE__ << " : @@@ I have 2 good oppositely-charged muons. I'm trying to vertex them @@@" << std::endl;
+
+
+			  // ############################################
+			  // # Check goodness of muons closest approach #
+			  // ############################################
+			  ClosestApp.calculate(muTrackpTT.initialFreeState(),muTrackmTT.initialFreeState());
+			  if (ClosestApp.status() == false)
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad status of closest approach" << std::endl;
+			      continue;
+			    }
+			  XingPoint = ClosestApp.crossingPoint();
+			  if ((sqrt(XingPoint.x()*XingPoint.x() + XingPoint.y()*XingPoint.y()) > TRKMAXR) || (fabs(XingPoint.z()) > TRKMAXZ))
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> closest approach crossing point outside the tracker volume" << std::endl;
+			      continue;
+			    }
+
+
+			  // #####################################################
+			  // # Cut on the mumu 3D-DCA with respect to each other #
+			  // #####################################################
+			  double DCAmumu = ClosestApp.distance();
+			  if (DCAmumu > DCAMUMU)
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad 3D-DCA of mu+(-) with respect to mu-(+): " << DCAmumu << std::endl;
+			      continue;
+			    }
+
+
+			  chi = 0.;
+			  ndf = 0.;
+			  // ####################################################
+			  // # Try to vertex the two muons to get dimuon vertex #
+			  // ####################################################
+			  std::vector<RefCountedKinematicParticle> muonParticles;
+			  muonParticles.push_back(partFactory.particle(muTrackmTT,muonMass,chi,ndf,muonMassErr));
+			  muonParticles.push_back(partFactory.particle(muTrackpTT,muonMass,chi,ndf,muonMassErr));
+	  
+			  RefCountedKinematicTree mumuVertexFitTree = PartVtxFitter.fit(muonParticles);
+			  if (mumuVertexFitTree->isValid() == false)
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the mu+ mu- vertex fit" << std::endl;
+			      continue; 
+			    }
+	  
+			  mumuVertexFitTree->movePointerToTheTop();
+			  RefCountedKinematicParticle mumu_KP = mumuVertexFitTree->currentParticle();
+			  RefCountedKinematicVertex mumu_KV   = mumuVertexFitTree->currentDecayVertex();
+			  if (mumu_KV->vertexIsValid() == false)
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the mu+ mu- vertex fit" << std::endl;
+			      continue;
+			    }
+	  
+			  if (TMath::Prob((double)mumu_KV->chiSquared(), int(rint(mumu_KV->degreesOfFreedom()))) < CLMUMUVTX)
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad vtx CL from mu+ mu- fit: " << TMath::Prob((double)mumu_KV->chiSquared(),int(rint(mumu_KV->degreesOfFreedom()))) << std::endl;
+			      continue;
+			    }
+
+
+			  // #########################################################
+			  // # Extract the re-fitted tracks after the dimuon vtx fit #
+			  // #########################################################
+			  mumuVertexFitTree->movePointerToTheTop();
+
+			  mumuVertexFitTree->movePointerToTheFirstChild();
+			  RefCountedKinematicParticle refitMum  = mumuVertexFitTree->currentParticle();
+			  const reco::TransientTrack refitMumTT = refitMum->refittedTransientTrack();
+
+			  mumuVertexFitTree->movePointerToTheNextChild();
+			  RefCountedKinematicParticle refitMup  = mumuVertexFitTree->currentParticle();
+			  const reco::TransientTrack refitMupTT = refitMup->refittedTransientTrack();
+
+
+			  // ############################################
+			  // # Cut on the dimuon inviariant mass and pT #
+			  // ############################################
+			  double pTpair = sqrt((refitMumTT.track().momentum().x() + refitMupTT.track().momentum().x()) * (refitMumTT.track().momentum().x() + refitMupTT.track().momentum().x()) +
+					       (refitMumTT.track().momentum().y() + refitMupTT.track().momentum().y()) * (refitMumTT.track().momentum().y() + refitMupTT.track().momentum().y()));
+			  double MuMuInvMass = mumu_KP->currentState().mass();
+			  if ((pTpair < MINMUMUPT) || (MuMuInvMass < MINMUMUINVMASS) || (MuMuInvMass > MAXMUMUINVMASS))
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> no good mumu pair pT: " << pTpair << "\tinv. mass: " << MuMuInvMass << std::endl;
+			      continue;
+			    }
+
+
+			  // ######################################################
+			  // # Compute the distance between mumu vtx and BeamSpot #
+			  // ######################################################
+			  double MuMuLSBS;
+			  double MuMuLSBSErr;
+			  Utility->computeLS (mumu_KV->position().x(),mumu_KV->position().y(),0.0,
+					      beamSpot.position().x(),beamSpot.position().y(),0.0,
+					      mumu_KV->error().cxx(),mumu_KV->error().cyy(),0.0,
+					      mumu_KV->error().matrix()(0,1),0.0,0.0,
+					      beamSpot.covariance()(0,0),beamSpot.covariance()(1,1),0.0,
+					      beamSpot.covariance()(0,1),0.0,0.0,
+					      &MuMuLSBS,&MuMuLSBSErr);
+			  if (MuMuLSBS/MuMuLSBSErr < LSMUMUBS)
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad mumu L/sigma with respect to BeamSpot: " << MuMuLSBS << "+/-" << MuMuLSBSErr << std::endl;
+			      continue;
+			    }
+	  
+
+			  // ###################################################################
+			  // # Compute cos(alpha) between mumu momentum and mumuVtx - BeamSpot #
+			  // ###################################################################
+			  double MuMuCosAlphaBS;
+			  double MuMuCosAlphaBSErr;
+			  Utility->computeCosAlpha (mumu_KP->currentState().globalMomentum().x(),mumu_KP->currentState().globalMomentum().y(),0.0,
+						    mumu_KV->position().x() - beamSpot.position().x(),mumu_KV->position().y() - beamSpot.position().y(),0.0,
+						    mumu_KP->currentState().kinematicParametersError().matrix()(3,3),mumu_KP->currentState().kinematicParametersError().matrix()(4,4),0.0,
+						    mumu_KP->currentState().kinematicParametersError().matrix()(3,4),0.0,0.0,
+						    mumu_KV->error().cxx() + beamSpot.covariance()(0,0),mumu_KV->error().cyy() + beamSpot.covariance()(1,1),0.0,
+						    mumu_KV->error().matrix()(0,1) + beamSpot.covariance()(0,1),0.0,0.0,
+						    &MuMuCosAlphaBS,&MuMuCosAlphaBSErr);
+			  if (MuMuCosAlphaBS < COSALPHAMUMUBS)
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad mumu cos(alpha) with respect to BeamSpot: " << MuMuCosAlphaBS << "+/-" << MuMuCosAlphaBSErr << std::endl;
+			      continue;
+			    }
+
+
+			  if (printMsg == true) std::cout << "\n" << __LINE__ << " : @@@ I have 2 good oppositely-charged tracks. I'm trying to vertex them @@@" << std::endl;
 
 
 			  // ##############################################
@@ -567,20 +566,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  if ((sqrt(XingPoint.x()*XingPoint.x() + XingPoint.y()*XingPoint.y()) > TRKMAXR) || (fabs(XingPoint.z()) > TRKMAXZ))
 			    {
 			      if (printMsg == true) std::cout << __LINE__ << " : continue --> closest approach crossing point outside the tracker volume" << std::endl;
-			      continue;
-			    }
-
-
-			  // ######################################################
-			  // # Check if K*0 (OR K*0bar) mass is within acceptance #
-			  // ######################################################
-			  double kstInvMass = Utility->computeInvMass (TrackmTT.track().momentum().x(),TrackmTT.track().momentum().y(),TrackmTT.track().momentum().z(),Utility->pionMass,
-								       TrackpTT.track().momentum().x(),TrackpTT.track().momentum().y(),TrackpTT.track().momentum().z(),Utility->kaonMass);
-			  double kstBarInvMass = Utility->computeInvMass (TrackmTT.track().momentum().x(),TrackmTT.track().momentum().y(),TrackmTT.track().momentum().z(),Utility->kaonMass,
-									  TrackpTT.track().momentum().x(),TrackpTT.track().momentum().y(),TrackpTT.track().momentum().z(),Utility->pionMass);
-			  if ((fabs(kstInvMass - Utility->kstMass) > KSTMASSWINDOW*Utility->kstSigma) && (fabs(kstBarInvMass - Utility->kstMass) > KSTMASSWINDOW*Utility->kstSigma))
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad K*0 mass: " << kstInvMass << " AND K*0bar mass: " << kstBarInvMass << std::endl;
 			      continue;
 			    }
 
@@ -635,7 +620,19 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the K*0bar vertex fit" << std::endl;
 			      continue;
 			    }
-		
+
+
+			  // ######################################################
+			  // # Check if K*0 (OR K*0bar) mass is within acceptance #
+			  // ######################################################
+			  double kstInvMass    = kst_KP->currentState().mass();
+			  double kstBarInvMass = kstBar_KP->currentState().mass();
+			  if ((fabs(kstInvMass - Utility->kstMass) > KSTMASSWINDOW*Utility->kstSigma) && (fabs(kstBarInvMass - Utility->kstMass) > KSTMASSWINDOW*Utility->kstSigma))
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad K*0 mass: " << kstInvMass << " AND K*0bar mass: " << kstBarInvMass << std::endl;
+			      continue;
+			    }
+
 			  
 			  // ###########################################################
 			  // # Extract the re-fitted tracks after the dihadron vtx fit #
@@ -1005,7 +1002,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  NTuple->bVtxX->push_back(b_KV->position().x());
 			  NTuple->bVtxY->push_back(b_KV->position().y());
 			  NTuple->bVtxZ->push_back(b_KV->position().z());
-
+	
 			  NTuple->bCosAlphaVtx->push_back(cosAlphaVtx);
 			  NTuple->bCosAlphaVtxE->push_back(cosAlphaVtxErr);
 			  NTuple->bCosAlphaBS->push_back(cosAlphaBS);
@@ -1028,9 +1025,9 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  // #############
 			  // # Save: K*0 #
 			  // #############
-			  NTuple->kstMass->push_back(kst_KP->currentState().mass());
+			  NTuple->kstMass->push_back(kstInvMass);
 			  NTuple->kstMassE->push_back(sqrt(kst_KP->currentState().kinematicParametersError().matrix()(6,6)));
-			  NTuple->kstBarMass->push_back(kstBar_KP->currentState().mass());
+			  NTuple->kstBarMass->push_back(kstBarInvMass);
 			  NTuple->kstBarMassE->push_back(sqrt(kstBar_KP->currentState().kinematicParametersError().matrix()(6,6)));
 
 			  NTuple->kstPx->push_back(kst_KP->currentState().globalMomentum().x());
@@ -1046,7 +1043,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  // #################
 			  // # Save: mu+ mu- #
 			  // #################
-			  NTuple->mumuMass->push_back(mumu_KP->currentState().mass());
+			  NTuple->mumuMass->push_back(MuMuInvMass);
 			  NTuple->mumuMassE->push_back(sqrt(mumu_KP->currentState().kinematicParametersError().matrix()(6,6)));
 
 			  NTuple->mumuPx->push_back(mumu_KP->currentState().globalMomentum().x());
