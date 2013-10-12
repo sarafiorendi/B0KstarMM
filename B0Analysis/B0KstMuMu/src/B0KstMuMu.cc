@@ -145,6 +145,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
   double cosAlphaBSErr;
 
   double deltaEtaPhi;
+  double pTtmp;
 
   KinematicParticleFactoryFromTransientTrack partFactory;
 
@@ -279,13 +280,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      // # Check mu- kinematics #
 	      // ########################
 	      muTrackm = iMuonM->innerTrack();
-	      // Tracks are sorted by decreasing pT
-	      if ((muTrackm.isNull() == false) && (muTrackm->pt() < MUMINPT))
-		{
-		  if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu- : " << muTrackm->pt() << std::endl;
-		  break;
-		}
-	      if ((muTrackm.isNull() == true) || (muTrackm->charge() != -1) || (fabs(muTrackm->eta()) > MUMAXETA)) continue;
+	      if ((muTrackm.isNull() == true) || (muTrackm->charge() != -1)) continue;
  
 	      const reco::TransientTrack muTrackmTT(muTrackm, &(*bFieldHandle));
 
@@ -317,13 +312,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  // # Check mu+ kinematics #
 		  // ########################
 		  muTrackp = iMuonP->innerTrack();
-		  // Tracks are sorted by decreasing pT
-		  if ((muTrackp.isNull() == false) && (muTrackp->pt() < MUMINPT))
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu+ : " << muTrackp->pt() << std::endl;
-		      break;
-		    }
-		  if ((muTrackp.isNull() == true) || (muTrackp->charge() != 1) || (fabs(muTrackp->eta()) > MUMAXETA)) continue;
+		  if ((muTrackp.isNull() == true) || (muTrackp->charge() != 1)) continue;
 
 		  const reco::TransientTrack muTrackpTT(muTrackp, &(*bFieldHandle));
 
@@ -428,6 +417,27 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  const reco::TransientTrack refitMupTT = refitMup->refittedTransientTrack();
 
 
+		  // Tracks are sorted by decreasing pT
+		  pTtmp = sqrt(refitMumTT.track().momentum().x()*refitMumTT.track().momentum().x() + refitMumTT.track().momentum().y()*refitMumTT.track().momentum().y());
+		  if (pTtmp < MUMINPT)
+		    {
+		      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu- : " << pTtmp << std::endl;
+		      break;
+		    }
+		  else if (fabs(Utility->computeEta (refitMumTT.track().momentum().x(),refitMumTT.track().momentum().y(),refitMumTT.track().momentum().z())) > MUMAXETA) continue;
+		  
+		  // Tracks are sorted by decreasing pT
+		  pTtmp = sqrt(refitMupTT.track().momentum().x()*refitMupTT.track().momentum().x() + refitMupTT.track().momentum().y()*refitMupTT.track().momentum().y());
+		  if (pTtmp < MUMINPT)
+		    {
+		      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu+ : " << pTtmp << std::endl;
+		      break;
+		    }
+		  else if (fabs(Utility->computeEta (refitMupTT.track().momentum().x(),refitMupTT.track().momentum().y(),refitMupTT.track().momentum().z())) > MUMAXETA) continue;
+
+
+
+
 		  // ############################################
 		  // # Cut on the dimuon inviariant mass and pT #
 		  // ############################################
@@ -488,12 +498,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		      // # Check Track- kinematics #
 		      // ###########################
 		      Trackm = iTrackM->track();
-		      // Tracks are sorted by decreasing pT
-		      if ((Trackm.isNull() == false) && (Trackm->pt() < MINHADPT))
-			{
-			  if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track- : " << Trackm->pt() << std::endl;
-			  break;
-			}
 		      if ((Trackm.isNull() == true) || (Trackm->charge() != -1)) continue;
 
 		      const reco::TransientTrack TrackmTT(Trackm, &(*bFieldHandle));
@@ -526,12 +530,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  // # Check Track+ kinematics #
 			  // ###########################
 			  Trackp = iTrackP->track();
-			  // Tracks are sorted by decreasing pT
-			  if ((Trackp.isNull() == false) && (Trackp->pt() < MINHADPT))
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track+ : " << Trackp->pt() << std::endl;
-			      break;
-			    }
 			  if ((Trackp.isNull() == true) || (Trackp->charge() != 1)) continue;
 
 			  const reco::TransientTrack TrackpTT(Trackp, &(*bFieldHandle));
@@ -656,6 +654,23 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  kstVertexFitTree->movePointerToTheNextChild();
 			  RefCountedKinematicParticle refitTrkp  = kstVertexFitTree->currentParticle();
 			  const reco::TransientTrack refitTrkpTT = refitTrkp->refittedTransientTrack();
+
+
+			  // Tracks are sorted by decreasing pT
+			  pTtmp = sqrt(refitTrkmTT.track().momentum().x()*refitTrkmTT.track().momentum().x() + refitTrkmTT.track().momentum().y()*refitTrkmTT.track().momentum().y());
+			  if (pTtmp < MINHADPT)
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track- : " << pTtmp << std::endl;
+			      break;
+			    }
+
+			  // Tracks are sorted by decreasing pT
+			  pTtmp = sqrt(refitTrkpTT.track().momentum().x()*refitTrkpTT.track().momentum().x() + refitTrkpTT.track().momentum().y()*refitTrkpTT.track().momentum().y());
+			  if (pTtmp < MINHADPT)
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track+ : " << pTtmp << std::endl;
+			      break;
+			    }
 
 
 			  // #################################################
