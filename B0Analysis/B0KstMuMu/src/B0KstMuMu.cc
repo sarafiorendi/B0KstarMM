@@ -524,24 +524,9 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		      const reco::TransientTrack TrackmTT(Trackm, &(*bFieldHandle));
 
 
-		      // ######################################
-		      // # Compute K*0 track- DCA to BeamSpot #
-		      // ######################################
-		      theDCAXBS = TrackmTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
-		      if (theDCAXBS.isValid() == false)
-			{
-			  if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for track-" << std::endl;
-			  continue;
-			}
-		      double DCAKstTrkmBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
-		      double DCAKstTrkmBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
-		      if (fabs(DCAKstTrkmBS/DCAKstTrkmBSErr) < HADDCASBS)
-			{
-			  if (printMsg == true) std::cout << __LINE__ << " : continue --> track- DCA/sigma with respect to BeamSpot is too small: " << DCAKstTrkmBS << "+/-" << DCAKstTrkmBSErr << std::endl;
-			  continue;
-			}
 
-		      
+
+   
 		      // ##############
 		      // # Get Track+ #
 		      // ##############
@@ -562,42 +547,9 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  const reco::TransientTrack TrackpTT(Trackp, &(*bFieldHandle));
 
 
-			  // ######################################
-			  // # Compute K*0 track+ DCA to BeamSpot #
-			  // ######################################
-			  theDCAXBS = TrackpTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
-			  if (theDCAXBS.isValid() == false)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for track+" << std::endl;
-			      continue;
-			    }
-			  double DCAKstTrkpBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
-			  double DCAKstTrkpBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
-			  if (fabs(DCAKstTrkpBS/DCAKstTrkpBSErr) < HADDCASBS)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> track+ DCA/sigma with respect to BeamSpot is too small: " << DCAKstTrkpBS << "+/-" << DCAKstTrkpBSErr << std::endl;
-			      continue;
-			    }
-
 
 			  if (printMsg == true) std::cout << "\n" << __LINE__ << " : @@@ I have 2 good oppositely-charged tracks. I'm trying to vertex them @@@" << std::endl;
 
-
-			  // ##############################################
-			  // # Check goodness of hadrons closest approach #
-			  // ##############################################
-			  ClosestApp.calculate(TrackpTT.initialFreeState(),TrackmTT.initialFreeState());
-			  if (ClosestApp.status() == false)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad status of closest approach" << std::endl;
-			      continue;
-			    }
-			  XingPoint = ClosestApp.crossingPoint();
-			  if ((sqrt(XingPoint.x()*XingPoint.x() + XingPoint.y()*XingPoint.y()) > TRKMAXR) || (fabs(XingPoint.z()) > TRKMAXZ))
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> closest approach crossing point outside the tracker volume" << std::endl;
-			      continue;
-			    }
 
 
 			  chi = 0.;
@@ -660,6 +612,60 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  if ((fabs(kstInvMass - Utility->kstMass) > KSTMASSWINDOW*Utility->kstSigma) && (fabs(kstBarInvMass - Utility->kstMass) > KSTMASSWINDOW*Utility->kstSigma))
 			    {
 			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad K*0 mass: " << kstInvMass << " AND K*0bar mass: " << kstBarInvMass << std::endl;
+			      continue;
+			    }
+
+
+
+		      // ######################################
+		      // # Compute K*0 track- DCA to BeamSpot #
+		      // ######################################
+		      theDCAXBS = TrackmTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
+		      if (theDCAXBS.isValid() == false)
+			{
+			  if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for track-" << std::endl;
+			  continue;
+			}
+		      double DCAKstTrkmBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
+		      double DCAKstTrkmBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
+		      if (fabs(DCAKstTrkmBS/DCAKstTrkmBSErr) < HADDCASBS)
+			{
+			  if (printMsg == true) std::cout << __LINE__ << " : continue --> track- DCA/sigma with respect to BeamSpot is too small: " << DCAKstTrkmBS << "+/-" << DCAKstTrkmBSErr << std::endl;
+			  continue;
+			}
+
+
+			  // ######################################
+			  // # Compute K*0 track+ DCA to BeamSpot #
+			  // ######################################
+			  theDCAXBS = TrackpTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
+			  if (theDCAXBS.isValid() == false)
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for track+" << std::endl;
+			      continue;
+			    }
+			  double DCAKstTrkpBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
+			  double DCAKstTrkpBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
+			  if (fabs(DCAKstTrkpBS/DCAKstTrkpBSErr) < HADDCASBS)
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> track+ DCA/sigma with respect to BeamSpot is too small: " << DCAKstTrkpBS << "+/-" << DCAKstTrkpBSErr << std::endl;
+			      continue;
+			    }
+
+
+			  // ##############################################
+			  // # Check goodness of hadrons closest approach #
+			  // ##############################################
+			  ClosestApp.calculate(TrackpTT.initialFreeState(),TrackmTT.initialFreeState());
+			  if (ClosestApp.status() == false)
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad status of closest approach" << std::endl;
+			      continue;
+			    }
+			  XingPoint = ClosestApp.crossingPoint();
+			  if ((sqrt(XingPoint.x()*XingPoint.x() + XingPoint.y()*XingPoint.y()) > TRKMAXR) || (fabs(XingPoint.z()) > TRKMAXZ))
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> closest approach crossing point outside the tracker volume" << std::endl;
 			      continue;
 			    }
 
