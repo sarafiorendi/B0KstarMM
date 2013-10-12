@@ -290,22 +290,25 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      const reco::TransientTrack muTrackmTT(muTrackm, &(*bFieldHandle));
 
 			  
-	      // ###############################
-	      // # Compute mu- DCA to BeamSpot #
-	      // ###############################
-	      theDCAXBS = muTrackmTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
-	      if (theDCAXBS.isValid() == false)
-		{
-		  if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for mu-" << std::endl;
-		  continue;
-		}
-	      double DCAmumBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
-	      double DCAmumBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
-	      if (fabs(DCAmumBS) > DCAMUBS)
-		{
-		  if (printMsg == true) std::cout << __LINE__ << " : continue --> bad absolute impact parameter 2D for mu- : " << DCAmumBS << std::endl;
-		  continue;
-		}
+
+
+
+
+
+
+
+
+
+
+
+
+	     
+
+
+
+
+
+
 
 
 	      // ###########
@@ -328,53 +331,9 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  const reco::TransientTrack muTrackpTT(muTrackp, &(*bFieldHandle));
 
 
-		  // ###############################
-		  // # Compute mu+ DCA to BeamSpot #
-		  // ###############################
-		  theDCAXBS = muTrackpTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
-		  if (theDCAXBS.isValid() == false)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for mu+" << std::endl;
-		      continue;
-		    }
-		  double DCAmupBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
-		  double DCAmupBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
-		  if (fabs(DCAmupBS) > DCAMUBS)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad absolute impact parameter 2D for mu+: " << DCAmupBS << std::endl;
-		      continue;
-		    }
 
 
 		  if (printMsg == true) std::cout << "\n" << __LINE__ << " : @@@ I have 2 good oppositely-charged muons. I'm trying to vertex them @@@" << std::endl;
-
-
-		  // ############################################
-		  // # Check goodness of muons closest approach #
-		  // ############################################
-		  ClosestApp.calculate(muTrackpTT.initialFreeState(),muTrackmTT.initialFreeState());
-		  if (ClosestApp.status() == false)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad status of closest approach" << std::endl;
-		      continue;
-		    }
-		  XingPoint = ClosestApp.crossingPoint();
-		  if ((sqrt(XingPoint.x()*XingPoint.x() + XingPoint.y()*XingPoint.y()) > TRKMAXR) || (fabs(XingPoint.z()) > TRKMAXZ))
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> closest approach crossing point outside the tracker volume" << std::endl;
-		      continue;
-		    }
-
-
-		  // #####################################################
-		  // # Cut on the mumu 3D-DCA with respect to each other #
-		  // #####################################################
-		  double DCAmumu = ClosestApp.distance();
-		  if (DCAmumu > DCAMUMU)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad 3D-DCA of mu+(-) with respect to mu-(+): " << DCAmumu << std::endl;
-		      continue;
-		    }
 
 
 		  chi = 0.;
@@ -472,6 +431,77 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad mumu cos(alpha) with respect to BeamSpot: " << MuMuCosAlphaBS << "+/-" << MuMuCosAlphaBSErr << std::endl;
 		      continue;
 		    }
+
+
+
+		  // ###############################
+	      // # Compute mu- DCA to BeamSpot #
+	      // ###############################
+	      theDCAXBS = muTrackmTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
+	      if (theDCAXBS.isValid() == false)
+		{
+		  if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for mu-" << std::endl;
+		  continue;
+		}
+	      double DCAmumBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
+	      double DCAmumBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
+	      if (fabs(DCAmumBS) > DCAMUBS)
+		{
+		  if (printMsg == true) std::cout << __LINE__ << " : continue --> bad absolute impact parameter 2D for mu- : " << DCAmumBS << std::endl;
+		  continue;
+		}
+
+
+
+
+		  // ###############################
+		  // # Compute mu+ DCA to BeamSpot #
+		  // ###############################
+		  theDCAXBS = muTrackpTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
+		  if (theDCAXBS.isValid() == false)
+		    {
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for mu+" << std::endl;
+		      continue;
+		    }
+		  double DCAmupBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
+		  double DCAmupBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
+		  if (fabs(DCAmupBS) > DCAMUBS)
+		    {
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad absolute impact parameter 2D for mu+: " << DCAmupBS << std::endl;
+		      continue;
+		    }
+
+
+
+
+		  // ############################################
+		  // # Check goodness of muons closest approach #
+		  // ############################################
+		  ClosestApp.calculate(muTrackpTT.initialFreeState(),muTrackmTT.initialFreeState());
+		  if (ClosestApp.status() == false)
+		    {
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad status of closest approach" << std::endl;
+		      continue;
+		    }
+		  XingPoint = ClosestApp.crossingPoint();
+		  if ((sqrt(XingPoint.x()*XingPoint.x() + XingPoint.y()*XingPoint.y()) > TRKMAXR) || (fabs(XingPoint.z()) > TRKMAXZ))
+		    {
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> closest approach crossing point outside the tracker volume" << std::endl;
+		      continue;
+		    }
+
+
+		  // #####################################################
+		  // # Cut on the mumu 3D-DCA with respect to each other #
+		  // #####################################################
+		  double DCAmumu = ClosestApp.distance();
+		  if (DCAmumu > DCAMUMU)
+		    {
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad 3D-DCA of mu+(-) with respect to mu-(+): " << DCAmumu << std::endl;
+		      continue;
+		    }
+
+
 
 
 		  // ##############
