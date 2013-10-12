@@ -1224,9 +1224,9 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  bBarParticles.clear();
 			  kstParticles.clear();
 			  kstBarParticles.clear();
+			  muonParticles.clear(); 
 			} // End for Track+
 		    } // End for Track-
-		  muonParticles.clear(); 
 		} // End for mu+
 	    } // End for mu-
 	} // End if bestVtx is true
