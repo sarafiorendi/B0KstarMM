@@ -551,44 +551,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    }
 
 
-			  // #################################################
-			  // # Check if the hadron Track- is actually a muon #
-			  // #################################################
-			  MuMCat.clear();
-			  MuMCat = "NotMatched";
-			  for (std::vector<pat::Muon>::const_iterator iMuon = thePATMuonHandle->begin(); iMuon != thePATMuonHandle->end(); iMuon++)
-			    {
-			      muTrackTmp = iMuon->innerTrack();
-			      if ((muTrackTmp.isNull() == true) || (muTrackTmp->charge() != -1)) continue;
-			      if (Trackm == muTrackTmp)
-				{
-				  MuMCat.clear();
-				  MuMCat.append(getMuCat(*iMuon));
-				  if (printMsg == true) std::cout << __LINE__ << " : negative charged hadron is actually a muon (momentum: " << Trackm->p() << ") whose category is: " << MuMCat.c_str() << std::endl;
-				  break;
-				}
-			    }
-
-
-			  // #################################################
-			  // # Check if the hadron Track+ is actually a muon #
-			  // #################################################
-			  MuPCat.clear();
-			  MuPCat = "NotMatched";
-			  for (std::vector<pat::Muon>::const_iterator iMuon = thePATMuonHandle->begin(); iMuon != thePATMuonHandle->end(); iMuon++)
-			    {
-			      muTrackTmp = iMuon->innerTrack();
-			      if ((muTrackTmp.isNull() == true) || (muTrackTmp->charge() != 1)) continue;
-			      if (Trackp == muTrackTmp)
-				{
-				  MuPCat.clear();
-				  MuPCat.append(getMuCat(*iMuon));
-				  if (printMsg == true) std::cout << __LINE__ << " : positive charged hadron is actually a muon (momentum: " << Trackp->p() << ") whose category is: " << MuPCat.c_str() << std::endl;
-				  break;
-				}
-			    }
-
-
 			  if (printMsg == true) std::cout << "\n" << __LINE__ << " : @@@ I have 2 good oppositely charged tracks. I'm trying to vertex them @@@" << std::endl;
 
 
@@ -689,10 +651,42 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  const reco::TransientTrack refitTrkpTT = refitTrkp->refittedTransientTrack();
 
 
+			  // #################################################
+			  // # Check if the hadron Track- is actually a muon #
+			  // #################################################
+			  MuMCat.clear();
+			  MuMCat = "NotMatched";
+			  for (std::vector<pat::Muon>::const_iterator iMuon = thePATMuonHandle->begin(); iMuon != thePATMuonHandle->end(); iMuon++)
+			    {
+			      muTrackTmp = iMuon->innerTrack();
+			      if ((muTrackTmp.isNull() == true) || (muTrackTmp->charge() != -1)) continue;
+			      if (Trackm == muTrackTmp)
+				{
+				  MuMCat.clear();
+				  MuMCat.append(getMuCat(*iMuon));
+				  if (printMsg == true) std::cout << __LINE__ << " : negative charged hadron is actually a muon (momentum: " << Trackm->p() << ") whose category is: " << MuMCat.c_str() << std::endl;
+				  break;
+				}
+			    }
 
 
-			  std::cout << "K* mass : " << kst_KP->currentState().mass() << "\t" << kstInvMass << std::endl;
-			  std::cout << "K*bar mass : " << kstBar_KP->currentState().mass() << "\t" << kstBarInvMass << std::endl;
+			  // #################################################
+			  // # Check if the hadron Track+ is actually a muon #
+			  // #################################################
+			  MuPCat.clear();
+			  MuPCat = "NotMatched";
+			  for (std::vector<pat::Muon>::const_iterator iMuon = thePATMuonHandle->begin(); iMuon != thePATMuonHandle->end(); iMuon++)
+			    {
+			      muTrackTmp = iMuon->innerTrack();
+			      if ((muTrackTmp.isNull() == true) || (muTrackTmp->charge() != 1)) continue;
+			      if (Trackp == muTrackTmp)
+				{
+				  MuPCat.clear();
+				  MuPCat.append(getMuCat(*iMuon));
+				  if (printMsg == true) std::cout << __LINE__ << " : positive charged hadron is actually a muon (momentum: " << Trackp->p() << ") whose category is: " << MuPCat.c_str() << std::endl;
+				  break;
+				}
+			    }
 
 
 
