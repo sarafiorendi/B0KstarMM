@@ -146,6 +146,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
   double deltaEtaPhi;
   double pTtmp;
+  double etaTmp;
 
   KinematicParticleFactoryFromTransientTrack partFactory;
 
@@ -276,6 +277,9 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	  // ###########
 	  for (std::vector<pat::Muon>::const_iterator iMuonM = thePATMuonHandle->begin(); iMuonM != thePATMuonHandle->end(); iMuonM++)
 	    {
+	      bool skip = false;
+
+
 	      // ########################
 	      // # Check mu- kinematics #
 	      // ########################
@@ -417,23 +421,25 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  const reco::TransientTrack refitMupTT = refitMup->refittedTransientTrack();
 
 
-		  // Tracks are sorted by decreasing pT
+		  // ########################
+		  // # Muon pT and eta cuts #
+		  // ########################
+		  pTtmp  = sqrt(refitMupTT.track().momentum().x()*refitMupTT.track().momentum().x() + refitMupTT.track().momentum().y()*refitMupTT.track().momentum().y());
+		  etaTmp = Utility->computeEta (refitMupTT.track().momentum().x(),refitMupTT.track().momentum().y(),refitMupTT.track().momentum().z());
+		  if ((pTtmp < MUMINPT) || (fabs(etaTmp) > MUMAXETA))
+		    {
+		      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu+ : " << pTtmp << " or too high eta : " << etaTmp << std::endl;
+		      continue;
+		    }
+
 		  pTtmp = sqrt(refitMumTT.track().momentum().x()*refitMumTT.track().momentum().x() + refitMumTT.track().momentum().y()*refitMumTT.track().momentum().y());
-		  if (pTtmp < MUMINPT)
+		  etaTmp = Utility->computeEta (refitMumTT.track().momentum().x(),refitMumTT.track().momentum().y(),refitMumTT.track().momentum().z());
+		  if ((pTtmp < MUMINPT) || (fabs(etaTmp) > MUMAXETA))
 		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu- : " << pTtmp << std::endl;
-		      break;
+		      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu- : " << pTtmp << " or too high eta : " << etaTmp << std::endl;
+		      skip = true;
+		      continue;
 		    }
-		  else if (fabs(Utility->computeEta (refitMumTT.track().momentum().x(),refitMumTT.track().momentum().y(),refitMumTT.track().momentum().z())) > MUMAXETA) continue;
-		  
-		  // Tracks are sorted by decreasing pT
-		  pTtmp = sqrt(refitMupTT.track().momentum().x()*refitMupTT.track().momentum().x() + refitMupTT.track().momentum().y()*refitMupTT.track().momentum().y());
-		  if (pTtmp < MUMINPT)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu+ : " << pTtmp << std::endl;
-		      break;
-		    }
-		  else if (fabs(Utility->computeEta (refitMupTT.track().momentum().x(),refitMupTT.track().momentum().y(),refitMupTT.track().momentum().z())) > MUMAXETA) continue;
 
 
 
@@ -494,6 +500,9 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  // ##############
 		  for (std::vector<pat::GenericParticle>::const_iterator iTrackM = thePATTrackHandle->begin(); iTrackM != thePATTrackHandle->end(); iTrackM++)
 		    {
+		      bool skip = false;
+
+
 		      // ###########################
 		      // # Check Track- kinematics #
 		      // ###########################
@@ -656,21 +665,24 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  const reco::TransientTrack refitTrkpTT = refitTrkp->refittedTransientTrack();
 
 
-			  // Tracks are sorted by decreasing pT
-			  pTtmp = sqrt(refitTrkmTT.track().momentum().x()*refitTrkmTT.track().momentum().x() + refitTrkmTT.track().momentum().y()*refitTrkmTT.track().momentum().y());
-			  if (pTtmp < MINHADPT)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track- : " << pTtmp << std::endl;
-			      break;
-			    }
-
-			  // Tracks are sorted by decreasing pT
+			  // ##########################
+			  // # Hadron pT and eta cuts #
+			  // ##########################
 			  pTtmp = sqrt(refitTrkpTT.track().momentum().x()*refitTrkpTT.track().momentum().x() + refitTrkpTT.track().momentum().y()*refitTrkpTT.track().momentum().y());
 			  if (pTtmp < MINHADPT)
 			    {
 			      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track+ : " << pTtmp << std::endl;
-			      break;
+			      continue;
 			    }
+
+			  pTtmp = sqrt(refitTrkmTT.track().momentum().x()*refitTrkmTT.track().momentum().x() + refitTrkmTT.track().momentum().y()*refitTrkmTT.track().momentum().y());
+			  if (pTtmp < MINHADPT)
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track- : " << pTtmp << std::endl;
+			      skip = true;
+			      continue;
+			    }
+
 
 
 			  // #################################################
@@ -1250,9 +1262,11 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  kstParticles.clear();
 			  kstBarParticles.clear();
 			} // End for Track+
+		      if (skip == true) continue;
 		    } // End for Track-
 		  muonParticles.clear(); 
 		} // End for mu+
+	      if (skip == true) continue;
 	    } // End for mu-
 	} // End if bestVtx is true
       else if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid Pri.Vtx" << std::endl;
