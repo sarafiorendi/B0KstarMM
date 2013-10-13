@@ -145,8 +145,8 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
   double cosAlphaBSErr;
 
   double deltaEtaPhi;
-  double pTtmp;
-  double etaTmp;
+  double pT;
+  double eta;
 
   KinematicParticleFactoryFromTransientTrack partFactory;
 
@@ -424,19 +424,19 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  // ########################
 		  // # Muon pT and eta cuts #
 		  // ########################
-		  pTtmp  = sqrt(refitMupTT.track().momentum().x()*refitMupTT.track().momentum().x() + refitMupTT.track().momentum().y()*refitMupTT.track().momentum().y());
-		  etaTmp = Utility->computeEta (refitMupTT.track().momentum().x(),refitMupTT.track().momentum().y(),refitMupTT.track().momentum().z());
-		  if ((pTtmp < MUMINPT) || (fabs(etaTmp) > MUMAXETA))
+		  pT  = sqrt(refitMupTT.track().momentum().x()*refitMupTT.track().momentum().x() + refitMupTT.track().momentum().y()*refitMupTT.track().momentum().y());
+		  eta = Utility->computeEta (refitMupTT.track().momentum().x(),refitMupTT.track().momentum().y(),refitMupTT.track().momentum().z());
+		  if ((pT < MUMINPT) || (fabs(eta) > MUMAXETA))
 		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu+ : " << pTtmp << " or too high eta : " << etaTmp << std::endl;
+		      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu+ : " << pT << " or too high eta : " << eta << std::endl;
 		      continue;
 		    }
 
-		  pTtmp = sqrt(refitMumTT.track().momentum().x()*refitMumTT.track().momentum().x() + refitMumTT.track().momentum().y()*refitMumTT.track().momentum().y());
-		  etaTmp = Utility->computeEta (refitMumTT.track().momentum().x(),refitMumTT.track().momentum().y(),refitMumTT.track().momentum().z());
-		  if ((pTtmp < MUMINPT) || (fabs(etaTmp) > MUMAXETA))
+		  pT = sqrt(refitMumTT.track().momentum().x()*refitMumTT.track().momentum().x() + refitMumTT.track().momentum().y()*refitMumTT.track().momentum().y());
+		  eta = Utility->computeEta (refitMumTT.track().momentum().x(),refitMumTT.track().momentum().y(),refitMumTT.track().momentum().z());
+		  if ((pT < MUMINPT) || (fabs(eta) > MUMAXETA))
 		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu- : " << pTtmp << " or too high eta : " << etaTmp << std::endl;
+		      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu- : " << pT << " or too high eta : " << eta << std::endl;
 		      skip = true;
 		      continue;
 		    }
@@ -668,17 +668,17 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  // ##########################
 			  // # Hadron pT and eta cuts #
 			  // ##########################
-			  pTtmp = sqrt(refitTrkpTT.track().momentum().x()*refitTrkpTT.track().momentum().x() + refitTrkpTT.track().momentum().y()*refitTrkpTT.track().momentum().y());
-			  if (pTtmp < MINHADPT)
+			  pT = sqrt(refitTrkpTT.track().momentum().x()*refitTrkpTT.track().momentum().x() + refitTrkpTT.track().momentum().y()*refitTrkpTT.track().momentum().y());
+			  if (pT < MINHADPT)
 			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track+ : " << pTtmp << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track+ : " << pT << std::endl;
 			      continue;
 			    }
 
-			  pTtmp = sqrt(refitTrkmTT.track().momentum().x()*refitTrkmTT.track().momentum().x() + refitTrkmTT.track().momentum().y()*refitTrkmTT.track().momentum().y());
-			  if (pTtmp < MINHADPT)
+			  pT = sqrt(refitTrkmTT.track().momentum().x()*refitTrkmTT.track().momentum().x() + refitTrkmTT.track().momentum().y()*refitTrkmTT.track().momentum().y());
+			  if (pT < MINHADPT)
 			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track- : " << pTtmp << std::endl;
+			      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track- : " << pT << std::endl;
 			      skip = true;
 			      continue;
 			    }

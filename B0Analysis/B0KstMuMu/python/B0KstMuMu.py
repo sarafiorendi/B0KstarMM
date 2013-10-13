@@ -2,7 +2,7 @@
 ### Variables ###
 #################
 runDataMC = 1 # 1 = Data; 2 = MC (Reco + Gen); 3 = MC (Gen)
-useJSON   = True
+useJSON   = False
 printMsg  = False
 triggerProcessName = 'HLT' # 'GEN' or 'HLT' or 'RECO' or 'TEST' or ...
 
@@ -24,6 +24,9 @@ process.MessageLogger.suppressWarning = cms.untracked.vstring('B0KstMuMu')
 #################
 ### GlobalTag ###
 #################
+### Auto detect GlobalTag ###
+#from Configuration.AlCa.GlobalTag import GlobalTag
+#process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:com10_8E33v2', '')
 if (runDataMC != 1):
     process.GlobalTag.globaltag = cms.string('START53_V7G::All') # Signal MC: START53_V19F; J/psi X MC: START53_V7G
 else:
@@ -150,18 +153,29 @@ switchOnTriggerMatchEmbedding(process, triggerMatchers = ['cleanMuonTriggerMatch
 #########################
 ### Remove unused PAT ###
 #########################
-process.patDefaultSequence.remove(process.patJetCorrFactors)
-process.patDefaultSequence.remove(process.patJetCharge)
+process.patDefaultSequence.remove(process.muonMatch)
+process.patDefaultSequence.remove(process.electronMatch)
+process.patDefaultSequence.remove(process.photonMatch)
+process.patDefaultSequence.remove(process.tauMatch)
+process.patDefaultSequence.remove(process.tauGenJetMatch)
+
+process.patDefaultSequence.remove(process.tauGenJets)
+process.patDefaultSequence.remove(process.tauGenJetsSelectorAllHadrons)
+
 process.patDefaultSequence.remove(process.patJetPartonMatch)
 process.patDefaultSequence.remove(process.patJetGenJetMatch)
+process.patDefaultSequence.remove(process.patJetCorrFactors)
+process.patDefaultSequence.remove(process.patJetCharge)
 process.patDefaultSequence.remove(process.patJetPartons)
 process.patDefaultSequence.remove(process.patJetPartonAssociation)
 process.patDefaultSequence.remove(process.patJetFlavourAssociation)
 process.patDefaultSequence.remove(process.patJets)
-process.patDefaultSequence.remove(process.patMETs)
+
 process.patDefaultSequence.remove(process.selectedPatJets)
 process.patDefaultSequence.remove(process.cleanPatJets)
 process.patDefaultSequence.remove(process.countPatJets)
+
+process.patDefaultSequence.remove(process.patMETs)
 
 
 ##########################
@@ -182,6 +196,9 @@ process.B0KstMuMu = cms.EDAnalyzer('B0KstMuMu',
 ###########
 ### RUN ###
 ###########
+### Run unscheduled = create and read just what I need ###
+process.options = cms.untracked.PSet(allowUnscheduled = cms.untracked.bool(True))
+
 process.patPath  = cms.Path(process.patDefaultSequence)
 process.ntupPath = cms.Path(process.B0KstMuMu)
 
