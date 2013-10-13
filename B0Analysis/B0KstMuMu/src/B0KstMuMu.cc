@@ -684,7 +684,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    }
 
 
-
 			  // #################################################
 			  // # Check if the hadron Track- is actually a muon #
 			  // #################################################

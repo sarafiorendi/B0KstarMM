@@ -175,6 +175,10 @@ process.patDefaultSequence.remove(process.selectedPatJets)
 process.patDefaultSequence.remove(process.cleanPatJets)
 process.patDefaultSequence.remove(process.countPatJets)
 
+process.patDefaultSequence.remove(process.patCandidateSummary)
+process.patDefaultSequence.remove(process.selectedPatCandidateSummary)
+process.patDefaultSequence.remove(process.cleanPatCandidateSummary)
+
 process.patDefaultSequence.remove(process.patMETs)
 
 
