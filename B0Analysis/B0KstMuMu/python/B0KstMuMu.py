@@ -2,7 +2,7 @@
 ### Variables ###
 #################
 runDataMC = 1 # 1 = Data; 2 = MC (Reco + Gen); 3 = MC (Gen)
-useJSON   = False
+useJSON   = True
 printMsg  = False
 triggerProcessName = 'HLT' # 'GEN' or 'HLT' or 'RECO' or 'TEST' or ...
 
