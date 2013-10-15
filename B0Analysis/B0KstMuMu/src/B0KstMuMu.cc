@@ -2275,7 +2275,7 @@ void B0KstMuMu::beginJob ()
   // # Loading HLT-trigger cuts #
   // ############################
   Utility->ReadPreselectionCut(parameterFile_.c_str());
-  if (printMsg == true) std::cout << "\n" << __LINE__ << " : Pre-selection cuts" << std::endl;
+  if (printMsg == true) std::cout << "\n@@@ Pre-selection cuts @@@" << std::endl;
   CLMUMUVTX      = Utility->GetPreCut("MuMuVtxCL");      if (printMsg == true) std::cout << __LINE__ << " : CLMUMUVTX      = " << CLMUMUVTX << std::endl;
   LSMUMUBS       = Utility->GetPreCut("MuMuLsBS");       if (printMsg == true) std::cout << __LINE__ << " : LSMUMUBS       = " << LSMUMUBS << std::endl;
   DCAMUMU        = Utility->GetPreCut("DCAMuMu");        if (printMsg == true) std::cout << __LINE__ << " : DCAMUMU        = " << DCAMUMU << std::endl;
@@ -2299,7 +2299,7 @@ void B0KstMuMu::beginJob ()
 
   if (printMsg == true)
     {
-      std::cout << "\n@@@ Global Constants @@@" << std::endl;
+      std::cout << "\n@@@ Global constants @@@" << std::endl;
       std::cout << __LINE__ << " : TRKMAXR    = " << TRKMAXR << std::endl;
 
       std::cout << __LINE__ << " : PRIVTXNDOF = " << PRIVTXNDOF << std::endl;
