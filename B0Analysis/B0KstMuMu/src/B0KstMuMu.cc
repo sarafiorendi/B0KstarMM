@@ -73,6 +73,9 @@
 #define PRIVTXMAXZ 50.0 // [cm]
 #define PRIVTXMAXR  2.0 // [cm]
 
+#define MUVARTOLE 0.01  // [From 0 to 1]
+#define HADVARTOLE 0.10 // [From 0 to 1]
+
 
 // #######################
 // # Truth matching cuts #
@@ -288,7 +291,19 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
  
 	      const reco::TransientTrack muTrackmTT(muTrackm, &(*bFieldHandle));
 
-			  
+		
+	      // #########################
+	      // # Muon- pT and eta cuts #
+	      // #########################
+	      pT  = muTrackm->pt();
+	      eta = Utility->computeEta (muTrackmTT.track().momentum().x(),muTrackmTT.track().momentum().y(),muTrackmTT.track().momentum().z());
+	      if ((pT < (MUMINPT*(1.0-MUVARTOLE))) || (fabs(eta) > (MUMAXETA*(1.0+MUVARTOLE))))
+		{
+		  if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu- : " << pT << " or too high eta : " << eta << std::endl;
+		  break;
+		}
+
+
 	      // ###############################
 	      // # Compute mu- DCA to BeamSpot #
 	      // ###############################
@@ -319,6 +334,18 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  if ((muTrackp.isNull() == true) || (muTrackp->charge() != 1)) continue;
 
 		  const reco::TransientTrack muTrackpTT(muTrackp, &(*bFieldHandle));
+
+
+		  // #########################
+		  // # Muon+ pT and eta cuts #
+		  // #########################
+		  pT  = muTrackp->pt();
+		  eta = Utility->computeEta (muTrackpTT.track().momentum().x(),muTrackpTT.track().momentum().y(),muTrackpTT.track().momentum().z());
+		  if ((pT < (MUMINPT*(1.0-MUVARTOLE))) || (fabs(eta) > (MUMAXETA*(1.0+MUVARTOLE))))
+		    {
+		      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu+ : " << pT << " or too high eta : " << eta << std::endl;
+		      break;
+		    }
 
 
 		  // ###############################
@@ -363,6 +390,20 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  if (DCAmumu > DCAMUMU)
 		    {
 		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad 3D-DCA of mu+(-) with respect to mu-(+): " << DCAmumu << std::endl;
+		      continue;
+		    }
+
+
+		  // ############################################
+		  // # Cut on the dimuon inviariant mass and pT #
+		  // ############################################
+		  pT = sqrt((muTrackmTT.track().momentum().x() + muTrackpTT.track().momentum().x()) * (muTrackmTT.track().momentum().x() + muTrackpTT.track().momentum().x()) +
+			    (muTrackmTT.track().momentum().y() + muTrackpTT.track().momentum().y()) * (muTrackmTT.track().momentum().y() + muTrackpTT.track().momentum().y()));
+		  double MuMuInvMass = Utility->computeInvMass (muTrackmTT.track().momentum().x(),muTrackmTT.track().momentum().y(),muTrackmTT.track().momentum().z(),Utility->muonMass(),
+								muTrackpTT.track().momentum().x(),muTrackpTT.track().momentum().y(),muTrackpTT.track().momentum().z(),Utility->muonMass());
+		  if ((pT < (MINMUMUPT*(1.0-MUVARTOLE))) || (MuMuInvMass < (MINMUMUINVMASS*(1.0-MUVARTOLE))) || (MuMuInvMass > (MAXMUMUINVMASS*(1.0+MUVARTOLE))))
+		    {
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> no good mumu pair pT: " << pT << "\tinv. mass: " << MuMuInvMass << std::endl;
 		      continue;
 		    }
 
@@ -428,31 +469,29 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  eta = Utility->computeEta (refitMupTT.track().momentum().x(),refitMupTT.track().momentum().y(),refitMupTT.track().momentum().z());
 		  if ((pT < MUMINPT) || (fabs(eta) > MUMAXETA))
 		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu+ : " << pT << " or too high eta : " << eta << std::endl;
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> too low pT of mu+ : " << pT << " or too high eta : " << eta << std::endl;
 		      continue;
 		    }
 
-		  pT = sqrt(refitMumTT.track().momentum().x()*refitMumTT.track().momentum().x() + refitMumTT.track().momentum().y()*refitMumTT.track().momentum().y());
+		  pT  = sqrt(refitMumTT.track().momentum().x()*refitMumTT.track().momentum().x() + refitMumTT.track().momentum().y()*refitMumTT.track().momentum().y());
 		  eta = Utility->computeEta (refitMumTT.track().momentum().x(),refitMumTT.track().momentum().y(),refitMumTT.track().momentum().z());
 		  if ((pT < MUMINPT) || (fabs(eta) > MUMAXETA))
 		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu- : " << pT << " or too high eta : " << eta << std::endl;
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> too low pT of mu- : " << pT << " or too high eta : " << eta << std::endl;
 		      skip = true;
 		      continue;
 		    }
 
 
-
-
 		  // ############################################
 		  // # Cut on the dimuon inviariant mass and pT #
 		  // ############################################
-		  double pTpair = sqrt((refitMumTT.track().momentum().x() + refitMupTT.track().momentum().x()) * (refitMumTT.track().momentum().x() + refitMupTT.track().momentum().x()) +
-				       (refitMumTT.track().momentum().y() + refitMupTT.track().momentum().y()) * (refitMumTT.track().momentum().y() + refitMupTT.track().momentum().y()));
-		  double MuMuInvMass = mumu_KP->currentState().mass();
-		  if ((pTpair < MINMUMUPT) || (MuMuInvMass < MINMUMUINVMASS) || (MuMuInvMass > MAXMUMUINVMASS))
+		  pT = sqrt((refitMumTT.track().momentum().x() + refitMupTT.track().momentum().x()) * (refitMumTT.track().momentum().x() + refitMupTT.track().momentum().x()) +
+			    (refitMumTT.track().momentum().y() + refitMupTT.track().momentum().y()) * (refitMumTT.track().momentum().y() + refitMupTT.track().momentum().y()));
+		  MuMuInvMass = mumu_KP->currentState().mass();
+		  if ((pT < MINMUMUPT) || (MuMuInvMass < MINMUMUINVMASS) || (MuMuInvMass > MAXMUMUINVMASS))
 		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> no good mumu pair pT: " << pTpair << "\tinv. mass: " << MuMuInvMass << std::endl;
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> no good mumu pair pT: " << pT << "\tinv. mass: " << MuMuInvMass << std::endl;
 		      continue;
 		    }
 
@@ -512,6 +551,17 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		      const reco::TransientTrack TrackmTT(Trackm, &(*bFieldHandle));
 
 
+		      // ##########################
+		      // # Track- pT and eta cuts #
+		      // ##########################
+		      pT = sqrt(TrackmTT.track().momentum().x()*TrackmTT.track().momentum().x() + TrackmTT.track().momentum().y()*TrackmTT.track().momentum().y());
+		      if (pT < (MINHADPT*(1.0-HADVARTOLE)))
+			{
+			  if (printMsg == true) std::cout << __LINE__ << " : continue --> too low pT of track- : " << pT << std::endl;
+			  continue;
+			}
+		      
+
 		      // ######################################
 		      // # Compute K*0 track- DCA to BeamSpot #
 		      // ######################################
@@ -542,6 +592,17 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  if ((Trackp.isNull() == true) || (Trackp->charge() != 1)) continue;
 
 			  const reco::TransientTrack TrackpTT(Trackp, &(*bFieldHandle));
+
+
+			  // ##########################
+			  // # Track+ pT and eta cuts #
+			  // ##########################
+			  pT = sqrt(TrackpTT.track().momentum().x()*TrackpTT.track().momentum().x() + TrackpTT.track().momentum().y()*TrackpTT.track().momentum().y());
+			  if (pT < (MINHADPT*(1.0-HADVARTOLE)))
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> too low pT of track+ : " << pT << std::endl;
+			      continue;
+			    }
 
 
 			  // ######################################
@@ -575,6 +636,21 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  if ((sqrt(XingPoint.x()*XingPoint.x() + XingPoint.y()*XingPoint.y()) > TRKMAXR) || (fabs(XingPoint.z()) > TRKMAXZ))
 			    {
 			      if (printMsg == true) std::cout << __LINE__ << " : continue --> closest approach crossing point outside the tracker volume" << std::endl;
+			      continue;
+			    }
+
+
+			  // ######################################################
+			  // # Check if K*0 (OR K*0bar) mass is within acceptance #
+			  // ######################################################
+			  double kstInvMass    = Utility->computeInvMass (TrackmTT.track().momentum().x(),TrackmTT.track().momentum().y(),TrackmTT.track().momentum().z(),Utility->pionMass,
+									  TrackpTT.track().momentum().x(),TrackpTT.track().momentum().y(),TrackpTT.track().momentum().z(),Utility->kaonMass);
+			  double kstBarInvMass = Utility->computeInvMass (TrackmTT.track().momentum().x(),TrackmTT.track().momentum().y(),TrackmTT.track().momentum().z(),Utility->kaonMass,
+									  TrackpTT.track().momentum().x(),TrackpTT.track().momentum().y(),TrackpTT.track().momentum().z(),Utility->pionMass);
+			  if ((fabs(kstInvMass - Utility->kstMass)    > (KSTMASSWINDOW*Utility->kstSigma*(1.0+HADVARTOLE))) &&
+			      (fabs(kstBarInvMass - Utility->kstMass) > (KSTMASSWINDOW*Utility->kstSigma*(1.0+HADVARTOLE))))
+			    {
+			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad K*0 mass: " << kstInvMass << " AND K*0bar mass: " << kstBarInvMass << std::endl;
 			      continue;
 			    }
 
@@ -642,8 +718,8 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  // ######################################################
 			  // # Check if K*0 (OR K*0bar) mass is within acceptance #
 			  // ######################################################
-			  double kstInvMass    = kst_KP->currentState().mass();
-			  double kstBarInvMass = kstBar_KP->currentState().mass();
+			  kstInvMass    = kst_KP->currentState().mass();
+			  kstBarInvMass = kstBar_KP->currentState().mass();
 			  if ((fabs(kstInvMass - Utility->kstMass) > KSTMASSWINDOW*Utility->kstSigma) && (fabs(kstBarInvMass - Utility->kstMass) > KSTMASSWINDOW*Utility->kstSigma))
 			    {
 			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad K*0 mass: " << kstInvMass << " AND K*0bar mass: " << kstBarInvMass << std::endl;
@@ -2220,6 +2296,22 @@ void B0KstMuMu::beginJob ()
   KSTMASSWINDOW  = Utility->GetPreCut("KstMass");   if (printMsg == true) std::cout << __LINE__ << " : KSTMASSWINDOW  = " << KSTMASSWINDOW << std::endl;
   HADDCASBS      = Utility->GetPreCut("HadDCASBS"); if (printMsg == true) std::cout << __LINE__ << " : HADDCASBS      = " << HADDCASBS << std::endl;
   MINHADPT       = Utility->GetPreCut("HadpT");     if (printMsg == true) std::cout << __LINE__ << " : MINHADPT       = " << MINHADPT << std::endl;
+
+  if (printMsg == true)
+    {
+      std::cout << "\n@@@ Global Constants @@@" << std::endl;
+      std::cout << __LINE__ << "TRKMAXR    = " << TRKMAXR << std::endl;
+
+      std::cout << __LINE__ << "PRIVTXNDOF = " << PRIVTXNDOF << std::endl;
+      std::cout << __LINE__ << "PRIVTXMAXZ = " << PRIVTXMAXZ << std::endl;
+      std::cout << __LINE__ << "PRIVTXMAXR = " << PRIVTXMAXR << std::endl;
+
+      std::cout << __LINE__ << "MUVARTOLE  = " << MUVARTOLE << std::endl;
+      std::cout << __LINE__ << "HADVARTOLE = " << HADVARTOLE << std::endl;
+
+      std::cout << __LINE__ << "RCUTMU     = " << RCUTMU << std::endl;
+      std::cout << __LINE__ << "RCUTTRK    = " << RCUTTRK << std::endl;
+    }
 }
 
 

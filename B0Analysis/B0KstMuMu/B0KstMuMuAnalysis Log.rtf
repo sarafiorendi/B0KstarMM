@@ -1,7 +1,7 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1187\cocoasubrtf390
+{\rtf1\ansi\ansicpg1252\cocoartf1187\cocoasubrtf400
 \cocoascreenfonts1{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
 {\colortbl;\red255\green255\blue255;}
-\paperw11900\paperh16840\margl1440\margr1440\vieww17660\viewh20280\viewkind0
+\paperw11900\paperh16840\margl1440\margr1440\vieww17660\viewh16600\viewkind0
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
 \f0\b\fs24 \cf0 @@@@@@@@@@@@@@@@@@@\
@@ -805,11 +805,13 @@ By contrast, the mistagging variation that we had (from 8% to 12.2%) changed the
 \
 5. Use XML for configuration file (?)\
 \
-6. Add dilution to AFB, AFB'  = (1 - 2m)AFB, and to all other asymmetry terms to account for CP-state mistag (m)\
-7. Compute mass shape from 4D-fit to MC\
-8. Correct statistical errors by the sigmas of the Gaussian fits to the pulls\
-9. Search for Bs --> J/psi K* by restricting to the barrel region\
-10. LHCb discovered a new dimuon resonance from B+ --> mu+mu- K+ at ~4.2 GeV\
+6. Test cut: | ( m(B)rec - m(B)PDG ) - ( m(mu+mu-)rec - m(J/psi)PDG ) | < m (e.g. 130 MeV)\
+7. Add dilution to AFB, AFB'  = (1 - 2m)AFB, and to all other asymmetry terms to account for CP-state mistag (m)\
+and remove cut if both K+pi- and K-pi+ are within 50 MeV from K* PDG mass\
+8. Compute mass shape from 4D-fit to MC\
+9. Correct statistical errors by the sigmas of the Gaussian fits to the pulls\
+10. Search for Bs --> J/psi K* by restricting to the barrel region\
+11. LHCb discovered a new dimuon resonance from B+ --> mu+mu- K+ at ~4.2 GeV\
 \
 \
 \
