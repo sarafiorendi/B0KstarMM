@@ -557,8 +557,8 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		      pT = sqrt(TrackmTT.track().momentum().x()*TrackmTT.track().momentum().x() + TrackmTT.track().momentum().y()*TrackmTT.track().momentum().y());
 		      if (pT < (MINHADPT*(1.0-HADVARTOLE)))
 			{
-			  if (printMsg == true) std::cout << __LINE__ << " : continue --> too low pT of track- : " << pT << std::endl;
-			  continue;
+			  if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track- : " << pT << std::endl;
+			  break;
 			}
 		      
 
@@ -600,8 +600,8 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  pT = sqrt(TrackpTT.track().momentum().x()*TrackpTT.track().momentum().x() + TrackpTT.track().momentum().y()*TrackpTT.track().momentum().y());
 			  if (pT < (MINHADPT*(1.0-HADVARTOLE)))
 			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> too low pT of track+ : " << pT << std::endl;
-			      continue;
+			      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track+ : " << pT << std::endl;
+			      break;
 			    }
 
 
