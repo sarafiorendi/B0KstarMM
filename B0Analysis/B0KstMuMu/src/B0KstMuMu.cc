@@ -2300,17 +2300,17 @@ void B0KstMuMu::beginJob ()
   if (printMsg == true)
     {
       std::cout << "\n@@@ Global Constants @@@" << std::endl;
-      std::cout << __LINE__ << "TRKMAXR    = " << TRKMAXR << std::endl;
+      std::cout << __LINE__ << " : TRKMAXR    = " << TRKMAXR << std::endl;
 
-      std::cout << __LINE__ << "PRIVTXNDOF = " << PRIVTXNDOF << std::endl;
-      std::cout << __LINE__ << "PRIVTXMAXZ = " << PRIVTXMAXZ << std::endl;
-      std::cout << __LINE__ << "PRIVTXMAXR = " << PRIVTXMAXR << std::endl;
+      std::cout << __LINE__ << " : PRIVTXNDOF = " << PRIVTXNDOF << std::endl;
+      std::cout << __LINE__ << " : PRIVTXMAXZ = " << PRIVTXMAXZ << std::endl;
+      std::cout << __LINE__ << " : PRIVTXMAXR = " << PRIVTXMAXR << std::endl;
 
-      std::cout << __LINE__ << "MUVARTOLE  = " << MUVARTOLE << std::endl;
-      std::cout << __LINE__ << "HADVARTOLE = " << HADVARTOLE << std::endl;
+      std::cout << __LINE__ << " : MUVARTOLE  = " << MUVARTOLE << std::endl;
+      std::cout << __LINE__ << " : HADVARTOLE = " << HADVARTOLE << std::endl;
 
-      std::cout << __LINE__ << "RCUTMU     = " << RCUTMU << std::endl;
-      std::cout << __LINE__ << "RCUTTRK    = " << RCUTTRK << std::endl;
+      std::cout << __LINE__ << " : RCUTMU     = " << RCUTMU << std::endl;
+      std::cout << __LINE__ << " : RCUTTRK    = " << RCUTTRK << std::endl;
     }
 }
 
