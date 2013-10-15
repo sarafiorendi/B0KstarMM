@@ -399,8 +399,8 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  // ############################################
 		  pT = sqrt((muTrackmTT.track().momentum().x() + muTrackpTT.track().momentum().x()) * (muTrackmTT.track().momentum().x() + muTrackpTT.track().momentum().x()) +
 			    (muTrackmTT.track().momentum().y() + muTrackpTT.track().momentum().y()) * (muTrackmTT.track().momentum().y() + muTrackpTT.track().momentum().y()));
-		  double MuMuInvMass = Utility->computeInvMass (muTrackmTT.track().momentum().x(),muTrackmTT.track().momentum().y(),muTrackmTT.track().momentum().z(),Utility->muonMass(),
-								muTrackpTT.track().momentum().x(),muTrackpTT.track().momentum().y(),muTrackpTT.track().momentum().z(),Utility->muonMass());
+		  double MuMuInvMass = Utility->computeInvMass (muTrackmTT.track().momentum().x(),muTrackmTT.track().momentum().y(),muTrackmTT.track().momentum().z(),Utility->muonMass,
+								muTrackpTT.track().momentum().x(),muTrackpTT.track().momentum().y(),muTrackpTT.track().momentum().z(),Utility->muonMass);
 		  if ((pT < (MINMUMUPT*(1.0-MUVARTOLE))) || (MuMuInvMass < (MINMUMUINVMASS*(1.0-MUVARTOLE))) || (MuMuInvMass > (MAXMUMUINVMASS*(1.0+MUVARTOLE))))
 		    {
 		      if (printMsg == true) std::cout << __LINE__ << " : continue --> no good mumu pair pT: " << pT << "\tinv. mass: " << MuMuInvMass << std::endl;
