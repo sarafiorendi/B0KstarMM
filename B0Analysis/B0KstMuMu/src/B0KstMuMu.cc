@@ -386,10 +386,10 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  // #####################################################
 		  // # Cut on the mumu 3D-DCA with respect to each other #
 		  // #####################################################
-		  double DCAmumu = ClosestApp.distance();
-		  if (DCAmumu > DCAMUMU)
+		  double mumuDCA = ClosestApp.distance();
+		  if (mumuDCA > DCAMUMU)
 		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad 3D-DCA of mu+(-) with respect to mu-(+): " << DCAmumu << std::endl;
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad 3D-DCA of mu+(-) with respect to mu-(+): " << mumuDCA << std::endl;
 		      continue;
 		    }
 
@@ -1171,7 +1171,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  NTuple->mumuCosAlphaBSE->push_back(MuMuCosAlphaBSErr);
 			  NTuple->mumuLBS->push_back(MuMuLSBS);
 			  NTuple->mumuLBSE->push_back(MuMuLSBSErr);
-			  NTuple->mumuDCA->push_back(DCAmumu);
+			  NTuple->mumuDCA->push_back(mumuDCA);
 
 
 			  // #############
