@@ -63,11 +63,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # K*0 (OR K*0bar) mass window sigma [3.0]
 3.0
 
-# hadron DCA/sigma w/respect to BS [0.9]
-0.9
+# hadron DCA/sigma w/respect to BS [0.8]
+0.8
 
-# hadron min pT [0.5 GeV/c]
-0.5
+# hadron min pT [0.4 GeV/c]
+0.4
 
 
 ###########################

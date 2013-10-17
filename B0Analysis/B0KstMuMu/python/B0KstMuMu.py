@@ -201,7 +201,7 @@ process.B0KstMuMu = cms.EDAnalyzer('B0KstMuMu',
 ### RUN ###
 ###########
 ### Run unscheduled = create and read just what I need ###
-process.options = cms.untracked.PSet(allowUnscheduled = cms.untracked.bool(True))
+#process.options = cms.untracked.PSet(allowUnscheduled = cms.untracked.bool(True))
 
 process.patPath  = cms.Path(process.patDefaultSequence)
 process.ntupPath = cms.Path(process.B0KstMuMu)
