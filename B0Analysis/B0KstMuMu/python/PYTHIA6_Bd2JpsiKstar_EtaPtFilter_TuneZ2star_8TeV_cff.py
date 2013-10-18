@@ -14,7 +14,6 @@ configurationMetadata = cms.untracked.PSet(
 
 from Configuration.Generator.PythiaUEZ2starSettings_cfi import *
 
-
 generator = cms.EDFilter("Pythia6GeneratorFilter",
 			 pythiaPylistVerbosity = cms.untracked.int32(0),
 			 pythiaHepMCVerbosity = cms.untracked.bool(False),
