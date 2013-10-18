@@ -5,12 +5,10 @@
 
 import FWCore.ParameterSet.Config as cms
 
-
 configurationMetadata = cms.untracked.PSet(
 	version = cms.untracked.string('$Revision: 1.1 $'),
 	name = cms.untracked.string('PYTHIA6_Bd2JpsiKstar_EtaPtFilter_TuneZ2star_8TeV_cff.py'),
 	annotation = cms.untracked.string('Summer12: Pythia6+EvtGen generation of B0d --> K*0(K pi) J/Psi(Mu+Mu-), 8TeV'))
-
 
 from Configuration.Generator.PythiaUEZ2starSettings_cfi import *
 
@@ -61,6 +59,5 @@ mumugenfilter = cms.EDFilter("MCParticlePairFilter",
 			     ParticleCharge = cms.untracked.int32(-1),
 			     ParticleID1 = cms.untracked.vint32(13),
 			     ParticleID2 = cms.untracked.vint32(13))
-
 
 ProductionFilterSequence = cms.Sequence(generator*b0filter*oniafilter*mumugenfilter)

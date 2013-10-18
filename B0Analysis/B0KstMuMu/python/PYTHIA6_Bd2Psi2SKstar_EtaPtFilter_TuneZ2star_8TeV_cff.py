@@ -5,12 +5,10 @@
 
 import FWCore.ParameterSet.Config as cms
 
-
 configurationMetadata = cms.untracked.PSet(
 	version = cms.untracked.string('$Revision: 1.1 $'),
 	name = cms.untracked.string('PYTHIA6_Bd2Psi2SKstar_EtaPtFilter_TuneZ2star_8TeV_cff.py'),
 	annotation = cms.untracked.string('Summer12: Pythia6+EvtGen generation of B0d --> K*0(K pi) Psi(2S)(Mu+Mu-), 8TeV'))
-
 
 from Configuration.Generator.PythiaUEZ2starSettings_cfi import *
 
@@ -22,7 +20,7 @@ generator = cms.EDFilter("Pythia6GeneratorFilter",
 			 filterEfficiency = cms.untracked.double(1.0), # Given by PYTHIA after running
 			 maxEventsToPrint = cms.untracked.int32(0),
 			 
-			 ExternalDecays = cms.PSet(
+                         ExternalDecays = cms.PSet(
 	EvtGen = cms.untracked.PSet(
 	operates_on_particles = cms.vint32(0),
 	use_default_decay = cms.untracked.bool(False),
@@ -31,7 +29,7 @@ generator = cms.EDFilter("Pythia6GeneratorFilter",
 	user_decay_file = cms.FileInPath('GeneratorInterface/ExternalDecays/data/Bd_Psi2SKstar_mumuKpi.dec'),
 	list_forced_decays = cms.vstring('MyB0','Myanti-B0')),
 	parameterSets = cms.vstring('EvtGen')),
-			 
+
 			 PythiaParameters = cms.PSet(
 	pythiaUESettingsBlock,
 	bbbarSettings = cms.vstring('MSEL = 1'),
@@ -61,6 +59,5 @@ mumugenfilter = cms.EDFilter("MCParticlePairFilter",
 			     ParticleCharge = cms.untracked.int32(-1),
 			     ParticleID1 = cms.untracked.vint32(13),
 			     ParticleID2 = cms.untracked.vint32(13))
-
 
 ProductionFilterSequence = cms.Sequence(generator*b0filter*oniafilter*mumugenfilter)
