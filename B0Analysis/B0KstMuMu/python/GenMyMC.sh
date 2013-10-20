@@ -10,7 +10,7 @@
 
 ### Create just GEN-MC ###
 # Remove only the mumugenfilter from GEN-Fragment.py
-cmsDriver.py Configuration/Generator/python/$1 -s GEN --conditions START53_V19F::All --datatier GEN-SIM --eventcontent RAWSIM -n 100 --no_exec
+cmsDriver.py Configuration/Generator/python/$1 -s GEN --conditions START53_V19F::All --datatier GEN-SIM --eventcontent GENRAW -n 100 --no_exec
 
 
 ### Create just GEN-SIM-MC for official production tests ###
