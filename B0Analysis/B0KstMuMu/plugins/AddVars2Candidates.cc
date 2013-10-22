@@ -30,7 +30,6 @@ using namespace std;
 #define B0pTFileName       "B0pTDataMC.root"
 #define HadppTFileName     "HadppTDataMC.root"
 #define HadmpTFileName     "HadmpTDataMC.root"
-#define ThetaKFileName     "ThetaKDataMC.root"
 #define ParameterFILE      "../python/ParameterFile.txt"
 
 #define SignalType 1 // If checking MC B0 --> K*0 mumu  : 1
@@ -56,7 +55,6 @@ void AddGenVariables (string option);
 template<class T> void AddEvWeightPileup (T* NTupleOut);
 template<class T> void AddEvWeightB0pT (T* NTupleOut);
 template<class T> void AddEvWeightHadpT (T* NTupleOut, string trkSign);
-template<class T> void AddEvWeightThetaK (B0KstMuMuSingleCandTreeContent* NTupleOut);
 
 
 // ###########################
@@ -719,62 +717,13 @@ template<class T> void AddEvWeightHadpT (T* NTupleOut, string trkSign)
 }
 
 
-template<class T> void AddEvWeightThetaK (B0KstMuMuSingleCandTreeContent* NTupleOut)
-{
-  stringstream myString;
-  double value = 0.0;
-  int nEntries;
-
-
-  NTupleOut->ClearNTuple();
-  NTupleOut->MakeTreeBranches(theTreeOut);
-
-  NTupleIn->ClearNTuple();
-  NTupleIn->SetBranchAddresses(theTreeIn);
-  nEntries = theTreeIn->GetEntries();
-  cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
-
-
-  TFile* fileDataMC = TFile::Open(ThetaKFileName,"READ");
-  TCanvas* cTmp     = (TCanvas*)fileDataMC->Get("c0");
-  TH1D* hMC         = (TH1D*)cTmp->GetPrimitive("hM1D");
-  TH1D* hData       = (TH1D*)cTmp->GetPrimitive("hDsig1D");
- 
-  TH1D* hW = (TH1D*)hData->Clone();
-  hW->SetName("ThetaKWeights");
-  hW->Divide(hMC);
-
-
-  cout << "\n@@@ Assigning the weights to the events @@@" << endl;
-  for (int entry = 0; entry < nEntries; entry++)
-    {
-      theTreeIn->GetEntry(entry);      
-      NTupleOut->CopyWholeNTuple(NTupleIn);
-
-      value = NTupleOut->CosThetaKArb;
-      if ((hW->FindBin(value) != 0) && (hW->FindBin(value) != hW->GetNbinsX()+1))
-	{
-	  NTupleOut->evWeightE2 = NTupleOut->evWeightE2 * pow(hW->GetBinContent(hW->FindBin(value)),2.0) +
-	    pow(hW->GetBinError(hW->FindBin(value)) * NTupleOut->evWeight,2.0);
-	  NTupleOut->evWeight = NTupleOut->evWeight * hW->GetBinContent(hW->FindBin(value));
-	}
-
-      theTreeOut->Fill();
-      NTupleOut->ClearNTuple();
-    }
-  
-
-  fileDataMC->Close();
-}
-
-
 int main (int argc, char** argv)
 {
   if (argc >= 4)
     {
       string option = argv[1];
       if ((((option == "pileupW") || (option == "HadpTW")) && (argc == 5)) ||
-	  (((option == "B0pTW") || (option == "thetaKW") || (option == "nvAllReco") || (option == "nvTruthMatchReco") || (option == "nvGen") || (option == "nvGen2SingleCand")) && (argc == 4)))
+	  (((option == "B0pTW") || (option == "nvAllReco") || (option == "nvTruthMatchReco") || (option == "nvGen") || (option == "nvGen2SingleCand")) && (argc == 4)))
 	{
 	  string fileNameIn  = argv[2];
 	  string fileNameOut = argv[3];
@@ -786,7 +735,7 @@ int main (int argc, char** argv)
 
 	  TFile* NtplFileIn = new TFile(fileNameIn.c_str(), "READ");
 	  theTreeIn = (TTree*) NtplFileIn->Get("B0KstMuMu/B0KstMuMuNTuple");
-	  NTupleIn = new B0KstMuMuSingleCandTreeContent();
+	  NTupleIn  = new B0KstMuMuSingleCandTreeContent();
 	  NTupleIn->Init();
 
 	  TFile* NtplFileOut = new TFile(fileNameOut.c_str(), "RECREATE");
@@ -794,19 +743,18 @@ int main (int argc, char** argv)
 	  NtplFileOut->mkdir("B0KstMuMu");
 	  NtplFileOut->cd("B0KstMuMu");
 	  theTreeOut = new TTree("B0KstMuMuNTuple","B0KstMuMuNTuple");
-	  NTupleOut = new B0KstMuMuSingleCandTreeContent();
+	  NTupleOut  = new B0KstMuMuSingleCandTreeContent();
 	  NTupleOut->Init();
 
 
 	  cout << "\n@@@ Settings @@@" << endl;
-	  cout << "PileUp MC file name: " << PileUpMCFileName << endl;
-	  cout << "PileUp data file name: " << PileUpDataFileName << endl;
-	  cout << "B0 pT data-MC file name: " << B0pTFileName << endl;
+	  cout << "PileUp MC file name: "                  << PileUpMCFileName << endl;
+	  cout << "PileUp data file name: "                << PileUpDataFileName << endl;
+	  cout << "B0 pT data-MC file name: "              << B0pTFileName << endl;
 	  cout << "Positive hadron pT data-MC file name: " << HadppTFileName << endl;
 	  cout << "Negative hadron pT data-MC file name: " << HadmpTFileName << endl;
-	  cout << "cos(theta_K) data-MC file name: " << ThetaKFileName << endl;
-	  cout << "ParameterFILE: " << ParameterFILE << endl;
-	  cout << "Signal Type: " << SignalType << endl;
+	  cout << "ParameterFILE: "                        << ParameterFILE << endl;
+	  cout << "Signal Type: "                          << SignalType << endl;
 
 
 	  if (option == "pileupW")
@@ -824,11 +772,6 @@ int main (int argc, char** argv)
 	    {
 	      AddEvWeightHadpT<B0KstMuMuSingleCandTreeContent>(NTupleOut,fileType);
 	      cout << "\n@@@ Added new event weight from hadron pT @@@" << endl;
-	    }
-	  else if (option == "thetaKW")
-	    {
-	      AddEvWeightThetaK<B0KstMuMuSingleCandTreeContent>(NTupleOut);
-	      cout << "\n@@@ Added new event weight from cos(theta_K) @@@" << endl;
 	    }
 	  else if ((option == "nvAllReco") || (option == "nvTruthMatchReco") || (option == "nvGen") || (option == "nvGen2SingleCand"))
 	    {
@@ -861,11 +804,10 @@ int main (int argc, char** argv)
       else
 	{
 	  cout << "Parameter missing: " << endl;
-	  cout << "./AddVars2Candidates [pileupW B0pTW HadpTW thetaKW nvAllReco nvTruthMatchReco nvGen nvGen2SingleCand] inputFile.root outputFile.root [[if pileupW]outputFile-type(single/multi)] [[if HadpT]pos/neg]" << endl;
+	  cout << "./AddVars2Candidates [pileupW B0pTW HadpTW nvAllReco nvTruthMatchReco nvGen nvGen2SingleCand] inputFile.root outputFile.root [[if pileupW]outputFile-type(single/multi)] [[if HadpT]pos/neg]" << endl;
 	  cout << "- pileupW          : change the weight to all single/multiple candidates according to pileup weight" << endl;
 	  cout << "- B0pTW            : change the weight to all single candidates according to B0 pT weight" << endl;
 	  cout << "- HadpTW           : change the weight to all single candidates according to hadron pT weight" << endl;
-	  cout << "- thetaKW          : change the weight to all single candidates according to cos(theta_K) weight" << endl;
 	  cout << "- nvAllReco        : generate new NTupleOut giveing to each candidate in NTupleIn a new TTree entry and adding the RECO single candidate variables" << endl;
 	  cout << "- nvTruthMatchReco : generate new NTupleOut adding the RECO single candidate variables only for the first truth matched candidate in a signal event, discarding the other candidates" << endl;
 	  cout << "- nvGen            : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC (NoFilter,Filter,Multi-candidates)" << endl;
@@ -877,11 +819,10 @@ int main (int argc, char** argv)
   else
     {
       cout << "Parameter missing: " << endl;
-      cout << "./AddVars2Candidates [pileupW B0pTW HadpTW thetaKW nvAllReco nvTruthMatchReco nvGen nvGen2SingleCand] inputFile.root outputFile.root [[if pileupW]outputFile-type(single/multi)] [[if HadpT]pos/neg]" << endl;
+      cout << "./AddVars2Candidates [pileupW B0pTW HadpTW nvAllReco nvTruthMatchReco nvGen nvGen2SingleCand] inputFile.root outputFile.root [[if pileupW]outputFile-type(single/multi)] [[if HadpT]pos/neg]" << endl;
       cout << "- pileupW          : change the weight to all single/multiple candidates according to pileup weight" << endl;
       cout << "- B0pTW            : change the weight to all single candidates according to B0 pT weight" << endl;
       cout << "- HadpTW           : change the weight to all single candidates according to hadron pT weight" << endl;
-      cout << "- thetaKW          : change the weight to all single candidates according to cos(theta_K) weight" << endl;
       cout << "- nvAllReco        : generate new NTupleOut giveing to each candidate in NTupleIn a new TTree entry and adding the RECO single candidate variables" << endl;
       cout << "- nvTruthMatchReco : generate new NTupleOut adding the RECO single candidate variables only for the first truth matched candidate in a signal event, discarding the other candidates" << endl;
       cout << "- nvGen            : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC (NoFilter,Filter,Multi-candidates)" << endl;

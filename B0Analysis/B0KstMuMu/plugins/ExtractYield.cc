@@ -2878,13 +2878,13 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 	      ((((FitType >= 33) && (FitType <= 36)) || ((FitType >= 53) && (FitType <= 56)) || ((FitType >= 73) && (FitType <= 76))) && 
 	       (NTuple->B0pT > Utility->GetSeleCut("B0pT")) && (fabs(NTuple->B0Eta) < Utility->GetSeleCut("B0Eta"))))
 	    {
-	      Vars.setRealValue("B0MassArb",NTuple->B0MassArb);
-	      Vars.setRealValue("mumuMass",NTuple->mumuMass->at(0));
-	      Vars.setRealValue("mumuMassE",NTuple->mumuMassE->at(0));
-	      Vars.setRealValue("CosThetaKArb",NTuple->CosThetaKArb);
-	      Vars.setRealValue("CosThetaMuArb",NTuple->CosThetaMuArb);
+	      Vars.setRealValue("B0MassArb",         NTuple->B0MassArb);
+	      Vars.setRealValue("mumuMass",          NTuple->mumuMass->at(0));
+	      Vars.setRealValue("mumuMassE",         NTuple->mumuMassE->at(0));
+	      Vars.setRealValue("CosThetaKArb",      NTuple->CosThetaKArb);
+	      Vars.setRealValue("CosThetaMuArb",     NTuple->CosThetaMuArb);
 	      Vars.setRealValue("PhiKstMuMuPlaneArb",NTuple->PhiKstMuMuPlaneArb);
-	      Vars.setRealValue("truthMatchSignal",NTuple->truthMatchSignal->at(0));
+	      Vars.setRealValue("truthMatchSignal",  NTuple->truthMatchSignal->at(0));
 
 	      SingleCandNTuple->add(Vars);
 	    }

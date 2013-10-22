@@ -88,7 +88,7 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   double signalSigma = sqrt(Utility->GetGenericParam("FRACMASSS") * Utility->GetGenericParam("SIGMAS1") * Utility->GetGenericParam("SIGMAS1") +
 			    (1. - Utility->GetGenericParam("FRACMASSS")) * Utility->GetGenericParam("SIGMAS2") * Utility->GetGenericParam("SIGMAS2"));
   double MCtoDataRescale = 2.7384/(2219.8/49.1*33.2); // [fb-1(Data) / fb-1(MC) (corrected by the PYTHIA overestimation of the cross-section)]
-
+  
 
   // #################
   // # Cut selection #
@@ -407,8 +407,8 @@ int main (int argc, char** argv)
       cout << "\n@@@ Settings @@@" << endl;
       cout << "Parameter file: "         << ParameterFILE << endl;
       cout << "Do trig check: "          << DoTrigCheck << endl;
-      cout << "Special high q2 bin #2: " <<  SpecialHighq2Bin2 << endl;
-      cout << "\nnEvPrint: "             << nEvPrint << endl;
+      cout << "Special high q2 bin #2: " << SpecialHighq2Bin2 << endl;
+      cout << "nEvPrint: "               << nEvPrint << endl;
 
 
       Utility = new Utils();
