@@ -11,7 +11,6 @@ triggerProcessName = 'HLT' # 'GEN' or 'HLT' or 'RECO' or 'TEST' or ...
 ### CMSSW configs ###
 #####################
 import FWCore.ParameterSet.Config as cms
-
 process = cms.Process('B0KSTMUMUNTUPLIZER')
 
 process.load('FWCore.MessageLogger.MessageLogger_cfi')
