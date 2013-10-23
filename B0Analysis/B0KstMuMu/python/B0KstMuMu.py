@@ -40,9 +40,9 @@ import sys
 if (len(sys.argv) > 2):
     readFiles = sys.argv[2]
 ### GEN MC ###
-    path = 'file:/bestman/storage/cms/store/user/dinardo/PYTHIA6_Bd2KstarMuMu_EtaPtFilter_TuneZ2star_8TeV_GEN_NoFilter/'
-#    path = 'file:/bestman/storage/cms/store/user/dinardo/PYTHIA6_Bd2JpsiKstar_EtaPtFilter_TuneZ2star_8TeV_GEN_NoFilter/'
-#    path = 'file:/bestman/storage/cms/store/user/dinardo/PYTHIA6_Bd2Psi2SKstar_EtaPtFilter_TuneZ2star_8TeV_GEN_NoFilter/'
+    path = 'file:/mnt/hadoop/store/user/dinardo/PYTHIA6_Bd2KstarMuMu_EtaPtFilter_TuneZ2star_8TeV_GEN_NoFilter/'
+#    path = 'file:/mnt/hadoop/store/user/dinardo/PYTHIA6_Bd2JpsiKstar_EtaPtFilter_TuneZ2star_8TeV_GEN_NoFilter/'
+#    path = 'file:/mnt/hadoop/store/user/dinardo/PYTHIA6_Bd2Psi2SKstar_EtaPtFilter_TuneZ2star_8TeV_GEN_NoFilter/'
     file = readFiles.replace(path, '')
 else:
 ### GEN MC ###
