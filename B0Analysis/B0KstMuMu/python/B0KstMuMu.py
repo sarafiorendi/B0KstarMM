@@ -40,24 +40,14 @@ import sys
 if (len(sys.argv) > 2):
     readFiles = sys.argv[2]
 ### GEN MC ###
-    path = 'file:/bestman/storage/cms/store/user/dinardo/PYTHIA6_B0dToKstMuMuKPi_7TeV_cff_GEN_Filter/'
-#    path = 'file:/bestman/storage/cms/store/user/dinardo/PYTHIA6_B0dToKstMuMuKPi_7TeV_cff_GEN_NoFilter_01/'
-
-#    path = 'file:/bestman/storage/cms/store/user/dinardo/PYTHIA6_B0dToJPsiKstMuMuKPi_7TeV_cff_GEN_Filter/'
-#    path = 'file:/bestman/storage/cms/store/user/dinardo/PYTHIA6_B0dToJPsiKstMuMuKPi_7TeV_cff_GEN_NoFilter/'
-
-#    path = 'file:/bestman/storage/cms/store/user/dinardo/PYTHIA6_B0dToPsi2SKstMuMuKPi_7TeV_cff_GEN_Filter/'
-#    path = 'file:/bestman/storage/cms/store/user/dinardo/PYTHIA6_B0dToPsi2SKstMuMuKPi_7TeV_cff_GEN_NoFilter/'
+    path = 'file:/bestman/storage/cms/store/user/dinardo/PYTHIA6_Bd2KstarMuMu_EtaPtFilter_TuneZ2star_8TeV_GEN_NoFilter/'
+#    path = 'file:/bestman/storage/cms/store/user/dinardo/PYTHIA6_Bd2JpsiKstar_EtaPtFilter_TuneZ2star_8TeV_GEN_NoFilter/'
+#    path = 'file:/bestman/storage/cms/store/user/dinardo/PYTHIA6_Bd2Psi2SKstar_EtaPtFilter_TuneZ2star_8TeV_GEN_NoFilter/'
     file = readFiles.replace(path, '')
 else:
 ### GEN MC ###
-    from B0ToKstMuMu_GEN_Filter_MC_cff import readFiles
-#    from B0ToKstMuMu_GEN_NoFilter_01_MC_cff import readFiles
-
-#    from B0ToJPsiKst_GEN_Filter_MC_cff import readFiles
+    from B0ToKstMuMu_GEN_NoFilter_MC_cff import readFiles
 #    from B0ToJPsiKst_GEN_NoFilter_MC_cff import readFiles
-
-#    from B0ToPsi2SKst_GEN_Filter_MC_cff import readFiles
 #    from B0ToPsi2SKst_GEN_NoFilter_MC_cff import readFiles
 process.source = cms.Source('PoolSource',
                             duplicateCheckMode = cms.untracked.string('noDuplicateCheck'),
@@ -87,13 +77,8 @@ process.maxLuminosityBlocks = cms.untracked.PSet(input = cms.untracked.int32(-1)
 process.TFileService = cms.Service('TFileService', fileName = cms.string(
     'B0ToKstMuMu.root'
 ### GEN MC ###
-#    '/nfs/data36/cms/dinardo/B0ToKstMuMu_GEN_Filter_MC_NTuples/' + file
-#    '/nfs/data36/cms/dinardo/B0ToKstMuMu_GEN_NoFilter_01_MC_NTuples/' + file
-
-#    '/nfs/data36/cms/dinardo/B0ToJPsiKst_GEN_Filter_MC_NTuples/' + file
+#    '/nfs/data36/cms/dinardo/B0ToKstMuMu_GEN_NoFilter_MC_NTuples/' + file
 #    '/nfs/data36/cms/dinardo/B0ToJPsiKst_GEN_NoFilter_MC_NTuples/' + file
-
-#    '/nfs/data36/cms/dinardo/B0ToPsi2SKst_GEN_Filter_MC_NTuples/' + file
 #    '/nfs/data36/cms/dinardo/B0ToPsi2SKst_GEN_NoFilter_MC_NTuples/' + file
     ), closeFileFast = cms.untracked.bool(True))
 

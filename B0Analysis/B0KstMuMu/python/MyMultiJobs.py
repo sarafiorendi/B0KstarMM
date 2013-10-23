@@ -25,17 +25,12 @@ while loopy:
 ## jobs to the queue
 
 nJobsToRun = 200
-nSecToWait =  60
-sample = 'BKSMM_'
+nSecToWait = 60
+sample = 'BKMM_'
 
 ### GEN MC ###
-#from B0ToKstMuMu_GEN_Filter_MC_cff import readFiles
-#from B0ToKstMuMu_GEN_NoFilter_01_MC_cff import readFiles
-
-#from B0ToJPsiKst_GEN_Filter_MC_cff import readFiles
+from B0ToKstMuMu_GEN_NoFilter_MC_cff import readFiles
 #from B0ToJPsiKst_GEN_NoFilter_MC_cff import readFiles
-
-#from B0ToPsi2SKst_GEN_Filter_MC_cff import readFiles
 #from B0ToPsi2SKst_GEN_NoFilter_MC_cff import readFiles
 files = readFiles
 listStart = 0
