@@ -356,11 +356,13 @@ void B0KstMuMuTreeContent::ClearNTuple ()
   // ########################################################
   // # Run Number, event number, #reco vtx and event weight #
   // ########################################################
-  runN       = 0;
-  eventN     = 0;
-  recoVtxN   = 0;
-  evWeight   = 1;
-  evWeightE2 = 0;
+  runN            = 0;
+  eventN          = 0;
+  recoVtxN        = 0;
+  evWeight        = 1;
+  evWeightE2      = 0;
+  numEventsTried  = 0;
+  numEventsPassed = 0;
 
   // ### Trigger ###
   TrigTable->clear();
@@ -622,11 +624,13 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   // ########################################################
   // # Run Number, event number, #reco vtx and event weight #
   // ########################################################
-  theTree->Branch("runN",       &runN,       "runN/i");
-  theTree->Branch("eventN",     &eventN,     "eventN/i");
-  theTree->Branch("recoVtxN",   &recoVtxN,   "recoVtxN/i");
-  theTree->Branch("evWeight",   &evWeight,   "evWeight/D");
-  theTree->Branch("evWeightE2", &evWeightE2, "evWeightE2/D");
+  theTree->Branch("runN",            &runN,            "runN/i");
+  theTree->Branch("eventN",          &eventN,          "eventN/i");
+  theTree->Branch("recoVtxN",        &recoVtxN,        "recoVtxN/i");
+  theTree->Branch("evWeight",        &evWeight,        "evWeight/D");
+  theTree->Branch("evWeightE2",      &evWeightE2,      "evWeightE2/D");
+  theTree->Branch("numEventsTried",  &numEventsTried,  "numEventsTried/i");
+  theTree->Branch("numEventsPassed", &numEventsPassed, "numEventsPassed/i");
 
   // ### Trigger ###
   theTree->Branch("TrigTable",     &TrigTable);
@@ -883,11 +887,13 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   // ########################################################
   // # Run Number, event number, #reco vtx and event weight #
   // ########################################################
-  theTree->SetBranchAddress("runN",       &runN);
-  theTree->SetBranchAddress("eventN",     &eventN);
-  theTree->SetBranchAddress("recoVtxN",   &recoVtxN);
-  theTree->SetBranchAddress("evWeight",   &evWeight);
-  theTree->SetBranchAddress("evWeightE2", &evWeightE2);
+  theTree->SetBranchAddress("runN",            &runN);
+  theTree->SetBranchAddress("eventN",          &eventN);
+  theTree->SetBranchAddress("recoVtxN",        &recoVtxN);
+  theTree->SetBranchAddress("evWeight",        &evWeight);
+  theTree->SetBranchAddress("evWeightE2",      &evWeightE2);
+  theTree->SetBranchAddress("numEventsTried",  &numEventsTried);
+  theTree->SetBranchAddress("numEventsPassed", &numEventsPassed);
 
   // ### Trigger ###
   theTree->SetBranchAddress("TrigTable",     &TrigTable);
@@ -1156,11 +1162,13 @@ void B0KstMuMuTreeContent::CopyScalars (B0KstMuMuTreeContent* NTupleIn)
   // ########################################################
   // # Run Number, event number, #reco vtx and event weight #
   // ########################################################
-  runN       = NTupleIn->runN;
-  eventN     = NTupleIn->eventN;
-  recoVtxN   = NTupleIn->recoVtxN;
-  evWeight   = NTupleIn->evWeight;
-  evWeightE2 = NTupleIn->evWeightE2;
+  runN            = NTupleIn->runN;
+  eventN          = NTupleIn->eventN;
+  recoVtxN        = NTupleIn->recoVtxN;
+  evWeight        = NTupleIn->evWeight;
+  evWeightE2      = NTupleIn->evWeightE2;
+  numEventsTried  = NTupleIn->numEventsTried;
+  numEventsPassed = NTupleIn->numEventsPassed;
 
   // ### Trigger ###
   for (unsigned int i = 0; i < NTupleIn->TrigTable->size(); i++)

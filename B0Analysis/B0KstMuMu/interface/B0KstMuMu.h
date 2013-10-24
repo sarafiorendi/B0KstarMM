@@ -53,6 +53,7 @@ private:
   virtual void beginJob ();
   virtual void analyze (const edm::Event&, const edm::EventSetup&);
   virtual void endJob ();
+  virtual void endLuminosityBlock (const edm::LuminosityBlock& lumiBlock, const edm::EventSetup& iSetup);
 
   // ####################
   // # HLT-trigger cuts #

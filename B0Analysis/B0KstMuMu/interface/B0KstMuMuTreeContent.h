@@ -34,6 +34,9 @@ class B0KstMuMuTreeContent
   unsigned int              recoVtxN;
   double                    evWeight;
   double                    evWeightE2;
+  unsigned int              numEventsTried;
+  unsigned int              numEventsPassed;
+
 
   // ###########
   // # Trigger #

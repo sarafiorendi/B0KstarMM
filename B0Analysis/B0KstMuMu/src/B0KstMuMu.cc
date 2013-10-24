@@ -53,6 +53,7 @@
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/GenFilterInfo.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "MagneticField/Engine/interface/MagneticField.h"
 
@@ -2319,6 +2320,26 @@ void B0KstMuMu::endJob ()
 {
   theTree->GetDirectory()->cd();
   theTree->Write();
+}
+
+
+void B0KstMuMu::endLuminosityBlock(const edm::LuminosityBlock& lumiBlock, const edm::EventSetup& iSetup)
+{
+  if ((doGenReco_ == 2) || (doGenReco_ == 3))
+    {
+      edm::Handle<GenFilterInfo> genFilter;
+      lumiBlock.getByLabel("genFilterEfficiencyProducer", genFilter);
+
+      NTuple->numEventsTried  += genFilter->numEventsTried();
+      NTuple->numEventsPassed += genFilter->numEventsPassed();
+
+      if (printMsg == true)
+	{
+	  std::cout << "\n@@@ End of a luminosity block @@@" << std::endl;
+	  std::cout << __LINE__ << " : number of events tried = " << NTuple->numEventsTried << std::endl;
+	  std::cout << __LINE__ << " : number of events passed = " << NTuple->numEventsPassed << std::endl;
+	}
+    }
 }
 
 
