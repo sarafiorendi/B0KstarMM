@@ -2330,8 +2330,8 @@ void B0KstMuMu::endLuminosityBlock(const edm::LuminosityBlock& lumiBlock, const 
       edm::Handle<GenFilterInfo> genFilter;
       lumiBlock.getByLabel("genFilterEfficiencyProducer", genFilter);
 
-      NTuple->numEventsTried  += genFilter->numEventsTried();
-      NTuple->numEventsPassed += genFilter->numEventsPassed();
+      NTuple->numEventsTried  = genFilter->numEventsTried();
+      NTuple->numEventsPassed = genFilter->numEventsPassed();
 
       if (printMsg == true)
 	{
