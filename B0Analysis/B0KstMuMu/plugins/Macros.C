@@ -80,7 +80,7 @@ void PlotEffPlots (string fileName, unsigned int plotN, unsigned int binN);
 void PlotB0vsMuMu (string fileName, bool rejectPsi);
 void PlotBkgMC (string fileName, bool iFit, double scaleMCdata);
 void ReduceTree (string fileNameIn, string fileNameOut);
-void QueryCandidates (string fileName);
+  void QueryCandidates (string fileName);
 void SampleMCforPileup (string fileNameIn, string fileNameOut);
 void DivideNTuple (string fileNameIn, string fileNameOut, unsigned int n);
 void SampleNTuple (string fileNameIn, string fileNameOut, double fraction);
@@ -1148,60 +1148,55 @@ void QueryCandidates (string fileName)
   gROOT->SetStyle("Plain");
   gROOT->ForceStyle();
   gStyle->SetPalette(1);
-  gStyle->SetOptFit(1112);
-  gStyle->SetOptStat(0);
+  gStyle->SetOptFit(0);
+  gStyle->SetOptStat(1110);
   gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
   gStyle->SetTitleOffset(1.25,"y"); 
   TGaxis::SetMaxDigits(3);
 
 
-  string TrigQuery = "HLT DoubleMu4p5 LowMass Displaced";
- 
   TFile* NtplFileIn = TFile::Open(fileName.c_str(),"READ");
   TTree* theTreeIn = (TTree*)NtplFileIn->Get("B0KstMuMu/B0KstMuMuNTuple");
 
-  vector<string>* vec1 = new vector<string>;
-  vector<double>* vec2 = new vector<double>;
+  double numEventsTried  = 0.0;
+  double numEventsPassed = 0.0;
+  double minBin = 0.0;
+  double maxBin = 1000.0;
+  int nBins = 1000;
 
-  int nEntries = theTreeIn->GetEntries();
-  cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
-  unsigned int counter = 0;
-  bool Found = false;
+  TH1D* hTr = new TH1D("hTr","hTr",nBins,minBin,maxBin);
+  hTr->SetXTitle("Events [#]");
+  hTr->SetYTitle("Entries [#]");
+
+  TH1D* hPa = new TH1D("hPa","hPa",nBins,minBin,maxBin);
+  hPa->SetXTitle("Events [#]");
+  hPa->SetYTitle("Entries [#]");
+
+  theTreeIn->Draw("numEventsTried>>hTr","","goff");
+  theTreeIn->Draw("numEventsPassed>>hPa","","goff");
+
+  for (int i = 0; i < nBins; i++)
+    {
+      numEventsTried  += hTr->GetBinContent(i+1)*hTr->GetBinLowEdge(i+1);
+      numEventsPassed += hPa->GetBinContent(i+1)*hPa->GetBinLowEdge(i+1);
+    }
+  cout << "Total number of events tried : " << numEventsTried << endl;
+  cout << "Total number of events tried : " << numEventsPassed << endl;
+  cout << "Efficiency : " << ((double)(numEventsPassed)) / ((double)(numEventsTried)) << endl;
 
   TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
-  TH1D* histo1 = new TH1D("histo1","histo1",200,0,5.0);
+  c0->Divide(1,2);
 
-  for (int entry = 0; entry < nEntries; entry++)
-    {
-      theTreeIn->SetBranchAddress("TrigTable", &vec1);
-      theTreeIn->SetBranchAddress("mumuMass", &vec2);
-      theTreeIn->GetEntry(entry);
+  c0->cd(1);
+  gPad->SetLogy();
+  hTr->Draw();
 
-      Found = false;
-      for (unsigned int it = 0; it < (*vec1).size(); it++)
-	{
-	  if ((*vec1)[it].find(TrigQuery.c_str()) != string::npos)
-	    {
-	      Found = true;
-	      counter++;
-	      break;
-	    }
-	}
+  c0->cd(2);
+  gPad->SetLogy();
+  hPa->Draw();
 
-      if (Found == true)
-	for (unsigned int it = 0; it < (*vec2).size(); it++)
-	  histo1->Fill((*vec2)[it]);
-
-      vec1->clear();
-      vec2->clear();
-    }
-
-  c0->cd();
-  histo1->Draw();
+  c0->Modified();
   c0->Update();
-
-  cout << "The trigger " << TrigQuery.c_str() << " is present " << counter << " times" << endl;
 }
 
 
@@ -1718,10 +1713,6 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
   myString.clear(); myString.str("");
   myString << DIREXPTCOMP << "CMS.data";
   dVar.push_back(readData(myString.str().c_str(),dataType,1,20,false,0,noHbar,0.0*offset));
-
-  // myString.clear(); myString.str("");
-  // myString << DIREXPTCOMP << "LHCb_0_37fb.data";
-  // dVar.push_back(readData(myString.str().c_str(),dataType,2,21,false,0,noHbar,0.0*offset));
 
   myString.clear(); myString.str("");
   myString << DIREXPTCOMP << "LHCb_1fb.data";
