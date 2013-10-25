@@ -53,6 +53,15 @@ class B0KstMuMuTreeContent
   // # Pileup information in MC #
   // ############################
   std::vector<double>       *bunchXingMC, *numInteractionsMC, *trueNumInteractionsMC;
+  // Comment:
+  // - PileupSummaryInfo::getTrueNumInteractions() gives the distribution of the mean number of interactions per crossing.
+  // Since this is the mean value of the poisson distribution from which the number of interactions in- and out-of-time are
+  // generated, no additional information should be required for reweighting if these values are matched in data and Monte Carlo.
+  // - PileupSummaryInfo::getPU_NumInteractions() gives the expected mean number of interactions per crossing for each LumiSection.
+  // Therefore the pileup histogram will contain the distribution of the number of interactions one would actually observe given
+  // a poisson of that mean. So, this distribution is what one would see if one counted the number of events seen in a given beam
+  // crossing (by looking at the number of vertices in data, for example. This would be appropriate for pileup reweighting based
+  // on in-time-only distributions.
 
   // ################################
   // # Primary Vertex and Beam Spot #
