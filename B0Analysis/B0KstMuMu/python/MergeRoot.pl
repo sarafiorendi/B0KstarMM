@@ -2,15 +2,9 @@
 
 
 ### GEN MC ###
-#$dirName = "/nfs/data36/cms/dinardo/B0ToKstMuMu_GEN_Filter_MC_NTuples/" ;
-#$dirName = "/nfs/data36/cms/dinardo/B0ToKstMuMu_GEN_NoFilter_01_MC_NTuples/" ;
-
-#$dirName = "/nfs/data36/cms/dinardo/B0ToJPsiKst_GEN_Filter_MC_NTuples/" ;
+#$dirName = "/nfs/data36/cms/dinardo/B0ToKstMuMu_GEN_NoFilter_MC_NTuples/" ;
 #$dirName = "/nfs/data36/cms/dinardo/B0ToJPsiKst_GEN_NoFilter_MC_NTuples/" ;
-
-#$dirName = "/nfs/data36/cms/dinardo/B0ToPsi2SKst_GEN_Filter_MC_NTuples/" ;
 #$dirName = "/nfs/data36/cms/dinardo/B0ToPsi2SKst_GEN_NoFilter_MC_NTuples/" ;
-
 ### Data ###
 $dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_Data2012A_01/" ;
 
@@ -30,15 +24,9 @@ for ($count = 0; $count < $nOut; $count++)
 
 
 ### GEN MC ###
-#    $fileOut = "B0ToKstMuMu_GEN_Filter_MC_NTuples" ;
-#    $fileOut = "B0ToKstMuMu_GEN_NoFilter_01_MC_NTuples" ;
-
-#    $fileOut = "B0ToJPsiKst_GEN_Filter_MC_NTuples" ;
+#    $fileOut = "B0ToKstMuMu_GEN_NoFilter_MC_NTuples" ;
 #    $fileOut = "B0ToJPsiKst_GEN_NoFilter_MC_NTuples" ;
-
-#    $fileOut = "B0ToPsi2SKst_GEN_Filter_MC_NTuples" ;
 #    $fileOut = "B0ToPsi2SKst_GEN_NoFilter_MC_NTuples" ;
-
 ### Data ###
     $fileOut = "B0ToKstMuMu_Data2012A_NTuples_Merged" ;
 
