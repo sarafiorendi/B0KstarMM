@@ -100,49 +100,49 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   string fileName = "";
   if (scanType == 0)
     {
-      LowEdge = 0.0;
+      LowEdge  = 0.0;
       HighEdge = 0.6;
-      nBins = 60;
+      nBins    = 60;
 
       fileName = "CL";
     }
   else if (scanType == 1)
     {
-      LowEdge = 0.0;
-      HighEdge = 40.0;
-      nBins = 80;
+      LowEdge  = 0.0;
+      HighEdge = 20.0;
+      nBins    = 80;
 
       fileName = "LS";
     }
   else if (scanType == 2)
     {
-      LowEdge = 0.997;
+      LowEdge  = 0.997;
       HighEdge = 1.0;
-      nBins = 60;
+      nBins    = 60;
 
       fileName = "cos";
     }
   else if (scanType == 3)
     {
-      LowEdge = 0.4;
+      LowEdge  = 0.4;
       HighEdge = 2.5;
-      nBins = 42;
+      nBins    = 42;
 
       fileName = "hadpT";
     }
   else if (scanType == 4)
     {
-      LowEdge = 0.0;
+      LowEdge  = 0.0;
       HighEdge = 0.15;
-      nBins = 30;
+      nBins    = 30;
 
       fileName = "kstM";
     }
   else if (scanType == 5)
     {
-      LowEdge = 1.2;
-      HighEdge = 11.2;
-      nBins = 100;
+      LowEdge  = 0.8;
+      HighEdge = 4.8;
+      nBins    = 80;
 
       fileName = "hadDCA";
     }
