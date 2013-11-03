@@ -6,13 +6,13 @@
 #$dirName = "/nfs/data36/cms/dinardo/B0ToJPsiKst_GEN_NoFilter_MC_NTuples/" ;
 #$dirName = "/nfs/data36/cms/dinardo/B0ToPsi2SKst_GEN_NoFilter_MC_NTuples/" ;
 
-#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_B0ToPsiMuMu_01/" ;
-#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_BpToPsiMuMu_01/" ;
-#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_BsToPsiMuMu_01/" ;
-#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_LambdaBToPsiMuMu_01/" ;
+#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_B0ToPsiMuMu/" ;
+#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_BpToPsiMuMu/" ;
+#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_BsToPsiMuMu/" ;
+#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_LambdaBToPsiMuMu/" ;
 
 ### Data ###
-$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_Data2012A_01/" ;
+$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_Data2012A/" ;
 
 
 $listcmd = "ls " . $dirName ;
