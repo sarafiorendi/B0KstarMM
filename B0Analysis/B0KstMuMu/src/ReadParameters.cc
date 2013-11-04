@@ -84,7 +84,7 @@ void ReadParameters::ReadFromFile (unsigned int blockNumber, std::vector<std::st
     }
 }
 
-void ReadParameters::SaveToFile (unsigned int blockNumber, std::vector<std::string>* ParVector)
+void ReadParameters::WriteToFile (unsigned int blockNumber, std::vector<std::string>* ParVector)
 {
   for (unsigned int i = 0; i < ParVector->size(); i++) fileHandler << ParVector->operator[](i) << std::endl;
 }

@@ -12,7 +12,7 @@ INCFLAGS     = -I $(MYINCDIR)
 GSLFLAGS     = -L $(HOME)/gsl/lib -lgsl
 BOOSTFLFLAGS = -L $(HOME)/boost/stage/lib
 ROOTFLAGS    = `root-config --cflags --glibs` -lMinuit
-ROOFITFLAGS  = `root-config --cflags --glibs` -lRooFit -lRooFitCore -lMinuit -lFoam
+ROOFITFLAGS  = `root-config --cflags --glibs` -lRooFit -lRooFitCore -lFoam -lMinuit
 
 
 SingleCandB0KstMuMu: $(MYSOURCEDIR) $(MYINCDIR) SingleCandB0KstMuMu.cc

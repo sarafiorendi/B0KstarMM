@@ -2300,7 +2300,7 @@ void Utils::SaveFitValues (std::string fileName, std::vector<std::string>* vecPa
   vecParStr->insert(vecParStr->end(),"");
 
   ReadParameters* ParameterFile = new ReadParameters(fileName.c_str(),"app");
-  ParameterFile->SaveToFile(0,vecParStr);
+  ParameterFile->WriteToFile(0,vecParStr);
   delete ParameterFile;
 }
 
