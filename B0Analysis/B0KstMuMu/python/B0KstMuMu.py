@@ -2,7 +2,7 @@
 ### Variables ###
 #################
 runDataMC = 1 # 1 = Data; 2 = MC (Reco + Gen); 3 = MC (Gen)
-useJSON   = False
+useJSON   = True
 printMsg  = False
 triggerProcessName = 'HLT' # 'GEN' or 'HLT' or 'RECO' or 'TEST' or ...
 
@@ -27,7 +27,7 @@ process.MessageLogger.suppressWarning = cms.untracked.vstring('B0KstMuMu')
 #from Configuration.AlCa.GlobalTag import GlobalTag
 #process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:com10_8E33v2', '')
 if (runDataMC != 1):
-    process.GlobalTag.globaltag = cms.string('START53_V7G::All') # Signal MC: START53_V19F; J/psi X MC: START53_V7G
+    process.GlobalTag.globaltag = cms.string('START53_V19F::All') # Run dep. MC: START53_V19F; J/psi X MC: START53_V7G
 else:
     process.GlobalTag.globaltag = cms.string('FT53_V21A_AN6::All')
 
