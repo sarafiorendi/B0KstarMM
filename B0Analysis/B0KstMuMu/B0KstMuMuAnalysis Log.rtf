@@ -918,7 +918,7 @@ hltDiMuonMerging ("SimpleTrackListMerger")\
 		- 2012D1			[All 4883 files,	3.904 fb-1]\
 		- 2012D1_miss		[All 6 files,		7.206 pb-1]\
 		- 2012D2			[All 4779 files,	3.716 fb-1]\
-		- 2012D2 _miss	[All 3 files,		xxx pb-1]\
+		- 2012D2 _miss	[All 3 files,		3.400 pb-1]\
 \
 \
 @@@@@@@@@@@\
@@ -1137,15 +1137,18 @@ HLT-trigger cuts:\
 \b To-Do 2012 data analysis
 \b0  @\
 @@@@@@@@@@@@@@\
-1. Test cut: | ( m(B)reco - m(B)PDG ) - ( m(mu+mu-)reco - m(J/psi)PDG ) | < m (e.g. 130 MeV)\
-2. Add dilution to AFB, AFB'  = (1 - 2m)AFB, and to all other asymmetry terms to account for CP-state mistag (m)\
-and remove cut if both K+pi- and K-pi+ are within 50 MeV from K* PDG mass\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 1. Compute 4D efficiency\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 2. Test cut: | ( m(B)reco - m(B)PDG ) - ( m(mu+mu-)reco - m(J/psi)PDG ) | < m (e.g. 130 MeV)\
+3. Add dilution to AFB, AFB'  = (1 - 2m)AFB, and to all other asymmetry terms to account for CP-state\
+mistag (m) and remove cut if both K+pi- and K-pi+ are within 50 MeV from K* PDG mass\
 \
-3. Define PDF classes + virtual PDF class: implement PDF + save/load parameters + toy + folding --> efficiency\
-4. Use XML for configuration file (?)\
+4. Define PDF classes + virtual PDF class: implement PDF + save/load parameters + toy + folding\
+5. Use XML for configuration file (?)\
 \
-5. Compute mass shape from 4D-fit to MC\
-6. Correct statistical errors by the sigmas of the Gaussian fits to the pulls\
-7. Search for Bs --> J/psi K* by restricting to the barrel region\
-8. LHCb discovered a new dimuon resonance from B+ --> mu+mu- K+ at ~4.2 GeV\
+6. Compute mass shape from 4D-fit to MC\
+7. Correct statistical errors by the sigmas of the Gaussian fits to the pulls\
+8. Search for Bs --> J/psi K* by restricting to the barrel region\
+9. LHCb discovered a new dimuon resonance from B+ --> mu+mu- K+ at ~4.2 GeV\
 }

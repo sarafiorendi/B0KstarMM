@@ -142,6 +142,7 @@ class Utils
   void InitEfficiency (effValue myEffiVal, effStruct myEff, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins);
   void SaveEfficiency (std::string fileName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, effStruct myEff);
   void ReadEfficiency (std::string fileName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, effStruct* myEff);
+  void GetEffq2Bin (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, insigned int cosThetaKIndx, insigned int cosThetaMuIndx, unsigned int phiIndx, effStruct myEff, double* Eff, double* EffErr)
   void DeleteEfficiency (effStruct myEff);
 
   int SearchBin (double val2Search, std::vector<double>* bins);
@@ -187,9 +188,11 @@ class Utils
   void SaveAnalyticalEff (std::string fileName, double q2Val, std::vector<double>* q2Bins, std::vector<double>* effFuncPar, std::vector<double>* effFuncErr = NULL);
   void SaveAnalyticalEffFullCovariance (std::string fileName, TMatrixTSym<double>* covMatrix, double q2Val, std::vector<double>* q2Bins);
 
+  std::string TellMeEffFuncThetaKThetaLPhi ();
   std::string TellMeEffFuncThetaKThetaL ();
   std::string TellMeEffFuncThetaK ();
   std::string TellMeEffFuncThetaL ();
+  std::string TellMeEffFuncPhi ();
 
   void ReadAnalyticalEff (std::string fileNameEffParams,
 			  std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins,
@@ -203,6 +206,7 @@ class Utils
 
   void InitEffFuncThetaL (TF1* fitFun, unsigned int q2BinIndx);
   void InitEffFuncThetaK (TF1* fitFun, unsigned int q2BinIndx);
+  void InitEffFuncPhi (TF1* fitFun, unsigned int q2BinIndx);
 
   void AddConstraint1D (TH1D** histo, std::string constrType, double errX, double Yval, double errY, unsigned int ID);
   void AddConstraintThetaL (TH1D** histo,

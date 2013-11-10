@@ -2282,7 +2282,7 @@ void B0KstMuMu::beginJob ()
   DCAMUMU        = Utility->GetPreCut("DCAMuMu");        if (printMsg == true) std::cout << __LINE__ << " : DCAMUMU        = " << DCAMUMU << std::endl;
   DCAMUBS        = Utility->GetPreCut("DCAMuBS");        if (printMsg == true) std::cout << __LINE__ << " : DCAMUBS        = " << DCAMUBS << std::endl;
   COSALPHAMUMUBS = Utility->GetPreCut("cosAlphaMuMuBS"); if (printMsg == true) std::cout << __LINE__ << " : COSALPHAMUMUBS = " << COSALPHAMUMUBS << std::endl;
-  MUMINPT        = Utility->GetPreCut("MupT");           if (printMsg == true) std::cout << __LINE__ << " : MUMINPT        = " << MUMINPT << std::endl;
+  MUMINPT        = Utility->GetPreCut("MinMupT");        if (printMsg == true) std::cout << __LINE__ << " : MUMINPT        = " << MUMINPT << std::endl;
   MUMAXETA       = Utility->GetPreCut("MuEta");          if (printMsg == true) std::cout << __LINE__ << " : MUMAXETA       = " << MUMAXETA << std::endl;
   MINMUMUPT      = Utility->GetPreCut("MuMupT");         if (printMsg == true) std::cout << __LINE__ << " : MINMUMUPT      = " << MINMUMUPT << std::endl;
   MINMUMUINVMASS = Utility->GetPreCut("MinMuMuMass");    if (printMsg == true) std::cout << __LINE__ << " : MINMUMUINVMASS = " << MINMUMUINVMASS << std::endl;

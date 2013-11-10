@@ -451,6 +451,37 @@ void Utils::ReadEfficiency (std::string fileName, std::vector<double>* q2Bins, s
   in.close();
 }
 
+void Utils::GetEffq2Bin (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, insigned int cosThetaKIndx, insigned int cosThetaMuIndx, unsigned int phiIndx, effStruct myEff, double* Eff, double* EffErr)
+{
+  // @@@TMP@@@
+  effValue myEffVal;
+  effValue myEffValOrg;
+  
+  ResetEffValue(&myEffVal,0.0);
+  ResetEffValue(&myEffValOrg,0.0);
+
+  myEffVal.Num1 = myEff.Num1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx];
+  myEffVal.Den1 = myEff.Den1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx];
+  myEffVal.Num2 = myEff.Num2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx];
+  myEffVal.Den2 = myEff.Den2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx];
+
+  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
+    {
+      myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 / (myEffVal.Num1*myEffVal.Num1);
+      myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 / (myEffVal.Num2*myEffVal.Num2);
+      myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 / (myEffVal.Den1*myEffVal.Den1);
+      myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 / (myEffVal.Den2*myEffVal.Den2);
+      
+      *Eff    = myEffVal.Num1*myEffVal.Num2 / (myEffVal.Den1*myEffVal.Den2);
+      *EffErr = *Eff * sqrt((1. / myEffValOrg.Num1 - 1. / myEffValOrg.Den1 + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) + (1. / myEffValOrg.Num2 - 1. / myEffValOrg.Den2 + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
+    }
+  else
+    {
+      *Eff    = 0.0;
+      *EffErr = 0.0;
+    }
+}
+
 void Utils::DeleteEfficiency (effStruct myEff)
 {
   delete myEff.Num1;
@@ -1656,6 +1687,11 @@ void Utils::SaveAnalyticalEffFullCovariance (std::string fileName, TMatrixTSym<d
   fileOutput.close();
 }
 
+std::string Utils::TellMeEffFuncThetaKThetaLPhi ()
+{
+  return "[20] + [21]*(([0]+[1]*x+[2]*x*x+[3]*x*x*x) + ([4]+[5]*x+[6]*x*x+[7]*x*x*x)*y*y + ([8]+[9]*x+[10]*x*x+[11]*x*x*x)*y*y*y + ([12]+[13]*x+[14]*x*x+[15]*x*x*x)*y*y*y*y + ([16]+[17]*x+[18]*x*x+[19]*x*x*x)*y*y*y*y*y*y)*z + [22]*z*z";
+}
+
 std::string Utils::TellMeEffFuncThetaKThetaL ()
 {
   return "([0]+[1]*x+[2]*x*x+[3]*x*x*x) + ([4]+[5]*x+[6]*x*x+[7]*x*x*x)*y*y + ([8]+[9]*x+[10]*x*x+[11]*x*x*x)*y*y*y + ([12]+[13]*x+[14]*x*x+[15]*x*x*x)*y*y*y*y + ([16]+[17]*x+[18]*x*x+[19]*x*x*x)*y*y*y*y*y*y";
@@ -1669,6 +1705,11 @@ std::string Utils::TellMeEffFuncThetaK ()
 std::string Utils::TellMeEffFuncThetaL ()
 {
   return "[0]  + [1]*x*x + [2]*x*x*x + [3]*x*x*x*x + [4]*x*x*x*x*x*x";
+}
+
+std::string Utils::TellMeEffFuncPhi ()
+{
+  return "[0]  + [1]*x + [2]*x*x";
 }
 
 void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
@@ -1987,6 +2028,17 @@ void Utils::InitEffFuncThetaK (TF1* fitFun, unsigned int q2BinIndx)
   fitFun->SetParameter(1,0.0);
   fitFun->SetParameter(2,0.0);
   fitFun->SetParameter(3,0.0);
+}
+
+void Utils::InitEffFuncPhi (TF1* fitFun, unsigned int q2BinIndx)
+{
+  fitFun->ReleaseParameter(0);
+  fitFun->ReleaseParameter(1);
+  fitFun->ReleaseParameter(2);
+
+  fitFun->SetParameter(0,0.0);
+  fitFun->SetParameter(1,0.0);
+  fitFun->SetParameter(2,0.0);
 }
 
 void Utils::AddConstraint1D (TH1D** histo, std::string constrType, double errX, double Yval, double errY, unsigned int ID)
@@ -2425,7 +2477,7 @@ bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigChe
   // # This method is used together with the method: "ReadSelectionCuts" #
   // #####################################################################
 
-  double CLMuMuVtx = GetSeleCut("CLMuMuVtx");
+  double MuMuVtxCL = GetSeleCut("MuMuVtxCL");
   double MinMupT   = GetSeleCut("MinMupT");
   double BestVal   = 0.0;
   double BestValTmp;
@@ -2439,9 +2491,9 @@ bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigChe
       // # Candidate selection through kinematic cuts #
       // ##############################################
       if (((DoTrigCheck == 0) ||
-           ((DoTrigCheck == 1) && (IsInTriggerTable(NTuple, &CLMuMuVtx, &MinMupT, i) >= 1)) ||
-	   ((DoTrigCheck == 2) && (IsInTriggerTable(NTuple, &CLMuMuVtx, &MinMupT, i, evFraction) >= 1)) ||
-	   ((DoTrigCheck == 3) && (IsInTriggerTable(NTuple, &CLMuMuVtx, &MinMupT, -1, evFraction) >= 1))) &&
+           ((DoTrigCheck == 1) && (IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, i) >= 1)) ||
+	   ((DoTrigCheck == 2) && (IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, i, evFraction) >= 1)) ||
+	   ((DoTrigCheck == 3) && (IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, -1, evFraction) >= 1))) &&
 	  
 	  // #####################
 	  // # Choose good muons #
@@ -2484,7 +2536,7 @@ bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigChe
 	  // #########################
 	  // # Dimuon selection cuts #
 	  // #########################
-	  (NTuple->mumuVtxCL->at(i) > CLMuMuVtx) &&
+	  (NTuple->mumuVtxCL->at(i) > MuMuVtxCL) &&
 
 	  // #########################
 	  // # Hadron selection cuts #
@@ -2516,9 +2568,9 @@ bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigChe
 	      ((fabs(NTuple->kstMass->at(i) - kstMass) > 1.0*kstSigma) || (fabs(NTuple->kstBarMass->at(i) - kstMass) > 1.0*kstSigma)) &&
 	      (BestValTmp > BestVal))
 	    {
-	      if      (DoTrigCheck == 1) *TrigCat = IsInTriggerTable(NTuple, &CLMuMuVtx, &MinMupT, i);
-              else if (DoTrigCheck == 2) *TrigCat = IsInTriggerTable(NTuple, &CLMuMuVtx, &MinMupT, i, evFraction);
-              else if (DoTrigCheck == 3) *TrigCat = IsInTriggerTable(NTuple, &CLMuMuVtx, &MinMupT, -1, evFraction);
+	      if      (DoTrigCheck == 1) *TrigCat = IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, i);
+              else if (DoTrigCheck == 2) *TrigCat = IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, i, evFraction);
+              else if (DoTrigCheck == 3) *TrigCat = IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, -1, evFraction);
 
 	      BestVal       = BestValTmp;
 	      *BestCandIndx = i;
@@ -2619,7 +2671,7 @@ bool Utils::FlavorTagger (B0KstMuMuTreeContent* NTuple, unsigned int i, bool* B0
 
 void Utils::ReadSelectionCuts (std::string fileName)
 // #############################
-// # CLMuMuVtx  = SeleCuts[0]  #
+// # MuMuVtxCL  = SeleCuts[0]  #
 // # MinMupT    = SeleCuts[1]  #
 // # B0LsBS     = SeleCuts[2]  #
 // # B0VtxCL    = SeleCuts[3]  #
@@ -2660,7 +2712,7 @@ void Utils::ReadSelectionCuts (std::string fileName)
 
 bool Utils::SetSeleCut (std::string cutName, double val)
 {
-  if      (cutName == "CLMuMuVtx")  SeleCuts[0]  = val;
+  if      (cutName == "MuMuVtxCL")  SeleCuts[0]  = val;
   else if (cutName == "MinMupT")    SeleCuts[1]  = val;
   else if (cutName == "B0LsBS")     SeleCuts[2]  = val;
   else if (cutName == "B0VtxCL")    SeleCuts[3]  = val;
@@ -2683,7 +2735,7 @@ bool Utils::SetSeleCut (std::string cutName, double val)
 
 double Utils::GetSeleCut (std::string cutName)
 {
-  if      (cutName == "CLMuMuVtx")  return SeleCuts[0];
+  if      (cutName == "MuMuVtxCL")  return SeleCuts[0];
   else if (cutName == "MinMupT")    return SeleCuts[1];
   else if (cutName == "B0LsBS")     return SeleCuts[2];
   else if (cutName == "B0VtxCL")    return SeleCuts[3];
@@ -2713,7 +2765,7 @@ void Utils::ReadPreselectionCut (std::string fileName)
 // # DCAMuMu        = PreCuts[2]  #
 // # DCAMuBS        = PreCuts[3]  #
 // # cosAlphaMuMuBS = PreCuts[4]  #
-// # MupT           = PreCuts[5]  #
+// # MinMupT        = PreCuts[5]  #
 // # MuEta          = PreCuts[6]  #
 // # MuMupT         = PreCuts[7]  #
 // # MinMuMuMass    = PreCuts[8]  #
@@ -2754,7 +2806,7 @@ bool Utils::SetPreCut (std::string cutName, double val)
   else if (cutName == "DCAMuMu")        PreCuts[2]  = val;
   else if (cutName == "DCAMuBS")        PreCuts[3]  = val;
   else if (cutName == "cosAlphaMuMuBS") PreCuts[4]  = val;
-  else if (cutName == "MupT")           PreCuts[5]  = val;
+  else if (cutName == "MinMupT")        PreCuts[5]  = val;
   else if (cutName == "MuEta")          PreCuts[6]  = val;
   else if (cutName == "MuMupT")         PreCuts[7]  = val;
   else if (cutName == "MinMuMuMass")    PreCuts[8]  = val;
@@ -2777,7 +2829,7 @@ double Utils::GetPreCut (std::string cutName)
   else if (cutName == "DCAMuMu")        return PreCuts[2];
   else if (cutName == "DCAMuBS")        return PreCuts[3];
   else if (cutName == "cosAlphaMuMuBS") return PreCuts[4];
-  else if (cutName == "MupT")           return PreCuts[5];
+  else if (cutName == "MinMupT")        return PreCuts[5];
   else if (cutName == "MuEta")          return PreCuts[6];
   else if (cutName == "MuMupT")         return PreCuts[7];
   else if (cutName == "MinMuMuMass")    return PreCuts[8];

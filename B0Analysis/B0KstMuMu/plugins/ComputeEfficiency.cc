@@ -14,16 +14,16 @@
 #include <TFile.h>
 #include <TH1D.h>
 #include <TH2D.h>
+#include <TH3D.h>
 #include <TF1.h>
+#include <TF2.h>
+#include <TF3.h>
 #include <TF12.h>
 #include <TMath.h>
 #include <TRandom3.h>
 #include <TLegend.h>
 #include <TText.h>
 #include <TFitResult.h>
-#include <TVectorD.h>
-#include <TDecompBK.h>
-#include <TMatrixDSymEigen.h>
 #endif
 
 #include <math.h>
@@ -41,25 +41,39 @@ using namespace std;
 // # How to create the analytical efficiency #
 // ###########################################
 // (a) Make binned efficiency with the command "Make"
+
 // (b) Fit the theta_l variable with the command "FitEff1D" for every q2 bin
 //     - Set command option to "thetaL"
+
 // (c) Fit the theta_K variable with the command "FitEff1D"
 //     - Set command option to "thetaK"
 //     - Set "INPUTTHETAL" to the output.txt file of point (b)
-// (d) Fit the theta_l-theta_K variables with the command "FitEff2D"
+
+// (d) Fit the phi variable with the command "FitEff1D" for every q2 bin
+//     - Set command option to "phi"
+
+// (e) Fit the theta_l-theta_K variables with the command "FitEff2D"
 //     - Set "INPUT2DEffRef" to the output.txt file of point (c)
-// (e) Of you want to look at the final result run the command "TestEff"
-//     - Set "INPUT2DEffRef" to the output.txt file of point (d)
+
+// (f) Fit the theta_l-theta_K-phi variables with the command "FitEff3D"
+//     - Set "INPUT2DEffRef" to the output.txt file of point (c)
+//     - Set "INPUTPHI"      to the output.txt file of point (d)
+
+// (g) Of you want to look at the final result run the command "TestEff"
+//     - Set "INPUT2DEffRef" to the output.txt file of point (e)
+//     - Set "INPUT3DEffRef" to the output.txt file of point (f)
 
 
 // ####################
 // # Global constants #
 // ####################
 #define INPUTTHETAL    "../../Efficiency/ThetaL_B0ToKstMuMu.txt"
+#define INPUTPHI       "../../Efficiency/Phi_B0ToKstMuMu.txt"
 #define INPUT2DEffRef  "../../Efficiency/ThetaK_B0ToKstMuMu.txt" // "ThetaK_B0ToKstMuMu.txt" OR "ThetaKThetaL_B0ToKstMuMu.txt"
 #define INPUT2DEffComp "../../Efficiency/ThetaKThetaL_B0ToKstMuMu.txt"
+#define INPUT3DEffRef  "../../Efficiency/ThetaKThetaLPhi_B0ToKstMuMu.txt"
 #define SavePlot false
-#define CHECKEFFatREAD false // Check if 2D efficiency goes negative
+#define CHECKEFFatREAD false // Check if 2D or 3D efficiency goes negative
 #define NFILES 200
 #define INPUTGenEff "../../Efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
 #define SignalType 1 // If checking MC B0 --> K*0 mumu  : 1
@@ -74,11 +88,11 @@ using namespace std;
 #define CorrFactorNEvGenNoFilter_KstMuMu 9985833333.0 // Total number of actually generated events without filter
 #define CorrFactorNEvGenFilter_KstMuMu   9943333333.0 // Total number of actually generated events with filter
 // For J/psi normalization / control sample MC
-#define CorrFactorNEvGenNoFilter_JPsi 1499500000.0 // Total number of actually generated events without filter
-#define CorrFactorNEvGenFilter_JPsi  14995000000.0 // Total number of actually generated events with filter
+#define CorrFactorNEvGenNoFilter_JPsi    1499500000.0 // Total number of actually generated events without filter
+#define CorrFactorNEvGenFilter_JPsi     14995000000.0 // Total number of actually generated events with filter
 // For psi(2S) normalization / control sample MC
-#define CorrFactorNEvGenNoFilter_Psi2S 1499000000.0 // Total number of actually generated events without filter
-#define CorrFactorNEvGenFilter_Psi2S  14985000000.0 // Total number of actually generated events with filter
+#define CorrFactorNEvGenNoFilter_Psi2S   1499000000.0 // Total number of actually generated events without filter
+#define CorrFactorNEvGenFilter_Psi2S    14985000000.0 // Total number of actually generated events with filter
 
 // ###################
 // # Fit constraints #
@@ -125,6 +139,8 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
 void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut);
 void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
+			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
+void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
 void TestEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool saveHistos);
 
@@ -209,9 +225,19 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
     {
       theTree->GetEntry(entry);
 
-      if ((NTuple->B0pT > Utility->GetSeleCut("B0pT")) && (fabs(NTuple->B0Eta) < Utility->GetSeleCut("B0Eta")) &&
-	  ((NTuple->genSignal == SignalType || NTuple->genSignal == SignalType+1) &&
-	   ((type == 1 || type == 2 || type == 3) || ((type == 4) && (NTuple->truthMatchSignal->at(0) == true)))))
+      if ((NTuple->B0pT > Utility->GetSeleCut("B0pT")) &&
+	  (fabs(NTuple->B0Eta) < Utility->GetSeleCut("B0Eta")) &&
+	  ((NTuple->genSignal == SignalType || NTuple->genSignal == SignalType+1)) &&
+
+	  ((type == 1 || type == 3) ||
+
+	   ((type == 2) &&
+	    (sqrt(NTuple->mumPx->at(0)*NTuple->mumPx->at(0) + NTuple->mumPy->at(0)*NTuple->mumPy->at(0)) > Utility->GetPreCut("MinMupT") &&
+	     (sqrt(NTuple->mupPx->at(0)*NTuple->mupPx->at(0) + NTuple->mupPy->at(0)*NTuple->mupPy->at(0)) > Utility->GetPreCut("MinMupT")) &&
+	     (Utility->computeEta(NTuple->mumPx->at(0),NTuple->mumPy->at(0),NTuple->mumPz->at(0)) < Utility->GetPreCut("MuEta")) &&
+	     (Utility->computeEta(NTuple->mupPx->at(0),NTuple->mupPy->at(0),NTuple->mupPz->at(0)) < Utility->GetPreCut("MuEta")))) ||
+
+	   ((type == 4) && (NTuple->truthMatchSignal->at(0) == true))))
 	{
 	  mumuq2          = NTuple->mumuMass->at(0)*NTuple->mumuMass->at(0);
 
@@ -930,6 +956,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   double Eff, EffErr;
   double* cosThetaKBins_ = new double[cosThetaKBins->size()]; for (unsigned int i = 0; i < cosThetaKBins->size(); i++) cosThetaKBins_[i] = cosThetaKBins->operator[](i);
   double* cosThetaLBins_ = new double[cosThetaLBins->size()]; for (unsigned int i = 0; i < cosThetaLBins->size(); i++) cosThetaLBins_[i] = cosThetaLBins->operator[](i);
+  double* phiBins_       = new double[phiBins->size()];       for (unsigned int i = 0; i < phiBins->size(); i++)       phiBins_[i]       = phiBins->operator[](i);
   vector<TH1D*> histFit;
   TF1* fitFun;
   stringstream myString;
@@ -941,6 +968,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // #########################
   double YaxesThetaL = 4.0e-3;
   double YaxesThetaK = 1.0e-2;
+  double YaxesPhi    = 1.0e-2;
   // #########################
 
 
@@ -1064,7 +1092,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	      cout << "Cos(theta_K) bin " << j << " --> reading coef. " << k << " for var. theta_l: " << histFit.back()->GetBinContent(j+1) << "+/-" <<  histFit.back()->GetBinError(j+1) << endl;
 
 	      if (coeff == 0.0) nullParameter = nullParameter*true; // --> All parameter errors must be zero in order to ignore the parameter
-	      else nullParameter = false;
+	      else              nullParameter = false;
 	    }
 
 
@@ -1093,7 +1121,68 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
       fileOutput.close();
     }
-  
+  else if (who == "phi")
+    {
+      fileOutput.open(fileNameOut.replace(fileNameOut.find(".txt"),4,"Phi.txt").c_str(),ofstream::app);
+      if (fileOutput.good() == false)
+	{
+	  cout << "[ComputeEfficiency::Fit1DEfficiencies]\tError opening file : " << fileNameOut.c_str() << endl;
+	  exit (1);
+	}
+
+      
+      // ###########################
+      // # Define the fit function #
+      // ###########################
+      fitFun = new TF1("fitFun",Utility->TellMeEffFuncPhi().c_str(),-Utility->PI - abscissaErr,Utility->PI + abscissaErr);
+
+
+      Utility->InitEffFuncThetaL(fitFun,q2BinIndx);
+
+
+      myString.str("");
+      myString << "histFit";
+      histFit.push_back(new TH1D(myString.str().c_str(),myString.str().c_str(),phiBins->size()-1,phiBins_));
+
+      for (unsigned int l = 0; l < phiBins->size()-1; l++)
+	{
+	  Utility->IntegrateEffCosThetaKCosThetaL(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,l,myEff,&Eff,&EffErr);
+
+	  histFit.back()->SetBinContent(l+1,Eff);
+	  histFit.back()->SetBinError(l+1,EffErr);
+	}
+
+
+      // ######################################################################
+      // # Add constraint where it is necessary to bound the function at zero #
+      // ######################################################################
+      // Utility->AddConstraintThetaL(&histFit.back(),q2BinIndx,j,abscissaErr,ordinateVal,ordinateErr,q2BinIndx);
+
+
+      // ################
+      // # Save results #
+      // ################
+      histFit.back()->SetMarkerStyle(20);
+      histFit.back()->SetXTitle("#phi");
+      histFit.back()->SetYTitle("Efficiency");
+      histFit.back()->GetYaxis()->SetRangeUser(-YaxesPhi,YaxesPhi);
+
+      cEff->cd(1);
+      histFit.back()->Fit("fitFun","V");
+      histFit.back()->Draw("pe1");
+
+      fileOutput << (q2Bins->operator[](q2BinIndx)+q2Bins->operator[](q2BinIndx+1))/2.;
+      for (int i = 0; i < fitFun->GetNpar(); i++) fileOutput << "   " << fitFun->GetParameter(i) << "   " << fitFun->GetParError(i);
+      fileOutput << endl;
+
+      cout << "@@@ Value at " << phiBins->operator[](0) << " : " << fitFun->Eval(phiBins->operator[](0)) << " @@@" << endl;
+      cout << "@@@ Value at " << phiBins->operator[](phiBins->size()-1) << " : " << fitFun->Eval(phiBins->operator[](phiBins->size()-1)) << " @@@\n" << endl;
+
+      if (Utility->EffMinValue1D(phiBins->operator[](0),phiBins->operator[](phiBins->size()-1),fitFun) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit(1); }
+
+      fileOutput.close();
+    }
+
 
   cEff->Update();
   histFit.clear();
@@ -1138,6 +1227,126 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	Histo->SetBinError(j+1,k+1,EffErr);
       }
 
+
+  Utility->ReadAnalyticalEff(INPUT2DEffRef,q2Bins,cosThetaKBins,cosThetaLBins,&effFuncsRef,"effFuncsRef",0);
+  effFuncsRef[q2BinIndx]->SetRange(cosThetaKBins->operator[](0),
+				   cosThetaLBins->operator[](0) - abscissaErr,
+				   cosThetaKBins->operator[](cosThetaKBins->size()-1) + abscissaErr,
+				   cosThetaLBins->operator[](cosThetaLBins->size()-1) + abscissaErr);
+
+
+  for (int i = 0; i < effFuncsRef[q2BinIndx]->GetNpar(); i++)
+    if (effFuncsRef[q2BinIndx]->GetParError(i) == 0.0) effFuncsRef[q2BinIndx]->FixParameter(i,effFuncsRef[q2BinIndx]->GetParameter(i));
+
+
+  // ############################################################################################
+  // # Add constraint along Y (= cosThetaL) where it is necessary to bound the function at zero #
+  // ############################################################################################
+  Utility->AddConstraintThetaK(&Histo,cosThetaKBins,q2BinIndx,abscissaErr,ordinateVal,ordinateErr,q2BinIndx);
+
+
+  cTestGlobalFit->cd();
+  fitResults = Histo->Fit(effFuncsRef[q2BinIndx]->GetName(),"VMRS");
+  TMatrixTSym<double> covMatrix(fitResults->GetCovarianceMatrix());
+  effFuncsRef[q2BinIndx]->Draw("surf1");
+  Histo->Draw("lego2");
+  cTestGlobalFit->Update();
+
+  cout << "@@@ chi2/DoF = " << effFuncsRef[q2BinIndx]->GetChisquare() / effFuncsRef[q2BinIndx]->GetNDF() << " (" << effFuncsRef[q2BinIndx]->GetChisquare() << "/" << effFuncsRef[q2BinIndx]->GetNDF() << ")";
+  cout << "\tCL : " << TMath::Prob(effFuncsRef[q2BinIndx]->GetChisquare(),effFuncsRef[q2BinIndx]->GetNDF()) << " @@@" << endl;
+
+
+  // ############################################################################################
+  // # Add constraint along X (= cosThetaK) where it is necessary to bound the function at zero #
+  // ############################################################################################
+  if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncsRef[q2BinIndx]) < 0.0)
+    {
+      cout << "@@@ Efficiency is still negative ! @@@" << endl;
+
+      Utility->AddConstraint2D(&Histo,abscissaErr,ordinateVal,ordinateErr,q2BinIndx,"X");
+      cTestGlobalFit->cd();
+      fitResults = Histo->Fit(effFuncsRef[q2BinIndx]->GetName(),"VMRS");
+      TMatrixTSym<double> covMatrixConstr(fitResults->GetCovarianceMatrix());
+      effFuncsRef[q2BinIndx]->Draw("surf1");
+      Histo->Draw("lego2");
+      cTestGlobalFit->Update();
+
+      cout << "@@@ chi2/DoF = " << effFuncsRef[q2BinIndx]->GetChisquare() / effFuncsRef[q2BinIndx]->GetNDF() << " (" << effFuncsRef[q2BinIndx]->GetChisquare() << "/" << effFuncsRef[q2BinIndx]->GetNDF() << ")";
+      cout << "\tCL : " << TMath::Prob(effFuncsRef[q2BinIndx]->GetChisquare(),effFuncsRef[q2BinIndx]->GetNDF()) << " @@@" << endl;
+      Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncsRef[q2BinIndx]);
+
+      Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFuncsRef[q2BinIndx],(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
+      fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
+      Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrixConstr,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
+
+      covMatrixConstr.Clear();
+
+      if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncsRef[q2BinIndx]) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit(1); }
+    }
+  else
+    {
+      Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFuncsRef[q2BinIndx],(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
+      fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
+      Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrix,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
+
+      covMatrix.Clear();
+    }
+
+
+  // ########################################
+  // # Check integrity of covariance matrix #
+  // ########################################
+  vector<TMatrixTSym<double>*>* covMatrices = new vector<TMatrixTSym<double>*>;
+  Utility->ReadAnalyticalEffFullCovariance(fileNameOut.c_str(),covMatrices,0);
+
+
+  effFuncsRef.clear();
+  covMatrices->clear();
+  delete covMatrices;
+}
+
+
+void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
+			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut)
+{
+  // #################
+  // Local variables #
+  // #################
+  TFitResultPtr fitResults;
+  stringstream myString;
+  double Eff, EffErr;
+  double* cosThetaKBins_ = Utility->MakeBinning(cosThetaKBins);
+  double* cosThetaLBins_ = Utility->MakeBinning(cosThetaLBins);
+  double* phiBins_       = Utility->MakeBinning(phiBins);
+  vector<TF3*> effFuncsRef;
+  // #################
+
+
+  TCanvas* cTestGlobalFit = new TCanvas("cTestGlobalFit", "cTestGlobalFit", 10, 10, 700, 500);
+
+  myString.str("");
+  myString << "Histo_q2Bin_" << q2BinIndx;
+  TH3D* Histo = new TH3D(myString.str().c_str(), myString.str().c_str(), cosThetaKBins->size()-1, cosThetaKBins_, cosThetaLBins->size()-1, cosThetaLBins_, phiBins->size()-1, phiBins_);
+  Histo->SetXTitle("cos(#theta_{K})");
+  Histo->GetXaxis()->SetTitleOffset(1.8);
+  Histo->SetYTitle("cos(#theta_{#font[12]{l}})");
+  Histo->GetYaxis()->SetTitleOffset(1.8);
+  Histo->SetZTitle("#phi");
+  Histo->GetZaxis()->SetTitleOffset(1.8);
+
+
+  // ##########################
+  // # Read binned efficiency #
+  // ##########################
+  for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
+    for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
+      for (unsigned int l = 0; l < phiBins->size()-1; l++)
+	{
+	  Utility->GetEffq2Bin(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,j,k,l,myEff,&Eff,&EffErr);
+	  Histo->SetBinContent(j+1,k+1,l+1,Eff);
+	  Histo->SetBinError(j+1,k+1,l+1,EffErr);
+	}
+// @@@TMP@@@
 
   Utility->ReadAnalyticalEff(INPUT2DEffRef,q2Bins,cosThetaKBins,cosThetaLBins,&effFuncsRef,"effFuncsRef",0);
   effFuncsRef[q2BinIndx]->SetRange(cosThetaKBins->operator[](0),
@@ -1511,6 +1720,7 @@ int main (int argc, char** argv)
 
 	  Utility = new Utils();
 	  Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
+	  Utility->ReadPreselectionCut(ParameterFILE);
 	  Utility->ReadSelectionCuts(ParameterFILE);
 
 
@@ -1523,10 +1733,10 @@ int main (int argc, char** argv)
 	  Utility->InitEfficiency(myEffVal,myEff,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
 
 
-	  ComputeEfficiency(theTreeGenCandidatesNoFilter,NTupleGenCandidatesNoFilter,myEff.Den1,myEff.Err2PoisDen1,myEff.Err2WeigDen1,1,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
-	  ComputeEfficiency(theTreeGenCandidatesFilter,  NTupleGenCandidatesFilter,  myEff.Num1,myEff.Err2PoisNum1,myEff.Err2WeigNum1,2,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
-	  ComputeEfficiency(theTreeRecoCandidates,       NTupleRecoCandidates,       myEff.Den2,myEff.Err2PoisDen2,myEff.Err2WeigDen2,3,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
-	  ComputeEfficiency(theTreeSingleCand,           NTupleSingleCand,           myEff.Num2,myEff.Err2PoisNum2,myEff.Err2WeigNum2,4,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
+	  ComputeEfficiency(theTreeGenCandidatesNoFilter,NTupleGenCandidatesNoFilter,myEff.Den1,myEff.Err2PoisDen1,myEff.Err2WeigDen1, 1 ,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
+	  ComputeEfficiency(theTreeGenCandidatesFilter,  NTupleGenCandidatesFilter,  myEff.Num1,myEff.Err2PoisNum1,myEff.Err2WeigNum1, 2 ,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
+	  ComputeEfficiency(theTreeRecoCandidates,       NTupleRecoCandidates,       myEff.Den2,myEff.Err2PoisDen2,myEff.Err2WeigDen2, 3 ,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
+	  ComputeEfficiency(theTreeSingleCand,           NTupleSingleCand,           myEff.Num2,myEff.Err2PoisNum2,myEff.Err2WeigNum2, 4 ,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
 
 
 	  Utility->SaveEfficiency(fileNameOutput.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff);
