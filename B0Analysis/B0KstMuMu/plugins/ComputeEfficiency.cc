@@ -1342,87 +1342,86 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
     for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
       for (unsigned int l = 0; l < phiBins->size()-1; l++)
 	{
-	  Utility->GetEffq2Bin(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,j,k,l,myEff,&Eff,&EffErr);
+	  Utility->GetEffq2Bin(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,j,k,l,myEff,&Eff,&EffErr);
 	  Histo->SetBinContent(j+1,k+1,l+1,Eff);
 	  Histo->SetBinError(j+1,k+1,l+1,EffErr);
 	}
-// @@@TMP@@@
 
-  Utility->ReadAnalyticalEff(INPUT2DEffRef,q2Bins,cosThetaKBins,cosThetaLBins,&effFuncsRef,"effFuncsRef",0);
-  effFuncsRef[q2BinIndx]->SetRange(cosThetaKBins->operator[](0),
-				   cosThetaLBins->operator[](0) - abscissaErr,
-				   cosThetaKBins->operator[](cosThetaKBins->size()-1) + abscissaErr,
-				   cosThetaLBins->operator[](cosThetaLBins->size()-1) + abscissaErr);
-
-
-  for (int i = 0; i < effFuncsRef[q2BinIndx]->GetNpar(); i++)
-    if (effFuncsRef[q2BinIndx]->GetParError(i) == 0.0) effFuncsRef[q2BinIndx]->FixParameter(i,effFuncsRef[q2BinIndx]->GetParameter(i));
+  // Utility->ReadAnalyticalEff(INPUT2DEffRef,q2Bins,cosThetaKBins,cosThetaLBins,&effFuncsRef,"effFuncsRef",0);
+  // effFuncsRef[q2BinIndx]->SetRange(cosThetaKBins->operator[](0),
+  // 				   cosThetaLBins->operator[](0) - abscissaErr,
+  // 				   cosThetaKBins->operator[](cosThetaKBins->size()-1) + abscissaErr,
+  // 				   cosThetaLBins->operator[](cosThetaLBins->size()-1) + abscissaErr);
 
 
-  // ############################################################################################
-  // # Add constraint along Y (= cosThetaL) where it is necessary to bound the function at zero #
-  // ############################################################################################
-  Utility->AddConstraintThetaK(&Histo,cosThetaKBins,q2BinIndx,abscissaErr,ordinateVal,ordinateErr,q2BinIndx);
+  // for (int i = 0; i < effFuncsRef[q2BinIndx]->GetNpar(); i++)
+  //   if (effFuncsRef[q2BinIndx]->GetParError(i) == 0.0) effFuncsRef[q2BinIndx]->FixParameter(i,effFuncsRef[q2BinIndx]->GetParameter(i));
+
+
+  // // ############################################################################################
+  // // # Add constraint along Y (= cosThetaL) where it is necessary to bound the function at zero #
+  // // ############################################################################################
+  // Utility->AddConstraintThetaK(&Histo,cosThetaKBins,q2BinIndx,abscissaErr,ordinateVal,ordinateErr,q2BinIndx);
 
 
   cTestGlobalFit->cd();
-  fitResults = Histo->Fit(effFuncsRef[q2BinIndx]->GetName(),"VMRS");
-  TMatrixTSym<double> covMatrix(fitResults->GetCovarianceMatrix());
-  effFuncsRef[q2BinIndx]->Draw("surf1");
-  Histo->Draw("lego2");
-  cTestGlobalFit->Update();
+  // fitResults = Histo->Fit(effFuncsRef[q2BinIndx]->GetName(),"VMRS");
+  // TMatrixTSym<double> covMatrix(fitResults->GetCovarianceMatrix());
+  // effFuncsRef[q2BinIndx]->Draw("surf1");
+  // Histo->Draw("lego2");
+  // cTestGlobalFit->Update();
 
-  cout << "@@@ chi2/DoF = " << effFuncsRef[q2BinIndx]->GetChisquare() / effFuncsRef[q2BinIndx]->GetNDF() << " (" << effFuncsRef[q2BinIndx]->GetChisquare() << "/" << effFuncsRef[q2BinIndx]->GetNDF() << ")";
-  cout << "\tCL : " << TMath::Prob(effFuncsRef[q2BinIndx]->GetChisquare(),effFuncsRef[q2BinIndx]->GetNDF()) << " @@@" << endl;
-
-
-  // ############################################################################################
-  // # Add constraint along X (= cosThetaK) where it is necessary to bound the function at zero #
-  // ############################################################################################
-  if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncsRef[q2BinIndx]) < 0.0)
-    {
-      cout << "@@@ Efficiency is still negative ! @@@" << endl;
-
-      Utility->AddConstraint2D(&Histo,abscissaErr,ordinateVal,ordinateErr,q2BinIndx,"X");
-      cTestGlobalFit->cd();
-      fitResults = Histo->Fit(effFuncsRef[q2BinIndx]->GetName(),"VMRS");
-      TMatrixTSym<double> covMatrixConstr(fitResults->GetCovarianceMatrix());
-      effFuncsRef[q2BinIndx]->Draw("surf1");
-      Histo->Draw("lego2");
-      cTestGlobalFit->Update();
-
-      cout << "@@@ chi2/DoF = " << effFuncsRef[q2BinIndx]->GetChisquare() / effFuncsRef[q2BinIndx]->GetNDF() << " (" << effFuncsRef[q2BinIndx]->GetChisquare() << "/" << effFuncsRef[q2BinIndx]->GetNDF() << ")";
-      cout << "\tCL : " << TMath::Prob(effFuncsRef[q2BinIndx]->GetChisquare(),effFuncsRef[q2BinIndx]->GetNDF()) << " @@@" << endl;
-      Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncsRef[q2BinIndx]);
-
-      Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFuncsRef[q2BinIndx],(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
-      fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
-      Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrixConstr,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
-
-      covMatrixConstr.Clear();
-
-      if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncsRef[q2BinIndx]) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit(1); }
-    }
-  else
-    {
-      Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFuncsRef[q2BinIndx],(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
-      fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
-      Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrix,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
-
-      covMatrix.Clear();
-    }
+  // cout << "@@@ chi2/DoF = " << effFuncsRef[q2BinIndx]->GetChisquare() / effFuncsRef[q2BinIndx]->GetNDF() << " (" << effFuncsRef[q2BinIndx]->GetChisquare() << "/" << effFuncsRef[q2BinIndx]->GetNDF() << ")";
+  // cout << "\tCL : " << TMath::Prob(effFuncsRef[q2BinIndx]->GetChisquare(),effFuncsRef[q2BinIndx]->GetNDF()) << " @@@" << endl;
 
 
-  // ########################################
-  // # Check integrity of covariance matrix #
-  // ########################################
-  vector<TMatrixTSym<double>*>* covMatrices = new vector<TMatrixTSym<double>*>;
-  Utility->ReadAnalyticalEffFullCovariance(fileNameOut.c_str(),covMatrices,0);
+  // // ############################################################################################
+  // // # Add constraint along X (= cosThetaK) where it is necessary to bound the function at zero #
+  // // ############################################################################################
+  // if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncsRef[q2BinIndx]) < 0.0)
+  //   {
+  //     cout << "@@@ Efficiency is still negative ! @@@" << endl;
+
+  //     Utility->AddConstraint2D(&Histo,abscissaErr,ordinateVal,ordinateErr,q2BinIndx,"X");
+  //     cTestGlobalFit->cd();
+  //     fitResults = Histo->Fit(effFuncsRef[q2BinIndx]->GetName(),"VMRS");
+  //     TMatrixTSym<double> covMatrixConstr(fitResults->GetCovarianceMatrix());
+  //     effFuncsRef[q2BinIndx]->Draw("surf1");
+  //     Histo->Draw("lego2");
+  //     cTestGlobalFit->Update();
+
+  //     cout << "@@@ chi2/DoF = " << effFuncsRef[q2BinIndx]->GetChisquare() / effFuncsRef[q2BinIndx]->GetNDF() << " (" << effFuncsRef[q2BinIndx]->GetChisquare() << "/" << effFuncsRef[q2BinIndx]->GetNDF() << ")";
+  //     cout << "\tCL : " << TMath::Prob(effFuncsRef[q2BinIndx]->GetChisquare(),effFuncsRef[q2BinIndx]->GetNDF()) << " @@@" << endl;
+  //     Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncsRef[q2BinIndx]);
+
+  //     Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFuncsRef[q2BinIndx],(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
+  //     fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
+  //     Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrixConstr,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
+
+  //     covMatrixConstr.Clear();
+
+  //     if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncsRef[q2BinIndx]) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit(1); }
+  //   }
+  // else
+  //   {
+  //     Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFuncsRef[q2BinIndx],(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
+  //     fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
+  //     Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrix,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
+
+  //     covMatrix.Clear();
+  //   }
 
 
-  effFuncsRef.clear();
-  covMatrices->clear();
-  delete covMatrices;
+  // // ########################################
+  // // # Check integrity of covariance matrix #
+  // // ########################################
+  // vector<TMatrixTSym<double>*>* covMatrices = new vector<TMatrixTSym<double>*>;
+  // Utility->ReadAnalyticalEffFullCovariance(fileNameOut.c_str(),covMatrices,0);
+
+
+  // effFuncsRef.clear();
+  // covMatrices->clear();
+  // delete covMatrices;
 }
 
 

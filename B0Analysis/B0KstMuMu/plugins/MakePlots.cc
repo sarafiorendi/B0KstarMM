@@ -24,8 +24,8 @@
 #include <TKey.h>
 #endif
 
-#include <stdlib.h>
 #include <math.h>
+#include <cstdlib>
 #include <vector>
 #include <fstream>
 #include <iostream>

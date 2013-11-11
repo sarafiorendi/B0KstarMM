@@ -1,5 +1,5 @@
 CC            = g++
-CCFLAGS       = -g -Wall -m64 -O3
+CCFLAGS       = -g -ansi -Wall -m64 -O3
 
 MYSOURCEDIR   = ../src
 MYSOURCES     = $(MYSOURCEDIR)/B0KstMuMuTreeContent.cc $(MYSOURCEDIR)/B0KstMuMuSingleCandTreeContent.cc $(MYSOURCEDIR)/Utils.cc $(MYSOURCEDIR)/ReadParameters.cc

@@ -26,7 +26,7 @@
 
 #include <math.h>
 #include <sstream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <vector>
 #include <fstream>
 #include <iostream>

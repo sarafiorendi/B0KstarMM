@@ -15,9 +15,9 @@
 #include <TH1D.h>
 #endif
 
-#include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <cstdlib>
 #include <sstream>
 #include <vector>
 #include <iomanip>
