@@ -1,4 +1,4 @@
-CC            = clang++
+CC            = g++
 CCFLAGS       = -g -ansi -Wall -m64 -O3
 
 MYSOURCEDIR   = ../src
