@@ -16,7 +16,7 @@
 #include <TLorentzVector.h>
 #endif
 
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <sstream>
 
@@ -83,7 +83,7 @@ void SelectBestCand ()
     {
       theTreeIn->GetEntry(entry);
 
-      if (Utility->ChooseBestCand(NTupleIn, DoTrigCheck, ((double)entry)/((double)nEntries), &BestCandIndx, &B0notB0bar, &TrigCat, &countCands) == true)
+      if (Utility->ChooseBestCand(NTupleIn, DoTrigCheck, static_cast<double>(entry)/static_cast<double>(nEntries), &BestCandIndx, &B0notB0bar, &TrigCat, &countCands) == true)
 	{
 	  NTupleOut->CopyData(NTupleIn, BestCandIndx);
 	  
@@ -503,7 +503,7 @@ void BestCandPerformance ()
 	  }
 
 
-      if (Utility->ChooseBestCand(NTupleIn, DoTrigCheck, ((double)entry)/((double)nEntries), &BestCandIndx, &B0notB0bar, &TrigCat, &countCands) == true)
+      if (Utility->ChooseBestCand(NTupleIn, DoTrigCheck, static_cast<double>(entry)/static_cast<double>(nEntries), &BestCandIndx, &B0notB0bar, &TrigCat, &countCands) == true)
 	{
 	  countSeleEv++;
 
@@ -523,13 +523,13 @@ void BestCandPerformance ()
 	  countCandsAVG += countCands;
 	}
     }
-  countCandsAVG = countCandsAVG / ((double)counter);
+  countCandsAVG = countCandsAVG / static_cast<double>(counter);
 
-  cout << "\n@@@ Efficiency: " << ((double)countGoodSeleEv) / ((double)coutGoodEv) * 100. << " @@@" << endl;
-  cout << "@@@ Purity: " << ((double)countGoodSeleEv) / ((double)countSeleEv) * 100. << " @@@" << endl;
-  cout << "@@@ Total B-tagging efficiency: " << ((double)(countGoodBTag+countGoodBbarTag)) / ((double)countGoodSeleEv) * 100. << " @@@" << endl;
-  cout << "@@@ B-tagging efficiency: " << ((double)countGoodBbarTag) / ((double)countGoodBSeleEv) * 100. << " @@@" << endl;
-  cout << "@@@ Bbar-tagging efficiency: " << ((double)countGoodBbarTag) / ((double)countGoodBbarSeleEv) * 100. << " @@@" << endl;
+  cout << "\n@@@ Efficiency: " << static_cast<double>(countGoodSeleEv) / static_cast<double>(coutGoodEv) * 100. << " @@@" << endl;
+  cout << "@@@ Purity: " << static_cast<double>(countGoodSeleEv) / static_cast<double>(countSeleEv) * 100. << " @@@" << endl;
+  cout << "@@@ Total B-tagging efficiency: " << static_cast<double>(countGoodBTag+countGoodBbarTag) / static_cast<double>(countGoodSeleEv) * 100. << " @@@" << endl;
+  cout << "@@@ B-tagging efficiency: " << static_cast<double>(countGoodBbarTag) / static_cast<double>(countGoodBSeleEv) * 100. << " @@@" << endl;
+  cout << "@@@ Bbar-tagging efficiency: " << static_cast<double>(countGoodBbarTag) / static_cast<double>(countGoodBbarSeleEv) * 100. << " @@@" << endl;
   cout << "@@@ Average number of candidates after all cuts applied but B0-vtx CL: " << countCandsAVG << " @@@" << endl;
 }
 

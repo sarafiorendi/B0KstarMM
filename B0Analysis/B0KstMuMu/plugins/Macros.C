@@ -24,7 +24,7 @@
 #include <TCutG.h>
 #include <TKey.h>
 
-#include <math.h>
+#include <cmath>
 #include <sstream>
 #include <cstdlib>
 #include <vector>

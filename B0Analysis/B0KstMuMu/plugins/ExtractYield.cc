@@ -76,7 +76,7 @@
 #include <RooRandom.h>
 #endif
 
-#include <time.h>
+#include <ctime>
 #include <iostream>
 #include <sstream>
 
@@ -2377,18 +2377,18 @@ void MakeGraphicalScan (RooAbsPdf* TotalPDF, TCanvas* Canv, RooRealVar* x, RooRe
   
   for (unsigned int i = 0; i < NBins; i++)
     {
-      TotalPDF->getVariables()->setRealValue("FlS",Flmin + (Flmax-Flmin) / ((double)NBins) * (double)i);
+      TotalPDF->getVariables()->setRealValue("FlS",Flmin + (Flmax-Flmin) / static_cast<double>(NBins) * static_cast<double>(i));
       
       for (unsigned int j = 0; j < NBins*2; j++)
 	{
-	  TotalPDF->getVariables()->setRealValue("AfbS",Afbmin + (Afbmax-Afbmin) / ((double)(NBins*2)) * (double)j);
+	  TotalPDF->getVariables()->setRealValue("AfbS",Afbmin + (Afbmax-Afbmin) / static_cast<double>(NBins*2) * static_cast<double>(j));
 	  
 	  negNOneg = 1.0;
 	  if ((x != NULL) && (y != NULL))
 	    {
 	      for (unsigned int k = 0; k <= NBins; k++)
 		{
-		  x->setVal(-1.0 + 2.0 / ((double)NBins) * (double)k);
+		  x->setVal(-1.0 + 2.0 / static_cast<double>(NBins) * static_cast<double>(k));
 		  for (unsigned int l = 0; l <= NBins; l++)
 		    {
 		      // Here I remove the corners
@@ -2397,7 +2397,7 @@ void MakeGraphicalScan (RooAbsPdf* TotalPDF, TCanvas* Canv, RooRealVar* x, RooRe
 			    ((k == 0) && (l == NBins)) ||
 			    ((k == NBins) && (l == NBins))))
 			{
-			  y->setVal(-1.0 + 2.0 / ((double)NBins) * (double)l);
+			  y->setVal(-1.0 + 2.0 / static_cast<double>(NBins) * static_cast<double>(l));
 			  outputPDF = TotalPDF->getVal();
 			  if (outputPDF <= 0.0) negNOneg = 0.0;
 			}
@@ -2416,7 +2416,7 @@ void MakeGraphicalScan (RooAbsPdf* TotalPDF, TCanvas* Canv, RooRealVar* x, RooRe
 	    {
 	      for (unsigned int k = 0; k <= NBins; k++)
 		{
-		  x->setVal(-1.0 + 2.0 / ((double)NBins) * (double)k);
+		  x->setVal(-1.0 + 2.0 / static_cast<double>(NBins) * static_cast<double>(k));
 		  outputPDF = TotalPDF->getVal();
 		  if (outputPDF <= 0.0) negNOneg = 0.0;
 		  
@@ -2433,7 +2433,7 @@ void MakeGraphicalScan (RooAbsPdf* TotalPDF, TCanvas* Canv, RooRealVar* x, RooRe
 	    {
 	      for (unsigned int l = 0; l <= NBins; l++)
 		{
-		  y->setVal(-1.0 + 2.0 / ((double)NBins) * (double)l);
+		  y->setVal(-1.0 + 2.0 / static_cast<double>(NBins) * static_cast<double>(l));
 		  outputPDF = TotalPDF->getVal();
 		  if (outputPDF <= 0.0) negNOneg = 0.0;
 

@@ -60,7 +60,6 @@
 #include "TMath.h"
 
 #include <sstream>
-
 #include <utility>
 
 
@@ -442,9 +441,9 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		      continue;
 		    }
 	  
-		  if (TMath::Prob((double)mumu_KV->chiSquared(), int(rint(mumu_KV->degreesOfFreedom()))) < CLMUMUVTX)
+		  if (TMath::Prob(static_cast<double>(mumu_KV->chiSquared()), static_cast<int>(rint(mumu_KV->degreesOfFreedom()))) < CLMUMUVTX)
 		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad vtx CL from mu+ mu- fit: " << TMath::Prob((double)mumu_KV->chiSquared(),int(rint(mumu_KV->degreesOfFreedom()))) << std::endl;
+		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad vtx CL from mu+ mu- fit: " << TMath::Prob(static_cast<double>(mumu_KV->chiSquared()), static_cast<int>(rint(mumu_KV->degreesOfFreedom()))) << std::endl;
 		      continue;
 		    }
 
@@ -872,13 +871,13 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad B0 mass: " << b_KP->currentState().mass() << " AND B0bar mass: " << bBar_KP->currentState().mass() << std::endl;
 			      continue;
 			    }
-			  if ((TMath::Prob((double)b_KV->chiSquared(), int(rint(b_KV->degreesOfFreedom()))) < CLB0VTX) &&
-			      (TMath::Prob((double)bBar_KV->chiSquared(), int(rint(bBar_KV->degreesOfFreedom()))) < CLB0VTX))
+			  if ((TMath::Prob(static_cast<double>(b_KV->chiSquared()), static_cast<int>(rint(b_KV->degreesOfFreedom()))) < CLB0VTX) &&
+			      (TMath::Prob(static_cast<double>(bBar_KV->chiSquared()), static_cast<int>(rint(bBar_KV->degreesOfFreedom()))) < CLB0VTX))
 			    {
 			      if (printMsg == true)
 				{
-				  std::cout << __LINE__ << " : continue --> bad vtx CL from B0 fit: " << TMath::Prob((double)b_KV->chiSquared(), int(rint(b_KV->degreesOfFreedom())));
-				  std::cout << " AND bad vtx CL from B0bar fit: " << TMath::Prob((double)bBar_KV->chiSquared(), int(rint(bBar_KV->degreesOfFreedom()))) << std::endl;
+				  std::cout << __LINE__ << " : continue --> bad vtx CL from B0 fit: " << TMath::Prob(static_cast<double>(b_KV->chiSquared()), static_cast<int>(rint(b_KV->degreesOfFreedom())));
+				  std::cout << " AND bad vtx CL from B0bar fit: " << TMath::Prob(static_cast<double>(bBar_KV->chiSquared()), static_cast<int>(rint(bBar_KV->degreesOfFreedom()))) << std::endl;
 				}
 			      continue;
 			    }
@@ -1111,7 +1110,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  NTuple->bPy->push_back(b_KP->currentState().globalMomentum().y());
 			  NTuple->bPz->push_back(b_KP->currentState().globalMomentum().z());	      
 
-			  NTuple->bVtxCL->push_back(TMath::Prob((double)b_KV->chiSquared(), int(rint(b_KV->degreesOfFreedom()))));
+			  NTuple->bVtxCL->push_back(TMath::Prob(static_cast<double>(b_KV->chiSquared()), static_cast<int>(rint(b_KV->degreesOfFreedom()))));
 			  NTuple->bVtxX->push_back(b_KV->position().x());
 			  NTuple->bVtxY->push_back(b_KV->position().y());
 			  NTuple->bVtxZ->push_back(b_KV->position().z());
@@ -1147,7 +1146,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  NTuple->kstPy->push_back(kst_KP->currentState().globalMomentum().y());
 			  NTuple->kstPz->push_back(kst_KP->currentState().globalMomentum().z());
 
-			  NTuple->kstVtxCL->push_back(TMath::Prob((double)kst_KV->chiSquared(), int(rint(kst_KV->degreesOfFreedom()))));
+			  NTuple->kstVtxCL->push_back(TMath::Prob(static_cast<double>(kst_KV->chiSquared()), static_cast<int>(rint(kst_KV->degreesOfFreedom()))));
 			  NTuple->kstVtxX->push_back(kst_KV->position().x());
 			  NTuple->kstVtxY->push_back(kst_KV->position().y());
 			  NTuple->kstVtxZ->push_back(kst_KV->position().z());
@@ -1163,7 +1162,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  NTuple->mumuPy->push_back(mumu_KP->currentState().globalMomentum().y());
 			  NTuple->mumuPz->push_back(mumu_KP->currentState().globalMomentum().z());
 
-			  NTuple->mumuVtxCL->push_back(TMath::Prob((double)mumu_KV->chiSquared(), int(rint(mumu_KV->degreesOfFreedom()))));
+			  NTuple->mumuVtxCL->push_back(TMath::Prob(static_cast<double>(mumu_KV->chiSquared()), static_cast<int>(rint(mumu_KV->degreesOfFreedom()))));
 			  NTuple->mumuVtxX->push_back(mumu_KV->position().x());
 			  NTuple->mumuVtxY->push_back(mumu_KV->position().y());
 			  NTuple->mumuVtxZ->push_back(mumu_KV->position().z());
@@ -1179,7 +1178,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  // # Save: mu- #
 			  // #############
 			  NTuple->mumHighPurity->push_back(muTrackm->quality(reco::Track::highPurity));
-			  NTuple->mumCL->push_back(TMath::Prob(muTrackmTT.chi2(), int(rint(muTrackmTT.ndof()))));
+			  NTuple->mumCL->push_back(TMath::Prob(muTrackmTT.chi2(), static_cast<int>(rint(muTrackmTT.ndof()))));
 			  NTuple->mumNormChi2->push_back(muTrackm->normalizedChi2());
 			  NTuple->mumPx->push_back(refitMumTT.track().momentum().x());
 			  NTuple->mumPy->push_back(refitMumTT.track().momentum().y());
@@ -1191,10 +1190,10 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  NTuple->mumDCABSE->push_back(DCAmumBSErr);
 
 			  NTuple->mumKinkChi2->push_back(iMuonM->combinedQuality().trkKink);
-			  NTuple->mumFracHits->push_back((double)muTrackm->hitPattern().numberOfValidHits() / (double)(muTrackm->hitPattern().numberOfValidHits() +
-														       muTrackm->hitPattern().numberOfLostHits() +
-														       muTrackm->trackerExpectedHitsInner().numberOfLostHits() +
-														       muTrackm->trackerExpectedHitsOuter().numberOfLostHits()));
+			  NTuple->mumFracHits->push_back(static_cast<double>(muTrackm->hitPattern().numberOfValidHits()) / static_cast<double>(muTrackm->hitPattern().numberOfValidHits() +
+																	       muTrackm->hitPattern().numberOfLostHits() +
+																	       muTrackm->trackerExpectedHitsInner().numberOfLostHits() +
+																	       muTrackm->trackerExpectedHitsOuter().numberOfLostHits()));
 			  theDCAXVtx = IPTools::absoluteTransverseImpactParameter(muTrackmTT, bestVtxReFit);
 			  NTuple->mumdxyVtx->push_back(theDCAXVtx.second.value());
 			  NTuple->mumdzVtx->push_back(muTrackmTT.track().dz(bestVtxReFit.position()));
@@ -1224,7 +1223,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  // # Save: mu+ #
 			  // #############
 			  NTuple->mupHighPurity->push_back(muTrackp->quality(reco::Track::highPurity));
-			  NTuple->mupCL->push_back(TMath::Prob(muTrackpTT.chi2(), int(rint(muTrackpTT.ndof()))));
+			  NTuple->mupCL->push_back(TMath::Prob(muTrackpTT.chi2(), static_cast<int>(rint(muTrackpTT.ndof()))));
 			  NTuple->mupNormChi2->push_back(muTrackp->normalizedChi2());
 			  NTuple->mupPx->push_back(refitMupTT.track().momentum().x());
 			  NTuple->mupPy->push_back(refitMupTT.track().momentum().y());
@@ -1234,12 +1233,12 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  NTuple->mupDCAVtxE->push_back(DCAmupVtxErr);
 			  NTuple->mupDCABS->push_back(DCAmupBS);
 			  NTuple->mupDCABSE->push_back(DCAmupBSErr);
-
+			  
 			  NTuple->mupKinkChi2->push_back(iMuonP->combinedQuality().trkKink);
-			  NTuple->mupFracHits->push_back((double)muTrackp->hitPattern().numberOfValidHits() / (double)(muTrackp->hitPattern().numberOfValidHits() +
-														       muTrackp->hitPattern().numberOfLostHits() +
-														       muTrackp->trackerExpectedHitsInner().numberOfLostHits() +
-														       muTrackp->trackerExpectedHitsOuter().numberOfLostHits()));
+			  NTuple->mupFracHits->push_back(static_cast<double>(muTrackp->hitPattern().numberOfValidHits()) / static_cast<double>(muTrackp->hitPattern().numberOfValidHits() +
+																	       muTrackp->hitPattern().numberOfLostHits() +
+																	       muTrackp->trackerExpectedHitsInner().numberOfLostHits() +
+																	       muTrackp->trackerExpectedHitsOuter().numberOfLostHits()));
 			  theDCAXVtx = IPTools::absoluteTransverseImpactParameter(muTrackpTT, bestVtxReFit);
 			  NTuple->mupdxyVtx->push_back(theDCAXVtx.second.value());
 			  NTuple->mupdzVtx->push_back(muTrackpTT.track().dz(bestVtxReFit.position()));
@@ -1269,7 +1268,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  // # Save: Track- #
 			  // ################
 			  NTuple->kstTrkmHighPurity->push_back(Trackm->quality(reco::Track::highPurity));
-			  NTuple->kstTrkmCL->push_back(TMath::Prob(TrackmTT.chi2(), int(rint(TrackmTT.ndof()))));
+			  NTuple->kstTrkmCL->push_back(TMath::Prob(TrackmTT.chi2(), static_cast<int>(rint(TrackmTT.ndof()))));
 			  NTuple->kstTrkmNormChi2->push_back(Trackm->normalizedChi2());
 			  NTuple->kstTrkmPx->push_back(refitTrkmTT.track().momentum().x());
 			  NTuple->kstTrkmPy->push_back(refitTrkmTT.track().momentum().y());
@@ -1280,9 +1279,9 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  NTuple->kstTrkmDCABS->push_back(DCAKstTrkmBS);
 			  NTuple->kstTrkmDCABSE->push_back(DCAKstTrkmBSErr);
 
-			  NTuple->kstTrkmFracHits->push_back((double)Trackm->hitPattern().numberOfValidHits() / (double)(Trackm->hitPattern().numberOfValidHits() +
-															 Trackm->hitPattern().numberOfLostHits() +
-															 Trackm->trackerExpectedHitsInner().numberOfLostHits()));
+			  NTuple->kstTrkmFracHits->push_back(static_cast<double>(Trackm->hitPattern().numberOfValidHits()) / static_cast<double>(Trackm->hitPattern().numberOfValidHits() +
+																		 Trackm->hitPattern().numberOfLostHits() +
+																		 Trackm->trackerExpectedHitsInner().numberOfLostHits()));
 			  theDCAXVtx = IPTools::absoluteTransverseImpactParameter(TrackmTT, bestVtxReFit);
 			  NTuple->kstTrkmdxyVtx->push_back(theDCAXVtx.second.value());
 			  NTuple->kstTrkmdzVtx->push_back(TrackmTT.track().dz(bestVtxReFit.position()));
@@ -1300,7 +1299,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  // # Save: Track+ #
 			  // ################
 			  NTuple->kstTrkpHighPurity->push_back(Trackp->quality(reco::Track::highPurity));
-			  NTuple->kstTrkpCL->push_back(TMath::Prob(TrackpTT.chi2(), int(rint(TrackpTT.ndof()))));
+			  NTuple->kstTrkpCL->push_back(TMath::Prob(TrackpTT.chi2(), static_cast<int>(rint(TrackpTT.ndof()))));
 			  NTuple->kstTrkpNormChi2->push_back(Trackp->normalizedChi2());
 			  NTuple->kstTrkpPx->push_back(refitTrkpTT.track().momentum().x());
 			  NTuple->kstTrkpPy->push_back(refitTrkpTT.track().momentum().y());
@@ -1311,9 +1310,9 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  NTuple->kstTrkpDCABS->push_back(DCAKstTrkpBS);
 			  NTuple->kstTrkpDCABSE->push_back(DCAKstTrkpBSErr);
 
-			  NTuple->kstTrkpFracHits->push_back((double)Trackp->hitPattern().numberOfValidHits() / (double)(Trackp->hitPattern().numberOfValidHits() +
-															 Trackp->hitPattern().numberOfLostHits() +
-															 Trackp->trackerExpectedHitsInner().numberOfLostHits()));
+			  NTuple->kstTrkpFracHits->push_back(static_cast<double>(Trackp->hitPattern().numberOfValidHits()) / static_cast<double>(Trackp->hitPattern().numberOfValidHits() +
+																		 Trackp->hitPattern().numberOfLostHits() +
+																		 Trackp->trackerExpectedHitsInner().numberOfLostHits()));
 			  theDCAXVtx = IPTools::absoluteTransverseImpactParameter(TrackpTT, bestVtxReFit);
 			  NTuple->kstTrkpdxyVtx->push_back(theDCAXVtx.second.value());
 			  NTuple->kstTrkpdzVtx->push_back(TrackpTT.track().dz(bestVtxReFit.position()));
@@ -1365,7 +1364,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	  // #####################################
 	  // # Save: Primary Vertex and BeamSpot #
 	  // #####################################
-	  NTuple->priVtxCL = TMath::Prob((double)bestVtx.chi2(), int(rint(bestVtx.ndof())));
+	  NTuple->priVtxCL = TMath::Prob(bestVtx.chi2(), static_cast<int>(rint(bestVtx.ndof())));
 	  NTuple->priVtxX  = bestVtx.x();
 	  NTuple->priVtxY  = bestVtx.y();
 	  NTuple->priVtxZ  = bestVtx.z();

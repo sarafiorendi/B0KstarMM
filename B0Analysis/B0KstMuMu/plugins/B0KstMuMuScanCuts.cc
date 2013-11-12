@@ -15,8 +15,8 @@
 #include <TH1D.h>
 #endif
 
-#include <math.h>
-#include <time.h>
+#include <cmath>
+#include <ctime>
 #include <cstdlib>
 #include <sstream>
 #include <vector>
@@ -218,7 +218,7 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
 
       for (unsigned int i = 0; i < nBins; i++)
 	{
-	  cutValue = LowEdge+((double)i)*(HighEdge-LowEdge)/((double)nBins);
+	  cutValue = LowEdge + static_cast<double>(i) * (HighEdge-LowEdge) / static_cast<double>(nBins);
 
 	  if      (scanType == 0) Utility->SetSeleCut("B0VtxCL",    cutValue);
 	  else if (scanType == 1) Utility->SetSeleCut("B0LsBS",     cutValue);
@@ -227,7 +227,7 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
 	  else if (scanType == 4) Utility->SetSeleCut("KstMass",    cutValue);
 	  else if (scanType == 5) Utility->SetSeleCut("HadDCASBS",  cutValue);
 
-	  if ((Utility->ChooseBestCand(NTupleS, DoTrigCheck, ((double)entry)/((double)nEntriesS), &BestCandIndx, &B0notB0bar, &TrigCat, &countCands) == true) &&
+	  if ((Utility->ChooseBestCand(NTupleS, DoTrigCheck, static_cast<double>(entry)/static_cast<double>(nEntriesS), &BestCandIndx, &B0notB0bar, &TrigCat, &countCands) == true) &&
 
 	      (((B0notB0bar == true) && (fabs(NTupleS->bMass->at(BestCandIndx) - Utility->B0Mass) < Utility->GetGenericParam("NSigmaB0S")*signalSigma)) ||
 	       ((B0notB0bar == false) && (fabs(NTupleS->bBarMass->at(BestCandIndx) - Utility->B0Mass) < Utility->GetGenericParam("NSigmaB0S")*signalSigma))) &&
@@ -254,8 +254,8 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
 
       if (entry%nEvPrint == 0)
 	{
-	  timeEnd = (time(NULL) - timeStart) * (double(nEntriesS)) / (double(entry)) - (time(NULL) - timeStart);
-	  cout << "- Analyzed " << entry << " events (" << (double(entry)) / (double(nEntriesS)) * 100.0 << "%) --> " << timeEnd / 60.0 << " minutes to end\r" << flush;
+	  timeEnd = (time(NULL) - timeStart) * static_cast<double>(nEntriesS) / static_cast<double>(entry) - (time(NULL) - timeStart);
+	  cout << "- Analyzed " << entry << " events (" << static_cast<double>(entry) / static_cast<double>(nEntriesS) * 100.0 << "%) --> " << timeEnd / 60.0 << " minutes to end\r" << flush;
 	}
     }
 
@@ -281,7 +281,7 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
       
       for (unsigned int i = 0; i < nBins; i++)
 	{
-	  cutValue = LowEdge+((double)i)*(HighEdge-LowEdge)/((double)nBins);
+	  cutValue = LowEdge + static_cast<double>(i) * (HighEdge-LowEdge) / static_cast<double>(nBins);
 	  
 	  if      (scanType == 0) Utility->SetSeleCut("B0VtxCL",    cutValue);
 	  else if (scanType == 1) Utility->SetSeleCut("B0LsBS",     cutValue);
@@ -290,7 +290,7 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
 	  else if (scanType == 4) Utility->SetSeleCut("KstMass",    cutValue);
 	  else if (scanType == 5) Utility->SetSeleCut("HadDCASBS",  cutValue);
 
-	  if ((Utility->ChooseBestCand(NTupleB, DoTrigCheck, ((double)entry)/((double)nEntriesB), &BestCandIndx, &B0notB0bar, &TrigCat, &countCands) == true) &&
+	  if ((Utility->ChooseBestCand(NTupleB, DoTrigCheck, static_cast<double>(entry)/static_cast<double>(nEntriesB), &BestCandIndx, &B0notB0bar, &TrigCat, &countCands) == true) &&
 
 	      (((B0notB0bar == true) &&
 		(((NTupleB->bMass->at(BestCandIndx) > Utility->B0Mass-(Utility->GetGenericParam("NSigmaB0B")+Utility->GetGenericParam("NSigmaB0S"))*signalSigma) &&
@@ -324,8 +324,8 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
       
       if (entry%nEvPrint == 0)
 	{
-	  timeEnd = (time(NULL) - timeStart) * (double(nEntriesB)) / (double(entry)) - (time(NULL) - timeStart);
-	  cout << "- Analyzed " << entry << " events (" << (double(entry)) / (double(nEntriesB)) * 100.0 << "%) --> " << timeEnd / 60.0 << " minutes to end\r" << flush;
+	  timeEnd = (time(NULL) - timeStart) * static_cast<double>(nEntriesB) / static_cast<double>(entry) - (time(NULL) - timeStart);
+	  cout << "- Analyzed " << entry << " events (" << static_cast<double>(entry) / static_cast<double>(nEntriesB) * 100.0 << "%) --> " << timeEnd / 60.0 << " minutes to end\r" << flush;
 	}
     }
 

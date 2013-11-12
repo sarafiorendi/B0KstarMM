@@ -24,7 +24,7 @@
 #include <TKey.h>
 #endif
 
-#include <math.h>
+#include <cmath>
 #include <cstdlib>
 #include <vector>
 #include <fstream>
@@ -1778,8 +1778,8 @@ void MakePhysicsPlots (unsigned int PlotType)
       
       ratioLeg->AddEntry(chi2Histo,"#chi^{2}(<SM>, Data)");
     }
-  cout << "\n@@@ Global chi2 = " << myGlobalChi2 / ((double)DoF) << " (" << myGlobalChi2 << "/" << ((double)DoF) << ") @@@" << endl;
-  myGlobalChi2 = myGlobalChi2 / ((double)DoF);
+  cout << "\n@@@ Global chi2 = " << myGlobalChi2 / static_cast<double>(DoF) << " (" << myGlobalChi2 << "/" << static_cast<double>(DoF) << ") @@@" << endl;
+  myGlobalChi2 = myGlobalChi2 / static_cast<double>(DoF);
 
   chi2Histo->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});#chi^{2}");
   chi2Histo->GetXaxis()->SetLabelSize(0.06);
@@ -1866,7 +1866,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       paveText->SetBorderSize(0.0);
       paveText->SetFillColor(kWhite);
       paveText->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myGlobalChi2));
-      paveText->AddText(Form("%s%.3f","p-value = ",TMath::Prob(myGlobalChi2*(double(DoF)),DoF)));
+      paveText->AddText(Form("%s%.3f","p-value = ",TMath::Prob(myGlobalChi2*static_cast<double>(DoF),DoF)));
       paveText->SetFillStyle(0);
       paveText->SetTextSize(0.035);
       paveText->Draw();
@@ -2836,7 +2836,7 @@ void MakePvaluePlot (string fileName, string plotType, int specBin)
 
   cout << "\n\n@@@ p-value computaion of NLL distribution from paramter file: " << ParameterFILE << " @@@" << endl;
 
-  for (int i = (specBin == -1 ? 0 : specBin); i < (specBin == -1 ? (int)(q2Bins.size()-1) : specBin+1); i++)
+  for (int i = (specBin == -1 ? 0 : specBin); i < (specBin == -1 ? static_cast<int>(q2Bins.size()-1) : specBin+1); i++)
     {
       if ((i == Utility->GetJPsiBin(&q2Bins)) || (i == Utility->GetPsiPBin(&q2Bins))) continue;
 

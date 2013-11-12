@@ -4,7 +4,7 @@
 #include <TAxis.h>
 #include <TMath.h>
 
-#include <math.h>
+#include <cmath>
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
@@ -44,6 +44,7 @@ Utils::Utils ()
 
   NcoeffThetaL = 5;
   NcoeffThetaK = 4;
+  NcoeffPhi    = 3;
 
   PI = 3.141592653589793;
 
@@ -1503,7 +1504,7 @@ void Utils::ReadFitStartingValues (std::string fileName, std::vector<std::vector
   for (unsigned int i = 0; i < ParVector.size(); i=i+nFitParam+nConfigParam)
     {
 
-      std::cout << "\nRead set-" << (int)((double)i/(double)(nFitParam+nConfigParam)) << " of fit-parameter starting values" << std::endl;
+      std::cout << "\nRead set-" << static_cast<int>(static_cast<double>(i)/static_cast<double>(nFitParam+nConfigParam)) << " of fit-parameter starting values" << std::endl;
 
       for (unsigned int j = 0; j < nFitParam; j++)
 	{
@@ -1550,7 +1551,7 @@ void Utils::ReadFitSystematics (std::string fileName, std::vector<std::vector<do
   for (unsigned int i = 0; i < ParVector.size(); i=i+nFitObserv)
     {
 
-      std::cout << "\nRead set-" << (int)((double)i/(double)(nFitObserv)) << " of fit-observable systematic errors" << std::endl;
+      std::cout << "\nRead set-" << static_cast<int>(static_cast<double>(i)/static_cast<double>(nFitObserv)) << " of fit-observable systematic errors" << std::endl;
 
       for (unsigned int j = 0; j < nFitObserv; j++)
 	{
@@ -1590,7 +1591,7 @@ void Utils::ReadNLLval (std::string fileName, std::vector<std::vector<double>*>*
   for (unsigned int i = 0; i < ParVector.size(); i=i+nFitObserv)
     {
 
-      std::cout << "\nRead set-" << (int)((double)i/(double)(nFitObserv)) << " of fit-observable NLL" << std::endl;
+      std::cout << "\nRead set-" << static_cast<int>(static_cast<double>(i)/static_cast<double>(nFitObserv)) << " of fit-observable NLL" << std::endl;
 
       for (unsigned int j = 0; j < nFitObserv; j++)
 	{
@@ -1667,9 +1668,9 @@ void Utils::SaveAnalyticalEff (std::string fileName, TF2* effFunc, double q2Val,
   fileOutput.close();
 }
 
-void Utils::SaveAnalyticalEff (std::string fileName, double q2Val, std::vector<double>* q2Bins, std::vector<double>* effFuncPar, std::vector<double>* effFuncErr)
+void Utils::SaveAnalyticalEff (std::string fileName, TF3* effFunc, double q2Val, std::vector<double>* q2Bins)
 {
-  ofstream fileOutput;
+ ofstream fileOutput;
   fileOutput.open(fileName.c_str(),ofstream::app);
   if (fileOutput.good() == false)
     {
@@ -1680,12 +1681,36 @@ void Utils::SaveAnalyticalEff (std::string fileName, double q2Val, std::vector<d
   for (unsigned int k = 0; k < NcoeffThetaL; k++)
     {
       fileOutput << q2Val;
-      for (unsigned int j = 0; j < NcoeffThetaK; j++) fileOutput << "   " << effFuncPar->operator[](j+k*NcoeffThetaK) << "   " << (effFuncErr != NULL ? effFuncErr->operator[](j+k*NcoeffThetaK) : 0.0);
+      for (unsigned int j = 0; j < NcoeffThetaK; j++) fileOutput << "   " << effFunc->GetParameter(j+k*NcoeffThetaK) << "   " << effFunc->GetParError(j+k*NcoeffThetaK);
       fileOutput << std::endl;
     }
 
+  fileOutput << q2Val;
+  for (unsigned int l = 0; l < NcoeffPhi; l++) fileOutput << "   " << effFunc->GetParameter(l+NcoeffThetaL*NcoeffThetaK) << "   " << effFunc->GetParError(l+NcoeffThetaL*NcoeffThetaK);
+  fileOutput << std::endl;
+
   fileOutput.close();
 }
+
+// void Utils::SaveAnalyticalEff (std::string fileName, double q2Val, std::vector<double>* q2Bins, std::vector<double>* effFuncPar, std::vector<double>* effFuncErr)
+// {
+//   ofstream fileOutput;
+//   fileOutput.open(fileName.c_str(),ofstream::app);
+//   if (fileOutput.good() == false)
+//     {
+//       std::cout << "[Utils::SaveAnalyticalEff]\tError opening file : " << fileName << std::endl;
+//       exit (1);
+//     }
+  
+//   for (unsigned int k = 0; k < NcoeffThetaL; k++)
+//     {
+//       fileOutput << q2Val;
+//       for (unsigned int j = 0; j < NcoeffThetaK; j++) fileOutput << "   " << effFuncPar->operator[](j+k*NcoeffThetaK) << "   " << (effFuncErr != NULL ? effFuncErr->operator[](j+k*NcoeffThetaK) : 0.0);
+//       fileOutput << std::endl;
+//     }
+
+//   fileOutput.close();
+// }
 
 void Utils::SaveAnalyticalEffFullCovariance (std::string fileName, TMatrixTSym<double>* covMatrix, double q2Val, std::vector<double>* q2Bins)
 {
@@ -1791,6 +1816,84 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
   delete ParameterFile;
 }
 
+void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
+			       std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins,
+			       std::vector<TF3*>* effFuncs, std::string effID, const unsigned int dataBlockN)
+{
+  unsigned int indx;
+  std::stringstream myString;
+  double* coeffVec = new double[NcoeffThetaK];
+
+  std::vector<std::string> ParVector;
+  ReadParameters* ParameterFile = new ReadParameters(fileNameEffParams.c_str());
+
+
+  // ######################################
+  // # Read block of parameters from file #
+  // ######################################
+  ParameterFile->ReadFromFile(dataBlockN,&ParVector);
+
+  for (unsigned int q2BinIndx = 0; q2BinIndx < q2Bins->size()-1; q2BinIndx++)
+    {
+      myString.str("");
+      myString << effID << "_" << q2BinIndx;
+      effFuncs->push_back(new TF3(myString.str().c_str(),TellMeEffFuncThetaKThetaLPhi().c_str(),
+				  cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),
+				  cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),
+				  phiBins->operator[](0),phiBins->operator[](cosThetaLBins->size()-1)));
+      
+      std::cout << "\n@@@ Reading coefficients for analytical efficiency for set-" << q2BinIndx << " from file " << fileNameEffParams.c_str() << " @@@" << std::endl;
+      
+      for (unsigned int k = 0; k < NcoeffThetaL; k++)
+	{
+	  std::stringstream rawStringK(ParVector[k+q2BinIndx*NcoeffThetaL]);
+	  rawStringK >> coeffVec[0]; // Discard q2 bin value
+	  indx = 0;
+	  for (unsigned int j = 0; j < NcoeffThetaK*2; j = j+2)
+	    {
+	      rawStringK >> coeffVec[indx];
+	      effFuncs->operator[](q2BinIndx)->SetParameter(indx+NcoeffThetaK*k,coeffVec[indx]);
+	      rawStringK >> coeffVec[indx];
+	      effFuncs->operator[](q2BinIndx)->SetParError(indx+NcoeffThetaK*k,coeffVec[indx]);
+
+	      std::cout << "Theta_L coef. " << k << " --> reading coef. " << indx << " for var. theta_K: ";
+	      std::cout << effFuncs->operator[](q2BinIndx)->GetParameter(indx+NcoeffThetaK*k) << " +/- ";
+	      std::cout << effFuncs->operator[](q2BinIndx)->GetParError(indx+NcoeffThetaK*k) << std::endl;
+
+	      indx++;
+	    }
+	}
+
+      std::stringstream rawStringK(ParVector[NcoeffThetaL+q2BinIndx*NcoeffThetaL]);
+      rawStringK >> coeffVec[0]; // Discard q2 bin value
+      indx = 0;
+      for (unsigned int l = 0; l < NcoeffPhi*2; l = l+2)
+	{
+	  rawStringK >> coeffVec[indx];
+	  effFuncs->operator[](q2BinIndx)->SetParameter(indx+NcoeffThetaK*NcoeffThetaL,coeffVec[indx]);
+	  rawStringK >> coeffVec[indx];
+	  effFuncs->operator[](q2BinIndx)->SetParError(indx+NcoeffThetaK*NcoeffThetaL,coeffVec[indx]);
+	  
+	  std::cout << "Reading coef. " << indx << " for var. phi: ";
+	  std::cout << effFuncs->operator[](q2BinIndx)->GetParameter(indx+NcoeffThetaK*NcoeffThetaL) << " +/- ";
+	  std::cout << effFuncs->operator[](q2BinIndx)->GetParError(indx+NcoeffThetaK*NcoeffThetaL) << std::endl;
+
+	  indx++;
+	}
+      
+      effFuncs->operator[](q2BinIndx)->GetXaxis()->SetTitle("cos(#theta_{#font[122]{K}})");
+      effFuncs->operator[](q2BinIndx)->GetXaxis()->SetTitleOffset(1.8);
+      effFuncs->operator[](q2BinIndx)->GetYaxis()->SetTitle("cos(#theta_{#font[12]{l}})");
+      effFuncs->operator[](q2BinIndx)->GetYaxis()->SetTitleOffset(1.8);
+      effFuncs->operator[](q2BinIndx)->GetZaxis()->SetTitle("#phi");
+      effFuncs->operator[](q2BinIndx)->GetZaxis()->SetTitleOffset(1.8);
+    }
+
+  delete coeffVec;
+  ParVector.clear();
+  delete ParameterFile;
+}
+
 void Utils::ReadAnalyticalEffFullCovariance (std::string fileNameEffParams, std::vector<TMatrixTSym<double>*>* covMatrices, const unsigned int dataBlockN)
 // #######################
 // # x <--> cos(theta_K) #
@@ -1810,7 +1913,7 @@ void Utils::ReadAnalyticalEffFullCovariance (std::string fileNameEffParams, std:
   // ######################################
   ParameterFile->ReadFromFile(dataBlockN,&ParVector);
 
-  for (int q2BinIndx = 0; q2BinIndx < int(rint(ParVector.size()/Ncoeff)); q2BinIndx++)
+  for (int q2BinIndx = 0; q2BinIndx < static_cast<int>(rint(ParVector.size()/Ncoeff)); q2BinIndx++)
     {
       std::cout << "\n@@@ Reading covariance matrix for analytical efficiency for set-" << q2BinIndx << " from file " << fileNameEffParams.c_str() << " @@@" << std::endl;
       
@@ -1846,15 +1949,15 @@ double Utils::EffMinValue1D (double minX, double maxX, TF1* effFunc)
   // # Search for the minimal value of the 1D-function #
   // ###################################################
   for (unsigned int i = 0; i <= nsteps; i++)
-    if (effFunc->Eval(maxX - (maxX - minX) / ((double)nsteps) * ((double)i)) < minVal)
+    if (effFunc->Eval(maxX - (maxX - minX) / static_cast<double>(nsteps) * static_cast<double>(i)) < minVal)
       {
-	minVal = effFunc->Eval(maxX - (maxX - minX) / ((double)nsteps) * ((double)i));
+	minVal = effFunc->Eval(maxX - (maxX - minX) / static_cast<double>(nsteps) * static_cast<double>(i));
 	iMem = i;
       }
   
-  std::cout << "\n@@@ Efficiency minimal value (if less than zero): " << minVal << " at: X = " << maxX - (maxX - minX) / ((double)nsteps) * ((double)iMem);
-  std::cout << " (step along X: " << (maxX - minX) / ((double)nsteps) << ") @@@" << std::endl;
-
+  std::cout << "\n@@@ Efficiency minimal value (if less than zero): " << minVal << " at: X = " << maxX - (maxX - minX) / static_cast<double>(nsteps) * static_cast<double>(iMem);
+  std::cout << " (step along X: " << (maxX - minX) / static_cast<double>(nsteps) << ") @@@" << std::endl;
+  
   return minVal;
 }
 
@@ -1870,22 +1973,63 @@ double Utils::EffMinValue2D (std::vector<double>* cosThetaKBins, std::vector<dou
   // ###############################################################################################################################################
   for (unsigned int i = 0; i <= nsteps; i++)
     for (unsigned int j = 0; j <= nsteps; j++)
-      if (effFunc->Eval(cosThetaKBins->operator[](cosThetaKBins->size()-1) - (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / ((double)nsteps) * (double)j,
-			cosThetaLBins->operator[](cosThetaLBins->size()-1) - (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / ((double)nsteps) * (double)i) < minVal)
+      if (effFunc->Eval(cosThetaKBins->operator[](cosThetaKBins->size()-1) - (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(j),
+			cosThetaLBins->operator[](cosThetaLBins->size()-1) - (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(i)) < minVal)
 	{
-	  minVal = effFunc->Eval(cosThetaKBins->operator[](cosThetaKBins->size()-1) - (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / ((double)nsteps) * (double)j,
-				 cosThetaLBins->operator[](cosThetaLBins->size()-1) - (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / ((double)nsteps) * (double)i);
+	  minVal = effFunc->Eval(cosThetaKBins->operator[](cosThetaKBins->size()-1) - (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(j),
+				 cosThetaLBins->operator[](cosThetaLBins->size()-1) - (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(i));
 	  iMem = i;
 	  jMem = j;
 	}
   
   std::cout << "\n@@@ Efficiency minimal value (if less than zero): " << minVal << " at: (theta_K,theta_l = ";
-  std::cout << cosThetaKBins->operator[](cosThetaKBins->size()-1) - (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / ((double)nsteps) * (double)jMem << ",";
-  std::cout << cosThetaLBins->operator[](cosThetaLBins->size()-1) - (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / ((double)nsteps) * (double)iMem << ")";
+  std::cout << cosThetaKBins->operator[](cosThetaKBins->size()-1) - (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(jMem) << ",";
+  std::cout << cosThetaLBins->operator[](cosThetaLBins->size()-1) - (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(iMem) << ")";
   std::cout << " (grid step along cos(theta_K): ";
-  std::cout << (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / ((double)nsteps);
+  std::cout << (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / static_cast<double>(nsteps);
   std::cout << "; grid step along cos(theta_l): ";
-  std::cout << (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / ((double)nsteps);
+  std::cout << (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / static_cast<double>(nsteps);
+  std::cout << ") @@@" << std::endl;
+
+  return minVal;
+}
+
+double Utils::EffMinValue3D (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, TF3* effFunc)
+{
+  const unsigned int nsteps = 2000;
+  unsigned int iMem = 0;
+  unsigned int jMem = 0;
+  unsigned int lMem = 0;
+  double minVal = 0.0;
+
+  // ###############################################################################################################################################
+  // # Search for the minimal value of the efficiency scanning the domain lattice divided in nsteps per coordinate, i.e. nsteps*nsteps grid matrix #
+  // ###############################################################################################################################################
+  for (unsigned int i = 0; i <= nsteps; i++)
+    for (unsigned int j = 0; j <= nsteps; j++)
+      for (unsigned int l = 0; l <= nsteps; l++)
+	if (effFunc->Eval(cosThetaKBins->operator[](cosThetaKBins->size()-1) - (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(j),
+			  cosThetaLBins->operator[](cosThetaLBins->size()-1) - (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(i),
+			  phiBins->operator[](phiBins->size()-1)             - (phiBins->operator[](phiBins->size()-1)             - phiBins->operator[](0))       / static_cast<double>(nsteps) * static_cast<double>(l)) < minVal)
+	  {
+	    minVal = effFunc->Eval(cosThetaKBins->operator[](cosThetaKBins->size()-1) - (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(j),
+				   cosThetaLBins->operator[](cosThetaLBins->size()-1) - (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(i),
+				   phiBins->operator[](phiBins->size()-1)             - (phiBins->operator[](phiBins->size()-1)             - phiBins->operator[](0))       / static_cast<double>(nsteps) * static_cast<double>(l));
+	    iMem = i;
+	    jMem = j;
+	    lMem = l;
+	  }
+  
+  std::cout << "\n@@@ Efficiency minimal value (if less than zero): " << minVal << " at: (theta_K,theta_l,phi = ";
+  std::cout << cosThetaKBins->operator[](cosThetaKBins->size()-1) - (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(jMem) << ",";
+  std::cout << cosThetaLBins->operator[](cosThetaLBins->size()-1) - (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(iMem) << ",";
+  std::cout << phiBins->operator[](phiBins->size()-1)             - (phiBins->operator[](phiBins->size()-1)             - phiBins->operator[](0))       / static_cast<double>(nsteps) * static_cast<double>(lMem) << ")";
+  std::cout << " (grid step along cos(theta_K): ";
+  std::cout << (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / static_cast<double>(nsteps);
+  std::cout << "; grid step along cos(theta_l): ";
+  std::cout << (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / static_cast<double>(nsteps);
+  std::cout << "; grid step along phi: ";
+  std::cout << (phiBins->operator[](phiBins->size()-1)             - phiBins->operator[](0))       / static_cast<double>(nsteps);
   std::cout << ") @@@" << std::endl;
 
   return minVal;
@@ -2518,15 +2662,15 @@ bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigChe
 	  // #####################
 	  // # Choose good muons #
 	  // #####################
-	  (NTuple->mumNTrkLayers->at(i) > int(rint(GetSeleCut("NTrkLayers")))) &&
-	  (NTuple->mumNPixLayers->at(i) > int(rint(GetSeleCut("NPixLayers")))) &&
+	  (NTuple->mumNTrkLayers->at(i) > static_cast<int>(rint(GetSeleCut("NTrkLayers")))) &&
+	  (NTuple->mumNPixLayers->at(i) > static_cast<int>(rint(GetSeleCut("NPixLayers")))) &&
 	  (NTuple->mumNormChi2->at(i) < GetSeleCut("NormChi2")) &&
 	  (fabs(NTuple->mumdxyVtx->at(i)) < GetSeleCut("dxyVtx")) &&
 	  (fabs(NTuple->mumdzVtx->at(i)) < GetSeleCut("dzVtx")) &&
 	  (NTuple->mumCat->at(i).find("TMOneStationTight") != std::string::npos) &&
 	  
-	  (NTuple->mupNTrkLayers->at(i) > int(rint(GetSeleCut("NTrkLayers")))) &&
-	  (NTuple->mupNPixLayers->at(i) > int(rint(GetSeleCut("NPixLayers")))) &&
+	  (NTuple->mupNTrkLayers->at(i) > static_cast<int>(rint(GetSeleCut("NTrkLayers")))) &&
+	  (NTuple->mupNPixLayers->at(i) > static_cast<int>(rint(GetSeleCut("NPixLayers")))) &&
 	  (NTuple->mupNormChi2->at(i) < GetSeleCut("NormChi2")) &&
 	  (fabs(NTuple->mupdxyVtx->at(i)) < GetSeleCut("dxyVtx")) &&
 	  (fabs(NTuple->mupdzVtx->at(i)) < GetSeleCut("dzVtx")) &&
@@ -2617,10 +2761,10 @@ bool Utils::FlavorTagger (B0KstMuMuTreeContent* NTuple, unsigned int i, bool* B0
   // # ###########################################
   // # Scramble the tagging of the CP-eigenstate #
   // # ###########################################
-  double rndDice = ((double)rand()) / ((double)RAND_MAX);
+  double rndDice = static_cast<double>(rand()) / static_cast<double>(RAND_MAX);
   if (rndDice < scrambleFraction)
     {
-      rndDice = ((double)rand()) / ((double)RAND_MAX);
+      rndDice = static_cast<double>(rand()) / static_cast<double>(RAND_MAX);
       if (rndDice < 0.5)
 	{
 	  if (*B0notB0bar == false)

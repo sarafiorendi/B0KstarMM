@@ -582,7 +582,7 @@ template<class T> void AddEvWeightPileup (T* NTupleOut)
       NTupleOut->CopyWholeNTuple(NTupleIn);
 
       if (typeid(T) == typeid(B0KstMuMuSingleCandTreeContent)) HLTpathIndx = ((B0KstMuMuSingleCandTreeContent*)NTupleOut)->TrigCat;
-      else                                                     HLTpathIndx = Utility->HLTpathForEvFraction(((double)entry)/((double)nEntries));
+      else                                                     HLTpathIndx = Utility->HLTpathForEvFraction(static_cast<double>(entry)/static_cast<double>(nEntries));
 
       for (unsigned int i = 0; i < NTupleOut->bunchXingMC->size(); i++)
 	{

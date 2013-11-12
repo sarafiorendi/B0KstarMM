@@ -26,7 +26,7 @@
 #include <TFitResult.h>
 #endif
 
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <sstream>
 
@@ -1327,7 +1327,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   myString.str("");
   myString << "Histo_q2Bin_" << q2BinIndx;
   TH3D* Histo = new TH3D(myString.str().c_str(), myString.str().c_str(), cosThetaKBins->size()-1, cosThetaKBins_, cosThetaLBins->size()-1, cosThetaLBins_, phiBins->size()-1, phiBins_);
-  Histo->SetXTitle("cos(#theta_{K})");
+  Histo->SetXTitle("cos(#theta_{#font[122]{K}})");
   Histo->GetXaxis()->SetTitleOffset(1.8);
   Histo->SetYTitle("cos(#theta_{#font[12]{l}})");
   Histo->GetYaxis()->SetTitleOffset(1.8);
@@ -1347,15 +1347,18 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  Histo->SetBinError(j+1,k+1,l+1,EffErr);
 	}
 
-  // Utility->ReadAnalyticalEff(INPUT2DEffRef,q2Bins,cosThetaKBins,cosThetaLBins,&effFuncsRef,"effFuncsRef",0);
-  // effFuncsRef[q2BinIndx]->SetRange(cosThetaKBins->operator[](0),
-  // 				   cosThetaLBins->operator[](0) - abscissaErr,
-  // 				   cosThetaKBins->operator[](cosThetaKBins->size()-1) + abscissaErr,
-  // 				   cosThetaLBins->operator[](cosThetaLBins->size()-1) + abscissaErr);
+
+  Utility->ReadAnalyticalEff(INPUT2DEffRef,q2Bins,cosThetaKBins,cosThetaLBins,phiBins, &effFuncsRef,"effFuncsRef",0);
+  effFuncsRef[q2BinIndx]->SetRange(cosThetaKBins->operator[](0),
+  				   cosThetaLBins->operator[](0) - abscissaErr,
+				   phiBins->operator[](0) - abscissaErr,
+  				   cosThetaKBins->operator[](cosThetaKBins->size()-1) + abscissaErr,
+  				   cosThetaLBins->operator[](cosThetaLBins->size()-1) + abscissaErr,
+				   phiBins->operator[](phiBins->size()-1) + abscissaErr);
 
 
-  // for (int i = 0; i < effFuncsRef[q2BinIndx]->GetNpar(); i++)
-  //   if (effFuncsRef[q2BinIndx]->GetParError(i) == 0.0) effFuncsRef[q2BinIndx]->FixParameter(i,effFuncsRef[q2BinIndx]->GetParameter(i));
+  for (int i = 0; i < effFuncsRef[q2BinIndx]->GetNpar(); i++)
+    if (effFuncsRef[q2BinIndx]->GetParError(i) == 0.0) effFuncsRef[q2BinIndx]->FixParameter(i,effFuncsRef[q2BinIndx]->GetParameter(i));
 
 
   // // ############################################################################################
@@ -1365,22 +1368,22 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
 
   cTestGlobalFit->cd();
-  // fitResults = Histo->Fit(effFuncsRef[q2BinIndx]->GetName(),"VMRS");
-  // TMatrixTSym<double> covMatrix(fitResults->GetCovarianceMatrix());
-  // effFuncsRef[q2BinIndx]->Draw("surf1");
-  // Histo->Draw("lego2");
-  // cTestGlobalFit->Update();
+  fitResults = Histo->Fit(effFuncsRef[q2BinIndx]->GetName(),"VMRS");
+  TMatrixTSym<double> covMatrix(fitResults->GetCovarianceMatrix());
+  effFuncsRef[q2BinIndx]->Draw("surf1"); // @@@TMP@@@
+  Histo->Draw("lego2"); // @@@TMP@@@
+  cTestGlobalFit->Update();
 
-  // cout << "@@@ chi2/DoF = " << effFuncsRef[q2BinIndx]->GetChisquare() / effFuncsRef[q2BinIndx]->GetNDF() << " (" << effFuncsRef[q2BinIndx]->GetChisquare() << "/" << effFuncsRef[q2BinIndx]->GetNDF() << ")";
-  // cout << "\tCL : " << TMath::Prob(effFuncsRef[q2BinIndx]->GetChisquare(),effFuncsRef[q2BinIndx]->GetNDF()) << " @@@" << endl;
+  cout << "@@@ chi2/DoF = " << effFuncsRef[q2BinIndx]->GetChisquare() / effFuncsRef[q2BinIndx]->GetNDF() << " (" << effFuncsRef[q2BinIndx]->GetChisquare() << "/" << effFuncsRef[q2BinIndx]->GetNDF() << ")";
+  cout << "\tCL : " << TMath::Prob(effFuncsRef[q2BinIndx]->GetChisquare(),effFuncsRef[q2BinIndx]->GetNDF()) << " @@@" << endl;
 
 
   // // ############################################################################################
   // // # Add constraint along X (= cosThetaK) where it is necessary to bound the function at zero #
   // // ############################################################################################
-  // if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncsRef[q2BinIndx]) < 0.0)
-  //   {
-  //     cout << "@@@ Efficiency is still negative ! @@@" << endl;
+  if (Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,effFuncsRef[q2BinIndx]) < 0.0)
+    {
+      cout << "@@@ Efficiency is still negative ! @@@" << endl;
 
   //     Utility->AddConstraint2D(&Histo,abscissaErr,ordinateVal,ordinateErr,q2BinIndx,"X");
   //     cTestGlobalFit->cd();
@@ -1400,28 +1403,28 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
   //     covMatrixConstr.Clear();
 
-  //     if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncsRef[q2BinIndx]) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit(1); }
-  //   }
-  // else
-  //   {
-  //     Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFuncsRef[q2BinIndx],(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
-  //     fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
-  //     Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrix,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
+      if (Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,effFuncsRef[q2BinIndx]) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit(1); }
+    }
+  else
+    {
+      Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFuncsRef[q2BinIndx],(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
+      fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
+      Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrix,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
 
-  //     covMatrix.Clear();
-  //   }
+      covMatrix.Clear();
+    }
 
 
   // // ########################################
   // // # Check integrity of covariance matrix #
   // // ########################################
-  // vector<TMatrixTSym<double>*>* covMatrices = new vector<TMatrixTSym<double>*>;
-  // Utility->ReadAnalyticalEffFullCovariance(fileNameOut.c_str(),covMatrices,0);
+  vector<TMatrixTSym<double>*>* covMatrices = new vector<TMatrixTSym<double>*>;
+  Utility->ReadAnalyticalEffFullCovariance(fileNameOut.c_str(),covMatrices,0);
 
 
-  // effFuncsRef.clear();
-  // covMatrices->clear();
-  // delete covMatrices;
+  effFuncsRef.clear();
+  covMatrices->clear();
+  delete covMatrices;
 }
 
 
