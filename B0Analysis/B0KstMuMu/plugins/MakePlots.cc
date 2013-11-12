@@ -1824,7 +1824,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       {
 	if (Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false)
 	  {
-	    probHisto->SetBinContent(i+1,TMath::Prob(chi2Histo->GetBinContent(i+1),1.0));
+	    probHisto->SetBinContent(i+1,TMath::Prob(chi2Histo->GetBinContent(i+1),1));
 	  }
       }
     else probHisto->SetBinContent(i+1,0.0);

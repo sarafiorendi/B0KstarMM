@@ -1322,7 +1322,8 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // #################
 
 
-  TCanvas* cTestGlobalFit = new TCanvas("cTestGlobalFit", "cTestGlobalFit", 10, 10, 700, 500);
+  TCanvas* cTestGlobalFit = new TCanvas("cTestGlobalFit", "cTestGlobalFit", 10, 10, 900, 500);
+  cTestGlobalFit->Divide(3,1);
 
   myString.str("");
   myString << "Histo_q2Bin_" << q2BinIndx;
@@ -1364,14 +1365,20 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // // ############################################################################################
   // // # Add constraint along Y (= cosThetaL) where it is necessary to bound the function at zero #
   // // ############################################################################################
+  // @@@TMP@@@
   // Utility->AddConstraintThetaK(&Histo,cosThetaKBins,q2BinIndx,abscissaErr,ordinateVal,ordinateErr,q2BinIndx);
 
 
   cTestGlobalFit->cd();
   fitResults = Histo->Fit(effFuncsRef[q2BinIndx]->GetName(),"VMRS");
   TMatrixTSym<double> covMatrix(fitResults->GetCovarianceMatrix());
-  effFuncsRef[q2BinIndx]->Draw("surf1"); // @@@TMP@@@
-  Histo->Draw("lego2"); // @@@TMP@@@
+  cTestGlobalFit->cd(1);
+  // effFuncsRef[q2BinIndx]->Draw("surf1"); // @@@TMP@@@
+  Histo->Project3D("xy")->Draw("lego2");
+  cTestGlobalFit->cd(2);
+  Histo->Project3D("xz")->Draw("lego2");
+  cTestGlobalFit->cd(3);
+  Histo->Project3D("zy")->Draw("lego2");
   cTestGlobalFit->Update();
 
   cout << "@@@ chi2/DoF = " << effFuncsRef[q2BinIndx]->GetChisquare() / effFuncsRef[q2BinIndx]->GetNDF() << " (" << effFuncsRef[q2BinIndx]->GetChisquare() << "/" << effFuncsRef[q2BinIndx]->GetNDF() << ")";
@@ -1385,23 +1392,28 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
     {
       cout << "@@@ Efficiency is still negative ! @@@" << endl;
 
+  // @@@TMP@@@
   //     Utility->AddConstraint2D(&Histo,abscissaErr,ordinateVal,ordinateErr,q2BinIndx,"X");
-  //     cTestGlobalFit->cd();
-  //     fitResults = Histo->Fit(effFuncsRef[q2BinIndx]->GetName(),"VMRS");
-  //     TMatrixTSym<double> covMatrixConstr(fitResults->GetCovarianceMatrix());
-  //     effFuncsRef[q2BinIndx]->Draw("surf1");
-  //     Histo->Draw("lego2");
-  //     cTestGlobalFit->Update();
+      fitResults = Histo->Fit(effFuncsRef[q2BinIndx]->GetName(),"VMRS");
+      TMatrixTSym<double> covMatrixConstr(fitResults->GetCovarianceMatrix());
+      cTestGlobalFit->cd(1);
+      // effFuncsRef[q2BinIndx]->Draw("surf1"); // @@@TMP@@@
+      Histo->Project3D("xy")->Draw("lego2");
+      cTestGlobalFit->cd(2);
+      Histo->Project3D("xz")->Draw("lego2");
+      cTestGlobalFit->cd(3);
+      Histo->Project3D("zy")->Draw("lego2");
+      cTestGlobalFit->Update();
 
-  //     cout << "@@@ chi2/DoF = " << effFuncsRef[q2BinIndx]->GetChisquare() / effFuncsRef[q2BinIndx]->GetNDF() << " (" << effFuncsRef[q2BinIndx]->GetChisquare() << "/" << effFuncsRef[q2BinIndx]->GetNDF() << ")";
-  //     cout << "\tCL : " << TMath::Prob(effFuncsRef[q2BinIndx]->GetChisquare(),effFuncsRef[q2BinIndx]->GetNDF()) << " @@@" << endl;
-  //     Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncsRef[q2BinIndx]);
+      cout << "@@@ chi2/DoF = " << effFuncsRef[q2BinIndx]->GetChisquare() / effFuncsRef[q2BinIndx]->GetNDF() << " (" << effFuncsRef[q2BinIndx]->GetChisquare() << "/" << effFuncsRef[q2BinIndx]->GetNDF() << ")";
+      cout << "\tCL : " << TMath::Prob(effFuncsRef[q2BinIndx]->GetChisquare(),effFuncsRef[q2BinIndx]->GetNDF()) << " @@@" << endl;
+      Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,effFuncsRef[q2BinIndx]);
 
-  //     Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFuncsRef[q2BinIndx],(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
-  //     fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
-  //     Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrixConstr,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
+      Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFuncsRef[q2BinIndx],(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
+      fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
+      Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrixConstr,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
 
-  //     covMatrixConstr.Clear();
+      covMatrixConstr.Clear();
 
       if (Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,effFuncsRef[q2BinIndx]) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit(1); }
     }
@@ -1524,9 +1536,9 @@ void TestEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vect
   DoF = (cosThetaKBins->size()-1)*(cosThetaLBins->size()-1) - DoF; // DoF = number of bins - number of fit parameters
   cout << "\n@@@ chi2 test between binned and analytical efficiencies @@@" << endl;
   cout << "chi2/DoF (average over the bin) = " << chi2avg / DoF << " (" << chi2avg << "/" << DoF << ")";
-  cout << "\tCL : " << TMath::Prob(chi2avg,DoF) << endl;
+  cout << "\tCL : " << TMath::Prob(chi2avg,static_cast<int>(DoF)) << endl;
   cout << "chi2/DoF (by point) = " << chi2point / DoF << " (" << chi2point << "/" << DoF << ")";
-  cout << "\tCL : " << TMath::Prob(chi2point,DoF) << endl;
+  cout << "\tCL : " << TMath::Prob(chi2point,static_cast<int>(DoF)) << endl;
   Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,EffFuncRef);
 
 
@@ -1654,6 +1666,7 @@ int main (int argc, char** argv)
       cout << "INPUTTHETAL: "    << INPUTTHETAL << endl;
       cout << "INPUT2DEffRef: "  << INPUT2DEffRef << endl;
       cout << "INPUT2DEffComp: " << INPUT2DEffComp << endl;
+      cout << "INPUT3DEffRef: "  << INPUT3DEffRef << endl;
       cout << "Save plot: "      << SavePlot << endl;
       cout << "CHECKEFFatREAD: " << CHECKEFFatREAD << endl;
       cout << "NFILES: "         << NFILES << endl;
@@ -1817,7 +1830,7 @@ int main (int argc, char** argv)
 	  theApp.Run (); // Eventloop on air
 	  return 0;
 	}
-      else if (((option == "FitEff1D") && (argc == 5)) || ((option == "FitEff2D") && (argc == 4)))
+      else if (((option == "FitEff1D") && (argc == 5)) || ((option == "FitEff2D") && (argc == 4)) || ((option == "FitEff3D") && (argc == 4)))
 	{
 	  string fileNameInput   = argv[2];
 	  unsigned int q2BinIndx = atoi(argv[3]);
@@ -1848,6 +1861,7 @@ int main (int argc, char** argv)
 
 	  if      (option == "FitEff1D") Fit1DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,whichVar2Fit,q2BinIndx,"Theta.txt");
 	  else if (option == "FitEff2D") Fit2DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,"ThetaKThetaL.txt");
+	  else if (option == "FitEff3D") Fit3DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,"ThetaKThetaLPhi.txt");
 
 
 	  delete Utility;
@@ -1904,7 +1918,7 @@ int main (int argc, char** argv)
 	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
 
 	  cout << "\nParameter missing: " << endl;
-	  cout << "./ComputeEfficiency [Make ReadBin ReadAnaly ReadGenAnaly FitEff1D FitEff2D TestEff] " << endl;
+	  cout << "./ComputeEfficiency [Make ReadBin ReadAnaly ReadGenAnaly FitEff1D FitEff2D FitEff3D TestEff] " << endl;
 	  cout << "[inputFileGenCandidatesNoFilter.root inputFileGenCandidatesFilter.root inputRecoCandidates.root inputFileSingleCand.root] " << endl;
 	  cout << "[out/in]putFile.txt [q2 bin indx.]" << endl;
 
@@ -1917,6 +1931,7 @@ int main (int argc, char** argv)
 
 	  cout << "FitEff1D     --> file with binned efficiency AND [q2 bin indx.] [thetaL thetaK]" << endl;
 	  cout << "FitEff2D     --> file with binned efficiency AND [q2 bin indx.]" << endl;
+	  cout << "FitEff3D     --> file with binned efficiency AND [q2 bin indx.]" << endl;
 
 	  cout << "TestEff      --> file with binned efficiency AND [q2 bin indx.]" << endl;
 
@@ -1940,7 +1955,7 @@ int main (int argc, char** argv)
       cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
 
       cout << "\nParameter missing: " << endl;
-      cout << "./ComputeEfficiency [Make ReadBin ReadAnaly ReadGenAnaly FitEff1D FitEff2D TestEff] " << endl;
+      cout << "./ComputeEfficiency [Make ReadBin ReadAnaly ReadGenAnaly FitEff1D FitEff2D FitEff3D TestEff] " << endl;
       cout << "[inputFileGenCandidatesNoFilter.root inputFileGenCandidatesFilter.root inputRecoCandidates.root inputFileSingleCand.root] " << endl;
       cout << "[out/in]putFile.txt [q2 bin indx.]" << endl;
 
@@ -1953,7 +1968,8 @@ int main (int argc, char** argv)
 
       cout << "FitEff1D     --> file with binned efficiency AND [q2 bin indx.] [thetaL thetaK]" << endl;
       cout << "FitEff2D     --> file with binned efficiency AND [q2 bin indx.]" << endl;
-      
+      cout << "FitEff3D     --> file with binned efficiency AND [q2 bin indx.]" << endl;
+
       cout << "TestEff      --> file with binned efficiency AND [q2 bin indx.]" << endl;
 
       return 1;
