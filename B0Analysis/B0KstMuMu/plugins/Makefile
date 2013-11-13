@@ -1,9 +1,14 @@
+OS            := $(shell uname)
+ifeq ($(OS), Darwin)
+CXX           := clang++
+endif
+ifeq ($(OS), Linux)
 CXX           := g++
+endif
 CXXFLAGS      := -g -ansi -Wall -m64 -O3
 
 SOURCEDIR     := ../src
-TEST          := $(wildcard $(SOURCEDIR)/*.cc)
-SOURCES       := $(filter-out $(SOURCEDIR)/B0KstMuMu.cc,$(TEST))
+SOURCES       := $(filter-out $(SOURCEDIR)/B0KstMuMu.cc,$(wildcard $(SOURCEDIR)/*.cc))
 
 INCLUDEDIR    := ../interface
 INCLUDES      := -I $(INCLUDEDIR)
@@ -18,8 +23,6 @@ GSLFLAGS      := -L $(HOME)/gsl/lib -lgsl
 
 ROOTFLAGS     := `root-config --cflags --glibs` -lMinuit
 ROOFITFLAGS   := $(ROOTFLAGS) -lRooFit -lRooFitCore -lFoam
-
-LOCALCC       := $(wildcard *.cc)
 
 
 SingleCandB0KstMuMu: $(SOURCEDIR) $(INCLUDEDIR) SingleCandB0KstMuMu.cc
@@ -40,5 +43,6 @@ MakePlots: $(SOURCEDIR) $(INCLUDEDIR) MakePlots.cc
 ExtractYield: $(SOURCEDIR) $(INCLUDEDIR) ExtractYield.cc
 	$(CXX) $(CXXFLAGS) -o $@ $(ROOFITFLAGS) $(INCLUDES) $(SOURCES) $@.cc
 
+LOCALCC := $(wildcard *.cc)
 clean:
 	$(RM)r $(LOCALCC:%.cc=%) $(LOCALCC:%.cc=%.dSYM) Macros_C.*
