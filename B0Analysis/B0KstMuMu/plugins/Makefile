@@ -1,40 +1,44 @@
-CC            = g++
-CCFLAGS       = -g -ansi -Wall -m64 -O3
+CXX           := g++
+CXXFLAGS      := -g -ansi -Wall -m64 -O3
 
-MYSOURCEDIR   = ../src
-MYSOURCES     = $(MYSOURCEDIR)/B0KstMuMuTreeContent.cc $(MYSOURCEDIR)/B0KstMuMuSingleCandTreeContent.cc $(MYSOURCEDIR)/Utils.cc $(MYSOURCEDIR)/ReadParameters.cc
+SOURCEDIR     := ../src
+TEST          := $(wildcard $(SOURCEDIR)/*.cc)
+SOURCES       := $(filter-out $(SOURCEDIR)/B0KstMuMu.cc,$(TEST))
 
-MYINDIR       = ../interface
-MYINFLAGS     = -I $(MYINDIR)
+INCLUDEDIR    := ../interface
+INCLUDES      := -I $(INCLUDEDIR)
 
-XERCESINFLAGS = -I $(HOME)/xerces/include
-BOOSTINFLAGS  = -I $(HOME)/boost
-GSLINCFLAGS   = -I $(HOME)/gsl/include
+XERCESINFLAGS := -I $(HOME)/xerces/include
+BOOSTINFLAGS  := -I $(HOME)/boost
+GSLINCFLAGS   := -I $(HOME)/gsl/include
 
-XERCESFLAGS   = -L $(HOME)/xerces/lib -lxerces-c
-BOOSTFLFLAGS  = -L $(HOME)/boost/stage/lib
-GSLFLAGS      = -L $(HOME)/gsl/lib -lgsl
-ROOTFLAGS     = `root-config --cflags --glibs` -lMinuit
-ROOFITFLAGS   = `root-config --cflags --glibs` -lRooFit -lRooFitCore -lFoam -lMinuit
+XERCESFLAGS   := -L $(HOME)/xerces/lib -lxerces-c
+BOOSTFLFLAGS  := -L $(HOME)/boost/stage/lib
+GSLFLAGS      := -L $(HOME)/gsl/lib -lgsl
+
+ROOTFLAGS     := `root-config --cflags --glibs` -lMinuit
+ROOFITFLAGS   := $(ROOTFLAGS) -lRooFit -lRooFitCore -lFoam
+
+LOCAL         := $(wildcard *.cc)
 
 
-SingleCandB0KstMuMu: $(MYSOURCEDIR) $(MYINDIR) SingleCandB0KstMuMu.cc
-	$(CC) $(CCFLAGS) -o SingleCandB0KstMuMu $(ROOTFLAGS) $(MYINFLAGS) $(MYSOURCES) SingleCandB0KstMuMu.cc
+SingleCandB0KstMuMu: $(SOURCEDIR) $(INCLUDEDIR) SingleCandB0KstMuMu.cc
+	$(CXX) $(CXXFLAGS) -o $@ $(ROOTFLAGS) $(INCLUDES) $(SOURCES) $@.cc
 
-AddVars2Candidates: $(MYSOURCEDIR) $(MYINDIR) AddVars2Candidates.cc
-	$(CC) $(CCFLAGS) -o AddVars2Candidates $(ROOTFLAGS) $(MYINFLAGS) $(MYSOURCES) AddVars2Candidates.cc
+AddVars2Candidates: $(SOURCEDIR) $(INCLUDEDIR) AddVars2Candidates.cc
+	$(CXX) $(CXXFLAGS) -o $@ $(ROOTFLAGS) $(INCLUDES) $(SOURCES) $@.cc
 
-ExtractYield: $(MYSOURCEDIR) $(MYINDIR) ExtractYield.cc
-	$(CC) $(CCFLAGS) -o ExtractYield $(ROOFITFLAGS) $(MYINFLAGS) $(MYSOURCES) ExtractYield.cc
+B0KstMuMuScanCuts: $(SOURCEDIR) $(INCLUDEDIR) B0KstMuMuScanCuts.cc
+	$(CXX) $(CXXFLAGS) -o $@ $(ROOTFLAGS) $(INCLUDES) $(SOURCES) $@.cc
 
-ComputeEfficiency: $(MYSOURCEDIR) $(MYINDIR) ComputeEfficiency.cc
-	$(CC) $(CCFLAGS) -o ComputeEfficiency $(ROOTFLAGS) $(MYINFLAGS) $(MYSOURCES) ComputeEfficiency.cc
+ComputeEfficiency: $(SOURCEDIR) $(INCLUDEDIR) ComputeEfficiency.cc
+	$(CXX) $(CXXFLAGS) -o $@ $(ROOTFLAGS) $(INCLUDES) $(SOURCES) $@.cc
 
-MakePlots: $(MYSOURCEDIR) $(MYINDIR) MakePlots.cc
-	$(CC) $(CCFLAGS) -o MakePlots $(ROOTFLAGS) $(MYINFLAGS) $(MYSOURCES) MakePlots.cc
+MakePlots: $(SOURCEDIR) $(INCLUDEDIR) MakePlots.cc
+	$(CXX) $(CXXFLAGS) -o $@ $(ROOTFLAGS) $(INCLUDES) $(SOURCES) $@.cc
 
-B0KstMuMuScanCuts: $(MYSOURCEDIR) $(MYINDIR) B0KstMuMuScanCuts.cc
-	$(CC) $(CCFLAGS) -o B0KstMuMuScanCuts $(ROOTFLAGS) $(MYINFLAGS) $(MYSOURCES) B0KstMuMuScanCuts.cc
+ExtractYield: $(SOURCEDIR) $(INCLUDEDIR) ExtractYield.cc
+	$(CXX) $(CXXFLAGS) -o $@ $(ROOFITFLAGS) $(INCLUDES) $(SOURCES) $@.cc
 
 clean:
-	rm -rf SingleCandB0KstMuMu AddVars2Candidates ExtractYield ComputeEfficiency MakePlots B0KstMuMuScanCuts SingleCandB0KstMuMu.dSYM AddVars2Candidates.dSYM ExtractYield.dSYM ComputeEfficiency.dSYM MakePlots.dSYM B0KstMuMuScanCuts.dSYM Macros_C.*
+	$(RM) $(LOCAL:%.cc=%) $(LOCAL:%.cc=%.dSYM) Macros_C.*
