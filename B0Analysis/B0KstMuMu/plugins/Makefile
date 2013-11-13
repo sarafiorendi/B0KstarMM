@@ -19,7 +19,7 @@ GSLFLAGS      := -L $(HOME)/gsl/lib -lgsl
 ROOTFLAGS     := `root-config --cflags --glibs` -lMinuit
 ROOFITFLAGS   := $(ROOTFLAGS) -lRooFit -lRooFitCore -lFoam
 
-LOCAL         := $(wildcard *.cc)
+LOCALCC       := $(wildcard *.cc)
 
 
 SingleCandB0KstMuMu: $(SOURCEDIR) $(INCLUDEDIR) SingleCandB0KstMuMu.cc
@@ -41,4 +41,4 @@ ExtractYield: $(SOURCEDIR) $(INCLUDEDIR) ExtractYield.cc
 	$(CXX) $(CXXFLAGS) -o $@ $(ROOFITFLAGS) $(INCLUDES) $(SOURCES) $@.cc
 
 clean:
-	$(RM) $(LOCAL:%.cc=%) $(LOCAL:%.cc=%.dSYM) Macros_C.*
+	$(RM)r $(LOCALCC:%.cc=%) $(LOCALCC:%.cc=%.dSYM) Macros_C.*
