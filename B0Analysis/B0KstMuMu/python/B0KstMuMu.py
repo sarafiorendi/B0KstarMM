@@ -51,10 +51,7 @@ else:
 process.source = cms.Source('PoolSource',
                             duplicateCheckMode = cms.untracked.string('noDuplicateCheck'),
                             skipEvents = cms.untracked.uint32(0),
-                            fileNames = cms.untracked.vstring(
-#    'rfio:/castor/cern.ch/user/d/dinardo/MyJPsiKstpMC/MyJPsiKstpSkim_1_1_yR4.root'
-                                readFiles
-                            ))
+                            fileNames = cms.untracked.vstring(readFiles))
 
 
 ##################################
