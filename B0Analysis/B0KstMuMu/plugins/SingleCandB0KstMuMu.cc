@@ -580,7 +580,7 @@ int main (int argc, char** argv)
 	  else
 	    {
 	      cout << "[SingleCandB0KstMuMu::main]\tWrong option: " << option << endl;
-	      exit(1);
+	      exit (EXIT_FAILURE);
 	    }
 	  cout << "\n@@@ Single candidate optimization cut done @@@" << endl;
 
@@ -598,14 +598,14 @@ int main (int argc, char** argv)
 	      NTupleOut->Destroy();
 	      delete NTupleOut;
 	    }
-	  return 0;
+	  return EXIT_SUCCESS;
 	}
       else
 	{
 	  cout << "Parameter missing: " << endl;
 	  cout << "./SingleCandB0KstMuMu [singlecand eff] inputFile.root [outputFile.root]" << endl;
 
-	  return 1;
+	  return EXIT_FAILURE;
 	}
     }
   else
@@ -613,8 +613,8 @@ int main (int argc, char** argv)
       cout << "Parameter missing: " << endl;
       cout << "./SingleCandB0KstMuMu [singlecand eff] inputFile.root [outputFile.root]" << endl;
 
-      return 1;
+      return EXIT_FAILURE;
     }
 
-  return 0;
+  return EXIT_SUCCESS;
 }

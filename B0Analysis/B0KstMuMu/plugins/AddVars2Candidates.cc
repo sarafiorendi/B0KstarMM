@@ -315,7 +315,7 @@ void AddGenVariables (string option)
 	  else 
 	    {
 	      cout << "[AddVars2Candidates::AddGenVariables]\tWrong option: " << option << endl;
-	      exit(1);
+	      exit (EXIT_FAILURE);
 	    }
 
 
@@ -681,7 +681,7 @@ template<class T> void AddEvWeightHadpT (T* NTupleOut, string trkSign)
   else
     {	
       cout << "[AddVars2Candidates::AddEvWeightHadpT]\tWrong option: " << trkSign << endl;
-      exit(1);
+      exit (EXIT_FAILURE);
     }
   TCanvas* cTmp = (TCanvas*)fileDataMC->Get("c0");
   TH1D* hMC     = (TH1D*)cTmp->GetPrimitive("hM1D");
@@ -799,7 +799,7 @@ int main (int argc, char** argv)
 	  delete Utility;
 	  delete NTupleIn;
 
-	  return 0;
+	  return EXIT_SUCCESS;
 	}
       else
 	{
@@ -813,7 +813,7 @@ int main (int argc, char** argv)
 	  cout << "- nvGen            : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC (NoFilter,Filter,Multi-candidates)" << endl;
 	  cout << "- nvGen2SingleCand : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from a GEN-RECO-MC (Single-candidate)" << endl;
 
-	  return 1;
+	  return EXIT_FAILURE;
 	}
     }
   else
@@ -828,8 +828,8 @@ int main (int argc, char** argv)
       cout << "- nvGen            : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC (NoFilter,Filter,Multi-candidates)" << endl;
       cout << "- nvGen2SingleCand : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from a GEN-RECO-MC (Single-candidate)" << endl;
       
-      return 1;
+      return EXIT_FAILURE;
     }
   
-  return 0;
+  return EXIT_SUCCESS;
 }

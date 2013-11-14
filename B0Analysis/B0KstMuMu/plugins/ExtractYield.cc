@@ -595,7 +595,7 @@ void PrintVariables (RooArgSet* setVar, string type)
   else
     {
       cout << "[ExtractYield::PrintVariables]\tWrong parameter: " << type << endl;
-      exit(1);
+      exit (EXIT_FAILURE);
     }
 }
 
@@ -8740,7 +8740,7 @@ int main(int argc, char** argv)
 	  cout << " --> EffCorrAnalyPDF    = analytical eff. correction used in the p.d.f." << endl;
 	  cout << " --> EffCorrGenAnalyPDF = compute systematic error realted to analytical eff. correction used in the p.d.f." << endl;
 
-	  return 1;
+	  return EXIT_FAILURE;
 	}
     }
   else
@@ -8818,8 +8818,8 @@ int main(int argc, char** argv)
       cout << "FitType = 96: 3D generate paramter with (B0Mass, cos(theta_K), cos(theta_l)) distribution from pdf" << endl;
       cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       
-      return 1;
+      return EXIT_FAILURE;
     }
 
-  return 0;
+  return EXIT_SUCCESS;
 }

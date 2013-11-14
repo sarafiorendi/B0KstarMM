@@ -194,7 +194,7 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
   else
     {
       cout << "[ComputeEfficiency::ComputeEfficiency]\tNon valid signal type : " << SignalType << endl;
-      exit (1);
+      exit (EXIT_FAILURE);
     }
   cout << "\n@@@ Correction factor for efficiency between with/without filter: " << CorrFactorNEvGenFilter << " / " << CorrFactorNEvGenNoFilter;
   cout << " = " << CorrFactorNEvGenFilter/CorrFactorNEvGenNoFilter << " @@@" << endl;
@@ -981,7 +981,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
       if (fileOutput.good() == false)
 	{
 	  cout << "[ComputeEfficiency::Fit1DEfficiencies]\tError opening file : " << fileNameOut.c_str() << endl;
-	  exit (1);
+	  exit (EXIT_FAILURE);
 	}
 
 
@@ -1035,7 +1035,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  cout << "@@@ Value at " << cosThetaLBins->operator[](0) << " : " << fitFun->Eval(cosThetaLBins->operator[](0)) << " @@@" << endl;
 	  cout << "@@@ Value at " << cosThetaLBins->operator[](cosThetaLBins->size()-1) << " : " << fitFun->Eval(cosThetaLBins->operator[](cosThetaLBins->size()-1)) << " @@@\n" << endl;
 
-	  if (Utility->EffMinValue1D(cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),fitFun) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit(1); }
+	  if (Utility->EffMinValue1D(cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),fitFun) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
 	}
 
       fileOutput.close();
@@ -1046,7 +1046,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
       if (fileOutput.good() == false)
 	{
 	  cout << "[ComputeEfficiency::Fit1DEfficiencies]\tError opening file : " << fileNameOut.c_str() << endl;
-	  exit (1);
+	  exit (EXIT_FAILURE);
 	}
 
 
@@ -1073,7 +1073,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  if (fileInput.good() == false)
 	    {
 	      cout << "[ComputeEfficiency::Fit1DEfficiencies]\tError opening file : " << INPUTTHETAL << endl;
-	      exit (1);
+	      exit (EXIT_FAILURE);
 	    }
 	  for (unsigned int j = 0; j < (cosThetaKBins->size()-1)*q2BinIndx; j++) getline(fileInput,tmpString);
 	  nullParameter = true;
@@ -1127,7 +1127,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
       if (fileOutput.good() == false)
 	{
 	  cout << "[ComputeEfficiency::Fit1DEfficiencies]\tError opening file : " << fileNameOut.c_str() << endl;
-	  exit (1);
+	  exit (EXIT_FAILURE);
 	}
 
       
@@ -1178,7 +1178,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
       cout << "@@@ Value at " << phiBins->operator[](0) << " : " << fitFun->Eval(phiBins->operator[](0)) << " @@@" << endl;
       cout << "@@@ Value at " << phiBins->operator[](phiBins->size()-1) << " : " << fitFun->Eval(phiBins->operator[](phiBins->size()-1)) << " @@@\n" << endl;
 
-      if (Utility->EffMinValue1D(phiBins->operator[](0),phiBins->operator[](phiBins->size()-1),fitFun) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit(1); }
+      if (Utility->EffMinValue1D(phiBins->operator[](0),phiBins->operator[](phiBins->size()-1),fitFun) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
 
       fileOutput.close();
     }
@@ -1281,7 +1281,7 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
       covMatrixConstr.Clear();
 
-      if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncsRef[q2BinIndx]) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit(1); }
+      if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncsRef[q2BinIndx]) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
     }
   else
     {
@@ -1415,7 +1415,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
       covMatrixConstr.Clear();
 
-      if (Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,effFuncsRef[q2BinIndx]) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit(1); }
+      if (Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,effFuncsRef[q2BinIndx]) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
     }
   else
     {
@@ -1935,7 +1935,7 @@ int main (int argc, char** argv)
 
 	  cout << "TestEff      --> file with binned efficiency AND [q2 bin indx.]" << endl;
 
-	  return 1;
+	  return EXIT_FAILURE;
 	}
     }
   else
@@ -1972,8 +1972,8 @@ int main (int argc, char** argv)
 
       cout << "TestEff      --> file with binned efficiency AND [q2 bin indx.]" << endl;
 
-      return 1;
+      return EXIT_FAILURE;
     }
   
-  return 0;
+  return EXIT_SUCCESS;
 }

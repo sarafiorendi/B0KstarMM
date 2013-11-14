@@ -12,7 +12,7 @@ ReadParameters::ReadParameters(const char* InputFileName, std::string howOpen)
       if (fileHandler.good() == false)
 	{
 	  std::cout << "[ReadParameters::ReadFromFile]\tError opening file : " << InputFileName << std::endl;
-	  exit (1);
+	  exit (EXIT_FAILURE);
 	}
     }
   else if (howOpen == "out")
@@ -22,7 +22,7 @@ ReadParameters::ReadParameters(const char* InputFileName, std::string howOpen)
       if (fileHandler.good() == false)
 	{
 	  std::cout << "[ReadParameters::ReadFromFile]\tError opening file : " << InputFileName << std::endl;
-	  exit (1);
+	  exit (EXIT_FAILURE);
 	}
     }
   else if (howOpen == "app")
@@ -32,7 +32,7 @@ ReadParameters::ReadParameters(const char* InputFileName, std::string howOpen)
       if (fileHandler.good() == false)
 	{
 	  std::cout << "[ReadParameters::ReadFromFile]\tError opening file : " << InputFileName << std::endl;
-	  exit (1);
+	  exit (EXIT_FAILURE);
 	}
     }
 }

@@ -149,7 +149,7 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   else
     {
       cout << "[Macros::CutOptimization]\tWrong scan type: " << scanType << endl;
-      exit(1);
+      exit (EXIT_FAILURE);
     }
 
 
@@ -422,7 +422,7 @@ int main (int argc, char** argv)
 
 
       theApp.Run (); // Eventloop on air
-      return 0;
+      return EXIT_SUCCESS;
     }
   else
     {
@@ -443,8 +443,8 @@ int main (int argc, char** argv)
       cout << "4 = q2 bin 2,4,6" << endl;
       cout << "5 = q2 bin all but 3,5" << endl;
 
-      return 1;
+      return EXIT_FAILURE;
     }
   
-  return 0;
+  return EXIT_SUCCESS;
 }

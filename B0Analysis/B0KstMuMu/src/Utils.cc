@@ -376,7 +376,7 @@ void Utils::SaveEfficiency (std::string fileName, std::vector<double>* q2Bins, s
   if (out.good() == false)
     {
       std::cout << "[Utils::SaveMatrices]\tError opening file : " << fileName << std::endl;
-      exit (1);
+      exit (EXIT_FAILURE);
     }
 
   for (unsigned int i = 0; i < q2Bins->size()-1; i++)
@@ -417,7 +417,7 @@ void Utils::ReadEfficiency (std::string fileName, std::vector<double>* q2Bins, s
   if (in.good() == false)
     {
       std::cout << "[Utils::ReadEfficiency]\tError opening file : " << fileName << std::endl;
-      exit (1);
+      exit (EXIT_FAILURE);
     }
   
   GenEfficiency(myEff,q2Bins,cosThetaKBins,cosThetaLBins,phiBins);
@@ -1624,7 +1624,7 @@ double Utils::GetNLLval (std::vector<std::vector<double>*>* NLLvals, std::string
   else
     {
       std::cout << "[Utils::GetNLLval]\tNLL parameter not valid : " << varName << std::endl;
-      exit (1);
+      exit (EXIT_FAILURE);
     }
 }
 
@@ -1655,7 +1655,7 @@ void Utils::SaveAnalyticalEff (std::string fileName, TF2* effFunc, double q2Val,
   if (fileOutput.good() == false)
     {
       std::cout << "[Utils::SaveAnalyticalEff]\tError opening file : " << fileName << std::endl;
-      exit (1);
+      exit (EXIT_FAILURE);
     }
   
   for (unsigned int k = 0; k < NcoeffThetaL; k++)
@@ -1675,7 +1675,7 @@ void Utils::SaveAnalyticalEff (std::string fileName, TF3* effFunc, double q2Val,
   if (fileOutput.good() == false)
     {
       std::cout << "[Utils::SaveAnalyticalEff]\tError opening file : " << fileName << std::endl;
-      exit (1);
+      exit (EXIT_FAILURE);
     }
   
   for (unsigned int k = 0; k < NcoeffThetaL; k++)
@@ -1699,7 +1699,7 @@ void Utils::SaveAnalyticalEff (std::string fileName, TF3* effFunc, double q2Val,
 //   if (fileOutput.good() == false)
 //     {
 //       std::cout << "[Utils::SaveAnalyticalEff]\tError opening file : " << fileName << std::endl;
-//       exit (1);
+//       exit (EXIT_FAILURE);
 //     }
   
 //   for (unsigned int k = 0; k < NcoeffThetaL; k++)
@@ -1719,7 +1719,7 @@ void Utils::SaveAnalyticalEffFullCovariance (std::string fileName, TMatrixTSym<d
   if (fileOutput.good() == false)
     {
       std::cout << "[Utils::SaveAnalyticalEffFullCovariance]\tError opening file : " << fileName << std::endl;
-      exit (1);
+      exit (EXIT_FAILURE);
     }
   
   for (int i = 0; i < covMatrix->GetNrows(); i++)
@@ -2075,7 +2075,7 @@ void Utils::MakeGraphVar (std::string parFileName, TGraphAsymmErrors** graph, st
       else if (varName == "Afb")  rawString << vecParam[GetFitParamIndx("AfbS")]->operator[](i);
       else if (varName == "At2")  rawString << vecParam[GetFitParamIndx("At2S")]->operator[](i);
       else if (varName == "Atim") rawString << vecParam[GetFitParamIndx("AtimS")]->operator[](i);
-      else { std::cout << "[Utils::MakeGraphVar]\tVariable name unknown: " << varName << std::endl; exit(1); }
+      else { std::cout << "[Utils::MakeGraphVar]\tVariable name unknown: " << varName << std::endl; exit (EXIT_FAILURE); }
 
       if ((allBins == true) || (ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false))
 	{
@@ -2220,7 +2220,7 @@ void Utils::AddConstraint1D (TH1D** histo, std::string constrType, double errX, 
   unsigned int nNewBins;
   if ((constrType == "low") || (constrType == "high")) nNewBins = (*histo)->GetNbinsX()+2;
   else if (constrType == "both") nNewBins = (*histo)->GetNbinsX()+3;
-  else { std::cout << "[ComputeEfficiency::AddConstraint1D]\tError wrong parameter" << std::endl; exit(1); }
+  else { std::cout << "[ComputeEfficiency::AddConstraint1D]\tError wrong parameter" << std::endl; exit (EXIT_FAILURE); }
   double* reBins;
   reBins = new double[nNewBins];
 
@@ -2546,7 +2546,7 @@ unsigned int Utils::ParFileBlockN (std::string blockName)
   else if (blockName == "dtype")       return 17;
 
   std::cout << "[Utils::ParFileBlockN]\tError wrong index name : " << blockName << std::endl;
-  exit (1);
+  exit (EXIT_FAILURE);
 }
 
 unsigned int Utils::GetFitParamIndx (std::string varName)
@@ -2614,7 +2614,7 @@ unsigned int Utils::GetFitParamIndx (std::string varName)
   else if (varName == "AsS")            return 50;
 
   std::cout << "[Utils::GetFitParamIndx]\tError wrong index name : " << varName << std::endl;
-  exit (1);
+  exit (EXIT_FAILURE);
 }
 
 unsigned int Utils::GetConfigParamIndx (std::string varName)
@@ -2625,7 +2625,7 @@ unsigned int Utils::GetConfigParamIndx (std::string varName)
   else if (varName == "BkgType")        return 3;
 
   std::cout << "[Utils::GetConfigParamIndx]\tError wrong index name : " << varName << std::endl;
-  exit (1);
+  exit (EXIT_FAILURE);
 }
 
 bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigCheck, double evFraction, int* BestCandIndx, bool* B0notB0bar, int* TrigCat, unsigned int* countCands)
@@ -2918,7 +2918,7 @@ double Utils::GetSeleCut (std::string cutName)
   else
     {
       std::cout << "[Utils::GetSeleCut]\tSelection cut not valid : " << cutName << std::endl;
-      exit (1);
+      exit (EXIT_FAILURE);
     }
 }
 
@@ -3007,7 +3007,7 @@ double Utils::GetPreCut (std::string cutName)
   else
     {
       std::cout << "[Utils::GetPreCut]\tPre-selection cut not valid : " << cutName << std::endl;
-      exit (1);
+      exit (EXIT_FAILURE);
     }
 }
 
@@ -3078,7 +3078,7 @@ double Utils::GetGenericParam (std::string parName)
   else
     {
       std::cout << "[Utils::GetGenericParam]\tGeneric parameter not valid : " << parName << std::endl;
-      exit (1);
+      exit (EXIT_FAILURE);
     }
 }
 

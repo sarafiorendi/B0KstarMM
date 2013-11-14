@@ -1133,7 +1133,7 @@ TGraphAsymmErrors* ReadFromASCII (string fileName, unsigned int PlotType, vector
   if (inputFile.good() == false)
     {
       cout << "[MakePlots::ReadFromASCII]\tError opening file : " << fileName.c_str() << endl;
-      exit (1);
+      exit (EXIT_FAILURE);
     }
   inputFile >> xs >> ys >> xel >> xeh >> yel >> yeh;
   while (inputFile)
@@ -1435,7 +1435,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   else
     {
       cout << "[MakePlots::MakePhysicsPlots]\tWrong option number" << endl;
-      exit(1);
+      exit (EXIT_FAILURE);
     }
 
 
@@ -1974,7 +1974,7 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
   if (inputFile.good() == false)
     {
       cout << "[MakePlots::EvalMultyRun]\tError opening file : " << myString.str().c_str() << endl;
-      exit (1);
+      exit (EXIT_FAILURE);
     }
 
 
@@ -2550,7 +2550,7 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
       else
 	{
 	  cout << "[MakePlots::PlotKK]\tWrong parameter: " << RECOorGEN << endl;
-	  exit (1);
+	  exit (EXIT_FAILURE);
 	}
 
 
@@ -2926,7 +2926,7 @@ int main (int argc, char** argv)
 	  cout << "            [KKMass: dataFileName bkgSub RECOorGEN]" << endl;
 	  cout << "            [MuHadMass: dataFileName]" << endl;
 
-	  return 1;
+	  return EXIT_FAILURE;
 	}
 
 
@@ -3058,12 +3058,12 @@ int main (int argc, char** argv)
 	  cout << "26 = cos(theta_K)" << endl;
 	  cout << "27 = cos(theta_l)" << endl;
 
-	  return 1;
+	  return EXIT_FAILURE;
 	}
 
       delete Utility;
       theApp.Run (); // Eventloop on air
-      return 0;
+      return EXIT_SUCCESS;
     }
   else
     {
@@ -3147,8 +3147,8 @@ int main (int argc, char** argv)
       cout << "26 = cos(theta_K)" << endl;
       cout << "27 = cos(theta_l)" << endl;
 
-      return 1;
+      return EXIT_FAILURE;
     }
   
-  return 0;
+  return EXIT_SUCCESS;
 }
