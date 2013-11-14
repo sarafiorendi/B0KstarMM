@@ -81,19 +81,6 @@ using namespace std;
                      // If checking MC B0 --> psi(2S) K*0 : 5
 #define ParameterFILE "../python/ParameterFile.txt"
 
-// ############################################################################
-// # In case the final number of events with and without filter are different #
-// ############################################################################
-// For signal MC
-#define CorrFactorNEvGenNoFilter_KstMuMu 9985833333.0 // Total number of actually generated events without filter
-#define CorrFactorNEvGenFilter_KstMuMu   9943333333.0 // Total number of actually generated events with filter
-// For J/psi normalization / control sample MC
-#define CorrFactorNEvGenNoFilter_JPsi    1499500000.0 // Total number of actually generated events without filter
-#define CorrFactorNEvGenFilter_JPsi     14995000000.0 // Total number of actually generated events with filter
-// For psi(2S) normalization / control sample MC
-#define CorrFactorNEvGenNoFilter_Psi2S   1499000000.0 // Total number of actually generated events without filter
-#define CorrFactorNEvGenFilter_Psi2S    14985000000.0 // Total number of actually generated events with filter
-
 // ###################
 // # Fit constraints #
 // ###################
@@ -157,14 +144,12 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
 // # Efficiency type = 4 --> total single candidate events  #
 // ##########################################################
 {
-  // #################
-  // Local variables #
-  // #################
+  // ###################
+  // # Local variables #
+  // ###################
   int nEntries;
   Utils::effStruct _Counter;
   double* Counter;
-  double CorrFactorNEvGenNoFilter = 1.0;
-  double CorrFactorNEvGenFilter   = 1.0;
   double mumuq2;
   double cosThetaK;
   double cosThetaMu;
@@ -173,31 +158,7 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
   int cosThetaKBinIndx;
   int cosThetaMuBinIndx;
   int phiKstMuMuPlaneBinIndx;
-  // #################
-
-
-  if (SignalType == 1)
-    {
-      CorrFactorNEvGenNoFilter = CorrFactorNEvGenNoFilter_KstMuMu;
-      CorrFactorNEvGenFilter   = CorrFactorNEvGenFilter_KstMuMu;
-    }
-  else if (SignalType == 3)
-    {
-      CorrFactorNEvGenNoFilter = CorrFactorNEvGenNoFilter_JPsi;
-      CorrFactorNEvGenFilter   = CorrFactorNEvGenFilter_JPsi;
-    }
-  else if (SignalType == 5)
-    {
-      CorrFactorNEvGenNoFilter = CorrFactorNEvGenNoFilter_Psi2S;
-      CorrFactorNEvGenFilter   = CorrFactorNEvGenFilter_Psi2S;
-    }
-  else
-    {
-      cout << "[ComputeEfficiency::ComputeEfficiency]\tNon valid signal type : " << SignalType << endl;
-      exit (EXIT_FAILURE);
-    }
-  cout << "\n@@@ Correction factor for efficiency between with/without filter: " << CorrFactorNEvGenFilter << " / " << CorrFactorNEvGenNoFilter;
-  cout << " = " << CorrFactorNEvGenFilter/CorrFactorNEvGenNoFilter << " @@@" << endl;
+  // ###################
 
 
   // ###################################
@@ -294,6 +255,7 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
 	}
     }
 
+
   for (unsigned int i = 0; i < q2Bins->size()-1; i++)
     for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
       for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
@@ -302,12 +264,10 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
 	    if (type == 1)
 	      {
 		VectorErr2Pois[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i] =
-		  Vector[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i] *
-		  pow(CorrFactorNEvGenFilter/CorrFactorNEvGenNoFilter,2.0);
+		  Vector[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 		
 		Vector[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i] =
-		  Vector[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i] *
-		  CorrFactorNEvGenFilter/CorrFactorNEvGenNoFilter;
+		  Vector[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	      }
 
 	    else if (type == 2)
@@ -327,15 +287,16 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
 		    Counter[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0);
 	  }
 
+
   Utility->DeleteEfficiency(_Counter);
 }
 
 
 void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff)
 {
-  // #################
-  // Local variables #
-  // #################
+  // ###################
+  // # Local variables #
+  // ###################
   stringstream myString;
   double Eff, EffErr;
   double totalEffAll;
@@ -627,9 +588,9 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 		       string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool saveHistos, int specBin)
 {
-  // #################
-  // Local variables #
-  // #################
+  // ###################
+  // # Local variables #
+  // ###################
   const unsigned int MAXVAL = (isSingleEff == true ? 1 : NFILES+1);
   double totalEffAll;
   double totalEffSignal;
@@ -950,9 +911,9 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
 void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut)
 {
-  // #################
-  // Local variables #
-  // #################
+  // ###################
+  // # Local variables #
+  // ###################
   double Eff, EffErr;
   double* cosThetaKBins_ = new double[cosThetaKBins->size()]; for (unsigned int i = 0; i < cosThetaKBins->size(); i++) cosThetaKBins_[i] = cosThetaKBins->operator[](i);
   double* cosThetaLBins_ = new double[cosThetaLBins->size()]; for (unsigned int i = 0; i < cosThetaLBins->size(); i++) cosThetaLBins_[i] = cosThetaLBins->operator[](i);
@@ -1137,7 +1098,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
       fitFun = new TF1("fitFun",Utility->TellMeEffFuncPhi().c_str(),-Utility->PI - abscissaErr,Utility->PI + abscissaErr);
 
 
-      Utility->InitEffFuncThetaL(fitFun,q2BinIndx);
+      Utility->InitEffFuncPhi(fitFun,q2BinIndx);
 
 
       myString.str("");
@@ -1156,6 +1117,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
       // ######################################################################
       // # Add constraint where it is necessary to bound the function at zero #
       // ######################################################################
+      // @@@TMP@@@
       // Utility->AddConstraintThetaL(&histFit.back(),q2BinIndx,j,abscissaErr,ordinateVal,ordinateErr,q2BinIndx);
 
 
@@ -1192,16 +1154,16 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut)
 {
-  // #################
-  // Local variables #
-  // #################
+  // ###################
+  // # Local variables #
+  // ###################
   TFitResultPtr fitResults;
   stringstream myString;
   double Eff, EffErr;
   double* cosThetaKBins_ = Utility->MakeBinning(cosThetaKBins);
   double* cosThetaLBins_ = Utility->MakeBinning(cosThetaLBins);
   vector<TF2*> effFuncsRef;
-  // #################
+  // ###################
 
 
   TCanvas* cTestGlobalFit = new TCanvas("cTestGlobalFit", "cTestGlobalFit", 10, 10, 700, 500);
@@ -1309,9 +1271,9 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut)
 {
-  // #################
-  // Local variables #
-  // #################
+  // ###################
+  // # Local variables #
+  // ###################
   TFitResultPtr fitResults;
   stringstream myString;
   double Eff, EffErr;
@@ -1319,7 +1281,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   double* cosThetaLBins_ = Utility->MakeBinning(cosThetaLBins);
   double* phiBins_       = Utility->MakeBinning(phiBins);
   vector<TF3*> effFuncsRef;
-  // #################
+  // ###################
 
 
   TCanvas* cTestGlobalFit = new TCanvas("cTestGlobalFit", "cTestGlobalFit", 10, 10, 900, 500);
@@ -1442,9 +1404,9 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
 void TestEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool saveHistos)
 {
-  // #################
-  // Local variables #
-  // #################
+  // ###################
+  // # Local variables #
+  // ###################
   double Eff, EffErr;
   double averagePerBin;
   double integralRef;
@@ -1674,26 +1636,18 @@ int main (int argc, char** argv)
       cout << "Signal Type: "    << SignalType << endl;
       cout << "ParameterFILE: "  <<  ParameterFILE << endl;
 
-      cout << "\nCorrection factor N events generated without filter (signal):" << CorrFactorNEvGenNoFilter_KstMuMu << endl;
-      cout << "Correction factor N events generated with filter (signal):"      << CorrFactorNEvGenFilter_KstMuMu << endl;
-      cout << "Correction factor N events generated without filter (J/psi):"    << CorrFactorNEvGenNoFilter_JPsi << endl;
-      cout << "Correction factor N events generated with filter (J/psi):"       << CorrFactorNEvGenFilter_JPsi << endl;
-      cout << "Correction factor N events generated without filter (psi(2S)):"  << CorrFactorNEvGenNoFilter_Psi2S << endl;
-      cout << "Correction factor N events generated with filter (psi(2S)):"     << CorrFactorNEvGenFilter_Psi2S << endl;
-
       cout << "\nabscissaErr: " << abscissaErr << endl;
       cout << "ordinateVal: "   << ordinateVal << endl;
       cout << "ordinateErr: "   << ordinateErr << endl;
       cout << "ordinateRange: " << ordinateRange << endl;
 
 
-      if ((option == "Make") && (argc == 7))
+      if ((option == "Make") && (argc == 6))
 	{
 	  string fileNameGenCandidatesNoFilter = argv[2];
-	  string fileNameGenCandidatesFilter   = argv[3];
-	  string fileNameRecoCandidates        = argv[4];
-	  string fileNameSingleCand            = argv[5];
-	  string fileNameOutput                = argv[6];
+	  string fileNameRecoCandidates        = argv[3];
+	  string fileNameSingleCand            = argv[4];
+	  string fileNameOutput                = argv[5];
 
 	  TApplication theApp ("Applications", &argc, argv);
 
@@ -1716,11 +1670,6 @@ int main (int argc, char** argv)
 	  theTreeGenCandidatesNoFilter         = (TTree*) NtplFileGenCandidatesNoFilter->Get("B0KstMuMu/B0KstMuMuNTuple");
 	  NTupleGenCandidatesNoFilter          = new B0KstMuMuSingleCandTreeContent();
 	  NTupleGenCandidatesNoFilter->Init();
-
-	  TFile* NtplFileGenCandidatesFilter = new TFile(fileNameGenCandidatesFilter.c_str(), "READ");
-	  theTreeGenCandidatesFilter         = (TTree*) NtplFileGenCandidatesFilter->Get("B0KstMuMu/B0KstMuMuNTuple");
-	  NTupleGenCandidatesFilter          = new B0KstMuMuSingleCandTreeContent();
-	  NTupleGenCandidatesFilter->Init();
 
 	  TFile* NtplFileRecoCandidates = new TFile(fileNameRecoCandidates.c_str(), "READ");
 	  theTreeRecoCandidates         = (TTree*) NtplFileRecoCandidates->Get("B0KstMuMu/B0KstMuMuNTuple");
@@ -1749,7 +1698,7 @@ int main (int argc, char** argv)
 
 
 	  ComputeEfficiency(theTreeGenCandidatesNoFilter,NTupleGenCandidatesNoFilter,myEff.Den1,myEff.Err2PoisDen1,myEff.Err2WeigDen1, 1 ,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
-	  ComputeEfficiency(theTreeGenCandidatesFilter,  NTupleGenCandidatesFilter,  myEff.Num1,myEff.Err2PoisNum1,myEff.Err2WeigNum1, 2 ,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
+	  ComputeEfficiency(theTreeGenCandidatesNoFilter,NTupleGenCandidatesNoFilter,myEff.Num1,myEff.Err2PoisNum1,myEff.Err2WeigNum1, 2 ,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
 	  ComputeEfficiency(theTreeRecoCandidates,       NTupleRecoCandidates,       myEff.Den2,myEff.Err2PoisDen2,myEff.Err2WeigDen2, 3 ,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
 	  ComputeEfficiency(theTreeSingleCand,           NTupleSingleCand,           myEff.Num2,myEff.Err2PoisNum2,myEff.Err2WeigNum2, 4 ,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
 
@@ -1905,21 +1854,13 @@ int main (int argc, char** argv)
 	{
 	  cout << "Efficiency = [#ev. after filter (GEN-level) / #ev. generated (GEN-level before filter)] * [#ev. in single cand. (reco-level truth-matched) / #ev. after filter (GEN-level in multi cand.)]" << endl;
 	  cout << "1. process inputFileGenCandidatesNoFilter.root with AddVars2Candidates nvGen" << endl;
-	  cout << "2. process inputFileGenCandidatesFilter.root with AddVars2Candidates nvGen" << endl;
+	  cout << "2. process inputFileGenCandidatesNoFilter.root with AddVars2Candidates nvGen" << endl;
 	  cout << "3. process inputRecoCandidates.root with AddVars2Candidates nvGen" << endl;
 	  cout << "4. make inputFileSingleCand.root from inputRecoCandidates.root" << endl; 
 
-	  cout << "\n@@@@@@@@@@@@ IMPORTANT for [Make] option @@@@@@@@@@@@" << endl;
-	  cout << "If you have just the files:" << endl;
-	  cout << "- inputFileGenCandidatesNoFilter.root (GEN-level before filter)" << endl;
-	  cout << "- inputFileSingleCand.root (reco-level truth-matched)" << endl;
-	  cout << "Use the synopsis:" << endl;
-	  cout << "./ComputeEfficiency Make inputFileGenCandidatesNoFilter.root inputFileSingleCand.root inputFileSingleCand.root inputFileSingleCand.root outputFile.txt" << endl;
-	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-
 	  cout << "\nParameter missing: " << endl;
 	  cout << "./ComputeEfficiency [Make ReadBin ReadAnaly ReadGenAnaly FitEff1D FitEff2D FitEff3D TestEff] " << endl;
-	  cout << "[inputFileGenCandidatesNoFilter.root inputFileGenCandidatesFilter.root inputRecoCandidates.root inputFileSingleCand.root] " << endl;
+	  cout << "[inputFileGenCandidatesNoFilter.root inputRecoCandidates.root inputFileSingleCand.root] " << endl;
 	  cout << "[out/in]putFile.txt [q2 bin indx.]" << endl;
 
 	  cout << "Make         --> root files for efficiency computation AND outputFile.txt" << endl;
@@ -1942,21 +1883,13 @@ int main (int argc, char** argv)
     {
       cout << "Efficiency = [#ev. after filter (GEN-level) / #ev. generated (GEN-level before filter)] * [#ev. in single cand. (reco-level truth-matched) / #ev. after filter (GEN-level in multi cand.)]" << endl;
       cout << "1. process inputFileGenCandidatesNoFilter.root with AddVars2Candidates nvGen" << endl;
-      cout << "2. process inputFileGenCandidatesFilter.root with AddVars2Candidates nvGen" << endl;
+      cout << "2. process inputFileGenCandidatesNoFilter.root with AddVars2Candidates nvGen" << endl;
       cout << "3. process inputRecoCandidates.root with AddVars2Candidates nvGen" << endl;
       cout << "4. make inputFileSingleCand.root from inputRecoCandidates.root" << endl; 
 
-      cout << "\n@@@@@@@@@@@@ IMPORTANT for [Make] option @@@@@@@@@@@@" << endl;
-      cout << "If you have just the files:" << endl;
-      cout << "- inputFileGenCandidatesNoFilter.root (GEN-level before filter)" << endl;
-      cout << "- inputFileSingleCand.root (reco-level truth-matched)" << endl;
-      cout << "Use the synopsis:" << endl;
-      cout << "./ComputeEfficiency Make inputFileGenCandidatesNoFilter.root inputFileSingleCand.root inputFileSingleCand.root inputFileSingleCand.root outputFile.txt" << endl;
-      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-
       cout << "\nParameter missing: " << endl;
       cout << "./ComputeEfficiency [Make ReadBin ReadAnaly ReadGenAnaly FitEff1D FitEff2D FitEff3D TestEff] " << endl;
-      cout << "[inputFileGenCandidatesNoFilter.root inputFileGenCandidatesFilter.root inputRecoCandidates.root inputFileSingleCand.root] " << endl;
+      cout << "[inputFileGenCandidatesNoFilter.root inputRecoCandidates.root inputFileSingleCand.root] " << endl;
       cout << "[out/in]putFile.txt [q2 bin indx.]" << endl;
 
       cout << "Make         --> root files for efficiency computation AND outputFile.txt" << endl;

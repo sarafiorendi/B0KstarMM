@@ -18,7 +18,7 @@
 class Utils
 {
 
-  
+
  public:
   
   Utils();
@@ -144,8 +144,7 @@ class Utils
   void GetEffq2Bin      (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int cosThetaKIndx, unsigned int cosThetaMuIndx, unsigned int phiIndx, effStruct myEff, double* Eff, double* EffErr);
   void DeleteEfficiency (effStruct myEff);
 
-  int SearchBin (double val2Search, std::vector<double>* bins);
-
+  int SearchBin  (double val2Search, std::vector<double>* bins);
   int GetJPsiBin (std::vector<double>* q2Bins);
   int GetPsiPBin (std::vector<double>* q2Bins);
 
@@ -168,29 +167,27 @@ class Utils
   bool IntegrateEffPhi                (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, double mumuMass2, double cosThetaK, double cosThetaMu, effStruct myEff, double* Eff, double* EffErr, bool PrintMsg);
 
   unsigned int HLTpathForEvFraction (double evtFrac);
-  unsigned int IsInTriggerTable (B0KstMuMuTreeContent* NTupleIn, double* HLTCutVar1, double* HLTCutVar2, int index = 0, double evtFrac = -1.0);
-  double GetHLTentries (unsigned int HLTindx);
-  unsigned int GetNHLTCat ();
+  unsigned int IsInTriggerTable     (B0KstMuMuTreeContent* NTupleIn, double* HLTCutVar1, double* HLTCutVar2, int index = 0, double evtFrac = -1.0);
+  unsigned int GetNHLTCat           ();
+  double GetHLTentries              (unsigned int HLTindx);
+  double ReadLumi                   (std::string fileName);
+
+  void ReadNLLval  (std::string fileName, std::vector<std::vector<double>*>* vecParam);
+  double GetNLLval (std::vector<std::vector<double>*>* NLLvals, std::string varName, unsigned int q2BinIndx);
 
   void ReadTriggerPathsANDCutsANDEntries (std::string fileName);
   void ReadFitStartingValues (std::string fileName, std::vector<std::vector<std::string>*>* vecParam, std::vector<std::vector<unsigned int>*>* configParam, const unsigned int dataBlockN);
   void ReadFitSystematics (std::string fileName, std::vector<std::vector<double>*>* vecParam);
 
-  void ReadNLLval  (std::string fileName, std::vector<std::vector<double>*>* vecParam);
-  double GetNLLval (std::vector<std::vector<double>*>* NLLvals, std::string varName, unsigned int q2BinIndx);
-
-  double ReadLumi (std::string fileName);
-
   void SaveAnalyticalEff (std::string fileName, TF2* effFunc, double q2Val, std::vector<double>* q2Bins);
   void SaveAnalyticalEff (std::string fileName, TF3* effFunc, double q2Val, std::vector<double>* q2Bins);
-  /* void SaveAnalyticalEff (std::string fileName, double q2Val, std::vector<double>* q2Bins, std::vector<double>* effFuncPar, std::vector<double>* effFuncErr = NULL); */
   void SaveAnalyticalEffFullCovariance (std::string fileName, TMatrixTSym<double>* covMatrix, double q2Val, std::vector<double>* q2Bins);
 
   std::string TellMeEffFuncThetaKThetaLPhi ();
-  std::string TellMeEffFuncThetaKThetaL ();
-  std::string TellMeEffFuncThetaK ();
-  std::string TellMeEffFuncThetaL ();
-  std::string TellMeEffFuncPhi ();
+  std::string TellMeEffFuncThetaKThetaL    ();
+  std::string TellMeEffFuncThetaK          ();
+  std::string TellMeEffFuncThetaL          ();
+  std::string TellMeEffFuncPhi             ();
 
   void ReadAnalyticalEff (std::string fileNameEffParams,
 			  std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins,
@@ -273,29 +270,29 @@ class Utils
   double B0MassErr;
   double kstSigma;
 
+  double PI;
+
   unsigned int NcoeffThetaL;
   unsigned int NcoeffThetaK;
   unsigned int NcoeffPhi;
 
-  double PI;
-
-  double ProbThreshold;
-  double scrambleFraction;
-
-  std::vector<double> PreCuts;
-  std::vector<double> SeleCuts;
-  std::vector<double> GenericPars;
-
-  TF1* KstMassShape;
-
  
  private:
+
+  TF1* KstMassShape;
 
   std::vector<std::string> HLTpath;
   std::vector<double> VecHLTCutVar1;
   std::vector<double> VecHLTCutVar2;
   std::vector<double> VecHLTentries;
   std::vector<std::string> TrigTable;
+
+  std::vector<double> PreCuts;
+  std::vector<double> SeleCuts;
+  std::vector<double> GenericPars;
+
+  double ProbThreshold;
+  double scrambleFraction;
 
   unsigned int nFitParam;
   unsigned int nConfigParam;

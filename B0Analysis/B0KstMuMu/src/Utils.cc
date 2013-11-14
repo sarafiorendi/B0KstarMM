@@ -1692,26 +1692,6 @@ void Utils::SaveAnalyticalEff (std::string fileName, TF3* effFunc, double q2Val,
   fileOutput.close();
 }
 
-// void Utils::SaveAnalyticalEff (std::string fileName, double q2Val, std::vector<double>* q2Bins, std::vector<double>* effFuncPar, std::vector<double>* effFuncErr)
-// {
-//   ofstream fileOutput;
-//   fileOutput.open(fileName.c_str(),ofstream::app);
-//   if (fileOutput.good() == false)
-//     {
-//       std::cout << "[Utils::SaveAnalyticalEff]\tError opening file : " << fileName << std::endl;
-//       exit (EXIT_FAILURE);
-//     }
-  
-//   for (unsigned int k = 0; k < NcoeffThetaL; k++)
-//     {
-//       fileOutput << q2Val;
-//       for (unsigned int j = 0; j < NcoeffThetaK; j++) fileOutput << "   " << effFuncPar->operator[](j+k*NcoeffThetaK) << "   " << (effFuncErr != NULL ? effFuncErr->operator[](j+k*NcoeffThetaK) : 0.0);
-//       fileOutput << std::endl;
-//     }
-
-//   fileOutput.close();
-// }
-
 void Utils::SaveAnalyticalEffFullCovariance (std::string fileName, TMatrixTSym<double>* covMatrix, double q2Val, std::vector<double>* q2Bins)
 {
   ofstream fileOutput;
