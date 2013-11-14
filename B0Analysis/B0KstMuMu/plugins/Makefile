@@ -1,11 +1,16 @@
 OS            := $(shell uname)
+
 ifeq ($(OS), Darwin)
 CXX           := clang++
+DEBUG         :=
 endif
+
 ifeq ($(OS), Linux)
 CXX           := g++
+DEBUG         := -g
 endif
-CXXFLAGS      := -g -ansi -Wall -m64 -O3
+
+CXXFLAGS      := $(DEBUG) -ansi -Wall -m64 -O3
 
 SOURCEDIR     := ../src
 SOURCES       := $(filter-out $(SOURCEDIR)/B0KstMuMu.cc,$(wildcard $(SOURCEDIR)/*.cc))
@@ -45,4 +50,4 @@ ExtractYield: $(SOURCEDIR) $(INCLUDEDIR) ExtractYield.cc
 
 LOCALCC := $(wildcard *.cc)
 clean:
-	$(RM)r $(LOCALCC:%.cc=%) $(LOCALCC:%.cc=%.dSYM) Macros_C.*
+	$(RM) $(LOCALCC:%.cc=%) Macros_C.*
