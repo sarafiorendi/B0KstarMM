@@ -1500,6 +1500,14 @@ unsigned int Utils::IsInTriggerTable (B0KstMuMuTreeContent* NTupleIn, double* HL
   return 0;
 }
 
+unsigned int Utils::GetNHLTCat ()
+{
+  // #####################################################################################
+  // # This method is used together with the method: "ReadTriggerPathsANDCutsANDEntries" #
+  // #####################################################################################
+  return HLTpath.size();
+}
+
 double Utils::GetHLTentries (unsigned int HLTindx)
 {
   // #####################################################################################
@@ -1509,12 +1517,83 @@ double Utils::GetHLTentries (unsigned int HLTindx)
   else return -1.0;
 }
 
-unsigned int Utils::GetNHLTCat ()
+double Utils::ReadLumi (std::string fileName)
 {
-  // #####################################################################################
-  // # This method is used together with the method: "ReadTriggerPathsANDCutsANDEntries" #
-  // #####################################################################################
-  return HLTpath.size();
+  double val = 0.0;
+  std::vector<std::string> ParVector;
+  ReadParameters* ParameterFile = new ReadParameters(fileName.c_str());
+
+
+  // ##############################
+  // # Read integrated luminosity #
+  // ##############################
+  ParameterFile->ReadFromFile(ParFileBlockN("lumi"),&ParVector);
+  for (unsigned int i = 0; i < ParVector.size(); i++) val = val + atof(ParVector[i].c_str());
+
+  std::cout << "\n@@@ Recorded luminosity: " << val << " fb-1 @@@" << std::endl;
+
+  ParVector.clear();
+  delete ParameterFile;
+  return val;
+}
+
+void Utils::ReadNLLval (std::string fileName, std::vector<std::vector<double>*>* vecParam)
+// vecParam[0] --> Fl
+// vecParam[1] --> Afb
+// vecParam[2] --> At2
+// vecParam[3] --> Atim
+// vecParam[4] --> Branching-Fraction
+{
+  double val;
+  std::vector<std::string> ParVector;
+  ReadParameters* ParameterFile = new ReadParameters(fileName.c_str());
+
+
+  // ###################
+  // # Read NLL values #
+  // ###################
+  ParameterFile->ReadFromFile(ParFileBlockN("fitNLL"),&ParVector);
+
+  for (unsigned int j = 0; j < nFitObserv*2; j++) vecParam->push_back(new std::vector<double>);
+  
+  for (unsigned int i = 0; i < ParVector.size(); i=i+nFitObserv)
+    {
+
+      std::cout << "\nRead set-" << static_cast<int>(static_cast<double>(i)/static_cast<double>(nFitObserv)) << " of fit-observable NLL" << std::endl;
+
+      for (unsigned int j = 0; j < nFitObserv; j++)
+	{
+	  std::stringstream rawString(ParVector[i+j]);
+	  rawString >> val;
+	  vecParam->operator[](j)->push_back(val);
+	  std::cout << "Fit observable-" << j << " NLL: " << vecParam->operator[](j)->back() << std::endl;
+	}
+    }
+
+  
+  ParVector.clear();
+  delete ParameterFile;
+}
+
+double Utils::GetNLLval (std::vector<std::vector<double>*>* NLLvals, std::string varName, unsigned int q2BinIndx)
+// ####################
+// # varName = "Fl"   #
+// # varName = "Afb"  #
+// # varName = "At2"  #
+// # varName = "Atim" #
+// # varName = "BF"   #
+// ####################
+{
+  if      (varName == "Fl")   return (*NLLvals)[0]->operator[](q2BinIndx);
+  else if (varName == "Afb")  return (*NLLvals)[1]->operator[](q2BinIndx);
+  else if (varName == "At2")  return (*NLLvals)[2]->operator[](q2BinIndx);
+  else if (varName == "Atim") return (*NLLvals)[3]->operator[](q2BinIndx);
+  else if (varName == "BF")   return (*NLLvals)[4]->operator[](q2BinIndx);
+  else
+    {
+      std::cout << "[Utils::GetNLLval]\tNLL parameter not valid : " << varName << std::endl;
+      exit (EXIT_FAILURE);
+    }
 }
 
 void Utils::ReadTriggerPathsANDCutsANDEntries (std::string fileName)
@@ -1625,85 +1704,6 @@ void Utils::ReadFitSystematics (std::string fileName, std::vector<std::vector<do
   
   ParVector.clear();
   delete ParameterFile;
-}
-
-void Utils::ReadNLLval (std::string fileName, std::vector<std::vector<double>*>* vecParam)
-// vecParam[0] --> Fl
-// vecParam[1] --> Afb
-// vecParam[2] --> At2
-// vecParam[3] --> Atim
-// vecParam[4] --> Branching-Fraction
-{
-  double val;
-  std::vector<std::string> ParVector;
-  ReadParameters* ParameterFile = new ReadParameters(fileName.c_str());
-
-
-  // ###################
-  // # Read NLL values #
-  // ###################
-  ParameterFile->ReadFromFile(ParFileBlockN("fitNLL"),&ParVector);
-
-  for (unsigned int j = 0; j < nFitObserv*2; j++) vecParam->push_back(new std::vector<double>);
-  
-  for (unsigned int i = 0; i < ParVector.size(); i=i+nFitObserv)
-    {
-
-      std::cout << "\nRead set-" << static_cast<int>(static_cast<double>(i)/static_cast<double>(nFitObserv)) << " of fit-observable NLL" << std::endl;
-
-      for (unsigned int j = 0; j < nFitObserv; j++)
-	{
-	  std::stringstream rawString(ParVector[i+j]);
-	  rawString >> val;
-	  vecParam->operator[](j)->push_back(val);
-	  std::cout << "Fit observable-" << j << " NLL: " << vecParam->operator[](j)->back() << std::endl;
-	}
-    }
-
-  
-  ParVector.clear();
-  delete ParameterFile;
-}
-
-double Utils::GetNLLval (std::vector<std::vector<double>*>* NLLvals, std::string varName, unsigned int q2BinIndx)
-// ####################
-// # varName = "Fl"   #
-// # varName = "Afb"  #
-// # varName = "At2"  #
-// # varName = "Atim" #
-// # varName = "BF"   #
-// ####################
-{
-  if      (varName == "Fl")   return (*NLLvals)[0]->operator[](q2BinIndx);
-  else if (varName == "Afb")  return (*NLLvals)[1]->operator[](q2BinIndx);
-  else if (varName == "At2")  return (*NLLvals)[2]->operator[](q2BinIndx);
-  else if (varName == "Atim") return (*NLLvals)[3]->operator[](q2BinIndx);
-  else if (varName == "BF")   return (*NLLvals)[4]->operator[](q2BinIndx);
-  else
-    {
-      std::cout << "[Utils::GetNLLval]\tNLL parameter not valid : " << varName << std::endl;
-      exit (EXIT_FAILURE);
-    }
-}
-
-double Utils::ReadLumi (std::string fileName)
-{
-  double val = 0.0;
-  std::vector<std::string> ParVector;
-  ReadParameters* ParameterFile = new ReadParameters(fileName.c_str());
-
-
-  // ##############################
-  // # Read integrated luminosity #
-  // ##############################
-  ParameterFile->ReadFromFile(ParFileBlockN("lumi"),&ParVector);
-  for (unsigned int i = 0; i < ParVector.size(); i++) val = val + atof(ParVector[i].c_str());
-
-  std::cout << "\n@@@ Recorded luminosity: " << val << " fb-1 @@@" << std::endl;
-
-  ParVector.clear();
-  delete ParameterFile;
-  return val;
 }
 
 void Utils::SaveAnalyticalEff (std::string fileName, TF2* effFunc, double q2Val, std::vector<double>* q2Bins)
