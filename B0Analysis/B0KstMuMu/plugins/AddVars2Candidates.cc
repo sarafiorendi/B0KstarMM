@@ -26,7 +26,7 @@ using namespace std;
 // # Global constants #
 // ####################
 #define PileUpMCFileName   "PileUp/PileupMCkstJPsi.root" // "PileupMCkstMuMu.root"  OR "PileupMCkstJPsi.root" OR "PileupMCkstPsi2S.root"
-#define PileUpDataFileName "PileUp/PileupData_HLT"
+#define PileUpDataFileName "PileUp/PileupData_HLTx"
 #define B0pTFileName       "B0pTDataMC.root"
 #define HadppTFileName     "HadppTDataMC.root"
 #define HadmpTFileName     "HadmpTDataMC.root"
@@ -805,9 +805,11 @@ int main (int argc, char** argv)
 	{
 	  cout << "Parameter missing: " << endl;
 	  cout << "./AddVars2Candidates [pileupW B0pTW HadpTW nvAllReco nvTruthMatchReco nvGen nvGen2SingleCand] inputFile.root outputFile.root [[if pileupW]outputFile-type(single/multi)] [[if HadpT]pos/neg]" << endl;
+
 	  cout << "- pileupW          : change the weight to all single/multiple candidates according to pileup weight" << endl;
 	  cout << "- B0pTW            : change the weight to all single candidates according to B0 pT weight" << endl;
 	  cout << "- HadpTW           : change the weight to all single candidates according to hadron pT weight" << endl;
+
 	  cout << "- nvAllReco        : generate new NTupleOut giveing to each candidate in NTupleIn a new TTree entry and adding the RECO single candidate variables" << endl;
 	  cout << "- nvTruthMatchReco : generate new NTupleOut adding the RECO single candidate variables only for the first truth matched candidate in a signal event, discarding the other candidates" << endl;
 	  cout << "- nvGen            : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC (NoFilter,Filter,Multi-candidates)" << endl;
@@ -820,9 +822,11 @@ int main (int argc, char** argv)
     {
       cout << "Parameter missing: " << endl;
       cout << "./AddVars2Candidates [pileupW B0pTW HadpTW nvAllReco nvTruthMatchReco nvGen nvGen2SingleCand] inputFile.root outputFile.root [[if pileupW]outputFile-type(single/multi)] [[if HadpT]pos/neg]" << endl;
+
       cout << "- pileupW          : change the weight to all single/multiple candidates according to pileup weight" << endl;
       cout << "- B0pTW            : change the weight to all single candidates according to B0 pT weight" << endl;
       cout << "- HadpTW           : change the weight to all single candidates according to hadron pT weight" << endl;
+
       cout << "- nvAllReco        : generate new NTupleOut giveing to each candidate in NTupleIn a new TTree entry and adding the RECO single candidate variables" << endl;
       cout << "- nvTruthMatchReco : generate new NTupleOut adding the RECO single candidate variables only for the first truth matched candidate in a signal event, discarding the other candidates" << endl;
       cout << "- nvGen            : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC (NoFilter,Filter,Multi-candidates)" << endl;

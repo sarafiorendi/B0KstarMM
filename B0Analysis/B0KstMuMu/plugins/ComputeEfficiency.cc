@@ -1147,7 +1147,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
       // # Add constraint where it is necessary to bound the function at zero #
       // ######################################################################
       // @@@TMP@@@
-      // Utility->AddConstraintThetaL(&histFit.back(),q2BinIndx,j,abscissaErr,ordinateVal,ordinateErr,q2BinIndx);
+      // Utility->AddConstraint...
 
 
       // ##############################
@@ -1667,7 +1667,8 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   integralDiff = diffFunc->Integral(cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1));
 
 
-  cout << "\n@@@ Area difference between analytical-reference (" << INPUT_THETAL_THETAK << ") and analytical-comparison (" << INPUT_THETAL_THETAK_Comp << ") efficiencies @@@" << endl;
+  cout << "\n@@@ Area difference between analytical-reference (" << INPUT_THETAL_THETAK;
+  cout << ") and analytical-comparison (" << INPUT_THETAL_THETAK_Comp << ") efficiencies @@@" << endl;
   cout << "Integral absolute difference: " << integralDiff << ";\tIntegral reference: " << integralRef;
   cout << ";\tPercentage of compatibility: " << (integralRef-integralDiff)/integralRef*100. << "%" << endl;
 }
@@ -1765,6 +1766,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   // ##############################
   // # Show slices of cos(thetaK) #
   // ##############################
+  // @@@TMP@@@
   // for (unsigned int binIndx = 0; binIndx < cosThetaKBins->size()-1; binIndx++)
     // {
     //   cEff->cd(binIndx+3);
@@ -1791,6 +1793,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   // ##############################
   // # Show slices of cos(thetaL) #
   // ##############################
+  // @@@TMP@@@
   // for (unsigned int binIndx = 0; binIndx < cosThetaLBins->size()-1; binIndx++)
     // {
     //   cEff->cd(binIndx+3+cosThetaKBins->size()-1);
