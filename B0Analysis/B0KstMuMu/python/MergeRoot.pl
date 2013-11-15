@@ -8,8 +8,8 @@
 
 ### RECO MC ###
 #$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_B0ToKstMuMu/" ;
-#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_B0ToKstJpsi/" ;
-#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_B0ToKstPsi2S/" ;
+#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_B0ToJPsiKst/" ;
+#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_B0ToPsi2SKst/" ;
 #$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_BsToKstMuMu/" ;
 
 #$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_B0ToPsiMuMu/" ;
@@ -42,8 +42,8 @@ for ($count = 0; $count < $nOut; $count++)
 
 ### RECO MC ###
 #    $fileOut = "B0ToKstMuMu_MC_NTuple" ;
-#    $fileOut = "B0ToKstJpsi_MC_NTuple" ;
-#    $fileOut = "B0ToKstPsi2S_MC_NTuple" ;
+#    $fileOut = "B0ToJPsiKst_MC_NTuple" ;
+#    $fileOut = "B0ToPsi2SKst_MC_NTuple" ;
 #    $fileOut = "BsToKstMuMu_MC_NTuple" ;
 
 #    $fileOut = "B0ToPsiMuMu_MC_NTuple" ;

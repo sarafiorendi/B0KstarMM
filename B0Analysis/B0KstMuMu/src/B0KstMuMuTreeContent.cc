@@ -1154,7 +1154,8 @@ void B0KstMuMuTreeContent::CopyData (B0KstMuMuTreeContent* NTupleIn, int index)
 void B0KstMuMuTreeContent::CopyWholeNTuple (B0KstMuMuTreeContent* NTupleIn)
 {
   CopyScalars(NTupleIn);
-  for (unsigned int index = 0; index < NTupleIn->bMass->size(); index++) CopyVectors(NTupleIn,index);
+  if (NTupleIn->bMass != NULL)
+    for (unsigned int index = 0; index < NTupleIn->bMass->size(); index++) CopyVectors(NTupleIn,index);
 }
 
 void B0KstMuMuTreeContent::CopyScalars (B0KstMuMuTreeContent* NTupleIn)
@@ -1265,7 +1266,7 @@ void B0KstMuMuTreeContent::CopyScalars (B0KstMuMuTreeContent* NTupleIn)
 
 void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int index)
 {
-  if (index >= 0)
+  if ((index >= 0) && (NTupleIn->bMass != NULL))
     {
       // ### B0 Mass ###
       bMass->push_back(NTupleIn->bMass->at(index));

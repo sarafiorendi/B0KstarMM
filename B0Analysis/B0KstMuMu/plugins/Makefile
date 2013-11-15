@@ -33,7 +33,7 @@ ROOFITFLAGS   := $(ROOTFLAGS) -lRooFit -lRooFitCore -lFoam
 SingleCandB0KstMuMu: $(SOURCEDIR) $(INCLUDEDIR) SingleCandB0KstMuMu.cc
 	$(CXX) $(CXXFLAGS) -o $@ $(ROOTFLAGS) $(INCLUDES) $(SOURCES) $@.cc
 
-AddVars2Candidates: $(SOURCEDIR) $(INCLUDEDIR) AddVars2Candidates.cc
+AddVarsToCandidates: $(SOURCEDIR) $(INCLUDEDIR) AddVarsToCandidates.cc
 	$(CXX) $(CXXFLAGS) -o $@ $(ROOTFLAGS) $(INCLUDES) $(SOURCES) $@.cc
 
 B0KstMuMuScanCuts: $(SOURCEDIR) $(INCLUDEDIR) B0KstMuMuScanCuts.cc

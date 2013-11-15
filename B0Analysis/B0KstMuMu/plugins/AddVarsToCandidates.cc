@@ -50,241 +50,10 @@ B0KstMuMuSingleCandTreeContent* NTupleOut;
 // #######################
 // # Function Definition #
 // #######################
-void AddRecoVariables (string option);
 void AddGenVariables (string option);
 template<class T> void AddEvWeightPileup (T* NTupleOut);
 template<class T> void AddEvWeightB0pT (T* NTupleOut);
 template<class T> void AddEvWeightHadpT (T* NTupleOut, string trkSign);
-
-
-// ###########################
-// # Function Implementation #
-// ###########################
-void AddRecoVariables (string option)
-{
-  bool B0notB0bar = true;
-
-  NTupleOut->ClearNTuple();
-  NTupleOut->MakeTreeBranches(theTreeOut);
-
-  NTupleIn->ClearNTuple();
-  NTupleIn->SetBranchAddresses(theTreeIn);
-  int nEntries = theTreeIn->GetEntries();
-  cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
-
-
-  for (int entry = 0; entry < nEntries; entry++)
-    {
-      theTreeIn->GetEntry(entry);
-
-      for (unsigned int i = 0; i < NTupleIn->bMass->size(); i++)
-	{
-	  if (((option == "nvTruthMatchReco") && ((NTupleIn->genSignal == SignalType) || (NTupleIn->genSignal == SignalType+1)) && (NTupleIn->truthMatchSignal->at(i) == true)) || (option == "nvAllReco"))
-	    {
-	      NTupleOut->CopyData(NTupleIn, i);
-
-
-	      // ########################
-	      // # Adding new variables #
-	      // ########################
-	      if (NTupleIn->genSignal == SignalType)
-		{
-		  B0notB0bar = true;
-
-		  double cosThetaMup, cosThetaMupErr;
-		  double cosThetaK, cosThetaKErr;
-		  double phiKstMuMuPlane;
-		  // ############
-		  // # B0 boost #
-		  // ############
-		  TLorentzVector LoreVecB0;
-
-
-		  TLorentzVector LoreVecMuMu;
-		  LoreVecMuMu.SetXYZM(NTupleIn->mumuPx->at(i),NTupleIn->mumuPy->at(i),NTupleIn->mumuPz->at(i),NTupleIn->mumuMass->at(i));
-		  TVector3 boostMuMu = LoreVecMuMu.BoostVector();
-		  TLorentzVector LoreVecMup;
-		  LoreVecMup.SetXYZM(NTupleIn->mupPx->at(i),NTupleIn->mupPy->at(i),NTupleIn->mupPz->at(i),Utility->muonMass);
-		  // ################################
-		  // # Boost mu+ to mumu ref. frame #
-		  // ################################
-		  LoreVecMup.Boost(-boostMuMu);
-		  // ###############################
-		  // # Boost B0 to mumu ref. frame #
-		  // ###############################
-		  LoreVecB0.SetXYZM(NTupleIn->bPx->at(i),NTupleIn->bPy->at(i),NTupleIn->bPz->at(i),NTupleIn->bMass->at(i));
-		  LoreVecB0.Boost(-boostMuMu);
-		  // ##################
-		  // # Compute angles #
-		  // ##################
-		  Utility->computeCosAlpha(-LoreVecB0.Px(),-LoreVecB0.Py(),-LoreVecB0.Pz(),
-					   LoreVecMup.Px(),LoreVecMup.Py(),LoreVecMup.Pz(),
-					   0.0,0.0,0.0,
-					   0.0,0.0,0.0,
-					   0.0,0.0,0.0,
-					   0.0,0.0,0.0,
-					   &cosThetaMup,&cosThetaMupErr);
-
-
-		  TLorentzVector LoreVecKst;
-		  LoreVecKst.SetXYZM(NTupleIn->kstPx->at(i),NTupleIn->kstPy->at(i),NTupleIn->kstPz->at(i),NTupleIn->kstMass->at(i));
-		  TVector3 boostKst = LoreVecKst.BoostVector();
-		  TLorentzVector LoreVecK;
-		  LoreVecK.SetXYZM(NTupleIn->kstTrkpPx->at(i),NTupleIn->kstTrkpPy->at(i),NTupleIn->kstTrkpPz->at(i),Utility->kaonMass);
-		  // ##############################
-		  // # Boost K+ to K*0 ref. frame #
-		  // ##############################
-		  LoreVecK.Boost(-boostKst);
-		  // ##############################
-		  // # Boost B0 to K*0 ref. frame #
-		  // ##############################
-		  LoreVecB0.SetXYZM(NTupleIn->bPx->at(i),NTupleIn->bPy->at(i),NTupleIn->bPz->at(i),NTupleIn->bMass->at(i));
-		  LoreVecB0.Boost(-boostKst);
-		  // ##################
-		  // # Compute angles #
-		  // ##################
-		  Utility->computeCosAlpha(-LoreVecB0.Px(),-LoreVecB0.Py(),-LoreVecB0.Pz(),
-					   LoreVecK.Px(),LoreVecK.Py(),LoreVecK.Pz(),
-					   0.0,0.0,0.0,
-					   0.0,0.0,0.0,
-					   0.0,0.0,0.0,
-					   0.0,0.0,0.0,
-					   &cosThetaK,&cosThetaKErr);
-
-
-		  // ######################################################################
-		  // # Angle between [mu+ - mu-] and [K - pi] planes in the B0 ref. frame #
-		  // ######################################################################
-		  LoreVecB0.SetXYZM(NTupleIn->bPx->at(i),NTupleIn->bPy->at(i),NTupleIn->bPz->at(i),NTupleIn->bBarMass->at(i));
-		  TVector3 boostB0 = LoreVecB0.BoostVector();
-		  LoreVecMup.SetXYZM(NTupleIn->mupPx->at(i),NTupleIn->mupPy->at(i),NTupleIn->mupPz->at(i),Utility->muonMass);
-		  TLorentzVector LoreVecMum;
-		  LoreVecMum.SetXYZM(NTupleIn->mumPx->at(i),NTupleIn->mumPy->at(i),NTupleIn->mumPz->at(i),Utility->muonMass);
-		  LoreVecK.SetXYZM(NTupleIn->kstTrkpPx->at(i),NTupleIn->kstTrkpPy->at(i),NTupleIn->kstTrkpPz->at(i),Utility->kaonMass);
-		  TLorentzVector LoreVecPi;
-		  LoreVecPi.SetXYZM(NTupleIn->kstTrkmPx->at(i),NTupleIn->kstTrkmPy->at(i),NTupleIn->kstTrkmPz->at(i),Utility->pionMass);
-
-		  LoreVecMum.Boost(-boostB0);
-		  LoreVecMup.Boost(-boostB0);
-		  LoreVecK.Boost(-boostB0);
-		  LoreVecPi.Boost(-boostB0);
-		  TVector3 MuMuPlane = LoreVecMup.Vect().Cross(LoreVecMum.Vect());
-		  TVector3 KstPlane  = LoreVecK.Vect().Cross(LoreVecPi.Vect());
-		  if (MuMuPlane.Cross(KstPlane).Dot(-LoreVecB0.Vect()) > 0.0) phiKstMuMuPlane = MuMuPlane.Angle(KstPlane);
-		  else phiKstMuMuPlane = -MuMuPlane.Angle(KstPlane);
-
-
-		  NTupleOut->B0MassArb          = NTupleIn->bMass->at(i);
-		  NTupleOut->CosThetaMuArb      = cosThetaMup;
-		  NTupleOut->CosThetaKArb       = cosThetaK;
-		  NTupleOut->PhiKstMuMuPlaneArb = phiKstMuMuPlane;
-		}
-	      else if (NTupleIn->genSignal == SignalType+1)
-		{
-		  B0notB0bar = false;
-	      
-		  double cosThetaMum, cosThetaMumErr;
-		  double cosThetaK, cosThetaKErr;
-		  double phiKstMuMuPlane;
-		  // ############
-		  // # B0 boost #
-		  // ############
-		  TLorentzVector LoreVecB0;
-	
-
-		  TLorentzVector LoreVecMuMu;
-		  LoreVecMuMu.SetXYZM(NTupleIn->mumuPx->at(i),NTupleIn->mumuPy->at(i),NTupleIn->mumuPz->at(i),NTupleIn->mumuMass->at(i));
-		  TVector3 boostMuMu = LoreVecMuMu.BoostVector();
-		  TLorentzVector LoreVecMum;
-		  LoreVecMum.SetXYZM(NTupleIn->mumPx->at(i),NTupleIn->mumPy->at(i),NTupleIn->mumPz->at(i),Utility->muonMass);
-		  // ################################
-		  // # Boost mu- to mumu ref. frame #
-		  // ################################
-		  LoreVecMum.Boost(-boostMuMu);
-		  // ###############################
-		  // # Boost B0 to mumu ref. frame #
-		  // ###############################
-		  LoreVecB0.SetXYZM(NTupleIn->bPx->at(i),NTupleIn->bPy->at(i),NTupleIn->bPz->at(i),NTupleIn->bBarMass->at(i));
-		  LoreVecB0.Boost(-boostMuMu);
-		  // ##################
-		  // # Compute angles #
-		  // ##################
-		  Utility->computeCosAlpha(-LoreVecB0.Px(),-LoreVecB0.Py(),-LoreVecB0.Pz(),
-					   LoreVecMum.Px(),LoreVecMum.Py(),LoreVecMum.Pz(),
-					   0.0,0.0,0.0,
-					   0.0,0.0,0.0,
-					   0.0,0.0,0.0,
-					   0.0,0.0,0.0,
-					   &cosThetaMum,&cosThetaMumErr);
-
-
-		  TLorentzVector LoreVecKst;
-		  LoreVecKst.SetXYZM(NTupleIn->kstPx->at(i),NTupleIn->kstPy->at(i),NTupleIn->kstPz->at(i),NTupleIn->kstBarMass->at(i));
-		  TVector3 boostKst = LoreVecKst.BoostVector();
-		  TLorentzVector LoreVecK;
-		  LoreVecK.SetXYZM(NTupleIn->kstTrkmPx->at(i),NTupleIn->kstTrkmPy->at(i),NTupleIn->kstTrkmPz->at(i),Utility->kaonMass);
-		  // ##############################
-		  // # Boost K- to K*0 ref. frame #
-		  // ##############################
-		  LoreVecK.Boost(-boostKst);
-		  // ##############################
-		  // # Boost B0 to K*0 ref. frame #
-		  // ##############################
-		  LoreVecB0.SetXYZM(NTupleIn->bPx->at(i),NTupleIn->bPy->at(i),NTupleIn->bPz->at(i),NTupleIn->bBarMass->at(i));
-		  LoreVecB0.Boost(-boostKst);
-		  // ##################
-		  // # Compute angles #
-		  // ##################
-		  Utility->computeCosAlpha(-LoreVecB0.Px(),-LoreVecB0.Py(),-LoreVecB0.Pz(),
-					   LoreVecK.Px(),LoreVecK.Py(),LoreVecK.Pz(),
-					   0.0,0.0,0.0,
-					   0.0,0.0,0.0,
-					   0.0,0.0,0.0,
-					   0.0,0.0,0.0,
-					   &cosThetaK,&cosThetaKErr);
-
-
-		  // ######################################################################
-		  // # Angle between [mu+ - mu-] and [K - pi] planes in the B0 ref. frame #
-		  // ######################################################################
-		  LoreVecB0.SetXYZM(NTupleIn->bPx->at(i),NTupleIn->bPy->at(i),NTupleIn->bPz->at(i),NTupleIn->bBarMass->at(i));
-		  TVector3 boostB0 = LoreVecB0.BoostVector();
-		  LoreVecMum.SetXYZM(NTupleIn->mumPx->at(i),NTupleIn->mumPy->at(i),NTupleIn->mumPz->at(i),Utility->muonMass);
-		  TLorentzVector LoreVecMup;
-		  LoreVecMup.SetXYZM(NTupleIn->mupPx->at(i),NTupleIn->mupPy->at(i),NTupleIn->mupPz->at(i),Utility->muonMass);
-		  LoreVecK.SetXYZM(NTupleIn->kstTrkmPx->at(i),NTupleIn->kstTrkmPy->at(i),NTupleIn->kstTrkmPz->at(i),Utility->kaonMass);
-		  TLorentzVector LoreVecPi;
-		  LoreVecPi.SetXYZM(NTupleIn->kstTrkpPx->at(i),NTupleIn->kstTrkpPy->at(i),NTupleIn->kstTrkpPz->at(i),Utility->pionMass);
-
-		  LoreVecMum.Boost(-boostB0);
-		  LoreVecMup.Boost(-boostB0);
-		  LoreVecK.Boost(-boostB0);
-		  LoreVecPi.Boost(-boostB0);
-		  TVector3 MuMuPlane = LoreVecMum.Vect().Cross(LoreVecMup.Vect());
-		  TVector3 KstPlane  = LoreVecK.Vect().Cross(LoreVecPi.Vect());
-		  if (MuMuPlane.Cross(KstPlane).Dot(-LoreVecB0.Vect()) > 0.0) phiKstMuMuPlane = MuMuPlane.Angle(KstPlane);
-		  else phiKstMuMuPlane = -MuMuPlane.Angle(KstPlane);
-
-
-		  NTupleOut->B0MassArb          = NTupleIn->bBarMass->at(i);
-		  NTupleOut->CosThetaMuArb      = cosThetaMum;
-		  NTupleOut->CosThetaKArb       = cosThetaK;
-		  NTupleOut->PhiKstMuMuPlaneArb = phiKstMuMuPlane;
-		}
-
-	      NTupleOut->B0notB0bar = B0notB0bar;
-	      NTupleOut->B0pT       = sqrt(NTupleIn->bPx->at(i)*NTupleIn->bPx->at(i) + NTupleIn->bPy->at(i)*NTupleIn->bPy->at(i));
-	      NTupleOut->B0Eta      = Utility->computeEta (NTupleIn->bPx->at(i),NTupleIn->bPy->at(i),NTupleIn->bPz->at(i));
-	      NTupleOut->B0Phi      = Utility->computePhi (NTupleIn->bPx->at(i),NTupleIn->bPy->at(i),NTupleIn->bPz->at(i));
-
-	      theTreeOut->Fill();
-	      NTupleOut->ClearNTuple();
-
-	      if (option == "nvTruthMatchReco") break;
-	    }
-	}
-    }
-}
 
 
 void AddGenVariables (string option)
@@ -306,17 +75,8 @@ void AddGenVariables (string option)
 
       if ((NTupleIn->genSignal == SignalType) || (NTupleIn->genSignal == SignalType+1))
 	{
-	  if (option == "nvGen") NTupleOut->CopyData(NTupleIn, -1);
-	  else if (option == "nvGen2SingleCand")
-	    {
-	      NTupleOut->CopyData(NTupleIn, 0);
-	      NTupleOut->B0MassArb = NTupleIn->B0MassArb;
-	    }
-	  else 
-	    {
-	      cout << "[AddVars2Candidates::AddGenVariables]\tWrong option: " << option << endl;
-	      exit (EXIT_FAILURE);
-	    }
+	  NTupleOut->CopyData(NTupleIn, 0);
+	  NTupleOut->B0MassArb = NTupleIn->B0MassArb;
 
 
 	  // ########################
@@ -680,7 +440,7 @@ template<class T> void AddEvWeightHadpT (T* NTupleOut, string trkSign)
   else if (trkSign == "neg") fileDataMC = TFile::Open(HadmpTFileName,"READ");
   else
     {	
-      cout << "[AddVars2Candidates::AddEvWeightHadpT]\tWrong option: " << trkSign << endl;
+      cout << "[AddVarsToCandidates::AddEvWeightHadpT]\tWrong option: " << trkSign << endl;
       exit (EXIT_FAILURE);
     }
   TCanvas* cTmp = (TCanvas*)fileDataMC->Get("c0");
@@ -723,7 +483,7 @@ int main (int argc, char** argv)
     {
       string option = argv[1];
       if ((((option == "pileupW") || (option == "HadpTW")) && (argc == 5)) ||
-	  (((option == "B0pTW") || (option == "nvAllReco") || (option == "nvTruthMatchReco") || (option == "nvGen") || (option == "nvGen2SingleCand")) && (argc == 4)))
+	  (((option == "B0pTW") || (option == "addSingleCandGENvars")) && (argc == 4)))
 	{
 	  string fileNameIn  = argv[2];
 	  string fileNameOut = argv[3];
@@ -773,18 +533,10 @@ int main (int argc, char** argv)
 	      AddEvWeightHadpT<B0KstMuMuSingleCandTreeContent>(NTupleOut,fileType);
 	      cout << "\n@@@ Added new event weight from hadron pT @@@" << endl;
 	    }
-	  else if ((option == "nvAllReco") || (option == "nvTruthMatchReco") || (option == "nvGen") || (option == "nvGen2SingleCand"))
+	  else if (option == "addSingleCandGENvars")
 	    {
-	      if ((option == "nvAllReco") || (option == "nvTruthMatchReco"))
-		{
-		  AddRecoVariables(option);
-		  cout << "\n@@@ Added new variables to reco-candidates @@@" << endl;
-		}
-	      else if ((option == "nvGen") || (option == "nvGen2SingleCand"))
-		{
-		  AddGenVariables(option);
-		  cout << "\n@@@ Added new variables to gen-events @@@" << endl;
-		}
+	      AddGenVariables(option);
+	      cout << "\n@@@ Added new variables to gen-events @@@" << endl;
 	    }
 
 
@@ -804,16 +556,11 @@ int main (int argc, char** argv)
       else
 	{
 	  cout << "Parameter missing: " << endl;
-	  cout << "./AddVars2Candidates [pileupW B0pTW HadpTW nvAllReco nvTruthMatchReco nvGen nvGen2SingleCand] inputFile.root outputFile.root [[if pileupW]outputFile-type(single/multi)] [[if HadpT]pos/neg]" << endl;
-
-	  cout << "- pileupW          : change the weight to all single/multiple candidates according to pileup weight" << endl;
-	  cout << "- B0pTW            : change the weight to all single candidates according to B0 pT weight" << endl;
-	  cout << "- HadpTW           : change the weight to all single candidates according to hadron pT weight" << endl;
-
-	  cout << "- nvAllReco        : generate new NTupleOut giveing to each candidate in NTupleIn a new TTree entry and adding the RECO single candidate variables" << endl;
-	  cout << "- nvTruthMatchReco : generate new NTupleOut adding the RECO single candidate variables only for the first truth matched candidate in a signal event, discarding the other candidates" << endl;
-	  cout << "- nvGen            : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC (NoFilter,Multi-candidates)" << endl;
-	  cout << "- nvGen2SingleCand : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from a GEN-RECO-MC (Single-candidate)" << endl;
+	  cout << "./AddVarsToCandidates [pileupW B0pTW HadpTW addSingleCandGENvars] inputFile.root outputFile.root [[if pileupW]outputFile-type(single/multi)] [[if HadpT]pos/neg]" << endl;
+	  cout << "- pileupW              : change the weight to all single/multiple candidates according to pileup weight" << endl;
+	  cout << "- B0pTW                : change the weight to all single candidates according to B0 pT weight" << endl;
+	  cout << "- HadpTW               : change the weight to all single candidates according to hadron pT weight" << endl;
+	  cout << "- addSingleCandGENvars : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC" << endl;
 
 	  return EXIT_FAILURE;
 	}
@@ -821,16 +568,11 @@ int main (int argc, char** argv)
   else
     {
       cout << "Parameter missing: " << endl;
-      cout << "./AddVars2Candidates [pileupW B0pTW HadpTW nvAllReco nvTruthMatchReco nvGen nvGen2SingleCand] inputFile.root outputFile.root [[if pileupW]outputFile-type(single/multi)] [[if HadpT]pos/neg]" << endl;
-
-      cout << "- pileupW          : change the weight to all single/multiple candidates according to pileup weight" << endl;
-      cout << "- B0pTW            : change the weight to all single candidates according to B0 pT weight" << endl;
-      cout << "- HadpTW           : change the weight to all single candidates according to hadron pT weight" << endl;
-
-      cout << "- nvAllReco        : generate new NTupleOut giveing to each candidate in NTupleIn a new TTree entry and adding the RECO single candidate variables" << endl;
-      cout << "- nvTruthMatchReco : generate new NTupleOut adding the RECO single candidate variables only for the first truth matched candidate in a signal event, discarding the other candidates" << endl;
-      cout << "- nvGen            : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC (NoFilter,Multi-candidates)" << endl;
-      cout << "- nvGen2SingleCand : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from a GEN-RECO-MC (Single-candidate)" << endl;
+      cout << "./AddVarsToCandidates [pileupW B0pTW HadpTW addSingleCandGENvars] inputFile.root outputFile.root [[if pileupW]outputFile-type(single/multi)] [[if HadpT]pos/neg]" << endl;
+      cout << "- pileupW              : change the weight to all single/multiple candidates according to pileup weight" << endl;
+      cout << "- B0pTW                : change the weight to all single candidates according to B0 pT weight" << endl;
+      cout << "- HadpTW               : change the weight to all single candidates according to hadron pT weight" << endl;
+      cout << "- addSingleCandGENvars : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC" << endl;
       
       return EXIT_FAILURE;
     }
