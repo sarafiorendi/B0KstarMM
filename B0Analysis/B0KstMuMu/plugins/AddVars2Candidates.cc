@@ -812,7 +812,7 @@ int main (int argc, char** argv)
 
 	  cout << "- nvAllReco        : generate new NTupleOut giveing to each candidate in NTupleIn a new TTree entry and adding the RECO single candidate variables" << endl;
 	  cout << "- nvTruthMatchReco : generate new NTupleOut adding the RECO single candidate variables only for the first truth matched candidate in a signal event, discarding the other candidates" << endl;
-	  cout << "- nvGen            : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC (NoFilter,Filter,Multi-candidates)" << endl;
+	  cout << "- nvGen            : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC (NoFilter,Multi-candidates)" << endl;
 	  cout << "- nvGen2SingleCand : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from a GEN-RECO-MC (Single-candidate)" << endl;
 
 	  return EXIT_FAILURE;
@@ -829,7 +829,7 @@ int main (int argc, char** argv)
 
       cout << "- nvAllReco        : generate new NTupleOut giveing to each candidate in NTupleIn a new TTree entry and adding the RECO single candidate variables" << endl;
       cout << "- nvTruthMatchReco : generate new NTupleOut adding the RECO single candidate variables only for the first truth matched candidate in a signal event, discarding the other candidates" << endl;
-      cout << "- nvGen            : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC (NoFilter,Filter,Multi-candidates)" << endl;
+      cout << "- nvGen            : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC (NoFilter,Multi-candidates)" << endl;
       cout << "- nvGen2SingleCand : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from a GEN-RECO-MC (Single-candidate)" << endl;
       
       return EXIT_FAILURE;

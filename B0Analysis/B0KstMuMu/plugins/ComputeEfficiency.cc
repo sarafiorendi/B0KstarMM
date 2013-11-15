@@ -2146,7 +2146,7 @@ int main (int argc, char** argv)
 	  
 	  cout << "ReadGenAnaly --> (read files generated from analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
 
-	  cout << "Fit1DEff     --> file with binned efficiency AND [q2 bin indx.] [thetaL thetaK]" << endl;
+	  cout << "Fit1DEff     --> file with binned efficiency AND [q2 bin indx.] [thetaL thetaK phi]" << endl;
 	  cout << "Fit2DEff     --> file with binned efficiency AND [q2 bin indx.]" << endl;
 	  cout << "Fit3DEff     --> file with binned efficiency AND [q2 bin indx.]" << endl;
 
@@ -2176,7 +2176,7 @@ int main (int argc, char** argv)
       
       cout << "ReadGenAnaly --> (read files generated from analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
 
-      cout << "Fit1DEff     --> file with binned efficiency AND [q2 bin indx.] [thetaL thetaK]" << endl;
+      cout << "Fit1DEff     --> file with binned efficiency AND [q2 bin indx.] [thetaL thetaK phi]" << endl;
       cout << "Fit2DEff     --> file with binned efficiency AND [q2 bin indx.]" << endl;
       cout << "Fit3DEff     --> file with binned efficiency AND [q2 bin indx.]" << endl;
 

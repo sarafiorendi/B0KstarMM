@@ -72,6 +72,7 @@ Utils::Utils ()
   std::cout << "nFitObserv: "       << nFitObserv << std::endl;
   std::cout << "NcoeffThetaL: "     << NcoeffThetaL << std::endl;
   std::cout << "NcoeffThetaK: "     << NcoeffThetaK << std::endl;
+  std::cout << "NcoeffPhi: "        << NcoeffPhi << std::endl;
   std::cout << "ProbThreshold: "    << ProbThreshold << std::endl;
   std::cout << "scrambleFraction: " << scrambleFraction << std::endl;
   std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;

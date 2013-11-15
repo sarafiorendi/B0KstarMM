@@ -6,6 +6,12 @@
 #$dirName = "/nfs/data36/cms/dinardo/B0ToJPsiKst_GEN_NoFilter_MC_NTuples/" ;
 #$dirName = "/nfs/data36/cms/dinardo/B0ToPsi2SKst_GEN_NoFilter_MC_NTuples/" ;
 
+### RECO MC ###
+#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_B0ToKstMuMu/" ;
+#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_B0ToKstJpsi/" ;
+#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_B0ToKstPsi2S/" ;
+#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_BsToKstMuMu/" ;
+
 #$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_B0ToPsiMuMu/" ;
 #$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_BpToPsiMuMu/" ;
 #$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_BsToPsiMuMu/" ;
@@ -33,6 +39,12 @@ for ($count = 0; $count < $nOut; $count++)
 #    $fileOut = "B0ToKstMuMu_GEN_NoFilter_MC_NTuples" ;
 #    $fileOut = "B0ToJPsiKst_GEN_NoFilter_MC_NTuples" ;
 #    $fileOut = "B0ToPsi2SKst_GEN_NoFilter_MC_NTuples" ;
+
+### RECO MC ###
+#    $fileOut = "B0ToKstMuMu_MC_NTuple" ;
+#    $fileOut = "B0ToKstJpsi_MC_NTuple" ;
+#    $fileOut = "B0ToKstPsi2S_MC_NTuple" ;
+#    $fileOut = "BsToKstMuMu_MC_NTuple" ;
 
 #    $fileOut = "B0ToPsiMuMu_MC_NTuple" ;
 #    $fileOut = "BpToPsiMuMu_MC_NTuple" ;
