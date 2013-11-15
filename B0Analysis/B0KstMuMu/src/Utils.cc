@@ -1743,7 +1743,7 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
 {
   unsigned int indx;
   std::stringstream myString;
-  double* coeffVec = new double[NcoeffThetaK];
+  double* coeffVec = new double[2*NcoeffThetaK*NcoeffThetaL*NcoeffPhi];
 
   std::vector<std::string> ParVector;
   ReadParameters* ParameterFile = new ReadParameters(fileNameEffParams.c_str());
@@ -1791,6 +1791,7 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
       effFuncs->operator[](q2BinIndx)->GetZaxis()->SetTitle("Efficiency");
     }
 
+
   delete coeffVec;
   ParVector.clear();
   delete ParameterFile;
@@ -1802,7 +1803,7 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
 {
   unsigned int indx;
   std::stringstream myString;
-  double* coeffVec = new double[NcoeffThetaK];
+  double* coeffVec = new double[2*NcoeffThetaK*NcoeffThetaL*NcoeffPhi];
 
   std::vector<std::string> ParVector;
   ReadParameters* ParameterFile = new ReadParameters(fileNameEffParams.c_str());
@@ -1868,6 +1869,7 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
       effFuncs->operator[](q2BinIndx)->GetZaxis()->SetTitle("#phi");
       effFuncs->operator[](q2BinIndx)->GetZaxis()->SetTitleOffset(1.8);
     }
+
 
   delete coeffVec;
   ParVector.clear();
