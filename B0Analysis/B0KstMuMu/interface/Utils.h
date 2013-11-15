@@ -3,6 +3,7 @@
 
 #include <TH1D.h>
 #include <TH2D.h>
+#include <TH3D.h>
 #include <TF1.h>
 #include <TF2.h>
 #include <TF3.h>
@@ -137,12 +138,14 @@ class Utils
   void Readq2Bins   (std::string fileName, std::vector<double>* q2Bins);
   void ReadHLTpaths (std::string fileName, std::vector<std::string>* TrigTable);
 
-  void GenEfficiency    (effStruct* myEff, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins);
-  void InitEfficiency   (effValue myEffiVal, effStruct myEff, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins);
-  void SaveEfficiency   (std::string fileName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, effStruct myEff);
-  void ReadEfficiency   (std::string fileName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, effStruct* myEff);
-  void GetEffq2Bin      (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int cosThetaKIndx, unsigned int cosThetaMuIndx, unsigned int phiIndx, effStruct myEff, double* Eff, double* EffErr);
-  void DeleteEfficiency (effStruct myEff);
+  void GenEfficiency      (effStruct* myEff, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins);
+  void InitEfficiency     (effValue myEffiVal, effStruct myEff, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins);
+  void SaveEfficiency     (std::string fileName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, effStruct myEff);
+  void ReadEfficiency     (std::string fileName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, effStruct* myEff);
+  void GetEffq2Bin        (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int cosThetaKIndx, unsigned int cosThetaMuIndx, unsigned int phiIndx, effStruct myEff, double* Eff, double* EffErr);
+  TH2D* Get2DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff);
+  TH3D* Get3DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff);
+  void DeleteEfficiency   (effStruct myEff);
 
   int SearchBin  (double val2Search, std::vector<double>* bins);
   int GetJPsiBin (std::vector<double>* q2Bins);

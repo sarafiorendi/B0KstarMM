@@ -503,6 +503,61 @@ void Utils::GetEffq2Bin (std::vector<double>* q2Bins, std::vector<double>* cosTh
     }
 }
 
+TH2D* Utils::Get2DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff)
+{
+  double Eff, EffErr;
+  double* cosThetaKBins_ = MakeBinning(cosThetaKBins);
+  double* cosThetaLBins_ = MakeBinning(cosThetaLBins);
+
+  TH2D* Histo = new TH2D(histoName.c_str(), histoName.c_str(), cosThetaKBins->size()-1, cosThetaKBins_, cosThetaLBins->size()-1, cosThetaLBins_);
+  Histo->SetXTitle("cos(#theta_{#font[122]{K}})");
+  Histo->GetXaxis()->SetTitleOffset(1.8);
+  Histo->SetYTitle("cos(#theta_{#font[12]{l}})");
+  Histo->GetYaxis()->SetTitleOffset(1.8);
+  Histo->SetZTitle("Efficiency");
+
+
+  // ##########################
+  // # Read binned efficiency #
+  // ##########################
+  for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
+    for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
+      {
+	IntegrateEffPhi(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2Bins->operator[](q2Indx),cosThetaKBins->operator[](j),cosThetaLBins->operator[](k),myEff,&Eff,&EffErr,false);
+	Histo->SetBinContent(j+1,k+1,Eff);
+	Histo->SetBinError(j+1,k+1,EffErr);
+      }
+  
+  return Histo;
+}
+
+TH3D* Utils::Get3DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff)
+{
+  double Eff, EffErr;
+  double* cosThetaKBins_ = MakeBinning(cosThetaKBins);
+  double* cosThetaLBins_ = MakeBinning(cosThetaLBins);
+  double* phiBins_       = MakeBinning(phiBins);
+
+  TH3D* Histo = new TH3D(histoName.c_str(), histoName.c_str(), cosThetaKBins->size()-1, cosThetaKBins_, cosThetaLBins->size()-1, cosThetaLBins_, phiBins->size()-1, phiBins_);
+  Histo->SetXTitle("cos(#theta_{#font[122]{K}})");
+  Histo->GetXaxis()->SetTitleOffset(1.8);
+  Histo->SetYTitle("cos(#theta_{#font[12]{l}})");
+  Histo->GetYaxis()->SetTitleOffset(1.8);
+  Histo->SetZTitle("#phi");
+  Histo->GetZaxis()->SetTitleOffset(1.8);
+  
+  for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
+    for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
+      for (unsigned int l = 0; l < phiBins->size()-1; l++)
+	{
+	  GetEffq2Bin(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2Indx,j,k,l,myEff,&Eff,&EffErr);
+	  Histo->SetBinContent(j+1,k+1,l+1,Eff);
+	  Histo->SetBinError(j+1,k+1,l+1,EffErr);
+	}
+  
+  return Histo;
+}
+
 void Utils::DeleteEfficiency (effStruct myEff)
 {
   delete myEff.Num1;
