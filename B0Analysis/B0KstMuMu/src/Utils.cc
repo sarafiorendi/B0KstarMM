@@ -505,7 +505,8 @@ void Utils::GetEffq2Bin (std::vector<double>* q2Bins, std::vector<double>* cosTh
 
 TH2D* Utils::Get2DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff)
 {
-  double Eff, EffErr;
+  double Eff    = 0.0;
+  double EffErr = 0.0;
   double* cosThetaKBins_ = MakeBinning(cosThetaKBins);
   double* cosThetaLBins_ = MakeBinning(cosThetaLBins);
 
@@ -533,7 +534,8 @@ TH2D* Utils::Get2DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bi
 
 TH3D* Utils::Get3DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff)
 {
-  double Eff, EffErr;
+  double Eff    = 0.0;
+  double EffErr = 0.0;
   double* cosThetaKBins_ = MakeBinning(cosThetaKBins);
   double* cosThetaLBins_ = MakeBinning(cosThetaLBins);
   double* phiBins_       = MakeBinning(phiBins);
