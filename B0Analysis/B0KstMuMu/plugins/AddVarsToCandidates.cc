@@ -49,13 +49,13 @@ B0KstMuMuSingleCandTreeContent* NTupleOut;
 // #######################
 // # Function Definition #
 // #######################
-void AddGenVariables (string option, unsigned int SignalType);
+void AddGenVariables (string option, int SignalType);
 template<class T> void AddEvWeightPileup (T* NTupleOut);
 template<class T> void AddEvWeightB0pT (T* NTupleOut);
 template<class T> void AddEvWeightHadpT (T* NTupleOut, string trkSign);
 
 
-void AddGenVariables (string option, unsigned int SignalType)
+void AddGenVariables (string option, int SignalType)
 {
   bool B0notB0bar = true;
 
