@@ -1,5 +1,25 @@
 #include "../interface/B0KstMuMuSingleCandTreeContent.h"
 
+B0KstMuMuSingleCandTreeContent::B0KstMuMuSingleCandTreeContent ()
+{
+  B0KstMuMuTreeContent::B0KstMuMuTreeContent();
+
+  // ### B0 variables ###
+  B0MassArb  = 0;
+  B0pT       = 0;
+  B0Eta      = 0;
+  B0Phi      = 0;
+  B0notB0bar = true;
+
+  // ### Trigger category ###
+  TrigCat = 0;
+
+  // ### Angular anaylsis ###
+  CosThetaKArb       = 0;
+  CosThetaMuArb      = 0;
+  PhiKstMuMuPlaneArb = 0;
+}
+
 void B0KstMuMuSingleCandTreeContent::Init ()
 {
   B0KstMuMuTreeContent::Init();

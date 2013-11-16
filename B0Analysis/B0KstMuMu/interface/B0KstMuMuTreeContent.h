@@ -12,8 +12,8 @@ class B0KstMuMuTreeContent
 
  public:
   
-  B0KstMuMuTreeContent () {};
-  ~B0KstMuMuTreeContent () {};
+  B0KstMuMuTreeContent ();
+  ~B0KstMuMuTreeContent () { Destroy(); };
 
   void Init ();
   void Destroy ();
@@ -231,6 +231,10 @@ class B0KstMuMuTreeContent
   
  private:
 
+  void ClearScalars ();
+  void ClearScalarsMonteCarlo ();
+  void ClearVectors ();
+  void ClearVectorsMonteCarlo ();
   void CopyScalars (B0KstMuMuTreeContent* NTupleIn);
   void CopyVectors (B0KstMuMuTreeContent* NTupleIn, int index);
 

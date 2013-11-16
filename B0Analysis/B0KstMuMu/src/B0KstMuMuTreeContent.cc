@@ -1,6 +1,183 @@
 #include "../interface/B0KstMuMuTreeContent.h"
 #include <iostream>
 
+B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
+{
+  ClearScalars();
+
+  // ### Trigger ###
+  TrigTable     = NULL;
+  TrigPrescales = NULL;
+
+  // ### B0 Mass ###
+  bMass      = NULL;
+  bMassE     = NULL;
+  bBarMass   = NULL;
+  bBarMassE  = NULL;
+  bPx        = NULL;
+  bPy        = NULL;
+  bPz        = NULL;
+
+  // ### Pileup information in MC ###
+  bunchXingMC           = NULL;
+  numInteractionsMC     = NULL;
+  trueNumInteractionsMC = NULL;
+
+  // ### B0 Vtx ###
+  bVtxCL        = NULL;
+  bVtxX         = NULL;
+  bVtxY         = NULL;
+  bVtxZ         = NULL;
+  bCosAlphaVtx  = NULL;
+  bCosAlphaVtxE = NULL;
+  bCosAlphaBS   = NULL;
+  bCosAlphaBSE  = NULL;
+  bLVtx         = NULL;
+  bLVtxE        = NULL;
+  bLBS          = NULL;
+  bLBSE         = NULL;
+  bDCAVtx       = NULL;
+  bDCAVtxE      = NULL;
+  bDCABS        = NULL;
+  bDCABSE       = NULL;
+
+  // ### B0 ctau ###
+  bctauPVBS  = NULL;
+  bctauPVBSE = NULL;
+
+  // ### K*0 Mass ###
+  kstMass     = NULL;
+  kstMassE    = NULL;
+  kstBarMass  = NULL;
+  kstBarMassE = NULL;
+  kstPx       = NULL;
+  kstPy       = NULL;
+  kstPz       = NULL;
+
+  // ### K*0 Vtx ###
+  kstVtxCL = NULL;
+  kstVtxX  = NULL;
+  kstVtxY  = NULL;
+  kstVtxZ  = NULL;
+
+  // ### mu+ mu- Mass ###
+  mumuMass  = NULL;
+  mumuMassE = NULL;
+  mumuPx    = NULL;
+  mumuPy    = NULL;
+  mumuPz    = NULL;
+
+  // ### mu+ mu- Vtx ###
+  mumuVtxCL       = NULL;
+  mumuVtxX        = NULL;
+  mumuVtxY        = NULL;
+  mumuVtxZ        = NULL;
+  mumuCosAlphaBS  = NULL;
+  mumuCosAlphaBSE = NULL; 
+  mumuLBS         = NULL;
+  mumuLBSE        = NULL;
+  mumuDCA         = NULL;
+
+  // ### mu- ###
+  mumHighPurity    = NULL;
+  mumCL            = NULL;
+  mumNormChi2      = NULL;
+  mumPx            = NULL;
+  mumPy            = NULL;
+  mumPz            = NULL;
+  mumDCAVtx        = NULL;
+  mumDCAVtxE       = NULL;
+  mumDCABS         = NULL;
+  mumDCABSE        = NULL;
+  mumKinkChi2      = NULL;
+  mumFracHits      = NULL;
+  mumdxyVtx        = NULL;
+  mumdzVtx         = NULL;
+  mumDeltaRwithMC  = NULL;
+  mumCat           = NULL;
+  mumNPixHits      = NULL;
+  mumNPixLayers    = NULL;
+  mumNTrkHits      = NULL;
+  mumNTrkLayers    = NULL;
+  mumNMuonHits     = NULL;
+  mumNMatchStation = NULL;
+  mumTrig          = NULL;
+
+  // ### mu+ ###
+  mupHighPurity    = NULL;
+  mupCL            = NULL;
+  mupNormChi2      = NULL;
+  mupPx            = NULL;
+  mupPy            = NULL;
+  mupPz            = NULL;
+  mupDCAVtx        = NULL;
+  mupDCAVtxE       = NULL;
+  mupDCABS         = NULL;
+  mupDCABSE        = NULL;
+  mupKinkChi2      = NULL;
+  mupFracHits      = NULL;
+  mupdxyVtx        = NULL;
+  mupdzVtx         = NULL;
+  mupDeltaRwithMC  = NULL;
+  mupCat           = NULL;
+  mupNPixHits      = NULL;
+  mupNPixLayers    = NULL;
+  mupNTrkHits      = NULL;
+  mupNTrkLayers    = NULL;
+  mupNMuonHits     = NULL;
+  mupNMatchStation = NULL;
+  mupTrig          = NULL;
+
+  // ### K*0 track- ###
+  kstTrkmHighPurity   = NULL;
+  kstTrkmCL           = NULL;
+  kstTrkmNormChi2     = NULL;
+  kstTrkmPx           = NULL;
+  kstTrkmPy           = NULL;
+  kstTrkmPz           = NULL;
+  kstTrkmDCAVtx       = NULL;
+  kstTrkmDCAVtxE      = NULL;
+  kstTrkmDCABS        = NULL;
+  kstTrkmDCABSE       = NULL;
+  kstTrkmFracHits     = NULL;
+  kstTrkmdxyVtx       = NULL;
+  kstTrkmdzVtx        = NULL;
+  kstTrkmDeltaRwithMC = NULL;
+  kstTrkmNPixHits     = NULL;
+  kstTrkmNPixLayers   = NULL;
+  kstTrkmNTrkHits     = NULL;
+  kstTrkmNTrkLayers   = NULL;
+  kstTrkmMuMatch      = NULL;
+
+  // ### K*0 track+ ###
+  kstTrkpHighPurity   = NULL;
+  kstTrkpCL           = NULL;
+  kstTrkpNormChi2     = NULL;
+  kstTrkpPx           = NULL;
+  kstTrkpPy           = NULL;
+  kstTrkpPz           = NULL;
+  kstTrkpDCAVtx       = NULL;
+  kstTrkpDCAVtxE      = NULL;
+  kstTrkpDCABS        = NULL;
+  kstTrkpDCABSE       = NULL;
+  kstTrkpFracHits     = NULL;
+  kstTrkpdxyVtx       = NULL;
+  kstTrkpdzVtx        = NULL;
+  kstTrkpDeltaRwithMC = NULL;
+  kstTrkpNPixHits     = NULL;
+  kstTrkpNPixLayers   = NULL;
+  kstTrkpNTrkHits     = NULL;
+  kstTrkpNTrkLayers   = NULL;
+  kstTrkpMuMatch      = NULL;
+
+  // ### Matching Between Reconstructed and Generated ###
+  truthMatchSignal = NULL;
+  truthMatchMum    = NULL;
+  truthMatchMup    = NULL;
+  truthMatchTrkm   = NULL;
+  truthMatchTrkp   = NULL;
+}
+
 void B0KstMuMuTreeContent::Init ()
 {
   // ### Trigger ###
@@ -351,7 +528,7 @@ void B0KstMuMuTreeContent::Destroy ()
   delete truthMatchTrkp;
 }
 
-void B0KstMuMuTreeContent::ClearNTuple ()
+void B0KstMuMuTreeContent::ClearScalars ()
 {
   // ########################################################
   // # Run Number, event number, #reco vtx and event weight #
@@ -364,10 +541,6 @@ void B0KstMuMuTreeContent::ClearNTuple ()
   numEventsTried  = 0;
   numEventsPassed = 0;
 
-  // ### Trigger ###
-  TrigTable->clear();
-  TrigPrescales->clear();
-
   nB = 0;
   
   // ### Primary Vertex and Beam Spot ###
@@ -377,6 +550,85 @@ void B0KstMuMuTreeContent::ClearNTuple ()
   priVtxZ  = 0;
   bsX      = 0;
   bsY      = 0;
+  
+  ClearScalarsMonteCarlo();
+}
+
+void B0KstMuMuTreeContent::ClearScalarsMonteCarlo ()
+{
+  // ### Generated Observables ###
+  genSignal       = 0;
+  genMuMuBG       = 0;
+  genMuMuBGnTrksm = 0;
+  genMuMuBGnTrksp = 0;
+  genPsiPrompt     = false;
+  genSignHasFSR    = false;
+  genSignKstHasFSR = false;
+  genSignPsiHasFSR = false;
+
+  // # Generated Primary Vertex #
+  genPriVtxX = 0;
+  genPriVtxY = 0;
+  genPriVtxZ = 0;
+
+  // ### Generated B0 Mass ###
+  genB0Mass = 0;
+  genB0Px   = 0;
+  genB0Py   = 0;
+  genB0Pz   = 0;
+
+  // ### Generated B0 Vtx ###
+  genB0VtxX = 0;
+  genB0VtxY = 0;
+  genB0VtxZ = 0;
+
+  // ### Generated K*0 Mass ###
+  genKstMass = 0;
+  genKstPx   = 0;
+  genKstPy   = 0;
+  genKstPz   = 0;
+
+  // ### Generated K*0 Vtx ###
+  genKstVtxX = 0;
+  genKstVtxY = 0;
+  genKstVtxZ = 0;
+
+  // ### Generated J/psi or psi(2S) Mass and Vtx ###
+  genPsiMass = 0;
+  genPsiVtxX = 0;
+  genPsiVtxY = 0;
+  genPsiVtxZ = 0;
+
+  // ### Generated mu- ###
+  genMumMother = 0;
+  genMumPx     = 0;
+  genMumPy     = 0;
+  genMumPz     = 0;
+
+  // ### Generated mu+ ###
+  genMupMother = 0;
+  genMupPx     = 0;
+  genMupPy     = 0;
+  genMupPz     = 0;
+
+  // ### Generated K*0 track- ###
+  genKstTrkmMother = 0;
+  genKstTrkmPx     = 0;
+  genKstTrkmPy     = 0;
+  genKstTrkmPz     = 0;
+
+  // ### Generated K*0 track+ ###
+  genKstTrkpMother = 0;
+  genKstTrkpPx     = 0;
+  genKstTrkpPy     = 0;
+  genKstTrkpPz     = 0;
+}
+
+void B0KstMuMuTreeContent::ClearVectors ()
+{
+  // ### Trigger ###
+  TrigTable->clear();
+  TrigPrescales->clear();
 
   // ### B0 Mass ###
   bMass->clear();
@@ -539,84 +791,29 @@ void B0KstMuMuTreeContent::ClearNTuple ()
   kstTrkpNTrkLayers->clear();
   kstTrkpMuMatch->clear();
 
-  ClearMonteCarlo();
+  ClearVectorsMonteCarlo();
 }
 
-void B0KstMuMuTreeContent::ClearMonteCarlo ()
+void B0KstMuMuTreeContent::ClearVectorsMonteCarlo ()
 {
-  // ### Generated Observables ###
-  genSignal       = 0;
-  genMuMuBG       = 0;
-  genMuMuBGnTrksm = 0;
-  genMuMuBGnTrksp = 0;
-  genPsiPrompt     = false;
-  genSignHasFSR    = false;
-  genSignKstHasFSR = false;
-  genSignPsiHasFSR = false;
-
-  // # Generated Primary Vertex #
-  genPriVtxX = 0;
-  genPriVtxY = 0;
-  genPriVtxZ = 0;
-
-  // ### Generated B0 Mass ###
-  genB0Mass = 0;
-  genB0Px   = 0;
-  genB0Py   = 0;
-  genB0Pz   = 0;
-
-  // ### Generated B0 Vtx ###
-  genB0VtxX = 0;
-  genB0VtxY = 0;
-  genB0VtxZ = 0;
-
-  // ### Generated K*0 Mass ###
-  genKstMass = 0;
-  genKstPx   = 0;
-  genKstPy   = 0;
-  genKstPz   = 0;
-
-  // ### Generated K*0 Vtx ###
-  genKstVtxX = 0;
-  genKstVtxY = 0;
-  genKstVtxZ = 0;
-
-  // ### Generated J/psi or psi(2S) Mass and Vtx ###
-  genPsiMass = 0;
-  genPsiVtxX = 0;
-  genPsiVtxY = 0;
-  genPsiVtxZ = 0;
-
-  // ### Generated mu- ###
-  genMumMother = 0;
-  genMumPx     = 0;
-  genMumPy     = 0;
-  genMumPz     = 0;
-
-  // ### Generated mu+ ###
-  genMupMother = 0;
-  genMupPx     = 0;
-  genMupPy     = 0;
-  genMupPz     = 0;
-
-  // ### Generated K*0 track- ###
-  genKstTrkmMother = 0;
-  genKstTrkmPx     = 0;
-  genKstTrkmPy     = 0;
-  genKstTrkmPz     = 0;
-
-  // ### Generated K*0 track+ ###
-  genKstTrkpMother = 0;
-  genKstTrkpPx     = 0;
-  genKstTrkpPy     = 0;
-  genKstTrkpPz     = 0;
-
   // ### Matching Between Reconstructed and Generated ###
   truthMatchSignal->clear();
   truthMatchMum->clear();
   truthMatchMup->clear();
   truthMatchTrkm->clear();
   truthMatchTrkp->clear();
+}
+
+void B0KstMuMuTreeContent::ClearNTuple ()
+{
+  ClearScalars();
+  ClearVectors();
+}
+
+void B0KstMuMuTreeContent::ClearMonteCarlo ()
+{
+  ClearScalarsMonteCarlo();
+  ClearVectorsMonteCarlo();
 }
 
 void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
