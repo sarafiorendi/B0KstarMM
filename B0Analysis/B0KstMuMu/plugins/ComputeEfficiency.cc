@@ -77,14 +77,15 @@ using namespace std;
 #define INPUT_THETAL_THETAK_Comp     "../../Efficiency/ThetaKThetaL_B0ToKstMuMu.txt"
 #define INPUT_THETAL_THETAK_PHI_Comp "../../Efficiency/ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
-#define SavePlot false
+#define SavePlot       false
 #define CHECKEFFatREAD false // Check if 2D or 3D efficiency goes negative
-#define NFILES 200
-#define INPUTGenEff "../../Efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
-#define SignalType 1 // If checking MC B0 --> K*0 mumu  : 1
-                     // If checking MC B0 --> J/psi K*0 : 3
-                     // If checking MC B0 --> psi(2S) K*0 : 5
-#define ParameterFILE "../python/ParameterFile.txt"
+#define NFILES         200
+#define INPUTGenEff    "../../Efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
+#define SETBATCH       true // Set batch mode
+#define SignalType     1 // If checking MC B0 --> K*0 mumu  : 1
+                         // If checking MC B0 --> J/psi K*0 : 3
+                         // If checking MC B0 --> psi(2S) K*0 : 5
+#define ParameterFILE  "../python/ParameterFile.txt"
 
 // ###################
 // # Fit constraints #
@@ -1909,6 +1910,7 @@ int main (int argc, char** argv)
       cout << "NFILES: "         << NFILES << endl;
       cout << "INPUTGenEff: "    << INPUTGenEff << endl;
       cout << "Signal Type: "    << SignalType << endl;
+      cout << "SETBATCH: "       << SETBATCH << endl;
       cout << "ParameterFILE: "  <<  ParameterFILE << endl;
 
       cout << "\nabscissaErr: " << abscissaErr << endl;
@@ -1924,6 +1926,11 @@ int main (int argc, char** argv)
 	  string fileNameSingleCand            = argv[4];
 	  string fileNameOutput                = argv[5];
 
+	  if (SETBATCH == true)
+	    {
+	      cout << "\n@@@ Setting batch mode @@@" << endl;
+	      gROOT->SetBatch(true);
+	    }
 	  TApplication theApp ("Applications", &argc, argv);
 
 
@@ -1979,12 +1986,12 @@ int main (int argc, char** argv)
 
 
 	  Utility->SaveEfficiency(fileNameOutput.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff);
-	  MakeHistogramsAllBins(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff);
+	  if (SETBATCH == false) MakeHistogramsAllBins(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff);
 	  cout << "\n@@@ Efficiency computation is done @@@" << endl;
 
 
 	  delete Utility;
-	  theApp.Run (); // Eventloop on air
+	  if (SETBATCH == false) theApp.Run (); // Eventloop on air
 	  return EXIT_SUCCESS;
 	}
       else if ((option == "ReadBin") || (option == "ReadAnaly"))
