@@ -102,11 +102,9 @@ using std::vector;
 Utils* Utility;
 
 TTree* theTreeGenCandidatesNoFilter;
-TTree* theTreeGenCandidatesFilter;
 TTree* theTreeRecoCandidates;
 TTree* theTreeSingleCand;
 B0KstMuMuSingleCandTreeContent* NTupleGenCandidatesNoFilter;
-B0KstMuMuSingleCandTreeContent* NTupleGenCandidatesFilter;
 B0KstMuMuSingleCandTreeContent* NTupleRecoCandidates;
 B0KstMuMuSingleCandTreeContent* NTupleSingleCand;
 

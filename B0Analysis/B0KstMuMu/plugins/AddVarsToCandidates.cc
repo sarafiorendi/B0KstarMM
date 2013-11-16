@@ -570,7 +570,7 @@ int main (int argc, char** argv)
       cout << "- B0pTW                : change the weight to all single candidates according to B0 pT weight" << endl;
       cout << "- HadpTW               : change the weight to all single candidates according to hadron pT weight" << endl;
       cout << "- addSingleCandGENvars : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC" << endl;
-      cout << "- SignalType           : if B0 --> K*0 mumu = 1; if B0 --> J/psi K*0 = 3; if B0 --> psi(2S) K*0 = 5" << endl;
+      cout << "- SignalType           : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
 
       return EXIT_FAILURE;
     }
