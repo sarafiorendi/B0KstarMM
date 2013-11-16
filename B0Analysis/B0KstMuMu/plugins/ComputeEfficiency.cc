@@ -2142,7 +2142,7 @@ int main (int argc, char** argv)
 	  cout << "\nParameter missing: " << endl;
 	  cout << "./ComputeEfficiency [Make ReadBin ReadAnaly ReadGenAnaly Fit1DEff Fit2DEff Fit3DEff Test2DEff Test3DEff] " << endl;
 	  cout << "[inputFileGenCandidatesNoFilter.root inputRecoCandidates.root inputFileSingleCand.root] " << endl;
-	  cout << "[out/in]putFile.txt [q2 bin indx.]" << endl;
+	  cout << "[out/in]putFile.txt [SignalType] [q2 bin indx.]" << endl;
 
 	  cout << "Make         --> root files for efficiency computation AND outputFile.txt AND SignalType" << endl;
 	  cout << "             --> SignalType : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
@@ -2173,7 +2173,7 @@ int main (int argc, char** argv)
       cout << "\nParameter missing: " << endl;
       cout << "./ComputeEfficiency [Make ReadBin ReadAnaly ReadGenAnaly Fit1DEff Fit2DEff Fit3DEff Test2DEff Test3DEff] " << endl;
       cout << "[inputFileGenCandidatesNoFilter.root inputRecoCandidates.root inputFileSingleCand.root] " << endl;
-      cout << "[out/in]putFile.txt [q2 bin indx.]" << endl;
+      cout << "[out/in]putFile.txt [SignalType] [q2 bin indx.]" << endl;
 
       cout << "Make         --> root files for efficiency computation AND outputFile.txt AND SignalType" << endl;
       cout << "             --> SignalType : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
