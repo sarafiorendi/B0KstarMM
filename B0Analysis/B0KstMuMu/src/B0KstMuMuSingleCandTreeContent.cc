@@ -25,11 +25,6 @@ void B0KstMuMuSingleCandTreeContent::Init ()
   B0KstMuMuTreeContent::Init();
 }
 
-B0KstMuMuSingleCandTreeContent::~B0KstMuMuSingleCandTreeContent ()
-{
-  B0KstMuMuTreeContent::~B0KstMuMuTreeContent();
-}
-
 void B0KstMuMuSingleCandTreeContent::ClearNTuple ()
 {
   B0KstMuMuTreeContent::ClearNTuple();

@@ -12,7 +12,6 @@ class B0KstMuMuSingleCandTreeContent : public B0KstMuMuTreeContent
  public:
   
   B0KstMuMuSingleCandTreeContent ();
-  ~B0KstMuMuSingleCandTreeContent ();
 
   void Init ();
   void ClearNTuple ();
