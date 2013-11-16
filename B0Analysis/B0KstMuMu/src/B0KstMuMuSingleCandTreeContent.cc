@@ -2,7 +2,7 @@
 
 B0KstMuMuSingleCandTreeContent::B0KstMuMuSingleCandTreeContent ()
 {
-  B0KstMuMuTreeContent::B0KstMuMuTreeContent();
+  B0KstMuMuTreeContent();
 
   // ### B0 variables ###
   B0MassArb  = 0;
