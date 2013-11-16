@@ -12,10 +12,9 @@ class B0KstMuMuSingleCandTreeContent : public B0KstMuMuTreeContent
  public:
   
   B0KstMuMuSingleCandTreeContent ();
-  ~B0KstMuMuSingleCandTreeContent () { Destroy(); };
+  ~B0KstMuMuSingleCandTreeContent ();
 
   void Init ();
-  void Destroy ();
   void ClearNTuple ();
   void MakeTreeBranches (TTree* theTree);
   void SetBranchAddresses (TTree* theTree);

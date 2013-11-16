@@ -543,13 +543,11 @@ int main (int argc, char** argv)
 	  NtplFileOut->cd("B0KstMuMu");
 	  theTreeOut->Write();
 	  NtplFileOut->Close();
-	  NTupleOut->Destroy();
 	  delete NTupleOut;
 
 	  NtplFileIn->Close();
-	  NTupleIn->Destroy();
-	  delete Utility;
 	  delete NTupleIn;
+	  delete Utility;
 
 	  return EXIT_SUCCESS;
 	}

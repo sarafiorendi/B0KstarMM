@@ -353,7 +353,7 @@ void B0KstMuMuTreeContent::Init ()
   truthMatchTrkp   = new std::vector<bool>;
 }
 
-void B0KstMuMuTreeContent::Destroy ()
+B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
 {
   // ### Trigger ###
   delete TrigTable;

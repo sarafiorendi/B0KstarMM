@@ -25,9 +25,9 @@ void B0KstMuMuSingleCandTreeContent::Init ()
   B0KstMuMuTreeContent::Init();
 }
 
-void B0KstMuMuSingleCandTreeContent::Destroy ()
+B0KstMuMuSingleCandTreeContent::~B0KstMuMuSingleCandTreeContent ()
 {
-  B0KstMuMuTreeContent::Destroy();
+  B0KstMuMuTreeContent::~B0KstMuMuTreeContent();
 }
 
 void B0KstMuMuSingleCandTreeContent::ClearNTuple ()

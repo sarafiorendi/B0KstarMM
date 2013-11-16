@@ -13,10 +13,9 @@ class B0KstMuMuTreeContent
  public:
   
   B0KstMuMuTreeContent ();
-  ~B0KstMuMuTreeContent () { Destroy(); };
+  ~B0KstMuMuTreeContent ();
 
   void Init ();
-  void Destroy ();
   void ClearNTuple ();
   void ClearMonteCarlo ();
   void MakeTreeBranches (TTree* theTree);

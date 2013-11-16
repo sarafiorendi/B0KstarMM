@@ -595,7 +595,6 @@ int main (int argc, char** argv)
 	      NtplFileOut->Close();
 	      NtplFileIn->Close();
 
-	      NTupleOut->Destroy();
 	      delete NTupleOut;
 	    }
 	  return EXIT_SUCCESS;

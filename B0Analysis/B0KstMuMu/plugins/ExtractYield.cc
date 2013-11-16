@@ -2341,7 +2341,6 @@ void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2B
   NtplFileOut->cd("B0SingleCand");
   theTreeOut->Write();
   NtplFileOut->Close("R");
-  NTupleOut->Destroy();
   delete NTupleOut;
   delete NtplFileOut;
   delete MyToy;
