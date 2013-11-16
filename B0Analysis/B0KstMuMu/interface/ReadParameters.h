@@ -1,8 +1,8 @@
-#ifndef _READPARAMETERS
-#define _READPARAMETERS
+#ifndef READPARAMETERS_H
+#define READPARAMETERS_H
 
-#include <fstream>
 #include <string>
+#include <fstream>
 #include <vector>
 
 

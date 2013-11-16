@@ -1,5 +1,5 @@
-#ifndef _UTILS
-#define _UTILS
+#ifndef UTILS_H
+#define UTILS_H
 
 #include <TH1D.h>
 #include <TH2D.h>

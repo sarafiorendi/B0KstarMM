@@ -1,6 +1,6 @@
 #include "../interface/ReadParameters.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <iostream>
 
 ReadParameters::ReadParameters(const char* InputFileName, std::string howOpen)

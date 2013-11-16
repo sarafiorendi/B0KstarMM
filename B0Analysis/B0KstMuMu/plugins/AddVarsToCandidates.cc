@@ -4,14 +4,13 @@
 // # Author: Mauro Dinardo                                                #
 // ########################################################################
 
-#ifndef __CINT__
 #include <TROOT.h>
 #include <TCanvas.h>
 #include <TH1.h>
 #include <TFile.h>
 #include <TLorentzVector.h>
-#endif
 
+#include <cstdlib>
 #include <iostream>
 #include <sstream>
 
@@ -19,7 +18,11 @@
 #include "B0KstMuMuTreeContent.h"
 #include "B0KstMuMuSingleCandTreeContent.h"
 
-using namespace std;
+using std::cout;
+using std::endl;
+using std::string;
+using std::stringstream;
+using std::vector;
 
 
 // ####################
@@ -31,10 +34,6 @@ using namespace std;
 #define HadppTFileName     "HadppTDataMC.root"
 #define HadmpTFileName     "HadmpTDataMC.root"
 #define ParameterFILE      "../python/ParameterFile.txt"
-
-#define SignalType 1 // If checking MC B0 --> K*0 mumu  : 1
-                     // If checking MC B0 --> J/psi K*0 : 3
-                     // If checking MC B0 --> psi(2S) K*0 : 5
 
 
 // ####################
@@ -50,13 +49,13 @@ B0KstMuMuSingleCandTreeContent* NTupleOut;
 // #######################
 // # Function Definition #
 // #######################
-void AddGenVariables (string option);
+void AddGenVariables (string option, unsigned int SignalType);
 template<class T> void AddEvWeightPileup (T* NTupleOut);
 template<class T> void AddEvWeightB0pT (T* NTupleOut);
 template<class T> void AddEvWeightHadpT (T* NTupleOut, string trkSign);
 
 
-void AddGenVariables (string option)
+void AddGenVariables (string option, unsigned int SignalType)
 {
   bool B0notB0bar = true;
 
@@ -482,13 +481,13 @@ int main (int argc, char** argv)
   if (argc >= 4)
     {
       string option = argv[1];
-      if ((((option == "pileupW") || (option == "HadpTW")) && (argc == 5)) ||
-	  (((option == "B0pTW") || (option == "addSingleCandGENvars")) && (argc == 4)))
+      if ((((option == "pileupW") || (option == "HadpTW") || (option == "addSingleCandGENvars")) && (argc == 5)) ||
+	  ((option == "B0pTW") && (argc == 4)))
 	{
 	  string fileNameIn  = argv[2];
 	  string fileNameOut = argv[3];
-	  string fileType = "";
-	  if ((option == "pileupW") || (option == "HadpTW")) fileType = argv[4];
+	  string localVar = "";
+	  if ((option == "pileupW") || (option == "HadpTW") || (option == "addSingleCandGENvars")) localVar = argv[4];
 
 	  Utility = new Utils();
 	  Utility->ReadTriggerPathsANDCutsANDEntries(ParameterFILE);
@@ -514,12 +513,11 @@ int main (int argc, char** argv)
 	  cout << "Positive hadron pT data-MC file name: " << HadppTFileName << endl;
 	  cout << "Negative hadron pT data-MC file name: " << HadmpTFileName << endl;
 	  cout << "ParameterFILE: "                        << ParameterFILE << endl;
-	  cout << "Signal Type: "                          << SignalType << endl;
 
 
 	  if (option == "pileupW")
 	    {
-	      if (fileType == "single") AddEvWeightPileup<B0KstMuMuSingleCandTreeContent>(NTupleOut);
+	      if (localVar == "single") AddEvWeightPileup<B0KstMuMuSingleCandTreeContent>(NTupleOut);
 	      else                      AddEvWeightPileup<B0KstMuMuTreeContent>(NTupleOut);
 	      cout << "\n@@@ Added new event weight from pileup @@@" << endl;
 	    }
@@ -530,12 +528,12 @@ int main (int argc, char** argv)
 	    }
 	  else if (option == "HadpTW")
 	    {
-	      AddEvWeightHadpT<B0KstMuMuSingleCandTreeContent>(NTupleOut,fileType);
+	      AddEvWeightHadpT<B0KstMuMuSingleCandTreeContent>(NTupleOut,localVar);
 	      cout << "\n@@@ Added new event weight from hadron pT @@@" << endl;
 	    }
 	  else if (option == "addSingleCandGENvars")
 	    {
-	      AddGenVariables(option);
+	      AddGenVariables(option,atoi(localVar.c_str()));
 	      cout << "\n@@@ Added new variables to gen-events @@@" << endl;
 	    }
 
@@ -554,11 +552,12 @@ int main (int argc, char** argv)
       else
 	{
 	  cout << "Parameter missing: " << endl;
-	  cout << "./AddVarsToCandidates [pileupW B0pTW HadpTW addSingleCandGENvars] inputFile.root outputFile.root [[if pileupW]outputFile-type(single/multi)] [[if HadpT]pos/neg]" << endl;
+	  cout << "./AddVarsToCandidates [pileupW B0pTW HadpTW addSingleCandGENvars] inputFile.root outputFile.root [[if pileupW]outputFile-type(single/multi)] [[if HadpT]pos/neg] [[if addSingleCandGENvars]SignalType]" << endl;
 	  cout << "- pileupW              : change the weight to all single/multiple candidates according to pileup weight" << endl;
 	  cout << "- B0pTW                : change the weight to all single candidates according to B0 pT weight" << endl;
 	  cout << "- HadpTW               : change the weight to all single candidates according to hadron pT weight" << endl;
 	  cout << "- addSingleCandGENvars : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC" << endl;
+	  cout << "- SignalType           : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
 
 	  return EXIT_FAILURE;
 	}
@@ -566,12 +565,13 @@ int main (int argc, char** argv)
   else
     {
       cout << "Parameter missing: " << endl;
-      cout << "./AddVarsToCandidates [pileupW B0pTW HadpTW addSingleCandGENvars] inputFile.root outputFile.root [[if pileupW]outputFile-type(single/multi)] [[if HadpT]pos/neg]" << endl;
+      cout << "./AddVarsToCandidates [pileupW B0pTW HadpTW addSingleCandGENvars] inputFile.root outputFile.root [[if pileupW]outputFile-type(single/multi)] [[if HadpT]pos/neg] [[if addSingleCandGENvars]SignalType]" << endl;
       cout << "- pileupW              : change the weight to all single/multiple candidates according to pileup weight" << endl;
       cout << "- B0pTW                : change the weight to all single candidates according to B0 pT weight" << endl;
       cout << "- HadpTW               : change the weight to all single candidates according to hadron pT weight" << endl;
       cout << "- addSingleCandGENvars : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC" << endl;
-      
+      cout << "- SignalType           : if B0 --> K*0 mumu = 1; if B0 --> J/psi K*0 = 3; if B0 --> psi(2S) K*0 = 5" << endl;
+
       return EXIT_FAILURE;
     }
   

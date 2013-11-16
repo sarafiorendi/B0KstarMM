@@ -5,8 +5,8 @@
 // #         Created:  Mon Apr 27 09:53:19 MDT 2011 #
 // ##################################################
 
-#ifndef _B0KSTMUMU
-#define _B0KSTMUMU
+#ifndef B0KSTMUMU_H
+#define B0KSTMUMU_H
 
 // System include files
 #include <memory>

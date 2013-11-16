@@ -5,7 +5,6 @@
 // # Author: Mauro Dinardo                                                 #
 // #########################################################################
 
-#ifndef __CINT__
 #include <TROOT.h>
 #include <TApplication.h>
 #include <TStyle.h>
@@ -24,17 +23,21 @@
 #include <TLegend.h>
 #include <TText.h>
 #include <TFitResult.h>
-#endif
 
 #include <cmath>
 #include <iostream>
 #include <sstream>
+#include <vector>
 
 #include "ReadParameters.h"
 #include "Utils.h"
 #include "B0KstMuMuSingleCandTreeContent.h"
 
-using namespace std;
+using std::cout;
+using std::endl;
+using std::string;
+using std::stringstream;
+using std::vector;
 
 
 // ###########################################
@@ -82,9 +85,6 @@ using namespace std;
 #define NFILES         200
 #define INPUTGenEff    "../../Efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
 #define SETBATCH       true // Set batch mode
-#define SignalType     1 // If checking MC B0 --> K*0 mumu  : 1
-                         // If checking MC B0 --> J/psi K*0 : 3
-                         // If checking MC B0 --> psi(2S) K*0 : 5
 #define ParameterFILE  "../python/ParameterFile.txt"
 
 // ###################
@@ -125,7 +125,7 @@ Utils::effStruct myEff;
 // # Function Definition #
 // #######################
 void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, double* Vector, double* VectorErr2Pois, double* VectorErr2Weig, unsigned int type,
-			vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins);
+			vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, unsigned int SignalType);
 void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff);
 void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 		       string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool saveHistos, int specBin = -1);
@@ -143,7 +143,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
 // # Function Implementation #
 // ###########################
 void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, double* Vector, double* VectorErr2Pois, double* VectorErr2Weig, unsigned int type,
-			vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins)
+			vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, unsigned int SignalType)
 // ##########################################################
 // # Efficiency type = 1 --> total gen events before filter #
 // # Efficiency type = 2 --> total gen events after filter  #
@@ -1909,7 +1909,6 @@ int main (int argc, char** argv)
       cout << "CHECKEFFatREAD: " << CHECKEFFatREAD << endl;
       cout << "NFILES: "         << NFILES << endl;
       cout << "INPUTGenEff: "    << INPUTGenEff << endl;
-      cout << "Signal Type: "    << SignalType << endl;
       cout << "SETBATCH: "       << SETBATCH << endl;
       cout << "ParameterFILE: "  <<  ParameterFILE << endl;
 
@@ -1919,12 +1918,13 @@ int main (int argc, char** argv)
       cout << "ordinateRange: " << ordinateRange << endl;
 
 
-      if ((option == "Make") && (argc == 6))
+      if ((option == "Make") && (argc == 7))
 	{
 	  string fileNameGenCandidatesNoFilter = argv[2];
 	  string fileNameRecoCandidates        = argv[3];
 	  string fileNameSingleCand            = argv[4];
 	  string fileNameOutput                = argv[5];
+	  string SignalType                    = argv[6];
 
 	  if (SETBATCH == true)
 	    {
@@ -1979,10 +1979,10 @@ int main (int argc, char** argv)
 	  Utility->InitEfficiency(myEffVal,myEff,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
 
 
-	  ComputeEfficiency(theTreeGenCandidatesNoFilter,NTupleGenCandidatesNoFilter,myEff.Den1,myEff.Err2PoisDen1,myEff.Err2WeigDen1, 1 ,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
-	  ComputeEfficiency(theTreeGenCandidatesNoFilter,NTupleGenCandidatesNoFilter,myEff.Num1,myEff.Err2PoisNum1,myEff.Err2WeigNum1, 2 ,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
-	  ComputeEfficiency(theTreeRecoCandidates,       NTupleRecoCandidates,       myEff.Den2,myEff.Err2PoisDen2,myEff.Err2WeigDen2, 3 ,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
-	  ComputeEfficiency(theTreeSingleCand,           NTupleSingleCand,           myEff.Num2,myEff.Err2PoisNum2,myEff.Err2WeigNum2, 4 ,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
+	  ComputeEfficiency(theTreeGenCandidatesNoFilter,NTupleGenCandidatesNoFilter,myEff.Den1,myEff.Err2PoisDen1,myEff.Err2WeigDen1, 1 ,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,atoi(SignalType.c_str()));
+	  ComputeEfficiency(theTreeGenCandidatesNoFilter,NTupleGenCandidatesNoFilter,myEff.Num1,myEff.Err2PoisNum1,myEff.Err2WeigNum1, 2 ,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,atoi(SignalType.c_str()));
+	  ComputeEfficiency(theTreeRecoCandidates,       NTupleRecoCandidates,       myEff.Den2,myEff.Err2PoisDen2,myEff.Err2WeigDen2, 3 ,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,atoi(SignalType.c_str()));
+	  ComputeEfficiency(theTreeSingleCand,           NTupleSingleCand,           myEff.Num2,myEff.Err2PoisNum2,myEff.Err2WeigNum2, 4 ,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,atoi(SignalType.c_str()));
 
 
 	  Utility->SaveEfficiency(fileNameOutput.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff);
@@ -2146,7 +2146,8 @@ int main (int argc, char** argv)
 	  cout << "[inputFileGenCandidatesNoFilter.root inputRecoCandidates.root inputFileSingleCand.root] " << endl;
 	  cout << "[out/in]putFile.txt [q2 bin indx.]" << endl;
 
-	  cout << "Make         --> root files for efficiency computation AND outputFile.txt" << endl;
+	  cout << "Make         --> root files for efficiency computation AND outputFile.txt AND SignalType" << endl;
+	  cout << "             --> SignalType : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
 
 	  cout << "ReadBin      --> (read file with binned eff.) file with binned efficiency AND [q2 bin indx.(optional)]" << endl;
 	  cout << "ReadAnaly    --> (read file with analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
@@ -2176,8 +2177,9 @@ int main (int argc, char** argv)
       cout << "[inputFileGenCandidatesNoFilter.root inputRecoCandidates.root inputFileSingleCand.root] " << endl;
       cout << "[out/in]putFile.txt [q2 bin indx.]" << endl;
 
-      cout << "Make         --> root files for efficiency computation AND outputFile.txt" << endl;
-      
+      cout << "Make         --> root files for efficiency computation AND outputFile.txt AND SignalType" << endl;
+      cout << "             --> SignalType : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
+
       cout << "ReadBin      --> (read file with binned eff.) file with binned efficiency AND [q2 bin indx.(optional)]" << endl;
       cout << "ReadAnaly    --> (read file with analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
       

@@ -40,7 +40,6 @@
 // TotalPDFq2Bins = FullHLTpdf[i];
 // ############################################################################
 
-#ifndef __CINT__
 #include <TROOT.h>
 #include <TApplication.h>
 #include <TSystem.h>
@@ -74,7 +73,6 @@
 #include <Roo1DTable.h>
 #include <RooConstVar.h>
 #include <RooRandom.h>
-#endif
 
 #include <ctime>
 #include <iostream>
@@ -84,7 +82,12 @@
 #include "Utils.h"
 #include "B0KstMuMuSingleCandTreeContent.h"
 
-using namespace std;
+using std::cout;
+using std::endl;
+using std::string;
+using std::stringstream;
+using std::vector;
+using std::ios_base;
 using namespace RooFit;
 
 

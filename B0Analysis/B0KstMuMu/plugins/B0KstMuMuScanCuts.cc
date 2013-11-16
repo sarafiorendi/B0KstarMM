@@ -4,7 +4,6 @@
 // # Author: Mauro Dinardo                                                  #
 // ##########################################################################
 
-#ifndef __CINT__
 #include <TApplication.h>
 #include <TROOT.h>
 #include <TStyle.h>
@@ -13,19 +12,25 @@
 #include <TFile.h>
 #include <TTree.h>
 #include <TH1D.h>
-#endif
 
 #include <cmath>
 #include <ctime>
 #include <cstdlib>
+#include <iostream>
 #include <sstream>
-#include <vector>
 #include <iomanip>
+#include <vector>
 
 #include "Utils.h"
 #include "B0KstMuMuTreeContent.h"
 
-using namespace std;
+using std::cout;
+using std::flush;
+using std::setprecision;
+using std::endl;
+using std::string;
+using std::stringstream;
+using std::vector;
 
 
 // ####################

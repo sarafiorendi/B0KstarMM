@@ -1,5 +1,5 @@
-#ifndef _B0KSTMUMUTREE
-#define _B0KSTMUMUTREE
+#ifndef B0KSTMUMUTREECONTENT_H
+#define B0KSTMUMUTREECONTENT_H
 
 #include <vector>
 #include <string>

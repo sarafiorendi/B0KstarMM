@@ -4,7 +4,6 @@
 // # Author: Mauro Dinardo                                                  #
 // ##########################################################################
 
-#ifndef __CINT__
 #include <TROOT.h>
 #include <TStyle.h>
 #include <TCanvas.h>
@@ -14,7 +13,6 @@
 #include <TH1D.h>
 #include <TH2D.h>
 #include <TLorentzVector.h>
-#endif
 
 #include <cmath>
 #include <iostream>
@@ -24,7 +22,9 @@
 #include "B0KstMuMuTreeContent.h"
 #include "B0KstMuMuSingleCandTreeContent.h"
 
-using namespace std;
+using std::cout;
+using std::endl;
+using std::string;
 
 
 // ####################
