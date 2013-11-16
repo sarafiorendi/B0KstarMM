@@ -1463,7 +1463,7 @@ void B0KstMuMuTreeContent::CopyScalars (B0KstMuMuTreeContent* NTupleIn)
 
 void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int index)
 {
-  if ((index >= 0) && (NTupleIn->bMass != NULL))
+  if ((index >= 0) && (NTupleIn->bMass != NULL) && (NTupleIn->bMass->size() != 0))
     {
       // ### B0 Mass ###
       bMass->push_back(NTupleIn->bMass->at(index));
