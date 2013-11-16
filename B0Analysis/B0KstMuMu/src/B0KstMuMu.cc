@@ -109,7 +109,6 @@ B0KstMuMu::B0KstMuMu (const edm::ParameterSet& iConfig) :
 
 B0KstMuMu::~B0KstMuMu ()
 {
-  NTuple->Destroy();
   delete NTuple;
   delete Utility;
   delete ParameterFile;
