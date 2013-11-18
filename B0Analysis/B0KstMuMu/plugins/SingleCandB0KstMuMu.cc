@@ -30,9 +30,6 @@ using std::string;
 // ####################
 // # Global constants #
 // ####################
-#define SignalType 1 // If checking MC B0 --> K*0 mumu  : 1
-                     // If checking MC B0 --> J/psi K*0 : 3
-                     // If checking MC B0 --> psi(2S) K*0 : 5
 #define DoTrigCheck 1
 #define SaveHistos false
 #define DoMCTruth false    // Compute the signel candidate variables from MC-truth values
@@ -53,14 +50,14 @@ B0KstMuMuSingleCandTreeContent* NTupleOut;
 // #######################
 // # Function Definition #
 // #######################
-void SelectBestCand ();
-void BestCandPerformance ();
+void SelectBestCand (int SignalType);
+void BestCandPerformance (int SignalType);
 
 
 // ###########################
 // # Function Implementation #
 // ###########################
-void SelectBestCand ()
+void SelectBestCand (int SignalType)
 {
   unsigned int countCands;
   bool B0notB0bar;
@@ -457,7 +454,7 @@ void SelectBestCand ()
 }
 
 
-void BestCandPerformance ()
+void BestCandPerformance (int SignalType)
 {
   // #######################################################
   // # Compute efficiency, purity and B-tagging efficiency #
@@ -536,14 +533,15 @@ void BestCandPerformance ()
 
 int main (int argc, char** argv)
 {
-  if (argc >= 3)
+  if (argc >= 4)
     {
       string option = argv[1];
-      if (((option == "singlecand") && (argc == 4)) || (((option == "eff")) && (argc == 3)))
+      if (((option == "singlecand") && (argc == 5)) || (((option == "eff")) && (argc == 4)))
 	{
-	  string fileNameIn = argv[2];
+	  string localVar    = argv[2];
+	  string fileNameIn  = argv[3];
 	  string fileNameOut = "";
-	  if (argc == 4) fileNameOut = argv[3];
+	  if (argc == 5) fileNameOut = argv[4];
 
 	  Utility = new Utils();
 	  Utility->ReadTriggerPathsANDCutsANDEntries(ParameterFILE);
@@ -551,7 +549,6 @@ int main (int argc, char** argv)
 
 
 	  cout << "\n@@@ Settings @@@" << endl;
-	  cout << "Signal Type: "      << SignalType << endl;
 	  cout << "Do Trigger Check: " << DoTrigCheck << endl;
 	  cout << "SaveHistos: "       << SaveHistos << endl;
 	  cout << "DoMCTruth: "        << DoMCTruth << endl;
@@ -574,9 +571,9 @@ int main (int argc, char** argv)
 	      NTupleOut   = new B0KstMuMuSingleCandTreeContent();
 	      NTupleOut->Init();
 
-	      SelectBestCand();
+	      SelectBestCand(atoi(localVar.c_str()));
 	    }
-	  else if (option == "eff") BestCandPerformance();
+	  else if (option == "eff") BestCandPerformance(atoi(localVar.c_str()));
 	  else
 	    {
 	      cout << "[SingleCandB0KstMuMu::main]\tWrong option: " << option << endl;
@@ -602,7 +599,8 @@ int main (int argc, char** argv)
       else
 	{
 	  cout << "Parameter missing: " << endl;
-	  cout << "./SingleCandB0KstMuMu [singlecand eff] inputFile.root [outputFile.root]" << endl;
+	  cout << "./SingleCandB0KstMuMu [singlecand eff] [SignalType] inputFile.root [outputFile.root]" << endl;
+	  cout << "- SignalType : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
 
 	  return EXIT_FAILURE;
 	}
@@ -610,7 +608,8 @@ int main (int argc, char** argv)
   else
     {
       cout << "Parameter missing: " << endl;
-      cout << "./SingleCandB0KstMuMu [singlecand eff] inputFile.root [outputFile.root]" << endl;
+      cout << "./SingleCandB0KstMuMu [singlecand eff] [SignalType] inputFile.root [outputFile.root]" << endl;
+      cout << "- SignalType : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
 
       return EXIT_FAILURE;
     }
