@@ -554,7 +554,7 @@ void MakeComparisonDataMC (unsigned int plotType)
   // ##########
   else if (plotType == 26)
     {
-      Xtitle = "cos(#theta_{#font[122]{K}})";
+      Xtitle = "cos(#theta#lower[-0.4]{_{#font[122]{K}}})";
       minX = -1.0;
       maxX = 1.0;
 
@@ -564,7 +564,7 @@ void MakeComparisonDataMC (unsigned int plotType)
    }
   else if (plotType == 27)
     {
-      Xtitle = "cos(#theta_{#font[12]{l}})";
+      Xtitle = "cos(#theta#lower[-0.4]{_{#font[12]{l}}})";
       minX = -1.0;
       maxX = 1.0;
 
@@ -827,7 +827,7 @@ void MakeComparisonDataMC (unsigned int plotType)
       bVar = "kstTrkmPy";
     }
   
-  else if (plotType == 26) query = "CosThetaKArb"; // cos(theta_K)
+  else if (plotType == 26) query = "CosThetaKArb";  // cos(theta_K)
   else if (plotType == 27) query = "CosThetaMuArb"; // cos(theta_l)
 
 
@@ -1758,7 +1758,7 @@ void MakePhysicsPlots (unsigned int PlotType)
 	  else chi2Histo->SetBinContent(i+1,0.0);
 	}
 
-      ratioLeg->AddEntry(chi2Histo,"#chi^{2}(RECO, GEN)");
+      ratioLeg->AddEntry(chi2Histo,"#chi#lower[0.4]{^{2}}(RECO, GEN)");
     }
   else if ((PlotType == 10) || (PlotType == 11) || (PlotType == 12)) // Fl OR Afb OR Branching fraction
     {      
@@ -1778,12 +1778,12 @@ void MakePhysicsPlots (unsigned int PlotType)
 	  else chi2Histo->SetBinContent(i+1,0.0);
 	}
       
-      ratioLeg->AddEntry(chi2Histo,"#chi^{2}(<SM>, Data)");
+      ratioLeg->AddEntry(chi2Histo,"#chi#lower[0.4]{^{2}}(<SM>, Data)");
     }
   cout << "\n@@@ Global chi2 = " << myGlobalChi2 / static_cast<double>(DoF) << " (" << myGlobalChi2 << "/" << static_cast<double>(DoF) << ") @@@" << endl;
   myGlobalChi2 = myGlobalChi2 / static_cast<double>(DoF);
 
-  chi2Histo->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});#chi^{2}");
+  chi2Histo->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});#chi#lower[0.4]{^{2}}");
   chi2Histo->GetXaxis()->SetLabelSize(0.06);
   chi2Histo->GetXaxis()->SetTitleOffset(0.8);
   chi2Histo->GetXaxis()->SetTitleSize(0.07);
@@ -1867,7 +1867,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       paveText->SetTextAlign(11);
       paveText->SetBorderSize(0.0);
       paveText->SetFillColor(kWhite);
-      paveText->AddText(Form("%s%.2f","#chi^{2}/DoF = ",myGlobalChi2));
+      paveText->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myGlobalChi2));
       paveText->AddText(Form("%s%.3f","p-value = ",TMath::Prob(myGlobalChi2*static_cast<double>(DoF),DoF)));
       paveText->SetFillStyle(0);
       paveText->SetTextSize(0.035);
@@ -1942,7 +1942,7 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
   TCanvas* c3 = new TCanvas("c3","c3",10,10,700,500);
   c3->cd();
   TH1D* h3 = new TH1D("h3","h3",nBinsHisto,1.0,-1.0);
-  h3->GetXaxis()->SetTitle("Signal yield OR dBF/dq^{2} (GeV^{#font[122]{\55}2})");
+  h3->GetXaxis()->SetTitle("Signal yield OR dBF/dq#lower[0.4]{^{2}} (GeV^{#font[122]{\55}2})");
   h3->GetYaxis()->SetTitle("Entries");
   h3->SetFillColor(kAzure+6);
 
@@ -2007,7 +2007,7 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
 	    }
 	  else if ((sysType == 12) && (var3 != -2.0))
 	    {
-	      hSc->GetXaxis()->SetTitle("dBF/dq^{2} (GeV^{#font[122]{\55}2})");
+	      hSc->GetXaxis()->SetTitle("dBF/dq#lower[0.4]{^{2}} (GeV^{#font[122]{\55}2})");
 	      hSc->Fill(var3,var4);
 	    }
 	  
@@ -2049,7 +2049,7 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
 		}
 	      else if ((sysType == 12) && (var3 != -2.0))
 		{
-		  hSc->GetXaxis()->SetTitle("dBF/dq^{2} (GeV^{#font[122]{\55}2})");
+		  hSc->GetXaxis()->SetTitle("dBF/dq#lower[0.4]{^{2}} (GeV^{#font[122]{\55}2})");
 		  hSc->Fill(var3,var4);
 		}
 	  
@@ -2488,14 +2488,14 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
   hKstSig->SetMarkerStyle(20);
 
   TH2D* hDalitzSig = new TH2D("hDalitzSig","hDalitzSig",nBins,DalitzminX,DalitzmaxX,nBins,DalitzminY,DalitzmaxY);
-  hDalitzSig->SetXTitle("M^{2}(K #pi) (GeV^{2})");
-  hDalitzSig->SetYTitle("M^{2}(J/#psi K) (GeV^{2})");
-  hDalitzSig->SetZTitle("Entries / (0.03x0.125 (GeV^{4}))");
+  hDalitzSig->SetXTitle("M^#lower[0.4]{^{2}}(K #pi) (GeV#lower[0.4]{^{2}})");
+  hDalitzSig->SetYTitle("M#lower[0.4]{^{2}}(J/#psi K) (GeV#lower[0.4]{^{2}})");
+  hDalitzSig->SetZTitle("Entries / (0.03x0.125 (GeV#lower[0.4]{^{4}}))");
 
   TH2D* hDalitzBkg = new TH2D("hDalitzBkg","hDalitzBkg",nBins,DalitzminX,DalitzmaxX,nBins,DalitzminY,DalitzmaxY);
-  hDalitzBkg->SetXTitle("M^{2}(K #pi) (GeV^{2})");
-  hDalitzBkg->SetYTitle("M^{2}(J/#psi K) (GeV^{2})");
-  hDalitzBkg->SetZTitle("Entries / (0.03x0.125 (GeV^{4}))");
+  hDalitzBkg->SetXTitle("M#lower[0.4]{^{2}}(K #pi) (GeV#lower[0.4]{^{2}})");
+  hDalitzBkg->SetYTitle("M#lower[0.4]{^{2}}(J/#psi K) (GeV#lower[0.4]{^{2}})");
+  hDalitzBkg->SetZTitle("Entries / (0.03x0.125 (GeV#lower[0.4]{^{4}}))");
 
 
   for (int entry = 0; entry < nEntries; entry++)

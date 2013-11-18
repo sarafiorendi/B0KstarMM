@@ -81,7 +81,7 @@ using std::vector;
 #define INPUT_THETAL_THETAK_PHI_Comp "../../Efficiency/ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
 #define SavePlot       false
-#define CHECKEFFatREAD false // Check if 2D or 3D efficiency goes negative
+#define CHECKEFFatREAD false // Check if 2D or 3D efficiency go negative
 #define NFILES         200
 #define INPUTGenEff    "../../Efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
 #define SETBATCH       true // Set batch mode
@@ -125,8 +125,8 @@ Utils::effStruct myEff;
 void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, double* Vector, double* VectorErr2Pois, double* VectorErr2Weig, unsigned int type,
 			vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, unsigned int SignalType);
 void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff);
-void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-		       string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool saveHistos, int specBin = -1);
+void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
+			 string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool saveHistos, int specBin = -1);
 void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut);
 void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
@@ -322,7 +322,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   cEff->Divide(2,2);
 
   TH1D* Hq2 = new TH1D("Hq2", "Hq2", q2Bins->size()-1, q2Bins_);
-  Hq2->SetXTitle("q^{2} (GeV^{2})");
+  Hq2->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
   Hq2->SetYTitle("Efficiency");
 
   vector<TH1D*> vecHcosThetaK;
@@ -333,13 +333,13 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
       myString.str("");
       myString << "vecHcosThetaK_" << i;
       vecHcosThetaK.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), cosThetaKBins->size()-1, cosThetaKBins_));
-      vecHcosThetaK.back()->SetXTitle("cos(#theta_{#font[122]{K}})");
+      vecHcosThetaK.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
       vecHcosThetaK.back()->SetYTitle("Efficiency");
 
       myString.str("");
       myString << "vecHcosThetaL_" << i;
       vecHcosThetaL.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), cosThetaLBins->size()-1, cosThetaLBins_));
-      vecHcosThetaL.back()->SetXTitle("cos(#theta_{#font[12]{l}})");
+      vecHcosThetaL.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
       vecHcosThetaL.back()->SetYTitle("Efficiency");
 
       myString.str("");
@@ -407,7 +407,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   vecHcosThetaK[0]->Draw("e1");
   vecHcosThetaK[0]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
   TLegend* legThetaK = new TLegend(0.88, 0.65, 0.97, 0.89, "");
-  myString.str(""); myString << "q^{2} bin 0";
+  myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
   legThetaK->AddEntry(vecHcosThetaK[0],myString.str().c_str());
   for (unsigned int i = 1; i < q2Bins->size()-1; i++)
     {
@@ -417,7 +417,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
       vecHcosThetaK[i]->SetLineWidth(2);
       vecHcosThetaK[i]->Draw("sames e1");
       vecHcosThetaK[i]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
-      myString.str(""); myString << "q^{2} bin " << i;
+      myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
       legThetaK->AddEntry(vecHcosThetaK[i],myString.str().c_str());
     }
   legThetaK->SetFillColor(0);
@@ -432,7 +432,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   vecHcosThetaL[0]->Draw("e1");
   vecHcosThetaL[0]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
   TLegend* legThetaL = new TLegend(0.88, 0.65, 0.97, 0.89, "");
-  myString.str(""); myString << "q^{2} bin 0";
+  myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
   legThetaL->AddEntry(vecHcosThetaL[0],myString.str().c_str());
   for (unsigned int i = 1; i < q2Bins->size()-1; i++)
     {
@@ -442,7 +442,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
       vecHcosThetaL[i]->SetLineWidth(2);
       vecHcosThetaL[i]->Draw("sames e1");
       vecHcosThetaL[i]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
-      myString.str(""); myString << "q^{2} bin " << i;
+      myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
       legThetaL->AddEntry(vecHcosThetaL[i],myString.str().c_str());
     }
   legThetaL->SetFillColor(0);
@@ -457,7 +457,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   vecHphi[0]->Draw("e1");
   vecHphi[0]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
   TLegend* legphi = new TLegend(0.88, 0.65, 0.97, 0.89, "");
-  myString.str(""); myString << "q^{2} bin 0";
+  myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
   legphi->AddEntry(vecHphi[0],myString.str().c_str());
   for (unsigned int i = 1; i < q2Bins->size()-1; i++)
     {
@@ -467,7 +467,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
       vecHphi[i]->SetLineWidth(2);
       vecHphi[i]->Draw("sames e1");
       vecHphi[i]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
-      myString.str(""); myString << "q^{2} bin " << i;
+      myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
       legphi->AddEntry(vecHphi[i],myString.str().c_str());
     }
   legphi->SetFillColor(0);
@@ -477,25 +477,33 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   cEff->Update();
 
 
-  TCanvas* cNumCosThetaL = new TCanvas("cNumCosThetaL", "cNumCosThetaL", 10, 10, 1600, 900);
-  cNumCosThetaL->Divide(2,3);
-
   TCanvas* cNumCosThetaK = new TCanvas("cNumCosThetaK", "cNumCosThetaK", 10, 10, 1600, 900);
   cNumCosThetaK->Divide(2,3);
 
-  vector<TH1D*> vecHq2ANDcosThetaK;
-  vector<TH1D*> vecHq2ANDcosThetaL;
+  TCanvas* cNumCosThetaL = new TCanvas("cNumCosThetaL", "cNumCosThetaL", 10, 10, 1600, 900);
+  cNumCosThetaL->Divide(2,3);
+
+  TCanvas* cNumPhi = new TCanvas("cNumPhi", "cNumPhi", 10, 10, 1600, 900);
+  cNumPhi->Divide(2,3);
+
+  vector<TH2D*> vecHq2ANDcosThetaK;
+  vector<TH2D*> vecHq2ANDcosThetaL;
+  vector<TH2D*> vecHq2ANDphi;
+
   vector<TLegend*> legHq2ANDcosThetaK;
   vector<TLegend*> legHq2ANDcosThetaL;
+  vector<TLegend*> legHq2ANDphi;
+
   for (unsigned int i = 0; i < q2Bins->size()-1; i++)
     {
       for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
 	{
 	  myString.str("");
 	  myString << "vecHq2ANDcosThetaK_" << i << "_" << j;
-	  vecHq2ANDcosThetaK.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), cosThetaLBins->size()-1, cosThetaLBins_));
-	  vecHq2ANDcosThetaK.back()->SetXTitle("cos(#theta_{#font[12]{l}})");
-	  vecHq2ANDcosThetaK.back()->SetYTitle("Numerator single cand. [#]");
+	  vecHq2ANDcosThetaK.push_back(new TH2D(myString.str().c_str(), myString.str().c_str(), cosThetaLBins->size()-1, cosThetaLBins_, phiBins->size()-1, phiBins_));
+	  vecHq2ANDcosThetaK.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
+	  vecHq2ANDcosThetaK.back()->SetYTitle("#phi");
+	  vecHq2ANDcosThetaK.back()->SetZTitle("Numerator single cand. [#]");
 
 	  legHq2ANDcosThetaK.push_back(new TLegend(0.88, 0.6, 0.97, 0.89, ""));
 	}
@@ -504,28 +512,41 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 	{
 	  myString.str("");
 	  myString << "vecHq2ANDcosThetaL_" << i << "_" << k;
-	  vecHq2ANDcosThetaL.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), cosThetaKBins->size()-1, cosThetaKBins_));
-	  vecHq2ANDcosThetaL.back()->SetXTitle("cos(#theta_{#font[122]{K}})");
-	  vecHq2ANDcosThetaL.back()->SetYTitle("Numerator single cand. [#]");
+	  vecHq2ANDcosThetaL.push_back(new TH2D(myString.str().c_str(), myString.str().c_str(), cosThetaKBins->size()-1, cosThetaKBins_, phiBins->size()-1, phiBins_));
+	  vecHq2ANDcosThetaL.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
+	  vecHq2ANDcosThetaL.back()->SetYTitle("#phi");
+	  vecHq2ANDcosThetaL.back()->SetZTitle("Numerator single cand. [#]");
 
 	  legHq2ANDcosThetaL.push_back(new TLegend(0.88, 0.6, 0.97, 0.89, ""));
 	}
+
+      for (unsigned int l = 0; l < phiBins->size()-1; l++)
+	{
+	  myString.str("");
+	  myString << "vecHq2ANDphi_" << i << "_" << l;
+	  vecHq2ANDphi.push_back(new TH2D(myString.str().c_str(), myString.str().c_str(), cosThetaLBins->size()-1, cosThetaLBins_, cosThetaKBins->size()-1, cosThetaKBins_));
+	  vecHq2ANDphi.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
+	  vecHq2ANDphi.back()->SetYTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
+	  vecHq2ANDphi.back()->SetZTitle("Numerator single cand. [#]");
+
+	  legHq2ANDphi.push_back(new TLegend(0.88, 0.6, 0.97, 0.89, ""));
+	}
     }
-  
+
+
   for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
     {
       for (unsigned int i = 0; i < q2Bins->size()-1; i++)
 	{
-	  // #######################################################################################################
-	  // # Fill histogram : numerator of the efficiency vs cos(theta_l) in bins of dimuon q^2 and cos(theta_K) #
-	  // #######################################################################################################
+	  // ###############################################################################################################
+	  // # Fill histogram : numerator of the efficiency vs cos(theta_l) in bins of dimuon q^2 and cos(theta_K) and phi #
+	  // ###############################################################################################################
 	  for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
-	    {
-	      num2 = 0.0;
-	      for (unsigned int l = 0; l < phiBins->size()-1; l++)
-		num2 = num2 + myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	      vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetBinContent(k+1,num2);
-	    }
+	    for (unsigned int l = 0; l < phiBins->size()-1; l++)
+	      {
+		num2 = myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetBinContent(k+1,l+1,num2);
+	      }
 	  
 	  cNumCosThetaL->cd(j+1);
 	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetMarkerStyle(20+i);
@@ -533,18 +554,19 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetLineColor(1+i);
 	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetLineWidth(2);
 	  if (i == 0) vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->Draw("e1");
-	  else vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->Draw("sames e1");
-	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->GetYaxis()->SetRangeUser(1.0,Xaxes);
+	  else        vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->Draw("sames e1");
+	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(1.0,Xaxes);
 
-	  myString.str(""); myString << "q^{2} bin " << i;
+	  myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
 	  legHq2ANDcosThetaK[j]->AddEntry(vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i],myString.str().c_str());
 	}
-      
+
       legHq2ANDcosThetaK[j]->SetFillColor(0);
       legHq2ANDcosThetaK[j]->SetBorderSize(0);
       legHq2ANDcosThetaK[j]->Draw();
     }
   
+
   for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
     {
       for (unsigned int i = 0; i < q2Bins->size()-1; i++)
@@ -553,13 +575,12 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 	  // # Fill histogram : numerator of the efficiency vs cos(theta_K) in bins of dimuon q^2 and cos(theta_l) #
 	  // #######################################################################################################
 	  for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
-	    {
-	      num2 = 0.0;
-	      for (unsigned int l = 0; l < phiBins->size()-1; l++)
-		num2 = num2 + myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	      vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetBinContent(j+1,num2);
-	    }
-	  
+	    for (unsigned int l = 0; l < phiBins->size()-1; l++)
+	      {
+		num2 = myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetBinContent(j+1,l+1,num2);
+	      }
+
 	  cNumCosThetaK->cd(k+1);
 	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetMarkerStyle(20+i);
 	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetMarkerColor(1+i);
@@ -567,9 +588,9 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetLineWidth(2);
 	  if (i == 0) vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->Draw("e1");
 	  else vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->Draw("sames e1");
-	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->GetYaxis()->SetRangeUser(1.0,Xaxes);
+	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(1.0,Xaxes);
 
-	  myString.str(""); myString << "q^{2} bin " << i;
+	  myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
 	  legHq2ANDcosThetaL[k]->AddEntry(vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i],myString.str().c_str());
 	}
 
@@ -578,20 +599,56 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
       legHq2ANDcosThetaL[k]->Draw();
     }
 
+
+  for (unsigned int l = 0; l < phiBins->size()-1; l++)
+    {
+      for (unsigned int i = 0; i < q2Bins->size()-1; i++)
+	{
+	  // ###############################################################################################################
+	  // # Fill histogram : numerator of the efficiency vs phi in bins of dimuon q^2 and cos(theta_l) and cos(theta_k) #
+	  // ###############################################################################################################
+	  for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
+	    for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
+	      {
+		num2 = myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetBinContent(k+1,j+1,num2);
+	      }
+
+	  cNumPhi->cd(l+1);
+	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetMarkerStyle(20+i);
+	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetMarkerColor(1+i);
+	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetLineColor(1+i);
+	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetLineWidth(2);
+	  if (i == 0) vecHq2ANDphi[l*(q2Bins->size()-1)+i]->Draw("e1");
+	  else        vecHq2ANDphi[l*(q2Bins->size()-1)+i]->Draw("sames e1");
+	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(1.0,Xaxes);
+
+	  myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
+	  legHq2ANDphi[l]->AddEntry(vecHq2ANDphi[l*(q2Bins->size()-1)+i],myString.str().c_str());
+	}
+
+      legHq2ANDphi[l]->SetFillColor(0);
+      legHq2ANDphi[l]->SetBorderSize(0);
+      legHq2ANDphi[l]->Draw();
+    }
+
+
   cNumCosThetaL->Update();
   cNumCosThetaK->Update();
+  cNumPhi->Update();
 
 
   Utility->IntegrateEffAll(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,myEff,&totalEffAll,&EffErr);
   Utility->IntegrateEffButPsi(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,myEff,&totalEffSignal,&EffErr);
   Utility->IntegrateEffInJPsi(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,myEff,&totalEffJPsi,&EffErr);
   Utility->IntegrateEffInPsiP(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,myEff,&totalEffPsiP,&EffErr);
-  cout << "\nTotal efficiency: " << totalEffAll <<  "\tTotal signal efficiency: " << totalEffSignal << "\tTotal J/psi efficiency: " << totalEffJPsi << "\tTotal psi(2S) efficiency: " << totalEffPsiP << endl;
+  cout << "\nTotal efficiency: " << totalEffAll <<  "\tTotal signal efficiency: " << totalEffSignal;
+  cout << "\tTotal J/psi efficiency: " << totalEffJPsi << "\tTotal psi(2S) efficiency: " << totalEffPsiP << endl;
 }
 
 
-void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-		       string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool saveHistos, int specBin)
+void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
+			 string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool saveHistos, int specBin)
 {
   // ###################
   // # Local variables #
@@ -630,7 +687,7 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
       myString.str("");
       myString << "Hq2_" << i;
       Hq2.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), q2Bins->size()-1, q2Bins_));
-      Hq2.back()->SetXTitle("q^{2} (GeV^{2})");
+      Hq2.back()->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
       Hq2.back()->SetYTitle("Efficiency");
     }
 
@@ -640,7 +697,7 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
       myString.str("");
       myString << "HcosThetaK_" << i;
       HcosThetaK.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), cosThetaKBins->size()-1, cosThetaKBins_));
-      HcosThetaK.back()->SetXTitle("cos(#theta_{#font[122]{K}})");
+      HcosThetaK.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
       HcosThetaK.back()->SetYTitle("Efficiency");
     }
 
@@ -650,7 +707,7 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
       myString.str("");
       myString << "HcosThetaL_" << i;
       HcosThetaL.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), cosThetaLBins->size()-1, cosThetaLBins_));
-      HcosThetaL.back()->SetXTitle("cos(#theta_{#font[12]{l}})");
+      HcosThetaL.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
       HcosThetaL.back()->SetYTitle("Efficiency");
     }
 
@@ -848,7 +905,7 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
   cEff1->Update();
   cEff2->Update();
   cEff3->Update();
-  
+
   if (saveHistos == true)
     {
       if (isAnalyEff == false) cEff0->Print("Histo1.pdf");
@@ -860,9 +917,6 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
 
   TCanvas* cStatK = new TCanvas("cStatK", "cStatK", 10, 10, 1600, 900);
   cStatK->Divide(2,3);
-
-  TCanvas* cStatL = new TCanvas("cStatL", "cStatL", 10, 10, 1600, 900);
-  cStatL->Divide(2,3);
 
   vector<TH1D*> HstatK;
   for (unsigned int i = 0; i < cosThetaKBins->size()-1; i++)
@@ -877,6 +931,10 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
       HstatK.back()->Draw();
     }
 
+
+  TCanvas* cStatL = new TCanvas("cStatL", "cStatL", 10, 10, 1600, 900);
+  cStatL->Divide(2,3);
+  
   vector<TH1D*> HstatL;
   for (unsigned int i = 0; i < cosThetaLBins->size()-1; i++)
     {
@@ -889,6 +947,24 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
       cStatL->cd(i+1);
       HstatL.back()->Draw();
     }
+
+
+  TCanvas* cStatPhi = new TCanvas("cStatPhi", "cStatPhi", 10, 10, 1600, 900);
+  cStatPhi->Divide(2,3);
+  
+  vector<TH1D*> HstatPhi;
+  for (unsigned int i = 0; i < phiBins->size()-1; i++)
+    {
+      myString.str("");
+      myString << "HstatPhi_" << i;
+      HstatPhi.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), 50, -Xaxes, Xaxes));
+      HstatPhi.back()->SetXTitle("Diff. to reference");
+      HstatPhi.back()->SetYTitle("Entries [#]");
+
+      cStatPhi->cd(i+1);
+      HstatPhi.back()->Draw();
+    }
+
 
   if (isSingleEff == false)
     {
@@ -903,6 +979,7 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
   	  HstatK[i]->Draw();
   	}
 
+
       for (unsigned int i = 0; i < cosThetaLBins->size()-1; i++)
   	for (unsigned int itF = 0; itF < MAXVAL-1; itF++)
   	  HstatL[i]->Fill(HcosThetaL[itF]->GetBinContent(i+1) - HcosThetaL[MAXVAL-1]->GetBinContent(i+1));
@@ -913,9 +990,22 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
   	  HstatL[i]->SetFillColor(kAzure+6);
   	  HstatL[i]->Draw();
   	}
+      
+
+      for (unsigned int i = 0; i < phiBins->size()-1; i++)
+  	for (unsigned int itF = 0; itF < MAXVAL-1; itF++)
+  	  HstatPhi[i]->Fill(Hphi[itF]->GetBinContent(i+1) - Hphi[MAXVAL-1]->GetBinContent(i+1));
+
+      for (unsigned int i = 0; i < HstatPhi.size(); i++)
+  	{
+  	  cStatL->cd(i+1);
+  	  HstatPhi[i]->SetFillColor(kAzure+6);
+  	  HstatPhi[i]->Draw();
+  	}
 
       cStatK->Update();
       cStatL->Update();
+      cStatPhi->Update();
     }
 
 
@@ -923,7 +1013,8 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
   Utility->IntegrateEffButPsi(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,*myEff,&totalEffSignal,&EffErr);
   Utility->IntegrateEffInJPsi(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,*myEff,&totalEffJPsi,&EffErr);
   Utility->IntegrateEffInPsiP(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,*myEff,&totalEffPsiP,&EffErr);
-  cout << "\nTotal efficiency: " << totalEffAll <<  "\tTotal signal efficiency: " << totalEffSignal << "\tTotal J/psi efficiency: " << totalEffJPsi << "\tTotal psi(2S) efficiency: " << totalEffPsiP << endl;
+  cout << "\nTotal efficiency: " << totalEffAll <<  "\tTotal signal efficiency: " << totalEffSignal;
+  cout << "\tTotal J/psi efficiency: " << totalEffJPsi << "\tTotal psi(2S) efficiency: " << totalEffPsiP << endl;
 
 
   if ((isSingleEff == true) && (isAnalyEff == false)) MakeHistogramsAllBins(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,*myEff);
@@ -1001,7 +1092,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  // # Perform the fit of the analytical efficiency to the binned efficiency #
 	  // #########################################################################
 	  histFit.back()->SetMarkerStyle(20);
-	  histFit.back()->SetXTitle("cos(#theta_{#font[12]{l}})");
+	  histFit.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
 	  histFit.back()->SetYTitle("Efficiency");
 	  histFit.back()->GetYaxis()->SetRangeUser(-YaxesThetaL,YaxesThetaL);
 
@@ -1086,7 +1177,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  // # Perform the fit of the analytical efficiency to the binned efficiency #
 	  // #########################################################################
 	  histFit.back()->SetMarkerStyle(20);
-	  histFit.back()->SetXTitle("cos(#theta_{#font[122]{K}})");
+	  histFit.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
 	  histFit.back()->SetYTitle("Efficiency");
 	  histFit.back()->GetYaxis()->SetRangeUser(-YaxesThetaK,YaxesThetaK);
 
@@ -1569,7 +1660,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
       myString.str("");
       myString << "effFuncSlice_binK_" << binIndx;
       effFuncSlice.push_back(new TF12(myString.str().c_str(),EffFunc2D,(cosThetaKBins->operator[](binIndx)+cosThetaKBins->operator[](binIndx+1))/2.,"y"));
-      effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta_{#font[12]{l}})");
+      effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
       effFuncSlice.back()->GetYaxis()->SetTitle("Efficiency");
       effFuncSlice.back()->GetYaxis()->SetRangeUser(0.0,Zaxes);
       effFuncSlice.back()->Draw();
@@ -1577,7 +1668,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
       myString.str("");
       myString << "histoSlice_binK_" << binIndx;
       histoSlice.push_back(hisFunc2D->ProjectionY(myString.str().c_str(),binIndx+1,binIndx+1));
-      histoSlice.back()->SetXTitle("cos(#theta_{#font[12]{l}})");
+      histoSlice.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
       histoSlice.back()->SetMarkerStyle(20);
       histoSlice.back()->SetYTitle("Efficiency");
       histoSlice.back()->GetYaxis()->SetRangeUser(0.0,Zaxes);
@@ -1595,7 +1686,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
       myString.str("");
       myString << "effFuncSlice_binL_" << binIndx;
       effFuncSlice.push_back(new TF12(myString.str().c_str(),EffFunc2D,(cosThetaLBins->operator[](binIndx)+cosThetaLBins->operator[](binIndx+1))/2.,"x"));
-      effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta_{#font[122]{K}})");
+      effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
       effFuncSlice.back()->GetYaxis()->SetTitle("Efficiency");
       effFuncSlice.back()->GetYaxis()->SetRangeUser(0.0,Zaxes);
       effFuncSlice.back()->Draw();
@@ -1603,7 +1694,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
       myString.str("");
       myString << "histoSlice_binL_" << binIndx;
       histoSlice.push_back(hisFunc2D->ProjectionX(myString.str().c_str(),binIndx+1,binIndx+1));
-      histoSlice.back()->SetXTitle("cos(#theta_{#font[122]{K}})");
+      histoSlice.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
       histoSlice.back()->SetMarkerStyle(20);
       histoSlice.back()->SetYTitle("Efficiency");
       histoSlice.back()->GetYaxis()->SetRangeUser(0.0,Zaxes);
@@ -1773,7 +1864,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
     //   myString.str("");
     //   myString << "effFuncSlice_binK_" << binIndx;
     //   effFuncSlice.push_back(new TF12(myString.str().c_str(),EffFunc3D,(cosThetaKBins->operator[](binIndx)+cosThetaKBins->operator[](binIndx+1))/2.,"y"));
-    //   effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta_{#font[12]{l}})");
+    //   effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
     //   effFuncSlice.back()->GetYaxis()->SetTitle("Efficiency");
     //   effFuncSlice.back()->GetYaxis()->SetRangeUser(0.0,Zaxes);
     //   effFuncSlice.back()->Draw();
@@ -1781,7 +1872,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
     //   myString.str("");
     //   myString << "histoSlice_binK_" << binIndx;
     //   histoSlice.push_back(hisFunc3D->ProjectionY(myString.str().c_str(),binIndx+1,binIndx+1));
-    //   histoSlice.back()->SetXTitle("cos(#theta_{#font[12]{l}})");
+    //   histoSlice.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
     //   histoSlice.back()->SetMarkerStyle(20);
     //   histoSlice.back()->SetYTitle("Efficiency");
     //   histoSlice.back()->GetYaxis()->SetRangeUser(0.0,Zaxes);
@@ -1800,7 +1891,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
     //   myString.str("");
     //   myString << "effFuncSlice_binL_" << binIndx;
     //   effFuncSlice.push_back(new TF12(myString.str().c_str(),EffFunc2D,(cosThetaLBins->operator[](binIndx)+cosThetaLBins->operator[](binIndx+1))/2.,"x"));
-    //   effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta_{#font[122]{K}})");
+    //   effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
     //   effFuncSlice.back()->GetYaxis()->SetTitle("Efficiency");
     //   effFuncSlice.back()->GetYaxis()->SetRangeUser(0.0,Zaxes);
     //   effFuncSlice.back()->Draw();
@@ -1808,7 +1899,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
     //   myString.str("");
     //   myString << "histoSlice_binL_" << binIndx;
     //   histoSlice.push_back(hisFunc3D->ProjectionX(myString.str().c_str(),binIndx+1,binIndx+1));
-    //   histoSlice.back()->SetXTitle("cos(#theta_{#font[122]{K}})");
+    //   histoSlice.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
     //   histoSlice.back()->SetMarkerStyle(20);
     //   histoSlice.back()->SetYTitle("Efficiency");
     //   histoSlice.back()->GetYaxis()->SetRangeUser(0.0,Zaxes);
@@ -1992,7 +2083,7 @@ int main (int argc, char** argv)
 	  if (SETBATCH == false) theApp.Run (); // Eventloop on air
 	  return EXIT_SUCCESS;
 	}
-      else if ((option == "ReadBin") || (option == "ReadAnaly"))
+      else if ((option == "ReadBin") || (option == "Read3DAnaly"))
 	{
 	  string fileNameInput = argv[2];
 	  int specBin = -1;
@@ -2018,15 +2109,15 @@ int main (int argc, char** argv)
 	  Utility = new Utils();
 	  Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
 
-	  if (option == "ReadBin") ReadEfficiencies(true,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,false,&myEff,CHECKEFFatREAD,SavePlot,specBin);
-	  else                     ReadEfficiencies(true,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,true,&myEff,CHECKEFFatREAD,SavePlot,specBin);
+	  if (option == "ReadBin") Read3DEfficiencies(true,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,false,&myEff,CHECKEFFatREAD,SavePlot,specBin);
+	  else                     Read3DEfficiencies(true,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,true,&myEff,CHECKEFFatREAD,SavePlot,specBin);
 
 
 	  delete Utility;
 	  theApp.Run (); // Eventloop on air
 	  return EXIT_SUCCESS;
 	}
-      else if (option == "ReadGenAnaly")
+      else if (option == "Read3DGenAnaly")
 	{
 	  string fileNameInput = argv[2];
 	  int specBin = -1;
@@ -2052,7 +2143,7 @@ int main (int argc, char** argv)
 	  Utility = new Utils();
 	  Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
 	  
-	  ReadEfficiencies(false,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,true,&myEff,CHECKEFFatREAD,SavePlot,specBin);
+	  Read3DEfficiencies(false,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,true,&myEff,CHECKEFFatREAD,SavePlot,specBin);
 
 
 	  delete Utility;
@@ -2140,24 +2231,24 @@ int main (int argc, char** argv)
 	  cout << "4. make inputFileSingleCand.root from inputRecoCandidates.root" << endl; 
 
 	  cout << "\nParameter missing: " << endl;
-	  cout << "./ComputeEfficiency [Make ReadBin ReadAnaly ReadGenAnaly Fit1DEff Fit2DEff Fit3DEff Test2DEff Test3DEff] " << endl;
+	  cout << "./ComputeEfficiency [Make ReadBin Read3DAnaly Read3DGenAnaly Fit1DEff Fit2DEff Fit3DEff Test2DEff Test3DEff] " << endl;
 	  cout << "[inputFileGenCandidatesNoFilter.root inputRecoCandidates.root inputFileSingleCand.root] " << endl;
 	  cout << "[out/in]putFile.txt [SignalType] [q2 bin indx.]" << endl;
 
-	  cout << "Make         --> root files for efficiency computation AND outputFile.txt AND SignalType" << endl;
-	  cout << "             --> SignalType : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
+	  cout << "Make           --> root files for efficiency computation AND outputFile.txt AND SignalType" << endl;
+	  cout << "               --> SignalType : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
 
-	  cout << "ReadBin      --> (read file with binned eff.) file with binned efficiency AND [q2 bin indx.(optional)]" << endl;
-	  cout << "ReadAnaly    --> (read file with analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
+	  cout << "ReadBin        --> (read file with binned eff.) file with binned efficiency AND [q2 bin indx.(optional)]" << endl;
+	  cout << "Read3DAnaly    --> (read file with analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
 	  
-	  cout << "ReadGenAnaly --> (read files generated from analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
+	  cout << "Read3DGenAnaly --> (read files generated from analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
 
-	  cout << "Fit1DEff     --> file with binned efficiency AND [q2 bin indx.] [thetaL thetaK phi]" << endl;
-	  cout << "Fit2DEff     --> file with binned efficiency AND [q2 bin indx.]" << endl;
-	  cout << "Fit3DEff     --> file with binned efficiency AND [q2 bin indx.]" << endl;
+	  cout << "Fit1DEff       --> file with binned efficiency AND [q2 bin indx.] [thetaL thetaK phi]" << endl;
+	  cout << "Fit2DEff       --> file with binned efficiency AND [q2 bin indx.]" << endl;
+	  cout << "Fit3DEff       --> file with binned efficiency AND [q2 bin indx.]" << endl;
 
-	  cout << "Test2DEff    --> file with binned efficiency AND [q2 bin indx.]" << endl;
-	  cout << "Test3DEff    --> file with binned efficiency AND [q2 bin indx.]" << endl;
+	  cout << "Test2DEff      --> file with binned efficiency AND [q2 bin indx.]" << endl;
+	  cout << "Test3DEff      --> file with binned efficiency AND [q2 bin indx.]" << endl;
 
 	  return EXIT_FAILURE;
 	}
@@ -2171,24 +2262,24 @@ int main (int argc, char** argv)
       cout << "4. make inputFileSingleCand.root from inputRecoCandidates.root" << endl; 
 
       cout << "\nParameter missing: " << endl;
-      cout << "./ComputeEfficiency [Make ReadBin ReadAnaly ReadGenAnaly Fit1DEff Fit2DEff Fit3DEff Test2DEff Test3DEff] " << endl;
+      cout << "./ComputeEfficiency [Make ReadBin Read3DAnaly Read3DGenAnaly Fit1DEff Fit2DEff Fit3DEff Test2DEff Test3DEff] " << endl;
       cout << "[inputFileGenCandidatesNoFilter.root inputRecoCandidates.root inputFileSingleCand.root] " << endl;
       cout << "[out/in]putFile.txt [SignalType] [q2 bin indx.]" << endl;
-
-      cout << "Make         --> root files for efficiency computation AND outputFile.txt AND SignalType" << endl;
-      cout << "             --> SignalType : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
-
-      cout << "ReadBin      --> (read file with binned eff.) file with binned efficiency AND [q2 bin indx.(optional)]" << endl;
-      cout << "ReadAnaly    --> (read file with analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
       
-      cout << "ReadGenAnaly --> (read files generated from analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
-
-      cout << "Fit1DEff     --> file with binned efficiency AND [q2 bin indx.] [thetaL thetaK phi]" << endl;
-      cout << "Fit2DEff     --> file with binned efficiency AND [q2 bin indx.]" << endl;
-      cout << "Fit3DEff     --> file with binned efficiency AND [q2 bin indx.]" << endl;
-
-      cout << "Test2DEff    --> file with binned efficiency AND [q2 bin indx.]" << endl;
-      cout << "Test3DEff    --> file with binned efficiency AND [q2 bin indx.]" << endl;
+      cout << "Make           --> root files for efficiency computation AND outputFile.txt AND SignalType" << endl;
+      cout << "               --> SignalType : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
+      
+      cout << "ReadBin        --> (read file with binned eff.) file with binned efficiency AND [q2 bin indx.(optional)]" << endl;
+      cout << "Read3DAnaly    --> (read file with analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
+      
+      cout << "Read3DGenAnaly --> (read files generated from analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
+      
+      cout << "Fit1DEff       --> file with binned efficiency AND [q2 bin indx.] [thetaL thetaK phi]" << endl;
+      cout << "Fit2DEff       --> file with binned efficiency AND [q2 bin indx.]" << endl;
+      cout << "Fit3DEff       --> file with binned efficiency AND [q2 bin indx.]" << endl;
+      
+      cout << "Test2DEff      --> file with binned efficiency AND [q2 bin indx.]" << endl;
+      cout << "Test3DEff      --> file with binned efficiency AND [q2 bin indx.]" << endl;
 
       return EXIT_FAILURE;
     }

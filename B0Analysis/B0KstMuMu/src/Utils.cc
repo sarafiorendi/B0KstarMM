@@ -512,9 +512,9 @@ TH2D* Utils::Get2DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bi
   double* cosThetaLBins_ = MakeBinning(cosThetaLBins);
 
   TH2D* Histo = new TH2D(histoName.c_str(), histoName.c_str(), cosThetaKBins->size()-1, cosThetaKBins_, cosThetaLBins->size()-1, cosThetaLBins_);
-  Histo->SetXTitle("cos(#theta_{#font[122]{K}})");
+  Histo->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
   Histo->GetXaxis()->SetTitleOffset(1.8);
-  Histo->SetYTitle("cos(#theta_{#font[12]{l}})");
+  Histo->SetYTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
   Histo->GetYaxis()->SetTitleOffset(1.8);
   Histo->SetZTitle("Efficiency");
 
@@ -542,9 +542,9 @@ TH3D* Utils::Get3DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bi
   double* phiBins_       = MakeBinning(phiBins);
 
   TH3D* Histo = new TH3D(histoName.c_str(), histoName.c_str(), cosThetaKBins->size()-1, cosThetaKBins_, cosThetaLBins->size()-1, cosThetaLBins_, phiBins->size()-1, phiBins_);
-  Histo->SetXTitle("cos(#theta_{#font[122]{K}})");
+  Histo->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
   Histo->GetXaxis()->SetTitleOffset(1.8);
-  Histo->SetYTitle("cos(#theta_{#font[12]{l}})");
+  Histo->SetYTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
   Histo->GetYaxis()->SetTitleOffset(1.8);
   Histo->SetZTitle("#phi");
   Histo->GetZaxis()->SetTitleOffset(1.8);
@@ -1842,9 +1842,9 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
 	    }
 	}
         
-      effFuncs->operator[](q2BinIndx)->GetXaxis()->SetTitle("cos(#theta_{#font[122]{K}})");
+      effFuncs->operator[](q2BinIndx)->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
       effFuncs->operator[](q2BinIndx)->GetXaxis()->SetTitleOffset(1.8);
-      effFuncs->operator[](q2BinIndx)->GetYaxis()->SetTitle("cos(#theta_{#font[12]{l}})");
+      effFuncs->operator[](q2BinIndx)->GetYaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
       effFuncs->operator[](q2BinIndx)->GetYaxis()->SetTitleOffset(1.8);
       effFuncs->operator[](q2BinIndx)->GetZaxis()->SetTitle("Efficiency");
     }
@@ -1920,9 +1920,9 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
 	  indx++;
 	}
       
-      effFuncs->operator[](q2BinIndx)->GetXaxis()->SetTitle("cos(#theta_{#font[122]{K}})");
+      effFuncs->operator[](q2BinIndx)->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
       effFuncs->operator[](q2BinIndx)->GetXaxis()->SetTitleOffset(1.8);
-      effFuncs->operator[](q2BinIndx)->GetYaxis()->SetTitle("cos(#theta_{#font[12]{l}})");
+      effFuncs->operator[](q2BinIndx)->GetYaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
       effFuncs->operator[](q2BinIndx)->GetYaxis()->SetTitleOffset(1.8);
       effFuncs->operator[](q2BinIndx)->GetZaxis()->SetTitle("#phi");
       effFuncs->operator[](q2BinIndx)->GetZaxis()->SetTitleOffset(1.8);
@@ -2468,9 +2468,9 @@ void Utils::AddConstraint2D (TH2D** histo, double err, double Zval, double errZ,
     }
 
 
-  newHisto->SetXTitle("cos(#theta_{#font[122]{K}})");
+  newHisto->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
   newHisto->GetXaxis()->SetTitleOffset(1.8);
-  newHisto->SetYTitle("cos(#theta_{#font[12]{l}})");
+  newHisto->SetYTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
   newHisto->GetYaxis()->SetTitleOffset(1.8);
   newHisto->SetZTitle("Efficiency");
 
