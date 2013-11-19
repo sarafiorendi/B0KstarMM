@@ -19,7 +19,6 @@
 #include <sstream>
 
 #include "Utils.h"
-#include "B0KstMuMuTreeContent.h"
 #include "B0KstMuMuSingleCandTreeContent.h"
 
 using std::cout;
@@ -43,7 +42,7 @@ using std::string;
 Utils* Utility;
 TTree* theTreeIn;
 TTree* theTreeOut;
-B0KstMuMuTreeContent* NTupleIn;
+B0KstMuMuSingleCandTreeContent* NTupleIn;
 B0KstMuMuSingleCandTreeContent* NTupleOut;
 
 
@@ -559,7 +558,7 @@ int main (int argc, char** argv)
 	  TFile* NtplFileIn  = new TFile(fileNameIn.c_str(), "READ");
 	  TFile* NtplFileOut = NULL;
 	  theTreeIn          = (TTree*) NtplFileIn->Get("B0KstMuMu/B0KstMuMuNTuple");
-	  NTupleIn           = new B0KstMuMuTreeContent();
+	  NTupleIn           = new B0KstMuMuSingleCandTreeContent();
 	  NTupleIn->Init();
 
 	  if (option == "singlecand")
