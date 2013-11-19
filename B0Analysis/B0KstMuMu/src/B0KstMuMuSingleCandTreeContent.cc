@@ -85,10 +85,20 @@ void B0KstMuMuSingleCandTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("PhiKstMuMuPlaneArb", &PhiKstMuMuPlaneArb);
 }
 
-void B0KstMuMuSingleCandTreeContent::CopyWholeNTuple (B0KstMuMuSingleCandTreeContent* NTupleIn)
+void B0KstMuMuSingleCandTreeContent::CopyCandidate (B0KstMuMuSingleCandTreeContent* NTupleIn, int index)
 {
-  B0KstMuMuTreeContent::CopyWholeNTuple(NTupleIn);
+  CopyScalars(NTupleIn);
+  B0KstMuMuTreeContent::CopyCandidate(NTupleIn,index);
+}
 
+void B0KstMuMuSingleCandTreeContent::CopyAllCandidates (B0KstMuMuSingleCandTreeContent* NTupleIn)
+{
+  CopyScalars(NTupleIn);
+  B0KstMuMuTreeContent::CopyAllCandidates(NTupleIn);
+}
+
+void B0KstMuMuSingleCandTreeContent::CopyScalars (B0KstMuMuSingleCandTreeContent* NTupleIn)
+{
   // ### B0 variables ###
   B0MassArb  = NTupleIn->B0MassArb;
   B0pT       = NTupleIn->B0pT;

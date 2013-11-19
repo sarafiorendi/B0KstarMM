@@ -82,7 +82,7 @@ void SelectBestCand (int SignalType)
 
       if (Utility->ChooseBestCand(NTupleIn, DoTrigCheck, static_cast<double>(entry)/static_cast<double>(nEntries), &BestCandIndx, &B0notB0bar, &TrigCat, &countCands) == true)
 	{
-	  NTupleOut->CopyData(NTupleIn, BestCandIndx);
+	  NTupleOut->CopyCandidate(NTupleIn, BestCandIndx);
 	  
 	  // #############################################
 	  // # Adding new variables for angular analysis #
@@ -472,7 +472,7 @@ void BestCandPerformance (int SignalType)
   int BestCandIndx;
   int TrigCat;
 
-  unsigned int counter  = 0;
+  unsigned int counter = 0;
   double countCandsAVG = 0.0;
 
   NTupleIn->ClearNTuple();

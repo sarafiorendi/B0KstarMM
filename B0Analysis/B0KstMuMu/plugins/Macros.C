@@ -31,7 +31,11 @@
 #include <fstream>
 #include <vector>
 
-using namespace std;
+using std::cout;
+using std::endl;
+using std::string;
+using std::stringstream;
+using std::vector;
 
 
 // ####################
@@ -80,7 +84,6 @@ void PlotEffPlots (string fileName, unsigned int plotN, unsigned int binN);
 void PlotB0vsMuMu (string fileName, bool rejectPsi);
 void PlotBkgMC (string fileName, bool iFit, double scaleMCdata);
 void ReduceTree (string fileNameIn, string fileNameOut);
-  void QueryCandidates (string fileName);
 void SampleMCforPileup (string fileNameIn, string fileNameOut);
 void DivideNTuple (string fileNameIn, string fileNameOut, unsigned int n);
 void SampleNTuple (string fileNameIn, string fileNameOut, double fraction);
@@ -1134,69 +1137,6 @@ void ReduceTree (string fileNameIn, string fileNameOut)
   fileOut->Write();
   fileIn->Close();
   fileOut->Close();
-}
-
-
-// #############################################
-// # Sub-program to query the candidate ntuple #
-// #############################################
-void QueryCandidates (string fileName)
-{
-  // ##########################
-  // # Set histo layout style #
-  // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetPalette(1);
-  gStyle->SetOptFit(0);
-  gStyle->SetOptStat(1110);
-  gStyle->SetOptTitle(0);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
-
-
-  TFile* NtplFileIn = TFile::Open(fileName.c_str(),"READ");
-  TTree* theTreeIn = (TTree*)NtplFileIn->Get("B0KstMuMu/B0KstMuMuNTuple");
-
-  double numEventsTried  = 0.0;
-  double numEventsPassed = 0.0;
-  double minBin = 0.0;
-  double maxBin = 1000.0;
-  int nBins = 1000;
-
-  TH1D* hTr = new TH1D("hTr","hTr",nBins,minBin,maxBin);
-  hTr->SetXTitle("Events [#]");
-  hTr->SetYTitle("Entries [#]");
-
-  TH1D* hPa = new TH1D("hPa","hPa",nBins,minBin,maxBin);
-  hPa->SetXTitle("Events [#]");
-  hPa->SetYTitle("Entries [#]");
-
-  theTreeIn->Draw("numEventsTried>>hTr","","goff");
-  theTreeIn->Draw("numEventsPassed>>hPa","","goff");
-
-  for (int i = 0; i < nBins; i++)
-    {
-      numEventsTried  += hTr->GetBinContent(i+1)*hTr->GetBinLowEdge(i+1);
-      numEventsPassed += hPa->GetBinContent(i+1)*hPa->GetBinLowEdge(i+1);
-    }
-  cout << "Total number of events tried : " << numEventsTried << endl;
-  cout << "Total number of events tried : " << numEventsPassed << endl;
-  cout << "Efficiency : " << ((double)(numEventsPassed)) / ((double)(numEventsTried)) << endl;
-
-  TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
-  c0->Divide(1,2);
-
-  c0->cd(1);
-  gPad->SetLogy();
-  hTr->Draw();
-
-  c0->cd(2);
-  gPad->SetLogy();
-  hPa->Draw();
-
-  c0->Modified();
-  c0->Update();
 }
 
 

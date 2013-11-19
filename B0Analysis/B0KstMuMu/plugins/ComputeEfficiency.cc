@@ -84,7 +84,7 @@ using std::vector;
 #define CHECKEFFatREAD false // Check if 2D or 3D efficiency go negative
 #define NFILES         200
 #define INPUTGenEff    "../../Efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
-#define SETBATCH       true // Set batch mode
+#define SETBATCH       false // Set batch mode
 #define ParameterFILE  "../python/ParameterFile.txt"
 
 // ###################
@@ -200,8 +200,8 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
 	   ((type == 2) &&
 	    (sqrt(NTuple->mumPx->at(0)*NTuple->mumPx->at(0) + NTuple->mumPy->at(0)*NTuple->mumPy->at(0)) > Utility->GetPreCut("MinMupT") &&
 	     (sqrt(NTuple->mupPx->at(0)*NTuple->mupPx->at(0) + NTuple->mupPy->at(0)*NTuple->mupPy->at(0)) > Utility->GetPreCut("MinMupT")) &&
-	     (Utility->computeEta(NTuple->mumPx->at(0),NTuple->mumPy->at(0),NTuple->mumPz->at(0)) < Utility->GetPreCut("MuEta")) &&
-	     (Utility->computeEta(NTuple->mupPx->at(0),NTuple->mupPy->at(0),NTuple->mupPz->at(0)) < Utility->GetPreCut("MuEta")))) ||
+	     (fabs(Utility->computeEta(NTuple->mumPx->at(0),NTuple->mumPy->at(0),NTuple->mumPz->at(0))) < Utility->GetPreCut("MuEta")) &&
+	     (fabs(Utility->computeEta(NTuple->mupPx->at(0),NTuple->mupPy->at(0),NTuple->mupPz->at(0))) < Utility->GetPreCut("MuEta")))) ||
 
 	   ((type == 4) && (NTuple->truthMatchSignal->at(0) == true))))
 	{

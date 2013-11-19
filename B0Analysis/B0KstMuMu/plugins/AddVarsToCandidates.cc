@@ -74,9 +74,7 @@ void AddGenVariables (string option, int SignalType)
 
       if ((NTupleIn->genSignal == SignalType) || (NTupleIn->genSignal == SignalType+1))
 	{
-	  NTupleOut->CopyData(NTupleIn, 0);
-	  NTupleOut->B0MassArb = NTupleIn->B0MassArb;
-
+	  NTupleOut->CopyCandidate(NTupleIn, 0);
 
 	  // ########################
 	  // # Adding new variables #
@@ -338,7 +336,7 @@ template<class T> void AddEvWeightPileup (T* NTupleOut)
   for (int entry = 0; entry < nEntries; entry++)
     {
       theTreeIn->GetEntry(entry);      
-      NTupleOut->CopyWholeNTuple(NTupleIn);
+      NTupleOut->CopyAllCandidates(NTupleIn);
 
       if (typeid(T) == typeid(B0KstMuMuSingleCandTreeContent)) HLTpathIndx = ((B0KstMuMuSingleCandTreeContent*)NTupleOut)->TrigCat;
       else                                                     HLTpathIndx = Utility->HLTpathForEvFraction(static_cast<double>(entry)/static_cast<double>(nEntries));
@@ -395,7 +393,7 @@ template<class T> void AddEvWeightB0pT (T* NTupleOut)
   for (int entry = 0; entry < nEntries; entry++)
     {
       theTreeIn->GetEntry(entry);      
-      NTupleOut->CopyWholeNTuple(NTupleIn);
+      NTupleOut->CopyAllCandidates(NTupleIn);
 
       value = NTupleIn->B0pT;
       if ((hW->FindBin(value) != 0) && (hW->FindBin(value) != hW->GetNbinsX()+1))
@@ -455,7 +453,7 @@ template<class T> void AddEvWeightHadpT (T* NTupleOut, string trkSign)
   for (int entry = 0; entry < nEntries; entry++)
     {
       theTreeIn->GetEntry(entry);      
-      NTupleOut->CopyWholeNTuple(NTupleIn);
+      NTupleOut->CopyAllCandidates(NTupleIn);
 	  
       if      (trkSign == "pos") value = sqrt(NTupleOut->kstTrkpPx->at(0)*NTupleOut->kstTrkpPx->at(0) + NTupleOut->kstTrkpPy->at(0)*NTupleOut->kstTrkpPy->at(0));
       else if (trkSign == "neg") value = sqrt(NTupleOut->kstTrkmPx->at(0)*NTupleOut->kstTrkmPx->at(0) + NTupleOut->kstTrkmPy->at(0)*NTupleOut->kstTrkmPy->at(0));

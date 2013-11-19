@@ -1342,13 +1342,13 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("truthMatchTrkp",   &truthMatchTrkp);
 }
 
-void B0KstMuMuTreeContent::CopyData (B0KstMuMuTreeContent* NTupleIn, int index)
+void B0KstMuMuTreeContent::CopyCandidate (B0KstMuMuTreeContent* NTupleIn, int index)
 {
   CopyScalars(NTupleIn);
   CopyVectors(NTupleIn,index);
 }
 
-void B0KstMuMuTreeContent::CopyWholeNTuple (B0KstMuMuTreeContent* NTupleIn)
+void B0KstMuMuTreeContent::CopyAllCandidates (B0KstMuMuTreeContent* NTupleIn)
 {
   CopyScalars(NTupleIn);
   if (NTupleIn->bMass != NULL)

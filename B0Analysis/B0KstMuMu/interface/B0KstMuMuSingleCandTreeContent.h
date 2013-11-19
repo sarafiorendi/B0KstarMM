@@ -17,7 +17,8 @@ class B0KstMuMuSingleCandTreeContent : public B0KstMuMuTreeContent
   void ClearNTuple ();
   void MakeTreeBranches (TTree* theTree);
   void SetBranchAddresses (TTree* theTree);
-  void CopyWholeNTuple (B0KstMuMuSingleCandTreeContent* NTupleIn);
+  void CopyCandidate (B0KstMuMuSingleCandTreeContent* NTupleIn, int index);
+  void CopyAllCandidates (B0KstMuMuSingleCandTreeContent* NTupleIn);
 
 
   // ################
@@ -38,7 +39,8 @@ class B0KstMuMuSingleCandTreeContent : public B0KstMuMuTreeContent
   double CosThetaKArb, CosThetaMuArb, PhiKstMuMuPlaneArb;
 
  private:
-  
+  void CopyScalars (B0KstMuMuSingleCandTreeContent* NTupleIn);
+
 };
 
 #endif

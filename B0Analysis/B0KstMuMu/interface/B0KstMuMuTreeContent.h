@@ -20,8 +20,8 @@ class B0KstMuMuTreeContent
   void ClearMonteCarlo ();
   void MakeTreeBranches (TTree* theTree);
   void SetBranchAddresses (TTree* theTree);
-  void CopyData (B0KstMuMuTreeContent* NTupleIn, int index);
-  void CopyWholeNTuple (B0KstMuMuTreeContent* NTupleIn);
+  void CopyCandidate (B0KstMuMuTreeContent* NTupleIn, int index);
+  void CopyAllCandidates (B0KstMuMuTreeContent* NTupleIn);
   void FillWithNull (unsigned int upTo);
 
 
