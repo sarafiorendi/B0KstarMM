@@ -2025,109 +2025,102 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
   // ####################################
   // # Perform matching with candidates #
   // ####################################
-  if (NTuple->nB > 0)
-    {
-      if (NTuple->truthMatchSignal->size() == 0)
-	{
-	  for (unsigned int i = 0; i < NTuple->nB; i++)
-	    {
-	      NTuple->mumDeltaRwithMC->push_back(-1.0);
-	      NTuple->mupDeltaRwithMC->push_back(-1.0);
-	      NTuple->kstTrkmDeltaRwithMC->push_back(-1.0);
-	      NTuple->kstTrkpDeltaRwithMC->push_back(-1.0);
-	    
-	      NTuple->truthMatchMum->push_back(false);
-	      NTuple->truthMatchMup->push_back(false);
-	      NTuple->truthMatchTrkm->push_back(false);
-	      NTuple->truthMatchTrkp->push_back(false);
-	      NTuple->truthMatchSignal->push_back(false);
-	    }
-	}
-      else
-	{
-	  for (unsigned int i = 0; i < NTuple->nB; i++)
-	    {
-	      // ###########################
-	      // # Check matching with mu- #
-	      // ###########################
-	      deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genMumPx,NTuple->genMumPy,NTuple->genMumPz, NTuple->mumPx->at(i),NTuple->mumPy->at(i),NTuple->mumPz->at(i));
-	      NTuple->mumDeltaRwithMC->push_back(deltaEtaPhi);
-	      if (deltaEtaPhi < RCUTMU)
-		{
-		  NTuple->truthMatchMum->push_back(true);
-		  if (printMsg == true) std::cout << __LINE__ << " : found matched mu-" << std::endl;
-		}
-	      else NTuple->truthMatchMum->push_back(false);
+  if ((NTuple->genSignal != 0) || (NTuple->genMuMuBG != 0))
+    for (unsigned int i = 0; i < NTuple->nB; i++)
+      {
+	// ###########################
+	// # Check matching with mu- #
+	// ###########################
+	deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genMumPx,NTuple->genMumPy,NTuple->genMumPz, NTuple->mumPx->at(i),NTuple->mumPy->at(i),NTuple->mumPz->at(i));
+	NTuple->mumDeltaRwithMC->push_back(deltaEtaPhi);
+	if (deltaEtaPhi < RCUTMU)
+	  {
+	    NTuple->truthMatchMum->push_back(true);
+	    if (printMsg == true) std::cout << __LINE__ << " : found matched mu-" << std::endl;
+	  }
+	else NTuple->truthMatchMum->push_back(false);
 		      
 
-	      // ###########################
-	      // # Check matching with mu+ #
-	      // ###########################
-	      deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genMupPx,NTuple->genMupPy,NTuple->genMupPz, NTuple->mupPx->at(i),NTuple->mupPy->at(i),NTuple->mupPz->at(i));
-	      NTuple->mupDeltaRwithMC->push_back(deltaEtaPhi);
-	      if (deltaEtaPhi < RCUTMU)
-		{
-		  NTuple->truthMatchMup->push_back(true);
-		  if (printMsg == true) std::cout << __LINE__ << " : found matched mu+" << std::endl;
-		}
-	      else NTuple->truthMatchMup->push_back(false);
+	// ###########################
+	// # Check matching with mu+ #
+	// ###########################
+	deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genMupPx,NTuple->genMupPy,NTuple->genMupPz, NTuple->mupPx->at(i),NTuple->mupPy->at(i),NTuple->mupPz->at(i));
+	NTuple->mupDeltaRwithMC->push_back(deltaEtaPhi);
+	if (deltaEtaPhi < RCUTMU)
+	  {
+	    NTuple->truthMatchMup->push_back(true);
+	    if (printMsg == true) std::cout << __LINE__ << " : found matched mu+" << std::endl;
+	  }
+	else NTuple->truthMatchMup->push_back(false);
 		      
 
-	      // ##################################
-	      // # Check matching with K*0 track- #
-	      // ##################################
-	      if ((NTuple->genSignal != 0) || (NTuple->genMuMuBGnTrksm != 0))
-		{
-		  deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genKstTrkmPx,NTuple->genKstTrkmPy,NTuple->genKstTrkmPz, NTuple->kstTrkmPx->at(i),NTuple->kstTrkmPy->at(i),NTuple->kstTrkmPz->at(i));
-		  NTuple->kstTrkmDeltaRwithMC->push_back(deltaEtaPhi);
-		  if (deltaEtaPhi < RCUTTRK)
-		    {
-		      NTuple->truthMatchTrkm->push_back(true);
-		      if (printMsg == true) std::cout << __LINE__ << " : found matched track-" << std::endl;
-		    }
-		  else NTuple->truthMatchTrkm->push_back(false);
-		}
-	      else
-		{
-		  NTuple->truthMatchTrkm->push_back(false);
-		  NTuple->kstTrkmDeltaRwithMC->push_back(-1.0);
-		}
+	// ##################################
+	// # Check matching with K*0 track- #
+	// ##################################
+	if ((NTuple->genSignal != 0) || (NTuple->genMuMuBGnTrksm != 0))
+	  {
+	    deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genKstTrkmPx,NTuple->genKstTrkmPy,NTuple->genKstTrkmPz, NTuple->kstTrkmPx->at(i),NTuple->kstTrkmPy->at(i),NTuple->kstTrkmPz->at(i));
+	    NTuple->kstTrkmDeltaRwithMC->push_back(deltaEtaPhi);
+	    if (deltaEtaPhi < RCUTTRK)
+	      {
+		NTuple->truthMatchTrkm->push_back(true);
+		if (printMsg == true) std::cout << __LINE__ << " : found matched track-" << std::endl;
+	      }
+	    else NTuple->truthMatchTrkm->push_back(false);
+	  }
+	else
+	  {
+	    NTuple->truthMatchTrkm->push_back(false);
+	    NTuple->kstTrkmDeltaRwithMC->push_back(-1.0);
+	  }
 
 
-	      // ##################################
-	      // # Check matching with K*0 track+ #
-	      // ##################################
-	      if ((NTuple->genSignal != 0) || (NTuple->genMuMuBGnTrksp != 0))
-		{
-		  deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genKstTrkpPx,NTuple->genKstTrkpPy,NTuple->genKstTrkpPz, NTuple->kstTrkpPx->at(i),NTuple->kstTrkpPy->at(i),NTuple->kstTrkpPz->at(i));
-		  NTuple->kstTrkpDeltaRwithMC->push_back(deltaEtaPhi);
-		  if (deltaEtaPhi < RCUTTRK) 
-		    {
-		      NTuple->truthMatchTrkp->push_back(true);
-		      if (printMsg == true) std::cout << __LINE__ << " : found matched track+" << std::endl;
-		    }
-		  else NTuple->truthMatchTrkp->push_back(false);
-		}
-	      else
-		{
-		  NTuple->truthMatchTrkp->push_back(false);
-		  NTuple->kstTrkpDeltaRwithMC->push_back(-1.0);
-		}
+	// ##################################
+	// # Check matching with K*0 track+ #
+	// ##################################
+	if ((NTuple->genSignal != 0) || (NTuple->genMuMuBGnTrksp != 0))
+	  {
+	    deltaEtaPhi = Utility->computeEtaPhiDistance (NTuple->genKstTrkpPx,NTuple->genKstTrkpPy,NTuple->genKstTrkpPz, NTuple->kstTrkpPx->at(i),NTuple->kstTrkpPy->at(i),NTuple->kstTrkpPz->at(i));
+	    NTuple->kstTrkpDeltaRwithMC->push_back(deltaEtaPhi);
+	    if (deltaEtaPhi < RCUTTRK) 
+	      {
+		NTuple->truthMatchTrkp->push_back(true);
+		if (printMsg == true) std::cout << __LINE__ << " : found matched track+" << std::endl;
+	      }
+	    else NTuple->truthMatchTrkp->push_back(false);
+	  }
+	else
+	  {
+	    NTuple->truthMatchTrkp->push_back(false);
+	    NTuple->kstTrkpDeltaRwithMC->push_back(-1.0);
+	  }
 
 
-	      // ####################################################
-	      // # Check matching with B0 --> track+ track- mu+ mu- #
-	      // ####################################################
-	      if ((NTuple->truthMatchTrkm->back() == true) && (NTuple->truthMatchTrkp->back() == true) &&
-		  (NTuple->truthMatchMum->back() == true) && (NTuple->truthMatchMup->back() == true))
-		{
-		  NTuple->truthMatchSignal->push_back(true);
-		  if (printMsg == true) std::cout << __LINE__ << " : @@@ Found matched B0 --> track+ track- mu+ mu- @@@" << std::endl;
-		}
-	      else NTuple->truthMatchSignal->push_back(false);
-	    }
-	}
-    }
+	// ####################################################
+	// # Check matching with B0 --> track+ track- mu+ mu- #
+	// ####################################################
+	if ((NTuple->truthMatchTrkm->back() == true) && (NTuple->truthMatchTrkp->back() == true) &&
+	    (NTuple->truthMatchMum->back() == true) && (NTuple->truthMatchMup->back() == true))
+	  {
+	    NTuple->truthMatchSignal->push_back(true);
+	    if (printMsg == true) std::cout << __LINE__ << " : @@@ Found matched B0 --> track+ track- mu+ mu- @@@" << std::endl;
+	  }
+	else NTuple->truthMatchSignal->push_back(false);
+      }
+  else
+    for (unsigned int i = 0; i < NTuple->nB; i++)
+      {
+	NTuple->mumDeltaRwithMC->push_back(-1.0);
+	NTuple->mupDeltaRwithMC->push_back(-1.0);
+	NTuple->kstTrkmDeltaRwithMC->push_back(-1.0);
+	NTuple->kstTrkpDeltaRwithMC->push_back(-1.0);
+	
+	NTuple->truthMatchMum->push_back(false);
+	NTuple->truthMatchMup->push_back(false);
+	NTuple->truthMatchTrkm->push_back(false);
+	NTuple->truthMatchTrkp->push_back(false);
+	NTuple->truthMatchSignal->push_back(false);
+      }
 
 
 
