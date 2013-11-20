@@ -547,12 +547,12 @@ int main (int argc, char** argv)
 
 
 	  cout << "\n@@@ Settings @@@" << endl;
-	  cout << "Do Trigger Check: " << DoTrigCheck << endl;
-	  cout << "SaveHistos: "       << SaveHistos << endl;
-	  cout << "DoMCTruth: "        << DoMCTruth << endl;
-	  cout << "TagFromTruth: "     << TagFromTruth << endl;
-	  cout << "ParameterFILE: "    << ParameterFILE << endl;
-	  cout << "Default SignalType" << localVar << endl;
+	  cout << "Do Trigger Check: "   << DoTrigCheck << endl;
+	  cout << "SaveHistos: "         << SaveHistos << endl;
+	  cout << "DoMCTruth: "          << DoMCTruth << endl;
+	  cout << "TagFromTruth: "       << TagFromTruth << endl;
+	  cout << "ParameterFILE: "      << ParameterFILE << endl;
+	  cout << "Default SignalType: " << localVar << endl;
 
 
 	  TFile* NtplFileIn  = new TFile(fileNameIn.c_str(), "READ");
