@@ -535,12 +535,11 @@ int main (int argc, char** argv)
   if (argc >= 4)
     {
       string option = argv[1];
-      if (((option == "singlecand") && (argc == 5)) || (((option == "eff")) && (argc == 4)))
+      if (((option == "singlecand") || (option == "eff")) && (argc == 4))
 	{
-	  string localVar    = argv[2];
-	  string fileNameIn  = argv[3];
+	  string fileNameIn  = argv[2];
 	  string fileNameOut = "";
-	  if (argc == 5) fileNameOut = argv[4];
+	  string localVar    = "1";
 
 	  Utility = new Utils();
 	  Utility->ReadTriggerPathsANDCutsANDEntries(ParameterFILE);
@@ -553,6 +552,7 @@ int main (int argc, char** argv)
 	  cout << "DoMCTruth: "        << DoMCTruth << endl;
 	  cout << "TagFromTruth: "     << TagFromTruth << endl;
 	  cout << "ParameterFILE: "    << ParameterFILE << endl;
+	  cout << "Default SignalType" << localVar << endl;
 
 
 	  TFile* NtplFileIn  = new TFile(fileNameIn.c_str(), "READ");
@@ -563,6 +563,9 @@ int main (int argc, char** argv)
 
 	  if (option == "singlecand")
 	    {
+	      fileNameOut = argv[3];
+	      if (argc == 5) localVar = argv[4];
+
 	      NtplFileOut = new TFile(fileNameOut.c_str(), "RECREATE");
 	      NtplFileOut->mkdir("B0KstMuMu");
 	      NtplFileOut->cd("B0KstMuMu");
@@ -572,7 +575,11 @@ int main (int argc, char** argv)
 
 	      SelectBestCand(atoi(localVar.c_str()));
 	    }
-	  else if (option == "eff") BestCandPerformance(atoi(localVar.c_str()));
+	  else if (option == "eff")
+	    {
+	      localVar = argv[3];
+	      BestCandPerformance(atoi(localVar.c_str()));
+	    }
 	  else
 	    {
 	      cout << "[SingleCandB0KstMuMu::main]\tWrong option: " << option << endl;
@@ -607,7 +614,7 @@ int main (int argc, char** argv)
   else
     {
       cout << "Parameter missing: " << endl;
-      cout << "./SingleCandB0KstMuMu [singlecand eff] [SignalType] inputFile.root [outputFile.root]" << endl;
+      cout << "./SingleCandB0KstMuMu [singlecand eff] inputFile.root [[if singlecand]outputFile.root] [[if eff]SignalType]" << endl;
       cout << "- SignalType : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
 
       return EXIT_FAILURE;
