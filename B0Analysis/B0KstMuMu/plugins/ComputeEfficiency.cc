@@ -45,14 +45,14 @@ using std::vector;
 // ###########################################
 // (a) Make binned efficiency with the command "Make"
 
-// (b) Fit the theta_l variable with the command "FitEff1D" for every q2 bin
+// (b) Fit the theta_l variable with the command "Fit1DEff" for every q2 bin
 //     - Set command option to "thetaL"
 
-// (c) Fit the theta_K variable with the command "FitEff1D"
+// (c) Fit the theta_K variable with the command "Fit1DEff"
 //     - Set command option to "thetaK"
 //     - Set "INPUT_THETAL" to the output.txt file of point (b)
 
-// (d) Fit the phi variable with the command "FitEff1D" for every q2 bin
+// (d) Fit the phi variable with the command "Fit1DEff" for every q2 bin
 //     - Set command option to "phi"
 
 // (e) Fit the theta_l-theta_K variables with the command "FitEff2D"
@@ -62,23 +62,20 @@ using std::vector;
 //     - Set "INPUT_THETAL_THETAK" to the output.txt file of point (c)
 //     - Set "INPUT_PHI"           to the output.txt file of point (d)
 
-// (g) Of you want to look at the final result run the command "Test2DEff"
-//     - Set "INPUT_THETAL_THETAK_Comp"     to the output.txt file of point (e)
+// (g) If you want to look at the final result run the command "Test2DEff"
+//     - Set "INPUT_THETAL_THETAK" to the output.txt file of point (e)
 
-// (h) Of you want to look at the final result run the command "Test3DEff"
-//     - Set "INPUT_THETAL_THETAK_PHI_Comp" to the output.txt file of point (f)
+// (h) If you want to look at the final result run the command "Test3DEff"
+//     - Set "INPUT_THETAL_THETAK_PHI" to the output.txt file of point (f)
 
 
 // ####################
 // # Global constants #
 // ####################
-#define INPUT_THETAL            "../../Efficiency/ThetaL_B0ToKstMuMu.txt"
-#define INPUT_PHI               "../../Efficiency/Phi_B0ToKstMuMu.txt"
-#define INPUT_THETAL_THETAK     "../../Efficiency/ThetaK_B0ToKstMuMu.txt" // "ThetaK_B0ToKstMuMu.txt" OR "ThetaKThetaL_B0ToKstMuMu.txt"
-#define INPUT_THETAL_THETAK_PHI "../../Efficiency/ThetaKThetaLPhi_B0ToKstMuMu.txt"
-
-#define INPUT_THETAL_THETAK_Comp     "../../Efficiency/ThetaKThetaL_B0ToKstMuMu.txt"
-#define INPUT_THETAL_THETAK_PHI_Comp "../../Efficiency/ThetaKThetaLPhi_B0ToKstMuMu.txt"
+#define INPUT_THETAL            "ThetaL_B0ToKstMuMu.txt"
+#define INPUT_PHI               "Phi_B0ToKstMuMu.txt"
+#define INPUT_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu.txt" // "ThetaK_B0ToKstMuMu.txt" OR "ThetaKThetaL_B0ToKstMuMu.txt"
+#define INPUT_THETAL_THETAK_PHI "ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
 #define SavePlot       false
 #define CHECKEFFatREAD false // Check if 2D or 3D efficiency go negative
@@ -93,7 +90,7 @@ using std::vector;
 #define abscissaErr   1.0e-2
 #define ordinateVal   1.0e-5
 #define ordinateErr   1.0e-5
-#define ordinateRange 2.2e-3
+#define ordinateRange 1.0e-2
 
 
 // ####################
@@ -125,15 +122,18 @@ Utils::effStruct myEff;
 void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, double* Vector, double* VectorErr2Pois, double* VectorErr2Weig, unsigned int type,
 			vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, unsigned int SignalType);
 void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff);
+// @@@TMP@@@
 void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			 string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool saveHistos, int specBin = -1);
 void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut);
 void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
+// @@@TMP@@@
 void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
 void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool saveHistos);
+// @@@TMP@@@
 void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool saveHistos);
 
 
@@ -191,18 +191,19 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
     {
       theTree->GetEntry(entry);
 
-      if ((NTuple->B0pT > Utility->GetSeleCut("B0pT")) &&
+      if ((NTuple->B0pT        > Utility->GetSeleCut("B0pT"))  &&
 	  (fabs(NTuple->B0Eta) < Utility->GetSeleCut("B0Eta")) &&
+	  
 	  ((NTuple->genSignal == SignalType || NTuple->genSignal == SignalType+1)) &&
-
+	  
 	  ((type == 1 || type == 3) ||
-
+	   
 	   ((type == 2) &&
-	    (sqrt(NTuple->mumPx->at(0)*NTuple->mumPx->at(0) + NTuple->mumPy->at(0)*NTuple->mumPy->at(0)) > Utility->GetPreCut("MinMupT") &&
-	     (sqrt(NTuple->mupPx->at(0)*NTuple->mupPx->at(0) + NTuple->mupPy->at(0)*NTuple->mupPy->at(0)) > Utility->GetPreCut("MinMupT")) &&
-	     (fabs(Utility->computeEta(NTuple->mumPx->at(0),NTuple->mumPy->at(0),NTuple->mumPz->at(0))) < Utility->GetPreCut("MuEta")) &&
-	     (fabs(Utility->computeEta(NTuple->mupPx->at(0),NTuple->mupPy->at(0),NTuple->mupPz->at(0))) < Utility->GetPreCut("MuEta")))) ||
-
+	    (sqrt(NTuple->genMumPx*NTuple->genMumPx + NTuple->genMumPy*NTuple->genMumPy)   > Utility->GetPreCut("MinMupT")) &&
+	    (sqrt(NTuple->genMupPx*NTuple->genMupPx + NTuple->genMupPy*NTuple->genMupPy)   > Utility->GetPreCut("MinMupT")) &&
+	    (fabs(Utility->computeEta(NTuple->genMumPx,NTuple->genMumPy,NTuple->genMumPz)) < Utility->GetPreCut("MuEta"))   &&
+	    (fabs(Utility->computeEta(NTuple->genMupPx,NTuple->genMupPy,NTuple->genMupPz)) < Utility->GetPreCut("MuEta")))  ||
+	   
 	   ((type == 4) && (NTuple->truthMatchSignal->at(0) == true))))
 	{
 	  mumuq2          = NTuple->mumuMass->at(0)*NTuple->mumuMass->at(0);
@@ -299,7 +300,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   double* cosThetaLBins_ = Utility->MakeBinning(cosThetaLBins);
   double* phiBins_       = Utility->MakeBinning(phiBins);
   // ##################
-  double Xaxes = 1.0e4;
+  double Zaxes = 1.0e3;
   // ##################
 
 
@@ -533,15 +534,14 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 		vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetBinContent(k+1,l+1,num2);
 	      }
 	  
-	  cNumCosThetaL->cd(j+1);
+	  cNumCosThetaL->cd(j+1)->SetLogz();
 	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetMarkerStyle(1);
 	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetMarkerColor(1+i);
 	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetLineColor(1+i);
 	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetLineWidth(2);
-	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetFillColor(1+i);
-	  if (i == 0) vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->Draw("e4");
-	  else        vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->Draw("sames e4");
-	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(1.0,Xaxes);
+	  if (i == 0) vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->Draw("surf bb fb");
+	  else        vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->Draw("sames surf bb fb");
+	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(1.0,Zaxes);
 
 	  myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
 	  legHq2ANDcosThetaK[j]->AddEntry(vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i],myString.str().c_str());
@@ -567,15 +567,14 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 		vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetBinContent(j+1,l+1,num2);
 	      }
 
-	  cNumCosThetaK->cd(k+1);
+	  cNumCosThetaK->cd(k+1)->SetLogz();
 	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetMarkerStyle(1);
 	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetMarkerColor(1+i);
 	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetLineColor(1+i);
 	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetLineWidth(2);
-	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetFillColor(1+i);
-	  if (i == 0) vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->Draw("e4");
-	  else vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->Draw("sames e4");
-	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(1.0,Xaxes);
+	  if (i == 0) vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->Draw("surf bb fb");
+	  else vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->Draw("sames surf bb fb");
+	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(1.0,Zaxes);
 
 	  myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
 	  legHq2ANDcosThetaL[k]->AddEntry(vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i],myString.str().c_str());
@@ -601,15 +600,14 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 		vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetBinContent(k+1,j+1,num2);
 	      }
 
-	  cNumPhi->cd(l+1);
+	  cNumPhi->cd(l+1)->SetLogz();
 	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetMarkerStyle(1);
 	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetMarkerColor(1+i);
 	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetLineColor(1+i);
 	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetLineWidth(2);
-	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetFillColor(1+i);
-	  if (i == 0) vecHq2ANDphi[l*(q2Bins->size()-1)+i]->Draw("e4");
-	  else        vecHq2ANDphi[l*(q2Bins->size()-1)+i]->Draw("sames e4");
-	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(1.0,Xaxes);
+	  if (i == 0) vecHq2ANDphi[l*(q2Bins->size()-1)+i]->Draw("surf bb fb");
+	  else        vecHq2ANDphi[l*(q2Bins->size()-1)+i]->Draw("sames surf bb fb");
+	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(1.0,Zaxes);
 
 	  myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
 	  legHq2ANDphi[l]->AddEntry(vecHq2ANDphi[l*(q2Bins->size()-1)+i],myString.str().c_str());
@@ -657,7 +655,6 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
   stringstream effFuncIDs;
   // ###################
   double Xaxes = 0.2e-3;
-  double Yaxes = 1.2e-2;
   // ###################
 
 
@@ -837,25 +834,25 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
 	{
 	  cEff0->cd();
 	  Hq2[itF]->SetMarkerStyle(20);
-	  Hq2[itF]->GetYaxis()->SetRangeUser(0,Yaxes);
+	  Hq2[itF]->GetYaxis()->SetRangeUser(0,ordinateRange);
 	  if (isSingleEff == true) Hq2[itF]->Draw("pe1");
 	  else Hq2[itF]->Draw("same pe1");
 	  
 	  cEff1->cd();
 	  HcosThetaK[itF]->SetMarkerStyle(20);
-	  HcosThetaK[itF]->GetYaxis()->SetRangeUser(0,Yaxes);
+	  HcosThetaK[itF]->GetYaxis()->SetRangeUser(0,ordinateRange);
 	  if (isSingleEff == true) HcosThetaK[itF]->Draw("pe1");
 	  else HcosThetaK[itF]->Draw("same pe1");
 
 	  cEff2->cd();
 	  HcosThetaL[itF]->SetMarkerStyle(20);
-	  HcosThetaL[itF]->GetYaxis()->SetRangeUser(0,Yaxes);
+	  HcosThetaL[itF]->GetYaxis()->SetRangeUser(0,ordinateRange);
 	  if (isSingleEff == true) HcosThetaL[itF]->Draw("pe1");
 	  else HcosThetaL[itF]->Draw("same pe1");
 
 	  cEff3->cd();
 	  Hphi[itF]->SetMarkerStyle(20);
-	  Hphi[itF]->GetYaxis()->SetRangeUser(0,Yaxes);
+	  Hphi[itF]->GetYaxis()->SetRangeUser(0,ordinateRange);
 	  if (isSingleEff == true) Hphi[itF]->Draw("pe1");
 	  else Hphi[itF]->Draw("same pe1");
 	}
@@ -863,25 +860,25 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
 	{
 	  cEff0->cd();
 	  Hq2[itF]->SetLineColor(kBlue);
-	  Hq2[itF]->GetYaxis()->SetRangeUser(0,Yaxes);
+	  Hq2[itF]->GetYaxis()->SetRangeUser(0,ordinateRange);
 	  if (itF == 0) Hq2[itF]->Draw();
 	  else Hq2[itF]->Draw("same");
 
 	  cEff1->cd();
 	  HcosThetaK[itF]->SetLineColor(kBlue);
-	  HcosThetaK[itF]->GetYaxis()->SetRangeUser(0,Yaxes);
+	  HcosThetaK[itF]->GetYaxis()->SetRangeUser(0,ordinateRange);
 	  if (itF == 0) HcosThetaK[itF]->Draw();
 	  else HcosThetaK[itF]->Draw("same");
 
 	  cEff2->cd();
 	  HcosThetaL[itF]->SetLineColor(kBlue);
-	  HcosThetaL[itF]->GetYaxis()->SetRangeUser(0,Yaxes);
+	  HcosThetaL[itF]->GetYaxis()->SetRangeUser(0,ordinateRange);
 	  if (itF == 0) HcosThetaL[itF]->Draw();
 	  else HcosThetaL[itF]->Draw("same");
 
 	  cEff3->cd();
 	  Hphi[itF]->SetLineColor(kBlue);
-	  Hphi[itF]->GetYaxis()->SetRangeUser(0,Yaxes);
+	  Hphi[itF]->GetYaxis()->SetRangeUser(0,ordinateRange);
 	  if (itF == 0) Hphi[itF]->Draw();
 	  else Hphi[itF]->Draw("same");
 	}
@@ -1027,11 +1024,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   ofstream fileOutput;
   ifstream fileInput;
   bool nullParameter;
-  // #########################
-  double YaxesThetaL = 4.0e-3;
-  double YaxesThetaK = 1.0e-2;
-  double YaxesPhi    = 1.0e-2;
-  // #########################
+  // ###################
 
 
   TCanvas* cEff = new TCanvas("cEff", "cEff", 10, 10, 1600, 900);
@@ -1082,7 +1075,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  histFit.back()->SetMarkerStyle(20);
 	  histFit.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
 	  histFit.back()->SetYTitle("Efficiency");
-	  histFit.back()->GetYaxis()->SetRangeUser(-YaxesThetaL,YaxesThetaL);
+	  histFit.back()->GetYaxis()->SetRangeUser(-ordinateRange,ordinateRange);
 
 	  cEff->cd(j+1);
 	  histFit.back()->Fit("effFunc1D","V");
@@ -1167,7 +1160,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  histFit.back()->SetMarkerStyle(20);
 	  histFit.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
 	  histFit.back()->SetYTitle("Efficiency");
-	  histFit.back()->GetYaxis()->SetRangeUser(-YaxesThetaK,YaxesThetaK);
+	  histFit.back()->GetYaxis()->SetRangeUser(-ordinateRange,ordinateRange);
 
 	  cEff->cd(k+1);
 	  histFit.back()->Fit("effFunc1D","V");
@@ -1193,7 +1186,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
     }
   else if (who == "phi")
     {
-      fileOutput.open(fileNameOut.replace(fileNameOut.find(".txt"),4,"Phi.txt").c_str(),ofstream::app);
+      fileOutput.open(fileNameOut.replace(fileNameOut.find(".txt"),9,"Phi.txt").c_str(),ofstream::app);
       if (fileOutput.good() == false)
 	{
 	  cout << "[ComputeEfficiency::Fit1DEfficiencies]\tError opening file : " << fileNameOut.c_str() << endl;
@@ -1221,20 +1214,13 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	}
 
 
-      // ######################################################################
-      // # Add constraint where it is necessary to bound the function at zero #
-      // ######################################################################
-      // @@@TMP@@@
-      // Utility->AddConstraint...
-
-
       // ##############################
       // # Read analytical efficiency #
       // ##############################
       histFit.back()->SetMarkerStyle(20);
       histFit.back()->SetXTitle("#phi");
       histFit.back()->SetYTitle("Efficiency");
-      histFit.back()->GetYaxis()->SetRangeUser(-YaxesPhi,YaxesPhi);
+      histFit.back()->GetYaxis()->SetRangeUser(-ordinateRange,ordinateRange);
 
       cEff->cd(1);
       histFit.back()->Fit("effFunc1D","V");
@@ -1272,7 +1258,7 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   TFitResultPtr fitResults;
   stringstream myString;
   vector<TF2*> effFuncs2D;
-  TH2D*        hisFunc2D;
+  TH2D* hisFunc2D;
   // ###################
 
 
@@ -1312,8 +1298,8 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   cTestGlobalFit->cd();
   fitResults = hisFunc2D->Fit(effFuncs2D[q2BinIndx]->GetName(),"VMRS");
   TMatrixTSym<double> covMatrix(fitResults->GetCovarianceMatrix());
-  effFuncs2D[q2BinIndx]->Draw("surf1");
-  hisFunc2D->Draw("lego2");
+  effFuncs2D[q2BinIndx]->Draw("surf1 fb");
+  hisFunc2D->Draw("lego2 fb");
   cTestGlobalFit->Update();
 
   cout << "@@@ chi2/DoF = " << effFuncs2D[q2BinIndx]->GetChisquare() / effFuncs2D[q2BinIndx]->GetNDF() << " (" << effFuncs2D[q2BinIndx]->GetChisquare() << "/" << effFuncs2D[q2BinIndx]->GetNDF() << ")";
@@ -1331,8 +1317,8 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
       cTestGlobalFit->cd();
       fitResults = hisFunc2D->Fit(effFuncs2D[q2BinIndx]->GetName(),"VMRS");
       TMatrixTSym<double> covMatrixConstr(fitResults->GetCovarianceMatrix());
-      effFuncs2D[q2BinIndx]->Draw("surf1");
-      hisFunc2D->Draw("lego2");
+      effFuncs2D[q2BinIndx]->Draw("surf1 fb");
+      hisFunc2D->Draw("lego2 fb");
       cTestGlobalFit->Update();
 
       cout << "@@@ chi2/DoF = " << effFuncs2D[q2BinIndx]->GetChisquare() / effFuncs2D[q2BinIndx]->GetNDF() << " (" << effFuncs2D[q2BinIndx]->GetChisquare() << "/" << effFuncs2D[q2BinIndx]->GetNDF() << ")";
@@ -1381,10 +1367,10 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   stringstream myString;
   string tmpString;
   double coeff;
-  TF1*         effFunc1D;
+  TF1* effFunc1D;
   vector<TF2*> effFuncs2D;
-  TF3*         effFunc3D;
-  TH3D*        hisFunc3D;
+  TF3* effFunc3D;
+  TH3D* hisFunc3D;
   // ###################
 
 
@@ -1559,23 +1545,15 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   // ###################
   double Eff, EffErr;
   double averagePerBin;
-  double integralRef;
-  double integralComp;
-  double integralDiff;
   double chi2point = 0.0;
   double chi2avg   = 0.0;
   double DoF       = 0.0;
   vector<TF2*> effFuncs2D;
-  vector<TF2*> effFuncs2Dcomp;
-  TF2 *EffFunc2D,    *EffFunc2Dcomp;
-  TF2 *absEffFunc2D, *absEffFunc2Dcomp;
-  TF2* diffFunc;
+  TF2 *EffFunc2D;
   vector<TF12*> effFuncSlice;
   vector<TH1D*> histoSlice;
   string tmpString;
   stringstream myString;
-  // ###################
-  double Zaxes = 4.0e-3;
   // ###################
 
 
@@ -1592,19 +1570,17 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   TH2D* hisFunc2D = Utility->Get2DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
 
   cEff->cd(1);
-  hisFunc2D->Draw("lego2");
+  hisFunc2D->Draw("lego2 fb");
 
 
   // ###################################################################################
   // # Read analytical efficiencies (reference and comparison) and rescale if required #
   // ###################################################################################
   Utility->ReadAnalyticalEff(INPUT_THETAL_THETAK,q2Bins,cosThetaKBins,cosThetaLBins,&effFuncs2D,"effFuncs2D",0);
-  Utility->ReadAnalyticalEff(INPUT_THETAL_THETAK_Comp,q2Bins,cosThetaKBins,cosThetaLBins,&effFuncs2Dcomp,"effFuncs2Dcomp",0);
-  EffFunc2D     = effFuncs2D[q2BinIndx];
-  EffFunc2Dcomp = effFuncs2Dcomp[q2BinIndx];
+  EffFunc2D = effFuncs2D[q2BinIndx];
   cEff->cd(2);
   EffFunc2D->GetZaxis()->SetTitleOffset(1.25);
-  EffFunc2D->Draw("surf1");
+  EffFunc2D->Draw("surf2 fb");
 
 
   // ##############################
@@ -1650,7 +1626,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
       effFuncSlice.push_back(new TF12(myString.str().c_str(),EffFunc2D,(cosThetaKBins->operator[](binIndx)+cosThetaKBins->operator[](binIndx+1))/2.,"y"));
       effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
       effFuncSlice.back()->GetYaxis()->SetTitle("Efficiency");
-      effFuncSlice.back()->GetYaxis()->SetRangeUser(0.0,Zaxes);
+      effFuncSlice.back()->GetYaxis()->SetRangeUser(0.0,ordinateRange);
       effFuncSlice.back()->Draw();
 
       myString.str("");
@@ -1659,7 +1635,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
       histoSlice.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
       histoSlice.back()->SetMarkerStyle(20);
       histoSlice.back()->SetYTitle("Efficiency");
-      histoSlice.back()->GetYaxis()->SetRangeUser(0.0,Zaxes);
+      histoSlice.back()->GetYaxis()->SetRangeUser(0.0,ordinateRange);
       histoSlice.back()->Draw("same pe1");
     }
 
@@ -1676,7 +1652,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
       effFuncSlice.push_back(new TF12(myString.str().c_str(),EffFunc2D,(cosThetaLBins->operator[](binIndx)+cosThetaLBins->operator[](binIndx+1))/2.,"x"));
       effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
       effFuncSlice.back()->GetYaxis()->SetTitle("Efficiency");
-      effFuncSlice.back()->GetYaxis()->SetRangeUser(0.0,Zaxes);
+      effFuncSlice.back()->GetYaxis()->SetRangeUser(0.0,ordinateRange);
       effFuncSlice.back()->Draw();
 
       myString.str("");
@@ -1685,13 +1661,13 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
       histoSlice.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
       histoSlice.back()->SetMarkerStyle(20);
       histoSlice.back()->SetYTitle("Efficiency");
-      histoSlice.back()->GetYaxis()->SetRangeUser(0.0,Zaxes);
+      histoSlice.back()->GetYaxis()->SetRangeUser(0.0,ordinateRange);
       histoSlice.back()->Draw("same pe1");
     }
 
 
   cEff->cd(1);
-  hisFunc2D->Draw("lego2");
+  hisFunc2D->Draw("lego2 fb");
   cEff->Update();
   if (saveHistos == true)
     {
@@ -1702,12 +1678,13 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
       cEff->Print(myString.str().c_str());
     }
 
+
   cEffAnaly->cd();
-  EffFunc2D->Draw("surf1");
+  EffFunc2D->Draw("surf2 fb");
   myString.str("");
   myString << "q2 bin = " << q2BinIndx;
-  TText* Tag = new TText(0.65,0.85,myString.str().c_str());
-  Tag->DrawText(0.65,0.85,Tag->GetTitle());
+  TText* Tag = new TText(0.5,0.85,myString.str().c_str());
+  Tag->DrawText(0.5,0.85,Tag->GetTitle());
   cEffAnaly->Update();
   if (saveHistos == true)
     {
@@ -1715,40 +1692,6 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
       myString << "q2Bin_" << q2BinIndx << ".pdf";
       cEffAnaly->Print(myString.str().c_str());
     }
-
-
-  // ###############################################
-  // # Compute area AnalyticalRef - AnalyticalComp #
-  // ###############################################
-  myString.str("");
-  myString << "abs(" << EffFunc2D->GetName() << ")";
-  absEffFunc2D = new TF2("absEffFunc2D",myString.str().c_str(),
-			  cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),
-			  cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1));
-  integralRef = absEffFunc2D->Integral(cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1));
-
-  
-  myString.str("");
-  myString << "abs(" << EffFunc2Dcomp->GetName() << ")";
-  absEffFunc2Dcomp = new TF2("absEffFunc2Dcomp",myString.str().c_str(),
-			   cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),
-			   cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1));
-  integralComp = absEffFunc2Dcomp->Integral(cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1));
-
-
-  myString.str("");
-  myString << "abs(" << EffFunc2D->GetName() << "*(" << integralRef+integralComp << ")/(" << 2.*integralRef << ") - ";
-  myString << EffFunc2Dcomp->GetName() << "*(" << integralRef+integralComp << ")/(" << 2.*integralComp << "))";
-  diffFunc = new TF2("diffFunc",myString.str().c_str(),
-		     cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()),
-		     cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()));
-  integralDiff = diffFunc->Integral(cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1));
-
-
-  cout << "\n@@@ Area difference between analytical-reference (" << INPUT_THETAL_THETAK;
-  cout << ") and analytical-comparison (" << INPUT_THETAL_THETAK_Comp << ") efficiencies @@@" << endl;
-  cout << "Integral absolute difference: " << integralDiff << ";\tIntegral reference: " << integralRef;
-  cout << ";\tPercentage of compatibility: " << (integralRef-integralDiff)/integralRef*100. << "%" << endl;
 }
 
 
@@ -1759,17 +1702,11 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   // ###################
   double Eff, EffErr;
   double averagePerBin;
-  double integralRef;
-  double integralComp;
-  double integralDiff;
   double chi2point = 0.0;
   double chi2avg   = 0.0;
   double DoF       = 0.0;
   vector<TF3*> effFuncs3D;
-  vector<TF3*> effFuncs3Dcomp;
-  TF3 *EffFunc3D,    *EffFunc3Dcomp;
-  TF3 *absEffFunc3D, *absEffFunc3Dcomp;
-  TF3* diffFunc;
+  TF3 *EffFunc3D;
   vector<TF12*> effFuncSlice;
   vector<TH1D*> histoSlice;
   string tmpString;
@@ -1790,18 +1727,16 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   TH3D* hisFunc3D = Utility->Get3DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
 
   cEff->cd(1);
-  hisFunc3D->Draw("BOX");
+  hisFunc3D->Draw("BOX fb");
 
 
   // ###################################################################################
   // # Read analytical efficiencies (reference and comparison) and rescale if required #
   // ###################################################################################
   Utility->ReadAnalyticalEff(INPUT_THETAL_THETAK_PHI,q2Bins,cosThetaKBins,cosThetaLBins,phiBins,&effFuncs3D,"effFuncs3D",0);
-  Utility->ReadAnalyticalEff(INPUT_THETAL_THETAK_PHI_Comp,q2Bins,cosThetaKBins,cosThetaLBins,phiBins,&effFuncs3Dcomp,"effFuncs3Dcomp",0);
-  EffFunc3D     = effFuncs3D[q2BinIndx];
-  EffFunc3Dcomp = effFuncs3Dcomp[q2BinIndx];
+  EffFunc3D = effFuncs3D[q2BinIndx];
   cEff->cd(2);
-  EffFunc3D->Draw("ISO");
+  EffFunc3D->Draw("ISO fb");
 
 
   // ##############################
@@ -1854,7 +1789,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
     //   effFuncSlice.push_back(new TF12(myString.str().c_str(),EffFunc3D,(cosThetaKBins->operator[](binIndx)+cosThetaKBins->operator[](binIndx+1))/2.,"y"));
     //   effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
     //   effFuncSlice.back()->GetYaxis()->SetTitle("Efficiency");
-    //   effFuncSlice.back()->GetYaxis()->SetRangeUser(0.0,Zaxes);
+    //   effFuncSlice.back()->GetYaxis()->SetRangeUser(0.0,ordinateRange);
     //   effFuncSlice.back()->Draw();
 
     //   myString.str("");
@@ -1863,7 +1798,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
     //   histoSlice.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
     //   histoSlice.back()->SetMarkerStyle(20);
     //   histoSlice.back()->SetYTitle("Efficiency");
-    //   histoSlice.back()->GetYaxis()->SetRangeUser(0.0,Zaxes);
+    //   histoSlice.back()->GetYaxis()->SetRangeUser(0.0,ordinateRange);
     //   histoSlice.back()->Draw("same pe1");
     // }
 
@@ -1881,7 +1816,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
     //   effFuncSlice.push_back(new TF12(myString.str().c_str(),EffFunc2D,(cosThetaLBins->operator[](binIndx)+cosThetaLBins->operator[](binIndx+1))/2.,"x"));
     //   effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
     //   effFuncSlice.back()->GetYaxis()->SetTitle("Efficiency");
-    //   effFuncSlice.back()->GetYaxis()->SetRangeUser(0.0,Zaxes);
+    //   effFuncSlice.back()->GetYaxis()->SetRangeUser(0.0,ordinateRange);
     //   effFuncSlice.back()->Draw();
 
     //   myString.str("");
@@ -1890,25 +1825,26 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
     //   histoSlice.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
     //   histoSlice.back()->SetMarkerStyle(20);
     //   histoSlice.back()->SetYTitle("Efficiency");
-    //   histoSlice.back()->GetYaxis()->SetRangeUser(0.0,Zaxes);
+    //   histoSlice.back()->GetYaxis()->SetRangeUser(0.0,ordinateRange);
     //   histoSlice.back()->Draw("same pe1");
     // }
 
 
   cEff->cd(1);
-  hisFunc3D->Draw("BOX");
+  hisFunc3D->Draw("BOX fb");
   cEff->Update();
   if (saveHistos == true)
     {
-      tmpString = INPUT_THETAL_THETAK;
+      tmpString = INPUT_THETAL_THETAK_PHI;
       tmpString.erase(tmpString.find(".txt"),4);
       myString.str("");
       myString << tmpString << "_" << q2BinIndx << ".pdf";
       cEff->Print(myString.str().c_str());
     }
 
+
   cEffAnaly->cd();
-  EffFunc3D->Draw("ISO");
+  EffFunc3D->Draw("ISO fb");
   myString.str("");
   myString << "q2 bin = " << q2BinIndx;
   TText* Tag = new TText(0.65,0.85,myString.str().c_str());
@@ -1920,49 +1856,6 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
       myString << "q2Bin_" << q2BinIndx << ".pdf";
       cEffAnaly->Print(myString.str().c_str());
     }
-
-
-  // ###############################################
-  // # Compute area AnalyticalRef - AnalyticalComp #
-  // ###############################################
-  myString.str("");
-  myString << "abs(" << EffFunc3D->GetName() << ")";
-  absEffFunc3D = new TF3("absEffFunc3D",myString.str().c_str(),
-			 cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),
-			 cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),
-			 phiBins->operator[](0),phiBins->operator[](phiBins->size()-1));
-  integralRef = absEffFunc3D->Integral(cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),
-				       cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),
-				       phiBins->operator[](0),phiBins->operator[](phiBins->size()-1));
-  
-  
-  myString.str("");
-  myString << "abs(" << EffFunc3Dcomp->GetName() << ")";
-  absEffFunc3Dcomp = new TF3("absEffFunc2Dcomp",myString.str().c_str(),
-			     cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),
-			     cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),
-			     phiBins->operator[](0),phiBins->operator[](phiBins->size()-1));
-  integralComp = absEffFunc3Dcomp->Integral(cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),
-					    cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),
-					    phiBins->operator[](0),phiBins->operator[](phiBins->size()-1));
-
-
-  myString.str("");
-  myString << "abs(" << EffFunc3D->GetName() << "*(" << integralRef+integralComp << ")/(" << 2.*integralRef << ") - ";
-  myString << EffFunc3Dcomp->GetName() << "*(" << integralRef+integralComp << ")/(" << 2.*integralComp << "))";
-  diffFunc = new TF3("diffFunc",myString.str().c_str(),
-		     cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()),
-		     cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()),
-		     phiBins->operator[](0),phiBins->operator[](phiBins->size()));
-  integralDiff = diffFunc->Integral(cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),
-				    cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),
-				    phiBins->operator[](0),phiBins->operator[](phiBins->size()-1));
-
-
-  cout << "\n@@@ Area difference between analytical-reference (" << INPUT_THETAL_THETAK_PHI;
-  cout << ") and analytical-comparison (" << INPUT_THETAL_THETAK_PHI_Comp << ") efficiencies @@@" << endl;
-  cout << "Integral absolute difference: " << integralDiff << ";\tIntegral reference: " << integralRef;
-  cout << ";\tPercentage of compatibility: " << (integralRef-integralDiff)/integralRef*100. << "%" << endl;
 }
 
 
@@ -1974,20 +1867,17 @@ int main (int argc, char** argv)
 
 
       cout << "\n@@@ Settings @@@" << endl;
-      cout << "INPUT_THETAL: "                  << INPUT_THETAL << endl;
-      cout << "INPUT_PHI: "                     << INPUT_PHI << endl;
-      cout << "INPUT_THETAL_THETAK: "           << INPUT_THETAL_THETAK << endl;
-      cout << "INPUT_THETAL_THETAK_PHI: "       << INPUT_THETAL_THETAK_PHI << endl;
+      cout << "INPUT_THETAL: "            << INPUT_THETAL << endl;
+      cout << "INPUT_PHI: "               << INPUT_PHI << endl;
+      cout << "INPUT_THETAL_THETAK: "     << INPUT_THETAL_THETAK << endl;
+      cout << "INPUT_THETAL_THETAK_PHI: " << INPUT_THETAL_THETAK_PHI << endl;
 
-      cout << "\nINPUT_THETAL_THETAK_Comp: "      << INPUT_THETAL_THETAK_Comp << endl;
-      cout << "INPUT_THETAL_THETAK_PHI_Comp: "  << INPUT_THETAL_THETAK_PHI_Comp << endl;
-
-      cout << "\nSave plot: "      << SavePlot << endl;
+      cout << "\nSave plot: "    << SavePlot << endl;
       cout << "CHECKEFFatREAD: " << CHECKEFFatREAD << endl;
       cout << "NFILES: "         << NFILES << endl;
       cout << "INPUTGenEff: "    << INPUTGenEff << endl;
       cout << "SETBATCH: "       << SETBATCH << endl;
-      cout << "ParameterFILE: "  <<  ParameterFILE << endl;
+      cout << "ParameterFILE: "  << ParameterFILE << endl;
 
       cout << "\nabscissaErr: " << abscissaErr << endl;
       cout << "ordinateVal: "   << ordinateVal << endl;
@@ -2071,7 +1961,7 @@ int main (int argc, char** argv)
 	  if (SETBATCH == false) theApp.Run (); // Eventloop on air
 	  return EXIT_SUCCESS;
 	}
-      else if ((option == "ReadBin") || (option == "Read3DAnaly"))
+      else if (((option == "ReadBin") || (option == "Read3DAnaly")) && (argc >= 3))
 	{
 	  string fileNameInput = argv[2];
 	  int specBin = -1;
@@ -2091,7 +1981,7 @@ int main (int argc, char** argv)
 	  theApp.Run (); // Eventloop on air
 	  return EXIT_SUCCESS;
 	}
-      else if (option == "Read3DGenAnaly")
+      else if ((option == "Read3DGenAnaly") && (argc >= 3))
 	{
 	  string fileNameInput = argv[2];
 	  int specBin = -1;
@@ -2115,7 +2005,7 @@ int main (int argc, char** argv)
 	  string fileNameInput   = argv[2];
 	  unsigned int q2BinIndx = atoi(argv[3]);
 	  string whichVar2Fit = "";
-	  if (option == "FitEff1D") whichVar2Fit = argv[4];
+	  if (option == "Fit1DEff") whichVar2Fit = argv[4];
 	  cout << "Which Var to Fit: " << whichVar2Fit << endl;
 
 	  TApplication theApp ("Applications", &argc, argv);
@@ -2146,8 +2036,8 @@ int main (int argc, char** argv)
 	  Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
 	  Utility->ReadEfficiency(fileNameInput.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,&myEff);
 	  
-	  if      (option == "Fit1DEff") Test2DEfficiency(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,SavePlot);
-	  else if (option == "Fit3DEff") Test3DEfficiency(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,SavePlot);
+	  if      (option == "Test2DEff") Test2DEfficiency(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,SavePlot);
+	  else if (option == "Test3DEff") Test3DEfficiency(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,SavePlot);
 
 
 	  delete Utility;

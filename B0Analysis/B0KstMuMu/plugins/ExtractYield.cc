@@ -7663,38 +7663,38 @@ int main(int argc, char** argv)
 
 
 	  cout << "@@@ Input variables from command line @@@" << endl;
-	  cout << "- FitType = " <<               FitType << endl;
+	  cout << "- FitType = "               << FitType << endl;
 	  cout << "- input/outputFile.root = " << fileName.c_str() << endl;
-	  cout << "- correct4Efficiency = " <<    correct4Efficiency << endl;
-	  cout << "- specBin = " <<               specBin << endl;
-	  cout << "- tmpFileName = " <<           tmpFileName.c_str() << endl;
-	  cout << "- fileIndx = " <<              fileIndx << endl;
-	  cout << "- ParameterFILE = " <<         ParameterFILE.c_str() << endl;
-	  cout << "- nToy = " <<                  nToy << endl;
+	  cout << "- correct4Efficiency = "    << correct4Efficiency << endl;
+	  cout << "- specBin = "               << specBin << endl;
+	  cout << "- tmpFileName = "           << tmpFileName.c_str() << endl;
+	  cout << "- fileIndx = "              << fileIndx << endl;
+	  cout << "- ParameterFILE = "         << ParameterFILE.c_str() << endl;
+	  cout << "- nToy = "                  << nToy << endl;
 
 	  cout << "\n@@@ Internal settings @@@" << endl;
-	  cout << "NBINS = " <<               NBINS << endl;
-	  cout << "MULTYIELD = " <<           MULTYIELD << endl;
-	  cout << "NCOEFFPOLYBKG = " <<       NCOEFFPOLYBKG << endl;
-	  cout << "SLEWRATECONSTR = " <<      SLEWRATECONSTR << endl;
-	  cout << "NORMBIN = " <<             NORMBIN << endl;
-	  cout << "POLYCOEFRANGE = " <<       POLYCOEFRANGE << endl;
+	  cout << "NBINS = "          << NBINS << endl;
+	  cout << "MULTYIELD = "      << MULTYIELD << endl;
+	  cout << "NCOEFFPOLYBKG = "  << NCOEFFPOLYBKG << endl;
+	  cout << "SLEWRATECONSTR = " << SLEWRATECONSTR << endl;
+	  cout << "NORMBIN = "        << NORMBIN << endl;
+	  cout << "POLYCOEFRANGE = "  << POLYCOEFRANGE << endl;
 
-	  cout << "\nApplyConstr = " <<       ApplyConstr << endl;
-	  cout << "SAVEPOLY = " <<            SAVEPOLY << endl;
-	  cout << "RESETOBS = " <<            RESETOBS << endl;
-	  cout << "SETBATCH  = " <<           SETBATCH << endl;
-	  cout << "TESTeffFUNC = " <<         TESTeffFUNC << endl;
-	  cout << "SAVEPLOT = " <<            SAVEPLOT << endl;
-	  cout << "MakeMuMuPlots = " <<       MakeMuMuPlots << endl;
-	  cout << "MAKEGRAPHSCAN = " <<       MAKEGRAPHSCAN << endl;
-	  cout << "USEMINOS = " <<            USEMINOS << endl;
-	  cout << "UseSPwave = " <<           UseSPwave << endl;
+	  cout << "\nApplyConstr = "  << ApplyConstr << endl;
+	  cout << "SAVEPOLY = "       << SAVEPOLY << endl;
+	  cout << "RESETOBS = "       << RESETOBS << endl;
+	  cout << "SETBATCH  = "      << SETBATCH << endl;
+	  cout << "TESTeffFUNC = "    << TESTeffFUNC << endl;
+	  cout << "SAVEPLOT = "       << SAVEPLOT << endl;
+	  cout << "MakeMuMuPlots = "  << MakeMuMuPlots << endl;
+	  cout << "MAKEGRAPHSCAN = "  << MAKEGRAPHSCAN << endl;
+	  cout << "USEMINOS = "       << USEMINOS << endl;
+	  cout << "UseSPwave = "      << UseSPwave << endl;
 
-	  cout << "\nPARAMETERFILEIN = " <<   PARAMETERFILEIN << endl;
-	  cout << "PARAMETERFILEOUT = " <<    PARAMETERFILEOUT << endl;
-	  cout << "FitSysFILEOutput = " <<    FitSysFILEOutput << endl;
-	  cout << "FitSysFILEInput = " <<     FitSysFILEInput << endl;
+	  cout << "\nPARAMETERFILEIN = " << PARAMETERFILEIN << endl;
+	  cout << "PARAMETERFILEOUT = "  << PARAMETERFILEOUT << endl;
+	  cout << "FitSysFILEOutput = "  << FitSysFILEOutput << endl;
+	  cout << "FitSysFILEInput = "   << FitSysFILEInput << endl;
 
 	  legNames[0] = "Data";
 	  legNames[1] = "Total fit";
