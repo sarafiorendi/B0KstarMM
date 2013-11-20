@@ -535,7 +535,7 @@ int main (int argc, char** argv)
   if (argc >= 4)
     {
       string option = argv[1];
-      if (((option == "singlecand") || (option == "eff")) && (argc == 4))
+      if (((option == "singlecand") || (option == "eff")) && (argc >= 4))
 	{
 	  string fileNameIn  = argv[2];
 	  string fileNameOut = "";
