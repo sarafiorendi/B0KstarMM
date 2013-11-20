@@ -605,7 +605,7 @@ int main (int argc, char** argv)
       else
 	{
 	  cout << "Parameter missing: " << endl;
-	  cout << "./SingleCandB0KstMuMu [singlecand eff] [SignalType] inputFile.root [outputFile.root]" << endl;
+	  cout << "./SingleCandB0KstMuMu [singlecand eff] inputFile.root [[if singlecand]outputFile.root] [[if eff]SignalType]" << endl;
 	  cout << "- SignalType : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
 
 	  return EXIT_FAILURE;
