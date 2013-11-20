@@ -467,25 +467,25 @@ void Utils::GetEffq2Bin (std::vector<double>* q2Bins, std::vector<double>* cosTh
   myEffVal.Den2 = myEff.Den2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx];
 
   if (myEff.Err2PoisNum1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx] > 0.0)
-    myEffValOrg.Num1 = myEffValOrg.Num1 + pow(myEff.Num1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx],2.0) /
+    myEffValOrg.Num1 = pow(myEff.Num1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx],2.0) /
       myEff.Err2PoisNum1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx];
   
   if (myEff.Err2PoisNum2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx] > 0.0)
-    myEffValOrg.Num2 = myEffValOrg.Num2 + pow(myEff.Num2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx],2.0) /
+    myEffValOrg.Num2 = pow(myEff.Num2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx],2.0) /
       myEff.Err2PoisNum2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx];
   
   if (myEff.Err2PoisDen1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx] > 0.0)
-    myEffValOrg.Den1 = myEffValOrg.Den1 + pow(myEff.Den1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx],2.0) /
+    myEffValOrg.Den1 = pow(myEff.Den1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx],2.0) /
       myEff.Err2PoisDen1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx];
   
   if (myEff.Err2PoisDen2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx] > 0.0)
-    myEffValOrg.Den2 = myEffValOrg.Den2 + pow(myEff.Den2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx],2.0) /
+    myEffValOrg.Den2 = pow(myEff.Den2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx],2.0) /
       myEff.Err2PoisDen2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx];
   
-  myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1+myEff.Err2WeigNum1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx];
-  myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2+myEff.Err2WeigNum2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx];
-  myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1+myEff.Err2WeigDen1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx];
-  myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2+myEff.Err2WeigDen2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx];
+  myEffVal.Err2WeigNum1 = myEff.Err2WeigNum1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx];
+  myEffVal.Err2WeigNum2 = myEff.Err2WeigNum2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx];
+  myEffVal.Err2WeigDen1 = myEff.Err2WeigDen1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx];
+  myEffVal.Err2WeigDen2 = myEff.Err2WeigDen2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(q2Bins->size()-1) + q2Indx];
 
   if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
     {
@@ -675,10 +675,10 @@ void Utils::IntegrateEffAll (std::vector<double>* q2Bins, std::vector<double>* c
 	      myEffValOrg.Den2 = myEffValOrg.Den2 + pow(myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
 		myEff.Err2PoisDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 
-	    myEffVal.Err2WeigNum1=myEffVal.Err2WeigNum1+myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	    myEffVal.Err2WeigNum2=myEffVal.Err2WeigNum2+myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	    myEffVal.Err2WeigDen1=myEffVal.Err2WeigDen1+myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	    myEffVal.Err2WeigDen2=myEffVal.Err2WeigDen2+myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	    myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 + myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	    myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 + myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	    myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 + myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	    myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	  }
   
   if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
@@ -734,10 +734,10 @@ void Utils::IntegrateEffButPsi (std::vector<double>* q2Bins, std::vector<double>
 		myEffValOrg.Den2 = myEffValOrg.Den2 + pow(myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
 		  myEff.Err2PoisDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 
-	      myEffVal.Err2WeigNum1=myEffVal.Err2WeigNum1+myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	      myEffVal.Err2WeigNum2=myEffVal.Err2WeigNum2+myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	      myEffVal.Err2WeigDen1=myEffVal.Err2WeigDen1+myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	      myEffVal.Err2WeigDen2=myEffVal.Err2WeigDen2+myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	      myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 + myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	      myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 + myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	      myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 + myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	      myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	    }
   
   if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
@@ -792,14 +792,10 @@ void Utils::IntegrateEffInJPsi (std::vector<double>* q2Bins, std::vector<double>
 		myEffValOrg.Den2 = myEffValOrg.Den2 + pow(myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
 		  myEff.Err2PoisDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 
-	      myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 +
-		myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	      myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 +
-		myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	      myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 +
-		myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	      myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 +
-		myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	      myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 + myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	      myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 + myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	      myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 + myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	      myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	    }
   
   if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
@@ -854,14 +850,10 @@ void Utils::IntegrateEffInPsiP (std::vector<double>* q2Bins, std::vector<double>
 		myEffValOrg.Den2 = myEffValOrg.Den2 + pow(myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
 		  myEff.Err2PoisDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 
-	      myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 +
-		myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	      myEffVal.Err2WeigNum2=myEffVal.Err2WeigNum2 +
-		myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	      myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 +
-		myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	      myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 +
-		myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	      myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 + myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	      myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 + myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	      myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 + myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	      myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	    }
 
   if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
@@ -914,14 +906,10 @@ void Utils::IntegrateEffButq2 (std::vector<double>* q2Bins, std::vector<double>*
 	    myEffValOrg.Den2 = myEffValOrg.Den2 + pow(myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx],2.0) /
 	      myEff.Err2PoisDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
 
-	  myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 +
-	    myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
-	  myEffVal.Err2WeigNum2 =myEffVal.Err2WeigNum2 +
-	    myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
-	  myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 +
-	    myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
-	  myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 +
-	    myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
+	  myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 + myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
+	  myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 + myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
+	  myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 + myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
+	  myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
 	}
   
   if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
@@ -959,33 +947,25 @@ void Utils::IntegrateEffButCosThetaK (std::vector<double>* q2Bins, std::vector<d
 	  myEffVal.Den2 = myEffVal.Den2 + myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i];
 
 	  if (myEff.Err2PoisNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i] > 0.0)
-	    myEffValOrg.Num1 = myEffValOrg.Num1 +
-	      pow(myEff.Num1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i],2.0) /
+	    myEffValOrg.Num1 = myEffValOrg.Num1 + pow(myEff.Num1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i],2.0) /
 	      myEff.Err2PoisNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i];
 	    
 	  if (myEff.Err2PoisNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i] > 0.0)
-	    myEffValOrg.Num2 = myEffValOrg.Num2 +
-	      pow(myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i],2.0) /
+	    myEffValOrg.Num2 = myEffValOrg.Num2 + pow(myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i],2.0) /
 	      myEff.Err2PoisNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i];
 
 	  if (myEff.Err2PoisDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i] > 0.0)
-	    myEffValOrg.Den1 = myEffValOrg.Den1 +
-	      pow(myEff.Den1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i],2.0) /
+	    myEffValOrg.Den1 = myEffValOrg.Den1 + pow(myEff.Den1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i],2.0) /
 	      myEff.Err2PoisDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i];
 	    
 	  if (myEff.Err2PoisDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i] > 0.0)
-	    myEffValOrg.Den2 = myEffValOrg.Den2 +
-	      pow(myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i],2.0) /
+	    myEffValOrg.Den2 = myEffValOrg.Den2 + pow(myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i],2.0) /
 	      myEff.Err2PoisDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i];
 
-	  myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 +
-	    myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i];
-	  myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 +
-	    myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i];
-	  myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 +
-	    myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i];
-	  myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 +
-	    myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i];
+	  myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 + myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i];
+	  myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 + myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i];
+	  myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 + myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i];
+	  myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i];
 	}
   
   if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
@@ -1023,33 +1003,25 @@ void Utils::IntegrateEffButCosThetaL (std::vector<double>* q2Bins, std::vector<d
 	  myEffVal.Den2 = myEffVal.Den2 + myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 
 	  if (myEff.Err2PoisNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i] > 0.0)
-	    myEffValOrg.Num1 = myEffValOrg.Num1 +
-	      pow(myEff.Num1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
+	    myEffValOrg.Num1 = myEffValOrg.Num1 + pow(myEff.Num1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
 	      myEff.Err2PoisNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	    
 	  if (myEff.Err2PoisNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i] > 0.0)
-	    myEffValOrg.Num2 = myEffValOrg.Num2 +
-	      pow(myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
+	    myEffValOrg.Num2 = myEffValOrg.Num2 + pow(myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
 	      myEff.Err2PoisNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 
 	  if (myEff.Err2PoisDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i] > 0.0)
-	    myEffValOrg.Den1 = myEffValOrg.Den1 +
-	      pow(myEff.Den1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
+	    myEffValOrg.Den1 = myEffValOrg.Den1 + pow(myEff.Den1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
 	      myEff.Err2PoisDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	    
 	  if (myEff.Err2PoisDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i] > 0.0)
-	    myEffValOrg.Den2 = myEffValOrg.Den2 +
-	      pow(myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
+	    myEffValOrg.Den2 = myEffValOrg.Den2 + pow(myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
 	      myEff.Err2PoisDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 
-	  myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 +
-	    myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	  myEffVal.Err2WeigNum2=myEffVal.Err2WeigNum2 +
-	    myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	  myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 +
-	    myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	  myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 +
-	    myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	  myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 + myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	  myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 + myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	  myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 + myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	  myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	}
   
   if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
@@ -1087,33 +1059,25 @@ void Utils::IntegrateEffButPhi (std::vector<double>* q2Bins, std::vector<double>
 	  myEffVal.Den2 = myEffVal.Den2 + myEff.Den2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 
 	  if (myEff.Err2PoisNum1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i] > 0.0)
-	    myEffValOrg.Num1 = myEffValOrg.Num1 +
-	      pow(myEff.Num1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
+	    myEffValOrg.Num1 = myEffValOrg.Num1 + pow(myEff.Num1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
 	      myEff.Err2PoisNum1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	    
 	  if (myEff.Err2PoisNum2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i] > 0.0)
-	    myEffValOrg.Num2 = myEffValOrg.Num2 +
-	      pow(myEff.Num2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
+	    myEffValOrg.Num2 = myEffValOrg.Num2 + pow(myEff.Num2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
 	      myEff.Err2PoisNum2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 
 	  if (myEff.Err2PoisDen1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i] > 0.0)
-	    myEffValOrg.Den1 = myEffValOrg.Den1 +
-	      pow(myEff.Den1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
+	    myEffValOrg.Den1 = myEffValOrg.Den1 + pow(myEff.Den1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
 	      myEff.Err2PoisDen1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	    
 	  if (myEff.Err2PoisDen2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i] > 0.0)
-	    myEffValOrg.Den2 = myEffValOrg.Den2 +
-	      pow(myEff.Den2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
+	    myEffValOrg.Den2 = myEffValOrg.Den2 + pow(myEff.Den2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i],2.0) /
 	      myEff.Err2PoisDen2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 
-	  myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 +
-	    myEff.Err2WeigNum1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	  myEffVal.Err2WeigNum2=myEffVal.Err2WeigNum2 +
-	    myEff.Err2WeigNum2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	  myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 +
-	    myEff.Err2WeigDen1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-	  myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 +
-	    myEff.Err2WeigDen2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	  myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 + myEff.Err2WeigNum1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	  myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 + myEff.Err2WeigNum2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	  myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 + myEff.Err2WeigDen1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	  myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	}
 
   if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
@@ -1150,33 +1114,25 @@ void Utils::IntegrateEffPhiCosThetaL (std::vector<double>* q2Bins, std::vector<d
 	myEffVal.Den2 = myEffVal.Den2 + myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx];
 
 	if (myEff.Err2PoisNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx] > 0.0)
-	  myEffValOrg.Num1 = myEffValOrg.Num1 +
-	    pow(myEff.Num1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx],2.0) /
+	  myEffValOrg.Num1 = myEffValOrg.Num1 + pow(myEff.Num1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx],2.0) /
 	    myEff.Err2PoisNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx];
 	    
 	if (myEff.Err2PoisNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx] > 0.0)
-	  myEffValOrg.Num2 = myEffValOrg.Num2 +
-	    pow(myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx],2.0) /
+	  myEffValOrg.Num2 = myEffValOrg.Num2 + pow(myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx],2.0) /
 	    myEff.Err2PoisNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx];
 
 	if (myEff.Err2PoisDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx] > 0.0)
-	  myEffValOrg.Den1 = myEffValOrg.Den1 +
-	    pow(myEff.Den1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx],2.0) /
+	  myEffValOrg.Den1 = myEffValOrg.Den1 + pow(myEff.Den1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx],2.0) /
 	    myEff.Err2PoisDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx];
 	    
 	if (myEff.Err2PoisDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx] > 0.0)
-	  myEffValOrg.Den2 = myEffValOrg.Den2 +
-	    pow(myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx],2.0) /
+	  myEffValOrg.Den2 = myEffValOrg.Den2 + pow(myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx],2.0) /
 	    myEff.Err2PoisDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx];
 
-	myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 +
-	  myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx];
-	myEffVal.Err2WeigNum2=myEffVal.Err2WeigNum2 +
-	  myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx];
-	myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 +
-	  myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx];
-	myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 +
-	  myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx];
+	myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 + myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx];
+	myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 + myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx];
+	myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 + myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx];
+	myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx];
       }
 
   if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
@@ -1213,33 +1169,25 @@ void Utils::IntegrateEffPhiCosThetaK (std::vector<double>* q2Bins, std::vector<d
 	myEffVal.Den2 = myEffVal.Den2 + myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
 
 	if (myEff.Err2PoisNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx] > 0.0)
-	  myEffValOrg.Num1 = myEffValOrg.Num1 +
-	    pow(myEff.Num1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx],2.0) /
+	  myEffValOrg.Num1 = myEffValOrg.Num1 + pow(myEff.Num1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx],2.0) /
 	    myEff.Err2PoisNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
 	    
 	if (myEff.Err2PoisNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx] > 0.0)
-	  myEffValOrg.Num2 = myEffValOrg.Num2 +
-	    pow(myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx],2.0) /
+	  myEffValOrg.Num2 = myEffValOrg.Num2 + pow(myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx],2.0) /
 	    myEff.Err2PoisNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
 
 	if (myEff.Err2PoisDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx] > 0.0)
-	  myEffValOrg.Den1 = myEffValOrg.Den1 +
-	    pow(myEff.Den1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx],2.0) /
+	  myEffValOrg.Den1 = myEffValOrg.Den1 + pow(myEff.Den1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx],2.0) /
 	    myEff.Err2PoisDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
 	    
 	if (myEff.Err2PoisDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx] > 0.0)
-	  myEffValOrg.Den2 = myEffValOrg.Den2 +
-	    pow(myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx],2.0) /
+	  myEffValOrg.Den2 = myEffValOrg.Den2 + pow(myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx],2.0) /
 	    myEff.Err2PoisDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
 
-	myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 +
-	  myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
-	myEffVal.Err2WeigNum2=myEffVal.Err2WeigNum2 +
-	  myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
-	myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 +
-	  myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
-	myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 +
-	  myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
+	myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 + myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
+	myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 + myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
+	myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 + myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
+	myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
       }
   
   if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
@@ -1276,33 +1224,25 @@ void Utils::IntegrateEffCosThetaKCosThetaL (std::vector<double>* q2Bins, std::ve
 	myEffVal.Den2 = myEffVal.Den2 + myEff.Den2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
 
 	if (myEff.Err2PoisNum1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx] > 0.0)
-	  myEffValOrg.Num1 = myEffValOrg.Num1 +
-	    pow(myEff.Num1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx],2.0) /
+	  myEffValOrg.Num1 = myEffValOrg.Num1 + pow(myEff.Num1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx],2.0) /
 	    myEff.Err2PoisNum1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
 	    
 	if (myEff.Err2PoisNum2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx] > 0.0)
-	  myEffValOrg.Num2 = myEffValOrg.Num2 +
-	    pow(myEff.Num2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx],2.0) /
+	  myEffValOrg.Num2 = myEffValOrg.Num2 + pow(myEff.Num2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx],2.0) /
 	    myEff.Err2PoisNum2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
 
 	if (myEff.Err2PoisDen1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx] > 0.0)
-	  myEffValOrg.Den1 = myEffValOrg.Den1 +
-	    pow(myEff.Den1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx],2.0) /
+	  myEffValOrg.Den1 = myEffValOrg.Den1 + pow(myEff.Den1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx],2.0) /
 	    myEff.Err2PoisDen1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
 	    
 	if (myEff.Err2PoisDen2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx] > 0.0)
-	  myEffValOrg.Den2 = myEffValOrg.Den2 +
-	    pow(myEff.Den2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx],2.0) /
+	  myEffValOrg.Den2 = myEffValOrg.Den2 + pow(myEff.Den2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx],2.0) /
 	    myEff.Err2PoisDen2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
 
-	myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 +
-	  myEff.Err2WeigNum1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
-	myEffVal.Err2WeigNum2=myEffVal.Err2WeigNum2 +
-	  myEff.Err2WeigNum2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
-	myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 +
-	  myEff.Err2WeigDen1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
-	myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 +
-	  myEff.Err2WeigDen2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
+	myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 + myEff.Err2WeigNum1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
+	myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 + myEff.Err2WeigNum2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
+	myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 + myEff.Err2WeigDen1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
+	myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
       }
   
   if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
@@ -1411,14 +1351,10 @@ bool Utils::IntegrateEffPhi (std::vector<double>* q2Bins, std::vector<double>* c
 				 cosThetaKBinIndx*(q2Bins->size()-1) +
 				 mumuq2BinIndx];
 
-	  myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 +
-	    myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + mumuq2BinIndx];
-	  myEffVal.Err2WeigNum2=myEffVal.Err2WeigNum2 +
-	    myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + mumuq2BinIndx];
-	  myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 +
-	    myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + mumuq2BinIndx];
-	  myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 +
-	    myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + mumuq2BinIndx];
+	  myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 + myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + mumuq2BinIndx];
+	  myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 + myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + mumuq2BinIndx];
+	  myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 + myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + mumuq2BinIndx];
+	  myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + mumuq2BinIndx];
 	}
       
       if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)

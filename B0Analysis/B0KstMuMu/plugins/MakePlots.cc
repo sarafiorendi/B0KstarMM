@@ -211,20 +211,6 @@ void MakeComparisonDataMC (unsigned int plotType)
   TTree* TreeData = (TTree*)Vfiles.back()->Get("B0KstMuMu/B0KstMuMuNTuple");
 
 
-  // ##########################
-  // # Set histo layout style #
-  // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetPalette(1);
-  gStyle->SetOptFit(1112);
-  gStyle->SetOptStat(1110);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
-
-
   double minX = 0.0;
   double maxX = 40.0;
   unsigned int nBinsX = 100;
@@ -1192,20 +1178,6 @@ TGraphAsymmErrors* ReadFromASCII (string fileName, unsigned int PlotType, vector
 
 void CheckPhysicsRegion ()
 {
-  // ##########################
-  // # Set histo layout style #
-  // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetPalette(1);
-  gStyle->SetOptFit(0);
-  gStyle->SetOptStat(0);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
-
-  
   TCanvas* canv0 = new TCanvas("canv0","canv0",10,10,1200,600);
   TGraphAsymmErrors* ge;
   TGraphAsymmErrors* geTMP;
@@ -1265,13 +1237,8 @@ void MakePhysicsPlots (unsigned int PlotType)
   // ##########################
   // # Set histo layout style #
   // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetPalette(1);
   gStyle->SetOptFit(0);
   gStyle->SetOptStat(0);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
   gStyle->SetPadTopMargin(0.11);
   gStyle->SetPadBottomMargin(0.12);
   gStyle->SetTitleOffset(1.1,"x");
@@ -1281,7 +1248,6 @@ void MakePhysicsPlots (unsigned int PlotType)
   gStyle->SetLabelSize(0.05,"x");
   gStyle->SetLabelSize(0.05,"y");
   gStyle->SetEndErrorSize(8);
-  TGaxis::SetMaxDigits(3);
 
   
   unsigned int DoF = 0;
@@ -1906,20 +1872,6 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
 // # 12 = BF multy minima  #
 // #########################
 {
-  // ##########################
-  // # Set histo layout style #
-  // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetPalette(1);
-  gStyle->SetOptFit(1111);
-  gStyle->SetOptStat(1110);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.1);
-  gStyle->SetTitleOffset(1.25,"y");
-  TGaxis::SetMaxDigits(3);
-
-
   unsigned int nBinsHisto = 50;
   stringstream myString;
   ifstream inputFile;
@@ -2094,20 +2046,6 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
 
 void PlotMuMu (string fileName, bool bkgSub)
 {
-  // ##########################
-  // # Set histo layout style #
-  // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetPalette(1);
-  gStyle->SetOptFit(1112);
-  gStyle->SetOptStat(1110);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
-
-
   int nEntries;
   double minX = 0.8;
   double maxX = 5.0;
@@ -2182,20 +2120,6 @@ void PlotMuMu (string fileName, bool bkgSub)
 
 void PlotKst (string fileName, bool bkgSub)
 {
-  // ##########################
-  // # Set histo layout style #
-  // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetPalette(1);
-  gStyle->SetOptFit(1112);
-  gStyle->SetOptStat(1110);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
-
-
   int nEntries;
   double minX  = 0.82;
   double maxX  = 0.97;
@@ -2416,20 +2340,6 @@ void PlotKst (string fileName, bool bkgSub)
 
 void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
 {
-  // ##########################
-  // # Set histo layout style #
-  // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetPalette(1);
-  gStyle->SetOptFit(1112);
-  gStyle->SetOptStat(1110);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
-
-
   int nEntries;
 
   double KKminX      = 0.95;
@@ -2604,20 +2514,6 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
 
 void PlotMuHadMass (string fileName)
 {
-  // ##########################
-  // # Set histo layout style #
-  // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetPalette(1);
-  gStyle->SetOptFit(1112);
-  gStyle->SetOptStat(0);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
-
-
   double minX = 0.0;
   double maxX = 5.0;
   double MuHadMass;
@@ -2704,21 +2600,6 @@ void MakeupNLLandPULLplots (string fileName, string plotType, int specBin)
 // # plotType = "BF"                             #
 // ###############################################
 {
-  // ##########################
-  // # Set histo layout style #
-  // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetPalette(1);
-  gStyle->SetOptFit(1112);
-  gStyle->SetOptStat(1110);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
-  gStyle->SetStatY(0.9);
-
-
   stringstream myString;
   double val;
   vector<TFile*> fileID;
@@ -2799,20 +2680,6 @@ void MakePvaluePlot (string fileName, string plotType, int specBin)
 // # If specBin == -1 then loop over all q^2 bins #
 // ################################################
 {
-  // ##########################
-  // # Set histo layout style #
-  // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetPalette(1);
-  gStyle->SetOptFit(0);
-  gStyle->SetOptStat(0);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
-
-
   stringstream myString;
   double val;
   TFile* fileID;
@@ -2963,7 +2830,21 @@ int main (int argc, char** argv)
 
       if (option == "getHfromToy") gROOT->SetBatch(true);
       TApplication theApp ("Applications", &argc, argv);
-	
+
+
+      // ##########################
+      // # Set histo layout style #
+      // ##########################
+      gROOT->SetStyle("Plain");
+      gROOT->ForceStyle();
+      gStyle->SetPalette(1);
+      gStyle->SetOptFit(1112);
+      gStyle->SetOptStat(1110);
+      gStyle->SetOptTitle(0);
+      gStyle->SetPadRightMargin(0.02);
+      gStyle->SetTitleOffset(1.25,"y"); 
+      TGaxis::SetMaxDigits(3);
+
 
       Utility = new Utils();
       Utility->ReadGenericParam(ParameterFILE);

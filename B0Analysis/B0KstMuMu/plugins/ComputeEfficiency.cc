@@ -234,11 +234,7 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
 		  Vector[phiKstMuMuPlaneBinIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 		  	 cosThetaMuBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 		  	 cosThetaKBinIndx*(q2Bins->size()-1) +
-		  	 mumuq2BinIndx] = 
-		    Vector[phiKstMuMuPlaneBinIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
-		  	   cosThetaMuBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
-		  	   cosThetaKBinIndx*(q2Bins->size()-1) +
-		  	   mumuq2BinIndx] +
+		  	 mumuq2BinIndx] +=
 		    NTuple->evWeight;
 	  
 		  Counter[phiKstMuMuPlaneBinIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
@@ -249,12 +245,8 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
 		  VectorErr2Weig[phiKstMuMuPlaneBinIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 				 cosThetaMuBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 				 cosThetaKBinIndx*(q2Bins->size()-1) +
-				 mumuq2BinIndx] =
-		    VectorErr2Weig[phiKstMuMuPlaneBinIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
-				   cosThetaMuBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
-				   cosThetaKBinIndx*(q2Bins->size()-1) +
-				   mumuq2BinIndx] +
-		    NTuple->evWeightE2*NTuple->evWeightE2;
+				 mumuq2BinIndx] +=
+		    NTuple->evWeightE2;
 		}
 	    }
 	}
@@ -266,23 +258,16 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
       for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
 	for (unsigned int l = 0; l < phiBins->size()-1; l++)
 	  {
-	    if (type == 1)
+	    if ((type == 1) || (type == 2))
 	      {
 		VectorErr2Pois[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i] =
 		  Vector[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-		
-		Vector[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i] =
-		  Vector[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	      }
-
-	    else if (type == 2)
-	      VectorErr2Pois[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i] =
-		Vector[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 
 	    else if (Counter[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i] <= 0.0)
 	      {
-		VectorErr2Weig[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i] = 0.0;
 		VectorErr2Pois[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i] = 0.0;
+		VectorErr2Weig[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i] = 0.0;
 	      }
 
 	    else if ((type == 3) || (type == 4))
@@ -549,12 +534,13 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 	      }
 	  
 	  cNumCosThetaL->cd(j+1);
-	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetMarkerStyle(20+i);
+	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetMarkerStyle(1);
 	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetMarkerColor(1+i);
 	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetLineColor(1+i);
 	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetLineWidth(2);
-	  if (i == 0) vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->Draw("e1");
-	  else        vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->Draw("sames e1");
+	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetFillColor(1+i);
+	  if (i == 0) vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->Draw("e4");
+	  else        vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->Draw("sames e4");
 	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(1.0,Xaxes);
 
 	  myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
@@ -582,12 +568,13 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 	      }
 
 	  cNumCosThetaK->cd(k+1);
-	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetMarkerStyle(20+i);
+	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetMarkerStyle(1);
 	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetMarkerColor(1+i);
 	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetLineColor(1+i);
 	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetLineWidth(2);
-	  if (i == 0) vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->Draw("e1");
-	  else vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->Draw("sames e1");
+	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetFillColor(1+i);
+	  if (i == 0) vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->Draw("e4");
+	  else vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->Draw("sames e4");
 	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(1.0,Xaxes);
 
 	  myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
@@ -615,12 +602,13 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 	      }
 
 	  cNumPhi->cd(l+1);
-	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetMarkerStyle(20+i);
+	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetMarkerStyle(1);
 	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetMarkerColor(1+i);
 	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetLineColor(1+i);
 	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetLineWidth(2);
-	  if (i == 0) vecHq2ANDphi[l*(q2Bins->size()-1)+i]->Draw("e1");
-	  else        vecHq2ANDphi[l*(q2Bins->size()-1)+i]->Draw("sames e1");
+	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetFillColor(1+i);
+	  if (i == 0) vecHq2ANDphi[l*(q2Bins->size()-1)+i]->Draw("e4");
+	  else        vecHq2ANDphi[l*(q2Bins->size()-1)+i]->Draw("sames e4");
 	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(1.0,Xaxes);
 
 	  myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
@@ -2007,6 +1995,20 @@ int main (int argc, char** argv)
       cout << "ordinateRange: " << ordinateRange << endl;
 
 
+      // ##########################
+      // # Set histo layout style #
+      // ##########################
+      gROOT->SetStyle("Plain");
+      gROOT->ForceStyle();
+      gStyle->SetPalette(1);
+      gStyle->SetOptFit(1112);
+      gStyle->SetOptStat(0);
+      gStyle->SetOptTitle(0);
+      gStyle->SetPadRightMargin(0.02);
+      gStyle->SetTitleOffset(1.25,"y"); 
+      TGaxis::SetMaxDigits(3);
+      
+
       if ((option == "Make") && (argc == 7))
 	{
 	  string fileNameGenCandidatesNoFilter = argv[2];
@@ -2021,20 +2023,6 @@ int main (int argc, char** argv)
 	      gROOT->SetBatch(true);
 	    }
 	  TApplication theApp ("Applications", &argc, argv);
-
-
-	  // ##########################
-	  // # Set histo layout style #
-	  // ##########################
-	  gROOT->SetStyle("Plain");
-	  gROOT->ForceStyle();
-	  gStyle->SetPalette(1);
-	  gStyle->SetOptFit(1112);
-	  gStyle->SetOptStat(0);
-	  gStyle->SetOptTitle(0);
-	  gStyle->SetPadRightMargin(0.02);
-	  gStyle->SetTitleOffset(1.25,"y"); 
-	  TGaxis::SetMaxDigits(3);
 
       
 	  TFile* NtplFileGenCandidatesNoFilter = new TFile(fileNameGenCandidatesNoFilter.c_str(), "READ");
@@ -2091,21 +2079,7 @@ int main (int argc, char** argv)
 
 	  TApplication theApp ("Applications", &argc, argv);
 
-
-	  // ##########################
-	  // # Set histo layout style #
-	  // ##########################
-	  gROOT->SetStyle("Plain");
-	  gROOT->ForceStyle();
-	  gStyle->SetPalette(1);
-	  gStyle->SetOptFit(1112);
-	  gStyle->SetOptStat(0);
-	  gStyle->SetOptTitle(0);
-	  gStyle->SetPadRightMargin(0.02);
-	  gStyle->SetTitleOffset(1.25,"y"); 
-	  TGaxis::SetMaxDigits(3);
-
-      
+    
 	  Utility = new Utils();
 	  Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
 
@@ -2124,20 +2098,6 @@ int main (int argc, char** argv)
 	  if (argc == 4) specBin = atoi(argv[3]);
 
 	  TApplication theApp ("Applications", &argc, argv);
-
-
-	  // ##########################
-	  // # Set histo layout style #
-	  // ##########################
-	  gROOT->SetStyle("Plain");
-	  gROOT->ForceStyle();
-	  gStyle->SetPalette(1);
-	  gStyle->SetOptFit(1112);
-	  gStyle->SetOptStat(0);
-	  gStyle->SetOptTitle(0);
-	  gStyle->SetPadRightMargin(0.02);
-	  gStyle->SetTitleOffset(1.25,"y"); 
-	  TGaxis::SetMaxDigits(3);
 
 
 	  Utility = new Utils();
@@ -2161,20 +2121,6 @@ int main (int argc, char** argv)
 	  TApplication theApp ("Applications", &argc, argv);
 
 
-	  // ##########################
-	  // # Set histo layout style #
-	  // ##########################
-	  gROOT->SetStyle("Plain");
-	  gROOT->ForceStyle();
-	  gStyle->SetPalette(1);
-	  gStyle->SetOptFit(1112);
-	  gStyle->SetOptStat(0);
-	  gStyle->SetOptTitle(0);
-	  gStyle->SetPadRightMargin(0.02);
-	  gStyle->SetTitleOffset(1.25,"y"); 
-	  TGaxis::SetMaxDigits(3);
-
-
 	  Utility = new Utils();
 	  Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
 	  Utility->ReadEfficiency(fileNameInput.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,&myEff);
@@ -2194,20 +2140,6 @@ int main (int argc, char** argv)
 	  unsigned int q2BinIndx = atoi(argv[3]);
 
 	  TApplication theApp ("Applications", &argc, argv);
-
-
-	  // ##########################
-	  // # Set histo layout style #
-	  // ##########################
-	  gROOT->SetStyle("Plain");
-	  gROOT->ForceStyle();
-	  gStyle->SetPalette(1);
-	  gStyle->SetOptFit(1112);
-	  gStyle->SetOptStat(0);
-	  gStyle->SetOptTitle(0);
-	  gStyle->SetPadRightMargin(0.02);
-	  gStyle->SetTitleOffset(1.25,"y"); 
-	  TGaxis::SetMaxDigits(3);
 
 
 	  Utility = new Utils();
