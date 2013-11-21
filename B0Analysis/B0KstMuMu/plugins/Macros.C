@@ -43,7 +43,7 @@ using std::vector;
 // ####################
 #define DIREXPTCOMP "./ExperimentComparison/"
 
-#define ordinateRange 2.2e-3
+#define ordinateRange 1.0e-2
 
 #define B0MassIntervalLeft  0.28 // [GeV/c2]
 #define B0MassIntervalRight 0.28 // [GeV/c2]
@@ -87,13 +87,13 @@ void ReduceTree (string fileNameIn, string fileNameOut);
 void SampleMCforPileup (string fileNameIn, string fileNameOut);
 void DivideNTuple (string fileNameIn, string fileNameOut, unsigned int n);
 void SampleNTuple (string fileNameIn, string fileNameOut, double fraction);
+void ComputeMCfilterEff (string fileName);
 void DrawString (double Lumi);
 TCutG* DrawExclusion (double Xlow, double Xhigh, double Ylow, double Yhigh, string cutName, unsigned int fillStyle, unsigned int color);
 void printData (int nBins, TVectorD V1, TVectorD V2, TVectorD V3, TVectorD V4, TVectorD V5, TVectorD V6);
 void offsetData (int nBins, TVectorD* V1, TVectorD* V2, TVectorD* V3, double offset);
 TGraphAsymmErrors* readData (TString fileName, int dataType, int color, int markerType, bool doFill, int fillStyle, bool noHbar, double offset);
-TGraphAsymmErrors* worldAverage (vector<TGraphAsymmErrors*>* expReults);
-void showData (int dataType, double offset, bool noHbar, bool doWorlAvg);
+void showData (int dataType, double offset, bool noHbar);
 
 
 // ###########################
@@ -116,7 +116,8 @@ TH1D* ComputeCumulative(TH1D* hIN, string hCumulName)
   for (int i = 1; i <= hIN->GetNbinsX(); i++)
     for (int j = i; j <= hIN->GetNbinsX(); j++)
       hCumul->SetBinContent(j, hCumul->GetBinContent(j) + hIN->GetBinContent(i));
-  
+
+  cout << "Maximum of comulative: " << hCumul->GetMaximum() << endl;
   return hCumul;
 }
 
@@ -1073,6 +1074,7 @@ void ReduceTree (string fileNameIn, string fileNameOut)
   // #######
   // # mu- #
   // #######
+  theTreeIn->SetBranchStatus("mumHighPurity",1);
   theTreeIn->SetBranchStatus("mumNormChi2",1);
   theTreeIn->SetBranchStatus("mumCat",1);
   theTreeIn->SetBranchStatus("mumPx",1);
@@ -1089,6 +1091,7 @@ void ReduceTree (string fileNameIn, string fileNameOut)
   // #######
   // # mu+ #
   // #######
+  theTreeIn->SetBranchStatus("mupHighPurity",1);
   theTreeIn->SetBranchStatus("mupNormChi2",1);
   theTreeIn->SetBranchStatus("mupCat",1);
   theTreeIn->SetBranchStatus("mupPx",1);
@@ -1105,6 +1108,7 @@ void ReduceTree (string fileNameIn, string fileNameOut)
   // ##############
   // # K*0 track- #
   // ##############
+  theTreeIn->SetBranchStatus("kstTrkmHighPurity",1);
   theTreeIn->SetBranchStatus("kstTrkmMuMatch",1);
   theTreeIn->SetBranchStatus("kstTrkmDCABS",1);
   theTreeIn->SetBranchStatus("kstTrkmDCABSE",1);
@@ -1115,6 +1119,7 @@ void ReduceTree (string fileNameIn, string fileNameOut)
   // ##############
   // # K*0 track+ #
   // ##############
+  theTreeIn->SetBranchStatus("kstTrkpHighPurity",1);
   theTreeIn->SetBranchStatus("kstTrkpMuMatch",1);
   theTreeIn->SetBranchStatus("kstTrkpDCABS",1);
   theTreeIn->SetBranchStatus("kstTrkpDCABSE",1);
@@ -1351,6 +1356,42 @@ void SampleNTuple (string fileNameIn, string fileNameOut, double fraction)
 }
 
 
+// ########################################
+// # Code to compute MC filter efficiency #
+// ########################################
+void ComputeMCfilterEff (string fileName)
+{
+  // #################
+  // # Read the tree #
+  // #################
+  TFile* _file0 = TFile::Open(fileName.c_str(),"READ");
+  TTree* B0KstMuMuNTuple = (TTree*)_file0->Get("B0KstMuMu/B0KstMuMuNTuple");
+
+  int nEntries = B0KstMuMuNTuple->GetEntries();
+  cout << "@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
+
+  unsigned int val1;
+  unsigned int val2;
+
+  unsigned int evTried  = 0.0;
+  unsigned int evPassed = 0.0;
+
+  for (int entry = 0; entry < nEntries; entry++)
+    {
+      B0KstMuMuNTuple->SetBranchAddress("numEventsTried",  &val1);
+      B0KstMuMuNTuple->SetBranchAddress("numEventsPassed", &val2);
+      B0KstMuMuNTuple->GetEntry(entry);
+      
+      evTried  += val1;
+      evPassed += val2;
+    }
+
+  cout << "Total number of events tried: "  << evTried  << endl;
+  cout << "Total number of events passed: " << evPassed << endl;
+  cout << "Monte Carlo filter efficiency: " << static_cast<double>(evPassed) / static_cast<double>(evTried) << endl;
+}
+
+
 // #######################################
 // # Code to plot experiment-comparisons #
 // #######################################
@@ -1542,56 +1583,7 @@ TGraphAsymmErrors* readData (TString fileName, int dataType, int color, int mark
 }
 
 
-TGraphAsymmErrors* worldAverage (vector<TGraphAsymmErrors*>* expReults)
-{
-  TVectorD avgVal   (expReults->operator[](0)->GetN());
-  TVectorD avgErrLo (expReults->operator[](0)->GetN());
-  TVectorD avgErrHi (expReults->operator[](0)->GetN());
-  TVectorD xs (expReults->operator[](0)->GetN(),expReults->operator[](0)->GetX());
-  TVectorD xh (expReults->operator[](0)->GetN(),expReults->operator[](0)->GetEXlow());
-  TVectorD xl (expReults->operator[](0)->GetN(),expReults->operator[](0)->GetEXhigh());
-  double tmpVal;
-  double tmpSum;
-
-
-  // ######################
-  // # Make world average #
-  // ######################
-  for (int j = 0; j < expReults->operator[](0)->GetN(); j++)
-    {
-      avgVal[j]   = 0.0;
-      avgErrLo[j] = 0.0;
-      avgErrHi[j] = 0.0;
-      tmpSum = 0.0;
-
-
-      for (unsigned int i = 0; i < expReults->size(); i++)
-	{
-	  tmpVal = powf(expReults->operator[](i)->GetErrorYlow(j),2.0) + powf(expReults->operator[](i)->GetErrorYhigh(j),2.0);
-      
-	  avgVal[j]   = avgVal[j]   + expReults->operator[](i)->GetY()[j] / tmpVal;
-	  avgErrLo[j] = avgErrLo[j] + powf(expReults->operator[](i)->GetErrorYlow(j) / tmpVal,2.0);
-	  avgErrHi[j] = avgErrHi[j] + powf(expReults->operator[](i)->GetErrorYhigh(j) / tmpVal,2.0);
-
-	  tmpSum = tmpSum + 1. / tmpVal;
-	}
-
-
-      avgVal[j]  = avgVal[j] / tmpSum;
-      avgErrLo[j] = sqrt(avgErrLo[j]) / tmpSum;
-      avgErrHi[j] = sqrt(avgErrHi[j]) / tmpSum;
-    }
-
-
-  cout << "\nWorld average:" << endl;
-  printData(expReults->operator[](0)->GetN(),xs,xl,xh,avgVal,avgErrLo,avgErrHi);
-
-
-  return new TGraphAsymmErrors(xs,avgVal,xl,xh,avgErrLo,avgErrHi);
-}
-
-
-void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
+void showData (int dataType, double offset, bool noHbar)
 // #########################
 // # dataType == 0 --> FL  #
 // # dataType == 1 --> AFB #
@@ -1674,13 +1666,6 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
   myString << DIREXPTCOMP << "CDF.data";
   dVar.push_back(readData(myString.str().c_str(),dataType,kGray+1,29,false,0,noHbar,-1.0*offset));
 
-  TGraphAsymmErrors* worldAverageGr = worldAverage(&dVar);
-  worldAverageGr->SetMarkerColor(kRed);
-  worldAverageGr->SetMarkerSize(1.2);
-  worldAverageGr->SetLineColor(kRed);
-  worldAverageGr->SetLineWidth(1);
-  worldAverageGr->SetMarkerStyle(21);
-
   myString.clear(); myString.str("");
   myString << DIREXPTCOMP << "Theory.data";
   dVar.push_back(readData(myString.str().c_str(),dataType,kBlue,20,true,3001,noHbar,0.0*offset));
@@ -1688,37 +1673,21 @@ void showData (int dataType, double offset, bool noHbar, bool doWorlAvg)
 
   cData->cd();
   h0->Draw();
-  if (doWorlAvg == true)
-    {
-      dVar[0]->Draw("same p");
-      worldAverageGr->Draw("same p");
-    }
-  else
-    {
-      dVar[dVar.size()-1]->Draw("same e2");
-      for (unsigned int i = 0; i < dVar.size()-1; i++) dVar[dVar.size()-i-2]->Draw("same p");
-    }
+  dVar[dVar.size()-1]->Draw("same e2");
+  for (unsigned int i = 0; i < dVar.size()-1; i++) dVar[dVar.size()-i-2]->Draw("same p");
 
 
   unsigned int it = 0;
   TLegend* leg = NULL;
-  if (doWorlAvg == true) leg = new TLegend(0.12, 0.7, 0.37, 0.88, "");
-  else                   leg = new TLegend(0.12, 0.6, 0.27, 0.88, "");
-  if (doWorlAvg == true)
-    {
-      leg->AddEntry(dVar[it++],"CMS","lp");
-      leg->AddEntry(worldAverageGr,"World Average","lp");
-    }
-  else  
-    {
-      leg->AddEntry(dVar[dVar.size()-1],"<SM>","F");
-      leg->AddEntry(dVar[it++],"CMS","lp");
-      leg->AddEntry(dVar[it++],"LHCb","lp");
-      // if (dataType != 2) leg->AddEntry(dVar[it++],"Atlas","lp");
-      leg->AddEntry(dVar[it++],"BaBar","lp");
-      leg->AddEntry(dVar[it++],"Belle","lp");
-      leg->AddEntry(dVar[it++],"CDF","lp");
-    }
+  leg = new TLegend(0.12, 0.6, 0.27, 0.88, "");
+  leg->AddEntry(dVar[dVar.size()-1],"<SM>","F");
+  leg->AddEntry(dVar[it++],"CMS","lp");
+  leg->AddEntry(dVar[it++],"LHCb","lp");
+  // if (dataType != 2) leg->AddEntry(dVar[it++],"Atlas","lp");
+  leg->AddEntry(dVar[it++],"BaBar","lp");
+  leg->AddEntry(dVar[it++],"Belle","lp");
+  leg->AddEntry(dVar[it++],"CDF","lp");
+
   leg->SetFillStyle(0);
   leg->SetFillColor(0);
   leg->SetBorderSize(0);
