@@ -1370,9 +1370,9 @@ void ComputeMCfilterEff (string fileName)
   int nEntries = B0KstMuMuNTuple->GetEntries();
   cout << "@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
-  unsigned int val1;
-  unsigned int val2;
 
+  unsigned int val1     = 0.0;
+  unsigned int val2     = 0.0;
   unsigned int evTried  = 0.0;
   unsigned int evPassed = 0.0;
 
@@ -1385,6 +1385,7 @@ void ComputeMCfilterEff (string fileName)
       evTried  += val1;
       evPassed += val2;
     }
+
 
   cout << "Total number of events tried: "  << evTried  << endl;
   cout << "Total number of events passed: " << evPassed << endl;
