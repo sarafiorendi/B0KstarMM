@@ -1323,7 +1323,6 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
       cout << "@@@ chi2/DoF = " << effFuncs2D[q2BinIndx]->GetChisquare() / effFuncs2D[q2BinIndx]->GetNDF() << " (" << effFuncs2D[q2BinIndx]->GetChisquare() << "/" << effFuncs2D[q2BinIndx]->GetNDF() << ")";
       cout << "\tCL : " << TMath::Prob(effFuncs2D[q2BinIndx]->GetChisquare(),effFuncs2D[q2BinIndx]->GetNDF()) << " @@@" << endl;
-      Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncs2D[q2BinIndx]);
 
       Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFuncs2D[q2BinIndx],(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
       fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
@@ -1359,6 +1358,12 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut)
 {
+  // ##########################
+  // # Set histo layout style #
+  // ##########################
+  gStyle->SetPadTopMargin(0.02);
+
+
   // ###################
   // # Local variables #
   // ###################
@@ -1367,15 +1372,22 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   stringstream myString;
   string tmpString;
   double coeff;
+  TH1* tmpHist1D;
   TF1* effFunc1D;
   vector<TF2*> effFuncs2D;
   TF3* effFunc3D;
   TH3D* hisFunc3D;
-  // ###################
+  TH3D* effHis3D;
+  // #################
+  double Yaxes = 2e-1;
+  // #################
 
 
-  TCanvas* cTestGlobalFit = new TCanvas("cTestGlobalFit", "cTestGlobalFit", 10, 10, 900, 500);
-  cTestGlobalFit->Divide(3,1);
+  TCanvas* cTestGlobalFit2D = new TCanvas("cTestGlobalFit2D", "cTestGlobalFit2D", 10, 10, 900, 500);
+  cTestGlobalFit2D->Divide(3,1);
+
+  TCanvas* cTestGlobalFit1D = new TCanvas("cTestGlobalFit1D", "cTestGlobalFit11D", 10, 10, 900, 500);
+  cTestGlobalFit1D->Divide(3,1);
 
   
   // ##########################
@@ -1384,7 +1396,17 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   myString.str("");
   myString << "Histo_q2Bin_" << q2BinIndx;
   hisFunc3D = Utility->Get3DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
-  
+  hisFunc3D->SetMarkerStyle(20);
+  hisFunc3D->SetMarkerColor(kBlack);
+  hisFunc3D->GetXaxis()->SetTitleOffset(1.35);
+  hisFunc3D->GetYaxis()->SetTitleOffset(1.35);
+  hisFunc3D->GetZaxis()->SetTitleOffset(1.35);
+
+  cTestGlobalFit2D->cd(1);
+  hisFunc3D->Draw("ISO");
+  cTestGlobalFit1D->cd(1);
+  hisFunc3D->Draw("ISO");
+
 
   // ##############################
   // # Read analytical efficiency #
@@ -1399,6 +1421,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   effFunc1D = new TF1("effFunc1D",Utility->TellMeEffFuncPhi().c_str(),Utility->PI,Utility->PI);
   Utility->InitEffFuncPhi(effFunc1D,q2BinIndx);
 
+  cout << "\n@@@ Reading coefficients for analytical efficiency for phi from file " << INPUT_PHI << " @@@" << endl;
   fileInput.open(INPUT_PHI,ofstream::in);
   if (fileInput.good() == false)
     {
@@ -1412,11 +1435,11 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   for (unsigned int l = 0; l < Utility->NcoeffPhi; l++)
     {
       rawStringK >> coeff;
-      effFunc1D->SetParameter(l+1,coeff);
+      effFunc1D->SetParameter(l,coeff);
       rawStringK >> coeff;
-      effFunc1D->SetParError(l+1,coeff);
+      effFunc1D->SetParError(l,coeff);
 
-      cout << "Reading coef. " << l << " for var. phi: " << effFunc1D->GetParameter(l+1) << "+/-" << effFunc1D->GetParError(l+1) << endl;
+      cout << "Reading coef. " << l << " for var. phi: " << effFunc1D->GetParameter(l) << "+/-" << effFunc1D->GetParError(l) << endl;
     }
 
 
@@ -1424,25 +1447,24 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // # Putting together cos(theta_k), cos(theta_l), and phi #
   // ########################################################
   effFunc3D = new TF3("effFunc3D",Utility->TellMeEffFuncThetaKThetaLPhi().c_str(),
-		      cosThetaKBins->operator[](0),
-		      cosThetaLBins->operator[](0) - abscissaErr,
-		      phiBins->operator[](0) - abscissaErr,
-		      cosThetaKBins->operator[](cosThetaKBins->size()-1) + abscissaErr,
-		      cosThetaLBins->operator[](cosThetaLBins->size()-1) + abscissaErr,
-		      phiBins->operator[](phiBins->size()-1) + abscissaErr);
+		      cosThetaKBins->operator[](0) - abscissaErr,cosThetaKBins->operator[](cosThetaKBins->size()-1) + abscissaErr,
+		      cosThetaLBins->operator[](0) - abscissaErr,cosThetaLBins->operator[](cosThetaLBins->size()-1) + abscissaErr,
+		      phiBins->operator[](0)       - abscissaErr,phiBins->operator[](phiBins->size()-1)             + abscissaErr);
+  effFunc3D->SetMarkerStyle(20);
+  effFunc3D->SetMarkerColor(kBlack);
 
   for (int i = 0; i < effFuncs2D[q2BinIndx]->GetNpar(); i++)
     {
-      effFunc3D->SetParameter(i+1,effFuncs2D[q2BinIndx]->GetParameter(i+1));
-      effFunc3D->SetParError(i+1,effFuncs2D[q2BinIndx]->GetParError(i+1));
+      effFunc3D->SetParameter(i,effFuncs2D[q2BinIndx]->GetParameter(i));
+      effFunc3D->SetParError(i,effFuncs2D[q2BinIndx]->GetParError(i));
     }
 
   for (int i = 0; i < effFunc1D->GetNpar(); i++)
     {
-      effFunc3D->SetParameter(i+1,effFunc1D->GetParameter(effFuncs2D[q2BinIndx]->GetNpar()+i+1));
-      effFunc3D->SetParError(i+1,effFunc1D->GetParError(effFuncs2D[q2BinIndx]->GetNpar()+i+1));
+      effFunc3D->SetParameter(effFuncs2D[q2BinIndx]->GetNpar()+i,effFunc1D->GetParameter(i));
+      effFunc3D->SetParError(effFuncs2D[q2BinIndx]->GetNpar()+i,effFunc1D->GetParError(i));
     }
-  
+
 
   // ############################################################################################
   // # Add constraint along Y (= cosThetaL) where it is necessary to bound the function at zero #
@@ -1454,26 +1476,78 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // #########################################################################
   // # Perform the fit of the analytical efficiency to the binned efficiency #
   // #########################################################################
-  fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VMRS");
+  fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VRS");
   TMatrixTSym<double> covMatrix(fitResults->GetCovarianceMatrix());
+  if (fitResults != 0)
+    {
+      cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: " << fitResults << endl;
+      exit (EXIT_FAILURE);
+    }
+  else if (covMatrix.Determinant() <= 0.0)
+    {
+      cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: covariance matrix not positive-defined" << endl;
+      exit (EXIT_FAILURE);
+    }
+  else if (covMatrix.IsSymmetric() == false)
+    {
+      cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: covariance matrix not symmetric" << endl;
+      exit (EXIT_FAILURE);
+    }
 
-  hisFunc3D = dynamic_cast<TH3D*>(effFunc3D->GetHistogram());
+  effHis3D = Utility->Get3DEffHitoq2Bin("effHis3D",q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
+  effHis3D->SetMarkerStyle(22);
+  effHis3D->SetMarkerColor(kRed);
+  for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
+    for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
+      for (unsigned int l = 0; l < phiBins->size()-1; l++)
+	{
+	  coeff = effFunc3D->Eval((cosThetaKBins->operator[](j)+cosThetaKBins->operator[](j+1))/2.,
+				  (cosThetaLBins->operator[](k)+cosThetaLBins->operator[](k+1))/2.,
+				  (phiBins->operator[](l)+phiBins->operator[](l+1))/2.);
+	  effHis3D->SetBinContent(j+1,k+1,l+1,coeff);
+	  effHis3D->SetBinError(j+1,k+1,l+1,0.0);
+	}
 
-  cTestGlobalFit->cd(1);
+  // #######################
+  // # Make 2D projections #
+  // #######################
+  cTestGlobalFit2D->cd(1);
   hisFunc3D->Project3D("xy")->Draw("lego2");
-  hisFunc3D->Project3D("xy")->Draw("same lego2");
+  effHis3D->Project3D("xy")->Draw("same surf");
 
-  cTestGlobalFit->cd(2);
+  cTestGlobalFit2D->cd(2);
   hisFunc3D->Project3D("xz")->Draw("lego2");
-  hisFunc3D->Project3D("xz")->Draw("same lego2");
+  effHis3D->Project3D("xz")->Draw("same surf");
 
-  cTestGlobalFit->cd(3);
-  hisFunc3D->Project3D("zy")->Draw("lego2");
-  hisFunc3D->Project3D("zy")->Draw("same lego2");
-  cTestGlobalFit->Update();
+  cTestGlobalFit2D->cd(3);
+  hisFunc3D->Project3D("yz")->Draw("lego2");
+  effHis3D->Project3D("yz")->Draw("same surf");
+  cTestGlobalFit2D->Update();
 
-  cout << "@@@ chi2/DoF = " << effFunc3D->GetChisquare() / effFunc3D->GetNDF() << " (" << effFunc3D->GetChisquare() << "/" << effFunc3D->GetNDF() << ")";
-  cout << "\tCL : " << TMath::Prob(effFunc3D->GetChisquare(),effFunc3D->GetNDF()) << " @@@" << endl;
+  // #######################
+  // # Make 1D projections #
+  // #######################
+  cTestGlobalFit1D->cd(1);
+  tmpHist1D = hisFunc3D->Project3D("x");
+  tmpHist1D->GetYaxis()->SetRangeUser(0.0,Yaxes);
+  tmpHist1D->Draw("pe1");
+  effHis3D->Project3D("x")->Draw("same pe1");
+
+  cTestGlobalFit1D->cd(2);
+  tmpHist1D = hisFunc3D->Project3D("y");
+  tmpHist1D->GetYaxis()->SetRangeUser(0.0,Yaxes);
+  tmpHist1D->Draw("pe1");
+  effHis3D->Project3D("y")->Draw("same pe1");
+
+  cTestGlobalFit1D->cd(3);
+  tmpHist1D = hisFunc3D->Project3D("z");
+  tmpHist1D->GetYaxis()->SetRangeUser(0.0,Yaxes);
+  tmpHist1D->Draw("pe1");
+  effHis3D->Project3D("z")->Draw("same pe1");
+  cTestGlobalFit1D->Update();
+
+  cout << "@@@ chi2/DoF = " << fitResults->Chi2() / fitResults->Ndf() << " (" << fitResults->Chi2() << "/" << fitResults->Ndf() << ")";
+  cout << "\tCL : " << TMath::Prob(fitResults->Chi2(),fitResults->Ndf()) << " @@@" << endl;
 
 
   // ############################################################################################
@@ -1482,31 +1556,83 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   if (Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,effFunc3D) < 0.0)
     {
       cout << "@@@ Efficiency is still negative ! @@@" << endl;
-
+      
       // @@@TMP@@@
       // Utility->AddConstraint...
 
-      fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VMRS");
+      delete effHis3D;
+      fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VRS");
       TMatrixTSym<double> covMatrixConstr(fitResults->GetCovarianceMatrix());
+      if (fitResults != 0)
+	{
+	  cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: " << fitResults << endl;
+	  exit (EXIT_FAILURE);
+	}
+      else if (covMatrix.Determinant() <= 0.0)
+	{
+	  cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: covariance matrix not positive-defined" << endl;
+	  exit (EXIT_FAILURE);
+	}
+      else if (covMatrix.IsSymmetric() == false)
+	{
+	  cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: covariance matrix not symmetric" << endl;
+	  exit (EXIT_FAILURE);
+	}
 
-      hisFunc3D = dynamic_cast<TH3D*>(effFunc3D->GetHistogram());
+      effHis3D = Utility->Get3DEffHitoq2Bin("effHis3D",q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
+      effHis3D->SetMarkerStyle(22);
+      effHis3D->SetMarkerColor(kRed);
+      for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
+	for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
+	  for (unsigned int l = 0; l < phiBins->size()-1; l++)
+	    {
+	      coeff = effFunc3D->Eval((cosThetaKBins->operator[](j)+cosThetaKBins->operator[](j+1))/2.,
+				      (cosThetaLBins->operator[](k)+cosThetaLBins->operator[](k+1))/2.,
+				      (phiBins->operator[](l)+phiBins->operator[](l+1))/2.);
+	      effHis3D->SetBinContent(j+1,k+1,l+1,coeff);
+	      effHis3D->SetBinError(j+1,k+1,l+1,0.0);
+	    }
 
-      cTestGlobalFit->cd(1);
+      // #######################
+      // # Make 2D projections #
+      // #######################
+      cTestGlobalFit2D->cd(1);
       hisFunc3D->Project3D("xy")->Draw("lego2");
-      hisFunc3D->Project3D("xy")->Draw("same lego2");
-      
-      cTestGlobalFit->cd(2);
+      effHis3D->Project3D("xy")->Draw("same surf");
+
+      cTestGlobalFit2D->cd(2);
       hisFunc3D->Project3D("xz")->Draw("lego2");
-      hisFunc3D->Project3D("xz")->Draw("same lego2");
-      
-      cTestGlobalFit->cd(3);
-      hisFunc3D->Project3D("zy")->Draw("lego2");
-      hisFunc3D->Project3D("zy")->Draw("same lego2");
-      cTestGlobalFit->Update();
-  
-      cout << "@@@ chi2/DoF = " << effFunc3D->GetChisquare() / effFunc3D->GetNDF() << " (" << effFunc3D->GetChisquare() << "/" << effFunc3D->GetNDF() << ")";
-      cout << "\tCL : " << TMath::Prob(effFunc3D->GetChisquare(),effFunc3D->GetNDF()) << " @@@" << endl;
-      Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,effFunc3D);
+      effHis3D->Project3D("xz")->Draw("same surf");
+
+      cTestGlobalFit2D->cd(3);
+      hisFunc3D->Project3D("yz")->Draw("lego2");
+      effHis3D->Project3D("yz")->Draw("same surf");
+      cTestGlobalFit2D->Update();
+
+      // #######################
+      // # Make 1D projections #
+      // #######################
+      cTestGlobalFit1D->cd(1);
+      tmpHist1D = hisFunc3D->Project3D("x");
+      tmpHist1D->GetYaxis()->SetRangeUser(0.0,Yaxes);
+      tmpHist1D->Draw("pe1");
+      effHis3D->Project3D("x")->Draw("same pe1");
+
+      cTestGlobalFit1D->cd(2);
+      tmpHist1D = hisFunc3D->Project3D("y");
+      tmpHist1D->GetYaxis()->SetRangeUser(0.0,Yaxes);
+      tmpHist1D->Draw("pe1");
+      effHis3D->Project3D("y")->Draw("same pe1");
+
+      cTestGlobalFit1D->cd(3);
+      tmpHist1D = hisFunc3D->Project3D("z");
+      tmpHist1D->GetYaxis()->SetRangeUser(0.0,Yaxes);
+      tmpHist1D->Draw("pe1");
+      effHis3D->Project3D("z")->Draw("same pe1");
+      cTestGlobalFit1D->Update();
+   
+      cout << "@@@ chi2/DoF = " << fitResults->Chi2() / fitResults->Ndf() << " (" << fitResults->Chi2() << "/" << fitResults->Ndf() << ")";
+      cout << "\tCL : " << TMath::Prob(fitResults->Chi2(),fitResults->Ndf()) << " @@@" << endl;
 
       Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFunc3D,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
       fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
@@ -1535,6 +1661,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
   covMatrices->clear();
   delete covMatrices;
+  delete effHis3D;
 }
 
 
@@ -1573,9 +1700,9 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   hisFunc2D->Draw("lego2 fb");
 
 
-  // ###################################################################################
-  // # Read analytical efficiencies (reference and comparison) and rescale if required #
-  // ###################################################################################
+  // ##############################
+  // # Read analytical efficiency #
+  // ##############################
   Utility->ReadAnalyticalEff(INPUT_THETAL_THETAK,q2Bins,cosThetaKBins,cosThetaLBins,&effFuncs2D,"effFuncs2D",0);
   EffFunc2D = effFuncs2D[q2BinIndx];
   cEff->cd(2);
@@ -1603,7 +1730,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
 	
 	chi2avg   = chi2avg + pow((Eff - averagePerBin) / EffErr,2.);
 	chi2point = chi2point + pow((Eff - EffFunc2D->Eval((cosThetaKBins->operator[](j)+cosThetaKBins->operator[](j+1))/2.,
-							    (cosThetaLBins->operator[](k)+cosThetaLBins->operator[](k+1))/2.)) / EffErr,2.);
+							   (cosThetaLBins->operator[](k)+cosThetaLBins->operator[](k+1))/2.)) / EffErr,2.);
       }
   DoF = (cosThetaKBins->size()-1)*(cosThetaLBins->size()-1) - DoF; // DoF = number of bins - number of fit parameters
   cout << "\n@@@ chi2 test between binned and analytical efficiencies @@@" << endl;
@@ -1730,9 +1857,9 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   hisFunc3D->Draw("BOX fb");
 
 
-  // ###################################################################################
-  // # Read analytical efficiencies (reference and comparison) and rescale if required #
-  // ###################################################################################
+  // ##############################
+  // # Read analytical efficiency #
+  // ##############################
   Utility->ReadAnalyticalEff(INPUT_THETAL_THETAK_PHI,q2Bins,cosThetaKBins,cosThetaLBins,phiBins,&effFuncs3D,"effFuncs3D",0);
   EffFunc3D = effFuncs3D[q2BinIndx];
   cEff->cd(2);
