@@ -1371,10 +1371,10 @@ void ComputeMCfilterEff (string fileName)
   cout << "@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
 
-  unsigned int val1     = 0.0;
-  unsigned int val2     = 0.0;
-  unsigned int evTried  = 0.0;
-  unsigned int evPassed = 0.0;
+  unsigned int val1      = 0;
+  unsigned int val2      = 0;
+  unsigned long evTried  = 0;
+  unsigned long evPassed = 0;
 
   for (int entry = 0; entry < nEntries; entry++)
     {
@@ -1389,7 +1389,8 @@ void ComputeMCfilterEff (string fileName)
 
   cout << "Total number of events tried: "  << evTried  << endl;
   cout << "Total number of events passed: " << evPassed << endl;
-  cout << "Monte Carlo filter efficiency: " << static_cast<double>(evPassed) / static_cast<double>(evTried) << endl;
+  cout << "Monte Carlo filter efficiency: " << static_cast<double>(evPassed) / static_cast<double>(evTried);
+  cout << " +/- " << sqrt(static_cast<double>(evPassed) * (1. - static_cast<double>(evPassed) / static_cast<double>(evTried))) / static_cast<double>(evTried) << endl;
 }
 
 
