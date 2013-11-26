@@ -204,20 +204,18 @@ class Utils
   double EffMinValue2D (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, TF2* effFunc);
   double EffMinValue3D (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, TF3* effFunc);
 
-  void MakeGraphVar(std::string parFileName, TGraphAsymmErrors** graph, std::string varName, bool allBins, double offset = 0.0);
+  void MakeGraphVar (std::string parFileName, TGraphAsymmErrors** graph, std::string varName, bool allBins, double offset = 0.0);
 
   void InitEffFuncThetaL (TF1* fitFun, unsigned int q2BinIndx);
   void InitEffFuncThetaK (TF1* fitFun, unsigned int q2BinIndx);
   void InitEffFuncPhi    (TF1* fitFun, unsigned int q2BinIndx);
 
-  void AddConstraint1D (TH1D** histo, std::string constrType, double errX, double Yval, double errY, unsigned int ID);
-  void AddConstraintThetaL (TH1D** histo,
-			    unsigned int q2BinIndx, unsigned int cosThetaLBinIndx,
-			    double constrXerr, double constrYval, double constrYerr, unsigned int ID);
-  void AddConstraint2D (TH2D** histo, double err, double Zval, double errZ, unsigned int ID, std::string toBeConstr, std::vector<std::string>* toBeAdded = NULL);
-  void AddConstraintThetaK (TH2D** histo, std::vector<double>* cosThetaKBins,
-			    unsigned int q2BinIndx,
-			    double constrXerr, double constrZval, double constrZerr, unsigned int ID);
+  void AddConstraint1D     (TH1D** histo, std::string constrType, double errX, double Yval, double errY, unsigned int ID);
+  void AddConstraintThetaL (TH1D** histo, unsigned int q2BinIndx, unsigned int cosThetaLBinIndx, double constrXerr, double constrYval, double constrYerr, unsigned int ID);
+  void AddConstraint2D     (TH2D** histo, double err, double Zval, double errZ, unsigned int ID, std::string toBeConstr, std::vector<std::string>* toBeAdded = NULL);
+  void AddConstraintThetaK (TH2D** histo, std::vector<double>* cosThetaKBins, unsigned int q2BinIndx, double constrXYerr, double constrZval, double constrZerr, unsigned int ID);
+  void AddConstraintThetaK (TH3D** histo, std::vector<double>* cosThetaKBins, unsigned int q2BinIndx, double constrXYerr, double constrTval, double constrTerr, unsigned int ID);
+  void AddConstraint3D     (TH3D** histo, double err, double Tval, double errT, unsigned int ID, std::string toBeConstr, std::vector<std::string>* toBeAdded = NULL);
 
   bool IsThereOddDegree (TF2* effFunc);
 

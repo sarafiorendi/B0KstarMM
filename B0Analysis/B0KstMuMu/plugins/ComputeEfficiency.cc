@@ -87,10 +87,10 @@ using std::vector;
 // ###################
 // # Fit constraints #
 // ###################
-#define abscissaErr   1.0e-2
-#define ordinateVal   1.0e-5
-#define ordinateErr   1.0e-5
-#define ordinateRange 1.0e-2
+#define abscissaErr   1e-2
+#define ordinateVal   1e-5
+#define ordinateErr   1e-5
+#define ordinateRange 1e-2
 
 
 // ####################
@@ -129,7 +129,6 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 			Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut);
 void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
-// @@@TMP@@@
 void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
 void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool saveHistos);
@@ -299,9 +298,9 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   double* cosThetaKBins_ = Utility->MakeBinning(cosThetaKBins);
   double* cosThetaLBins_ = Utility->MakeBinning(cosThetaLBins);
   double* phiBins_       = Utility->MakeBinning(phiBins);
-  // ##################
-  double Zaxes = 1.0e3;
-  // ##################
+  // ################
+  double Zaxes = 1e3;
+  // ################
 
 
   TCanvas* cEff = new TCanvas("cEff", "cEff", 10, 10, 1600, 900);
@@ -1314,6 +1313,7 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
       cout << "@@@ Efficiency is still negative ! @@@" << endl;
 
       Utility->AddConstraint2D(&hisFunc2D,abscissaErr,ordinateVal,ordinateErr,q2BinIndx,"X");
+
       cTestGlobalFit->cd();
       fitResults = hisFunc2D->Fit(effFuncs2D[q2BinIndx]->GetName(),"VMRS");
       TMatrixTSym<double> covMatrixConstr(fitResults->GetCovarianceMatrix());
@@ -1396,11 +1396,6 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   myString.str("");
   myString << "Histo_q2Bin_" << q2BinIndx;
   hisFunc3D = Utility->Get3DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
-  hisFunc3D->SetMarkerStyle(20);
-  hisFunc3D->SetMarkerColor(kBlack);
-  hisFunc3D->GetXaxis()->SetTitleOffset(1.35);
-  hisFunc3D->GetYaxis()->SetTitleOffset(1.35);
-  hisFunc3D->GetZaxis()->SetTitleOffset(1.35);
 
   cTestGlobalFit2D->cd(1);
   hisFunc3D->Draw("ISO");
@@ -1469,14 +1464,23 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // ############################################################################################
   // # Add constraint along Y (= cosThetaL) where it is necessary to bound the function at zero #
   // ############################################################################################
-  // @@@TMP@@@
-  // Utility->AddConstraint...
+  // Utility->AddConstraintThetaK(&hisFunc3D,cosThetaKBins,q2BinIndx,abscissaErr,ordinateVal,ordinateErr,q2BinIndx);
+  hisFunc3D->SetMarkerStyle(20);
+  hisFunc3D->SetMarkerColor(kBlack);
+  hisFunc3D->GetXaxis()->SetTitleOffset(1.35);
+  hisFunc3D->GetYaxis()->SetTitleOffset(1.35);
+  hisFunc3D->GetZaxis()->SetTitleOffset(1.35);
 
 
   // #########################################################################
   // # Perform the fit of the analytical efficiency to the binned efficiency #
   // #########################################################################
-  fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VRS");
+  fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VMRS");
+  if (fitResults != 0)
+    {
+      cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: " << fitResults << endl;
+      fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VRS");
+    }
   TMatrixTSym<double> covMatrix(fitResults->GetCovarianceMatrix());
   if (fitResults != 0)
     {
@@ -1557,11 +1561,20 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
     {
       cout << "@@@ Efficiency is still negative ! @@@" << endl;
       
-      // @@@TMP@@@
-      // Utility->AddConstraint...
+      // Utility->AddConstraint3D(&hisFunc3D,abscissaErr,ordinateVal,ordinateErr,q2BinIndx,"X");
+      hisFunc3D->SetMarkerStyle(20);
+      hisFunc3D->SetMarkerColor(kBlack);
+      hisFunc3D->GetXaxis()->SetTitleOffset(1.35);
+      hisFunc3D->GetYaxis()->SetTitleOffset(1.35);
+      hisFunc3D->GetZaxis()->SetTitleOffset(1.35);
 
       delete effHis3D;
-      fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VRS");
+      fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VMRS");
+      if (fitResults != 0)
+	{
+	  cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: " << fitResults << endl;
+	  fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VRS");
+	}
       TMatrixTSym<double> covMatrixConstr(fitResults->GetCovarianceMatrix());
       if (fitResults != 0)
 	{
@@ -1640,7 +1653,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
       covMatrixConstr.Clear();
 
-      if (Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,effFunc3D) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
+      // if (Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,effFunc3D) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
     }
   else
     {

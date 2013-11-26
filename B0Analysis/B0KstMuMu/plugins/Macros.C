@@ -43,7 +43,7 @@ using std::vector;
 // ####################
 #define DIREXPTCOMP "./ExperimentComparison/"
 
-#define ordinateRange 1.0e-2
+#define ordinateRange 1e-2
 
 #define B0MassIntervalLeft  0.28 // [GeV/c2]
 #define B0MassIntervalRight 0.28 // [GeV/c2]
@@ -1371,10 +1371,10 @@ void ComputeMCfilterEff (string fileName)
   cout << "@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
 
-  unsigned int val1      = 0;
-  unsigned int val2      = 0;
-  unsigned long evTried  = 0;
-  unsigned long evPassed = 0;
+  unsigned int val1 = 0;
+  unsigned int val2 = 0;
+  unsigned long long evTried  = 0;
+  unsigned long long evPassed = 0;
 
   for (int entry = 0; entry < nEntries; entry++)
     {
