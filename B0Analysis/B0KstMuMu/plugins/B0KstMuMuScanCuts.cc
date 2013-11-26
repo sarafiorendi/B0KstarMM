@@ -92,14 +92,14 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   // ##############
   double signalSigma = sqrt(Utility->GetGenericParam("FRACMASSS") * Utility->GetGenericParam("SIGMAS1") * Utility->GetGenericParam("SIGMAS1") +
 			    (1. - Utility->GetGenericParam("FRACMASSS")) * Utility->GetGenericParam("SIGMAS2") * Utility->GetGenericParam("SIGMAS2"));
-  double MCtoDataRescale = 2.7384/(2219.8/49.1*33.2); // [fb-1(Data) / fb-1(MC) (corrected by the PYTHIA overestimation of the cross-section)]
-  
+  double MCtoDataRescale = 7.631/(5951.1*49.1/33.2); // [fb-1(Data) / fb-1(MC) (corrected by the PYTHIA overestimation of the cross-section)]
+
 
   // #################
   // # Cut selection #
   // #################
-  double LowEdge     = 0.0;
-  double HighEdge    = 0.0;
+  double LowEdge  = 0.0;
+  double HighEdge = 0.0;
   unsigned int nBins = 0;
   double cutValue;
   string fileName = "";
