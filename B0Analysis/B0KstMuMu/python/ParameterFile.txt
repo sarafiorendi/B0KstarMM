@@ -1902,7 +1902,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 1
 
 # Luminosity [fb-1]
-20.0
+20.466
 
 
 ############################

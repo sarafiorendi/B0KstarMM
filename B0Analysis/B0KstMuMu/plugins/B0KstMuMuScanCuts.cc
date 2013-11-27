@@ -40,6 +40,7 @@ using std::vector;
 #define DoTrigCheck 1
 #define SpecialHighq2Bin2 7.3
 #define nEvPrint 200000
+#define SETBATCH true // Set batch mode
 
 
 // ####################
@@ -92,7 +93,7 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   // ##############
   double signalSigma = sqrt(Utility->GetGenericParam("FRACMASSS") * Utility->GetGenericParam("SIGMAS1") * Utility->GetGenericParam("SIGMAS1") +
 			    (1. - Utility->GetGenericParam("FRACMASSS")) * Utility->GetGenericParam("SIGMAS2") * Utility->GetGenericParam("SIGMAS2"));
-  double MCtoDataRescale = 7.631/(5951.1*49.1/33.2); // [fb-1(Data) / fb-1(MC) (corrected by the PYTHIA overestimation of the cross-section)]
+  double MCtoDataRescale = 20.466442/(5951.1*49.1/33.2); // [fb-1(Data) / fb-1(MC) (corrected by the PYTHIA overestimation of the cross-section)]
 
 
   // #################
@@ -392,6 +393,11 @@ int main (int argc, char** argv)
       string MCFile         = argv[3];
       string DataFile       = argv[4];
 
+      if (SETBATCH == true)
+	{
+	  cout << "\n@@@ Setting batch mode @@@" << endl;
+	  gROOT->SetBatch(true);
+	}
       TApplication theApp ("Applications", &argc, argv);
 
 
@@ -407,13 +413,14 @@ int main (int argc, char** argv)
       gStyle->SetPadRightMargin(0.02);
       gStyle->SetTitleOffset(1.25,"y"); 
       TGaxis::SetMaxDigits(3);
-      
+
 
       cout << "\n@@@ Settings @@@" << endl;
       cout << "Parameter file: "         << ParameterFILE << endl;
       cout << "Do trig check: "          << DoTrigCheck << endl;
       cout << "Special high q2 bin #2: " << SpecialHighq2Bin2 << endl;
       cout << "nEvPrint: "               << nEvPrint << endl;
+      cout << "SETBATCH: "               << SETBATCH << endl;
 
 
       Utility = new Utils();
@@ -426,7 +433,7 @@ int main (int argc, char** argv)
       CutOptimization(scanType,q2Region,MCFile,DataFile);
 
 
-      theApp.Run (); // Eventloop on air
+      if (SETBATCH == false) theApp.Run (); // Eventloop on air
       return EXIT_SUCCESS;
     }
   else
