@@ -38,7 +38,7 @@ using std::vector;
 // ####################
 #define ParameterFILE "../python/ParameterFile.txt"
 #define DoTrigCheck 1
-#define SpecialHighq2Bin2 7.3
+#define SpecialHighq2Bin2 7.3 // [GeV/c2]2
 #define nEvPrint 200000
 #define SETBATCH true // Set batch mode
 
@@ -154,7 +154,7 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
     }
   else
     {
-      cout << "[Macros::CutOptimization]\tWrong scan type: " << scanType << endl;
+      cout << "[B0KstMuMuScanCuts::CutOptimization]\tWrong scan type: " << scanType << endl;
       exit (EXIT_FAILURE);
     }
 
