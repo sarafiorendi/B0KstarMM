@@ -1889,13 +1889,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 5.0
 
 # B0 peak sigma-1 from signal MC, whole q2 spectrum [GeV/c2]
-0.0280896
+0.0269146
 
 # B0 peak sigma-2 from signal MC, whole q2 spectrum [GeV/c2]
-0.0582018
+0.0554064
 
 # B0 peak gaussian fraction from signal MC, whole q2 spectrum
-0.760330
+0.719694
 
 
 ############################
