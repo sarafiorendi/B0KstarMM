@@ -57,11 +57,23 @@ vector<double> phiBins;
 // # Function Definition #
 // #######################
 void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFile, string DataFile);
+void PrintCurrentTime ();
 
 
 // ###########################
 // # Function Implementation #
 // ###########################
+void PrintCurrentTime ()
+{
+  time_t rawT;
+  struct tm* localT;
+
+  time(&rawT);
+  localT = localtime(&rawT);
+  cout << "\n@@@ The current date/time is: " << asctime(localT) << " @@@\n" << endl;
+}
+
+
 void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFile, string DataFile)
 // #####################################
 // # scanType = 0 = "CL"               #
@@ -214,6 +226,7 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   NTupleS->SetBranchAddresses(theTreeInS);
   int nEntriesS = theTreeInS->GetEntries();
   cout << "\n@@@ Total number of events in the Signal tree: " << nEntriesS << " @@@" << endl;
+  PrintCurrentTime();
 
   vector<double> countS;
   countS.assign(nBins,0);
