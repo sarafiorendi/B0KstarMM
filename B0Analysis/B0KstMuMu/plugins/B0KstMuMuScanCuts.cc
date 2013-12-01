@@ -77,11 +77,11 @@ void PrintCurrentTime ()
 void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFile, string DataFile)
 // #####################################
 // # scanType = 0 = "CL"               #
-// # scanType = 1 = "LS"               #
-// # scanType = 2 = "cos"              #
-// # scanType = 3 = "hadpT"            #
-// # scanType = 4 = "kstM"             #
-// # scanType = 5 = "hadDCA"           #
+// # scanType = 1 = "L/sigma"          #
+// # scanType = 2 = "cos(alpha)"       #
+// # scanType = 3 = "had pT"           #
+// # scanType = 4 = "mass(K*)"         #
+// # scanType = 5 = "hadDCA/sigma"     #
 // #####################################
 // # q2Region = 0 = q2 bin 0,1         #
 // # q2Region = 1 = q2 bin 7           #
@@ -119,32 +119,32 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   if (scanType == 0)
     {
       LowEdge  = 0.0;
-      HighEdge = 0.6;
-      nBins    = 60;
+      HighEdge = 0.3;
+      nBins    = 30;
 
       fileName = "CL";
     }
   else if (scanType == 1)
     {
       LowEdge  = 0.0;
-      HighEdge = 20.0;
-      nBins    = 80;
+      HighEdge = 40.0;
+      nBins    = 40;
 
       fileName = "LS";
     }
   else if (scanType == 2)
     {
-      LowEdge  = 0.997;
+      LowEdge  = 0.999;
       HighEdge = 1.0;
-      nBins    = 60;
+      nBins    = 20;
 
       fileName = "cos";
     }
   else if (scanType == 3)
     {
       LowEdge  = 0.4;
-      HighEdge = 2.5;
-      nBins    = 42;
+      HighEdge = 2.0;
+      nBins    = 32;
 
       fileName = "hadpT";
     }
@@ -160,9 +160,9 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
     {
       LowEdge  = 0.8;
       HighEdge = 4.8;
-      nBins    = 80;
+      nBins    = 40;
 
-      fileName = "hadDCA";
+      fileName = "hadDCAS";
     }
   else
     {
@@ -391,9 +391,6 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   myString.str("");
   myString << "Scan_" << fileName << "_scanType" << scanType << "_q2Region" << q2Region << ".root";
   c0->Print(myString.str().c_str());
-
-
-  system("say \"Hey, I'm done !\"");
 }
 
 
@@ -455,11 +452,11 @@ int main (int argc, char** argv)
       cout << "./CutOptimization [scanType] [q2Region] [MC root file name] [Data root file name]" << endl;
       cout << "@@@@@@ Possible scanType values @@@@@@" << endl;
       cout << "0 = CL" << endl;
-      cout << "1 = LS" << endl;
-      cout << "2 = cos" << endl;
-      cout << "3 = hadpT" << endl;
-      cout << "4 = kstM" << endl;
-      cout << "5 = hadDCA" << endl;
+      cout << "1 = L/sigma" << endl;
+      cout << "2 = cos(alpha)" << endl;
+      cout << "3 = had pT" << endl;
+      cout << "4 = mass(K*)" << endl;
+      cout << "5 = hadDCA/sigma" << endl;
       cout << "@@@@@@ Possible q2Region values @@@@@@" << endl;
       cout << "0 = q2 bin 0,1" << endl;
       cout << "1 = q2 bin 7" << endl;

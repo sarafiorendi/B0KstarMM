@@ -1680,7 +1680,7 @@ void Utils::SaveAnalyticalEff (std::string fileName, TF3* effFunc, double q2Val,
     }
 
   fileOutput << q2Val;
-  for (unsigned int l = 0; l < NcoeffPhi; l++) fileOutput << "   " << effFunc->GetParameter(l+NcoeffThetaL*NcoeffThetaK) << "   " << effFunc->GetParError(l+NcoeffThetaL*NcoeffThetaK);
+  for (unsigned int l = 0; l < NcoeffPhi; l++) fileOutput << "   " << effFunc->GetParameter(l+NcoeffThetaK*NcoeffThetaL) << "   " << effFunc->GetParError(l+NcoeffThetaK*NcoeffThetaL);
   fileOutput << std::endl;
 
   fileOutput.close();
@@ -1737,7 +1737,7 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
 {
   unsigned int indx;
   std::stringstream myString;
-  double* coeffVec = new double[2*NcoeffThetaK*NcoeffThetaL*NcoeffPhi];
+  double* coeffVec = new double[2*NcoeffThetaK*NcoeffThetaL];
 
   std::vector<std::string> ParVector;
   ReadParameters* ParameterFile = new ReadParameters(fileNameEffParams.c_str());
@@ -1797,7 +1797,7 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
 {
   unsigned int indx;
   std::stringstream myString;
-  double* coeffVec = new double[2*NcoeffThetaK*NcoeffThetaL*NcoeffPhi];
+  double* coeffVec = new double[2*(NcoeffThetaK*NcoeffThetaL+NcoeffPhi)];
 
   std::vector<std::string> ParVector;
   ReadParameters* ParameterFile = new ReadParameters(fileNameEffParams.c_str());
@@ -1876,7 +1876,7 @@ void Utils::ReadAnalyticalEffFullCovariance (std::string fileNameEffParams, std:
 // # y <--> cos(theta_l) #
 // #######################
 {
-  const unsigned int Ncoeff = NcoeffThetaL*NcoeffThetaK;
+  const unsigned int Ncoeff = NcoeffThetaK*NcoeffThetaL+NcoeffPhi;
 
   double* coeffVec = new double[Ncoeff];
 
@@ -1909,6 +1909,7 @@ void Utils::ReadAnalyticalEffFullCovariance (std::string fileNameEffParams, std:
 	    }
 	}
     }
+
 
   delete coeffVec;
   ParVector.clear();
@@ -1977,6 +1978,11 @@ double Utils::EffMinValue3D (std::vector<double>* cosThetaKBins, std::vector<dou
   unsigned int jMem = 0;
   unsigned int lMem = 0;
   double minVal = 0.0;
+  double tmpVal;
+
+  double valj;
+  double valk;
+  double vall;
 
   // ###############################################################################################################################################
   // # Search for the minimal value of the efficiency scanning the domain lattice divided in nsteps per coordinate, i.e. nsteps*nsteps grid matrix #
@@ -1984,29 +1990,37 @@ double Utils::EffMinValue3D (std::vector<double>* cosThetaKBins, std::vector<dou
   for (unsigned int k = 0; k <= nsteps; k++)
     for (unsigned int j = 0; j <= nsteps; j++)
       for (unsigned int l = 0; l <= nsteps; l++)
-	if (effFunc->Eval(cosThetaKBins->operator[](cosThetaKBins->size()-1) - (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(j),
-			  cosThetaLBins->operator[](cosThetaLBins->size()-1) - (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(k),
-			  phiBins->operator[](phiBins->size()-1)             - (phiBins->operator[](phiBins->size()-1)             - phiBins->operator[](0))       / static_cast<double>(nsteps) * static_cast<double>(l)) < minVal)
-	  {
-	    minVal = effFunc->Eval(cosThetaKBins->operator[](cosThetaKBins->size()-1) - (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(j),
-				   cosThetaLBins->operator[](cosThetaLBins->size()-1) - (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(k),
-				   phiBins->operator[](phiBins->size()-1)             - (phiBins->operator[](phiBins->size()-1)             - phiBins->operator[](0))       / static_cast<double>(nsteps) * static_cast<double>(l));
-	    kMem = k;
-	    jMem = j;
-	    lMem = l;
-	  }
-  
-  std::cout << "\n@@@ Efficiency minimal value (if less than zero): " << minVal << " at: (theta_K,theta_l,phi = ";
-  std::cout << cosThetaKBins->operator[](cosThetaKBins->size()-1) - (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(jMem) << ",";
-  std::cout << cosThetaLBins->operator[](cosThetaLBins->size()-1) - (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(kMem) << ",";
-  std::cout << phiBins->operator[](phiBins->size()-1)             - (phiBins->operator[](phiBins->size()-1)             - phiBins->operator[](0))       / static_cast<double>(nsteps) * static_cast<double>(lMem) << ")";
-  std::cout << " (grid step along cos(theta_K): ";
+	{
+	  tmpVal = effFunc->Eval(cosThetaKBins->operator[](cosThetaKBins->size()-1) - (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(j),
+				 cosThetaLBins->operator[](cosThetaLBins->size()-1) - (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(k),
+				 phiBins->operator[](phiBins->size()-1)             - (phiBins->operator[](phiBins->size()-1)             - phiBins->operator[](0))       / static_cast<double>(nsteps) * static_cast<double>(l));
+	  if (tmpVal < minVal)
+	    {
+	      minVal = tmpVal;
+
+	      kMem = k;
+	      jMem = j;
+	      lMem = l;
+	    }
+	}
+
+  valj = cosThetaKBins->operator[](cosThetaKBins->size()-1) - (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(jMem);
+  valk = cosThetaLBins->operator[](cosThetaLBins->size()-1) - (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(kMem);
+  vall = phiBins->operator[](phiBins->size()-1)             - (phiBins->operator[](phiBins->size()-1)             - phiBins->operator[](0))       / static_cast<double>(nsteps) * static_cast<double>(lMem);
+
+  std::cout << "\n@@@ Efficiency minimal value (if less than zero): " << minVal << " at: (theta_K,theta_l,phi = " << valj << "," << valk << "," << vall << ")" << std::endl;
+
+  std::cout << "Grid step along cos(theta_K): ";
   std::cout << (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / static_cast<double>(nsteps);
   std::cout << "; grid step along cos(theta_l): ";
   std::cout << (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / static_cast<double>(nsteps);
   std::cout << "; grid step along phi: ";
-  std::cout << (phiBins->operator[](phiBins->size()-1)             - phiBins->operator[](0))       / static_cast<double>(nsteps);
-  std::cout << ") @@@" << std::endl;
+  std::cout << (phiBins->operator[](phiBins->size()-1)             - phiBins->operator[](0))       / static_cast<double>(nsteps) << std::endl;
+
+  std::cout << "Corresponding to the bins (theta_K,theta_l,phi): ";
+  std::cout << SearchBin(valj,cosThetaKBins) << ",";
+  std::cout << SearchBin(valk,cosThetaLBins) << ",";
+  std::cout << SearchBin(vall,phiBins) << std::endl;
 
   return minVal;
 }
@@ -2181,7 +2195,7 @@ void Utils::InitEffFuncPhi (TF1* fitFun, unsigned int q2BinIndx)
   fitFun->SetParameter(2,0.0);
 }
 
-void Utils::AddConstraint1D (TH1D** histo, std::string constrType, double errX, double Yval, double errY, unsigned int ID)
+void Utils::AddConstraint1D (TH1D** histo, std::string constrType, double err, double Yval, double Yerr, unsigned int ID)
 // ############################################
 // # constrType = "low"  : at lower boundary  #
 // # constrType = "both" : at both boundaries #
@@ -2203,7 +2217,7 @@ void Utils::AddConstraint1D (TH1D** histo, std::string constrType, double errX, 
 
   if (constrType == "low")
     {
-      reBins[0] = (*histo)->GetBinLowEdge(1) - errX;
+      reBins[0] = (*histo)->GetBinLowEdge(1) - err;
       for (int i = 1; i <= (*histo)->GetNbinsX(); i++) reBins[i] = (*histo)->GetBinLowEdge(i);
       reBins[(*histo)->GetNbinsX()+1] = (*histo)->GetBinLowEdge((*histo)->GetNbinsX()) + (*histo)->GetBinWidth((*histo)->GetNbinsX());
     }
@@ -2211,14 +2225,14 @@ void Utils::AddConstraint1D (TH1D** histo, std::string constrType, double errX, 
     {
       for (int i = 1; i <= (*histo)->GetNbinsX(); i++) reBins[i-1] = (*histo)->GetBinLowEdge(i);
       reBins[(*histo)->GetNbinsX()] = (*histo)->GetBinLowEdge((*histo)->GetNbinsX()) + (*histo)->GetBinWidth((*histo)->GetNbinsX());
-      reBins[(*histo)->GetNbinsX()+1] = reBins[(*histo)->GetNbinsX()] + errX;
+      reBins[(*histo)->GetNbinsX()+1] = reBins[(*histo)->GetNbinsX()] + err;
     }
   else
     {
-      reBins[0] = (*histo)->GetBinLowEdge(1) - errX;
+      reBins[0] = (*histo)->GetBinLowEdge(1) - err;
       for (int i = 1; i <= (*histo)->GetNbinsX(); i++) reBins[i] = (*histo)->GetBinLowEdge(i);
       reBins[(*histo)->GetNbinsX()+1] = (*histo)->GetBinLowEdge((*histo)->GetNbinsX()) + (*histo)->GetBinWidth((*histo)->GetNbinsX());
-      reBins[(*histo)->GetNbinsX()+2] = reBins[(*histo)->GetNbinsX()+1] + errX;
+      reBins[(*histo)->GetNbinsX()+2] = reBins[(*histo)->GetNbinsX()+1] + err;
     }
 
 
@@ -2230,7 +2244,7 @@ void Utils::AddConstraint1D (TH1D** histo, std::string constrType, double errX, 
   if (constrType == "low")
     {
       newHisto->SetBinContent(1, Yval);
-      newHisto->SetBinError(1,errY);
+      newHisto->SetBinError(1,Yerr);
       for (int i = 1; i <= (*histo)->GetNbinsX(); i++)
 	{
 	  newHisto->SetBinContent(i+1,(*histo)->GetBinContent(i));
@@ -2245,19 +2259,19 @@ void Utils::AddConstraint1D (TH1D** histo, std::string constrType, double errX, 
 	  newHisto->SetBinError(i,(*histo)->GetBinError(i));
 	}
       newHisto->SetBinContent((*histo)->GetNbinsX()+1,Yval);
-      newHisto->SetBinError((*histo)->GetNbinsX()+1,errY);
+      newHisto->SetBinError((*histo)->GetNbinsX()+1,Yerr);
     }
   else
     {
       newHisto->SetBinContent(1,Yval);
-      newHisto->SetBinError(1,errY);
+      newHisto->SetBinError(1,Yerr);
       for (int i = 1; i <= (*histo)->GetNbinsX(); i++)
 	{
 	  newHisto->SetBinContent(i+1,(*histo)->GetBinContent(i));
 	  newHisto->SetBinError(i+1,(*histo)->GetBinError(i));
 	}
       newHisto->SetBinContent((*histo)->GetNbinsX()+2,Yval);
-      newHisto->SetBinError((*histo)->GetNbinsX()+2,errY);
+      newHisto->SetBinError((*histo)->GetNbinsX()+2,Yerr);
     }
 
 
@@ -2279,7 +2293,7 @@ void Utils::AddConstraintThetaL (TH1D** histo, unsigned int q2BinIndx, unsigned 
   if ((q2BinIndx == 2) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"low",constrXerr,constrYval,constrYerr,ID);
 }
 
-void Utils::AddConstraint2D (TH2D** histo, double err, double Zval, double errZ, unsigned int ID, std::string toBeConstr, std::vector<std::string>* toBeAdded)
+void Utils::AddConstraint2D (TH2D** histo, double err, double Zval, double Zerr, unsigned int ID, std::string toBeConstr, std::vector<std::string>* toBeAdded)
 // ################################################################################################################################################
 // # toBeConstr = Y --> Add constraints to Y axes (= cosThetaL) to both sides, according to the toBeAdded variable (= X axes binning = cosThetaK) #
 // # toBeConstr = X --> Add constraints to X axes (= cosThetaK) to the whole positive side                                                        #
@@ -2333,7 +2347,7 @@ void Utils::AddConstraint2D (TH2D** histo, double err, double Zval, double errZ,
 	  if ((toBeAdded->operator[](i) == "low") || (toBeAdded->operator[](i) == "both"))
 	    {
 	      newHisto->SetBinContent(i+1,1,Zval);
-	      newHisto->SetBinError(i+1,1,errZ);
+	      newHisto->SetBinError(i+1,1,Zerr);
 	    }
 	  else
 	    {
@@ -2350,7 +2364,7 @@ void Utils::AddConstraint2D (TH2D** histo, double err, double Zval, double errZ,
 	  if ((toBeAdded->operator[](i) == "high") || (toBeAdded->operator[](i) == "both"))
 	    {
 	      newHisto->SetBinContent(i+1,(*histo)->GetNbinsY()+2,Zval);
-	      newHisto->SetBinError(i+1,(*histo)->GetNbinsY()+2,errZ);
+	      newHisto->SetBinError(i+1,(*histo)->GetNbinsY()+2,Zerr);
 	    }
 	  else
 	    {
@@ -2392,14 +2406,14 @@ void Utils::AddConstraint2D (TH2D** histo, double err, double Zval, double errZ,
 	    newHisto->SetBinError(i,j,(*histo)->GetBinError(i,j));
 	  }      
       newHisto->SetBinContent((*histo)->GetNbinsX()+1,1,Zval);
-      newHisto->SetBinError((*histo)->GetNbinsX()+1,1,errZ);
+      newHisto->SetBinError((*histo)->GetNbinsX()+1,1,Zerr);
       for (int j = 2; j < (*histo)->GetNbinsY(); j++)
 	{
 	  newHisto->SetBinContent((*histo)->GetNbinsX()+1,j,Zval);
-	  newHisto->SetBinError((*histo)->GetNbinsX()+1,j,errZ);
+	  newHisto->SetBinError((*histo)->GetNbinsX()+1,j,Zerr);
 	}
       newHisto->SetBinContent((*histo)->GetNbinsX()+1,(*histo)->GetNbinsY(),Zval);
-      newHisto->SetBinError((*histo)->GetNbinsX()+1,(*histo)->GetNbinsY(),errZ);
+      newHisto->SetBinError((*histo)->GetNbinsX()+1,(*histo)->GetNbinsY(),Zerr);
     }
 
 
@@ -2433,39 +2447,9 @@ void Utils::AddConstraintThetaK (TH2D** histo, std::vector<double>* cosThetaKBin
   if (q2BinIndx == 2) toBeAdded[3] = "low";
 
   AddConstraint2D(histo,constrXYerr,constrZval,constrZerr,ID,"Y",&toBeAdded);
-
-  toBeAdded.clear();
 }
 
-void Utils::AddConstraintThetaK (TH3D** histo, std::vector<double>* cosThetaKBins, unsigned int q2BinIndx, double constrXYerr, double constrTval, double constrTerr, unsigned int ID)
-{
-  std::vector<std::string> toBeAdded;
-
-  for (unsigned int i = 0; i < cosThetaKBins->size()-1; i++) toBeAdded.push_back("no");
-
-  if (q2BinIndx == 0) for (unsigned int i = 0; i < cosThetaKBins->size()-1; i++) toBeAdded[i] = "both";
-
-  if (q2BinIndx == 1) for (unsigned int i = 0; i < cosThetaKBins->size()-1; i++) toBeAdded[i] = "both";
-
-  if (q2BinIndx == 2) toBeAdded[0] = "high";
-  if (q2BinIndx == 2) toBeAdded[1] = "high";
-  if (q2BinIndx == 2) toBeAdded[2] = "high";
-  if (q2BinIndx == 2) toBeAdded[3] = "low";
-
-  AddConstraint3D(histo,constrXYerr,constrTval,constrTerr,ID,"Y",&toBeAdded);
-
-  toBeAdded.clear();
-}
-
-void Utils::AddConstraint3D (TH3D** histo, double err, double Tval, double errT, unsigned int ID, std::string toBeConstr, std::vector<std::string>* toBeAdded)
-// ################################################################################################################################################
-// # toBeConstr = Y --> Add constraints to Y axes (= cosThetaL) to both sides, according to the toBeAdded variable (= X axes binning = cosThetaK) #
-// # toBeConstr = X --> Add constraints to X axes (= cosThetaK) to the whole positive side                                                        #
-// ################################################################################################################################################
-// # toBeAdded = "low" : at lower boundary                                                                                                        #
-// # toBeAdded = "both" : at both boundaries                                                                                                      #
-// # toBeAdded = "high" : at higher boundary                                                                                                      #
-// ################################################################################################################################################
+void Utils::AddConstraint3D (TH3D** histo, double err, double Tval, double Terr, unsigned int ID, std::vector<unsigned int> toBeAdded[])
 {
   std::stringstream myString;
   
@@ -2480,131 +2464,125 @@ void Utils::AddConstraint3D (TH3D** histo, double err, double Tval, double errT,
   TAxis* YAxis;
   TAxis* ZAxis;
 
+  unsigned int nNewBinsX;
+  unsigned int nNewBinsY;
+  unsigned int nNewBinsZ;
 
-  if (toBeConstr == "Y")
+
+  if (toBeAdded[0].size() == 0)
     {
-      unsigned int nNewBinsX;
       nNewBinsX = (*histo)->GetNbinsX()+1;
       reBinsX = new double[nNewBinsX];
       XAxis = (*histo)->GetXaxis();
       
       for (int i = 1; i <= (*histo)->GetNbinsX(); i++) reBinsX[i-1] = XAxis->GetBinLowEdge(i);
       reBinsX[(*histo)->GetNbinsX()] = XAxis->GetBinLowEdge((*histo)->GetNbinsX()) + XAxis->GetBinWidth((*histo)->GetNbinsX());
+    }
+  else
+    {
+      nNewBinsX = (*histo)->GetNbinsX()+3;
+      reBinsX = new double[nNewBinsX];
+      XAxis = (*histo)->GetXaxis();
       
-      
-      unsigned int nNewBinsY;
+      reBinsX[0] = XAxis->GetBinLowEdge(1) - err;
+      for (int i = 1; i <= (*histo)->GetNbinsX(); i++) reBinsX[i] = XAxis->GetBinLowEdge(i);
+      reBinsX[(*histo)->GetNbinsX()+1] = XAxis->GetBinLowEdge((*histo)->GetNbinsX()) + XAxis->GetBinWidth((*histo)->GetNbinsX());
+      reBinsX[(*histo)->GetNbinsX()+2] = reBinsX[(*histo)->GetNbinsX()+1] + err;
+    }
+
+  if (toBeAdded[1].size() == 0)
+    {
+      nNewBinsY = (*histo)->GetNbinsY()+1;
+      reBinsY = new double[nNewBinsY];
+      YAxis = (*histo)->GetYaxis();
+  
+      for (int i = 1; i <= (*histo)->GetNbinsY(); i++) reBinsY[i-1] = YAxis->GetBinLowEdge(i);
+      reBinsY[(*histo)->GetNbinsY()] = YAxis->GetBinLowEdge((*histo)->GetNbinsY()) + YAxis->GetBinWidth((*histo)->GetNbinsY());
+    }
+  else
+    {
       nNewBinsY = (*histo)->GetNbinsY()+3;
       reBinsY = new double[nNewBinsY];
       YAxis = (*histo)->GetYaxis();
-      
+  
       reBinsY[0] = YAxis->GetBinLowEdge(1) - err;
       for (int i = 1; i <= (*histo)->GetNbinsY(); i++) reBinsY[i] = YAxis->GetBinLowEdge(i);
       reBinsY[(*histo)->GetNbinsY()+1] = YAxis->GetBinLowEdge((*histo)->GetNbinsY()) + YAxis->GetBinWidth((*histo)->GetNbinsY());
       reBinsY[(*histo)->GetNbinsY()+2] = reBinsY[(*histo)->GetNbinsY()+1] + err;
-      
-
-      unsigned int nNewBinsZ;
-      nNewBinsZ = (*histo)->GetNbinsZ()+1;
-      reBinsZ = new double[nNewBinsZ];
-      ZAxis = (*histo)->GetZaxis();
-      
-      for (int i = 1; i <= (*histo)->GetNbinsZ(); i++) reBinsZ[i-1] = ZAxis->GetBinLowEdge(i);
-      reBinsZ[(*histo)->GetNbinsZ()] = ZAxis->GetBinLowEdge((*histo)->GetNbinsZ()) + ZAxis->GetBinWidth((*histo)->GetNbinsZ());
-
-      
-      myString.str("");
-      myString << (*histo)->GetName() << "_" << ID;
-      newHisto = new TH3D(myString.str().c_str(),myString.str().c_str(),nNewBinsX-1,reBinsX,nNewBinsY-1,reBinsY,nNewBinsZ-1,reBinsZ);
-
-
-      for (int k = 1; k <= (*histo)->GetNbinsZ(); k++)
-	{
-	  for (unsigned int i = 0; i < toBeAdded->size(); i++)
-	    {
-	      if ((toBeAdded->operator[](i) == "low") || (toBeAdded->operator[](i) == "both"))
-		{
-		  newHisto->SetBinContent(i+1,1,k,Tval);
-		  newHisto->SetBinError(i+1,1,k,errT);
-		}
-	      else
-		{
-		  newHisto->SetBinContent(i+1,1,k,0.0);
-		  newHisto->SetBinError(i+1,1,k,0.0);
-		}
-	      
-	      for (int j = 1; j <= (*histo)->GetNbinsY(); j++)
-		{
-		  newHisto->SetBinContent(i+1,j+1,k,(*histo)->GetBinContent(i+1,j,k));
-		  newHisto->SetBinError(i+1,j+1,k,(*histo)->GetBinError(i+1,j,k));
-		}
-	      
-	      if ((toBeAdded->operator[](i) == "high") || (toBeAdded->operator[](i) == "both"))
-		{
-		  newHisto->SetBinContent(i+1,(*histo)->GetNbinsY()+2,k,Tval);
-		  newHisto->SetBinError(i+1,(*histo)->GetNbinsY()+2,k,errT);
-		}
-	      else
-		{
-		  newHisto->SetBinContent(i+1,(*histo)->GetNbinsY()+2,k,0.0);
-		  newHisto->SetBinError(i+1,(*histo)->GetNbinsY()+2,k,0.0);
-		}
-	    }
-	}
     }
-  else if (toBeConstr == "X")
+
+  if (toBeAdded[2].size() == 0)
     {
-      unsigned int nNewBinsX;
-      nNewBinsX = (*histo)->GetNbinsX()+2;
-      reBinsX = new double[nNewBinsX];
-      XAxis = (*histo)->GetXaxis();
-      
-      for (int i = 1; i <= (*histo)->GetNbinsX(); i++) reBinsX[i-1] = XAxis->GetBinLowEdge(i);
-      reBinsX[(*histo)->GetNbinsX()] = XAxis->GetBinLowEdge((*histo)->GetNbinsX()) + XAxis->GetBinWidth((*histo)->GetNbinsX());
-      reBinsX[(*histo)->GetNbinsX()+1] = reBinsX[(*histo)->GetNbinsX()] + err;
-
-      
-      unsigned int nNewBinsY;
-      nNewBinsY = (*histo)->GetNbinsY()+1;
-      reBinsY = new double[nNewBinsY];
-      YAxis = (*histo)->GetYaxis();
-      
-      for (int i = 1; i <= (*histo)->GetNbinsY(); i++) reBinsY[i-1] = YAxis->GetBinLowEdge(i);
-      reBinsY[(*histo)->GetNbinsY()] = YAxis->GetBinLowEdge((*histo)->GetNbinsY()) + YAxis->GetBinWidth((*histo)->GetNbinsY());
-
-      
-      unsigned int nNewBinsZ;
       nNewBinsZ = (*histo)->GetNbinsZ()+1;
       reBinsZ = new double[nNewBinsZ];
       ZAxis = (*histo)->GetZaxis();
       
       for (int i = 1; i <= (*histo)->GetNbinsZ(); i++) reBinsZ[i-1] = ZAxis->GetBinLowEdge(i);
       reBinsZ[(*histo)->GetNbinsZ()] = ZAxis->GetBinLowEdge((*histo)->GetNbinsZ()) + ZAxis->GetBinWidth((*histo)->GetNbinsZ());
-
-
-      myString.str("");
-      myString << (*histo)->GetName() << "_" << ID;
-      newHisto = new TH3D(myString.str().c_str(),myString.str().c_str(),nNewBinsX-1,reBinsX,nNewBinsY-1,reBinsY,nNewBinsZ-1,reBinsZ);
-
-
-      for (int k = 1; k <= (*histo)->GetNbinsZ(); k++)
-	{
-	  for (int i = 1; i <= (*histo)->GetNbinsX(); i++)
-	    for (int j = 1; j <= (*histo)->GetNbinsY(); j++)
-	      {
-		newHisto->SetBinContent(i,j,k,(*histo)->GetBinContent(i,j,k));
-		newHisto->SetBinError(i,j,k,(*histo)->GetBinError(i,j,k));
-	      }      
-	  newHisto->SetBinContent((*histo)->GetNbinsX()+1,1,k,Tval);
-	  newHisto->SetBinError((*histo)->GetNbinsX()+1,1,k,errT);
-	  for (int j = 2; j < (*histo)->GetNbinsY(); j++)
-	    {
-	      newHisto->SetBinContent((*histo)->GetNbinsX()+1,j,k,Tval);
-	      newHisto->SetBinError((*histo)->GetNbinsX()+1,j,k,errT);
-	    }
-	  newHisto->SetBinContent((*histo)->GetNbinsX()+1,(*histo)->GetNbinsY(),k,Tval);
-	  newHisto->SetBinError((*histo)->GetNbinsX()+1,(*histo)->GetNbinsY(),k,errT);
-	}
     }
+  else
+    {
+      nNewBinsZ = (*histo)->GetNbinsZ()+3;
+      reBinsZ = new double[nNewBinsZ];
+      ZAxis = (*histo)->GetZaxis();
+      
+      reBinsZ[0] = ZAxis->GetBinLowEdge(1) - err;
+      for (int i = 1; i <= (*histo)->GetNbinsZ(); i++) reBinsZ[i] = ZAxis->GetBinLowEdge(i);
+      reBinsZ[(*histo)->GetNbinsZ()+1] = ZAxis->GetBinLowEdge((*histo)->GetNbinsZ()) + ZAxis->GetBinWidth((*histo)->GetNbinsZ());
+      reBinsZ[(*histo)->GetNbinsZ()+2] = reBinsZ[(*histo)->GetNbinsZ()+1] + err;
+    }
+
+  
+  myString.str("");
+  myString << (*histo)->GetName() << "_" << ID;
+  newHisto = new TH3D(myString.str().c_str(),myString.str().c_str(),nNewBinsX-1,reBinsX,nNewBinsY-1,reBinsY,nNewBinsZ-1,reBinsZ);
+
+
+  for (int i = 1; i <= newHisto->GetNbinsX(); i++)
+    for (int j = 1; j <= newHisto->GetNbinsY(); j++)
+      for (int k = 1; k <= newHisto->GetNbinsZ(); k++)
+	{
+	  // if ((toBeAdded[0][n] == i) && (toBeAdded[1][n] == j) && (toBeAdded[2][n] == k))
+	  //   {
+	  //     newHisto->SetBinContent(i,j,k,Tval);
+	  //     newHisto->SetBinError(i,j,k,Terr);
+	  //   }
+	  // else 
+	  //   {
+	  //   }
+	}
+
+
+  // for (unsigned int i = 0; i < toBeAdded->size(); i++)
+    // {
+    //   if ((toBeAdded->operator[](i) == "low") || (toBeAdded->operator[](i) == "both"))
+    // 	{
+    // 	  newHisto->SetBinContent(i+1,1,k,Tval);
+    // 	  newHisto->SetBinError(i+1,1,k,Terr);
+    // 	}
+    //   else
+    // 	{
+    // 	  newHisto->SetBinContent(i+1,1,k,0.0);
+    // 	  newHisto->SetBinError(i+1,1,k,0.0);
+    // 	}
+	      
+    //   for (int j = 1; j <= (*histo)->GetNbinsY(); j++)
+    // 	{
+    // 	  newHisto->SetBinContent(i+1,j+1,k,(*histo)->GetBinContent(i+1,j,k));
+    // 	  newHisto->SetBinError(i+1,j+1,k,(*histo)->GetBinError(i+1,j,k));
+    // 	}
+	      
+    //   if ((toBeAdded->operator[](i) == "high") || (toBeAdded->operator[](i) == "both"))
+    // 	{
+    // 	  newHisto->SetBinContent(i+1,(*histo)->GetNbinsY()+2,k,Tval);
+    // 	  newHisto->SetBinError(i+1,(*histo)->GetNbinsY()+2,k,Terr);
+    // 	}
+    //   else
+    // 	{
+    // 	  newHisto->SetBinContent(i+1,(*histo)->GetNbinsY()+2,k,0.0);
+    // 	  newHisto->SetBinError(i+1,(*histo)->GetNbinsY()+2,k,0.0);
+    // 	}
+    // }
 
 
   newHisto->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
@@ -2621,6 +2599,26 @@ void Utils::AddConstraint3D (TH3D** histo, double err, double Tval, double errT,
   delete reBinsX;
   delete reBinsY;
   delete reBinsZ;
+}
+
+void Utils::AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2BinIndx, double constrXYZerr, double constrTval, double constrTerr, unsigned int ID)
+// ####################################################
+// # toBeAdded[0] corresponds to the X axes cosThetaK #
+// # toBeAdded[1] corresponds to the Y axes cosThetaL #
+// # toBeAdded[2] corresponds to the Z axes phi       #
+// ####################################################
+{
+  std::vector<unsigned int> toBeAdded[3]; // Push_back bin-numbers
+  
+  if (q2BinIndx == 5)
+    {
+      toBeAdded[0].push_back(2);
+      toBeAdded[1].push_back(1);
+      toBeAdded[2].push_back(4);
+    }
+
+  if ((toBeAdded[0].size() != 0) || (toBeAdded[1].size() != 0) || (toBeAdded[2].size() != 0))
+    AddConstraint3D(histo,constrXYZerr,constrTval,constrTerr,ID,toBeAdded);
 }
 
 bool Utils::IsThereOddDegree (TF2* effFunc)

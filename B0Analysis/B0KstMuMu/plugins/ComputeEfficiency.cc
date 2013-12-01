@@ -1403,8 +1403,8 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   hisFunc3D->Draw("ISO");
 
 
-  // ##############################
-  // # Read analytical efficiency #
+  // #################################
+  // # Read analytical efficiency    #
   // #################################
   // # cos(theta_k) and cos(theta_l) #
   // #################################
@@ -1461,10 +1461,10 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
     }
 
 
-  // ############################################################################################
-  // # Add constraint along Y (= cosThetaL) where it is necessary to bound the function at zero #
-  // ############################################################################################
-  // Utility->AddConstraintThetaK(&hisFunc3D,cosThetaKBins,q2BinIndx,abscissaErr,ordinateVal,ordinateErr,q2BinIndx);
+  // ##################################################################
+  // # Add constraint along X or Y or Z to bound the function at zero #
+  // ##################################################################
+  Utility->AddConstraintThetaKThetaLPhi(&hisFunc3D,q2BinIndx,abscissaErr,ordinateVal,ordinateErr,q2BinIndx);
   hisFunc3D->SetMarkerStyle(20);
   hisFunc3D->SetMarkerColor(kBlack);
   hisFunc3D->GetXaxis()->SetTitleOffset(1.35);
@@ -1554,115 +1554,13 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   cout << "\tCL : " << TMath::Prob(fitResults->Chi2(),fitResults->Ndf()) << " @@@" << endl;
 
 
-  // ############################################################################################
-  // # Add constraint along X (= cosThetaK) where it is necessary to bound the function at zero #
-  // ############################################################################################
-  if (Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,effFunc3D) < 0.0)
-    {
-      cout << "@@@ Efficiency is still negative ! @@@" << endl;
-      
-      // Utility->AddConstraint3D(&hisFunc3D,abscissaErr,ordinateVal,ordinateErr,q2BinIndx,"X");
-      hisFunc3D->SetMarkerStyle(20);
-      hisFunc3D->SetMarkerColor(kBlack);
-      hisFunc3D->GetXaxis()->SetTitleOffset(1.35);
-      hisFunc3D->GetYaxis()->SetTitleOffset(1.35);
-      hisFunc3D->GetZaxis()->SetTitleOffset(1.35);
+  if (Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,effFunc3D) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
 
-      delete effHis3D;
-      fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VMRS");
-      if (fitResults != 0)
-	{
-	  cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: " << fitResults << endl;
-	  fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VRS");
-	}
-      TMatrixTSym<double> covMatrixConstr(fitResults->GetCovarianceMatrix());
-      if (fitResults != 0)
-	{
-	  cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: " << fitResults << endl;
-	  exit (EXIT_FAILURE);
-	}
-      else if (covMatrix.Determinant() <= 0.0)
-	{
-	  cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: covariance matrix not positive-defined" << endl;
-	  exit (EXIT_FAILURE);
-	}
-      else if (covMatrix.IsSymmetric() == false)
-	{
-	  cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: covariance matrix not symmetric" << endl;
-	  exit (EXIT_FAILURE);
-	}
-
-      effHis3D = Utility->Get3DEffHitoq2Bin("effHis3D",q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
-      effHis3D->SetMarkerStyle(22);
-      effHis3D->SetMarkerColor(kRed);
-      for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
-	for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
-	  for (unsigned int l = 0; l < phiBins->size()-1; l++)
-	    {
-	      coeff = effFunc3D->Eval((cosThetaKBins->operator[](j)+cosThetaKBins->operator[](j+1))/2.,
-				      (cosThetaLBins->operator[](k)+cosThetaLBins->operator[](k+1))/2.,
-				      (phiBins->operator[](l)+phiBins->operator[](l+1))/2.);
-	      effHis3D->SetBinContent(j+1,k+1,l+1,coeff);
-	      effHis3D->SetBinError(j+1,k+1,l+1,0.0);
-	    }
-
-      // #######################
-      // # Make 2D projections #
-      // #######################
-      cTestGlobalFit2D->cd(1);
-      hisFunc3D->Project3D("xy")->Draw("lego2");
-      effHis3D->Project3D("xy")->Draw("same surf");
-
-      cTestGlobalFit2D->cd(2);
-      hisFunc3D->Project3D("xz")->Draw("lego2");
-      effHis3D->Project3D("xz")->Draw("same surf");
-
-      cTestGlobalFit2D->cd(3);
-      hisFunc3D->Project3D("yz")->Draw("lego2");
-      effHis3D->Project3D("yz")->Draw("same surf");
-      cTestGlobalFit2D->Update();
-
-      // #######################
-      // # Make 1D projections #
-      // #######################
-      cTestGlobalFit1D->cd(1);
-      tmpHist1D = hisFunc3D->Project3D("x");
-      tmpHist1D->GetYaxis()->SetRangeUser(0.0,Yaxes);
-      tmpHist1D->Draw("pe1");
-      effHis3D->Project3D("x")->Draw("same pe1");
-
-      cTestGlobalFit1D->cd(2);
-      tmpHist1D = hisFunc3D->Project3D("y");
-      tmpHist1D->GetYaxis()->SetRangeUser(0.0,Yaxes);
-      tmpHist1D->Draw("pe1");
-      effHis3D->Project3D("y")->Draw("same pe1");
-
-      cTestGlobalFit1D->cd(3);
-      tmpHist1D = hisFunc3D->Project3D("z");
-      tmpHist1D->GetYaxis()->SetRangeUser(0.0,Yaxes);
-      tmpHist1D->Draw("pe1");
-      effHis3D->Project3D("z")->Draw("same pe1");
-      cTestGlobalFit1D->Update();
-   
-      cout << "@@@ chi2/DoF = " << fitResults->Chi2() / fitResults->Ndf() << " (" << fitResults->Chi2() << "/" << fitResults->Ndf() << ")";
-      cout << "\tCL : " << TMath::Prob(fitResults->Chi2(),fitResults->Ndf()) << " @@@" << endl;
-
-      Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFunc3D,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
-      fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
-      Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrixConstr,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
-
-      covMatrixConstr.Clear();
-
-      // if (Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,effFunc3D) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
-    }
-  else
-    {
-      Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFunc3D,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
-      fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
-      Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrix,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
-
-      covMatrix.Clear();
-    }
+  Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFunc3D,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
+  fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
+  Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrix,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
+  
+  covMatrix.Clear();
 
 
   // ########################################
