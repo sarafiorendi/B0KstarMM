@@ -70,7 +70,7 @@ void PrintCurrentTime ()
 
   time(&rawT);
   localT = localtime(&rawT);
-  cout << "\n@@@ The current date/time is: " << asctime(localT) << " @@@\n" << endl;
+  cout << "The current date/time is: " << asctime(localT) << endl;
 }
 
 
@@ -289,7 +289,8 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   NTupleB->ClearNTuple();
   NTupleB->SetBranchAddresses(theTreeInB);
   int nEntriesB = theTreeInB->GetEntries();
-  cout << "@@@ Total number of events in the Background tree: " << nEntriesB << " @@@" << endl;
+  cout << "\n@@@ Total number of events in the Background tree: " << nEntriesB << " @@@" << endl;
+  PrintCurrentTime();
 
   vector<double> countB;
   countB.assign(nBins,0);
@@ -391,6 +392,8 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   myString.str("");
   myString << "Scan_" << fileName << "_scanType" << scanType << "_q2Region" << q2Region << ".root";
   c0->Print(myString.str().c_str());
+
+  PrintCurrentTime();
 }
 
 

@@ -87,8 +87,8 @@ using std::vector;
 // ###################
 // # Fit constraints #
 // ###################
-#define abscissaErr   1e-2
-#define ordinateVal   1e-5
+#define abscissaErr   4e-2
+#define ordinateVal   1e-3
 #define ordinateErr   1e-5
 #define ordinateRange 1e-2
 
@@ -1373,15 +1373,21 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   string tmpString;
   double coeff;
   TH1* tmpHist1D;
+  TH2* tmpHist2D;
   TF1* effFunc1D;
   vector<TF2*> effFuncs2D;
   TF3* effFunc3D;
   TH3D* hisFunc3D;
   TH3D* effHis3D;
-  // #################
-  double Yaxes = 2e-1;
-  // #################
+  double Zmin, Zmax;
+  // ##################
+  double Yaxes  = 2e-1;
+  double Zscale =  1.1;
+  // ##################
 
+
+  TCanvas* cShow2DAnaEff = new TCanvas("cShow2DAnaEff", "cShow2DAnaEff", 10, 10, 900, 500);
+  cShow2DAnaEff->Divide(3,1);
 
   TCanvas* cTestGlobalFit2D = new TCanvas("cTestGlobalFit2D", "cTestGlobalFit2D", 10, 10, 900, 500);
   cTestGlobalFit2D->Divide(3,1);
@@ -1396,7 +1402,10 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   myString.str("");
   myString << "Histo_q2Bin_" << q2BinIndx;
   hisFunc3D = Utility->Get3DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
-
+  Zmin = hisFunc3D->GetMinimum();
+ 
+  cShow2DAnaEff->cd(1);
+  hisFunc3D->Draw("ISO");
   cTestGlobalFit2D->cd(1);
   hisFunc3D->Draw("ISO");
   cTestGlobalFit1D->cd(1);
@@ -1516,17 +1525,52 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // # Make 2D projections #
   // #######################
   cTestGlobalFit2D->cd(1);
-  hisFunc3D->Project3D("xy")->Draw("lego2");
-  effHis3D->Project3D("xy")->Draw("same surf");
+  tmpHist2D = static_cast<TH2D*>(hisFunc3D->Project3D("xy"));
+  Zmax = tmpHist2D->GetMaximum()*Zscale;
+  tmpHist2D->GetZaxis()->SetRangeUser(Zmin,Zmax);
+  tmpHist2D->Draw("lego2 fb");
+
+  tmpHist2D = static_cast<TH2D*>(effHis3D->Project3D("xy"));
+  tmpHist2D->GetZaxis()->SetRangeUser(Zmin,Zmax);
+  tmpHist2D->Draw("same surf fb");
+
+  cShow2DAnaEff->cd(1);
+  tmpHist2D = static_cast<TH2D*>(effHis3D->Project3D("xy"));
+  tmpHist2D->GetZaxis()->SetRangeUser(Zmin,Zmax);
+  tmpHist2D->Draw("surf2 fb");
 
   cTestGlobalFit2D->cd(2);
-  hisFunc3D->Project3D("xz")->Draw("lego2");
-  effHis3D->Project3D("xz")->Draw("same surf");
+  tmpHist2D = static_cast<TH2D*>(hisFunc3D->Project3D("xz"));
+  Zmax = tmpHist2D->GetMaximum()*Zscale;
+  tmpHist2D->GetZaxis()->SetRangeUser(Zmin,Zmax);
+  tmpHist2D->Draw("lego2 fb");
+
+  tmpHist2D = static_cast<TH2D*>(effHis3D->Project3D("xz"));
+  tmpHist2D->GetZaxis()->SetRangeUser(Zmin,Zmax);
+  tmpHist2D->Draw("same surf fb");
+
+  cShow2DAnaEff->cd(2);
+  tmpHist2D = static_cast<TH2D*>(effHis3D->Project3D("xz"));
+  tmpHist2D->GetZaxis()->SetRangeUser(Zmin,Zmax);
+  tmpHist2D->Draw("surf2 fb");
 
   cTestGlobalFit2D->cd(3);
-  hisFunc3D->Project3D("yz")->Draw("lego2");
-  effHis3D->Project3D("yz")->Draw("same surf");
+  tmpHist2D = static_cast<TH2D*>(hisFunc3D->Project3D("yz"));
+  Zmax = tmpHist2D->GetMaximum()*Zscale;
+  tmpHist2D->GetZaxis()->SetRangeUser(Zmin,Zmax);
+  tmpHist2D->Draw("lego2 fb");
+
+  tmpHist2D = static_cast<TH2D*>(effHis3D->Project3D("yz"));
+  tmpHist2D->GetZaxis()->SetRangeUser(Zmin,Zmax);
+  tmpHist2D->Draw("same surf fb");
+
+  cShow2DAnaEff->cd(3);
+  tmpHist2D = static_cast<TH2D*>(effHis3D->Project3D("yz"));
+  tmpHist2D->GetZaxis()->SetRangeUser(Zmin,Zmax);
+  tmpHist2D->Draw("surf2 fb");
+
   cTestGlobalFit2D->Update();
+  cShow2DAnaEff->Update();
 
   // #######################
   // # Make 1D projections #
@@ -1548,6 +1592,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   tmpHist1D->GetYaxis()->SetRangeUser(0.0,Yaxes);
   tmpHist1D->Draw("pe1");
   effHis3D->Project3D("z")->Draw("same pe1");
+
   cTestGlobalFit1D->Update();
 
   cout << "@@@ chi2/DoF = " << fitResults->Chi2() / fitResults->Ndf() << " (" << fitResults->Chi2() << "/" << fitResults->Ndf() << ")";

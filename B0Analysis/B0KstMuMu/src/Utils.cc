@@ -573,7 +573,7 @@ int Utils::SearchBin (double val2Search, std::vector<double>* bins)
 {
   unsigned int i = 0;
   for (i = 0; i < bins->size() - 1; i++) if ((val2Search >= bins->operator[](i)) && (val2Search < bins->operator[](i+1))) break;
-  
+
   if (i != bins->size() - 1) return i;
   return -1;
 }
@@ -1973,7 +1973,7 @@ double Utils::EffMinValue2D (std::vector<double>* cosThetaKBins, std::vector<dou
 
 double Utils::EffMinValue3D (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, TF3* effFunc)
 {
-  const unsigned int nsteps = 100;
+  const unsigned int nsteps = 200;
   unsigned int kMem = 0;
   unsigned int jMem = 0;
   unsigned int lMem = 0;
@@ -2010,17 +2010,17 @@ double Utils::EffMinValue3D (std::vector<double>* cosThetaKBins, std::vector<dou
 
   std::cout << "\n@@@ Efficiency minimal value (if less than zero): " << minVal << " at: (theta_K,theta_l,phi = " << valj << "," << valk << "," << vall << ")" << std::endl;
 
+  std::cout << "Corresponding to bin (theta_K,theta_l,phi): ";
+  std::cout << SearchBin(valj,cosThetaKBins) << ",";
+  std::cout << SearchBin(valk,cosThetaLBins) << ",";
+  std::cout << SearchBin(vall,phiBins) << std::endl;
+
   std::cout << "Grid step along cos(theta_K): ";
   std::cout << (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / static_cast<double>(nsteps);
   std::cout << "; grid step along cos(theta_l): ";
   std::cout << (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / static_cast<double>(nsteps);
   std::cout << "; grid step along phi: ";
   std::cout << (phiBins->operator[](phiBins->size()-1)             - phiBins->operator[](0))       / static_cast<double>(nsteps) << std::endl;
-
-  std::cout << "Corresponding to the bins (theta_K,theta_l,phi): ";
-  std::cout << SearchBin(valj,cosThetaKBins) << ",";
-  std::cout << SearchBin(valk,cosThetaLBins) << ",";
-  std::cout << SearchBin(vall,phiBins) << std::endl;
 
   return minVal;
 }
@@ -2468,6 +2468,10 @@ void Utils::AddConstraint3D (TH3D** histo, double err, double Tval, double Terr,
   unsigned int nNewBinsY;
   unsigned int nNewBinsZ;
 
+  int deltaX;
+  int deltaY;
+  int deltaZ;
+
 
   if (toBeAdded[0].size() == 0)
     {
@@ -2477,6 +2481,8 @@ void Utils::AddConstraint3D (TH3D** histo, double err, double Tval, double Terr,
       
       for (int i = 1; i <= (*histo)->GetNbinsX(); i++) reBinsX[i-1] = XAxis->GetBinLowEdge(i);
       reBinsX[(*histo)->GetNbinsX()] = XAxis->GetBinLowEdge((*histo)->GetNbinsX()) + XAxis->GetBinWidth((*histo)->GetNbinsX());
+
+      deltaX = 0;
     }
   else
     {
@@ -2488,6 +2494,8 @@ void Utils::AddConstraint3D (TH3D** histo, double err, double Tval, double Terr,
       for (int i = 1; i <= (*histo)->GetNbinsX(); i++) reBinsX[i] = XAxis->GetBinLowEdge(i);
       reBinsX[(*histo)->GetNbinsX()+1] = XAxis->GetBinLowEdge((*histo)->GetNbinsX()) + XAxis->GetBinWidth((*histo)->GetNbinsX());
       reBinsX[(*histo)->GetNbinsX()+2] = reBinsX[(*histo)->GetNbinsX()+1] + err;
+
+      deltaX = 1;
     }
 
   if (toBeAdded[1].size() == 0)
@@ -2498,6 +2506,8 @@ void Utils::AddConstraint3D (TH3D** histo, double err, double Tval, double Terr,
   
       for (int i = 1; i <= (*histo)->GetNbinsY(); i++) reBinsY[i-1] = YAxis->GetBinLowEdge(i);
       reBinsY[(*histo)->GetNbinsY()] = YAxis->GetBinLowEdge((*histo)->GetNbinsY()) + YAxis->GetBinWidth((*histo)->GetNbinsY());
+
+      deltaY = 0;
     }
   else
     {
@@ -2509,6 +2519,8 @@ void Utils::AddConstraint3D (TH3D** histo, double err, double Tval, double Terr,
       for (int i = 1; i <= (*histo)->GetNbinsY(); i++) reBinsY[i] = YAxis->GetBinLowEdge(i);
       reBinsY[(*histo)->GetNbinsY()+1] = YAxis->GetBinLowEdge((*histo)->GetNbinsY()) + YAxis->GetBinWidth((*histo)->GetNbinsY());
       reBinsY[(*histo)->GetNbinsY()+2] = reBinsY[(*histo)->GetNbinsY()+1] + err;
+
+      deltaY = 1;
     }
 
   if (toBeAdded[2].size() == 0)
@@ -2519,6 +2531,8 @@ void Utils::AddConstraint3D (TH3D** histo, double err, double Tval, double Terr,
       
       for (int i = 1; i <= (*histo)->GetNbinsZ(); i++) reBinsZ[i-1] = ZAxis->GetBinLowEdge(i);
       reBinsZ[(*histo)->GetNbinsZ()] = ZAxis->GetBinLowEdge((*histo)->GetNbinsZ()) + ZAxis->GetBinWidth((*histo)->GetNbinsZ());
+
+      deltaZ = 0;
     }
   else
     {
@@ -2530,6 +2544,8 @@ void Utils::AddConstraint3D (TH3D** histo, double err, double Tval, double Terr,
       for (int i = 1; i <= (*histo)->GetNbinsZ(); i++) reBinsZ[i] = ZAxis->GetBinLowEdge(i);
       reBinsZ[(*histo)->GetNbinsZ()+1] = ZAxis->GetBinLowEdge((*histo)->GetNbinsZ()) + ZAxis->GetBinWidth((*histo)->GetNbinsZ());
       reBinsZ[(*histo)->GetNbinsZ()+2] = reBinsZ[(*histo)->GetNbinsZ()+1] + err;
+
+      deltaZ = 1;
     }
 
   
@@ -2541,48 +2557,26 @@ void Utils::AddConstraint3D (TH3D** histo, double err, double Tval, double Terr,
   for (int i = 1; i <= newHisto->GetNbinsX(); i++)
     for (int j = 1; j <= newHisto->GetNbinsY(); j++)
       for (int k = 1; k <= newHisto->GetNbinsZ(); k++)
-	{
-	  // if ((toBeAdded[0][n] == i) && (toBeAdded[1][n] == j) && (toBeAdded[2][n] == k))
-	  //   {
-	  //     newHisto->SetBinContent(i,j,k,Tval);
-	  //     newHisto->SetBinError(i,j,k,Terr);
-	  //   }
-	  // else 
-	  //   {
-	  //   }
-	}
-
-
-  // for (unsigned int i = 0; i < toBeAdded->size(); i++)
-    // {
-    //   if ((toBeAdded->operator[](i) == "low") || (toBeAdded->operator[](i) == "both"))
-    // 	{
-    // 	  newHisto->SetBinContent(i+1,1,k,Tval);
-    // 	  newHisto->SetBinError(i+1,1,k,Terr);
-    // 	}
-    //   else
-    // 	{
-    // 	  newHisto->SetBinContent(i+1,1,k,0.0);
-    // 	  newHisto->SetBinError(i+1,1,k,0.0);
-    // 	}
-	      
-    //   for (int j = 1; j <= (*histo)->GetNbinsY(); j++)
-    // 	{
-    // 	  newHisto->SetBinContent(i+1,j+1,k,(*histo)->GetBinContent(i+1,j,k));
-    // 	  newHisto->SetBinError(i+1,j+1,k,(*histo)->GetBinError(i+1,j,k));
-    // 	}
-	      
-    //   if ((toBeAdded->operator[](i) == "high") || (toBeAdded->operator[](i) == "both"))
-    // 	{
-    // 	  newHisto->SetBinContent(i+1,(*histo)->GetNbinsY()+2,k,Tval);
-    // 	  newHisto->SetBinError(i+1,(*histo)->GetNbinsY()+2,k,Terr);
-    // 	}
-    //   else
-    // 	{
-    // 	  newHisto->SetBinContent(i+1,(*histo)->GetNbinsY()+2,k,0.0);
-    // 	  newHisto->SetBinError(i+1,(*histo)->GetNbinsY()+2,k,0.0);
-    // 	}
-    // }
+	for (unsigned int n = 0; n < toBeAdded[0].size(); n++)
+	  {
+	    if ((toBeAdded[0][n] == i) && (toBeAdded[1][n] == j) && (toBeAdded[2][n] == k))
+	      {
+		newHisto->SetBinContent(i,j,k,Tval);
+		newHisto->SetBinError(i,j,k,Terr);
+	      }
+	    else if (((toBeAdded[0].size() != 0) && ((i == 1) || (i == newHisto->GetNbinsX()))) ||
+		     ((toBeAdded[1].size() != 0) && ((j == 1) || (j == newHisto->GetNbinsY()))) ||
+		     ((toBeAdded[2].size() != 0) && ((k == 1) || (k == newHisto->GetNbinsZ()))))
+	      {
+		newHisto->SetBinContent(i,j,k,0.0);
+		newHisto->SetBinError(i,j,k,0.0);
+	      }
+	    else
+	      {
+		newHisto->SetBinContent(i,j,k,(*histo)->GetBinContent(i-deltaX,j-deltaY,k-deltaZ));
+		newHisto->SetBinError(i,j,k,(*histo)->GetBinError(i-deltaX,j-deltaY,k-deltaZ));
+	      }
+	  }
 
 
   newHisto->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
@@ -2602,19 +2596,23 @@ void Utils::AddConstraint3D (TH3D** histo, double err, double Tval, double Terr,
 }
 
 void Utils::AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2BinIndx, double constrXYZerr, double constrTval, double constrTerr, unsigned int ID)
-// ####################################################
-// # toBeAdded[0] corresponds to the X axes cosThetaK #
-// # toBeAdded[1] corresponds to the Y axes cosThetaL #
-// # toBeAdded[2] corresponds to the Z axes phi       #
-// ####################################################
+// ##########################################################
+// # toBeAdded[0] corresponds to the X axes cosThetaK       #
+// # toBeAdded[1] corresponds to the Y axes cosThetaL       #
+// # toBeAdded[2] corresponds to the Z axes phi             #
+// ##########################################################
+// # If #bin = 0, then push_back(#bin)                      #
+// # else if #bin is the upper edge, then push_back(#bin+2) #
+// # else push_back(#bin+1)                                 #
+// ##########################################################
 {
   std::vector<unsigned int> toBeAdded[3]; // Push_back bin-numbers
-  
+
   if (q2BinIndx == 5)
     {
-      toBeAdded[0].push_back(2);
-      toBeAdded[1].push_back(1);
-      toBeAdded[2].push_back(4);
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
+      toBeAdded[1].push_back((*histo)->GetNbinsY()+2);
+      toBeAdded[2].push_back(1+1);
     }
 
   if ((toBeAdded[0].size() != 0) || (toBeAdded[1].size() != 0) || (toBeAdded[2].size() != 0))

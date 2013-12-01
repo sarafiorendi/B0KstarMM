@@ -6,6 +6,12 @@ useJSON   = True
 printMsg  = False
 triggerProcessName = 'HLT' # 'GEN' or 'HLT' or 'RECO' or 'TEST' or ...
 
+print "\n@@@ CMSSW run configuration flags @@@"
+print "runDataMC          : ", runDataMC
+print "useJSON            : ", useJSON
+print "printMsg           : ", printMsg
+print "triggerProcessName : ", triggerProcessName
+
 
 #####################
 ### CMSSW configs ###

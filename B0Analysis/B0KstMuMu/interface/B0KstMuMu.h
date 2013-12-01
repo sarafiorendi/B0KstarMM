@@ -79,6 +79,9 @@ private:
   double HADDCASBS;
   double MINHADPT;
 
+  // ######################################
+  // # Ntuplizer configuration parameters #
+  // ######################################
   std::string hltTriggerResults_;
   std::string vtxSample_;
   std::string beamSpot_;

@@ -97,6 +97,16 @@ B0KstMuMu::B0KstMuMu (const edm::ParameterSet& iConfig) :
   
   theTree(0)
 {
+  std::cout << "\n@@@ Ntuplizer configuration parameters @@@" << std::endl;
+  std::cout << __LINE__ << " : hltTriggerResults    = " << hltTriggerResults_ << std::endl;
+  std::cout << __LINE__ << " : vtxSample     = " << vtxSample_ << std::endl;
+  std::cout << __LINE__ << " : beamSpot      = " << beamSpot_ << std::endl;
+  std::cout << __LINE__ << " : genParticles  = " << genParticles_ << std::endl;
+  std::cout << __LINE__ << " : trackType     = " << trackType_ << std::endl;
+  std::cout << __LINE__ << " : parameterFile = " << parameterFile_ << std::endl;
+  std::cout << __LINE__ << " : doGenReco     = " << doGenReco_ << std::endl;
+  std::cout << __LINE__ << " : printMsg      = " << printMsg << std::endl;
+
   NTuple = new B0KstMuMuTreeContent();
   NTuple->Init();
   NTuple->ClearNTuple();
@@ -2327,7 +2337,7 @@ void B0KstMuMu::endLuminosityBlock(const edm::LuminosityBlock& lumiBlock, const 
       if (printMsg == true)
 	{
 	  std::cout << "\n@@@ End of a luminosity block @@@" << std::endl;
-	  std::cout << __LINE__ << " : number of events tried = " << NTuple->numEventsTried << std::endl;
+	  std::cout << __LINE__ << " : number of events tried  = " << NTuple->numEventsTried << std::endl;
 	  std::cout << __LINE__ << " : number of events passed = " << NTuple->numEventsPassed << std::endl;
 	}
     }
