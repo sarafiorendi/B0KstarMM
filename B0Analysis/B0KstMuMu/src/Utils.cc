@@ -2449,7 +2449,7 @@ void Utils::AddConstraintThetaK (TH2D** histo, std::vector<double>* cosThetaKBin
   AddConstraint2D(histo,constrXYerr,constrZval,constrZerr,ID,"Y",&toBeAdded);
 }
 
-void Utils::AddConstraint3D (TH3D** histo, double err, double Tval, double Terr, unsigned int ID, std::vector<unsigned int> toBeAdded[])
+void Utils::AddConstraint3D (TH3D** histo, double err, double Tval, double Terr, unsigned int ID, std::vector<int> toBeAdded[])
 {
   std::stringstream myString;
   
@@ -2554,10 +2554,10 @@ void Utils::AddConstraint3D (TH3D** histo, double err, double Tval, double Terr,
   newHisto = new TH3D(myString.str().c_str(),myString.str().c_str(),nNewBinsX-1,reBinsX,nNewBinsY-1,reBinsY,nNewBinsZ-1,reBinsZ);
 
 
-  for (unsigned int i = 1; i <= newHisto->GetNbinsX(); i++)
-    for (unsigned int j = 1; j <= newHisto->GetNbinsY(); j++)
-      for (unsigned int k = 1; k <= newHisto->GetNbinsZ(); k++)
-	for (unsigned int n = 0; n < toBeAdded[0].size(); n++)
+  for (int i = 1; i <= newHisto->GetNbinsX(); i++)
+    for (int j = 1; j <= newHisto->GetNbinsY(); j++)
+      for (int k = 1; k <= newHisto->GetNbinsZ(); k++)
+	for (int n = 0; n < toBeAdded[0].size(); n++)
 	  {
 	    if ((toBeAdded[0][n] == i) && (toBeAdded[1][n] == j) && (toBeAdded[2][n] == k))
 	      {
@@ -2606,7 +2606,7 @@ void Utils::AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2BinIndx, 
 // # else push_back(#bin+1)                                 #
 // ##########################################################
 {
-  std::vector<unsigned int> toBeAdded[3]; // Push_back bin-numbers
+  std::vector<int> toBeAdded[3]; // Push_back bin-numbers
 
   if (q2BinIndx == 5)
     {

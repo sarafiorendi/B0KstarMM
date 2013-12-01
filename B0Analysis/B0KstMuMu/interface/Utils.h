@@ -214,7 +214,7 @@ class Utils
   void AddConstraintThetaL (TH1D** histo, unsigned int q2BinIndx, unsigned int cosThetaLBinIndx, double constrXerr, double constrYval, double constrYerr, unsigned int ID);
   void AddConstraint2D     (TH2D** histo, double err, double Zval, double Zerr, unsigned int ID, std::string toBeConstr, std::vector<std::string>* toBeAdded = NULL);
   void AddConstraintThetaK (TH2D** histo, std::vector<double>* cosThetaKBins, unsigned int q2BinIndx, double constrXYerr, double constrZval, double constrZerr, unsigned int ID);
-  void AddConstraint3D     (TH3D** histo, double err, double Tval, double Terr, unsigned int ID, std::vector<unsigned int> toBeAdded[]);
+  void AddConstraint3D     (TH3D** histo, double err, double Tval, double Terr, unsigned int ID, std::vector<int> toBeAdded[]);
   void AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2BinIndx, double constrXYZerr, double constrTval, double constrTerr, unsigned int ID);
 
   bool IsThereOddDegree (TF2* effFunc);
