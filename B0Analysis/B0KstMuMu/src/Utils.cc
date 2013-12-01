@@ -1815,13 +1815,13 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
       effFuncs->push_back(new TF3(myString.str().c_str(),TellMeEffFuncThetaKThetaLPhi().c_str(),
 				  cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),
 				  cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),
-				  phiBins->operator[](0),phiBins->operator[](cosThetaLBins->size()-1)));
+				  phiBins->operator[](0),      phiBins->operator[](cosThetaLBins->size()-1)));
       
       std::cout << "\n@@@ Reading coefficients for analytical efficiency for set-" << q2BinIndx << " from file " << fileNameEffParams.c_str() << " @@@" << std::endl;
       
       for (unsigned int k = 0; k < NcoeffThetaL; k++)
 	{
-	  std::stringstream rawStringK(ParVector[k+q2BinIndx*NcoeffThetaL]);
+	  std::stringstream rawStringK(ParVector[k+q2BinIndx*(NcoeffThetaL+1)]);
 	  rawStringK >> coeffVec[0]; // Discard q2 bin value
 	  indx = 0;
 	  for (unsigned int j = 0; j < NcoeffThetaK*2; j = j+2)
@@ -1839,7 +1839,7 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
 	    }
 	}
 
-      std::stringstream rawStringK(ParVector[NcoeffThetaL+q2BinIndx*NcoeffThetaL]);
+      std::stringstream rawStringK(ParVector[NcoeffThetaL+q2BinIndx*(NcoeffThetaL+1)]);
       rawStringK >> coeffVec[0]; // Discard q2 bin value
       indx = 0;
       for (unsigned int l = 0; l < NcoeffPhi*2; l = l+2)
