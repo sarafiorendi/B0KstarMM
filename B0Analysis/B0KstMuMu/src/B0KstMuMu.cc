@@ -2277,43 +2277,40 @@ void B0KstMuMu::beginJob ()
   // # Loading HLT-trigger cuts #
   // ############################
   Utility->ReadPreselectionCut(parameterFile_.c_str());
-  if (printMsg == true) std::cout << "\n@@@ Pre-selection cuts @@@" << std::endl;
-  CLMUMUVTX      = Utility->GetPreCut("MuMuVtxCL");      if (printMsg == true) std::cout << __LINE__ << " : CLMUMUVTX      = " << CLMUMUVTX << std::endl;
-  LSMUMUBS       = Utility->GetPreCut("MuMuLsBS");       if (printMsg == true) std::cout << __LINE__ << " : LSMUMUBS       = " << LSMUMUBS << std::endl;
-  DCAMUMU        = Utility->GetPreCut("DCAMuMu");        if (printMsg == true) std::cout << __LINE__ << " : DCAMUMU        = " << DCAMUMU << std::endl;
-  DCAMUBS        = Utility->GetPreCut("DCAMuBS");        if (printMsg == true) std::cout << __LINE__ << " : DCAMUBS        = " << DCAMUBS << std::endl;
-  COSALPHAMUMUBS = Utility->GetPreCut("cosAlphaMuMuBS"); if (printMsg == true) std::cout << __LINE__ << " : COSALPHAMUMUBS = " << COSALPHAMUMUBS << std::endl;
-  MUMINPT        = Utility->GetPreCut("MinMupT");        if (printMsg == true) std::cout << __LINE__ << " : MUMINPT        = " << MUMINPT << std::endl;
-  MUMAXETA       = Utility->GetPreCut("MuEta");          if (printMsg == true) std::cout << __LINE__ << " : MUMAXETA       = " << MUMAXETA << std::endl;
-  MINMUMUPT      = Utility->GetPreCut("MuMupT");         if (printMsg == true) std::cout << __LINE__ << " : MINMUMUPT      = " << MINMUMUPT << std::endl;
-  MINMUMUINVMASS = Utility->GetPreCut("MinMuMuMass");    if (printMsg == true) std::cout << __LINE__ << " : MINMUMUINVMASS = " << MINMUMUINVMASS << std::endl;
-  MAXMUMUINVMASS = Utility->GetPreCut("MaxMuMuMass");    if (printMsg == true) std::cout << __LINE__ << " : MAXMUMUINVMASS = " << MAXMUMUINVMASS << std::endl;
+  std::cout << "\n@@@ Pre-selection cuts @@@" << std::endl;
+  CLMUMUVTX      = Utility->GetPreCut("MuMuVtxCL");      std::cout << __LINE__ << " : CLMUMUVTX      = " << CLMUMUVTX << std::endl;
+  LSMUMUBS       = Utility->GetPreCut("MuMuLsBS");       std::cout << __LINE__ << " : LSMUMUBS       = " << LSMUMUBS << std::endl;
+  DCAMUMU        = Utility->GetPreCut("DCAMuMu");        std::cout << __LINE__ << " : DCAMUMU        = " << DCAMUMU << std::endl;
+  DCAMUBS        = Utility->GetPreCut("DCAMuBS");        std::cout << __LINE__ << " : DCAMUBS        = " << DCAMUBS << std::endl;
+  COSALPHAMUMUBS = Utility->GetPreCut("cosAlphaMuMuBS"); std::cout << __LINE__ << " : COSALPHAMUMUBS = " << COSALPHAMUMUBS << std::endl;
+  MUMINPT        = Utility->GetPreCut("MinMupT");        std::cout << __LINE__ << " : MUMINPT        = " << MUMINPT << std::endl;
+  MUMAXETA       = Utility->GetPreCut("MuEta");          std::cout << __LINE__ << " : MUMAXETA       = " << MUMAXETA << std::endl;
+  MINMUMUPT      = Utility->GetPreCut("MuMupT");         std::cout << __LINE__ << " : MINMUMUPT      = " << MINMUMUPT << std::endl;
+  MINMUMUINVMASS = Utility->GetPreCut("MinMuMuMass");    std::cout << __LINE__ << " : MINMUMUINVMASS = " << MINMUMUINVMASS << std::endl;
+  MAXMUMUINVMASS = Utility->GetPreCut("MaxMuMuMass");    std::cout << __LINE__ << " : MAXMUMUINVMASS = " << MAXMUMUINVMASS << std::endl;
   
   // ##############################
   // # Loading pre-selection cuts #
   // ##############################
-  B0MASSLOWLIMIT = Utility->GetPreCut("MinB0Mass"); if (printMsg == true) std::cout << __LINE__ << " : B0MASSLOWLIMIT = " << B0MASSLOWLIMIT << std::endl;
-  B0MASSUPLIMIT  = Utility->GetPreCut("MaxB0Mass"); if (printMsg == true) std::cout << __LINE__ << " : B0MASSUPLIMIT  = " << B0MASSUPLIMIT << std::endl;
-  CLB0VTX        = Utility->GetPreCut("B0VtxCL");   if (printMsg == true) std::cout << __LINE__ << " : CLB0VTX        = " << CLB0VTX << std::endl;
-  KSTMASSWINDOW  = Utility->GetPreCut("KstMass");   if (printMsg == true) std::cout << __LINE__ << " : KSTMASSWINDOW  = " << KSTMASSWINDOW << std::endl;
-  HADDCASBS      = Utility->GetPreCut("HadDCASBS"); if (printMsg == true) std::cout << __LINE__ << " : HADDCASBS      = " << HADDCASBS << std::endl;
-  MINHADPT       = Utility->GetPreCut("HadpT");     if (printMsg == true) std::cout << __LINE__ << " : MINHADPT       = " << MINHADPT << std::endl;
+  B0MASSLOWLIMIT = Utility->GetPreCut("MinB0Mass"); std::cout << __LINE__ << " : B0MASSLOWLIMIT = " << B0MASSLOWLIMIT << std::endl;
+  B0MASSUPLIMIT  = Utility->GetPreCut("MaxB0Mass"); std::cout << __LINE__ << " : B0MASSUPLIMIT  = " << B0MASSUPLIMIT << std::endl;
+  CLB0VTX        = Utility->GetPreCut("B0VtxCL");   std::cout << __LINE__ << " : CLB0VTX        = " << CLB0VTX << std::endl;
+  KSTMASSWINDOW  = Utility->GetPreCut("KstMass");   std::cout << __LINE__ << " : KSTMASSWINDOW  = " << KSTMASSWINDOW << std::endl;
+  HADDCASBS      = Utility->GetPreCut("HadDCASBS"); std::cout << __LINE__ << " : HADDCASBS      = " << HADDCASBS << std::endl;
+  MINHADPT       = Utility->GetPreCut("HadpT");     std::cout << __LINE__ << " : MINHADPT       = " << MINHADPT << std::endl;
 
-  if (printMsg == true)
-    {
-      std::cout << "\n@@@ Global constants @@@" << std::endl;
-      std::cout << __LINE__ << " : TRKMAXR    = " << TRKMAXR << std::endl;
+  std::cout << "\n@@@ Global constants @@@" << std::endl;
+  std::cout << __LINE__ << " : TRKMAXR    = " << TRKMAXR << std::endl;
+  
+  std::cout << __LINE__ << " : PRIVTXNDOF = " << PRIVTXNDOF << std::endl;
+  std::cout << __LINE__ << " : PRIVTXMAXZ = " << PRIVTXMAXZ << std::endl;
+  std::cout << __LINE__ << " : PRIVTXMAXR = " << PRIVTXMAXR << std::endl;
+  
+  std::cout << __LINE__ << " : MUVARTOLE  = " << MUVARTOLE << std::endl;
+  std::cout << __LINE__ << " : HADVARTOLE = " << HADVARTOLE << std::endl;
 
-      std::cout << __LINE__ << " : PRIVTXNDOF = " << PRIVTXNDOF << std::endl;
-      std::cout << __LINE__ << " : PRIVTXMAXZ = " << PRIVTXMAXZ << std::endl;
-      std::cout << __LINE__ << " : PRIVTXMAXR = " << PRIVTXMAXR << std::endl;
-
-      std::cout << __LINE__ << " : MUVARTOLE  = " << MUVARTOLE << std::endl;
-      std::cout << __LINE__ << " : HADVARTOLE = " << HADVARTOLE << std::endl;
-
-      std::cout << __LINE__ << " : RCUTMU     = " << RCUTMU << std::endl;
-      std::cout << __LINE__ << " : RCUTTRK    = " << RCUTTRK << std::endl;
-    }
+  std::cout << __LINE__ << " : RCUTMU     = " << RCUTMU << std::endl;
+  std::cout << __LINE__ << " : RCUTTRK    = " << RCUTTRK << std::endl;
 }
 
 
