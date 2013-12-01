@@ -2554,9 +2554,9 @@ void Utils::AddConstraint3D (TH3D** histo, double err, double Tval, double Terr,
   newHisto = new TH3D(myString.str().c_str(),myString.str().c_str(),nNewBinsX-1,reBinsX,nNewBinsY-1,reBinsY,nNewBinsZ-1,reBinsZ);
 
 
-  for (int i = 1; i <= newHisto->GetNbinsX(); i++)
-    for (int j = 1; j <= newHisto->GetNbinsY(); j++)
-      for (int k = 1; k <= newHisto->GetNbinsZ(); k++)
+  for (unsigned int i = 1; i <= newHisto->GetNbinsX(); i++)
+    for (unsigned int j = 1; j <= newHisto->GetNbinsY(); j++)
+      for (unsigned int k = 1; k <= newHisto->GetNbinsZ(); k++)
 	for (unsigned int n = 0; n < toBeAdded[0].size(); n++)
 	  {
 	    if ((toBeAdded[0][n] == i) && (toBeAdded[1][n] == j) && (toBeAdded[2][n] == k))
