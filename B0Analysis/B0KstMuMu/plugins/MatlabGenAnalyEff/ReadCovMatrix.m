@@ -1,14 +1,14 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Generate new efficiency functions from the mutivariate normal %
-% distribution of the parameters                                %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Generate new efficiency functions from the multivariate normal %
+% distribution of the parameters                                 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [q2Bin, meanVOut, errVOut, CovMOut, meanVOrig] =...
-    ReadCovMatrix(fidVal,fidCov,NcoeffThetaL,NcoeffThetaK)
+    ReadCovMatrix(fidVal,fidCov,NcoeffThetaL,NcoeffThetaK,NcoeffPhi)
 
 nRowVal = NcoeffThetaL;
 nColVal = NcoeffThetaK*2+1;
-nRowCov = NcoeffThetaL*NcoeffThetaK;
-nColCov = NcoeffThetaL*NcoeffThetaK+1;
+nRowCov = NcoeffThetaL*NcoeffThetaK+NcoeffPhi;
+nColCov = NcoeffThetaL*NcoeffThetaK+NcoeffPhi+1;
 
 % Read central values from file
 myStr = '%f';
@@ -16,6 +16,12 @@ for i = 1:nColVal-1
     myStr = [myStr ' %f'];
 end
 tmpMval = fscanf(fidVal,myStr,[nColVal nRowVal]);
+myStr = '%f';
+for i = 1:2*NcoeffPhi
+    myStr = [myStr ' %f'];
+end
+tmpMval = [[tmpMval] [[fscanf(fidVal,myStr,2*NcoeffPhi+1)]; [0.0; 0.0]]];
+
 
 % Read covariance matrix from file
 myStr = '%f';
@@ -34,6 +40,7 @@ meanV = ValM(1, 1:2:end);
 for i = 2:nRowVal
     meanV = [meanV ValM(i, 1:2:end)];
 end
+meanV = [meanV ValM(nRowVal+1, 1:2:2*NcoeffPhi)];
 meanVOrig = meanV;
 meanV = meanV';
 
@@ -71,5 +78,4 @@ CovMOut(:, rowIndx:length(CovM)) = [];
 CovMOut(rowIndx:length(CovM), :) = [];
 
 errVOut = errV;
-
 end

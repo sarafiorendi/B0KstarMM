@@ -6,11 +6,15 @@
 %%%%%%%%%%%%%%%%%%%%
 % Global variables %
 %%%%%%%%%%%%%%%%%%%%
-nFiles = 200; % Number of files to generate
-nBins  = 8;   % Number of q^2 bins
+nFiles   = 200; % Number of files to generate
+nBins    = 8;   % Number of q^2 bins
 startBin = 1;
+
 NcoeffThetaL = 5;
 NcoeffThetaK = 4;
+NcoeffPhi    = 3;
+
+showPlot = false;
 
 
 for i = 1:nFiles
@@ -19,9 +23,9 @@ for i = 1:nFiles
     %%%%%%%%%%%%%%
     fidINval    = fopen('../../../Efficiency/ThetaKThetaL_B0ToKstMuMu_B0ToJPsiKst_B0ToPsi2SKst.txt','r');
     fidINcov    = fopen('../../../Efficiency/ThetaKThetaLFullCovariance_B0ToKstMuMu_B0ToJPsiKst_B0ToPsi2SKst.txt','r');
-    
+
     fileNameOut = sprintf('../../../Efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen_%d.txt',i-1);
-    fidOUT = fopen(fileNameOut,'w+');
+    fidOUT      = fopen(fileNameOut,'w+');
 
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -29,28 +33,28 @@ for i = 1:nFiles
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     for j = 1:startBin-1
         [q2Bin,meanV,errV,CovM,meanVOrig] = ReadCovMatrix(fidINval,...
-            fidINcov,NcoeffThetaL,NcoeffThetaK);
+            fidINcov,NcoeffThetaL,NcoeffThetaK,NcoeffPhi);
     end
-
+    
     
     fprintf('Generating file %d \n',i);
     for j = startBin:startBin+nBins-1
         [q2Bin,meanV,errV,CovM,meanVOrig] = ReadCovMatrix(fidINval,...
-            fidINcov,NcoeffThetaL,NcoeffThetaK);
+            fidINcov,NcoeffThetaL,NcoeffThetaK,NcoeffPhi);
         
                 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Check if the efficiency is negative %
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        if (EvalEffFunc(meanVOrig) == 0)
+        if (EvalEffFunc(meanVOrig,showPlot) == false)
             fprintf('@@@ The origianl efficiency is negative @@@\n');
         else
             fprintf('@@@ The origianl efficiency is OK @@@\n');
         end
 
         
-        isPOS = 0;
-        while (isPOS == 0)            
+        isPOS = false;
+        while (isPOS == false)            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%
             % Make multvariate vector %
             %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -79,21 +83,19 @@ for i = 1:nFiles
             
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % Check if the efficiency is negative %
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            isPOS = EvalEffFunc(strechNewV');
-            if (isPOS == 0)
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+            isPOS = EvalEffFunc(strechNewV',showPlot);
+            if (isPOS == false)
                 fprintf('--> The new efficiency is negative\n');
             else
                 fprintf('--> The new efficiency is OK\n');
             end
         end
-        
- 
+       
         SaveMVNvecIntoFile(fidOUT,q2Bin,strechNewV,errV,...
-            NcoeffThetaL,NcoeffThetaK);
+            NcoeffThetaL,NcoeffThetaK,NcoeffPhi);
     end
 
-    
 fclose(fidINval);
 fclose(fidINcov);
 fclose(fidOUT);

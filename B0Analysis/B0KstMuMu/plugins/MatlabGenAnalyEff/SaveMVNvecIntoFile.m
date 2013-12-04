@@ -1,7 +1,8 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Save new mutivariate normal vector into file %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function SaveMVNvecIntoFile(fid,q2Bin,meanV,errV,NcoeffThetaL,NcoeffThetaK)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Save new multivariate normal vector into file %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function SaveMVNvecIntoFile(fid,q2Bin,meanV,errV,...
+    NcoeffThetaL,NcoeffThetaK,NcoeffPhi)
 
 for i = 1:NcoeffThetaL
     myS = sprintf('%f',q2Bin);
@@ -16,4 +17,18 @@ for i = 1:NcoeffThetaL
     end
     
     fprintf(fid,'%s\n',myS);
+end
+
+myS = sprintf('%f',q2Bin);
+
+for i = 1:NcoeffPhi
+    if (errV(i+NcoeffThetaL*NcoeffThetaK) ~= 0)
+        myS = strcat(myS,sprintf('   %e   0',...
+            meanV(i+NcoeffThetaL*NcoeffThetaK)));
+    else
+        myS = strcat(myS,'   0   0');
+    end
+end
+ 
+fprintf(fid,'%s\n',myS);
 end
