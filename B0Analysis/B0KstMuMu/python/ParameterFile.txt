@@ -82,14 +82,14 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # mu min pT [3.5 GeV/c]
 3.5
 
-# B0 L/sigma w/respect to BS [12.0]
-12.0
+# B0 L/sigma w/respect to BS [0.0]
+0.0
 
-# B0 Vtx CL [0.09]
-0.09
+# B0 Vtx CL [0.22]
+0.22
 
-# B0 cos(alpha) w/respect to BS [0.9994]
-0.9994
+# B0 cos(alpha) w/respect to BS [0.9997]
+0.9997
 
 # B0 pT [8.0 GeV/c]
 8.0
@@ -97,14 +97,14 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # B0 eta [2.2]
 2.2
 
-# hadron DCA/sigma w/respect to BS [1.3]
-1.3
+# hadron DCA/sigma w/respect to BS [3.0]
+3.0
 
-# hadron min pT [0.75 GeV/c]
-0.75
+# hadron min pT [0.5 GeV/c]
+0.5
 
-# K*0 (OR K*0bar) mass window [0.08 GeV/c2]
-0.08
+# K*0 (OR K*0bar) mass window [0.065 GeV/c2]
+0.065
 
 # KK mass [1.035 GeV/c2]
 1.035
