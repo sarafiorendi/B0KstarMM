@@ -106,8 +106,8 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # K*0 (OR K*0bar) mass window [0.065 GeV/c2]
 0.065
 
-# KK mass [1.035 GeV/c2]
-1.035
+# KK mass [0.0 GeV/c2]
+0.0
 
 ### Muon identification cuts ###
 # Muon selection: n. tracker layers [5.0]

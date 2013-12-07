@@ -44,7 +44,7 @@ using std::vector;
 // ####################
 #define ParameterFILE        "../python/ParameterFile.txt"
 #define ParameterFILE_MCGEN  "../results/ParameterFile_Sig_MCGEN.txt"
-#define ParameterFILE_MCRECO "../results/ParameterFile_Sig_MCRECO_sample.txt"
+#define ParameterFILE_MCRECO "../results/ParameterFile_Sig_MCRECO.txt"
 
 #define SMFL     "../../SMprediction/FLErr.dat"
 #define SMAFB    "../../SMprediction/AFBErr.dat"
@@ -53,12 +53,11 @@ using std::vector;
 #define SMBINAFB "../../SMprediction/BinnedAFB.dat"
 #define SMBINBF  "../../SMprediction/BinneddBFdq2.dat"
 
-#define SingleCand_MCkstJPsi  "Candidates/MonteCarlo/SingleCand/singleCand_B0ToJPsiKst_BrMC_NTuples_Merged_pileupW.root"
-#define SingleCand_MCkstPsi2S "Candidates/MonteCarlo/SingleCand/singleCand_B0ToPsi2SKst_BrMC_NTuples_Merged_pileupW.root"
-#define SingleCand_Data       "Candidates/Data/singleCand_B0ToKstMuMu_DataRRPRv4v5v6v1B_NTuples_Merged.root"
+#define SingleCand_MCkstJPsi  "Data2012B0KstMuMuResults/MonteCarlo/SingleCand/singleCand_B0ToPsi2SKst_MC_NTuple.root"
+#define SingleCand_MCkstPsi2S "Data2012B0KstMuMuResults/MonteCarlo/SingleCand/singleCand_B0ToJPsiKst_MC_NTuple.root"
+#define SingleCand_Data       "Data2012B0KstMuMuResults/Data2012/SingleCand/singleCand_B0ToKstMuMu_Data2012ABCD_NTuples.root"
 
 #define FitSysFILE "../../Efficiency/EffSystematicsData/FitSystematics_q2Bin.txt"
-#define OutHisto "Results"
 #define YvalueOutsideLimits 10.0 // Value given to bins with zero error in order not to show them
 #define FORPAPER true // "true" = make special layout for publication
 
@@ -248,21 +247,21 @@ void MakeComparisonDataMC (unsigned int plotType)
   // #########
   else if (plotType == 2)
     {
-      Xtitle = "#mu^{#font[122]{+}} p_{T} (GeV)";
+      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} p_{T} (GeV)";
       maxX = 40.0;
 
       fileName = "MuppT.pdf";
     }
   else if (plotType == 3)
     {
-      Xtitle = "#mu^{#font[122]{\55}} p_{T} (GeV)";
+      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}} p_{T} (GeV)";
       maxX = 40.0;
 
       fileName = "MumpT.pdf";
     }
   else if (plotType == 4)
     {
-      Xtitle = "#mu^{#font[122]{+}} #eta";
+      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #eta";
       minX = -2.4;
       maxX = 2.4;
 
@@ -270,7 +269,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 5)
     {
-      Xtitle = "#mu^{#font[122]{\55}} #eta";
+      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}} #eta";
       minX = -2.4;
       maxX = 2.4;
 
@@ -278,7 +277,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 6)
     {
-      Xtitle = "#mu^{#font[122]{+}} #phi";
+      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -292,7 +291,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 7)
     {
-      Xtitle = "#mu^{#font[122]{+}} #phi";
+      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -306,7 +305,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 8)
     {
-      Xtitle = "#mu^{#font[122]{+}} #phi";
+      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -320,7 +319,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 9)
     {
-      Xtitle = "#mu^{#font[122]{+}} #phi";
+      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -334,7 +333,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 10)
     {
-      Xtitle = "#mu^{#font[122]{\55}} #phi";
+      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -348,7 +347,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 11)
     {
-      Xtitle = "#mu^{#font[122]{\55}} #phi";
+      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -362,7 +361,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 12)
     {
-      Xtitle = "#mu^{#font[122]{\55}} #phi";
+      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -376,7 +375,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 13)
     {
-      Xtitle = "#mu^{#font[122]{\55}} #phi";
+      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -2098,12 +2097,12 @@ void PlotMuMu (string fileName, bool bkgSub)
   TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
 
   TH1D* hDsig = new TH1D("hDsig","hDsig",nBins,minX,maxX);
-  hDsig->SetXTitle("M(#mu^{#font[122]{+}}#mu^{#font[122]{\55}}) (GeV)");
+  hDsig->SetXTitle("M(#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
   hDsig->SetYTitle("Entries / (0.042 GeV)");
   hDsig->SetMarkerStyle(20);
 
   TH1D* hDbkg = new TH1D("hDbkg","hDbkg",nBins,minX,maxX);
-  hDbkg->SetXTitle("M(#mu^{#font[122]{+}}#mu^{#font[122]{\55}}) (GeV)");
+  hDbkg->SetXTitle("M(#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
   hDbkg->SetYTitle("Entries / (0.042 GeV)");
   hDbkg->SetMarkerStyle(20);
 
@@ -2378,12 +2377,12 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
   TCanvas* c2 = new TCanvas("c2","c2",30,30,700,500);
 
   TH1D* hKKSig = new TH1D("hKKSig","hKKSig",nBins,KKminX,KKmaxX);
-  hKKSig->SetXTitle("M(#font[122]{K}^{#font[122]{+}}#font[122]{K}^{#font[122]{\55}}) (GeV)");
+  hKKSig->SetXTitle("M(#font[122]{K}#lower[0.6]{^{#font[122]{+}}}#font[122]{K}#lower[0.6]{^{#font[122]{\55}}}) (GeV)");
   hKKSig->SetYTitle("Entries / (0.005 GeV)");
   hKKSig->SetFillColor(kAzure+6);
 
   TH1D* hKKBkg = new TH1D("hKKBkg","hKKBkg",nBins,KKminX,KKmaxX);
-  hKKBkg->SetXTitle("M(#font[122]{K}^{#font[122]{+}}#font[122]{K}^{#font[122]{\55}}) (GeV)");
+  hKKBkg->SetXTitle("M(#font[122]{K}#lower[0.6]{^{#font[122]{+}}}#font[122]{K}#lower[0.6]{^{#font[122]{\55}}}) (GeV)");
   hKKBkg->SetYTitle("Entries / (0.005 GeV)");
   hKKBkg->SetFillColor(kAzure+6);
 
@@ -2816,7 +2815,6 @@ int main (int argc, char** argv)
       cout << "SingleCand_Data: "        << SingleCand_Data << endl;
 
       cout << "\nFitSysFILE: "        << FitSysFILE << endl;
-      cout << "OutHisto: "            << OutHisto << endl;
       cout << "YvalueOutsideLimits: " << YvalueOutsideLimits << endl;
       cout << "FORPAPER: "            << FORPAPER << endl;
 

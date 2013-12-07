@@ -116,7 +116,7 @@ using namespace RooFit;
 #define TESTeffFUNC   false // Check whether efficiency goes negative
 #define SAVEPLOT      false
 #define FUNCERRBAND   false // Show the p.d.f. error band
-#define MakeMuMuPlots false
+#define MakeMuMuPlots true
 #define MAKEGRAPHSCAN false // Make graphical scan of the physics-pdf*eff or physics-pdf alone (ony valid for GEN fit type options)
 #define USEMINOS      false
 #define UseSPwave     true
