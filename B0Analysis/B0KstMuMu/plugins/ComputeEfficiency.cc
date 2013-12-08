@@ -74,7 +74,7 @@ using std::vector;
 // ####################
 #define INPUT_THETAL            "ThetaL_B0ToKstMuMu.txt"
 #define INPUT_PHI               "Phi_B0ToKstMuMu.txt"
-#define INPUT_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu.txt" // "ThetaK_B0ToKstMuMu.txt" OR "ThetaKThetaL_B0ToKstMuMu.txt"
+#define INPUT_THETAL_THETAK     "ThetaK_B0ToKstMuMu.txt" // "ThetaK_B0ToKstMuMu.txt" OR "ThetaKThetaL_B0ToKstMuMu.txt"
 #define INPUT_THETAL_THETAK_PHI "ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
 #define SavePlot       false
@@ -87,8 +87,8 @@ using std::vector;
 // ###################
 // # Fit constraints #
 // ###################
-#define abscissaErr   4e-2
-#define ordinateVal   1e-3
+#define abscissaErr   1e-2
+#define ordinateVal   1e-4
 #define ordinateErr   1e-5
 #define ordinateRange 1e-2
 
@@ -123,15 +123,15 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
 			vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, unsigned int SignalType);
 void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff);
 void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			 string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool saveHistos, int specBin = -1);
+			 string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool savePlot, int specBin = -1);
 void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut);
 void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
 void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
-void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool saveHistos);
-void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool saveHistos);
+void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool savePlot);
+void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool savePlot);
 
 
 // ###########################
@@ -301,7 +301,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   // ################
 
 
-  TCanvas* cEff = new TCanvas("cEff", "cEff", 10, 10, 1600, 900);
+  TCanvas* cEff = new TCanvas("cEff", "cEff", 10, 10, 1200, 800);
   cEff->Divide(2,2);
 
   TH1D* Hq2 = new TH1D("Hq2", "Hq2", q2Bins->size()-1, q2Bins_);
@@ -460,13 +460,13 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   cEff->Update();
 
 
-  TCanvas* cNumCosThetaK = new TCanvas("cNumCosThetaK", "cNumCosThetaK", 10, 10, 1600, 900);
+  TCanvas* cNumCosThetaK = new TCanvas("cNumCosThetaK", "cNumCosThetaK", 10, 10, 1200, 800);
   cNumCosThetaK->Divide(2,3);
 
-  TCanvas* cNumCosThetaL = new TCanvas("cNumCosThetaL", "cNumCosThetaL", 10, 10, 1600, 900);
+  TCanvas* cNumCosThetaL = new TCanvas("cNumCosThetaL", "cNumCosThetaL", 10, 10, 1200, 800);
   cNumCosThetaL->Divide(2,3);
 
-  TCanvas* cNumPhi = new TCanvas("cNumPhi", "cNumPhi", 10, 10, 1600, 900);
+  TCanvas* cNumPhi = new TCanvas("cNumPhi", "cNumPhi", 10, 10, 1200, 800);
   cNumPhi->Divide(2,3);
 
   vector<TH2D*> vecHq2ANDcosThetaK;
@@ -631,7 +631,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 
 
 void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			 string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool saveHistos, int specBin)
+			 string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool savePlot, int specBin)
 {
   // ###################
   // # Local variables #
@@ -888,7 +888,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
   cEff2->Update();
   cEff3->Update();
 
-  if (saveHistos == true)
+  if (savePlot == true)
     {
       if (isAnalyEff == false) cEff0->Print("Histo1.pdf");
       cEff1->Print("Histo2.pdf");
@@ -897,7 +897,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
     }
 
 
-  TCanvas* cStatK = new TCanvas("cStatK", "cStatK", 10, 10, 1600, 900);
+  TCanvas* cStatK = new TCanvas("cStatK", "cStatK", 10, 10, 1200, 800);
   cStatK->Divide(2,3);
 
   vector<TH1D*> HstatK;
@@ -914,7 +914,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
     }
 
 
-  TCanvas* cStatL = new TCanvas("cStatL", "cStatL", 10, 10, 1600, 900);
+  TCanvas* cStatL = new TCanvas("cStatL", "cStatL", 10, 10, 1200, 800);
   cStatL->Divide(2,3);
   
   vector<TH1D*> HstatL;
@@ -931,7 +931,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
     }
 
 
-  TCanvas* cStatPhi = new TCanvas("cStatPhi", "cStatPhi", 10, 10, 1600, 900);
+  TCanvas* cStatPhi = new TCanvas("cStatPhi", "cStatPhi", 10, 10, 1200, 800);
   cStatPhi->Divide(2,3);
   
   vector<TH1D*> HstatPhi;
@@ -1024,7 +1024,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // ###################
 
 
-  TCanvas* cEff = new TCanvas("cEff", "cEff", 10, 10, 1600, 900);
+  TCanvas* cEff = new TCanvas("cEff", "cEff", 10, 10, 1200, 800);
   cEff->Divide(3,2);
 
   if (who == "thetaL")
@@ -1183,7 +1183,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
     }
   else if (who == "phi")
     {
-      fileOutput.open(fileNameOut.replace(fileNameOut.find(".txt"),9,"Phi.txt").c_str(),ofstream::app);
+      fileOutput.open(fileNameOut.replace(fileNameOut.find("Theta.txt"),9,"Phi.txt").c_str(),ofstream::app);
       if (fileOutput.good() == false)
 	{
 	  cout << "[ComputeEfficiency::Fit1DEfficiencies]\tError opening file : " << fileNameOut.c_str() << endl;
@@ -1247,7 +1247,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
 
 void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut)
+			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut, bool savePlot)
 {
   // ###################
   // # Local variables #
@@ -1346,6 +1346,17 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   Utility->ReadAnalyticalEffFullCovariance(fileNameOut.c_str(),covMatrices,0);
 
 
+  // #############
+  // # Save plot #
+  // #############
+  if (savePlot == true)
+    {
+      myString.str("");
+      myString << "Eff2D_q2Bin_" << q2BinIndx << ".pdf";
+      cTestGlobalFit->Print(myString.str().c_str());
+    }
+
+
   effFuncs2D.clear();
   covMatrices->clear();
   delete covMatrices;
@@ -1353,7 +1364,7 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
 
 void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut)
+			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut, bool savePlot)
 {
   // ##########################
   // # Set histo layout style #
@@ -1377,10 +1388,11 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   TF3* effFunc3D;
   TH3D* effHis3D;
   double Zmin, Zmax;
-  // ##################
+  // #######################
+  double parErrorPhi = 1e-4;
   double Yaxes  = 2e-1;
   double Zscale =  1.1;
-  // ##################
+  // #######################
 
 
   TCanvas* cShow2DAnaEff = new TCanvas("cShow2DAnaEff", "cShow2DAnaEff", 10, 10, 900, 500);
@@ -1482,17 +1494,29 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // # Perform the fit of the analytical efficiency to the binned efficiency #
   // #########################################################################
   fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VMRS");
+  cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: " << fitResults << endl;
+
   if (fitResults != 0)
     {
-      cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: " << fitResults << endl;
       fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VRS");
+      cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: " << fitResults << endl;
     }
-  TMatrixTSym<double> covMatrix(fitResults->GetCovarianceMatrix());
+
   if (fitResults != 0)
     {
+      for (int i = 1; i < effFunc1D->GetNpar(); i++)
+	{
+	  effFunc3D->SetParameter(effFuncs2D[q2BinIndx]->GetNpar()+i,0.0);
+	  effFunc3D->SetParError(effFuncs2D[q2BinIndx]->GetNpar()+i,parErrorPhi);
+	}
+
+      fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VRS");
       cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: " << fitResults << endl;
-      exit (EXIT_FAILURE);
     }
+
+  TMatrixTSym<double> covMatrix(fitResults->GetCovarianceMatrix());
+
+  if (fitResults != 0) exit (EXIT_FAILURE);
   else if (covMatrix.Determinant() <= 0.0)
     {
       cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: covariance matrix not positive-defined" << endl;
@@ -1534,7 +1558,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   cShow2DAnaEff->cd(1);
   tmpHist2D = static_cast<TH2D*>(effHis3D->Project3D("xy"));
   tmpHist2D->GetZaxis()->SetRangeUser(Zmin,Zmax);
-  tmpHist2D->Draw("surf2 fb");
+  tmpHist2D->Draw("surf1 fb");
 
   cTestGlobalFit2D->cd(2);
   tmpHist2D = static_cast<TH2D*>(hisFunc3D->Project3D("xz"));
@@ -1549,7 +1573,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   cShow2DAnaEff->cd(2);
   tmpHist2D = static_cast<TH2D*>(effHis3D->Project3D("xz"));
   tmpHist2D->GetZaxis()->SetRangeUser(Zmin,Zmax);
-  tmpHist2D->Draw("surf2 fb");
+  tmpHist2D->Draw("surf1 fb");
 
   cTestGlobalFit2D->cd(3);
   tmpHist2D = static_cast<TH2D*>(hisFunc3D->Project3D("yz"));
@@ -1564,7 +1588,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   cShow2DAnaEff->cd(3);
   tmpHist2D = static_cast<TH2D*>(effHis3D->Project3D("yz"));
   tmpHist2D->GetZaxis()->SetRangeUser(Zmin,Zmax);
-  tmpHist2D->Draw("surf2 fb");
+  tmpHist2D->Draw("surf1 fb");
 
   cTestGlobalFit2D->Update();
   cShow2DAnaEff->Update();
@@ -1590,6 +1614,13 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   tmpHist1D->Draw("pe1");
   effHis3D->Project3D("z")->Draw("same pe1");
 
+  TLegend* leg = new TLegend(0.2, 0.8, 0.85, 0.95, "");
+  leg->AddEntry(hisFunc3D,"Binned efficiency");
+  leg->AddEntry(effHis3D,"Analytical efficiency");
+  leg->SetFillColor(0);
+  leg->SetBorderSize(0);
+  leg->Draw();
+
   cTestGlobalFit1D->Update();
 
   cout << "@@@ chi2/DoF = " << fitResults->Chi2() / fitResults->Ndf() << " (" << fitResults->Chi2() << "/" << fitResults->Ndf() << ")";
@@ -1612,13 +1643,32 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   Utility->ReadAnalyticalEffFullCovariance(fileNameOut.c_str(),covMatrices,0);
 
 
+  // #############
+  // # Save plot #
+  // #############
+  if (savePlot == true)
+    {
+      myString.str("");
+      myString << "Eff1D_q2Bin_" << q2BinIndx << ".pdf";
+      cTestGlobalFit1D->Print(myString.str().c_str());
+
+      myString.str("");
+      myString << "Eff2D_q2Bin_" << q2BinIndx << ".pdf";
+      cTestGlobalFit2D->Print(myString.str().c_str());
+
+      myString.str("");
+      myString << "Eff2Danaly_q2Bin_" << q2BinIndx << ".pdf";
+      cShow2DAnaEff->Print(myString.str().c_str());
+    }
+
+
   covMatrices->clear();
   delete covMatrices;
   delete effHis3D;
 }
 
 
-void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool saveHistos)
+void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool savePlot)
 {
   // ###################
   // # Local variables #
@@ -1637,7 +1687,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   // ###################
 
 
-  TCanvas* cEff      = new TCanvas("cEff", "cEff", 10, 10, 1600, 900);
+  TCanvas* cEff      = new TCanvas("cEff", "cEff", 10, 10, 1200, 800);
   cEff->Divide(7,2);
 
 
@@ -1748,7 +1798,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   cEff->cd(1);
   hisFunc2D->Draw("lego2 fb");
   cEff->Update();
-  if (saveHistos == true)
+  if (savePlot == true)
     {
       tmpString = INPUT_THETAL_THETAK;
       tmpString.erase(tmpString.find(".txt"),4);
@@ -1759,7 +1809,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
 }
 
 
-void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool saveHistos)
+void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool savePlot)
 {
   // ##########################
   // # Set histo layout style #
@@ -1923,7 +1973,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
 
 
   cEff->Update();
-  if (saveHistos == true)
+  if (savePlot == true)
     {
       tmpString = INPUT_THETAL_THETAK_PHI;
       tmpString.erase(tmpString.find(".txt"),4);
@@ -2093,8 +2143,8 @@ int main (int argc, char** argv)
 	  Utility->ReadEfficiency(fileNameInput.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,&myEff);
 
 	  if      (option == "Fit1DEff") Fit1DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,whichVar2Fit,q2BinIndx,"Theta.txt");
-	  else if (option == "Fit2DEff") Fit2DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,"ThetaKThetaL.txt");
-	  else if (option == "Fit3DEff") Fit3DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,"ThetaKThetaLPhi.txt");
+	  else if (option == "Fit2DEff") Fit2DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,"ThetaKThetaL.txt",SavePlot);
+	  else if (option == "Fit3DEff") Fit3DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,"ThetaKThetaLPhi.txt",SavePlot);
 
 
 	  delete Utility;

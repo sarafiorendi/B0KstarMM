@@ -141,7 +141,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Lower edge bin 2: 4.3 [GeV/c2]2
 4.3
 
-# Lower edge bin 4: 6.0 [GeV/c2]2
+# Lower edge bin 3: 6.0 [GeV/c2]2
 #6.0
 
 # Lower edge bin 3: 8.68 [GeV/c2]2

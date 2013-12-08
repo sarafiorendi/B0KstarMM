@@ -2048,7 +2048,7 @@ void PlotMuMu (string fileName, bool bkgSub)
   int nEntries;
   double minX = 0.8;
   double maxX = 5.0;
-  unsigned int nBins = 100;
+  unsigned int nBins = 300;
   stringstream myString;
   string sigMassQuery = "";
   string bkgMassQuery = "";
@@ -2098,12 +2098,12 @@ void PlotMuMu (string fileName, bool bkgSub)
 
   TH1D* hDsig = new TH1D("hDsig","hDsig",nBins,minX,maxX);
   hDsig->SetXTitle("M(#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
-  hDsig->SetYTitle("Entries / (0.042 GeV)");
+  hDsig->SetYTitle("Entries / (0.014 GeV)");
   hDsig->SetMarkerStyle(20);
 
   TH1D* hDbkg = new TH1D("hDbkg","hDbkg",nBins,minX,maxX);
   hDbkg->SetXTitle("M(#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
-  hDbkg->SetYTitle("Entries / (0.042 GeV)");
+  hDbkg->SetYTitle("Entries / (0.014 GeV)");
   hDbkg->SetMarkerStyle(20);
 
   theTree->Draw("mumuMass>>hDsig",sigMassQuery.c_str(),"goff");

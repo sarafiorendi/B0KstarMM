@@ -8574,7 +8574,7 @@ int main(int argc, char** argv)
 		  // # Make toy-MC for B0 inv. mass fit #
 		  // ####################################
 		  cout << "\n@@@ Now make TOY-MC for fit to B0 total invariant mass @@@" << endl;
-		  TCanvas* cToyMC = new TCanvas("cToyMC","cToyMC",10, 10, 1600, 900);
+		  TCanvas* cToyMC = new TCanvas("cToyMC","cToyMC",10, 10, 1200, 800);
 
 		  InstantiateMassFit(&TotalPDFRejectPsi,B0MassArb,"TotalPDFRejectPsi",&configParam,specBin);
 		  MakeMassToy(TotalPDFRejectPsi,B0MassArb,cToyMC,FitType,nToy,&configParam,specBin,&fitParam,&vecConstr,fileName);
@@ -8585,7 +8585,7 @@ int main(int argc, char** argv)
 		  // # Make toy-MC for B0 inv. mass fit and angle #
 		  // ##############################################
 		  cout << "\n@@@ Now make TOY-MC for fit to B0 total invariant mass and cos(theta_K) @@@" << endl;
-		  TCanvas* cToyMC = new TCanvas("cToyMC","cToyMC",10, 10, 1600, 900);
+		  TCanvas* cToyMC = new TCanvas("cToyMC","cToyMC",10, 10, 1200, 800);
 
 		  InstantiateMassAngleFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,CosThetaKArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,specBin,effFuncs[specBin],true);
 		  MakeMassAngleToy(TotalPDFRejectPsi,B0MassArb,CosThetaKArb,cToyMC,FitType,nToy,&configParam,specBin,&fitParam,&vecConstr,fileName);
@@ -8596,7 +8596,7 @@ int main(int argc, char** argv)
 		  // # Make toy-MC for B0 inv. mass fit and angle #
 		  // ##############################################
 		  cout << "\n@@@ Now make TOY-MC for fit to B0 total invariant mass and cos(theta_l) @@@" << endl;
-		  TCanvas* cToyMC = new TCanvas("cToyMC","cToyMC",10, 10, 1600, 900);
+		  TCanvas* cToyMC = new TCanvas("cToyMC","cToyMC",10, 10, 1200, 800);
 
 		  InstantiateMassAngleFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,CosThetaMuArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,specBin,effFuncs[specBin],true);
 		  MakeMassAngleToy(TotalPDFRejectPsi,B0MassArb,CosThetaMuArb,cToyMC,FitType,nToy,&configParam,specBin,&fitParam,&vecConstr,fileName);
@@ -8607,7 +8607,7 @@ int main(int argc, char** argv)
 		  // # Make toy-MC for B0 inv. mass fit and angle #
 		  // ##############################################
 		  cout << "\n@@@ Now make TOY-MC for fit to B0 total invariant mass and phi @@@" << endl;
-		  TCanvas* cToyMC = new TCanvas("cToyMC","cToyMC",10, 10, 1600, 900);
+		  TCanvas* cToyMC = new TCanvas("cToyMC","cToyMC",10, 10, 1200, 800);
 
 		  InstantiateMassAngleFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,PhiKstMuMuPlaneArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,specBin,effFuncs[specBin],true);
 		  MakeMassAngleToy(TotalPDFRejectPsi,B0MassArb,PhiKstMuMuPlaneArb,cToyMC,FitType,nToy,&configParam,specBin,&fitParam,&vecConstr,fileName);
@@ -8618,7 +8618,7 @@ int main(int argc, char** argv)
 		  // # Make toy-MC for B0 inv. mass fit and angles #
 		  // ###############################################
 		  cout << "\n@@@ Now make TOY-MC for fit to B0 total invariant mass and cos(theta_K) and cos(theta_l) @@@" << endl;
-		  TCanvas* cToyMC = new TCanvas("cToyMC","cToyMC",10, 10, 1600, 900);
+		  TCanvas* cToyMC = new TCanvas("cToyMC","cToyMC",10, 10, 1200, 800);
 
 		  InstantiateMass2AnglesFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,CosThetaMuArb,CosThetaKArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,specBin,effFuncs[specBin],true);
 		  MakeMass2AnglesToy(TotalPDFRejectPsi,B0MassArb,CosThetaMuArb,CosThetaKArb,cToyMC,FitType,nToy,&configParam,specBin,&fitParam,&vecConstr,fileName);
