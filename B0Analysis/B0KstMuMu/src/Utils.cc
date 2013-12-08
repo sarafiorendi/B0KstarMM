@@ -2618,16 +2618,16 @@ void Utils::AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2BinIndx, 
 
   if (q2BinIndx == 0)
     {
-      for (unsigned int i = 1; i <= (*histo)->GetNbinsZ()+2; i++)
+      for (int i = 1; i <= (*histo)->GetNbinsZ()+2; i++)
 	{
-	  for (unsigned int j = 1; j <= (*histo)->GetNbinsX()+2; j++)
+	  for (int j = 1; j <= (*histo)->GetNbinsX()+2; j++)
 	    {
 	      toBeAdded[0].push_back(j);
 	      toBeAdded[1].push_back(1);
 	      toBeAdded[2].push_back(i);
 	    }
 
-	  for (unsigned int j = 1; j <= (*histo)->GetNbinsX()+2; j++)
+	  for (int j = 1; j <= (*histo)->GetNbinsX()+2; j++)
 	    {
 	      toBeAdded[0].push_back(j);
 	      toBeAdded[1].push_back((*histo)->GetNbinsY()+2);
@@ -2642,16 +2642,16 @@ void Utils::AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2BinIndx, 
 
   if (q2BinIndx == 1)
     {
-      for (unsigned int i = 1; i <= (*histo)->GetNbinsZ()+2; i++)
+      for (int i = 1; i <= (*histo)->GetNbinsZ()+2; i++)
 	{
-	  for (unsigned int j = 1; j <= (*histo)->GetNbinsX()+2; j++)
+	  for (int j = 1; j <= (*histo)->GetNbinsX()+2; j++)
 	    {
 	      toBeAdded[0].push_back(j);
 	      toBeAdded[1].push_back(1);
 	      toBeAdded[2].push_back(i);
 	    }
 
-	  for (unsigned int j = 1; j <= (*histo)->GetNbinsX()+2; j++)
+	  for (int j = 1; j <= (*histo)->GetNbinsX()+2; j++)
 	    {
 	      toBeAdded[0].push_back(j);
 	      toBeAdded[1].push_back((*histo)->GetNbinsY()+2);
