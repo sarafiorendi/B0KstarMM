@@ -116,7 +116,7 @@ using namespace RooFit;
 #define TESTeffFUNC   false // Check whether efficiency goes negative
 #define SAVEPLOT      false
 #define FUNCERRBAND   false // Show the p.d.f. error band
-#define MakeMuMuPlots true
+#define MakeMuMuPlots false
 #define MAKEGRAPHSCAN false // Make graphical scan of the physics-pdf*eff or physics-pdf alone (ony valid for GEN fit type options)
 #define USEMINOS      false
 #define UseSPwave     true
@@ -3120,7 +3120,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   double signalSigma  = 0.0;
   double signalSigmaE = 0.0;
   int nElements = 4;
-  if (fitPSIintru == 1) nElements = 2;
+  if (fitPSIintru == 1)                          nElements = 2;
   else if (GetVar(*TotalPDF,"nBkgPeak") != NULL) nElements = 5;
 
 
@@ -4168,7 +4168,7 @@ RooFitResult* MakeMassAngleFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRe
   double signalSigma  = 0.0;
   double signalSigmaE = 0.0;
   int nElements = 4;
-  if (fitPSIintru == 1) nElements = 2;
+  if (fitPSIintru == 1)                          nElements = 2;
   else if (GetVar(*TotalPDF,"nBkgPeak") != NULL) nElements = 5;
   TCanvas* localCanv[3];
   localCanv[0] = new TCanvas("localCanv0","localCanv0",20,20,700,500);
@@ -5879,7 +5879,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
   double signalSigma  = 0.0;
   double signalSigmaE = 0.0;
   int nElements = 4;
-  if (fitPSIintru == 1) nElements = 2;
+  if (fitPSIintru == 1)                          nElements = 2;
   else if (GetVar(*TotalPDF,"nBkgPeak") != NULL) nElements = 5;
   TCanvas* localCanv[4];
   localCanv[0] = new TCanvas("localCanv0","localCanv0",20,20,700,500);

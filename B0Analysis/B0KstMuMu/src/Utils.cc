@@ -1379,9 +1379,9 @@ bool Utils::IntegrateEffPhi (std::vector<double>* q2Bins, std::vector<double>* c
 }
 
 unsigned int Utils::HLTpathForEvFraction (double evtFrac)
-//######################
-// Returned value >= 1 #
-//######################
+// #######################
+// # Returned value >= 1 #
+// #######################
 {
   // #####################################################################################
   // # This method is used together with the method: "ReadTriggerPathsANDCutsANDEntries" #
@@ -1403,11 +1403,14 @@ unsigned int Utils::HLTpathForEvFraction (double evtFrac)
 }
 
 unsigned int Utils::IsInTriggerTable (B0KstMuMuTreeContent* NTupleIn, double* HLTCutVar1, double* HLTCutVar2, int index, double evtFrac)
-// ##########################################################
-// # if index == -1 just split the sample in HLT categories #
-// # output > 0 if it's in trigger table                    #
-// # else output = 0                                        #
-// ##########################################################
+// #############################################################
+// # if index == -2 just check if the global trigger was fired #
+// # if index == -1 just split the sample in HLT categories    #
+// # else           check both global and muon triggers        #
+// #############################################################
+// # if it's in trigger table return > 0                       #
+// # else                     return 0                         #
+// #############################################################
 {
   // #####################################################################################
   // # This method is used together with the method: "ReadTriggerPathsANDCutsANDEntries" #
@@ -1418,21 +1421,22 @@ unsigned int Utils::IsInTriggerTable (B0KstMuMuTreeContent* NTupleIn, double* HL
   for (unsigned int j = 0; j < HLTpath.size(); j++)
     {
       if (evtFrac >= 0.0) HLTpathIndx = HLTpathForEvFraction(evtFrac)-1;
-      else HLTpathIndx = j;
+      else                HLTpathIndx = j;
       *HLTCutVar1 = VecHLTCutVar1[HLTpathIndx];
       *HLTCutVar2 = VecHLTCutVar2[HLTpathIndx];
       if (index == -1) return (j < HLTpath.size()-1 ? HLTpathIndx+1 : 1);
 
       for (it = 0; it < NTupleIn->TrigTable->size(); it++) if (NTupleIn->TrigTable->operator[](it).find(HLTpath[HLTpathIndx].c_str()) != std::string::npos) break;
-      
+
       if ((it < NTupleIn->TrigTable->size()) &&
-	  (NTupleIn->mumTrig->at(index).find(HLTpath[HLTpathIndx].c_str()) != std::string::npos) &&
-	  (NTupleIn->mupTrig->at(index).find(HLTpath[HLTpathIndx].c_str()) != std::string::npos))
+	  ((index == -2) ||
+	   ((NTupleIn->mumTrig->at(index).find(HLTpath[HLTpathIndx].c_str()) != std::string::npos) &&
+	    (NTupleIn->mupTrig->at(index).find(HLTpath[HLTpathIndx].c_str()) != std::string::npos))))
 	return HLTpathIndx+1;
-      
+
       if (evtFrac >= 0.0) break;
     }
-  
+
   return 0;
 }
 
@@ -2905,13 +2909,16 @@ unsigned int Utils::GetConfigParamIndx (std::string varName)
 }
 
 bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigCheck, double evFraction, int* BestCandIndx, bool* B0notB0bar, int* TrigCat, unsigned int* countCands)
-// ##############################################################################
-// # DoTrigCheck: to allow check on trigger requirements for muons:             #
-// # 0: do not perform any trigger check                                        #
-// # 1: perform normal trigger check                                            #
-// # 2: perform trigger check and split the sample in HLT categories            #
-// # 3: do NOT perform any trigger check and split the sample in HLT categories #
-// ##############################################################################
+// ###############################################################################
+// # DoTrigCheck: to allow check on trigger requirements for muons:              #
+// # 0: do not perform any trigger check                                         #
+// # 1: perform normal trigger check (i.e. both global and muon triggers are     #
+// #    associated to at least one trigger in configuration file)                #
+// # 2: perform patial trigger check (i.e. global trigger is associated to at    #
+// #    least one trigger in configuration file)                                 #
+// # 3: perform normal trigger check and split the sample in HLT categories      #
+// # 4: do NOT perform any trigger check and split the sample in HLT categories  #
+// ###############################################################################
 {
   // #####################################################################
   // # This method is used together with the method: "ReadSelectionCuts" #
@@ -2932,9 +2939,10 @@ bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigChe
       // ##############################################
       if (((DoTrigCheck == 0) ||
            ((DoTrigCheck == 1) && (IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, i) >= 1)) ||
-	   ((DoTrigCheck == 2) && (IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, i, evFraction) >= 1)) ||
-	   ((DoTrigCheck == 3) && (IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, -1, evFraction) >= 1))) &&
-	  
+           ((DoTrigCheck == 2) && (IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, -2) >= 1)) ||
+	   ((DoTrigCheck == 3) && (IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, i, evFraction) >= 1)) ||
+	   ((DoTrigCheck == 4) && (IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, -1, evFraction) >= 1))) &&
+
 	  // #####################
 	  // # Choose good muons #
 	  // #####################
