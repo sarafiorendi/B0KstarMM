@@ -155,14 +155,14 @@ void TruthMatching (string fileName, bool truthMatch)
   double maxX = 6.4;
   unsigned int nBins;
   if (truthMatch == true) nBins = 300;
-  else                    nBins = 40;
+  else                    nBins = 100;
 
   TH1D* hb = new TH1D("hb","hb",nBins,minX,maxX);
-  hb->SetXTitle("M(K #pi #mu^{+} #mu^{-}) (GeV)");
+  hb->SetXTitle("M(K #pi #mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
   hb->SetYTitle("Entries");
 
   TH1D* hbar = new TH1D("hbar","hbar",nBins,minX,maxX);
-  hbar->SetXTitle("M(K #pi #mu^{+} #mu^{-}) (GeV)");
+  hbar->SetXTitle("M(K #pi #mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
   hbar->SetYTitle("Entries");
 
   TF1 *f0, *f1;
@@ -194,7 +194,7 @@ void TruthMatching (string fileName, bool truthMatch)
       B0KstMuMuNTuple->Draw("bBarMass>>hbar","genSignal == 2 && truthMatchSignal == 0 && genSignHasFSR == 0");
       hb->Add(hbar);
 
-      f0 = new TF1("f0","[2]*TMath::Gaus(x,[0],[1]) + [4]*TMath::Gaus(x,[0],[3]) + ([5]+[6]*x)",minX,maxX);
+      f0 = new TF1("f0","[2]*TMath::Gaus(x,[0],[1]) + [4]*TMath::Gaus(x,[0],[3]) + ([5]+[6]*(x-[7])*(x-[7]))",minX,maxX);
 
       f0->SetParName(0,"G-Mean1");
       f0->SetParName(1,"G-Sigma1");
@@ -205,16 +205,18 @@ void TruthMatching (string fileName, bool truthMatch)
 
       f0->SetParName(5,"P-Offset");
       f0->SetParName(6,"P-Ampli");
+      f0->SetParName(7,"P-Shift");
 
       f0->SetParameter(0,5.28);
-      f0->SetParameter(1,0.4);
-      f0->SetParameter(2,90.0);
+      f0->SetParameter(1,0.1);
+      f0->SetParameter(2,30.0);
 
-      f0->SetParameter(3,0.2);
-      f0->SetParameter(4,60.0);
+      f0->SetParameter(3,0.03);
+      f0->SetParameter(4,50.0);
 
-      f0->SetParameter(5,20.0);
-      f0->SetParameter(6,-1.0);
+      f0->SetParameter(5,10.0);
+      f0->SetParameter(6,-4.0);
+      f0->SetParameter(7,5.28);
     }
 
 
