@@ -3017,8 +3017,9 @@ bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigChe
 	      (BestValTmp > BestVal))
 	    {
 	      if      (DoTrigCheck == 1) *TrigCat = IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, i);
-              else if (DoTrigCheck == 2) *TrigCat = IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, i, evFraction);
-              else if (DoTrigCheck == 3) *TrigCat = IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, -1, evFraction);
+              else if (DoTrigCheck == 2) *TrigCat = IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, -2);
+              else if (DoTrigCheck == 3) *TrigCat = IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, i, evFraction);
+              else if (DoTrigCheck == 4) *TrigCat = IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, -1, evFraction);
 
 	      BestVal       = BestValTmp;
 	      *BestCandIndx = i;
