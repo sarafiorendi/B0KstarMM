@@ -2909,16 +2909,16 @@ unsigned int Utils::GetConfigParamIndx (std::string varName)
 }
 
 bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigCheck, double evFraction, int* BestCandIndx, bool* B0notB0bar, int* TrigCat, unsigned int* countCands)
-// ###############################################################################
-// # DoTrigCheck: to allow check on trigger requirements for muons:              #
-// # 0: do not perform any trigger check                                         #
-// # 1: perform normal trigger check (i.e. both global and muon triggers are     #
-// #    associated to at least one trigger in configuration file)                #
-// # 2: perform patial trigger check (i.e. global trigger is associated to at    #
-// #    least one trigger in configuration file)                                 #
-// # 3: perform normal trigger check and split the sample in HLT categories      #
-// # 4: do NOT perform any trigger check and split the sample in HLT categories  #
-// ###############################################################################
+// ##############################################################################
+// # DoTrigCheck: to allow check on trigger requirements                        #
+// # 0: do not perform any trigger check                                        #
+// # 1: perform normal trigger check (i.e. both global and muon triggers are    #
+// #    associated to at least one trigger in configuration file)               #
+// # 2: perform partial trigger check (i.e. global trigger is associated to at  #
+// #    least one trigger in configuration file)                                #
+// # 3: perform normal trigger check and split the sample in HLT categories     #
+// # 4: do NOT perform any trigger check and split the sample in HLT categories #
+// ##############################################################################
 {
   // #####################################################################
   // # This method is used together with the method: "ReadSelectionCuts" #
@@ -2929,17 +2929,17 @@ bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigChe
   double BestVal   = 0.0;
   double BestValTmp;
 
-  *countCands = 0;
+  *countCands   =  0;
   *BestCandIndx = -1;
-  *TrigCat = 0;
+  *TrigCat      =  0;
   for (unsigned int i = 0; i < NTuple->bMass->size(); i++)
     {
       // ##############################################
       // # Candidate selection through kinematic cuts #
       // ##############################################
-      if (((DoTrigCheck == 0) ||
-           ((DoTrigCheck == 1) && (IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, i) >= 1)) ||
-           ((DoTrigCheck == 2) && (IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, -2) >= 1)) ||
+      if (((DoTrigCheck == 0)                                                                           ||
+           ((DoTrigCheck == 1) && (IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, i) >= 1))             ||
+           ((DoTrigCheck == 2) && (IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, -2) >= 1))            ||
 	   ((DoTrigCheck == 3) && (IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, i, evFraction) >= 1)) ||
 	   ((DoTrigCheck == 4) && (IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, -1, evFraction) >= 1))) &&
 
@@ -2948,17 +2948,17 @@ bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigChe
 	  // #####################
 	  (NTuple->mumNTrkLayers->at(i) > static_cast<int>(rint(GetSeleCut("NTrkLayers")))) &&
 	  (NTuple->mumNPixLayers->at(i) > static_cast<int>(rint(GetSeleCut("NPixLayers")))) &&
-	  (NTuple->mumNormChi2->at(i) < GetSeleCut("NormChi2")) &&
-	  (fabs(NTuple->mumdxyVtx->at(i)) < GetSeleCut("dxyVtx")) &&
-	  (fabs(NTuple->mumdzVtx->at(i)) < GetSeleCut("dzVtx")) &&
-	  (NTuple->mumCat->at(i).find("TMOneStationTight") != std::string::npos) &&
+	  (NTuple->mumNormChi2->at(i) < GetSeleCut("NormChi2"))                             &&
+	  (fabs(NTuple->mumdxyVtx->at(i)) < GetSeleCut("dxyVtx"))                           &&
+	  (fabs(NTuple->mumdzVtx->at(i)) < GetSeleCut("dzVtx"))                             &&
+	  (NTuple->mumCat->at(i).find("TMOneStationTight") != std::string::npos)            &&
 	  
 	  (NTuple->mupNTrkLayers->at(i) > static_cast<int>(rint(GetSeleCut("NTrkLayers")))) &&
 	  (NTuple->mupNPixLayers->at(i) > static_cast<int>(rint(GetSeleCut("NPixLayers")))) &&
-	  (NTuple->mupNormChi2->at(i) < GetSeleCut("NormChi2")) &&
-	  (fabs(NTuple->mupdxyVtx->at(i)) < GetSeleCut("dxyVtx")) &&
-	  (fabs(NTuple->mupdzVtx->at(i)) < GetSeleCut("dzVtx")) &&
-	  (NTuple->mupCat->at(i).find("TMOneStationTight") != std::string::npos) &&
+	  (NTuple->mupNormChi2->at(i) < GetSeleCut("NormChi2"))                             &&
+	  (fabs(NTuple->mupdxyVtx->at(i)) < GetSeleCut("dxyVtx"))                           &&
+	  (fabs(NTuple->mupdzVtx->at(i)) < GetSeleCut("dzVtx"))                             &&
+	  (NTuple->mupCat->at(i).find("TMOneStationTight") != std::string::npos)            &&
 	  
 	  // #########################################
 	  // # Check that hadron track is NOT a muon #
@@ -2969,11 +2969,11 @@ bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigChe
 	  // #####################
 	  // # B0 selection cuts #
 	  // #####################
-	  (NTuple->bLBS->at(i)/NTuple->bLBSE->at(i) > GetSeleCut("B0LsBS")) &&
-	  (NTuple->bVtxCL->at(i) > GetSeleCut("B0VtxCL")) &&
-	  (NTuple->bCosAlphaBS->at(i) > GetSeleCut("B0cosAlpha")) &&
+	  (NTuple->bLBS->at(i)/NTuple->bLBSE->at(i) > GetSeleCut("B0LsBS"))                                          &&
+	  (NTuple->bVtxCL->at(i) > GetSeleCut("B0VtxCL"))                                                            &&
+	  (NTuple->bCosAlphaBS->at(i) > GetSeleCut("B0cosAlpha"))                                                    &&
 	  (sqrt(NTuple->bPx->at(i)*NTuple->bPx->at(i) + NTuple->bPy->at(i)*NTuple->bPy->at(i)) > GetSeleCut("B0pT")) &&
-	  (fabs(computeEta(NTuple->bPx->at(i),NTuple->bPy->at(i),NTuple->bPz->at(i))) < GetSeleCut("B0Eta")) &&
+	  (fabs(computeEta(NTuple->bPx->at(i),NTuple->bPy->at(i),NTuple->bPz->at(i))) < GetSeleCut("B0Eta"))         &&
 
 	  // #######################
 	  // # Muon selection cuts #
