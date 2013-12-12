@@ -3012,9 +3012,7 @@ bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigChe
 	  (*countCands)++;
 
 	  BestValTmp = NTuple->bVtxCL->at(i);
-	  if (((fabs(NTuple->kstMass->at(i) - kstMass) < 3.0*kstSigma) || (fabs(NTuple->kstBarMass->at(i) - kstMass) < 3.0*kstSigma)) &&
-	      ((fabs(NTuple->kstMass->at(i) - kstMass) > 1.0*kstSigma) || (fabs(NTuple->kstBarMass->at(i) - kstMass) > 1.0*kstSigma)) &&
-	      (BestValTmp > BestVal))
+	  if (BestValTmp > BestVal)
 	    {
 	      if      (DoTrigCheck == 1) *TrigCat = IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, i);
               else if (DoTrigCheck == 2) *TrigCat = IsInTriggerTable(NTuple, &MuMuVtxCL, &MinMupT, -2);
