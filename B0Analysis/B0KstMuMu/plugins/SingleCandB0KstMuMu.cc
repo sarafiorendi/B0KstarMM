@@ -455,9 +455,9 @@ void SelectBestCand (int SignalType)
 
 void BestCandPerformance (int SignalType)
 {
-  // #######################################################
-  // # Compute efficiency, purity and B-tagging efficiency #
-  // #######################################################
+  // ##############################################################
+  // # Compute efficiency, purity and B-flavor tagging efficiency #
+  // ##############################################################
   unsigned int coutGoodEv          = 0;
   unsigned int countSeleEv         = 0;
   unsigned int countGoodBTag       = 0;
@@ -523,9 +523,9 @@ void BestCandPerformance (int SignalType)
 
   cout << "\n@@@ Efficiency: " << static_cast<double>(countGoodSeleEv) / static_cast<double>(coutGoodEv) * 100. << " @@@" << endl;
   cout << "@@@ Purity: " << static_cast<double>(countGoodSeleEv) / static_cast<double>(countSeleEv) * 100. << " @@@" << endl;
-  cout << "@@@ Total B-tagging efficiency: " << static_cast<double>(countGoodBTag+countGoodBbarTag) / static_cast<double>(countGoodSeleEv) * 100. << " @@@" << endl;
-  cout << "@@@ B-tagging efficiency: " << static_cast<double>(countGoodBbarTag) / static_cast<double>(countGoodBSeleEv) * 100. << " @@@" << endl;
-  cout << "@@@ Bbar-tagging efficiency: " << static_cast<double>(countGoodBbarTag) / static_cast<double>(countGoodBbarSeleEv) * 100. << " @@@" << endl;
+  cout << "@@@ Total B-flavor tagging efficiency: " << static_cast<double>(countGoodBTag+countGoodBbarTag) / static_cast<double>(countGoodSeleEv) * 100. << " @@@" << endl;
+  cout << "@@@ B-flavor tagging efficiency: " << static_cast<double>(countGoodBbarTag) / static_cast<double>(countGoodBSeleEv) * 100. << " @@@" << endl;
+  cout << "@@@ Bbar-flavor tagging efficiency: " << static_cast<double>(countGoodBbarTag) / static_cast<double>(countGoodBbarSeleEv) * 100. << " @@@" << endl;
   cout << "@@@ Average number of candidates after all cuts applied but B0-vtx CL: " << countCandsAVG << " @@@" << endl;
 }
 
@@ -585,7 +585,7 @@ int main (int argc, char** argv)
 	      cout << "[SingleCandB0KstMuMu::main]\tWrong option: " << option << endl;
 	      exit (EXIT_FAILURE);
 	    }
-	  cout << "\n@@@ Single candidate optimization cut done @@@" << endl;
+	  cout << "\n@@@ Single candidate program done @@@" << endl;
 
 
 	  // #############
