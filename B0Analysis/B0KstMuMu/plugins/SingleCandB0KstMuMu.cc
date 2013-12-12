@@ -49,7 +49,7 @@ B0KstMuMuSingleCandTreeContent* NTupleOut;
 // #######################
 // # Function Definition #
 // #######################
-void SelectBestCand (int SignalType);
+void SelectBestCand      (int SignalType);
 void BestCandPerformance (int SignalType);
 
 

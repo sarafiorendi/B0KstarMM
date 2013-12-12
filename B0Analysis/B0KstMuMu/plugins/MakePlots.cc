@@ -71,19 +71,19 @@ Utils* Utility;
 // #######################
 // # Function Definition #
 // #######################
-void DrawString (double Lumi);
-void MakeComparisonDataMC (unsigned int plotType);
-TCutG* DrawExclusion (double Xlow, double Xhigh, double Ylow, double Yhigh, string cutName, unsigned int fillStyle, unsigned int color);
+void DrawString            (double Lumi);
+void MakeComparisonDataMC  (unsigned int plotType);
+TCutG* DrawExclusion       (double Xlow, double Xhigh, double Ylow, double Yhigh, string cutName, unsigned int fillStyle, unsigned int color);
 TGraphAsymmErrors* ReadFromASCII (string fileName, unsigned int PlotType, vector<double>* q2Bins, vector<double>* vxs, vector<double>* vys, vector<double>* vxel, vector<double>* vxeh, vector<double>* vyel, vector<double>* vyeh);
-void CheckPhysicsRegion ();
-void MakePhysicsPlots (unsigned int PlotType);
-void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName, double NLLinterval, double NLLlessThan);
-void PlotMuMu (string fileName, bool bkgSub);
-void PlotKst (string fileName, bool bkgSub);
-void PlotKK (string fileName, bool bkgSub, string RECOorGEN);
-void PlotMuHadMass (string fileName);
+void CheckPhysicsRegion    ();
+void MakePhysicsPlots      (unsigned int PlotType);
+void EvalMultyRun          (unsigned int sysType, unsigned int q2BinIndx, string fileName, double NLLinterval, double NLLlessThan);
+void PlotMuMu              (string fileName, bool bkgSub);
+void PlotKst               (string fileName, bool bkgSub);
+void PlotKK                (string fileName, bool bkgSub, string RECOorGEN);
+void PlotMuHadMass         (string fileName);
 void MakeupNLLandPULLplots (string fileName, string plotType);
-void MakePvaluePlot (string fileName, string plotType, int specBin);
+void MakePvaluePlot        (string fileName, string plotType, int specBin);
 
 
 // ###########################

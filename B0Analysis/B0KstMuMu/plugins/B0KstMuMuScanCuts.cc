@@ -56,8 +56,8 @@ vector<double> phiBins;
 // #######################
 // # Function Definition #
 // #######################
-void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFile, string DataFile);
 void PrintCurrentTime ();
+void CutOptimization  (unsigned int scanType, unsigned int q2Region, string MCFile, string DataFile);
 
 
 // ###########################

@@ -72,28 +72,28 @@ using std::vector;
 // #######################
 // # Function Definition #
 // #######################
-TH1D* ComputeCumulative(TH1D* hIN, string hCumulName);
-void TruthMatching (string fileName, bool truthMatch);
-void dBFfromGEN (string fileName);
-void CompareCosMassGENRECO (string fileNameRECO, string fileNameGEN);
-void ComputePileUp (string fileName);
-void PlotVtxWithPileUpW (string fileNameMC, string fileNameData, unsigned int TrigCat, bool withWeights);
-void PlotPileUp (string fileNameMC1, string fileNameMC2);
-void PlotCutScans (string fileName, string type);
-void PlotEffPlots (string fileName, unsigned int plotN, unsigned int binN);
-void PlotB0vsMuMu (string fileName, bool rejectPsi);
-void PlotBkgMC (string fileName, bool iFit, double scaleMCdata);
-void ReduceTree (string fileNameIn, string fileNameOut);
-void SampleMCforPileup (string fileNameIn, string fileNameOut);
-void DivideNTuple (string fileNameIn, string fileNameOut, unsigned int n);
-void SampleNTuple (string fileNameIn, string fileNameOut, double fraction);
-void ComputeMCfilterEff (string fileName);
-void DrawString (double Lumi);
-TCutG* DrawExclusion (double Xlow, double Xhigh, double Ylow, double Yhigh, string cutName, unsigned int fillStyle, unsigned int color);
-void printData (int nBins, TVectorD V1, TVectorD V2, TVectorD V3, TVectorD V4, TVectorD V5, TVectorD V6);
-void offsetData (int nBins, TVectorD* V1, TVectorD* V2, TVectorD* V3, double offset);
+TH1D* ComputeCumulative     (TH1D* hIN, string hCumulName);
+void TruthMatching          (string fileName, bool truthMatch);
+void dBFfromGEN             (string fileName);
+void CompareCosMassGENRECO  (string fileNameRECO, string fileNameGEN);
+void ComputePileUp          (string fileName);
+void PlotVtxWithPileUpW     (string fileNameMC, string fileNameData, unsigned int TrigCat, bool withWeights);
+void PlotPileUp             (string fileNameMC1, string fileNameMC2);
+void PlotCutScans           (string fileName, string type);
+void PlotEffPlots           (string fileName, unsigned int plotN, unsigned int binN);
+void PlotB0vsMuMu           (string fileName, bool rejectPsi);
+void PlotBkgMC              (string fileName, bool iFit, double scaleMCdata);
+void ReduceTree             (string fileNameIn, string fileNameOut);
+void SampleMCforPileup      (string fileNameIn, string fileNameOut);
+void DivideNTuple           (string fileNameIn, string fileNameOut, unsigned int n);
+void SampleNTuple           (string fileNameIn, string fileNameOut, double fraction);
+void ComputeMCfilterEff     (string fileName);
+void DrawString             (double Lumi);
+TCutG* DrawExclusion        (double Xlow, double Xhigh, double Ylow, double Yhigh, string cutName, unsigned int fillStyle, unsigned int color);
+void printData              (int nBins, TVectorD V1, TVectorD V2, TVectorD V3, TVectorD V4, TVectorD V5, TVectorD V6);
+void offsetData             (int nBins, TVectorD* V1, TVectorD* V2, TVectorD* V3, double offset);
 TGraphAsymmErrors* readData (TString fileName, int dataType, int color, int markerType, bool doFill, int fillStyle, bool noHbar, double offset);
-void showData (int dataType, double offset, bool noHbar);
+void showData               (int dataType, double offset, bool noHbar);
 
 
 // ###########################

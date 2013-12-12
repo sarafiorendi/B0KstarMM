@@ -119,19 +119,19 @@ Utils::effStruct myEff;
 // #######################
 // # Function Definition #
 // #######################
-void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, double* Vector, double* VectorErr2Pois, double* VectorErr2Weig, unsigned int type,
-			vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, unsigned int SignalType);
+void ComputeEfficiency     (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, double* Vector, double* VectorErr2Pois, double* VectorErr2Weig, unsigned int type,
+			    vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, unsigned int SignalType);
 void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff);
-void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			 string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool savePlot, int specBin = -1);
-void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut);
-void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
-void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
-void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool savePlot);
-void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool savePlot);
+void Read3DEfficiencies    (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
+			    string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool savePlot, int specBin = -1);
+void Fit1DEfficiencies     (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
+			    Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut);
+void Fit2DEfficiencies     (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
+			    Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
+void Fit3DEfficiencies     (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
+			    Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
+void Test2DEfficiency      (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool savePlot);
+void Test3DEfficiency      (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool savePlot);
 
 
 // ###########################
@@ -200,8 +200,10 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
 	    (sqrt(NTuple->genMupPx*NTuple->genMupPx + NTuple->genMupPy*NTuple->genMupPy)   > Utility->GetPreCut("MinMupT")) &&
 	    (fabs(Utility->computeEta(NTuple->genMumPx,NTuple->genMumPy,NTuple->genMumPz)) < Utility->GetPreCut("MuEta"))   &&
 	    (fabs(Utility->computeEta(NTuple->genMupPx,NTuple->genMupPy,NTuple->genMupPz)) < Utility->GetPreCut("MuEta")))  ||
-	   
-	   ((type == 4) && (NTuple->truthMatchSignal->at(0) == true))))
+
+	   ((type == 4) && (NTuple->truthMatchSignal->at(0) == true) &&
+	    (((NTuple->genSignal == SignalType)   && (NTuple->B0notB0bar == true)) ||
+	     ((NTuple->genSignal == SignalType+1) && (NTuple->B0notB0bar == false))))))
 	{
 	  mumuq2          = NTuple->mumuMass->at(0)*NTuple->mumuMass->at(0);
 
