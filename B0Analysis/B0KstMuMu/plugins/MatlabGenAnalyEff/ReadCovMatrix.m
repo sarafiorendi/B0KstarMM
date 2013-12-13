@@ -20,7 +20,7 @@ myStr = '%f';
 for i = 1:2*NcoeffPhi
     myStr = [myStr ' %f'];
 end
-tmpMval = [[tmpMval] [[fscanf(fidVal,myStr,2*NcoeffPhi+1)]; [0.0; 0.0]]];
+tmpMval = [tmpMval fscanf(fidVal,myStr,2*NcoeffPhi+1)];
 
 
 % Read covariance matrix from file

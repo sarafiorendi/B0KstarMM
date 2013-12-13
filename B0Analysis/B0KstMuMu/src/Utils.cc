@@ -44,13 +44,13 @@ Utils::Utils ()
 
   NcoeffThetaL = 5;
   NcoeffThetaK = 4;
-  NcoeffPhi    = 3;
+  NcoeffPhi    = 4;
 
   PI = 3.141592653589793;
 
-  ProbThreshold = 0.0; // Confidence Level for accepting the null hypothesis: the two mass hypothesis are statistically indistinguishable
+  ProbThreshold = 0.0; // Confidence Level for accepting the null hypothesis: "the two mass hypothesis are statistically indistinguishable"
   // if (F-test < ProbThreshold) --> accept the null hypothesis
-  // if (F-test > ProbThreshold) --> discard the null hypothesis
+  // if (F-test > ProbThreshold) --> reject the null hypothesis
   scrambleFraction = 0.0; // Fraction of events with random CP-tagging
   KstMassShape = new TF1("KstMassShape",
 			 "2*sqrt(2)*[0]*[1]* sqrt([0]*[0] * ([0]*[0] + [1]*[1])) / (TMath::Pi()*sqrt([0]*[0] + sqrt([0]*[0] * ([0]*[0] + [1]*[1])))) / ((x*x - [0]*[0]) * (x*x - [0]*[0]) + [0]*[0]*[1]*[1])",
@@ -1712,7 +1712,7 @@ void Utils::SaveAnalyticalEffFullCovariance (std::string fileName, TMatrixTSym<d
 
 std::string Utils::TellMeEffFuncThetaKThetaLPhi ()
 {
-  return "[20]*(([0]+[1]*x+[2]*x*x+[3]*x*x*x) + ([4]+[5]*x+[6]*x*x+[7]*x*x*x)*y*y + ([8]+[9]*x+[10]*x*x+[11]*x*x*x)*y*y*y + ([12]+[13]*x+[14]*x*x+[15]*x*x*x)*y*y*y*y + ([16]+[17]*x+[18]*x*x+[19]*x*x*x)*y*y*y*y*y*y) + [21]*z*z + [22]*z*z*y";
+  return "(([0]+[1]*x+[2]*x*x+[3]*x*x*x) + ([4]+[5]*x+[6]*x*x+[7]*x*x*x)*y*y + ([8]+[9]*x+[10]*x*x+[11]*x*x*x)*y*y*y + ([12]+[13]*x+[14]*x*x+[15]*x*x*x)*y*y*y*y + ([16]+[17]*x+[18]*x*x+[19]*x*x*x)*y*y*y*y*y*y) + ([20] + [21]*x*x + [22]*y+[23]*y*y)*z*z";
 }
 
 std::string Utils::TellMeEffFuncThetaKThetaL ()
@@ -1732,7 +1732,7 @@ std::string Utils::TellMeEffFuncThetaL ()
 
 std::string Utils::TellMeEffFuncPhi ()
 {
-  return "[0]  + [1]*x + [2]*x*x";
+  return "[0]  + [1]*x + [2]*x*x + [3]*x*x*x";
 }
 
 void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
@@ -3108,9 +3108,11 @@ bool Utils::FlavorTagger (B0KstMuMuTreeContent* NTuple, unsigned int i, bool* B0
   // # is significantly different from (mK*0bar - K*0 PDG mass)         #
   // ####################################################################
   double VarianceRatio;
-  if (pow((NTuple->kstMass->at(i)-kstMass) / NTuple->kstMassE->at(i),2.) > pow((NTuple->kstBarMass->at(i)-kstMass) / NTuple->kstBarMassE->at(i),2.))
-    VarianceRatio = pow((NTuple->kstMass->at(i)-kstMass) / NTuple->kstMassE->at(i),2.) / pow((NTuple->kstBarMass->at(i)-kstMass)  / NTuple->kstBarMassE->at(i),2.);
-  else VarianceRatio = pow((NTuple->kstBarMass->at(i)-kstMass) / NTuple->kstBarMassE->at(i),2.) / pow((NTuple->kstMass->at(i)-kstMass) / NTuple->kstMassE->at(i),2.);
+  double chi2Kst    = pow((NTuple->kstMass->at(i)    - kstMass) / NTuple->kstMassE->at(i),2.);
+  double chi2KstBar = pow((NTuple->kstBarMass->at(i) - kstMass) / NTuple->kstBarMassE->at(i),2.);
+  if (chi2Kst > chi2KstBar)
+       VarianceRatio = chi2Kst    / chi2KstBar;
+  else VarianceRatio = chi2KstBar / chi2Kst;
 
   if (TMath::FDistI(VarianceRatio,1.,1.) > ProbThreshold) return true;
   return false;

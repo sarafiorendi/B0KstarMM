@@ -7,38 +7,39 @@
 % Global variables %
 %%%%%%%%%%%%%%%%%%%%
 nFiles   = 200; % Number of files to generate
-nBins    = 8;   % Number of q^2 bins
-startBin = 1;
+nBins    =   8; % Number of q^2 bins
+startBin =   1; % Start bin [1...nBins]
 
 NcoeffThetaL = 5;
 NcoeffThetaK = 4;
-NcoeffPhi    = 3;
+NcoeffPhi    = 4;
 
-showPlot = false;
+showPlot = true;
 
 
 for i = 1:nFiles
     %%%%%%%%%%%%%%
     % Parameters %
     %%%%%%%%%%%%%%
-    fidINval    = fopen('../../../Efficiency/ThetaKThetaL_B0ToKstMuMu_B0ToJPsiKst_B0ToPsi2SKst.txt','r');
-    fidINcov    = fopen('../../../Efficiency/ThetaKThetaLFullCovariance_B0ToKstMuMu_B0ToJPsiKst_B0ToPsi2SKst.txt','r');
+    fidINval    = fopen('../../../Efficiency/ThetaKThetaLPhi_B0ToKstMuMu_B0ToJPsiKst_B0ToPsi2SKst.txt','r');
+    fidINcov    = fopen('../../../Efficiency/ThetaKThetaLPhiFullCovariance_B0ToKstMuMu_B0ToJPsiKst_B0ToPsi2SKst.txt','r');
 
     fileNameOut = sprintf('../../../Efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen_%d.txt',i-1);
     fidOUT      = fopen(fileNameOut,'w+');
+    fprintf('Generating file %d \n',i);
 
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Skip bins if you want to %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     for j = 1:startBin-1
+        fprintf('Skipping bin n.%d \n',j);
         [q2Bin,meanV,errV,CovM,meanVOrig] = ReadCovMatrix(fidINval,...
             fidINcov,NcoeffThetaL,NcoeffThetaK,NcoeffPhi);
     end
     
     
-    fprintf('Generating file %d \n',i);
-    for j = startBin:startBin+nBins-1
+    for j = startBin:nBins
         [q2Bin,meanV,errV,CovM,meanVOrig] = ReadCovMatrix(fidINval,...
             fidINcov,NcoeffThetaL,NcoeffThetaK,NcoeffPhi);
         

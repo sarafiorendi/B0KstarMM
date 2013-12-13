@@ -30,8 +30,8 @@ using std::string;
 // # Global constants #
 // ####################
 #define DoTrigCheck 1
-#define SaveHistos false
-#define DoMCTruth false    // Compute the signel candidate variables from MC-truth values
+#define SaveHistos   false
+#define DoMCTruth    false // Compute the single candidate variables from MC-truth values
 #define TagFromTruth false // Assign the CP-eigenstate from MC-truth
 #define ParameterFILE "../python/ParameterFile.txt"
 
