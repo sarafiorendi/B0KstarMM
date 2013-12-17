@@ -47,7 +47,8 @@ for i = 1:nFiles
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Check if the efficiency is negative %
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        if (EvalEffFunc(meanVOrig,showPlot) == false)
+        if ((NcoeffPhi == 0 && EvalEffFunc2D(meanVOrig,showPlot) == false) ||...
+            (NcoeffPhi ~= 0 && EvalEffFunc3D(meanVOrig,showPlot) == false))            
             fprintf('@@@ The origianl efficiency is negative @@@\n');
         else
             fprintf('@@@ The origianl efficiency is OK @@@\n');
@@ -84,8 +85,13 @@ for i = 1:nFiles
             
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % Check if the efficiency is negative %
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
-            isPOS = EvalEffFunc(strechNewV',showPlot);
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            if NcoeffPhi == 0
+                isPOS = EvalEffFunc2D(strechNewV',showPlot);
+            else
+                isPOS = EvalEffFunc3D(strechNewV',showPlot);
+            end
+                
             if (isPOS == false)
                 fprintf('--> The new efficiency is negative\n');
             else
@@ -97,6 +103,7 @@ for i = 1:nFiles
             NcoeffThetaL,NcoeffThetaK,NcoeffPhi);
     end
 
+    
 fclose(fidINval);
 fclose(fidINcov);
 fclose(fidOUT);

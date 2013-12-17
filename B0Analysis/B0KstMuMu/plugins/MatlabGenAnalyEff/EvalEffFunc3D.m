@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Evaluate the analytical efficiency to check if it becomes negative %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [isPOS] = EvalEffFunc(CF,showPlot)
+function [isPOS] = EvalEffFunc3D(CF,showPlot)
 
 isPOS  = true;
 nSteps = 200;
@@ -36,7 +36,6 @@ for i = 1:length(x)
                 (CF(13)+CF(14)*x(i)+CF(15)*x(i)^2+CF(16)*x(i)^3)*y(j)^4 +...
                 (CF(17)+CF(18)*x(i)+CF(19)*x(i)^2+CF(20)*x(i)^3)*y(j)^6 +...
                 (CF(21)+CF(22)*x(i)^2+CF(23)*y(j)+CF(24)*y(j)^2)*z(k)^2;
-            
             if (T(j,i,k) < 0)
                 isPOS = false;
                 return
@@ -86,7 +85,7 @@ end
 %%%%%%%%%%%%%%%%
 % Plot options %
 %%%%%%%%%%%%%%%%
-if (showPlot == true)
+if showPlot == true
    figure;
    surf(x, y, Txy, 'EdgeColor', 'none');
    shading interp;
