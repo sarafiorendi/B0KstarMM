@@ -38,8 +38,8 @@ Utils::Utils ()
   B0MassErr    = 1.7e-4;
   kstSigma     = 0.05;
 
-  nFitParam    = 51;
-  nConfigParam = 4;
+  nFitParam    = 66;
+  nConfigParam = 5;
   nFitObserv   = 5;
 
   NcoeffThetaL = 5;
@@ -1480,8 +1480,8 @@ double Utils::ReadLumi (std::string fileName)
 void Utils::ReadNLLval (std::string fileName, std::vector<std::vector<double>*>* vecParam)
 // vecParam[0] --> Fl
 // vecParam[1] --> Afb
-// vecParam[2] --> At2
-// vecParam[3] --> Atim
+// vecParam[2] --> P1
+// vecParam[3] --> P2
 // vecParam[4] --> Branching-Fraction
 {
   double val;
@@ -1519,16 +1519,16 @@ double Utils::GetNLLval (std::vector<std::vector<double>*>* NLLvals, std::string
 // ####################
 // # varName = "Fl"   #
 // # varName = "Afb"  #
-// # varName = "At2"  #
-// # varName = "Atim" #
+// # varName = "P1"   #
+// # varName = "P2"   #
 // # varName = "BF"   #
 // ####################
 {
-  if      (varName == "Fl")   return (*NLLvals)[0]->operator[](q2BinIndx);
-  else if (varName == "Afb")  return (*NLLvals)[1]->operator[](q2BinIndx);
-  else if (varName == "At2")  return (*NLLvals)[2]->operator[](q2BinIndx);
-  else if (varName == "Atim") return (*NLLvals)[3]->operator[](q2BinIndx);
-  else if (varName == "BF")   return (*NLLvals)[4]->operator[](q2BinIndx);
+  if      (varName == "Fl")  return (*NLLvals)[0]->operator[](q2BinIndx);
+  else if (varName == "Afb") return (*NLLvals)[1]->operator[](q2BinIndx);
+  else if (varName == "P1")  return (*NLLvals)[2]->operator[](q2BinIndx);
+  else if (varName == "P2")  return (*NLLvals)[3]->operator[](q2BinIndx);
+  else if (varName == "BF")  return (*NLLvals)[4]->operator[](q2BinIndx);
   else
     {
       std::cout << "[Utils::GetNLLval]\tNLL parameter not valid : " << varName << std::endl;
@@ -1606,10 +1606,10 @@ void Utils::ReadFitSystematics (std::string fileName, std::vector<std::vector<do
 // vecParam[1] --> Fl -err
 // vecParam[2] --> Afb +err
 // vecParam[3] --> Afb -err
-// vecParam[4] --> At2 +err
-// vecParam[5] --> At2 -err
-// vecParam[6] --> Atim +err
-// vecParam[7] --> Atim -err
+// vecParam[4] --> P1 +err
+// vecParam[5] --> P1 -err
+// vecParam[6] --> P2 +err
+// vecParam[7] --> P2 -err
 // vecParam[8] --> Branching-Fraction +err
 // vecParam[9] --> Branching-Fraction -err
 {
@@ -2030,13 +2030,13 @@ double Utils::EffMinValue3D (std::vector<double>* cosThetaKBins, std::vector<dou
 }
 
 void Utils::MakeGraphVar (std::string parFileName, TGraphAsymmErrors** graph, std::string varName, bool allBins, double offset)
-// ####################
-// # varName = "Fl"   #
-// # varName = "Afb"  #
-// # varName = "At2"  #
-// # varName = "Atim" #
-// # varName = "BF"   #
-// ####################
+// ###################
+// # varName = "Fl"  #
+// # varName = "Afb" #
+// # varName = "P1"  #
+// # varName = "P2"  #
+// # varName = "BF"  #
+// ###################
 {
   double tmpVar;
 
@@ -2064,11 +2064,11 @@ void Utils::MakeGraphVar (std::string parFileName, TGraphAsymmErrors** graph, st
   for (unsigned int i = 0; i < q2Bins.size()-1; i++)
     {
       std::stringstream rawString;
-      if      (varName == "BF")   rawString << ParVector[i];
-      else if (varName == "Fl")   rawString << vecParam[GetFitParamIndx("FlS")]->operator[](i);
-      else if (varName == "Afb")  rawString << vecParam[GetFitParamIndx("AfbS")]->operator[](i);
-      else if (varName == "At2")  rawString << vecParam[GetFitParamIndx("At2S")]->operator[](i);
-      else if (varName == "Atim") rawString << vecParam[GetFitParamIndx("AtimS")]->operator[](i);
+      if      (varName == "BF")  rawString << ParVector[i];
+      else if (varName == "Fl")  rawString << vecParam[GetFitParamIndx("FlS")]->operator[](i);
+      else if (varName == "Afb") rawString << vecParam[GetFitParamIndx("AfbS")]->operator[](i);
+      else if (varName == "P1")  rawString << vecParam[GetFitParamIndx("P1")]->operator[](i);
+      else if (varName == "P2")  rawString << vecParam[GetFitParamIndx("P2")]->operator[](i);
       else { std::cout << "[Utils::MakeGraphVar]\tVariable name unknown: " << varName << std::endl; exit (EXIT_FAILURE); }
 
       if ((allBins == true) || (ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false))
@@ -2890,12 +2890,26 @@ unsigned int Utils::GetFitParamIndx (std::string varName)
   else if (varName == "c2Poly3")        return 46;
   else if (varName == "c2Poly4")        return 47;
 
-  else if (varName == "FlS")            return 48;
-  else if (varName == "AfbS")           return 49;
-  else if (varName == "At2S")           return 50;
-  else if (varName == "AtimS")          return 51;
-  else if (varName == "FsS")            return 52;
-  else if (varName == "AsS")            return 53;
+  else if (varName == "nPolyP3")        return 48;
+  else if (varName == "p3Poly0")        return 49;
+  else if (varName == "p3Poly1")        return 50;
+  else if (varName == "p3Poly2")        return 51;
+  else if (varName == "p3Poly3")        return 52;
+  else if (varName == "p3Poly4")        return 53;
+
+  else if (varName == "nPolyC3")        return 54;
+  else if (varName == "c3Poly0")        return 55;
+  else if (varName == "c3Poly1")        return 56;
+  else if (varName == "c3Poly2")        return 57;
+  else if (varName == "c3Poly3")        return 58;
+  else if (varName == "c3Poly4")        return 59;
+
+  else if (varName == "FlS")            return 60;
+  else if (varName == "AfbS")           return 61;
+  else if (varName == "P1")             return 62;
+  else if (varName == "P2")             return 63;
+  else if (varName == "FsS")            return 64;
+  else if (varName == "AsS")            return 65;
 
   std::cout << "[Utils::GetFitParamIndx]\tError wrong index name : " << varName << std::endl;
   exit (EXIT_FAILURE);
