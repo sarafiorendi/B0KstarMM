@@ -2840,58 +2840,62 @@ unsigned int Utils::GetFitParamIndx (std::string varName)
   else if (varName == "tau2")           return 5;
   else if (varName == "fracMassBExp")   return 6;
 
-  else if (varName == "meanR1")         return 7;
-  else if (varName == "sigmaR1")        return 8;
-  else if (varName == "meanR2")         return 9;
-  else if (varName == "sigmaR2")        return 10;
-  else if (varName == "fracMassBRPeak") return 11;
+  else if (varName == "meanMisTag")     return 7;
+  else if (varName == "sigmaMisTag")    return 8;
 
-  else if (varName == "meanL1")         return 12;
-  else if (varName == "sigmaL1")        return 13;
-  else if (varName == "meanL2")         return 14;
-  else if (varName == "sigmaL2")        return 15;
-  else if (varName == "fracMassBLPeak") return 16;
+  else if (varName == "meanR1")         return 9;
+  else if (varName == "sigmaR1")        return 10;
+  else if (varName == "meanR2")         return 11;
+  else if (varName == "sigmaR2")        return 12;
+  else if (varName == "fracMassBRPeak") return 13;
 
-  else if (varName == "fracMassBPeak")  return 17;
+  else if (varName == "meanL1")         return 14;
+  else if (varName == "sigmaL1")        return 15;
+  else if (varName == "meanL2")         return 16;
+  else if (varName == "sigmaL2")        return 17;
+  else if (varName == "fracMassBLPeak") return 18;
 
-  else if (varName == "nBkgComb")       return 18;
-  else if (varName == "nBkgPeak")       return 19;
-  else if (varName == "nSig")           return 20;
+  else if (varName == "fracMassBPeak")  return 19;
 
-  else if (varName == "nPolyP1")        return 21;
-  else if (varName == "p1Poly0")        return 22;
-  else if (varName == "p1Poly1")        return 23;
-  else if (varName == "p1Poly2")        return 24;
-  else if (varName == "p1Poly3")        return 25;
-  else if (varName == "p1Poly4")        return 26;
+  else if (varName == "nBkgComb")       return 20;
+  else if (varName == "nBkgMisTag")     return 21;
+  else if (varName == "nBkgPeak")       return 22;
+  else if (varName == "nSig")           return 23;
 
-  else if (varName == "nPolyC1")        return 27;
-  else if (varName == "c1Poly0")        return 28;
-  else if (varName == "c1Poly1")        return 29;
-  else if (varName == "c1Poly2")        return 30;
-  else if (varName == "c1Poly3")        return 31;
-  else if (varName == "c1Poly4")        return 32;
+  else if (varName == "nPolyP1")        return 24;
+  else if (varName == "p1Poly0")        return 25;
+  else if (varName == "p1Poly1")        return 26;
+  else if (varName == "p1Poly2")        return 27;
+  else if (varName == "p1Poly3")        return 28;
+  else if (varName == "p1Poly4")        return 29;
 
-  else if (varName == "nPolyP2")        return 33;
-  else if (varName == "p2Poly0")        return 34;
-  else if (varName == "p2Poly1")        return 35;
-  else if (varName == "p2Poly2")        return 36;
-  else if (varName == "p2Poly3")        return 37;
-  else if (varName == "p2Poly4")        return 38;
+  else if (varName == "nPolyC1")        return 30;
+  else if (varName == "c1Poly0")        return 31;
+  else if (varName == "c1Poly1")        return 32;
+  else if (varName == "c1Poly2")        return 33;
+  else if (varName == "c1Poly3")        return 34;
+  else if (varName == "c1Poly4")        return 35;
 
-  else if (varName == "nPolyC2")        return 39;
-  else if (varName == "c2Poly0")        return 40;
-  else if (varName == "c2Poly1")        return 41;
-  else if (varName == "c2Poly2")        return 42;
-  else if (varName == "c2Poly3")        return 43;
-  else if (varName == "c2Poly4")        return 44;
+  else if (varName == "nPolyP2")        return 36;
+  else if (varName == "p2Poly0")        return 37;
+  else if (varName == "p2Poly1")        return 38;
+  else if (varName == "p2Poly2")        return 39;
+  else if (varName == "p2Poly3")        return 40;
+  else if (varName == "p2Poly4")        return 41;
 
-  else if (varName == "FlS")            return 45;
-  else if (varName == "AfbS")           return 46;
-  else if (varName == "At2S")           return 47;
-  else if (varName == "AtimS")          return 48;
-  else if (varName == "FsS")            return 49;
-  else if (varName == "AsS")            return 50;
+  else if (varName == "nPolyC2")        return 42;
+  else if (varName == "c2Poly0")        return 43;
+  else if (varName == "c2Poly1")        return 44;
+  else if (varName == "c2Poly2")        return 45;
+  else if (varName == "c2Poly3")        return 46;
+  else if (varName == "c2Poly4")        return 47;
+
+  else if (varName == "FlS")            return 48;
+  else if (varName == "AfbS")           return 49;
+  else if (varName == "At2S")           return 50;
+  else if (varName == "AtimS")          return 51;
+  else if (varName == "FsS")            return 52;
+  else if (varName == "AsS")            return 53;
 
   std::cout << "[Utils::GetFitParamIndx]\tError wrong index name : " << varName << std::endl;
   exit (EXIT_FAILURE);
@@ -2902,7 +2906,8 @@ unsigned int Utils::GetConfigParamIndx (std::string varName)
   if      (varName == "nGaussPSIintru") return 0;
   else if (varName == "fitPSIintru")    return 1;
   else if (varName == "SigType")        return 2;
-  else if (varName == "BkgType")        return 3;
+  else if (varName == "CombBkgType")    return 3;
+  else if (varName == "MistagBkgType")  return 4;
 
   std::cout << "[Utils::GetConfigParamIndx]\tError wrong index name : " << varName << std::endl;
   exit (EXIT_FAILURE);

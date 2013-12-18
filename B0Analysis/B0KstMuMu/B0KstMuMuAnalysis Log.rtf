@@ -1159,12 +1159,12 @@ HLT-trigger cuts:\
 \b \cf0 \ul Selection cuts:\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\b0 \cf0 \ulnone - B0 vtx CL		--> 0.22\
-- B0 L/sigma BS	--> 0\
-- B0 cos(alpha)		--> 0.9997\
-- had pT			--> 0.5\
-- K*0 mass		--> 0.065\
-- had DCA/sigma BS	--> 3.0\
+\b0 \cf0 \ulnone - B0 vtx CL		--> 0.1\
+- B0 L/sigma BS	--> 12\
+- B0 cos(alpha)		--> 0.9994\
+- had pT			--> 0.8\
+- K*0 mass		--> 0.09\
+- had DCA/sigma BS	--> 2.0\
 - phi(KK) rejection	--> 0.0\
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
@@ -1226,13 +1226,10 @@ Performance without step (B):\
 \b To-Do 2012 data analysis
 \b0  @\
 @@@@@@@@@@@@@@\
-1. Add dilution to AFB, AFB'  = (1 - 2m)AFB, and to all other asymmetry terms to account for flavor mistag (m\
+1. Compute mass shape from 4D-fit to MC\
+2. Correct statistical errors by the sigmas of the Gaussian fits to the pulls\
+3. Search for Bs --> J/psi K* by restricting to the barrel region\
+4. LHCb discovered a new dimuon resonance from B+ --> mu+mu- K+ at ~4.2 GeV\
 \
-2. Define PDF classes + virtual PDF class: implement PDF + save/load parameters + toy + folding\
-3. Use XML for configuration file (?)\
-\
-4. Compute mass shape from 4D-fit to MC\
-5. Correct statistical errors by the sigmas of the Gaussian fits to the pulls\
-6. Search for Bs --> J/psi K* by restricting to the barrel region\
-7. LHCb discovered a new dimuon resonance from B+ --> mu+mu- K+ at ~4.2 GeV\
-}
+5. Define PDF classes + virtual PDF class: implement PDF + save/load parameters + toy + folding\
+6. Use XML for configuration file (?)}
