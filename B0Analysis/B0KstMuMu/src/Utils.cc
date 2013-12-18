@@ -2917,9 +2917,9 @@ unsigned int Utils::GetFitParamIndx (std::string varName)
 
 unsigned int Utils::GetConfigParamIndx (std::string varName)
 {
-  if      (varName == "nGaussPSIintru") return 0;
-  else if (varName == "fitPSIintru")    return 1;
-  else if (varName == "SigType")        return 2;
+  if      (varName == "FitPeakBkg")     return 0;
+  else if (varName == "SigType")        return 1;
+  else if (varName == "PeakBkgType")    return 2;
   else if (varName == "CombBkgType")    return 3;
   else if (varName == "MistagBkgType")  return 4;
 

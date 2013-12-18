@@ -396,17 +396,17 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # P2 +/- err
 0.0   0.0   0.0
 # FS +/- err
-0.05   0.02   0.02
+0.0   0.0   0.0
 # AS +/- err
 0.0   0.0   0.0
 ###################################################################
-# Psi intrusion bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
-1
-# Intrusion bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
-3
+# Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
+0
 # Use two gaussians signal: 0 = no; 1 = yes
 1
-# Use two exponentials bkg: 0 = no; 1 = yes
+# Use two gaussians peaking bkg: 0 = no; 1 = yes
+0
+# Use two exponentials combinatorial bkg: 0 = no; 1 = yes
 0
 # Use mistag bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
 0
@@ -548,17 +548,17 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # P2 +/- err
 0.0   0.0   0.0
 # FS +/- err
-0.05   0.02   0.02
+0.0   0.0   0.0
 # AS +/- err
 0.0   0.0   0.0
 ###################################################################
-# Psi intrusion bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
-0
-# Intrusion bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
+# Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
 1
-# Use two exponentials bkg: 0 = no; 1 = yes
+# Use two gaussians peaking bkg: 0 = no; 1 = yes
+0
+# Use two exponentials combinatorial bkg: 0 = no; 1 = yes
 0
 # Use mistag bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
 0
@@ -700,17 +700,17 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # P2 +/- err
 0.0   0.0   0.0
 # FS +/- err
-0.05   0.02   0.02
+0.0   0.0   0.0
 # AS +/- err
 0.0   0.0   0.0
 ###################################################################
-# Psi intrusion bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
-0
-# Intrusion bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
+# Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
 1
-# Use two exponentials bkg: 0 = no; 1 = yes
+# Use two gaussians peaking bkg: 0 = no; 1 = yes
+0
+# Use two exponentials combinatorial bkg: 0 = no; 1 = yes
 0
 # Use mistag bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
 0
@@ -862,13 +862,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # AS +/- err
 0.0   0.0   0.0
 ###################################################################
-# Psi intrusion bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
-0
-# Intrusion bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
+# Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
 1
-# Use two exponentials bkg: 0 = no; 1 = yes
+# Use two gaussians peaking bkg: 0 = no; 1 = yes
+0
+# Use two exponentials combinatorial bkg: 0 = no; 1 = yes
 0
 # Use mistag bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
 0
@@ -1014,13 +1014,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # AS +/- err
 0.0   0.0   0.0
 ###################################################################
-# Psi intrusion bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
-0
-# Intrusion bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
+# Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
 1
-# Use two exponentials bkg: 0 = no; 1 = yes
+# Use two gaussians peaking bkg: 0 = no; 1 = yes
+0
+# Use two exponentials combinatorial bkg: 0 = no; 1 = yes
 0
 # Use mistag bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
 0
@@ -1166,13 +1166,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # AS +/- err
 0.0   0.0   0.0
 ###################################################################
-# Psi intrusion bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
-0
-# Intrusion bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
+# Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
 1
-# Use two exponentials bkg: 0 = no; 1 = yes
+# Use two gaussians peaking bkg: 0 = no; 1 = yes
+0
+# Use two exponentials combinatorial bkg: 0 = no; 1 = yes
 0
 # Use mistag bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
 0
@@ -1318,13 +1318,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # AS +/- err
 0.0   0.0   0.0
 ###################################################################
-# Psi intrusion bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
-0
-# Intrusion bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
+# Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
 1
-# Use two exponentials bkg: 0 = no; 1 = yes
+# Use two gaussians peaking bkg: 0 = no; 1 = yes
+0
+# Use two exponentials combinatorial bkg: 0 = no; 1 = yes
 0
 # Use mistag bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
 0
@@ -1470,13 +1470,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # AS +/- err
 0.0   0.0   0.0
 ###################################################################
-# Psi intrusion bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
-0
-# Intrusion bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
+# Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
 1
-# Use two exponentials bkg: 0 = no; 1 = yes
+# Use two gaussians peaking bkg: 0 = no; 1 = yes
+0
+# Use two exponentials combinatorial bkg: 0 = no; 1 = yes
 0
 # Use mistag bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
 0
@@ -1622,13 +1622,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # AS +/- err
 0.0   0.0   0.0
 ###################################################################
-# Psi intrusion bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
-0
-# Intrusion bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
+# Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
 1
-# Use two exponentials bkg: 0 = no; 1 = yes
+# Use two gaussians peaking bkg: 0 = no; 1 = yes
+0
+# Use two exponentials combinatorial bkg: 0 = no; 1 = yes
 0
 # Use mistag bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
 0
@@ -1774,13 +1774,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # AS +/- err
 0.0   0.0   0.0
 ###################################################################
-# Psi intrusion bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
-0
-# Intrusion bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
+# Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
 1
-# Use two exponentials bkg: 0 = no; 1 = yes
+# Use two gaussians peaking bkg: 0 = no; 1 = yes
+0
+# Use two exponentials combinatorial bkg: 0 = no; 1 = yes
 0
 # Use mistag bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
 0
@@ -1926,13 +1926,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # AS +/- err
 0.0   0.0   0.0
 ###################################################################
-# Psi intrusion bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
-0
-# Intrusion bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
+# Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
 1
-# Use two exponentials bkg: 0 = no; 1 = yes
+# Use two gaussians peaking bkg: 0 = no; 1 = yes
+0
+# Use two exponentials combinatorial bkg: 0 = no; 1 = yes
 0
 # Use mistag bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
 0
