@@ -7,8 +7,6 @@
 from os import system, chdir
 import sys
 
-# This program must be in a directory below "ExtractYield"
-
 if len(sys.argv) < 4:
     print "Synopsis: python RunBatchToy.py type[BF,FLAFB] nBins[0-7,-1] nJobs[> 0]"
     sys.exit()

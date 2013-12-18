@@ -9,9 +9,9 @@ if (@ARGV == 2)
     ############################
     # Configuration parameters #
     ############################
-    $dirEffRndGen = "../../Efficiency/EffRndGenAnalyFiles/" ;
-    $dataFile     = "Candidates/Data/singleCand_B0ToKstMuMu_DataRRPRv4v5v6v1B_NTuples_Merged.root" ;
-    $parFile      = "../python/ParameterFile.txt" ;
+    $dirEffRndGen = "../../../Efficiency/EffRndGenAnalyFiles/" ;
+    $dataFile     = "../Data2012B0KstMuMuResults/Data2012/SingleCand/singleCand_B0ToKstMuMu_Data2012ABCD_NTuples.root" ;
+    $parFile      = "../../python/ParameterFile.txt" ;
     ############################
 
     print "Directory with randomly generated efficiencies: $dirEffRndGen \n" ;
@@ -32,7 +32,7 @@ if (@ARGV == 2)
     foreach $file (@list[$listStart..$listEnd])
     {
 	chomp $file ;
-	$str = "./ExtractYield " . @ARGV[0] . " " . $dataFile . " EffCorrGenAnalyPDF " . $q2BinIndx . " " . $dirEffRndGen . $file . " " . $listIndx . " " . $parFile . "\n" ;
+	$str = ".././ExtractYield " . @ARGV[0] . " " . $dataFile . " EffCorrGenAnalyPDF " . $q2BinIndx . " " . $dirEffRndGen . $file . " " . $listIndx . " " . $parFile . "\n" ;
 	$cmd .= "echo " . $str ;
 	$cmd .= $str ;
 	$listIndx++ ;
