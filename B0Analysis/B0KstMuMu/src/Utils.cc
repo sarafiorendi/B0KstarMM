@@ -40,7 +40,7 @@ Utils::Utils ()
 
   nFitParam    = 66;
   nConfigParam = 5;
-  nFitObserv   = 5;
+  nFitObserv   = 5; // FL --- AFB --- P1 --- P2 --- BF
 
   NcoeffThetaL = 5;
   NcoeffThetaK = 4;
@@ -2067,8 +2067,8 @@ void Utils::MakeGraphVar (std::string parFileName, TGraphAsymmErrors** graph, st
       if      (varName == "BF")  rawString << ParVector[i];
       else if (varName == "Fl")  rawString << vecParam[GetFitParamIndx("FlS")]->operator[](i);
       else if (varName == "Afb") rawString << vecParam[GetFitParamIndx("AfbS")]->operator[](i);
-      else if (varName == "P1")  rawString << vecParam[GetFitParamIndx("P1")]->operator[](i);
-      else if (varName == "P2")  rawString << vecParam[GetFitParamIndx("P2")]->operator[](i);
+      else if (varName == "P1")  rawString << vecParam[GetFitParamIndx("P1S")]->operator[](i);
+      else if (varName == "P2")  rawString << vecParam[GetFitParamIndx("P2S")]->operator[](i);
       else { std::cout << "[Utils::MakeGraphVar]\tVariable name unknown: " << varName << std::endl; exit (EXIT_FAILURE); }
 
       if ((allBins == true) || (ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false))
@@ -2906,8 +2906,8 @@ unsigned int Utils::GetFitParamIndx (std::string varName)
 
   else if (varName == "FlS")            return 60;
   else if (varName == "AfbS")           return 61;
-  else if (varName == "P1")             return 62;
-  else if (varName == "P2")             return 63;
+  else if (varName == "P1S")            return 62;
+  else if (varName == "P2S")            return 63;
   else if (varName == "FsS")            return 64;
   else if (varName == "AsS")            return 65;
 
