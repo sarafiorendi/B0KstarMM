@@ -800,6 +800,8 @@ All q2 bins\
 - Fit mass-FL-AFB-FS-AS --- constraints	[X]\
 \
 \
+\
+\
 @@@@@@@@@@@@@@@\
 @ Tag for Approval: 
 \b V00-10-05
@@ -1165,7 +1167,7 @@ HLT-trigger cuts:\
 - had pT			--> 0.8\
 - K*0 mass		--> 0.09\
 - had DCA/sigma BS	--> 2.0\
-- phi(KK) rejection	--> 0.0\
+- phi(KK) rejection	--> 1.035\
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
@@ -1181,13 +1183,13 @@ Performance without step (B):\
 \cf0 \ulnone - 
 \b Efficiency
 \b0  to catch good events: 
-\b 8.9%
+\b XXX%
 \b0  (number of selected truth-matched events / total number of events containing a truth-match)\
 - 
-\b Purity: 99.8%
+\b Purity: XXX%
 \b0  (number of selected truth-matched events / total number of selected events)\
 - 
-\b Flavor-tagging efficiency: 87.3%
+\b Flavor-tagging efficiency: XXX%
 \b0  (number of correctly assigned flavor state / total number of flavor states in the selected events)\
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
@@ -1196,13 +1198,13 @@ Performance without step (B):\
 \cf0 \ulnone - 
 \b Efficiency
 \b0  to catch good events: 
-\b 7.8%
+\b XXX%
 \b0  (number of selected truth-matched events / total number of events containing a truth-match)\
 - 
-\b Purity: 99.8%
+\b Purity: XXX%
 \b0  (number of selected truth-matched events / total number of selected events)\
 - 
-\b Flavor-tagging efficiency: 91.0%
+\b Flavor-tagging efficiency: XXX%
 \b0  (number of correctly assigned flavor state / total number of flavor states in the selected events)\
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
@@ -1219,6 +1221,191 @@ Performance without step (B):\
 - 
 \b Flavor-tagging efficiency: 92.6%
 \b0  (number of correctly assigned flavor state / total number of flavor states in the selected events)\
+\
+\
+@@@@@@@@@@@@@@@@@@\
+@ 
+\b Fit procedure sequence of steps
+\b0   @\
+@@@@@@@@@@@@@@@@@@\
+\
+
+\b ############ GEN Signal MC ############\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b0 \cf0 \ul \
+All q2 bins\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Fit FL-AFB --- NO-constraints			[X]\
+( extract angular shape )\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul All q2 bins\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Count yields --- NO-constraints		[X]\
+( used for the dBF/dq2 )\
+\
+\
+
+\b ############ GEN J/psi  MC ############\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b0 \cf0 \ul \
+J/psi bin\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Fit FL-AFB --- NO-constraints			[X]\
+( extract angular shape )\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul J/psi bin\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Count yields --- NO-constraints		[X]\
+( used for the dBF/dq2 )\
+\
+\
+
+\b ############ GEN psi(2S)  MC ############\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b0 \cf0 \ul \
+psi(2S) bin\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Fit FL-AFB --- NO-constraints			[X]\
+( extract angular shape )\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul psi(2S) bin\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Count yields --- NO-constraints		[X]\
+( used for the dBF/dq2 )\
+\
+\
+
+\b ############## Signal MC ##############\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b0 \cf0 \ul \
+All q2 bins\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Fit mass-FL-AFB --- NO-constraints		[X]\
+( extract mass shape )\
+\
+Whole mumu spectrum\
+Fit mass --- NO-constraints			[X]\
+( extract mass for \'93generic parameters\'94 )\
+\
+\
+
+\b ############## J/psi MC ##############\
+
+\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul J/psi bin\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Fit mass-FL-AFB --- NO-constraints		[X]\
+( extract mass shape )\
+\
+Whole mumu spectrum\
+Fit mass --- NO-constraints			[X]\
+( the yield is used for the dBF/dq2 )\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul \
+Bin #2 and #4\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Fit mass-FL-AFB --- NO-constraints		[X]\
+( extract angular shape )\
+\
+\
+
+\b ############## psi(2S) ##############\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b0 \cf0 \ul psi(2S) bin\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Fit mass-FL-AFB --- NO-constraints		[X]\
+( extract mass shape )\
+\
+Whole mumu spectrum\
+Fit mass --- NO-constraints			[X]\
+( the yield is used for the dBF/dq2 )\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul \
+Bin #4 and #6\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Fit mass-FL-AFB --- NO-constraints		[X]\
+( extract angular shape )\
+\
+\
+
+\b ############ peaking bkg ############
+\b0 \
+\
+- Report bin 
+\b #2
+\b0  ( 
+\b #6
+\b0  ) to data config file rescaled by the 
+\b data / MC
+\b0  J/psi ( psi(2S) MC ) yield\
+- Rescale the J/psi MC ( psi(2S) MC ) yield by the 
+\b data / MC
+\b0  J/psi ( psi(2S) MC ) yield\
+- Rescale and merge bin 
+\b #4
+\b0  from J/psi and psi(2S) MC, report into data config file\
+\
+\
+
+\b ########### Signal mistag ###########
+\b0 \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul All q2 bins\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Fit mass --- NO-constraints			[X]\
+( extract mistag mass shape )\
+\
+\
+
+\b ########## data/MC mistag ##########
+\b0 \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul Quantify mistag in data\ulnone 				[X]\
+\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b \cf0 ############### data ###############\
+
+\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul J/psi bin\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Fit mass-FL-AFB-FS-AS --- constraints	[X] Multi minima scan\
+- Fit mass-FL-AFB-FS-AS --- constraints	[X]\
+( extract angular shape )\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul \
+psi(2S) bin\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Fit mass-FL-AFB-FS-AS --- constraints	[X] Multi minima scan\
+- Fit mass-FL-AFB-FS-AS --- constraints	[X]\
+( extract angular shape )\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone Whole mumu spectrum\
+- Fit mass --- constraints				[X]\
+( the yield is used for the dBF/dq2 )\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul \
+All q2 bins\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone - Fit mass-FL-AFB-FS-AS --- constraints	[X] Multi minima scan\
+- Fit mass-FL-AFB-FS-AS --- constraints	[X]\
+( extract angular shape )\
 \
 \
 @@@@@@@@@@@@@@\

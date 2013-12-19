@@ -2120,10 +2120,10 @@ void PlotMuMu (string fileName, bool bkgSub)
 void PlotKst (string fileName, bool bkgSub)
 {
   int nEntries;
-  double minX  = 0.82;
+  double minX  = 0.81;
   double maxX  = 0.97;
   double extra = 0.02;
-  unsigned int nBins = 100;
+  unsigned int nBins = 50;
   stringstream myString;
   string sigMassQuery = "";
   string bkgMassQuery = "";
@@ -2172,26 +2172,26 @@ void PlotKst (string fileName, bool bkgSub)
   nEntries = theTree->GetEntries();
   cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
-  TH1D* h1Dsig = new TH1D("h1Dsig","h1Dsig",nBins,minX - extra,maxX + extra+0.01);
+  TH1D* h1Dsig = new TH1D("h1Dsig","h1Dsig",nBins,minX - extra,maxX + extra);
   h1Dsig->SetXTitle("M(#font[122]{K}^{*0}) (GeV)");
-  h1Dsig->SetYTitle("Entries / (0.002 GeV)");
+  h1Dsig->SetYTitle("Entries / (0.004 GeV)");
   h1Dsig->SetMarkerStyle(20);
 
-  TH1D* h2Dsig = new TH1D("h2Dsig","h2Dsig",nBins,minX - extra,maxX + extra+0.01);
+  TH1D* h2Dsig = new TH1D("h2Dsig","h2Dsig",nBins,minX - extra,maxX + extra);
   h2Dsig->SetXTitle("M(#font[122]{K}^{*0}) (GeV)");
-  h2Dsig->SetYTitle("Entries / (0.002 GeV)");
+  h2Dsig->SetYTitle("Entries / (0.004 GeV)");
   h2Dsig->SetMarkerStyle(21);
   h2Dsig->SetMarkerColor(kRed);
 
 
-  TH1D* h1Dbkg = new TH1D("h1Dbkg","h1Dbkg",nBins,minX - extra,maxX + extra+0.01);
+  TH1D* h1Dbkg = new TH1D("h1Dbkg","h1Dbkg",nBins,minX - extra,maxX + extra);
   h1Dbkg->SetXTitle("M(#font[122]{K}^{*0}) (GeV)");
-  h1Dbkg->SetYTitle("Entries / (0.002 GeV)");
+  h1Dbkg->SetYTitle("Entries / (0.004 GeV)");
   h1Dbkg->SetMarkerStyle(20);
 
-  TH1D* h2Dbkg = new TH1D("h2Dbkg","h2Dbkg",nBins,minX - extra,maxX + extra+0.01);
+  TH1D* h2Dbkg = new TH1D("h2Dbkg","h2Dbkg",nBins,minX - extra,maxX + extra);
   h2Dbkg->SetXTitle("M(#font[122]{K}^{*0}) (GeV)");
-  h2Dbkg->SetYTitle("Entries / (0.002 GeV)");
+  h2Dbkg->SetYTitle("Entries / (0.004 GeV)");
   h2Dbkg->SetMarkerStyle(21);
   h2Dbkg->SetMarkerColor(kRed);
 
@@ -2261,7 +2261,7 @@ void PlotKst (string fileName, bool bkgSub)
 
   TH1D* h3Dsig = (TH1D*)h1Dsig->Clone("h3Dsig");
   h3Dsig->SetXTitle("M(#font[122]{K}^{*0}) (GeV)");
-  h3Dsig->SetYTitle("Entries / (0.002 GeV)");
+  h3Dsig->SetYTitle("Entries / (0.004 GeV)");
   h3Dsig->SetMarkerStyle(20);
 
   h3Dsig->Add(h2Dsig, 1.0);
@@ -2277,7 +2277,7 @@ void PlotKst (string fileName, bool bkgSub)
 
   TH1D* h3Dbkg = (TH1D*)h1Dbkg->Clone("h3Dbkg");
   h3Dbkg->SetXTitle("M(#font[122]{K}^{*0}) (GeV)");
-  h3Dbkg->SetYTitle("Entries / (0.002 GeV)");
+  h3Dbkg->SetYTitle("Entries / (0.004 GeV)");
   h3Dbkg->SetMarkerStyle(20);
 
   h3Dbkg->Add(h2Dbkg, 1.0);
@@ -2310,7 +2310,7 @@ void PlotKst (string fileName, bool bkgSub)
   fbkg->SetParameter(0,f0->GetParameter(10));
   fbkg->Draw("same");
 
-  TLegend* leg0 = new TLegend(0.15, 0.75, 0.4, 0.89, "");
+  TLegend* leg0 = new TLegend(0.15, 0.6, 0.35, 0.85, "");
   leg0->AddEntry(h3Dsig,"Data");
   leg0->AddEntry(f0,"Total fit");
   leg0->AddEntry(fsig,"Signal");
@@ -2326,7 +2326,7 @@ void PlotKst (string fileName, bool bkgSub)
   h1Dsig->Draw("e1p");
   h2Dsig->Draw("e1p same");
 
-  TLegend* leg1 = new TLegend(0.15, 0.75, 0.4, 0.89, "");
+  TLegend* leg1 = new TLegend(0.15, 0.6, 0.25, 0.85, "");
   leg1->AddEntry(h1Dsig,"#font[122]{K}^{*0}");
   leg1->AddEntry(h2Dsig,"#font[122]{K}^{*0}_{bar}");
   leg1->SetFillColor(0);
@@ -2594,8 +2594,8 @@ void MakeupNLLandPULLplots (string fileName, string plotType, int specBin)
 // ###############################################
 // # plotType = "Fl"                             #
 // # plotType = "Afb"                            #
-// # plotType = "At2"                            #
-// # plotType = "Atim"                           #
+// # plotType = "P1"                             #
+// # plotType = "P2"                             #
 // # plotType = "BF"                             #
 // ###############################################
 {
@@ -2672,8 +2672,8 @@ void MakePvaluePlot (string fileName, string plotType, int specBin)
 // ################################################
 // # plotType = "Fl"                              #
 // # plotType = "Afb"                             #
-// # plotType = "At2"                             #
-// # plotType = "Atim"                            #
+// # plotType = "P1"                              #
+// # plotType = "P2"                              #
 // # plotType = "BF"                              #
 // ################################################
 // # If specBin == -1 then loop over all q^2 bins #
@@ -2901,8 +2901,8 @@ int main (int argc, char** argv)
 	  cout << "For [Pval OR makeupNLL]:" << endl;
 	  cout << "Fl" << endl;
 	  cout << "Afb" << endl;
-	  cout << "At2" << endl;
-	  cout << "Atim" << endl;
+	  cout << "P1" << endl;
+	  cout << "P2" << endl;
 	  cout << "BF" << endl;
 
 	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
@@ -2990,8 +2990,8 @@ int main (int argc, char** argv)
       cout << "For [Pval OR makeupNLL]:" << endl;
       cout << "Fl" << endl;
       cout << "Afb" << endl;
-      cout << "At2" << endl;
-      cout << "Atim" << endl;
+      cout << "P1" << endl;
+      cout << "P2" << endl;
       cout << "BF" << endl;
 
       cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;

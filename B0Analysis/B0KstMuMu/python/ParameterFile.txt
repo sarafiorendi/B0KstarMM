@@ -107,7 +107,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.09
 
 # KK mass [0.0 GeV/c2]
-0.0
+1.035
 
 ### Muon identification cuts ###
 # Muon selection: n. tracker layers [5.0]
