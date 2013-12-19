@@ -1,8 +1,6 @@
 #################################
 # Program to run toy-MC studies #
-############################################################
-# This program must be in a directory below "ExtractYield" #
-############################################################
+#################################
 
 from os import system, chdir
 import sys
