@@ -151,8 +151,8 @@ void TruthMatching (string fileName, bool truthMatch)
   TTree* B0KstMuMuNTuple = (TTree*)_file0->Get("B0KstMuMu/B0KstMuMuNTuple");
 
 
-  double minX = 4.0;
-  double maxX = 6.4;
+  double minX = 3.8;
+  double maxX = 6.8;
   unsigned int nBins;
   if (truthMatch == true) nBins = 300;
   else                    nBins = 100;

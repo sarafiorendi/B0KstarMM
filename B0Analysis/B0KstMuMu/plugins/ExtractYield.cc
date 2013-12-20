@@ -91,12 +91,12 @@ using namespace RooFit;
 // ####################
 // # Global constants #
 // ####################
-#define NBINS          20
-#define MULTYIELD      1.0  // Multiplication factor to the number of entry in toy-MC
-#define NCOEFFPOLYBKG  5    // Maximum number of coefficients (= degree+1) of the polynomial describing the background in the angular variables
-#define SLEWRATECONSTR 1e-2 // Fraction of Afb allowed interval for the p.d.f. constraint to transit from 0 to max
-#define NORMBIN        3    // Bin used to normalize the yields to compute dBF/dq^2
-#define POLYCOEFRANGE  2.0  // Polynomial coefficients range for parameter regeneration
+#define NBINS            20
+#define MULTYIELD        1.0  // Multiplication factor to the number of entry in toy-MC
+#define NCOEFFPOLYBKG    5    // Maximum number of coefficients (= degree+1) of the polynomial describing the background in the angular variables
+#define SLEWRATECONSTR   1e-2 // Fraction of Afb allowed interval for the p.d.f. constraint to transit from 0 to max
+#define NORMJPSInotPSI2S 1    // "1" = normalize the yields to compute dBF/dq^2 with respect to J/psi; "0" use psi(2S) bin instead
+#define POLYCOEFRANGE    2.0  // Polynomial coefficients range for parameter regeneration
 
 #define nJPSIS 70000.0
 #define nJPSIB  1000.0
@@ -3301,23 +3301,23 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // # Reference to normalization channel #
       // ######################################
       myString.clear(); myString.str("");
-      myString << MakeAngWithEffPDF(effFuncs->operator[]((NORMBIN == 3 ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins))),NULL,y,z,FitType,useEffPDF,&Vars);
+      myString << MakeAngWithEffPDF(effFuncs->operator[]((NORMJPSInotPSI2S == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins))),NULL,y,z,FitType,useEffPDF,&Vars);
       EffPDFnorm = new RooGenericPdf("Efficiency",myString.str().c_str(),Vars);
  
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[]((NORMBIN == 3 ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
+      myString << fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[]((NORMJPSInotPSI2S == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
       SetValueAndErrors(EffPDFnorm,"FlS",1.0,&myString,&value,&errLo,&errHi);
 
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[]((NORMBIN == 3 ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
+      myString << fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[]((NORMJPSInotPSI2S == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
       SetValueAndErrors(EffPDFnorm,"AfbS",1.0,&myString,&value,&errLo,&errHi);
 
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[]((NORMBIN == 3 ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
+      myString << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[]((NORMJPSInotPSI2S == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
       SetValueAndErrors(EffPDFnorm,"FsS",1.0,&myString,&value,&errLo,&errHi);
 
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[]((NORMBIN == 3 ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
+      myString << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[]((NORMJPSInotPSI2S == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
       SetValueAndErrors(EffPDFnorm,"AsS",1.0,&myString,&value,&errLo,&errHi);
 
       PrintVariables(EffPDFnorm->getVariables(),"vars");
@@ -3448,9 +3448,9 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // ########################################
       // # Save outcome of the fit in histogram #
       // ########################################
-      if (configParam->operator[](Utility->GetConfigParamIndx("fitPSIintru"))->operator[](i) != 1)
+      if (configParam->operator[](Utility->GetConfigParamIndx("FitPeakBkg"))->operator[](i) != 1)
 	{
-	  VecHistoMeas->operator[](0)->SetBinContent(i+1,(GetVar(TotalPDFq2Bins[i],"nSig")->getVal() / effMuMu) / (PsiYield / effPsi) * (NORMBIN == 3 ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7);
+	  VecHistoMeas->operator[](0)->SetBinContent(i+1,(GetVar(TotalPDFq2Bins[i],"nSig")->getVal() / effMuMu) / (PsiYield / effPsi) * (NORMJPSInotPSI2S == true ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7);
 	  VecHistoMeas->operator[](0)->SetBinError(i+1,VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getError() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)));
 	  
 	  fileFitResults << "@@@@@@ dBF/dq^2 @@@@@@" << endl;
@@ -5082,23 +5082,23 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // # Reference to normalization channel #
       // ######################################
       myString.clear(); myString.str("");
-      myString << MakeAngWithEffPDF(effFuncs->operator[]((NORMBIN == 3 ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins))),NULL,y,z,FitType,useEffPDF,&Vars);
+      myString << MakeAngWithEffPDF(effFuncs->operator[]((NORMJPSInotPSI2S == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins))),NULL,y,z,FitType,useEffPDF,&Vars);
       EffPDFnorm = new RooGenericPdf("Efficiency",myString.str().c_str(),Vars);
  
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[]((NORMBIN == 3 ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
+      myString << fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[]((NORMJPSInotPSI2S == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
       SetValueAndErrors(EffPDFnorm,"FlS",1.0,&myString,&value,&errLo,&errHi);
 
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[]((NORMBIN == 3 ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
+      myString << fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[]((NORMJPSInotPSI2S == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
       SetValueAndErrors(EffPDFnorm,"AfbS",1.0,&myString,&value,&errLo,&errHi);
 
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[]((NORMBIN == 3 ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
+      myString << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[]((NORMJPSInotPSI2S == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
       SetValueAndErrors(EffPDFnorm,"FsS",1.0,&myString,&value,&errLo,&errHi);
 
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[]((NORMBIN == 3 ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
+      myString << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[]((NORMJPSInotPSI2S == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
       SetValueAndErrors(EffPDFnorm,"AsS",1.0,&myString,&value,&errLo,&errHi);
 
       PrintVariables(EffPDFnorm->getVariables(),"vars");
@@ -5235,7 +5235,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 
 	  if ((FitType != 36) && (FitType != 56) && (FitType != 76))
 	    {
-	      VecHistoMeas->operator[](2)->SetBinContent(i+1,(GetVar(TotalPDFq2Bins[i],"nSig")->getVal() / effMuMu) / (PsiYield / effPsi) * (NORMBIN == 3 ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7);
+	      VecHistoMeas->operator[](2)->SetBinContent(i+1,(GetVar(TotalPDFq2Bins[i],"nSig")->getVal() / effMuMu) / (PsiYield / effPsi) * (NORMJPSInotPSI2S == true ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7);
 	      VecHistoMeas->operator[](2)->SetBinError(i+1,VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getError() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)));
 	      
 	      fileFitResults << "@@@@@@ dBF/dq^2 @@@@@@" << endl;
@@ -6032,12 +6032,12 @@ int main(int argc, char** argv)
 	  cout << "- ParameterFILE = "         << ParameterFILE.c_str() << endl;
 
 	  cout << "\n@@@ Internal settings @@@" << endl;
-	  cout << "NBINS = "          << NBINS << endl;
-	  cout << "MULTYIELD = "      << MULTYIELD << endl;
-	  cout << "NCOEFFPOLYBKG = "  << NCOEFFPOLYBKG << endl;
-	  cout << "SLEWRATECONSTR = " << SLEWRATECONSTR << endl;
-	  cout << "NORMBIN = "        << NORMBIN << endl;
-	  cout << "POLYCOEFRANGE = "  << POLYCOEFRANGE << endl;
+	  cout << "NBINS = "            << NBINS << endl;
+	  cout << "MULTYIELD = "        << MULTYIELD << endl;
+	  cout << "NCOEFFPOLYBKG = "    << NCOEFFPOLYBKG << endl;
+	  cout << "SLEWRATECONSTR = "   << SLEWRATECONSTR << endl;
+	  cout << "NORMJPSInotPSI2S = " << NORMJPSInotPSI2S << endl;
+	  cout << "POLYCOEFRANGE = "    << POLYCOEFRANGE << endl;
 
 	  cout << "\nApplyConstr = "  << ApplyConstr << endl;
 	  cout << "SAVEPOLY = "       << SAVEPOLY << endl;
@@ -6123,7 +6123,7 @@ int main(int argc, char** argv)
 	  Utility->ReadSelectionCuts(ParameterFILE);
 	  Utility->ReadFitStartingValues(ParameterFILE,&fitParam,&configParam,Utility->ParFileBlockN("fitValGlob"));
 	  myString.clear(); myString.str("");
-	  myString << fitParam[Utility->GetFitParamIndx("nSig")]->operator[]((NORMBIN == 3 ? 1 : 2)).c_str(); // Read J/psi yield from global-fit results
+	  myString << fitParam[Utility->GetFitParamIndx("nSig")]->operator[]((NORMBIN == JPSIBIN ? 1 : 2)).c_str(); // Read J/psi yield from global-fit results
 	  SetValueAndErrors(NULL,"",1.0,&myString,&PsiYield,&PsiYerr,&PsiYerr);
 	  fileFitResults << "Normalization channel yield: " << PsiYield << " +/- " << PsiYerr << endl;
 	  for (unsigned int i = 0; i < fitParam.size(); i++)

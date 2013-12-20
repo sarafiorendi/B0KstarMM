@@ -130,7 +130,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # 4th block of parameters #
 ###########################
 # Number of q^2 bins
-9
+10
 
 # Lower edge bin 0 (min = 1): [GeV/c2]2
 1.0
@@ -142,24 +142,24 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 4.3
 
 # Lower edge bin 3: 6.0 [GeV/c2]2
-#6.0
+6.0
 
-# Lower edge bin 3: 8.68 [GeV/c2]2
+# Lower edge bin 4: 8.68 [GeV/c2]2
 8.68
 
-# Lower edge bin 4: 10.09 [GeV/c2]2
+# Lower edge bin 5: 10.09 [GeV/c2]2
 10.09
 
-# Lower edge bin 5: 12.86 [GeV/c2]2
+# Lower edge bin 6: 12.86 [GeV/c2]2
 12.86
 
-# Lower edge bin 6: 14.18 [GeV/c2]2
+# Lower edge bin 7: 14.18 [GeV/c2]2
 14.18
 
-# Lower edge bin 7: 16.0 [GeV/c2]2
+# Lower edge bin 8: 16.0 [GeV/c2]2
 16.0
 
-# Upper edge bin 8 (max = 4.8^2 = 23.04): 19.0 [GeV/c2]2
+# Upper edge bin 9 (max = 4.8^2 = 23.04): 19.0 [GeV/c2]2
 19.0
 
 
@@ -719,8 +719,8 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ############################
 # 10th block of parameters #
 ############################
-# Number of starting values for fit [66 double; 5 unsigned int] x 8 q^2 bins
-568
+# Number of starting values for fit [66 double; 5 unsigned int] x 9 q^2 bins
+639
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@ q^2 bin 0 @@@@@@@@@@@@@@@@@@@@@@@@@@@#
 # Signal mean [GeV/c2]
@@ -1938,11 +1938,163 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0
 
 
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@ q^2 bin 8 @@@@@@@@@@@@@@@@@@@@@@@@@@@#
+# Signal mean [GeV/c2]
+5.257
+# Signal sigma-1 [GeV/c2]
+0.03
+# Signal sigma-2 [GeV/c2]
+0.06
+# Fraction
+0.65
+###################################################################
+# Bkg tau-1 [GeV/c2]
+0.26
+# Bkg tau-2 [GeV/c2]
+0.0
+# Fraction
+0.0
+###################################################################
+# Bkg mean mistag [GeV/c2]
+0.0
+# Bkg sigma mistag [GeV/c2]
+0.0
+###################################################################
+# Bkg mean right-peak-1 [GeV/c2]
+0.0
+# Bkg sigma right-peak-1 [GeV/c2]
+0.0
+# Bkg mean right-peak-2 [GeV/c2]
+0.0
+# Bkg sigma right-peak-2 [GeV/c2]
+0.0
+# Fraction
+0.0
+# Bkg mean left-peak-1 [GeV/c2]
+0.0
+# Bkg sigma left-peak-1 [GeV/c2]
+0.0
+# Bkg mean left-peak-2 [GeV/c2]
+0.0
+# Bkg sigma left-peak-2 [GeV/c2]
+0.0
+# Fraction
+0.0
+# Fraction of right-peak
+0.0
+###################################################################
+# Combinatorial bkg yield
+40
+# Mistag bkg yield
+20
+# Peaking bkg yield
+0.0
+# Signal yield
+40
+###################################################################
+### Number of coefficients of the peak.bkg angle1 poly ###
+5
+# Bkg angle1 poly coeff. p0
+0.0
+# Bkg angle1 poly coeff. p1
+0.0
+# Bkg angle1 poly coeff. p2
+0.0
+# Bkg angle1 poly coeff. p3
+0.0
+# Bkg angle1 poly coeff. p4
+0.0
+### Number of coefficients of the comb/mistag.bkg angle1 poly ###
+5
+# Bkg angle1 poly coeff. c0
+0.0
+# Bkg angle1 poly coeff. c1
+0.0
+# Bkg angle1 poly coeff. c2
+0.0
+# Bkg angle1 poly coeff. c3
+0.0
+# Bkg angle1 poly coeff. c4
+0.0
+### Number of coefficients of the peak.bkg angle2 poly ###
+5
+# Bkg angle2 poly coeff. p0
+0.0
+# Bkg angle2 poly coeff. p1
+0.0
+# Bkg angle2 poly coeff. p2
+0.0
+# Bkg angle2 poly coeff. p3
+0.0
+# Bkg angle2 poly coeff. p4
+0.0
+### Number of coefficients of the comb/mistag.bkg angle2 poly ###
+5
+# Bkg angle2 poly coeff. c0
+0.0
+# Bkg angle2 poly coeff. c1
+0.0
+# Bkg angle2 poly coeff. c2
+0.0
+# Bkg angle2 poly coeff. c3
+0.0
+# Bkg angle2 poly coeff. c4
+0.0
+### Number of coefficients of the peak.bkg angle3 poly ###
+5
+# Bkg angle3 poly coeff. p0
+0.0
+# Bkg angle3 poly coeff. p1
+0.0
+# Bkg angle3 poly coeff. p2
+0.0
+# Bkg angle3 poly coeff. p3
+0.0
+# Bkg angle3 poly coeff. p4
+0.0
+### Number of coefficients of the comb/mistag.bkg angle3 poly ###
+5
+# Bkg angle3 poly coeff. c0
+0.0
+# Bkg angle3 poly coeff. c1
+0.0
+# Bkg angle3 poly coeff. c2
+0.0
+# Bkg angle3 poly coeff. c3
+0.0
+# Bkg angle3 poly coeff. c4
+0.0
+###################################################################
+# FL +/- err
+0.5   0.0   0.0
+# AFB +/- err
+0.0   0.0   0.0
+# P1 +/- err
+0.0   0.0   0.0
+# P2 +/- err
+0.0   0.0   0.0
+# FS +/- err
+0.0   0.0   0.0
+# AS +/- err
+0.0   0.0   0.0
+###################################################################
+# Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
+0
+# Use two gaussians signal: 0 = no; 1 = yes
+1
+# Use two gaussians peaking bkg: 0 = no; 1 = yes
+0
+# Use two exponentials combinatorial bkg: 0 = no; 1 = yes
+0
+# Use mistag bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
+0
+
+
 ############################
 # 11th block of parameters #
 ############################
 # Number of dBF/dq2 -/+ err [x 10-7]
-8
+9
 
 # q^2 bin 0
 0.0   0.0   0.0
@@ -1968,12 +2120,15 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # q^2 bin 7
 0.0   0.0   0.0
 
+# q^2 bin 8
+0.0   0.0   0.0
+
 
 ############################
 # 12th block of parameters #
 ############################
-# Number of systematic errors from different sources [5 parameters x 8 q^2bins]
-40
+# Number of systematic errors from different sources [5 parameters x 9 q^2bins]
+45
 
 # q^2 bin 0; +error --- -error
 # FL
@@ -2071,12 +2226,24 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Branching-Fraction
 0.0   0.0
 
+# q^2 bin 8; +error --- -error
+# FL
+0.0   0.0
+# AFB
+0.0   0.0
+# P1
+0.0   0.0
+# P2
+0.0   0.0
+# Branching-Fraction
+0.0   0.0
+
 
 ############################
 # 13th block of parameters #
 ############################
-# Number of NLL for profile likelihood [5 parameters x 8 q^2bins]
-40
+# Number of NLL for profile likelihood [5 parameters x 9 q^2bins]
+45
 
 # q^2 bin 0
 # FL
@@ -2174,12 +2341,24 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Branching-Fraction
 0.0
 
+# q^2 bin 8
+# FL
+0.0
+# AFB
+0.0
+# P1
+0.0
+# P2
+0.0
+# Branching-Fraction
+0.0
+
 
 ############################
 # 14th block of parameters #
 ############################
 # Eficiency parameters averaged over all HLT paths
-40
+45
 
 # q^2 ----- 1st theta ----- err ----- 2nd theta ----- err ----- 3rd theta ----- err ----- 4th theta ----- err
 1.5   0   0   0   0   0   0   0   0
@@ -2192,6 +2371,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 3.15   0   0   0   0   0   0   0   0
 3.15   0   0   0   0   0   0   0   0
 3.15   0   0   0   0   0   0   0   0
+4.49   0   0   0   0   0   0   0   0
+4.49   0   0   0   0   0   0   0   0
+4.49   0   0   0   0   0   0   0   0
+4.49   0   0   0   0   0   0   0   0
+4.49   0   0   0   0   0   0   0   0
 6.49   0   0   0   0   0   0   0   0
 6.49   0   0   0   0   0   0   0   0
 6.49   0   0   0   0   0   0   0   0
