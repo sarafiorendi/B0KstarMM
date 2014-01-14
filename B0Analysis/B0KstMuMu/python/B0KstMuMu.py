@@ -67,8 +67,10 @@ process.source = cms.Source('PoolSource',
 if (runDataMC == 1 and useJSON == True):
     import FWCore.PythonUtilities.LumiList as LumiList
     import FWCore.ParameterSet.Types as CfgTypes
-    myLumis = LumiList.LumiList(filename = 'Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON_MuonPhys.txt').getCMSSWString().split(',')
-#    myLumis = LumiList.LumiList(filename = 'Cert_160404-180252_7TeV_ReRecoNov08_Collisions11_JSON_MuonPhys_v2.txt').getCMSSWString().split(',')
+    if (run2012not2011 == True):
+        myLumis = LumiList.LumiList(filename = 'Cert_190456-208686_8TeV_22Jan2013ReReco_Collisions12_JSON_MuonPhys.txt').getCMSSWString().split(',')
+    else:
+        myLumis = LumiList.LumiList(filename = 'Cert_160404-180252_7TeV_ReRecoNov08_Collisions11_JSON_MuonPhys_v2.txt').getCMSSWString().split(',')
     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())
     process.source.lumisToProcess.extend(myLumis)
 
