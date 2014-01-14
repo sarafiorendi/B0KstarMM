@@ -9,7 +9,14 @@
 # Number of HLT paths
 1
 
-# HLT path:
+# HLT path 2011:
+#HLT_Dimuon6p5_LowMass_Displaced_v
+#HLT_Dimuon7_LowMass_Displaced_v
+#HLT_DoubleMu4_LowMass_Displaced_v
+#HLT_DoubleMu4p5_LowMass_Displaced_v
+#HLT_DoubleMu5_LowMass_Displaced_v
+
+# HLT path 2012:
 HLT_DoubleMu3p5_LowMass_Displaced_v
 
 

@@ -1,9 +1,10 @@
 #################
 ### Variables ###
 #################
-runDataMC = 1 # 1 = Data; 2 = MC (Reco + Gen); 3 = MC (Gen)
-useJSON   = True
-printMsg  = False
+runDataMC          = 1 # 1 = Data; 2 = MC (Reco + Gen); 3 = MC (Gen)
+useJSON            = True
+printMsg           = False
+run2012not2011     = True
 triggerProcessName = 'HLT' # 'GEN' or 'HLT' or 'RECO' or 'TEST' or ...
 
 print "\n@@@ CMSSW run configuration flags @@@"
@@ -121,21 +122,67 @@ removeMCMatching(process, ['All'], outputModules = [])
 #####################################
 ### Do trigger matching for muons ###
 #####################################
-process.cleanMuonTriggerMatchHLT = cms.EDProducer(
-    'PATTriggerMatcherDRLessByR',
-    src                   = cms.InputTag('cleanPatMuons'),
-    matched               = cms.InputTag('patTrigger'),
-    matchedCuts           = cms.string('path("HLT_DoubleMu3p5_LowMass_Displaced_v*")'),
-    maxDeltaR             = cms.double(0.1),
-    resolveAmbiguities    = cms.bool(True),
-    resolveByMatchQuality = cms.bool(True))
+
+if (run2012not2011 == True):
+    process.cleanMuonTriggerMatchHLT = cms.EDProducer(
+        'PATTriggerMatcherDRLessByR',
+        src                   = cms.InputTag('cleanPatMuons'),
+        matched               = cms.InputTag('patTrigger'),
+        matchedCuts           = cms.string('path("HLT_DoubleMu3p5_LowMass_Displaced_v*")'),
+        maxDeltaR             = cms.double(0.1),
+        resolveAmbiguities    = cms.bool(True),
+        resolveByMatchQuality = cms.bool(True))
+else:
+    process.cleanMuonTriggerMatchHLT0 = cms.EDProducer(
+        'PATTriggerMatcherDRLessByR',
+        src                   = cms.InputTag('cleanPatMuons'),
+        matched               = cms.InputTag('patTrigger'),
+        matchedCuts           = cms.string('path("HLT_Dimuon6p5_LowMass_Displaced_v*")'),
+        maxDeltaR             = cms.double(0.1),
+        resolveAmbiguities    = cms.bool(True),
+        resolveByMatchQuality = cms.bool(True))
+    process.cleanMuonTriggerMatchHLT1 = cms.EDProducer(
+        'PATTriggerMatcherDRLessByR',
+        src                   = cms.InputTag('cleanPatMuons'),
+        matched               = cms.InputTag('patTrigger'),
+        matchedCuts           = cms.string('path("HLT_Dimuon7_LowMass_Displaced_v*")'),
+        maxDeltaR             = cms.double(0.1),
+        resolveAmbiguities    = cms.bool(True),
+        resolveByMatchQuality = cms.bool(True))
+    process.cleanMuonTriggerMatchHLT2 = cms.EDProducer(
+        'PATTriggerMatcherDRLessByR',
+        src                   = cms.InputTag('cleanPatMuons'),
+        matched               = cms.InputTag('patTrigger'),
+        matchedCuts           = cms.string('path("HLT_DoubleMu4_LowMass_Displaced_v*")'),
+        maxDeltaR             = cms.double(0.1),
+        resolveAmbiguities    = cms.bool(True),
+        resolveByMatchQuality = cms.bool(True))
+    process.cleanMuonTriggerMatchHLT3 = cms.EDProducer(
+        'PATTriggerMatcherDRLessByR',
+        src                   = cms.InputTag('cleanPatMuons'),
+        matched               = cms.InputTag('patTrigger'),
+        matchedCuts           = cms.string('path("HLT_DoubleMu4p5_LowMass_Displaced_v*")'),
+        maxDeltaR             = cms.double(0.1),
+        resolveAmbiguities    = cms.bool(True),
+        resolveByMatchQuality = cms.bool(True))
+    process.cleanMuonTriggerMatchHLT4 = cms.EDProducer(
+        'PATTriggerMatcherDRLessByR',
+        src                   = cms.InputTag('cleanPatMuons'),
+        matched               = cms.InputTag('patTrigger'),
+        matchedCuts           = cms.string('path("HLT_DoubleMu5_LowMass_Displaced_v*")'),
+        maxDeltaR             = cms.double(0.1),
+        resolveAmbiguities    = cms.bool(True),
+        resolveByMatchQuality = cms.bool(True))
 
 
 ##################################
 ### Switch on PAT trigger info ###
 ##################################
 from PhysicsTools.PatAlgos.tools.trigTools import *
-switchOnTriggerMatchEmbedding(process, triggerMatchers = ['cleanMuonTriggerMatchHLT'], hltProcess = triggerProcessName, outputModule = '')
+if (run2012not2011 == True):
+    switchOnTriggerMatchEmbedding(process, triggerMatchers = ['cleanMuonTriggerMatchHLT'], hltProcess = triggerProcessName, outputModule = '')
+else:
+    switchOnTriggerMatchEmbedding(process, triggerMatchers = ['cleanMuonTriggerMatchHLT0','cleanMuonTriggerMatchHLT1','cleanMuonTriggerMatchHLT2','cleanMuonTriggerMatchHLT3','cleanMuonTriggerMatchHLT4'], hltProcess = triggerProcessName, outputModule = '')
 
 
 #########################
