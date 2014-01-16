@@ -2014,7 +2014,7 @@ double Utils::EffMinValue3D (std::vector<double>* cosThetaKBins, std::vector<dou
 
   std::cout << "\n@@@ Efficiency minimal value (if less than zero): " << minVal << " at: (theta_K,theta_l,phi = " << valj << "," << valk << "," << vall << ")" << std::endl;
 
-  std::cout << "Corresponding to bin [#bin convention 1...N] (theta_K,theta_l,phi): ";
+  std::cout << "Corresponding to bin [#bin convention 1...N (0 = upper bin)] (theta_K,theta_l,phi): ";
   std::cout << SearchBin(valj,cosThetaKBins)+1 << ",";
   std::cout << SearchBin(valk,cosThetaLBins)+1 << ",";
   std::cout << SearchBin(vall,phiBins)+1 << std::endl;
@@ -2173,6 +2173,12 @@ void Utils::InitEffFuncThetaL (TF1* fitFun, unsigned int q2BinIndx)
       fitFun->FixParameter(3,0.0);
       fitFun->FixParameter(4,0.0);
     }
+  else if (q2BinIndx == 8)
+    {
+      fitFun->SetParameter(2,0.0);
+      fitFun->FixParameter(3,0.0);
+      fitFun->FixParameter(4,0.0);
+    }
 }
 
 void Utils::InitEffFuncThetaK (TF1* fitFun, unsigned int q2BinIndx)
@@ -2291,9 +2297,14 @@ void Utils::AddConstraintThetaL (TH1D** histo, unsigned int q2BinIndx, unsigned 
 
   if (q2BinIndx == 1) AddConstraint1D(histo,"both",constrXerr,constrYval,constrYerr,ID);
 
-  if ((q2BinIndx == 2) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"high",constrXerr,constrYval,constrYerr,ID);
+  if ((q2BinIndx == 2) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"both",constrXerr,constrYval,constrYerr,ID);
+  if ((q2BinIndx == 2) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"both",constrXerr,constrYval,constrYerr,ID);
+  if ((q2BinIndx == 2) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"both",constrXerr,constrYval,constrYerr,ID);
   if ((q2BinIndx == 2) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"low",constrXerr,constrYval,constrYerr,ID);
   if ((q2BinIndx == 2) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",constrXerr,constrYval,constrYerr,ID);
+
+  if ((q2BinIndx == 3) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"high",constrXerr,constrYval,constrYerr,ID);
+  if ((q2BinIndx == 3) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"low",constrXerr,constrYval,constrYerr,ID);
 }
 
 void Utils::AddConstraint2D (TH2D** histo, double err, double Zval, double Zerr, unsigned int ID, std::string toBeConstr, std::vector<std::string>* toBeAdded)
@@ -2444,9 +2455,14 @@ void Utils::AddConstraintThetaK (TH2D** histo, std::vector<double>* cosThetaKBin
 
   if (q2BinIndx == 1) for (unsigned int i = 0; i < cosThetaKBins->size()-1; i++) toBeAdded[i] = "both";
 
-  if (q2BinIndx == 2) toBeAdded[1] = "high";
+  if (q2BinIndx == 2) toBeAdded[0] = "both";
+  if (q2BinIndx == 2) toBeAdded[1] = "both";
+  if (q2BinIndx == 2) toBeAdded[2] = "both";
   if (q2BinIndx == 2) toBeAdded[3] = "low";
   if (q2BinIndx == 2) toBeAdded[4] = "low";
+
+  if (q2BinIndx == 3) toBeAdded[1] = "high";
+  if (q2BinIndx == 3) toBeAdded[2] = "low";
 
   AddConstraint2D(histo,constrXYerr,constrZval,constrZerr,ID,"Y",&toBeAdded);
 }
@@ -2623,62 +2639,85 @@ void Utils::AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2BinIndx, 
   if (q2BinIndx == 0)
     {
       for (int i = 1; i <= (*histo)->GetNbinsZ()+2; i++)
-	{
-	  for (int j = 1; j <= (*histo)->GetNbinsX()+2; j++)
-	    {
-	      toBeAdded[0].push_back(j);
-	      toBeAdded[1].push_back(1);
-	      toBeAdded[2].push_back(i);
-	    }
+  	{
+  	  for (int j = 1; j <= (*histo)->GetNbinsX()+2; j++)
+  	    {
+  	      toBeAdded[0].push_back(j);
+  	      toBeAdded[1].push_back(1);
+  	      toBeAdded[2].push_back(i);
+  	    }
 
-	  for (int j = 1; j <= (*histo)->GetNbinsX()+2; j++)
-	    {
-	      toBeAdded[0].push_back(j);
-	      toBeAdded[1].push_back((*histo)->GetNbinsY()+2);
-	      toBeAdded[2].push_back(i);
-	    }
-	}
-
-      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
-      toBeAdded[1].push_back(5);
-      toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
+  	  for (int j = 1; j <= (*histo)->GetNbinsX()+2; j++)
+  	    {
+  	      toBeAdded[0].push_back(j);
+  	      toBeAdded[1].push_back((*histo)->GetNbinsY()+2);
+  	      toBeAdded[2].push_back(i);
+  	    }
+  	}
     }
 
   if (q2BinIndx == 1)
     {
       for (int i = 1; i <= (*histo)->GetNbinsZ()+2; i++)
-	{
-	  for (int j = 1; j <= (*histo)->GetNbinsX()+2; j++)
-	    {
-	      toBeAdded[0].push_back(j);
-	      toBeAdded[1].push_back(1);
-	      toBeAdded[2].push_back(i);
-	    }
+  	{
+  	  for (int j = 1; j <= (*histo)->GetNbinsX()+2; j++)
+  	    {
+  	      toBeAdded[0].push_back(j);
+  	      toBeAdded[1].push_back(1);
+  	      toBeAdded[2].push_back(i);
+  	    }
 
-	  for (int j = 1; j <= (*histo)->GetNbinsX()+2; j++)
-	    {
-	      toBeAdded[0].push_back(j);
-	      toBeAdded[1].push_back((*histo)->GetNbinsY()+2);
-	      toBeAdded[2].push_back(i);
-	    }
-	}
+  	  for (int j = 1; j <= (*histo)->GetNbinsX()+2; j++)
+  	    {
+  	      toBeAdded[0].push_back(j);
+  	      toBeAdded[1].push_back((*histo)->GetNbinsY()+2);
+  	      toBeAdded[2].push_back(i);
+  	    }
+  	}
     }
 
   if (q2BinIndx == 2)
     {
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
+      toBeAdded[1].push_back(1);
+      toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
+
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+1);
+      toBeAdded[1].push_back(1);
+      toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
+
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
+      toBeAdded[1].push_back(2);
+      toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
+
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
+      toBeAdded[1].push_back((*histo)->GetNbinsY()+2);
+      toBeAdded[2].push_back(4);
+
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+1);
+      toBeAdded[1].push_back((*histo)->GetNbinsY()+2);
+      toBeAdded[2].push_back(4);
+
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
+      toBeAdded[1].push_back((*histo)->GetNbinsY()+1);
+      toBeAdded[2].push_back(4);
+
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
+      toBeAdded[1].push_back(3);
+      toBeAdded[2].push_back(4);
+
       toBeAdded[0].push_back(3);
       toBeAdded[1].push_back((*histo)->GetNbinsY()+2);
       toBeAdded[2].push_back(4);
-
-      toBeAdded[0].push_back(6);
+    }
+  
+  if (q2BinIndx == 3)
+    {
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
       toBeAdded[1].push_back(1);
       toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
 
-      toBeAdded[0].push_back(6);
-      toBeAdded[1].push_back(2);
-      toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
-
-      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+1);
       toBeAdded[1].push_back(1);
       toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
 
@@ -2690,53 +2729,105 @@ void Utils::AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2BinIndx, 
       toBeAdded[1].push_back((*histo)->GetNbinsY()+2);
       toBeAdded[2].push_back(4);
 
-      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
-      toBeAdded[1].push_back(3);
-      toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
-    }
-
-  if (q2BinIndx == 3)
-    {
-      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
-      toBeAdded[1].push_back(3);
-      toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
-
-      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+1);
       toBeAdded[1].push_back((*histo)->GetNbinsY()+2);
-      toBeAdded[2].push_back(3);
+      toBeAdded[2].push_back(4);
 
       toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
-      toBeAdded[1].push_back(7);
-      toBeAdded[2].push_back(3);
+      toBeAdded[1].push_back((*histo)->GetNbinsY()+1);
+      toBeAdded[2].push_back(4);
     }
 
   if (q2BinIndx == 4)
     {
       toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
+      toBeAdded[1].push_back(1);
+      toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
+
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+1);
+      toBeAdded[1].push_back(1);
+      toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
+
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
+      toBeAdded[1].push_back(2);
+      toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
+
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
+      toBeAdded[1].push_back((*histo)->GetNbinsY()+2);
+      toBeAdded[2].push_back(4);
+
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+1);
       toBeAdded[1].push_back((*histo)->GetNbinsY()+2);
       toBeAdded[2].push_back(4);
 
       toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
-      toBeAdded[1].push_back(7);
+      toBeAdded[1].push_back((*histo)->GetNbinsY()+1);
+      toBeAdded[2].push_back(4);
+
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
+      toBeAdded[1].push_back(6);
+      toBeAdded[2].push_back(4);
+
+      toBeAdded[0].push_back(2);
+      toBeAdded[1].push_back((*histo)->GetNbinsY()+2);
+      toBeAdded[2].push_back(4);
+
+      toBeAdded[0].push_back(3);
+      toBeAdded[1].push_back(1);
       toBeAdded[2].push_back(4);
     }
 
   if (q2BinIndx == 5)
     {
       toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
-      toBeAdded[1].push_back((*histo)->GetNbinsY()+2);
-      toBeAdded[2].push_back(4);
+      toBeAdded[1].push_back(1);
+      toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
+
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+1);
+      toBeAdded[1].push_back(1);
+      toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
 
       toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
-      toBeAdded[1].push_back(7);
+      toBeAdded[1].push_back(2);
+      toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
+
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
+      toBeAdded[1].push_back((*histo)->GetNbinsY()+2);
       toBeAdded[2].push_back(4);
     }
 
   if (q2BinIndx == 6)
     {
       toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
+      toBeAdded[1].push_back(1);
+      toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
+
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+1);
+      toBeAdded[1].push_back(1);
+      toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
+
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
+      toBeAdded[1].push_back(2);
+      toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
+
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
       toBeAdded[1].push_back((*histo)->GetNbinsY()+2);
       toBeAdded[2].push_back(4);
+    }
+  
+  if (q2BinIndx == 7)
+    {
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
+      toBeAdded[1].push_back(1);
+      toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
+
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+1);
+      toBeAdded[1].push_back(1);
+      toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
+      
+      toBeAdded[0].push_back((*histo)->GetNbinsX()+2);
+      toBeAdded[1].push_back(2);
+      toBeAdded[2].push_back((*histo)->GetNbinsZ()+2);
     }
 
   if ((toBeAdded[0].size() != 0) || (toBeAdded[1].size() != 0) || (toBeAdded[2].size() != 0))

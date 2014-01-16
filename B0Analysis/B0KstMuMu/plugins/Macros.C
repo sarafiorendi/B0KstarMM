@@ -83,7 +83,7 @@ void PlotCutScans           (string fileName, string type);
 void PlotEffPlots           (string fileName, unsigned int plotN, unsigned int binN);
 void PlotB0vsMuMu           (string fileName, bool rejectPsi);
 void PlotBkgMC              (string fileName, bool iFit, double scaleMCdata);
-void ReduceTree             (string fileNameIn, string fileNameOut);
+void ReduceTree             (string fileNameIn, string fileNameOut, bool isSingleNotMultyCand);
 void SampleMCforPileup      (string fileNameIn, string fileNameOut);
 void DivideNTuple           (string fileNameIn, string fileNameOut, unsigned int n);
 void SampleNTuple           (string fileNameIn, string fileNameOut, double fraction);
@@ -1028,7 +1028,7 @@ void PlotBkgMC (string fileName, bool iFit, double scaleMCdata)
 // ########################################################################
 // # Sub-program to reduce the number of branches of the candidate ntuple #
 // ########################################################################
-void ReduceTree (string fileNameIn, string fileNameOut)
+void ReduceTree (string fileNameIn, string fileNameOut, bool isSingleNotMultyCand)
 {
   int nEntries;
 
@@ -1043,94 +1043,110 @@ void ReduceTree (string fileNameIn, string fileNameOut)
   // ######
   // # B0 #
   // ######
-  theTreeIn->SetBranchStatus("bMass",1);
-  theTreeIn->SetBranchStatus("bBarMass",1);
-  theTreeIn->SetBranchStatus("bPx",1);
-  theTreeIn->SetBranchStatus("bPy",1);
-  theTreeIn->SetBranchStatus("bPz",1);
-  theTreeIn->SetBranchStatus("bLBS",1);
-  theTreeIn->SetBranchStatus("bLBSE",1);
-  theTreeIn->SetBranchStatus("bVtxCL",1);
-  theTreeIn->SetBranchStatus("bCosAlphaBS",1);
+  if (isSingleNotMultyCand == false)
+    {
+      theTreeIn->SetBranchStatus("bMass",1);
+      theTreeIn->SetBranchStatus("bBarMass",1);
+      theTreeIn->SetBranchStatus("bPx",1);
+      theTreeIn->SetBranchStatus("bPy",1);
+      theTreeIn->SetBranchStatus("bPz",1);
+      theTreeIn->SetBranchStatus("bLBS",1);
+      theTreeIn->SetBranchStatus("bLBSE",1);
+      theTreeIn->SetBranchStatus("bVtxCL",1);
+      theTreeIn->SetBranchStatus("bCosAlphaBS",1);
 
-  theTreeIn->SetBranchStatus("TrigTable",1);
+      theTreeIn->SetBranchStatus("TrigTable",1);
 
-  // #########
-  // # Mu-Mu #
-  // #########
-  theTreeIn->SetBranchStatus("mumuVtxCL",1);
-  theTreeIn->SetBranchStatus("mumuMass",1);
-  theTreeIn->SetBranchStatus("mumuMassE",1);
+      // #########
+      // # Mu-Mu #
+      // #########
+      theTreeIn->SetBranchStatus("mumuVtxCL",1);
+      theTreeIn->SetBranchStatus("mumuMass",1);
+      theTreeIn->SetBranchStatus("mumuMassE",1);
 
-  // #######
-  // # K*0 #
-  // #######
-  theTreeIn->SetBranchStatus("kstMass",1);
-  theTreeIn->SetBranchStatus("kstMassE",1);
-  theTreeIn->SetBranchStatus("kstBarMass",1);
-  theTreeIn->SetBranchStatus("kstBarMassE",1);
-  theTreeIn->SetBranchStatus("kstPx",1);
-  theTreeIn->SetBranchStatus("kstPy",1);
-  theTreeIn->SetBranchStatus("kstPz",1);
+      // #######
+      // # K*0 #
+      // #######
+      theTreeIn->SetBranchStatus("kstMass",1);
+      theTreeIn->SetBranchStatus("kstMassE",1);
+      theTreeIn->SetBranchStatus("kstBarMass",1);
+      theTreeIn->SetBranchStatus("kstBarMassE",1);
+      theTreeIn->SetBranchStatus("kstPx",1);
+      theTreeIn->SetBranchStatus("kstPy",1);
+      theTreeIn->SetBranchStatus("kstPz",1);
 
-  // #######
-  // # mu- #
-  // #######
-  theTreeIn->SetBranchStatus("mumHighPurity",1);
-  theTreeIn->SetBranchStatus("mumNormChi2",1);
-  theTreeIn->SetBranchStatus("mumCat",1);
-  theTreeIn->SetBranchStatus("mumPx",1);
-  theTreeIn->SetBranchStatus("mumPy",1);
-  theTreeIn->SetBranchStatus("mumPz",1);
-  theTreeIn->SetBranchStatus("mumDCABS",1);
-  theTreeIn->SetBranchStatus("mumDCABSE",1);
-  theTreeIn->SetBranchStatus("mumdxyVtx",1);
-  theTreeIn->SetBranchStatus("mumdzVtx",1);
-  theTreeIn->SetBranchStatus("mumTrig",1);
-  theTreeIn->SetBranchStatus("mumNPixLayers",1);
-  theTreeIn->SetBranchStatus("mumNTrkLayers",1);
+      // #######
+      // # mu- #
+      // #######
+      theTreeIn->SetBranchStatus("mumHighPurity",1);
+      theTreeIn->SetBranchStatus("mumNormChi2",1);
+      theTreeIn->SetBranchStatus("mumCat",1);
+      theTreeIn->SetBranchStatus("mumPx",1);
+      theTreeIn->SetBranchStatus("mumPy",1);
+      theTreeIn->SetBranchStatus("mumPz",1);
+      theTreeIn->SetBranchStatus("mumDCABS",1);
+      theTreeIn->SetBranchStatus("mumDCABSE",1);
+      theTreeIn->SetBranchStatus("mumdxyVtx",1);
+      theTreeIn->SetBranchStatus("mumdzVtx",1);
+      theTreeIn->SetBranchStatus("mumTrig",1);
+      theTreeIn->SetBranchStatus("mumNPixLayers",1);
+      theTreeIn->SetBranchStatus("mumNTrkLayers",1);
 
-  // #######
-  // # mu+ #
-  // #######
-  theTreeIn->SetBranchStatus("mupHighPurity",1);
-  theTreeIn->SetBranchStatus("mupNormChi2",1);
-  theTreeIn->SetBranchStatus("mupCat",1);
-  theTreeIn->SetBranchStatus("mupPx",1);
-  theTreeIn->SetBranchStatus("mupPy",1);
-  theTreeIn->SetBranchStatus("mupPz",1);
-  theTreeIn->SetBranchStatus("mupDCABS",1);
-  theTreeIn->SetBranchStatus("mupDCABSE",1);
-  theTreeIn->SetBranchStatus("mupdxyVtx",1);
-  theTreeIn->SetBranchStatus("mupdzVtx",1);
-  theTreeIn->SetBranchStatus("mupTrig",1);
-  theTreeIn->SetBranchStatus("mupNPixLayers",1);
-  theTreeIn->SetBranchStatus("mupNTrkLayers",1);
+      // #######
+      // # mu+ #
+      // #######
+      theTreeIn->SetBranchStatus("mupHighPurity",1);
+      theTreeIn->SetBranchStatus("mupNormChi2",1);
+      theTreeIn->SetBranchStatus("mupCat",1);
+      theTreeIn->SetBranchStatus("mupPx",1);
+      theTreeIn->SetBranchStatus("mupPy",1);
+      theTreeIn->SetBranchStatus("mupPz",1);
+      theTreeIn->SetBranchStatus("mupDCABS",1);
+      theTreeIn->SetBranchStatus("mupDCABSE",1);
+      theTreeIn->SetBranchStatus("mupdxyVtx",1);
+      theTreeIn->SetBranchStatus("mupdzVtx",1);
+      theTreeIn->SetBranchStatus("mupTrig",1);
+      theTreeIn->SetBranchStatus("mupNPixLayers",1);
+      theTreeIn->SetBranchStatus("mupNTrkLayers",1);
 
-  // ##############
-  // # K*0 track- #
-  // ##############
-  theTreeIn->SetBranchStatus("kstTrkmHighPurity",1);
-  theTreeIn->SetBranchStatus("kstTrkmMuMatch",1);
-  theTreeIn->SetBranchStatus("kstTrkmDCABS",1);
-  theTreeIn->SetBranchStatus("kstTrkmDCABSE",1);
-  theTreeIn->SetBranchStatus("kstTrkmPx",1);
-  theTreeIn->SetBranchStatus("kstTrkmPy",1);
-  theTreeIn->SetBranchStatus("kstTrkmPz",1);
+      // ##############
+      // # K*0 track- #
+      // ##############
+      theTreeIn->SetBranchStatus("kstTrkmHighPurity",1);
+      theTreeIn->SetBranchStatus("kstTrkmMuMatch",1);
+      theTreeIn->SetBranchStatus("kstTrkmDCABS",1);
+      theTreeIn->SetBranchStatus("kstTrkmDCABSE",1);
+      theTreeIn->SetBranchStatus("kstTrkmPx",1);
+      theTreeIn->SetBranchStatus("kstTrkmPy",1);
+      theTreeIn->SetBranchStatus("kstTrkmPz",1);
 
-  // ##############
-  // # K*0 track+ #
-  // ##############
-  theTreeIn->SetBranchStatus("kstTrkpHighPurity",1);
-  theTreeIn->SetBranchStatus("kstTrkpMuMatch",1);
-  theTreeIn->SetBranchStatus("kstTrkpDCABS",1);
-  theTreeIn->SetBranchStatus("kstTrkpDCABSE",1);
-  theTreeIn->SetBranchStatus("kstTrkpPx",1);
-  theTreeIn->SetBranchStatus("kstTrkpPy",1);
-  theTreeIn->SetBranchStatus("kstTrkpPz",1);
+      // ##############
+      // # K*0 track+ #
+      // ##############
+      theTreeIn->SetBranchStatus("kstTrkpHighPurity",1);
+      theTreeIn->SetBranchStatus("kstTrkpMuMatch",1);
+      theTreeIn->SetBranchStatus("kstTrkpDCABS",1);
+      theTreeIn->SetBranchStatus("kstTrkpDCABSE",1);
+      theTreeIn->SetBranchStatus("kstTrkpPx",1);
+      theTreeIn->SetBranchStatus("kstTrkpPy",1);
+      theTreeIn->SetBranchStatus("kstTrkpPz",1);
+  
+      theTreeIn->SetBranchStatus("genSignal",1);
+      theTreeIn->SetBranchStatus("truthMatchSignal",1);
+    }
+  else
+    {
+      theTreeIn->SetBranchStatus("B0MassArb",1);
 
-  theTreeIn->SetBranchStatus("genSignal",1);
-  theTreeIn->SetBranchStatus("truthMatchSignal",1);
+      theTreeIn->SetBranchStatus("mumuMass",1);
+      theTreeIn->SetBranchStatus("mumuMassE",1);
+
+      theTreeIn->SetBranchStatus("truthMatchSignal",1);
+
+      theTreeIn->SetBranchStatus("CosThetaKArb",1);
+      theTreeIn->SetBranchStatus("CosThetaMuArb",1);
+      theTreeIn->SetBranchStatus("PhiKstMuMuPlaneArb",1);
+    }
 
   TFile* fileOut = TFile::Open(fileNameOut.c_str(),"RECREATE");
   fileOut->mkdir("B0KstMuMu");

@@ -11,6 +11,7 @@ print "\n@@@ CMSSW run configuration flags @@@"
 print "runDataMC          : ", runDataMC
 print "useJSON            : ", useJSON
 print "printMsg           : ", printMsg
+print "run2012not2011     : ", run2012not2011
 print "triggerProcessName : ", triggerProcessName
 
 
@@ -36,7 +37,10 @@ process.MessageLogger.suppressWarning = cms.untracked.vstring('B0KstMuMu')
 if (runDataMC != 1):
     process.GlobalTag.globaltag = cms.string('START53_V19F::All') # Run dep. MC: START53_V19F; J/psi X MC: START53_V7G
 else:
-    process.GlobalTag.globaltag = cms.string('FT53_V21A_AN6::All')
+    if (run2012not2011 == True):
+        process.GlobalTag.globaltag = cms.string('FT53_V21A_AN6::All')
+    else:
+        process.GlobalTag.globaltag = cms.string('***::All')
 
 
 #######################

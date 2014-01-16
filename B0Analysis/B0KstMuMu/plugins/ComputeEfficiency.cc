@@ -88,7 +88,7 @@ using std::vector;
 // # Fit constraints #
 // ###################
 #define abscissaErr   1e-2
-#define ordinateVal   1e-4
+#define ordinateVal   1e-4 // bin #0: 4e-4; bin #1: 1e-4; bin #2-#8: 1e-3;
 #define ordinateErr   1e-5
 #define ordinateRange 1e-2
 

@@ -1,17 +1,12 @@
-// ############################################################################
-// # Program to fit the B0 invariant mass for the B0 --> K*0 mu+ mu- analysis #
-// ############################################################################
-// # Measure forward-backward asymmetry (Afb) from dimuons                    #
-// # Longitudinal polarization (Fl) from K*0 (K pi)                           #
-// # Branching fraction with respect to B0 --> K*0 J/psi (mu+ mu-)            #
-// # Branching fraction with respect to B0 --> K*0 psi(2S) (mu+ mu-)          #
-// ############################################################################
-// # Author: Mauro Dinardo                                                    #
-// ############################################################################
-// # Search for @TMP@ to look for temporary code options                      #
-// ############################################################################
+// ################################################################################
+// # Program to perform the full angular analysis of the decay B0 --> K*0 mu+ mu- #
+// #                                                                              #
+// # Author: Mauro Dinardo                                                        #
+// ################################################################################
+// # Search for @TMP@ to look for temporary code options                          #
+// ################################################################################
 
-// ############ To make simultaneus fit to multiple HLT categories ############
+// ############## To make simultaneus fit to multiple HLT categories ##############
 // RooDataSet* SingleCandNTuple;
 // RooDataSet* SingleCandNTuple_HLT1 = NULL;
 // RooDataSet* SingleCandNTuple_HLT2 = NULL;
@@ -35,7 +30,7 @@
 // FullHLTpdf[i]->addPdf(*TotalPDFq2BinsHLT1[i],"HLT1");
 // FullHLTpdf[i]->addPdf(*TotalPDFq2BinsHLT2[i],"HLT2");
 // TotalPDFq2Bins = FullHLTpdf[i];
-// ############################################################################
+// ################################################################################
 
 #include <TROOT.h>
 #include <TApplication.h>
@@ -4367,60 +4362,60 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // #####################
       // # Make sideband fit #
       // #####################
-      if (FitPeakBkg != 1)
-	{
-	  RooAbsPdf* TmpPDF = NULL;
-	  RooDataSet* sideBands = NULL;
-	  RooRealVar frac("frac","Fraction",0.5,0.0,1.0);
-	  RooArgSet constrSidebads;
-	  ClearVars(&constrSidebads);
-	  BuildAngularConstraints(&constrSidebads,*TotalPDF);
+      // if (FitPeakBkg != 1)
+	// {
+	//   RooAbsPdf* TmpPDF = NULL;
+	//   RooDataSet* sideBands = NULL;
+	//   RooRealVar frac("frac","Fraction",0.5,0.0,1.0);
+	//   RooArgSet constrSidebads;
+	//   ClearVars(&constrSidebads);
+	//   BuildAngularConstraints(&constrSidebads,*TotalPDF);
 
 
-	  // ################
-	  // # Save results #
-	  // ################
-	  fileFitResults << "====================================================================" << endl;
-	  fileFitResults << "@@@@@@ B0 mass sideband fit @@@@@@" << endl;
-	  fileFitResults << "Amplitude of signal region (+/- n*< Sigma >): " << Utility->GetGenericParam("NSigmaB0S") << " * " << Utility->GetB0Width() << endl;
+	//   // ################
+	//   // # Save results #
+	//   // ################
+	//   fileFitResults << "====================================================================" << endl;
+	//   fileFitResults << "@@@@@@ B0 mass sideband fit @@@@@@" << endl;
+	//   fileFitResults << "Amplitude of signal region (+/- n*< Sigma >): " << Utility->GetGenericParam("NSigmaB0S") << " * " << Utility->GetB0Width() << endl;
 
 
-	  // ##############
-	  // # Get p.d.f. #
-	  // ##############
-	  if (FitPeakBkg != 0) TmpPDF = new RooAddPdf("TmpPDF","Temporary p.d.f.",RooArgList(*BkgAnglesC,*BkgAnglesP),RooArgList(frac));
-	  else                 TmpPDF = new RooProdPdf(*((RooProdPdf*)BkgAnglesC),"TmpPDF");
+	//   // ##############
+	//   // # Get p.d.f. #
+	//   // ##############
+	//   if (FitPeakBkg != 0) TmpPDF = new RooAddPdf("TmpPDF","Temporary p.d.f.",RooArgList(*BkgAnglesC,*BkgAnglesP),RooArgList(frac));
+	//   else                 TmpPDF = new RooProdPdf(*((RooProdPdf*)BkgAnglesC),"TmpPDF");
 
 
-	  // #############
-	  // # Sidebands #
-	  // #############
-	  myString.clear(); myString.str("");
-	  myString << "B0MassArb < " << (*TotalPDF)->getVariables()->getRealValue("meanS") - Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
-	  myString << " || B0MassArb > " << (*TotalPDF)->getVariables()->getRealValue("meanS") + Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
-	  cout << "Cut for B0 sidebands: " << myString.str().c_str() << endl;
-	  sideBands = (RooDataSet*)dataSet->reduce(myString.str().c_str());
+	//   // #############
+	//   // # Sidebands #
+	//   // #############
+	//   myString.clear(); myString.str("");
+	//   myString << "B0MassArb < " << (*TotalPDF)->getVariables()->getRealValue("meanS") - Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
+	//   myString << " || B0MassArb > " << (*TotalPDF)->getVariables()->getRealValue("meanS") + Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
+	//   cout << "Cut for B0 sidebands: " << myString.str().c_str() << endl;
+	//   sideBands = (RooDataSet*)dataSet->reduce(myString.str().c_str());
 
 
-	  // ###################
-	  // # Make actual fit #
-	  // ###################
-	  if (ApplyConstr == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebads),Save(true));
-	  else                     fitResult = TmpPDF->fitTo(*sideBands,Save(true));
-	  if (fitResult != NULL) fitResult->Print("v");
+	//   // ###################
+	//   // # Make actual fit #
+	//   // ###################
+	//   if (ApplyConstr == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebads),Save(true));
+	//   else                     fitResult = TmpPDF->fitTo(*sideBands,Save(true));
+	//   if (fitResult != NULL) fitResult->Print("v");
 
 	  
-	  // ####################
-	  // # Save fit results #
-	  // ####################
-	  StorePolyResultsInFile(TotalPDF);
+	//   // ####################
+	//   // # Save fit results #
+	//   // ####################
+	//   StorePolyResultsInFile(TotalPDF);
 
 
-	  delete TmpPDF;
-	  delete sideBands;
-	  ClearVars(&constrSidebads);
-	  if (fitResult != NULL) delete fitResult;
-	}
+	//   delete TmpPDF;
+	//   delete sideBands;
+	//   ClearVars(&constrSidebads);
+	//   if (fitResult != NULL) delete fitResult;
+	// }
 
 
       // ###################
@@ -4679,330 +4674,330 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // #####################
       // # Plot on sidebands #
       // #####################
-      if ((FitPeakBkg != 1) && (ID == 0))
-	{
-	  // ################
-	  // # Save results #
-	  // ################
-	  fileFitResults << "@@@@@@ B0 mass sideband fit overlaps @@@@@@" << endl;
-	  fileFitResults << "Amplitude of signal region: +/- " << Utility->GetGenericParam("NSigmaB0S") << " * < Sigma >" << endl;
+      // if ((FitPeakBkg != 1) && (ID == 0))
+	// {
+	//   // ################
+	//   // # Save results #
+	//   // ################
+	//   fileFitResults << "@@@@@@ B0 mass sideband fit overlaps @@@@@@" << endl;
+	//   fileFitResults << "Amplitude of signal region: +/- " << Utility->GetGenericParam("NSigmaB0S") << " * < Sigma >" << endl;
 
 
-	  // ################
-	  // # Low sideband #
-	  // ################
-	  x->setRange("lowSideband",(*TotalPDF)->getVariables()->getRealValue("meanS") - Utility->GetGenericParam("B0MassIntervalLeft"),
-		      (*TotalPDF)->getVariables()->getRealValue("meanS") - Utility->GetGenericParam("NSigmaB0S")*signalSigma);
-	  y->setRange("lowSideband",y->getMin(),y->getMax());
-	  z->setRange("lowSideband",z->getMin(),z->getMax());
+	//   // ################
+	//   // # Low sideband #
+	//   // ################
+	//   x->setRange("lowSideband",(*TotalPDF)->getVariables()->getRealValue("meanS") - Utility->GetGenericParam("B0MassIntervalLeft"),
+	// 	      (*TotalPDF)->getVariables()->getRealValue("meanS") - Utility->GetGenericParam("NSigmaB0S")*signalSigma);
+	//   y->setRange("lowSideband",y->getMin(),y->getMax());
+	//   z->setRange("lowSideband",z->getMin(),z->getMax());
 
 
-	  // #################
-	  // # Signal region #
-	  // #################
-	  x->setRange("signalRegion",(*TotalPDF)->getVariables()->getRealValue("meanS") - Utility->GetGenericParam("NSigmaB0S")*signalSigma,
-		      (*TotalPDF)->getVariables()->getRealValue("meanS") + Utility->GetGenericParam("NSigmaB0S")*signalSigma);
-	  y->setRange("signalRegion",y->getMin(),y->getMax());
-	  z->setRange("signalRegion",z->getMin(),z->getMax());
+	//   // #################
+	//   // # Signal region #
+	//   // #################
+	//   x->setRange("signalRegion",(*TotalPDF)->getVariables()->getRealValue("meanS") - Utility->GetGenericParam("NSigmaB0S")*signalSigma,
+	// 	      (*TotalPDF)->getVariables()->getRealValue("meanS") + Utility->GetGenericParam("NSigmaB0S")*signalSigma);
+	//   y->setRange("signalRegion",y->getMin(),y->getMax());
+	//   z->setRange("signalRegion",z->getMin(),z->getMax());
 
 
-	  // #################
-	  // # High sideband #
-	  // #################
-	  x->setRange("highSideband",(*TotalPDF)->getVariables()->getRealValue("meanS") + Utility->GetGenericParam("NSigmaB0S")*signalSigma,
-		      (*TotalPDF)->getVariables()->getRealValue("meanS") + Utility->GetGenericParam("B0MassIntervalRight"));
-	  y->setRange("highSideband",y->getMin(),y->getMax());
-	  z->setRange("highSideband",z->getMin(),z->getMax());
+	//   // #################
+	//   // # High sideband #
+	//   // #################
+	//   x->setRange("highSideband",(*TotalPDF)->getVariables()->getRealValue("meanS") + Utility->GetGenericParam("NSigmaB0S")*signalSigma,
+	// 	      (*TotalPDF)->getVariables()->getRealValue("meanS") + Utility->GetGenericParam("B0MassIntervalRight"));
+	//   y->setRange("highSideband",y->getMin(),y->getMax());
+	//   z->setRange("highSideband",z->getMin(),z->getMax());
 
 
-	  // ##############
-	  // # Y-variable #
-	  // ##############
+	//   // ##############
+	//   // # Y-variable #
+	//   // ##############
 
 
-	  // ###########################
-	  // # Background plot results #
-	  // ###########################
-	  Canv->cd(4);
-	  RooPlot* myFrameLowSideBY = y->frame(NBINS);
-	  dataSet->plotOn(myFrameLowSideBY,Name(MakeName(dataSet,ID).c_str()),CutRange("lowSideband"));
-	  (*TotalPDF)->plotOn(myFrameLowSideBY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("lowSideband"));
-	  if (GetVar(*TotalPDF,"nSig")       != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY,Components(*Signal),             LineStyle(7), LineColor(kBlue),    ProjectionRange("lowSideband"));
-	  if (GetVar(*TotalPDF,"nBkgComb")   != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY,Components(*BkgMassAngleComb),   LineStyle(4), LineColor(kRed),     ProjectionRange("lowSideband"));
-	  if (GetVar(*TotalPDF,"nBkgMisTag") != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY,Components(*BkgMassAngleMisTag), LineStyle(8), LineColor(kAzure+6), ProjectionRange("lowSideband"));
-	  if (GetVar(*TotalPDF,"nBkgPeak")   != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY,Components(*BkgMassAnglePeak),   LineStyle(3), LineColor(kViolet),  ProjectionRange("lowSideband"));
+	//   // ###########################
+	//   // # Background plot results #
+	//   // ###########################
+	//   Canv->cd(4);
+	//   RooPlot* myFrameLowSideBY = y->frame(NBINS);
+	//   dataSet->plotOn(myFrameLowSideBY,Name(MakeName(dataSet,ID).c_str()),CutRange("lowSideband"));
+	//   (*TotalPDF)->plotOn(myFrameLowSideBY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("lowSideband"));
+	//   if (GetVar(*TotalPDF,"nSig")       != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY,Components(*Signal),             LineStyle(7), LineColor(kBlue),    ProjectionRange("lowSideband"));
+	//   if (GetVar(*TotalPDF,"nBkgComb")   != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY,Components(*BkgMassAngleComb),   LineStyle(4), LineColor(kRed),     ProjectionRange("lowSideband"));
+	//   if (GetVar(*TotalPDF,"nBkgMisTag") != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY,Components(*BkgMassAngleMisTag), LineStyle(8), LineColor(kAzure+6), ProjectionRange("lowSideband"));
+	//   if (GetVar(*TotalPDF,"nBkgPeak")   != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY,Components(*BkgMassAnglePeak),   LineStyle(3), LineColor(kViolet),  ProjectionRange("lowSideband"));
 
-	  TPaveText* paveTextLowSideBY = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
-	  paveTextLowSideBY->AddText("Low sideband");
-	  paveTextLowSideBY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameLowSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
-	  paveTextLowSideBY->SetTextAlign(11);
-	  paveTextLowSideBY->SetBorderSize(0.0);
-	  paveTextLowSideBY->SetFillStyle(0);
-	  paveTextLowSideBY->SetTextSize(0.04);
-	  paveTextLowSideBY->Paint();
-	  myFrameLowSideBY->addObject(paveTextLowSideBY);
-	  DrawString(LUMI,myFrameLowSideBY);
-	  myFrameLowSideBY->Draw();
+	//   TPaveText* paveTextLowSideBY = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
+	//   paveTextLowSideBY->AddText("Low sideband");
+	//   paveTextLowSideBY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameLowSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+	//   paveTextLowSideBY->SetTextAlign(11);
+	//   paveTextLowSideBY->SetBorderSize(0.0);
+	//   paveTextLowSideBY->SetFillStyle(0);
+	//   paveTextLowSideBY->SetTextSize(0.04);
+	//   paveTextLowSideBY->Paint();
+	//   myFrameLowSideBY->addObject(paveTextLowSideBY);
+	//   DrawString(LUMI,myFrameLowSideBY);
+	//   myFrameLowSideBY->Draw();
 
-	  TLegend* legLowSideBY = new TLegend(0.75, 0.65, 0.97, 0.89, "");
-	  for (int i = 0; i < nElements; i++)
-	    {
-	      TString objName = myFrameLowSideBY->nameOf(i);
-	      if (objName == "") continue;
-	      TObject* obj = myFrameLowSideBY->findObject(objName.Data());
-	      legLowSideBY->AddEntry(obj,legNames[i],"lp");
-	    }
-	  legLowSideBY->SetFillStyle(0);
-	  legLowSideBY->SetFillColor(0);
-	  legLowSideBY->SetTextSize(0.04);
-	  legLowSideBY->SetBorderSize(0);
-	  legLowSideBY->Draw("same");
-
-
-	  // ################
-	  // # Save results #
-	  // ################
-	  fileFitResults << "Chi2/DoF low sideband-Y: " << myFrameLowSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str());
-	  fileFitResults << "; p-value: " << TMath::Prob(myFrameLowSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())*NBINS,NBINS) << endl;
+	//   TLegend* legLowSideBY = new TLegend(0.75, 0.65, 0.97, 0.89, "");
+	//   for (int i = 0; i < nElements; i++)
+	//     {
+	//       TString objName = myFrameLowSideBY->nameOf(i);
+	//       if (objName == "") continue;
+	//       TObject* obj = myFrameLowSideBY->findObject(objName.Data());
+	//       legLowSideBY->AddEntry(obj,legNames[i],"lp");
+	//     }
+	//   legLowSideBY->SetFillStyle(0);
+	//   legLowSideBY->SetFillColor(0);
+	//   legLowSideBY->SetTextSize(0.04);
+	//   legLowSideBY->SetBorderSize(0);
+	//   legLowSideBY->Draw("same");
 
 
-	  // ###########################
-	  // # Background plot results #
-	  // ###########################
-	  Canv->cd(5);
-	  RooPlot* myFrameSignalRegionY = y->frame(NBINS);
-	  dataSet->plotOn(myFrameSignalRegionY,Name(MakeName(dataSet,ID).c_str()),CutRange("signalRegion"));
-	  (*TotalPDF)->plotOn(myFrameSignalRegionY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("signalRegion"));
-	  if (GetVar(*TotalPDF,"nSig")       != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY,Components(*Signal),             LineStyle(7), LineColor(kBlue),    ProjectionRange("signalRegion"));
-	  if (GetVar(*TotalPDF,"nBkgComb")   != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY,Components(*BkgMassAngleComb),   LineStyle(4), LineColor(kRed),     ProjectionRange("signalRegion"));
-	  if (GetVar(*TotalPDF,"nBkgMisTag") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY,Components(*BkgMassAngleMisTag), LineStyle(8), LineColor(kAzure+6), ProjectionRange("signalRegion"));
-	  if (GetVar(*TotalPDF,"nBkgPeak")   != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY,Components(*BkgMassAnglePeak),   LineStyle(3), LineColor(kViolet),  ProjectionRange("signalRegion"));
-
-	  TPaveText* paveTextSignalRegionY = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
-	  paveTextSignalRegionY->AddText(Form("%s%.1f%s","Signal region: #pm",Utility->GetGenericParam("NSigmaB0S")," < #sigma >"));
-	  paveTextSignalRegionY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameSignalRegionY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
-	  paveTextSignalRegionY->SetTextAlign(11);
-	  paveTextSignalRegionY->SetBorderSize(0.0);
-	  paveTextSignalRegionY->SetFillStyle(0);
-	  paveTextSignalRegionY->SetTextSize(0.04);
-	  paveTextSignalRegionY->Paint();
-	  myFrameSignalRegionY->addObject(paveTextSignalRegionY);
-	  DrawString(LUMI,myFrameSignalRegionY);
-	  myFrameSignalRegionY->Draw();
-
-	  TLegend* legSignalRegionY = new TLegend(0.75, 0.65, 0.97, 0.89, "");
-	  for (int i = 0; i < nElements; i++)
-	    {
-	      TString objName = myFrameSignalRegionY->nameOf(i);
-	      if (objName == "") continue;
-	      TObject* obj = myFrameSignalRegionY->findObject(objName.Data());
-	      legSignalRegionY->AddEntry(obj,legNames[i],"lp");
-	    }
-	  legSignalRegionY->SetFillStyle(0);
-	  legSignalRegionY->SetFillColor(0);
-	  legSignalRegionY->SetTextSize(0.04);
-	  legSignalRegionY->SetBorderSize(0);
-	  legSignalRegionY->Draw("same");
+	//   // ################
+	//   // # Save results #
+	//   // ################
+	//   fileFitResults << "Chi2/DoF low sideband-Y: " << myFrameLowSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str());
+	//   fileFitResults << "; p-value: " << TMath::Prob(myFrameLowSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())*NBINS,NBINS) << endl;
 
 
-	  // ################
-	  // # Save results #
-	  // ################
-	  fileFitResults << "Chi2/DoF signal region-Y: " << myFrameSignalRegionY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str());
-	  fileFitResults << "; p-value: " << TMath::Prob(myFrameSignalRegionY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())*NBINS,NBINS) << endl;
+	//   // ###########################
+	//   // # Background plot results #
+	//   // ###########################
+	//   Canv->cd(5);
+	//   RooPlot* myFrameSignalRegionY = y->frame(NBINS);
+	//   dataSet->plotOn(myFrameSignalRegionY,Name(MakeName(dataSet,ID).c_str()),CutRange("signalRegion"));
+	//   (*TotalPDF)->plotOn(myFrameSignalRegionY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("signalRegion"));
+	//   if (GetVar(*TotalPDF,"nSig")       != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY,Components(*Signal),             LineStyle(7), LineColor(kBlue),    ProjectionRange("signalRegion"));
+	//   if (GetVar(*TotalPDF,"nBkgComb")   != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY,Components(*BkgMassAngleComb),   LineStyle(4), LineColor(kRed),     ProjectionRange("signalRegion"));
+	//   if (GetVar(*TotalPDF,"nBkgMisTag") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY,Components(*BkgMassAngleMisTag), LineStyle(8), LineColor(kAzure+6), ProjectionRange("signalRegion"));
+	//   if (GetVar(*TotalPDF,"nBkgPeak")   != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY,Components(*BkgMassAnglePeak),   LineStyle(3), LineColor(kViolet),  ProjectionRange("signalRegion"));
+
+	//   TPaveText* paveTextSignalRegionY = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
+	//   paveTextSignalRegionY->AddText(Form("%s%.1f%s","Signal region: #pm",Utility->GetGenericParam("NSigmaB0S")," < #sigma >"));
+	//   paveTextSignalRegionY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameSignalRegionY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+	//   paveTextSignalRegionY->SetTextAlign(11);
+	//   paveTextSignalRegionY->SetBorderSize(0.0);
+	//   paveTextSignalRegionY->SetFillStyle(0);
+	//   paveTextSignalRegionY->SetTextSize(0.04);
+	//   paveTextSignalRegionY->Paint();
+	//   myFrameSignalRegionY->addObject(paveTextSignalRegionY);
+	//   DrawString(LUMI,myFrameSignalRegionY);
+	//   myFrameSignalRegionY->Draw();
+
+	//   TLegend* legSignalRegionY = new TLegend(0.75, 0.65, 0.97, 0.89, "");
+	//   for (int i = 0; i < nElements; i++)
+	//     {
+	//       TString objName = myFrameSignalRegionY->nameOf(i);
+	//       if (objName == "") continue;
+	//       TObject* obj = myFrameSignalRegionY->findObject(objName.Data());
+	//       legSignalRegionY->AddEntry(obj,legNames[i],"lp");
+	//     }
+	//   legSignalRegionY->SetFillStyle(0);
+	//   legSignalRegionY->SetFillColor(0);
+	//   legSignalRegionY->SetTextSize(0.04);
+	//   legSignalRegionY->SetBorderSize(0);
+	//   legSignalRegionY->Draw("same");
 
 
-	  // ###########################
-	  // # Background plot results #
-	  // ###########################
-	  Canv->cd(6);
-	  RooPlot* myFrameHighSideBY = y->frame(NBINS);
-	  dataSet->plotOn(myFrameHighSideBY,Name(MakeName(dataSet,ID).c_str()),CutRange("highSideband"));
-	  (*TotalPDF)->plotOn(myFrameHighSideBY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("highSideband"));
-	  if (GetVar(*TotalPDF,"nSig")       != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY,Components(*Signal),             LineStyle(7), LineColor(kBlue),    ProjectionRange("highSideband"));
-	  if (GetVar(*TotalPDF,"nBkgComb")   != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY,Components(*BkgMassAngleComb),   LineStyle(4), LineColor(kRed),     ProjectionRange("highSideband"));
-	  if (GetVar(*TotalPDF,"nBkgMisTag") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY,Components(*BkgMassAngleMisTag), LineStyle(8), LineColor(kAzure+6), ProjectionRange("highSideband"));
-	  if (GetVar(*TotalPDF,"nBkgPeak")   != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY,Components(*BkgMassAnglePeak),   LineStyle(3), LineColor(kViolet),  ProjectionRange("highSideband"));
-
-	  TPaveText* paveTextHighSideBY = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
-	  paveTextHighSideBY->AddText("High sideband");
-	  paveTextHighSideBY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameHighSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
-	  paveTextHighSideBY->SetTextAlign(11);
-	  paveTextHighSideBY->SetBorderSize(0.0);
-	  paveTextHighSideBY->SetFillStyle(0);
-	  paveTextHighSideBY->SetTextSize(0.04);
-	  paveTextHighSideBY->Paint();
-	  myFrameHighSideBY->addObject(paveTextHighSideBY);
-	  DrawString(LUMI,myFrameHighSideBY);
-	  myFrameHighSideBY->Draw();
-
-	  TLegend* legHighSideBY = new TLegend(0.75, 0.65, 0.97, 0.89, "");
-	  for (int i = 0; i < nElements; i++)
-	    {
-	      TString objName = myFrameHighSideBY->nameOf(i);
-	      if (objName == "") continue;
-	      TObject* obj = myFrameHighSideBY->findObject(objName.Data());
-	      legHighSideBY->AddEntry(obj,legNames[i],"lp");
-	    }
-	  legHighSideBY->SetFillStyle(0);
-	  legHighSideBY->SetFillColor(0);
-	  legHighSideBY->SetTextSize(0.04);
-	  legHighSideBY->SetBorderSize(0);
-	  legHighSideBY->Draw("same");
+	//   // ################
+	//   // # Save results #
+	//   // ################
+	//   fileFitResults << "Chi2/DoF signal region-Y: " << myFrameSignalRegionY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str());
+	//   fileFitResults << "; p-value: " << TMath::Prob(myFrameSignalRegionY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())*NBINS,NBINS) << endl;
 
 
-	  // ################
-	  // # Save results #
-	  // ################
-	  fileFitResults << "Chi2/DoF high sideband-Y: " << myFrameHighSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str());
-	  fileFitResults << "; p-value: " << TMath::Prob(myFrameHighSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())*NBINS,NBINS) << endl;
+	//   // ###########################
+	//   // # Background plot results #
+	//   // ###########################
+	//   Canv->cd(6);
+	//   RooPlot* myFrameHighSideBY = y->frame(NBINS);
+	//   dataSet->plotOn(myFrameHighSideBY,Name(MakeName(dataSet,ID).c_str()),CutRange("highSideband"));
+	//   (*TotalPDF)->plotOn(myFrameHighSideBY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("highSideband"));
+	//   if (GetVar(*TotalPDF,"nSig")       != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY,Components(*Signal),             LineStyle(7), LineColor(kBlue),    ProjectionRange("highSideband"));
+	//   if (GetVar(*TotalPDF,"nBkgComb")   != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY,Components(*BkgMassAngleComb),   LineStyle(4), LineColor(kRed),     ProjectionRange("highSideband"));
+	//   if (GetVar(*TotalPDF,"nBkgMisTag") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY,Components(*BkgMassAngleMisTag), LineStyle(8), LineColor(kAzure+6), ProjectionRange("highSideband"));
+	//   if (GetVar(*TotalPDF,"nBkgPeak")   != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY,Components(*BkgMassAnglePeak),   LineStyle(3), LineColor(kViolet),  ProjectionRange("highSideband"));
+
+	//   TPaveText* paveTextHighSideBY = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
+	//   paveTextHighSideBY->AddText("High sideband");
+	//   paveTextHighSideBY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameHighSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+	//   paveTextHighSideBY->SetTextAlign(11);
+	//   paveTextHighSideBY->SetBorderSize(0.0);
+	//   paveTextHighSideBY->SetFillStyle(0);
+	//   paveTextHighSideBY->SetTextSize(0.04);
+	//   paveTextHighSideBY->Paint();
+	//   myFrameHighSideBY->addObject(paveTextHighSideBY);
+	//   DrawString(LUMI,myFrameHighSideBY);
+	//   myFrameHighSideBY->Draw();
+
+	//   TLegend* legHighSideBY = new TLegend(0.75, 0.65, 0.97, 0.89, "");
+	//   for (int i = 0; i < nElements; i++)
+	//     {
+	//       TString objName = myFrameHighSideBY->nameOf(i);
+	//       if (objName == "") continue;
+	//       TObject* obj = myFrameHighSideBY->findObject(objName.Data());
+	//       legHighSideBY->AddEntry(obj,legNames[i],"lp");
+	//     }
+	//   legHighSideBY->SetFillStyle(0);
+	//   legHighSideBY->SetFillColor(0);
+	//   legHighSideBY->SetTextSize(0.04);
+	//   legHighSideBY->SetBorderSize(0);
+	//   legHighSideBY->Draw("same");
 
 
-	  // ##############
-	  // # Z-variable #
-	  // ##############
+	//   // ################
+	//   // # Save results #
+	//   // ################
+	//   fileFitResults << "Chi2/DoF high sideband-Y: " << myFrameHighSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str());
+	//   fileFitResults << "; p-value: " << TMath::Prob(myFrameHighSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())*NBINS,NBINS) << endl;
 
 
-	  // ###########################
-	  // # Background plot results #
-	  // ###########################
-	  Canv->cd(7);
-	  RooPlot* myFrameLowSideBZ = z->frame(NBINS);
-	  dataSet->plotOn(myFrameLowSideBZ,Name(MakeName(dataSet,ID).c_str()),CutRange("lowSideband"));
-	  (*TotalPDF)->plotOn(myFrameLowSideBZ,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("lowSideband"));
-	  if (GetVar(*TotalPDF,"nSig")       != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ,Components(*Signal),             LineStyle(7), LineColor(kBlue),    ProjectionRange("lowSideband"));
-	  if (GetVar(*TotalPDF,"nBkgComb")   != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ,Components(*BkgMassAngleComb),   LineStyle(4), LineColor(kRed),     ProjectionRange("lowSideband"));
-	  if (GetVar(*TotalPDF,"nBkgMisTag") != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ,Components(*BkgMassAngleMisTag), LineStyle(8), LineColor(kAzure+6), ProjectionRange("lowSideband"));
-	  if (GetVar(*TotalPDF,"nBkgPeak")   != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ,Components(*BkgMassAnglePeak),   LineStyle(3), LineColor(kViolet),  ProjectionRange("lowSideband"));
-
-	  TPaveText* paveTextLowSideBZ = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
-	  paveTextLowSideBZ->AddText("Low sideband");
-	  paveTextLowSideBZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameLowSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
-	  paveTextLowSideBZ->SetTextAlign(11);
-	  paveTextLowSideBZ->SetBorderSize(0.0);
-	  paveTextLowSideBZ->SetFillStyle(0);
-	  paveTextLowSideBZ->SetTextSize(0.04);
-	  paveTextLowSideBZ->Paint();
-	  myFrameLowSideBZ->addObject(paveTextLowSideBZ);
-	  DrawString(LUMI,myFrameLowSideBZ);
-	  myFrameLowSideBZ->Draw();
-
-	  TLegend* legLowSideBZ = new TLegend(0.75, 0.65, 0.97, 0.89, "");
-	  for (int i = 0; i < nElements; i++)
-	    {
-	      TString objName = myFrameLowSideBZ->nameOf(i);
-	      if (objName == "") continue;
-	      TObject* obj = myFrameLowSideBZ->findObject(objName.Data());
-	      legLowSideBZ->AddEntry(obj,legNames[i],"lp");
-	    }
-	  legLowSideBZ->SetFillStyle(0);
-	  legLowSideBZ->SetFillColor(0);
-	  legLowSideBZ->SetTextSize(0.04);
-	  legLowSideBZ->SetBorderSize(0);
-	  legLowSideBZ->Draw("same");
+	//   // ##############
+	//   // # Z-variable #
+	//   // ##############
 
 
-	  // ################
-	  // # Save results #
-	  // ################
-	  fileFitResults << "Chi2/DoF low sideband-Z: " << myFrameLowSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str());
-	  fileFitResults << "; p-value: " << TMath::Prob(myFrameLowSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())*NBINS,NBINS) << endl;
+	//   // ###########################
+	//   // # Background plot results #
+	//   // ###########################
+	//   Canv->cd(7);
+	//   RooPlot* myFrameLowSideBZ = z->frame(NBINS);
+	//   dataSet->plotOn(myFrameLowSideBZ,Name(MakeName(dataSet,ID).c_str()),CutRange("lowSideband"));
+	//   (*TotalPDF)->plotOn(myFrameLowSideBZ,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("lowSideband"));
+	//   if (GetVar(*TotalPDF,"nSig")       != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ,Components(*Signal),             LineStyle(7), LineColor(kBlue),    ProjectionRange("lowSideband"));
+	//   if (GetVar(*TotalPDF,"nBkgComb")   != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ,Components(*BkgMassAngleComb),   LineStyle(4), LineColor(kRed),     ProjectionRange("lowSideband"));
+	//   if (GetVar(*TotalPDF,"nBkgMisTag") != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ,Components(*BkgMassAngleMisTag), LineStyle(8), LineColor(kAzure+6), ProjectionRange("lowSideband"));
+	//   if (GetVar(*TotalPDF,"nBkgPeak")   != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ,Components(*BkgMassAnglePeak),   LineStyle(3), LineColor(kViolet),  ProjectionRange("lowSideband"));
+
+	//   TPaveText* paveTextLowSideBZ = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
+	//   paveTextLowSideBZ->AddText("Low sideband");
+	//   paveTextLowSideBZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameLowSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+	//   paveTextLowSideBZ->SetTextAlign(11);
+	//   paveTextLowSideBZ->SetBorderSize(0.0);
+	//   paveTextLowSideBZ->SetFillStyle(0);
+	//   paveTextLowSideBZ->SetTextSize(0.04);
+	//   paveTextLowSideBZ->Paint();
+	//   myFrameLowSideBZ->addObject(paveTextLowSideBZ);
+	//   DrawString(LUMI,myFrameLowSideBZ);
+	//   myFrameLowSideBZ->Draw();
+
+	//   TLegend* legLowSideBZ = new TLegend(0.75, 0.65, 0.97, 0.89, "");
+	//   for (int i = 0; i < nElements; i++)
+	//     {
+	//       TString objName = myFrameLowSideBZ->nameOf(i);
+	//       if (objName == "") continue;
+	//       TObject* obj = myFrameLowSideBZ->findObject(objName.Data());
+	//       legLowSideBZ->AddEntry(obj,legNames[i],"lp");
+	//     }
+	//   legLowSideBZ->SetFillStyle(0);
+	//   legLowSideBZ->SetFillColor(0);
+	//   legLowSideBZ->SetTextSize(0.04);
+	//   legLowSideBZ->SetBorderSize(0);
+	//   legLowSideBZ->Draw("same");
 
 
-	  // ###########################
-	  // # Background plot results #
-	  // ###########################
-	  Canv->cd(8);
-	  RooPlot* myFrameSignalRegionZ = z->frame(NBINS);
-	  dataSet->plotOn(myFrameSignalRegionZ,Name(MakeName(dataSet,ID).c_str()),CutRange("signalRegion"));
-	  (*TotalPDF)->plotOn(myFrameSignalRegionZ,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("signalRegion"));
-	  if (GetVar(*TotalPDF,"nSig")       != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ,Components(*Signal),             LineStyle(7), LineColor(kBlue),    ProjectionRange("signalRegion"));
-	  if (GetVar(*TotalPDF,"nBkgComb")   != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ,Components(*BkgMassAngleComb),   LineStyle(4), LineColor(kRed),     ProjectionRange("signalRegion"));
-	  if (GetVar(*TotalPDF,"nBkgMisTag") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ,Components(*BkgMassAngleMisTag), LineStyle(8), LineColor(kAzure+6), ProjectionRange("signalRegion"));
-	  if (GetVar(*TotalPDF,"nBkgPeak")   != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ,Components(*BkgMassAnglePeak),   LineStyle(3), LineColor(kViolet),  ProjectionRange("signalRegion"));
-
-	  TPaveText* paveTextSignalRegionZ = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
-	  paveTextSignalRegionZ->AddText(Form("%s%.1f%s","Signal region: #pm",Utility->GetGenericParam("NSigmaB0S")," < #sigma >"));
-	  paveTextSignalRegionZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameSignalRegionZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
-	  paveTextSignalRegionZ->SetTextAlign(11);
-	  paveTextSignalRegionZ->SetBorderSize(0.0);
-	  paveTextSignalRegionZ->SetFillStyle(0);
-	  paveTextSignalRegionZ->SetTextSize(0.04);
-	  paveTextSignalRegionZ->Paint();
-	  myFrameSignalRegionZ->addObject(paveTextSignalRegionZ);
-	  DrawString(LUMI,myFrameSignalRegionZ);
-	  myFrameSignalRegionZ->Draw();
-
-	  TLegend* legSignalRegionZ = new TLegend(0.75, 0.65, 0.97, 0.89, "");
-	  for (int i = 0; i < nElements; i++)
-	    {
-	      TString objName = myFrameSignalRegionZ->nameOf(i);
-	      if (objName == "") continue;
-	      TObject* obj = myFrameSignalRegionZ->findObject(objName.Data());
-	      legSignalRegionZ->AddEntry(obj,legNames[i],"lp");
-	    }
-	  legSignalRegionZ->SetFillStyle(0);
-	  legSignalRegionZ->SetFillColor(0);
-	  legSignalRegionZ->SetTextSize(0.04);
-	  legSignalRegionZ->SetBorderSize(0);
-	  legSignalRegionZ->Draw("same");
+	//   // ################
+	//   // # Save results #
+	//   // ################
+	//   fileFitResults << "Chi2/DoF low sideband-Z: " << myFrameLowSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str());
+	//   fileFitResults << "; p-value: " << TMath::Prob(myFrameLowSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())*NBINS,NBINS) << endl;
 
 
-	  // ################
-	  // # Save results #
-	  // ################
-	  fileFitResults << "Chi2/DoF signal region-Z: " << myFrameSignalRegionZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str());
-	  fileFitResults << "; p-value: " << TMath::Prob(myFrameSignalRegionZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())*NBINS,NBINS) << endl;
+	//   // ###########################
+	//   // # Background plot results #
+	//   // ###########################
+	//   Canv->cd(8);
+	//   RooPlot* myFrameSignalRegionZ = z->frame(NBINS);
+	//   dataSet->plotOn(myFrameSignalRegionZ,Name(MakeName(dataSet,ID).c_str()),CutRange("signalRegion"));
+	//   (*TotalPDF)->plotOn(myFrameSignalRegionZ,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("signalRegion"));
+	//   if (GetVar(*TotalPDF,"nSig")       != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ,Components(*Signal),             LineStyle(7), LineColor(kBlue),    ProjectionRange("signalRegion"));
+	//   if (GetVar(*TotalPDF,"nBkgComb")   != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ,Components(*BkgMassAngleComb),   LineStyle(4), LineColor(kRed),     ProjectionRange("signalRegion"));
+	//   if (GetVar(*TotalPDF,"nBkgMisTag") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ,Components(*BkgMassAngleMisTag), LineStyle(8), LineColor(kAzure+6), ProjectionRange("signalRegion"));
+	//   if (GetVar(*TotalPDF,"nBkgPeak")   != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ,Components(*BkgMassAnglePeak),   LineStyle(3), LineColor(kViolet),  ProjectionRange("signalRegion"));
+
+	//   TPaveText* paveTextSignalRegionZ = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
+	//   paveTextSignalRegionZ->AddText(Form("%s%.1f%s","Signal region: #pm",Utility->GetGenericParam("NSigmaB0S")," < #sigma >"));
+	//   paveTextSignalRegionZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameSignalRegionZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+	//   paveTextSignalRegionZ->SetTextAlign(11);
+	//   paveTextSignalRegionZ->SetBorderSize(0.0);
+	//   paveTextSignalRegionZ->SetFillStyle(0);
+	//   paveTextSignalRegionZ->SetTextSize(0.04);
+	//   paveTextSignalRegionZ->Paint();
+	//   myFrameSignalRegionZ->addObject(paveTextSignalRegionZ);
+	//   DrawString(LUMI,myFrameSignalRegionZ);
+	//   myFrameSignalRegionZ->Draw();
+
+	//   TLegend* legSignalRegionZ = new TLegend(0.75, 0.65, 0.97, 0.89, "");
+	//   for (int i = 0; i < nElements; i++)
+	//     {
+	//       TString objName = myFrameSignalRegionZ->nameOf(i);
+	//       if (objName == "") continue;
+	//       TObject* obj = myFrameSignalRegionZ->findObject(objName.Data());
+	//       legSignalRegionZ->AddEntry(obj,legNames[i],"lp");
+	//     }
+	//   legSignalRegionZ->SetFillStyle(0);
+	//   legSignalRegionZ->SetFillColor(0);
+	//   legSignalRegionZ->SetTextSize(0.04);
+	//   legSignalRegionZ->SetBorderSize(0);
+	//   legSignalRegionZ->Draw("same");
 
 
-	  // ###########################
-	  // # Background plot results #
-	  // ###########################
-	  Canv->cd(9);
-	  RooPlot* myFrameHighSideBZ = z->frame(NBINS);
-	  dataSet->plotOn(myFrameHighSideBZ,Name(MakeName(dataSet,ID).c_str()),CutRange("highSideband"));
-	  (*TotalPDF)->plotOn(myFrameHighSideBZ,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("highSideband"));
-	  if (GetVar(*TotalPDF,"nSig")       != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ,Components(*Signal),             LineStyle(7), LineColor(kBlue),    ProjectionRange("highSideband"));
-	  if (GetVar(*TotalPDF,"nBkgComb")   != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ,Components(*BkgMassAngleComb),   LineStyle(4), LineColor(kRed),     ProjectionRange("highSideband"));
-	  if (GetVar(*TotalPDF,"nBkgMisTag") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ,Components(*BkgMassAngleMisTag), LineStyle(8), LineColor(kAzure+6), ProjectionRange("highSideband"));
-	  if (GetVar(*TotalPDF,"nBkgPeak")   != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ,Components(*BkgMassAnglePeak),   LineStyle(3), LineColor(kViolet),  ProjectionRange("highSideband"));
-
-	  TPaveText* paveTextHighSideBZ = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
-	  paveTextHighSideBZ->AddText("High sideband");
-	  paveTextHighSideBZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameHighSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
-	  paveTextHighSideBZ->SetTextAlign(11);
-	  paveTextHighSideBZ->SetBorderSize(0.0);
-	  paveTextHighSideBZ->SetFillStyle(0);
-	  paveTextHighSideBZ->SetTextSize(0.04);
-	  paveTextHighSideBZ->Paint();
-	  myFrameHighSideBZ->addObject(paveTextHighSideBZ);
-	  DrawString(LUMI,myFrameHighSideBZ);
-	  myFrameHighSideBZ->Draw();
-
-	  TLegend* legHighSideBZ = new TLegend(0.75, 0.65, 0.97, 0.89, "");
-	  for (int i = 0; i < nElements; i++)
-	    {
-	      TString objName = myFrameHighSideBZ->nameOf(i);
-	      if (objName == "") continue;
-	      TObject* obj = myFrameHighSideBZ->findObject(objName.Data());
-	      legHighSideBZ->AddEntry(obj,legNames[i],"lp");
-	    }
-	  legHighSideBZ->SetFillStyle(0);
-	  legHighSideBZ->SetFillColor(0);
-	  legHighSideBZ->SetTextSize(0.04);
-	  legHighSideBZ->SetBorderSize(0);
-	  legHighSideBZ->Draw("same");
+	//   // ################
+	//   // # Save results #
+	//   // ################
+	//   fileFitResults << "Chi2/DoF signal region-Z: " << myFrameSignalRegionZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str());
+	//   fileFitResults << "; p-value: " << TMath::Prob(myFrameSignalRegionZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())*NBINS,NBINS) << endl;
 
 
-	  // ################
-	  // # Save results #
-	  // ################
-	  fileFitResults << "Chi2/DoF high sideband-Z: " << myFrameHighSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str());
-	  fileFitResults << "; p-value: " << TMath::Prob(myFrameHighSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())*NBINS,NBINS) << endl;
+	//   // ###########################
+	//   // # Background plot results #
+	//   // ###########################
+	//   Canv->cd(9);
+	//   RooPlot* myFrameHighSideBZ = z->frame(NBINS);
+	//   dataSet->plotOn(myFrameHighSideBZ,Name(MakeName(dataSet,ID).c_str()),CutRange("highSideband"));
+	//   (*TotalPDF)->plotOn(myFrameHighSideBZ,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("highSideband"));
+	//   if (GetVar(*TotalPDF,"nSig")       != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ,Components(*Signal),             LineStyle(7), LineColor(kBlue),    ProjectionRange("highSideband"));
+	//   if (GetVar(*TotalPDF,"nBkgComb")   != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ,Components(*BkgMassAngleComb),   LineStyle(4), LineColor(kRed),     ProjectionRange("highSideband"));
+	//   if (GetVar(*TotalPDF,"nBkgMisTag") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ,Components(*BkgMassAngleMisTag), LineStyle(8), LineColor(kAzure+6), ProjectionRange("highSideband"));
+	//   if (GetVar(*TotalPDF,"nBkgPeak")   != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ,Components(*BkgMassAnglePeak),   LineStyle(3), LineColor(kViolet),  ProjectionRange("highSideband"));
+
+	//   TPaveText* paveTextHighSideBZ = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
+	//   paveTextHighSideBZ->AddText("High sideband");
+	//   paveTextHighSideBZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameHighSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
+	//   paveTextHighSideBZ->SetTextAlign(11);
+	//   paveTextHighSideBZ->SetBorderSize(0.0);
+	//   paveTextHighSideBZ->SetFillStyle(0);
+	//   paveTextHighSideBZ->SetTextSize(0.04);
+	//   paveTextHighSideBZ->Paint();
+	//   myFrameHighSideBZ->addObject(paveTextHighSideBZ);
+	//   DrawString(LUMI,myFrameHighSideBZ);
+	//   myFrameHighSideBZ->Draw();
+
+	//   TLegend* legHighSideBZ = new TLegend(0.75, 0.65, 0.97, 0.89, "");
+	//   for (int i = 0; i < nElements; i++)
+	//     {
+	//       TString objName = myFrameHighSideBZ->nameOf(i);
+	//       if (objName == "") continue;
+	//       TObject* obj = myFrameHighSideBZ->findObject(objName.Data());
+	//       legHighSideBZ->AddEntry(obj,legNames[i],"lp");
+	//     }
+	//   legHighSideBZ->SetFillStyle(0);
+	//   legHighSideBZ->SetFillColor(0);
+	//   legHighSideBZ->SetTextSize(0.04);
+	//   legHighSideBZ->SetBorderSize(0);
+	//   legHighSideBZ->Draw("same");
 
 
-	  fileFitResults << "====================================================================" << endl;
-	}
+	//   // ################
+	//   // # Save results #
+	//   // ################
+	//   fileFitResults << "Chi2/DoF high sideband-Z: " << myFrameHighSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str());
+	//   fileFitResults << "; p-value: " << TMath::Prob(myFrameHighSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())*NBINS,NBINS) << endl;
+
+
+	//   fileFitResults << "====================================================================" << endl;
+	// }
     }
   
 
@@ -6123,7 +6118,7 @@ int main(int argc, char** argv)
 	  Utility->ReadSelectionCuts(ParameterFILE);
 	  Utility->ReadFitStartingValues(ParameterFILE,&fitParam,&configParam,Utility->ParFileBlockN("fitValGlob"));
 	  myString.clear(); myString.str("");
-	  myString << fitParam[Utility->GetFitParamIndx("nSig")]->operator[]((NORMBIN == JPSIBIN ? 1 : 2)).c_str(); // Read J/psi yield from global-fit results
+	  myString << fitParam[Utility->GetFitParamIndx("nSig")]->operator[]((NORMJPSInotPSI2S == true ? 1 : 2)).c_str(); // Read J/psi yield from global-fit results
 	  SetValueAndErrors(NULL,"",1.0,&myString,&PsiYield,&PsiYerr,&PsiYerr);
 	  fileFitResults << "Normalization channel yield: " << PsiYield << " +/- " << PsiYerr << endl;
 	  for (unsigned int i = 0; i < fitParam.size(); i++)
@@ -6276,7 +6271,7 @@ int main(int argc, char** argv)
 	      // # Copy data from normalization q^2 bin #
 	      // ########################################
 	      myString.clear(); myString.str("");
-	      myString << FitSysFILEInput << "_FLAFB_" << NORMBIN << ".txt";
+	      myString << FitSysFILEInput << "_FLAFB_" << (NORMJPSInotPSI2S == true ? Utility->GetJPsiBin(&q2Bins) : Utility->GetPsiPBin(&q2Bins)) << ".txt";
 	      fileFitSystematicsInput.open(myString.str().c_str(),ios_base::in);
 	      if (fileFitSystematicsInput.good() == false)
 	    	{
@@ -6316,11 +6311,11 @@ int main(int argc, char** argv)
 
 	    	  myString.clear(); myString.str("");
 	    	  myString << var1;
-	    	  fitParam[Utility->GetFitParamIndx("FlS")]->operator[](NORMBIN) = myString.str();
+	    	  fitParam[Utility->GetFitParamIndx("FlS")]->operator[](NORMJPSInotPSI2S == true ? Utility->GetJPsiBin(&q2Bins) : Utility->GetPsiPBin(&q2Bins)) = myString.str();
 
 	    	  myString.clear(); myString.str("");
 	    	  myString << var2;
-	    	  fitParam[Utility->GetFitParamIndx("AfbS")]->operator[](NORMBIN) = myString.str();
+	    	  fitParam[Utility->GetFitParamIndx("AfbS")]->operator[](NORMJPSInotPSI2S == true ? Utility->GetJPsiBin(&q2Bins) : Utility->GetPsiPBin(&q2Bins)) = myString.str();
 	    	}
 	      fileFitSystematicsInput.close();
 	    }
@@ -6746,7 +6741,7 @@ int main(int argc, char** argv)
       cout << "FitType = 86: 3D generare dataset with (B0Mass, cos(theta_K), cos(theta_l)) distribution from pdf" << endl;
       cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       
-      cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Genera parameter @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+      cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Genera parameter @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "FitType = 96: 3D generate paramter with (B0Mass, cos(theta_K), cos(theta_l)) distribution from pdf" << endl;
       cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       
