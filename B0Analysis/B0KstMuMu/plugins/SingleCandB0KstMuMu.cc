@@ -538,7 +538,7 @@ int main (int argc, char** argv)
   if (argc >= 4)
     {
       string option = argv[1];
-      if (((option == "singlecand") || (option == "eff")) && (argc >= 4))
+      if ((option == "singlecand") || (option == "eff"))
 	{
 	  string fileNameIn  = argv[2];
 	  string fileNameOut = "";
@@ -580,7 +580,7 @@ int main (int argc, char** argv)
 	    }
 	  else if (option == "eff")
 	    {
-	      localVar = argv[3];
+	      if (argc == 4) localVar = argv[3];
 	      BestCandPerformance(atoi(localVar.c_str()));
 	    }
 	  else
@@ -607,8 +607,8 @@ int main (int argc, char** argv)
 	}
       else
 	{
-	  cout << "Parameter missing: " << endl;
-	  cout << "./SingleCandB0KstMuMu [singlecand eff] inputFile.root [[if singlecand]outputFile.root] [[if eff]SignalType]" << endl;
+	  cout << "Wrong option: " << endl;
+	  cout << "./SingleCandB0KstMuMu [singlecand eff] inputFile.root [[if singlecand]outputFile.root] [SignalType]" << endl;
 	  cout << "- SignalType : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
 
 	  return EXIT_FAILURE;
@@ -617,7 +617,7 @@ int main (int argc, char** argv)
   else
     {
       cout << "Parameter missing: " << endl;
-      cout << "./SingleCandB0KstMuMu [singlecand eff] inputFile.root [[if singlecand]outputFile.root] [[if eff]SignalType]" << endl;
+      cout << "./SingleCandB0KstMuMu [singlecand eff] inputFile.root [[if singlecand]outputFile.root] [SignalType]" << endl;
       cout << "- SignalType : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
 
       return EXIT_FAILURE;
