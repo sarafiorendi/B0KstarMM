@@ -5,11 +5,12 @@ B0KstMuMuSingleCandTreeContent::B0KstMuMuSingleCandTreeContent ()
   B0KstMuMuTreeContent();
 
   // ### B0 variables ###
-  B0MassArb  = 0;
-  B0pT       = 0;
-  B0Eta      = 0;
-  B0Phi      = 0;
-  B0notB0bar = true;
+  B0MassArb      = 0;
+  B0pT           = 0;
+  B0Eta          = 0;
+  B0Phi          = 0;
+  B0notB0bar     = true;
+  rightFlavorTag = true;
 
   // ### Trigger category ###
   TrigCat = 0;
@@ -30,11 +31,12 @@ void B0KstMuMuSingleCandTreeContent::ClearNTuple ()
   B0KstMuMuTreeContent::ClearNTuple();
 
   // ### B0 variables ###
-  B0MassArb  = 0;
-  B0pT       = 0;
-  B0Eta      = 0;
-  B0Phi      = 0;
-  B0notB0bar = true;
+  B0MassArb      = 0;
+  B0pT           = 0;
+  B0Eta          = 0;
+  B0Phi          = 0;
+  B0notB0bar     = true;
+  rightFlavorTag = true;
 
   // ### Trigger category ###
   TrigCat = 0;
@@ -50,11 +52,12 @@ void B0KstMuMuSingleCandTreeContent::MakeTreeBranches (TTree* theTree)
   B0KstMuMuTreeContent::MakeTreeBranches(theTree);
 
   // ### B0 variables ###
-  theTree->Branch("B0MassArb",  &B0MassArb,  "B0MassArb/D");
-  theTree->Branch("B0pT",       &B0pT,       "B0pT/D");
-  theTree->Branch("B0Eta",      &B0Eta,      "B0Eta/D");
-  theTree->Branch("B0Phi",      &B0Phi,      "B0Phi/D");
-  theTree->Branch("B0notB0bar", &B0notB0bar, "B0notB0bar/O");
+  theTree->Branch("B0MassArb",      &B0MassArb,      "B0MassArb/D");
+  theTree->Branch("B0pT",           &B0pT,           "B0pT/D");
+  theTree->Branch("B0Eta",          &B0Eta,          "B0Eta/D");
+  theTree->Branch("B0Phi",          &B0Phi,          "B0Phi/D");
+  theTree->Branch("B0notB0bar",     &B0notB0bar,     "B0notB0bar/O");
+  theTree->Branch("rightFlavorTag", &rightFlavorTag, "rightFlavorTag/O");
 
   // ### Trigger category ###
   theTree->Branch("TrigCat", &TrigCat, "TrigCat/I");
@@ -70,11 +73,12 @@ void B0KstMuMuSingleCandTreeContent::SetBranchAddresses (TTree* theTree)
   B0KstMuMuTreeContent::SetBranchAddresses(theTree);
 
   // ### B0 variables ###
-  theTree->SetBranchAddress("B0MassArb",  &B0MassArb);
-  theTree->SetBranchAddress("B0pT",       &B0pT);
-  theTree->SetBranchAddress("B0Eta",      &B0Eta);
-  theTree->SetBranchAddress("B0Phi",      &B0Phi);
-  theTree->SetBranchAddress("B0notB0bar", &B0notB0bar);
+  theTree->SetBranchAddress("B0MassArb",      &B0MassArb);
+  theTree->SetBranchAddress("B0pT",           &B0pT);
+  theTree->SetBranchAddress("B0Eta",          &B0Eta);
+  theTree->SetBranchAddress("B0Phi",          &B0Phi);
+  theTree->SetBranchAddress("B0notB0bar",     &B0notB0bar);
+  theTree->SetBranchAddress("rightFlavorTag", &rightFlavorTag);
 
   // ### Trigger category ###
   theTree->SetBranchAddress("TrigCat", &TrigCat);
@@ -100,11 +104,12 @@ void B0KstMuMuSingleCandTreeContent::CopyAllCandidates (B0KstMuMuSingleCandTreeC
 void B0KstMuMuSingleCandTreeContent::CopyScalars (B0KstMuMuSingleCandTreeContent* NTupleIn)
 {
   // ### B0 variables ###
-  B0MassArb  = NTupleIn->B0MassArb;
-  B0pT       = NTupleIn->B0pT;
-  B0Eta      = NTupleIn->B0Eta;
-  B0Phi      = NTupleIn->B0Phi;
-  B0notB0bar = NTupleIn->B0notB0bar;
+  B0MassArb      = NTupleIn->B0MassArb;
+  B0pT           = NTupleIn->B0pT;
+  B0Eta          = NTupleIn->B0Eta;
+  B0Phi          = NTupleIn->B0Phi;
+  B0notB0bar     = NTupleIn->B0notB0bar;
+  rightFlavorTag = NTupleIn->rightFlavorTag;
 
   // ### Trigger category ###
   TrigCat = NTupleIn->TrigCat;

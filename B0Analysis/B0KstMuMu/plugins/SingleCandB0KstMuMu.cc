@@ -31,8 +31,8 @@ using std::string;
 // ####################
 #define DoTrigCheck 1
 #define SaveHistos   false
-#define DoMCTruth    false // Compute the single candidate variables from MC-truth values
-#define TagFromTruth false // Assign the CP-eigenstate from MC-truth
+#define DoMCTruth    false // Compute the single candidate variables from MC-GEN values
+#define TagFromTruth false // Assign the CP-eigenstate from MC-GEN
 #define ParameterFILE "../python/ParameterFile.txt"
 
 
@@ -439,12 +439,15 @@ void SelectBestCand (int SignalType)
 	      NTupleOut->PhiKstMuMuPlaneArb = phiKstMuMuPlane;
 	    }
 
-	  NTupleOut->TrigCat    = TrigCat;
+	  NTupleOut->TrigCat = TrigCat;
 
 	  NTupleOut->B0notB0bar = B0notB0bar;
-	  NTupleOut->B0pT       = sqrt(NTupleIn->bPx->at(BestCandIndx)*NTupleIn->bPx->at(BestCandIndx) + NTupleIn->bPy->at(BestCandIndx)*NTupleIn->bPy->at(BestCandIndx));
-	  NTupleOut->B0Eta      = Utility->computeEta (NTupleIn->bPx->at(BestCandIndx),NTupleIn->bPy->at(BestCandIndx),NTupleIn->bPz->at(BestCandIndx));
-	  NTupleOut->B0Phi      = Utility->computePhi (NTupleIn->bPx->at(BestCandIndx),NTupleIn->bPy->at(BestCandIndx),NTupleIn->bPz->at(BestCandIndx));
+	  if (((NTupleIn->genSignal == SignalType) && (B0notB0bar == true)) ||
+	      ((NTupleIn->genSignal == SignalType+1) && (B0notB0bar == false))) NTupleOut->rightFlavorTag = true;
+	  else                                                                  NTupleOut->rightFlavorTag = false;
+	  NTupleOut->B0pT  = sqrt(NTupleIn->bPx->at(BestCandIndx)*NTupleIn->bPx->at(BestCandIndx) + NTupleIn->bPy->at(BestCandIndx)*NTupleIn->bPy->at(BestCandIndx));
+	  NTupleOut->B0Eta = Utility->computeEta (NTupleIn->bPx->at(BestCandIndx),NTupleIn->bPy->at(BestCandIndx),NTupleIn->bPz->at(BestCandIndx));
+	  NTupleOut->B0Phi = Utility->computePhi (NTupleIn->bPx->at(BestCandIndx),NTupleIn->bPy->at(BestCandIndx),NTupleIn->bPz->at(BestCandIndx));
 
 	  theTreeOut->Fill();
 	  NTupleOut->ClearNTuple();

@@ -1142,6 +1142,7 @@ void ReduceTree (string fileNameIn, string fileNameOut, bool isSingleNotMultyCan
       theTreeIn->SetBranchStatus("mumuMassE",1);
 
       theTreeIn->SetBranchStatus("truthMatchSignal",1);
+      theTreeIn->SetBranchStatus("rightFlavorTag",1);
 
       theTreeIn->SetBranchStatus("CosThetaKArb",1);
       theTreeIn->SetBranchStatus("CosThetaMuArb",1);

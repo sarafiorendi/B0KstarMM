@@ -201,9 +201,7 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
 	    (fabs(Utility->computeEta(NTuple->genMumPx,NTuple->genMumPy,NTuple->genMumPz)) < Utility->GetPreCut("MuEta"))   &&
 	    (fabs(Utility->computeEta(NTuple->genMupPx,NTuple->genMupPy,NTuple->genMupPz)) < Utility->GetPreCut("MuEta")))  ||
 
-	   ((type == 4) && (NTuple->truthMatchSignal->at(0) == true) &&
-	    (((NTuple->genSignal == SignalType)   && (NTuple->B0notB0bar == true)) ||
-	     ((NTuple->genSignal == SignalType+1) && (NTuple->B0notB0bar == false))))))
+	   ((type == 4) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true))))
 	{
 	  mumuq2          = NTuple->mumuMass->at(0)*NTuple->mumuMass->at(0);
 

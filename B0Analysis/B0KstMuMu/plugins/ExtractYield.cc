@@ -2789,6 +2789,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
   CosThetaMuArb      = new RooRealVar("CosThetaMuArb","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",-1.0,1.0,"");
   PhiKstMuMuPlaneArb = new RooRealVar("PhiKstMuMuPlaneArb","Angle (#mu#mu)--(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}#pi#lower[0.4]{^{#font[122]{\55}}}) planes",-Utility->PI,Utility->PI,"rad");
   truthMatchSignal   = new RooRealVar("truthMatchSignal","Truth matching",0.0,1.0,"bool");
+  rightFlavorTag     = new RooRealVar("rightFlavorTag","Right flavor tag",0.0,1.0,"bool");
 
 
   if (!(((FitType >= 21) && (FitType <= 26)) || ((FitType >= 81) && (FitType <= 86)) || (FitType == 96)))
@@ -2801,6 +2802,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
       Vars.add(*CosThetaMuArb);
       Vars.add(*PhiKstMuMuPlaneArb);
       Vars.add(*truthMatchSignal);
+      Vars.add(*rightFlavorTag);
 
       SingleCandNTuple = new RooDataSet("SingleCandNTuple","SingleCandNTuple",Vars);
 
@@ -2830,6 +2832,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 	      Vars.setRealValue("CosThetaMuArb",     NTuple->CosThetaMuArb);
 	      Vars.setRealValue("PhiKstMuMuPlaneArb",NTuple->PhiKstMuMuPlaneArb);
 	      Vars.setRealValue("truthMatchSignal",  NTuple->truthMatchSignal->at(0));
+	      Vars.setRealValue("rightFlavorTag",    NTuple->rightFlavorTag);
 
 	      SingleCandNTuple->add(Vars);
 	    }

@@ -266,10 +266,11 @@ void AddGenVariables (string option, int SignalType)
 	      NTupleOut->PhiKstMuMuPlaneArb = phiKstMuMuPlane;
 	    }
 
-	  NTupleOut->B0notB0bar = B0notB0bar;
-	  NTupleOut->B0pT       = sqrt(NTupleIn->genB0Px*NTupleIn->genB0Px + NTupleIn->genB0Py*NTupleIn->genB0Py);
-	  NTupleOut->B0Eta      = Utility->computeEta (NTupleIn->genB0Px,NTupleIn->genB0Py,NTupleIn->genB0Pz);
-	  NTupleOut->B0Phi      = Utility->computePhi (NTupleIn->genB0Px,NTupleIn->genB0Py,NTupleIn->genB0Pz);
+	  NTupleOut->B0notB0bar     = B0notB0bar;
+	  NTupleOut->rightFlavorTag = true;
+	  NTupleOut->B0pT           = sqrt(NTupleIn->genB0Px*NTupleIn->genB0Px + NTupleIn->genB0Py*NTupleIn->genB0Py);
+	  NTupleOut->B0Eta          = Utility->computeEta (NTupleIn->genB0Px,NTupleIn->genB0Py,NTupleIn->genB0Pz);
+	  NTupleOut->B0Phi          = Utility->computePhi (NTupleIn->genB0Px,NTupleIn->genB0Py,NTupleIn->genB0Pz);
 
 	  NTupleOut->mumuMass->push_back(Utility->computeInvMass(NTupleIn->genMumPx,NTupleIn->genMumPy,NTupleIn->genMumPz,Utility->muonMass,
 								 NTupleIn->genMupPx,NTupleIn->genMupPy,NTupleIn->genMupPz,Utility->muonMass));
