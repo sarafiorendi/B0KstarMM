@@ -2391,7 +2391,6 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Eficiency parameters averaged over all HLT paths
 45
 
-# q^2 ----- 1st theta ----- err ----- 2nd theta ----- err ----- 3rd theta ----- err ----- 4th theta ----- err
 1.5   0.00716595   2.0869e-05   -0.000926073   3.41482e-05   -0.0028025   3.96021e-05   -0.00328359   4.87676e-05
 1.5   -0.0201066   2.72987e-05   0.00516458   4.24041e-05   0.00976972   5.25432e-05   0.00701248   6.1905e-05
 1.5   0   0   0   0   0   0   0   0
@@ -2467,13 +2466,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 5.0
 
 # B0 peak sigma-1 from signal MC, whole q2 spectrum [GeV/c2]
-0.028035
+0.0267428
 
 # B0 peak sigma-2 from signal MC, whole q2 spectrum [GeV/c2]
-0.0651294
+0.0557447
 
 # B0 peak gaussian fraction from signal MC, whole q2 spectrum
-0.664374
+0.660678
 
 
 ############################
@@ -2483,11 +2482,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 1
 
 # Luminosity [fb-1]
-5950
+5951
 
 
 ############################
-# 17st block of parameters #
+# 17th block of parameters #
 ############################
 # Data type
 1

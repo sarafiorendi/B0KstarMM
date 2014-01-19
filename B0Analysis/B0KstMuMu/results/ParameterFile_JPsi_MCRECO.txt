@@ -2391,7 +2391,6 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Eficiency parameters averaged over all HLT paths
 45
 
-# q^2 ----- 1st theta ----- err ----- 2nd theta ----- err ----- 3rd theta ----- err ----- 4th theta ----- err
 1.5   0   0   0   0   0   0   0   0
 1.5   0   0   0   0   0   0   0   0
 1.5   0   0   0   0   0   0   0   0
@@ -2487,7 +2486,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 
 ############################
-# 17st block of parameters #
+# 17th block of parameters #
 ############################
 # Data type
 1
