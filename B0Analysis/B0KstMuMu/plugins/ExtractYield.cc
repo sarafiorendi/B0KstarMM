@@ -6119,7 +6119,7 @@ int main(int argc, char** argv)
 	  else if (FitType == 96) fileIndx = atoi(argv[5]);
 
 
-	  cout << "@@@ Input variables from command line @@@" << endl;
+	  cout << "\n@@@ Input variables from command line @@@" << endl;
 	  cout << "- input/outputFile.root = " << fileName.c_str() << endl;
 	  cout << "- correct4Efficiency = "    << correct4Efficiency << endl;
 	  cout << "- tmpFileName = "           << tmpFileName.c_str() << endl;
