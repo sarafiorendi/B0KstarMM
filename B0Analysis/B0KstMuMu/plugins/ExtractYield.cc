@@ -109,7 +109,7 @@ using namespace RooFit;
 #define FUNCERRBAND   false // Show the p.d.f. error band
 #define MakeMuMuPlots false
 #define MAKEGRAPHSCAN false // Make graphical scan of the physics-pdf*eff or physics-pdf alone (ony valid for GEN fit type options)
-#define CONTROLMisTag "remove"
+#define CONTROLMisTag "leave&Fit"
 // ==> Control mis-tag work flow <==
 // --> "remove" = remove mis-tagged ev.
 // --> "leave&Fit" do not remove mis-tagged ev. and fit mis-tag
