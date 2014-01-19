@@ -103,7 +103,7 @@ using namespace RooFit;
 #define ApplyConstr   false // Apply Gaussian constraints in the likelihood
 #define SAVEPOLY      false // "true" = save bkg polynomial coefficients in new parameter file; "false" = save original values
 #define RESETOBS      false // Reset polynomial coefficients for combinatorial background and angular observables for a fresh start
-#define SETBATCH      false // Set batch mode
+#define SETBATCH      false
 #define TESTeffFUNC   false // Check whether efficiency goes negative
 #define SAVEPLOT      false
 #define FUNCERRBAND   false // Show the p.d.f. error band
@@ -772,11 +772,11 @@ void BuildMassConstraints (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string var
   if ((GetVar(TotalPDF,"fracMassBPeak")  != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, TotalPDF, "fracMassBPeak");
 
   // @TMP@
-  if ((CONTROLMisTag == "leave&Fit") &&
+  if ((strcmp(CONTROLMisTag,"leave&Fit") == 0) &&
       (GetVar(TotalPDF,"nSig")           != NULL) && ((varName == "All") || (varName == "sign")))   AddGaussConstraint(vecConstr, TotalPDF, "nSig");
   if ((GetVar(TotalPDF,"nBkgPeak")       != NULL) && ((varName == "All") || (varName == "peak")))   AddGaussConstraint(vecConstr, TotalPDF, "nBkgPeak");
   if ((GetVar(TotalPDF,"nBkgMisTag")     != NULL) && ((varName == "All") || (varName == "mistag"))) AddGaussConstraint(vecConstr, TotalPDF, "nBkgMisTag");
-  // if ((CONTROLMisTag == "leave&Fit") &&
+  // if ((strcmp(CONTROLMisTag,"leave&Fit") == 0) &&
   //     (GetVar(TotalPDF,"nSig")           != NULL) && ((varName == "All") || (varName == "sign")))   AddPoissonConstraint(vecConstr, TotalPDF, "nSig");
   // if ((GetVar(TotalPDF,"nBkgPeak")       != NULL) && ((varName == "All") || (varName == "peak")))   AddPoissonConstraint(vecConstr, TotalPDF, "nBkgPeak");
   // if ((GetVar(TotalPDF,"nBkgMisTag")     != NULL) && ((varName == "All") || (varName == "mistag"))) AddPoissonConstraint(vecConstr, TotalPDF, "nBkgMisTag");
@@ -2891,7 +2891,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
       // # J/psi and psi(2S) keeping based on the event-by-event dimuon mass error #
       // ###########################################################################
       myString.clear(); myString.str("");
-      if (CONTROLMisTag == "remove") myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && ";
+      if (strcmp(CONTROLMisTag,"remove") == 0) myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && ";
       if (FitType == 36)
 	{
 	  myString << "truthMatchSignal == 1 && && rightFlavorTag == 1 && "
@@ -2905,7 +2905,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
       SingleCandNTuple_JPsi = (RooDataSet*)SingleCandNTuple->reduce(myString.str().c_str());
 
       myString.clear(); myString.str("");
-      if (CONTROLMisTag == "remove") myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && ";
+      if (strcmp(CONTROLMisTag,"remove") == 0) myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && ";
       if (FitType == 36)
 	{
 	  myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && "
@@ -2923,7 +2923,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
       // # J/psi and psi(2S) rejection based on the event-by-event dimuon mass error #
       // #############################################################################
       myString.clear(); myString.str("");
-      if (CONTROLMisTag == "remove") myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && ";
+      if (strcmp(CONTROLMisTag,"remove") == 0) myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && ";
       myString << "(mumuMass < (" << Utility->JPsiMass << "-" << Utility->GetGenericParam("NSigmaPsiBig") << "*mumuMassE)";
       myString << " || mumuMass > (" << Utility->PsiPMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)";
       myString << " || (mumuMass > (" << Utility->JPsiMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)";
@@ -2937,7 +2937,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
       // # J/psi and psi(2S) keeping based on the event-by-event dimuon mass error #
       // ###########################################################################
       myString.clear(); myString.str("");
-      if (CONTROLMisTag == "remove") myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && ";
+      if (strcmp(CONTROLMisTag,"remove") == 0) myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && ";
       myString << "((mumuMass > (" << Utility->JPsiMass << "-" << Utility->GetGenericParam("NSigmaPsiBig") << "*mumuMassE)";
       myString << " && mumuMass < (" << Utility->JPsiMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)) ||";
       myString << " (mumuMass > (" << Utility->PsiPMass << "-" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)";
@@ -3436,7 +3436,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       ClearVars(vecConstr);
       BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"sign");
       BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
-      if (CONTROLMisTag == "leave&NoFit") BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
+      if (strcmp(CONTROLMisTag,"leave&NoFit") == 0) BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
 
 
       // ###################################
@@ -3554,7 +3554,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   ClearVars(vecConstr);
   BuildMassConstraints(vecConstr,TotalPDF,"sign");
   BuildMassConstraints(vecConstr,TotalPDF,"peak");
-  if (CONTROLMisTag == "leave&NoFit") BuildMassConstraints(vecConstr,TotalPDF,"mistag");
+  if (strcmp(CONTROLMisTag,"leave&NoFit") == 0) BuildMassConstraints(vecConstr,TotalPDF,"mistag");
 
 
   // ###################################
@@ -5246,7 +5246,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 	{
 	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"sign");
 	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
-	  if (CONTROLMisTag == "leave&NoFit") BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
+	  if (strcmp(CONTROLMisTag,"leave&NoFit") == 0) BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
 	  if (configParam->operator[](Utility->GetConfigParamIndx("FitPeakBkg"))->operator[](i) != 1) BuildAngularConstraints(vecConstr,TotalPDFq2Bins[i]);
 	}
       if (((FitType != 46) && (FitType != 56) &&
@@ -5366,7 +5366,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   ClearVars(vecConstr);
   BuildMassConstraints(vecConstr,TotalPDF,"sign");
   BuildMassConstraints(vecConstr,TotalPDF,"peak");
-  if (CONTROLMisTag == "leave&NoFit") BuildMassConstraints(vecConstr,TotalPDF,"mistag");
+  if (strcmp(CONTROLMisTag,"leave&NoFit") == 0) BuildMassConstraints(vecConstr,TotalPDF,"mistag");
   BuildAngularConstraints(vecConstr,TotalPDF);
   if ((specBin != Utility->GetJPsiBin(q2Bins)) && (specBin != Utility->GetPsiPBin(q2Bins)))
     {
@@ -6149,7 +6149,7 @@ int main(int argc, char** argv)
 	  cout << "MakeMuMuPlots = "  << MakeMuMuPlots << endl;
 	  cout << "MAKEGRAPHSCAN = "  << MAKEGRAPHSCAN << endl;
 	  cout << "CONTROLMisTag = "  << CONTROLMisTag << endl;
-	  if ((CONTROLMisTag != "remove") && (CONTROLMisTag != "leave&Fit") && (CONTROLMisTag != "leave&NoFit"))
+	  if ((strcmp(CONTROLMisTag,"remove") != 0) && (strcmp(CONTROLMisTag,"leave&Fit") != 0) && (strcmp(CONTROLMisTag,"leave&NoFit") != 0))
 	    {
 	      cout << "[ExtractYield::main]\tInternal setting error : " << CONTROLMisTag << endl;
 	      exit (EXIT_FAILURE);
@@ -6481,7 +6481,7 @@ int main(int argc, char** argv)
 		      CopyFitResults(TotalPDFRejectPsi,0,&fitParam);
 		      ClearVars(&vecConstr);
 		      BuildMassConstraints(&vecConstr,TotalPDFRejectPsi,"sign");
-		      if (CONTROLMisTag == "leave&NoFit") BuildMassConstraints(&vecConstr,TotalPDFRejectPsi,"mistag");
+		      if (strcmp(CONTROLMisTag,"leave&NoFit") != 0) BuildMassConstraints(&vecConstr,TotalPDFRejectPsi,"mistag");
 		      PrintVariables(TotalPDFRejectPsi->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
 		      MakeMassFit(SingleCandNTuple_RejectPsi,&TotalPDFRejectPsi,B0MassArb,cB0MassArbRejectPsi,FitType,&vecConstr,&NLLvalue,NULL,fileIndx);
@@ -6511,7 +6511,7 @@ int main(int argc, char** argv)
 		      CopyFitResults(TotalPDFPsi,1,&fitParam);
 		      ClearVars(&vecConstr);
 		      BuildMassConstraints(&vecConstr,TotalPDFPsi,"sign");
-		      if (CONTROLMisTag == "leave&NoFit") BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
+		      if (strcmp(CONTROLMisTag,"leave&NoFit") != 0) BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
 		      PrintVariables(TotalPDFPsi->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
 		      MakeMassFit(SingleCandNTuple_JPsi,&TotalPDFPsi,B0MassArb,cB0MassArbJPsi,FitType,&vecConstr,&NLLvalue,NULL,fileIndx);
@@ -6530,7 +6530,7 @@ int main(int argc, char** argv)
 		      CopyFitResults(TotalPDFPsi,2,&fitParam);
 		      ClearVars(&vecConstr);
 		      BuildMassConstraints(&vecConstr,TotalPDFPsi,"sign");
-		      if (CONTROLMisTag == "leave&NoFit") BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
+		      if (strcmp(CONTROLMisTag,"leave&NoFit") != 0) BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
 		      PrintVariables(TotalPDFPsi->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
 		      MakeMassFit(SingleCandNTuple_PsiP,&TotalPDFPsi,B0MassArb,cB0MassArbPsiP,FitType,&vecConstr,&NLLvalue,NULL,fileIndx);
