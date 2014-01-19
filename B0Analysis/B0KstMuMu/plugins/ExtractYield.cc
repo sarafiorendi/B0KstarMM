@@ -1,6 +1,5 @@
 // ################################################################################
 // # Program to perform the full angular analysis of the decay B0 --> K*0 mu+ mu- #
-// #                                                                              #
 // # Author: Mauro Dinardo                                                        #
 // ################################################################################
 // # Search for @TMP@ to look for temporary code options                          #
@@ -92,7 +91,6 @@ using namespace RooFit;
 #define SLEWRATECONSTR  1e-2 // Fraction of Afb allowed interval for the p.d.f. constraint to transit from 0 to max
 #define POLYCOEFRANGE   2.0  // Polynomial coefficients range for parameter regeneration
 #define NORMJPSInotPSIP true // "true" = normalize yields to compute dBF/dq^2 with respect to J/psi; "false" use psi(2S) bin instead
-#define MISTAGRATE      0.1  // If "0" then use mistag from parameter file and leave it free to float, othewise fix it to a fraction of signal yield
 
 #define nJPSIS 70000.0
 #define nJPSIB  1000.0
@@ -111,6 +109,11 @@ using namespace RooFit;
 #define FUNCERRBAND   false // Show the p.d.f. error band
 #define MakeMuMuPlots false
 #define MAKEGRAPHSCAN false // Make graphical scan of the physics-pdf*eff or physics-pdf alone (ony valid for GEN fit type options)
+#define CONTROLMisTag "remove"
+// ==> Control mis-tag work flow <==
+// --> "remove" = remove mis-tagged ev.
+// --> "leave&Fit" do not remove mis-tagged ev. and fit mis-tag
+// --> "leave&NoFit" do not remove mis-tagged ev. and do not fit for it (apply constraints)
 #define USEMINOS      false
 #define UseSPwave     false
 
@@ -181,6 +184,7 @@ RooRealVar* CosThetaKArb;
 RooRealVar* CosThetaMuArb;
 RooRealVar* PhiKstMuMuPlaneArb;
 RooRealVar* truthMatchSignal;
+RooRealVar* rightFlavorTag;
 
 
 // #################################
@@ -229,7 +233,11 @@ RooAbsPdf*  BkgMassComb;
 // #############################
 // # Mistag background B0 mass #
 // #############################
-RooRealVar* sigmaMisTag;
+RooRealVar* sigmaMisTag1;
+RooAbsPdf*  BkgMassMisTag1;
+RooRealVar* sigmaMisTag2;
+RooAbsPdf*  BkgMassMisTag2;
+RooRealVar* fracMisTag;
 RooAbsPdf*  BkgMassMisTag;
 
 // ##############################
@@ -711,7 +719,7 @@ void AddPhysicsConstraint (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string var
   else
     {
       cout << "[ExtractYield::AddPhysicsConstraint]\tWrong parameter: " << varName << endl;
-      exit(1);
+      exit (EXIT_FAILURE);
     }
 
   myString.clear(); myString.str("");
@@ -745,7 +753,9 @@ void BuildMassConstraints (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string var
   if ((GetVar(TotalPDF,"sigmaS2")        != NULL) && ((varName == "All") || (varName == "sign"))) AddGaussConstraint(vecConstr, TotalPDF, "sigmaS2");
   if ((GetVar(TotalPDF,"fracMassS")      != NULL) && ((varName == "All") || (varName == "sign"))) AddGaussConstraint(vecConstr, TotalPDF, "fracMassS");
   
-  if ((GetVar(TotalPDF,"sigmaMisTag")    != NULL) && ((varName == "All") || (varName == "mistag"))) AddGaussConstraint(vecConstr, TotalPDF, "sigmaMisTag");
+  if ((GetVar(TotalPDF,"sigmaMisTag1")   != NULL) && ((varName == "All") || (varName == "mistag"))) AddGaussConstraint(vecConstr, TotalPDF, "sigmaMisTag1");
+  if ((GetVar(TotalPDF,"sigmaMisTag2")   != NULL) && ((varName == "All") || (varName == "mistag"))) AddGaussConstraint(vecConstr, TotalPDF, "sigmaMisTag2");
+  if ((GetVar(TotalPDF,"fracMisTag")     != NULL) && ((varName == "All") || (varName == "mistag"))) AddGaussConstraint(vecConstr, TotalPDF, "fracMisTag");
 
   if ((GetVar(TotalPDF,"meanR1")         != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, TotalPDF, "meanR1");
   if ((GetVar(TotalPDF,"sigmaR1")        != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, TotalPDF, "sigmaR1");
@@ -762,9 +772,13 @@ void BuildMassConstraints (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string var
   if ((GetVar(TotalPDF,"fracMassBPeak")  != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, TotalPDF, "fracMassBPeak");
 
   // @TMP@
-  if ((GetVar(TotalPDF,"nBkgPeak")       != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, TotalPDF, "nBkgPeak");
+  if ((CONTROLMisTag == "leave&Fit") &&
+      (GetVar(TotalPDF,"nSig")           != NULL) && ((varName == "All") || (varName == "sign")))   AddGaussConstraint(vecConstr, TotalPDF, "nSig");
+  if ((GetVar(TotalPDF,"nBkgPeak")       != NULL) && ((varName == "All") || (varName == "peak")))   AddGaussConstraint(vecConstr, TotalPDF, "nBkgPeak");
   if ((GetVar(TotalPDF,"nBkgMisTag")     != NULL) && ((varName == "All") || (varName == "mistag"))) AddGaussConstraint(vecConstr, TotalPDF, "nBkgMisTag");
-  // if ((GetVar(TotalPDF,"nBkgPeak")       != NULL) && ((varName == "All") || (varName == "peak"))) AddPoissonConstraint(vecConstr, TotalPDF, "nBkgPeak");
+  // if ((CONTROLMisTag == "leave&Fit") &&
+  //     (GetVar(TotalPDF,"nSig")           != NULL) && ((varName == "All") || (varName == "sign")))   AddPoissonConstraint(vecConstr, TotalPDF, "nSig");
+  // if ((GetVar(TotalPDF,"nBkgPeak")       != NULL) && ((varName == "All") || (varName == "peak")))   AddPoissonConstraint(vecConstr, TotalPDF, "nBkgPeak");
   // if ((GetVar(TotalPDF,"nBkgMisTag")     != NULL) && ((varName == "All") || (varName == "mistag"))) AddPoissonConstraint(vecConstr, TotalPDF, "nBkgMisTag");
 }
 
@@ -946,7 +960,9 @@ void DeleteFit (RooAbsPdf* TotalPDF, string DeleteType)
 	  if (GetVar(TotalPDF,"tau2")           != NULL) delete GetVar(TotalPDF,"tau2");
 	  if (GetVar(TotalPDF,"fracMassBExp")   != NULL) delete GetVar(TotalPDF,"fracMassBExp");
 
-	  if (GetVar(TotalPDF,"sigmaMisTag")    != NULL) delete GetVar(TotalPDF,"sigmaMisTag");
+	  if (GetVar(TotalPDF,"sigmaMisTag1")   != NULL) delete GetVar(TotalPDF,"sigmaMisTag1");
+	  if (GetVar(TotalPDF,"sigmaMisTag2")   != NULL) delete GetVar(TotalPDF,"sigmaMisTag2");
+	  if (GetVar(TotalPDF,"fracMisTag")     != NULL) delete GetVar(TotalPDF,"fracMisTag");
 
 	  if (GetVar(TotalPDF,"meanR1")         != NULL) delete GetVar(TotalPDF,"meanR1");
 	  if (GetVar(TotalPDF,"sigmaR1")        != NULL) delete GetVar(TotalPDF,"sigmaR1");
@@ -1021,6 +1037,8 @@ void DeleteFit (RooAbsPdf* TotalPDF, string DeleteType)
 	  if (TotalPDF->getComponents()->find("BkgMassExp1")        != NULL) delete TotalPDF->getComponents()->find("BkgMassExp1");
 	  if (TotalPDF->getComponents()->find("BkgMassExp2")        != NULL) delete TotalPDF->getComponents()->find("BkgMassExp2");
 
+	  if (TotalPDF->getComponents()->find("BkgMassMisTag1")     != NULL) delete TotalPDF->getComponents()->find("BkgMassMisTag1");
+	  if (TotalPDF->getComponents()->find("BkgMassMisTag2")     != NULL) delete TotalPDF->getComponents()->find("BkgMassMisTag2");
 	  if (TotalPDF->getComponents()->find("BkgMassMisTag")      != NULL) delete TotalPDF->getComponents()->find("BkgMassMisTag");
 
 	  if (TotalPDF->getComponents()->find("BkgMassRPeak1")      != NULL) delete TotalPDF->getComponents()->find("BkgMassRPeak1");
@@ -1042,7 +1060,7 @@ void DeleteFit (RooAbsPdf* TotalPDF, string DeleteType)
       else
 	{
 	  cout << "[ExtractYield::DeleteFit]\tWrong parameter: " << DeleteType << endl;
-	  exit(1);
+	  exit (EXIT_FAILURE);
 	}
     }
 }
@@ -1194,14 +1212,43 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
 	}
       if (GetVar(*TotalPDF,"nBkgComb") != NULL)
 	{
-	  fileFitResults << "Comb. bkg. yield: " << GetVar(*TotalPDF,"nBkgComb")->getVal() << " +/- " << GetVar(*TotalPDF,"nBkgComb")->getError();
+	  fileFitResults << "Comb. bkg yield: " << GetVar(*TotalPDF,"nBkgComb")->getVal() << " +/- " << GetVar(*TotalPDF,"nBkgComb")->getError();
 	  fileFitResults << " (" << GetVar(*TotalPDF,"nBkgComb")->getErrorHi() << "/" << GetVar(*TotalPDF,"nBkgComb")->getErrorLo() << ")" << endl;
 	}
 
 
+      if (GetVar(*TotalPDF,"fracMisTag") != NULL)
+	{
+	  signalSigma  = sqrt((*TotalPDF)->getVariables()->getRealValue("fracMisTag") * pow((*TotalPDF)->getVariables()->getRealValue("sigmaMisTag1"),2.) +
+			      (1.-(*TotalPDF)->getVariables()->getRealValue("fracMisTag")) * pow((*TotalPDF)->getVariables()->getRealValue("sigmaMisTag2"),2.));
+	  signalSigmaE = 1./(2.*signalSigma) * sqrt( pow((pow((*TotalPDF)->getVariables()->getRealValue("sigmaMisTag1"),2.)-pow((*TotalPDF)->getVariables()->getRealValue("sigmaMisTag2"),2.)) * GetVar(*TotalPDF,"fracMisTag")->getError(),2.) +
+						     pow(2.*(*TotalPDF)->getVariables()->getRealValue("fracMisTag") * (*TotalPDF)->getVariables()->getRealValue("sigmaMisTag1")*GetVar(*TotalPDF,"sigmaMisTag1")->getError(),2.) +
+						     pow(2.*(1.-(*TotalPDF)->getVariables()->getRealValue("fracMisTag")) * (*TotalPDF)->getVariables()->getRealValue("sigmaMisTag2")*GetVar(*TotalPDF,"sigmaMisTag2")->getError(),2.) );
+	}
+      else if (GetVar(*TotalPDF,"sigmaMisTag1") != NULL)
+	{
+	  signalSigma  = (*TotalPDF)->getVariables()->getRealValue("sigmaMisTag1");
+	  signalSigmaE = GetVar(*TotalPDF,"sigmaMisTag1")->getError();
+	}
+
+      if (GetVar(*TotalPDF,"nBkgMisTag") != NULL) fileFitResults << "Background mistag mean: equal to signal mean" << endl;
+      if (GetVar(*TotalPDF,"sigmaMisTag1") != NULL)
+	{
+	  fileFitResults << "Background mistag sigma-1: " << GetVar(*TotalPDF,"sigmaMisTag1")->getVal() << " +/- " << GetVar(*TotalPDF,"sigmaMisTag1")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"sigmaMisTag1")->getErrorHi() << "/" << GetVar(*TotalPDF,"sigmaMisTag1")->getErrorLo() << ")" << endl;
+	}
+      if (GetVar(*TotalPDF,"sigmaMisTag2") != NULL)
+	{
+	  fileFitResults << "Background mistag sigma-2: " << GetVar(*TotalPDF,"sigmaMisTag2")->getVal() << " +/- " << GetVar(*TotalPDF,"sigmaMisTag2")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"sigmaMisTag2")->getErrorHi() << "/" << GetVar(*TotalPDF,"sigmaMisTag2")->getErrorLo() << ")" << endl;
+	  fileFitResults << "Fraction: " << GetVar(*TotalPDF,"fracMisTag")->getVal() << " +/- " << GetVar(*TotalPDF,"fracMisTag")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"fracMisTag")->getErrorHi() << "/" << GetVar(*TotalPDF,"fracMisTag")->getErrorLo() << ")" << endl;
+	}
+      if (GetVar(*TotalPDF,"sigmaMisTag1") != NULL) fileFitResults << "< Sigma >: " << signalSigma << " +/- " << signalSigmaE << endl;
+
       if (GetVar(*TotalPDF,"nBkgMisTag") != NULL)
 	{
-	  fileFitResults << "Mistag bkg. yield: " << GetVar(*TotalPDF,"nBkgMisTag")->getVal() << " +/- " << GetVar(*TotalPDF,"nBkgMisTag")->getError();
+	  fileFitResults << "Mistag bkg yield: " << GetVar(*TotalPDF,"nBkgMisTag")->getVal() << " +/- " << GetVar(*TotalPDF,"nBkgMisTag")->getError();
 	  fileFitResults << " (" << GetVar(*TotalPDF,"nBkgMisTag")->getErrorHi() << "/" << GetVar(*TotalPDF,"nBkgMisTag")->getErrorLo() << ")" << endl;
 	}
 
@@ -1245,7 +1292,7 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
 	}
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL)
 	{
-	  fileFitResults << "Peaking bkg. yield: " << GetVar(*TotalPDF,"nBkgPeak")->getVal() << " +/- " << GetVar(*TotalPDF,"nBkgPeak")->getError();
+	  fileFitResults << "Peaking bkg yield: " << GetVar(*TotalPDF,"nBkgPeak")->getVal() << " +/- " << GetVar(*TotalPDF,"nBkgPeak")->getError();
 	  fileFitResults << " (" << GetVar(*TotalPDF,"nBkgPeak")->getErrorHi() << "/" << GetVar(*TotalPDF,"nBkgPeak")->getErrorLo() << ")" << endl;
 	}
 
@@ -1441,14 +1488,30 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
   vecParStr->push_back("###################################################################");
 
 
-  vecParStr->push_back("# Bkg sigma mistag [GeV/c2]");
-  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"sigmaMisTag") != NULL) && ((ApplyConstr == false) || ((ApplyConstr == true) && (vecConstr->find(string(string("sigmaMisTag") + string("_constr")).c_str()) == NULL))))
+  vecParStr->push_back("# Bkg sigma-1 mistag [GeV/c2]");
+  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"sigmaMisTag1") != NULL) && ((ApplyConstr == false) || ((ApplyConstr == true) && (vecConstr->find(string(string("sigmaMisTag1") + string("_constr")).c_str()) == NULL))))
     {
       myString.clear(); myString.str("");
-      myString << TotalPDF->getVariables()->getRealValue("sigmaMisTag") << "   " << GetVar(TotalPDF,"sigmaMisTag")->getErrorLo() << "   " << GetVar(TotalPDF,"sigmaMisTag")->getErrorHi();
+      myString << TotalPDF->getVariables()->getRealValue("sigmaMisTag1") << "   " << GetVar(TotalPDF,"sigmaMisTag1")->getErrorLo() << "   " << GetVar(TotalPDF,"sigmaMisTag1")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](fitParamIndx).c_str());
+  vecParStr->push_back("# Bkg sigma-2 mistag [GeV/c2]");
+  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"sigmaMisTag2") != NULL) && ((ApplyConstr == false) || ((ApplyConstr == true) && (vecConstr->find(string(string("sigmaMisTag2") + string("_constr")).c_str()) == NULL))))
+    {
+      myString.clear(); myString.str("");
+      myString << TotalPDF->getVariables()->getRealValue("sigmaMisTag2") << "   " << GetVar(TotalPDF,"sigmaMisTag2")->getErrorLo() << "   " << GetVar(TotalPDF,"sigmaMisTag2")->getErrorHi();
+      vecParStr->push_back(myString.str());
+    }
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](fitParamIndx).c_str());
+  vecParStr->push_back("# Fraction");
+  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"fracMisTag") != NULL) && ((ApplyConstr == false) || ((ApplyConstr == true) && (vecConstr->find(string(string("fracMisTag") + string("_constr")).c_str()) == NULL))))
+    {
+      myString.clear(); myString.str("");
+      myString << TotalPDF->getVariables()->getRealValue("fracMisTag") << "   " << GetVar(TotalPDF,"fracMisTag")->getErrorLo() << "   " << GetVar(TotalPDF,"fracMisTag")->getErrorHi();
+      vecParStr->push_back(myString.str());
+    }
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("fracMisTag"))->operator[](fitParamIndx).c_str());
 
 
   vecParStr->push_back("###################################################################");
@@ -1851,11 +1914,23 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vec
   if (GetVar(TotalPDF,"tau2")         != NULL) TotalPDF->getVariables()->setRealValue("tau2",         atof(fitParam->operator[](Utility->GetFitParamIndx("tau2"))->operator[](fitParamIndx).c_str()));
   if (GetVar(TotalPDF,"fracMassBExp") != NULL) TotalPDF->getVariables()->setRealValue("fracMassBExp", atof(fitParam->operator[](Utility->GetFitParamIndx("fracMassBExp"))->operator[](fitParamIndx).c_str()));
 
-  if (GetVar(TotalPDF,"sigmaMisTag") != NULL)
+  if (GetVar(TotalPDF,"sigmaMisTag1") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag"))->operator[](fitParamIndx).c_str();
-      SetValueAndErrors(TotalPDF,"sigmaMisTag",1.0,&myString,&value,&errLo,&errHi);
+      myString << fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](fitParamIndx).c_str();
+      SetValueAndErrors(TotalPDF,"sigmaMisTag1",1.0,&myString,&value,&errLo,&errHi);
+    }
+  if (GetVar(TotalPDF,"sigmaMisTag2") != NULL)
+    {
+      myString.clear(); myString.str("");
+      myString << fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](fitParamIndx).c_str();
+      SetValueAndErrors(TotalPDF,"sigmaMisTag2",1.0,&myString,&value,&errLo,&errHi);
+    }
+  if (GetVar(TotalPDF,"fracMisTag") != NULL)
+    {
+      myString.clear(); myString.str("");
+      myString << fitParam->operator[](Utility->GetFitParamIndx("fracMisTag"))->operator[](fitParamIndx).c_str();
+      SetValueAndErrors(TotalPDF,"fracMisTag",1.0,&myString,&value,&errLo,&errHi);
     }
 
   if (GetVar(TotalPDF,"meanR1") != NULL)
@@ -1934,19 +2009,8 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vec
   if (GetVar(TotalPDF,"nBkgMisTag") != NULL)
     {
       myString.clear(); myString.str("");
-      if (MISTAGRATE == 0.0)
-	{
-	  myString << fitParam->operator[](Utility->GetFitParamIndx("nBkgMisTag"))->operator[](fitParamIndx).c_str();
-	  SetValueAndErrors(TotalPDF,"nBkgMisTag",MULTYIELD,&myString,&value,&errLo,&errHi);
-	}
-      else
-	{
-	  myString << fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](fitParamIndx).c_str();
-	  SetValueAndErrors(TotalPDF,"nBkgMisTag",MULTYIELD,&myString,&value,&errLo,&errHi);
-	  myString.clear(); myString.str("");
-	  myString << value * MISTAGRATE << "   0   0";
-	  SetValueAndErrors(TotalPDF,"nBkgMisTag",MULTYIELD,&myString,&value,&errLo,&errHi);
-	}
+      myString << fitParam->operator[](Utility->GetFitParamIndx("nBkgMisTag"))->operator[](fitParamIndx).c_str();
+      SetValueAndErrors(TotalPDF,"nBkgMisTag",MULTYIELD,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"nBkgPeak") != NULL)
     {
@@ -1973,7 +2037,7 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vec
     {
       cout << "[ExtractYield::CopyFitResults]\tDegree of poly bkg is not within allowed limits: ";
       cout << NCoeffPolyBKGpeak1 << "\t" << NCoeffPolyBKGcomb1 << "\t" << NCoeffPolyBKGpeak2 << "\t" << NCoeffPolyBKGcomb2 << "\t" << NCoeffPolyBKGpeak3 << "\t" << NCoeffPolyBKGcomb3 << endl;
-      exit(1);
+      exit (EXIT_FAILURE);
     }
 
   for (unsigned int i = 0; i < NCoeffPolyBKGpeak1; i++)
@@ -2079,11 +2143,8 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vec
 
 void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr, string fileName, unsigned int fileIndx, vector<double>* q2Bins, unsigned int q2BinIndx)
 {
-  unsigned int NCoeffPolyBKGpeak1;
   unsigned int NCoeffPolyBKGcomb1;
-  unsigned int NCoeffPolyBKGpeak2;
   unsigned int NCoeffPolyBKGcomb2;
-  unsigned int NCoeffPolyBKGpeak3;
   unsigned int NCoeffPolyBKGcomb3;
 
   stringstream myString;
@@ -2093,6 +2154,7 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
 
   RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins->size()-1) + q2BinIndx + 1);
   cout << "\n@@@ Random seed for parameter file generation set to: " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
+
   
   if (GetVar(TotalPDF,"FlS") != NULL)
     {
@@ -2130,41 +2192,10 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
       cout << "As generation: lower bound = " << GetVar(TotalPDF,"AsS")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"AsS")->getMax() << endl;
     }
 
-  NCoeffPolyBKGpeak1 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP1"))->operator[](q2BinIndx).c_str());
-  NCoeffPolyBKGcomb1 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC1"))->operator[](q2BinIndx).c_str());
-  NCoeffPolyBKGpeak2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP2"))->operator[](q2BinIndx).c_str());
-  NCoeffPolyBKGcomb2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC2"))->operator[](q2BinIndx).c_str());
-  NCoeffPolyBKGpeak3 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP3"))->operator[](q2BinIndx).c_str());
-  NCoeffPolyBKGcomb3 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC3"))->operator[](q2BinIndx).c_str());
 
-  // @TMP@
-  // if (GetVar(TotalPDF,"nBkgPeak") != NULL)
-    // {
-    //   for (unsigned int i = 0; i < NCoeffPolyBKGpeak1; i++)
-    // 	{
-    // 	  myString.clear(); myString.str("");
-    // 	  myString << "p1Poly" << i;
-    // 	  if (GetVar(TotalPDF,myString.str().c_str()) != NULL) TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() *
-    // 												      (fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorHi()) + fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorLo())) +
-    // 												      + GetVar(TotalPDF,myString.str().c_str())->getVal() - fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorLo()));
-    // 	}
-    //   for (unsigned int i = 0; i < NCoeffPolyBKGpeak2; i++)
-    // 	{
-    // 	  myString.clear(); myString.str("");
-    // 	  myString << "p2Poly" << i;
-    // 	  if (GetVar(TotalPDF,myString.str().c_str()) != NULL) TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() *
-    // 												      (fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorHi()) + fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorLo())) +
-    // 												      + GetVar(TotalPDF,myString.str().c_str())->getVal() - fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorLo()));
-    // 	}
-    //   for (unsigned int i = 0; i < NCoeffPolyBKGpeak3; i++)
-    // 	{
-    // 	  myString.clear(); myString.str("");
-    // 	  myString << "p3Poly" << i;
-    // 	  if (GetVar(TotalPDF,myString.str().c_str()) != NULL) TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() *
-    // 												      (fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorHi()) + fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorLo())) +
-    // 												      + GetVar(TotalPDF,myString.str().c_str())->getVal() - fabs(GetVar(TotalPDF,myString.str().c_str())->getErrorLo()));
-    // 	}
-    // }
+  NCoeffPolyBKGcomb1 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC1"))->operator[](q2BinIndx).c_str());
+  NCoeffPolyBKGcomb2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC2"))->operator[](q2BinIndx).c_str());
+  NCoeffPolyBKGcomb3 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC3"))->operator[](q2BinIndx).c_str());
 
   for (unsigned int i = 0; i < NCoeffPolyBKGcomb1; i++)
     {
@@ -2184,7 +2215,8 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
       myString << "c3Poly" << i;
       if (GetVar(TotalPDF,myString.str().c_str()) != NULL) TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE/2.0);
     }
-  
+ 
+ 
   vecParStr = SaveFitResults(TotalPDF,q2BinIndx,fitParam,configParam,vecConstr);
 
   myString.clear(); myString.str("");
@@ -2273,7 +2305,8 @@ void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2B
       var = (RooRealVar*)(toySample->get(entry)->find("PhiKstMuMuPlaneArb"));
       if (var != NULL) NTupleOut->PhiKstMuMuPlaneArb = var->getVal();
       
-      NTupleOut->truthMatchSignal->push_back(false);
+      NTupleOut->truthMatchSignal->push_back(true);
+      NTupleOut->rightFlavorTag = true;
       NTupleOut->TrigCat = 1;
 
       theTreeOut->Fill();
@@ -2477,7 +2510,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // #####################################################
       // # Define fit variables and pdf for Background J/psi #
       // #####################################################
-      RooRealVar* a0JPsi = new RooRealVar("a0JPsi","First coefficient Bkg.poly.",0.0);
+      RooRealVar* a0JPsi = new RooRealVar("a0JPsi","First coefficient bkg poly.",0.0);
       RooPolynomial* BkgmumuMassJPsi = new RooPolynomial("BkgmumuMassJPsi","Background of dimuon mass distribution",*x,RooArgSet(*a0JPsi));
       a0JPsi->setConstant(false);
 
@@ -2598,7 +2631,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // #######################################################
       // # Define fit variables and pdf for Background psi(2S) #
       // #######################################################
-      RooRealVar* a0PsiP = new RooRealVar("a0PsiP","First coefficient Bkg.poly.",0.0);
+      RooRealVar* a0PsiP = new RooRealVar("a0PsiP","First coefficient bkg poly.",0.0);
       RooPolynomial* BkgmumuMassPsiP = new RooPolynomial("BkgmumuMassPsiP","Background of dimuon mass distribution",*x,RooArgSet(*a0PsiP));
       a0PsiP->setConstant(false);
 
@@ -2858,22 +2891,28 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
       // # J/psi and psi(2S) keeping based on the event-by-event dimuon mass error #
       // ###########################################################################
       myString.clear(); myString.str("");
-      if (MISTAGRATE != 0.0) myString << "truthMatchSignal == 1 && ";
+      if (CONTROLMisTag == "remove") myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && ";
       if (FitType == 36)
-	myString << "truthMatchSignal == 1 && (mumuMass > (" << Utility->JPsiMass << "-" << Utility->GetGenericParam("NSigmaPsiBig") << "*mumuMassE) && mumuMass < ("
-		 << Utility->JPsiMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE))";
-      else if ((FitType == 56) || (FitType == 76)) myString << "truthMatchSignal == 1";
+	{
+	  myString << "truthMatchSignal == 1 && && rightFlavorTag == 1 && "
+		   << "(mumuMass > (" << Utility->JPsiMass << "-" << Utility->GetGenericParam("NSigmaPsiBig") << "*mumuMassE) && mumuMass < ("
+	           << Utility->JPsiMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE))";
+	}
+      else if ((FitType == 56) || (FitType == 76)) myString << "truthMatchSignal == 1 && rightFlavorTag == 1";
       else myString << "(mumuMass > (" << Utility->JPsiMass << "-" << Utility->GetGenericParam("NSigmaPsiBig") << "*mumuMassE) && mumuMass < ("
 		    << Utility->JPsiMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE))";
       cout << "Cut for B0 --> J/psi K*0: " << myString.str().c_str() << endl;
       SingleCandNTuple_JPsi = (RooDataSet*)SingleCandNTuple->reduce(myString.str().c_str());
 
       myString.clear(); myString.str("");
-      if (MISTAGRATE != 0.0) myString << "truthMatchSignal == 1 && ";
+      if (CONTROLMisTag == "remove") myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && ";
       if (FitType == 36)
-	myString << "truthMatchSignal == 1 && (mumuMass > (" << Utility->PsiPMass << "-" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE) && mumuMass < ("
-		 << Utility->PsiPMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE))";
-      else if ((FitType == 56) || (FitType == 76)) myString << "truthMatchSignal == 1";
+	{
+	  myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && "
+		   << "(mumuMass > (" << Utility->PsiPMass << "-" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE) && mumuMass < ("
+		   << Utility->PsiPMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE))";
+	}
+      else if ((FitType == 56) || (FitType == 76)) myString << "truthMatchSignal == 1 && rightFlavorTag == 1";
       else myString << "(mumuMass > (" << Utility->PsiPMass << "-" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE) && mumuMass < ("
 		    << Utility->PsiPMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE))";
       cout << "Cut for B0 --> psi(2S) K*0: " << myString.str().c_str() << endl;
@@ -2884,28 +2923,28 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
       // # J/psi and psi(2S) rejection based on the event-by-event dimuon mass error #
       // #############################################################################
       myString.clear(); myString.str("");
-      if (MISTAGRATE != 0.0) myString << "truthMatchSignal == 1 && ";
+      if (CONTROLMisTag == "remove") myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && ";
       myString << "(mumuMass < (" << Utility->JPsiMass << "-" << Utility->GetGenericParam("NSigmaPsiBig") << "*mumuMassE)";
       myString << " || mumuMass > (" << Utility->PsiPMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)";
       myString << " || (mumuMass > (" << Utility->JPsiMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)";
       myString << " && mumuMass < (" << Utility->PsiPMass << "-" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)))";
       cout << "Cut for B0 --> mu+ mu- K*0 (outside Psi-region): " << myString.str().c_str() << endl;
       if (!(FitType == 36) && !(FitType == 56) && !(FitType == 76)) SingleCandNTuple_RejectPsi = (RooDataSet*)SingleCandNTuple->reduce(myString.str().c_str());
-      else                                                          SingleCandNTuple_RejectPsi = (RooDataSet*)SingleCandNTuple->reduce("truthMatchSignal == 1 && mumuMass > 0");
-      
+      else                                                          SingleCandNTuple_RejectPsi = (RooDataSet*)SingleCandNTuple->reduce("truthMatchSignal == 1 && rightFlavorTag == 1 && mumuMass > 0");
+
 
       // ###########################################################################
       // # J/psi and psi(2S) keeping based on the event-by-event dimuon mass error #
       // ###########################################################################
       myString.clear(); myString.str("");
-      if (MISTAGRATE != 0.0) myString << "truthMatchSignal == 1 && ";
+      if (CONTROLMisTag == "remove") myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && ";
       myString << "((mumuMass > (" << Utility->JPsiMass << "-" << Utility->GetGenericParam("NSigmaPsiBig") << "*mumuMassE)";
       myString << " && mumuMass < (" << Utility->JPsiMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)) ||";
       myString << " (mumuMass > (" << Utility->PsiPMass << "-" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)";
       myString << " && mumuMass < (" << Utility->PsiPMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)))";
       cout << "Cut for B0 --> mu+ mu- K*0 (inside Psi-region): " << myString.str().c_str() << endl;
       if (!(FitType == 36) && !(FitType == 56) && !(FitType == 76)) SingleCandNTuple_KeepPsi = (RooDataSet*)SingleCandNTuple->reduce(myString.str().c_str());
-      else                                                          SingleCandNTuple_KeepPsi = (RooDataSet*)SingleCandNTuple->reduce("truthMatchSignal == 1 && mumuMass > 0");
+      else                                                          SingleCandNTuple_KeepPsi = (RooDataSet*)SingleCandNTuple->reduce("truthMatchSignal == 1 && rightFlavorTag == 1 && mumuMass > 0");
 
 
       // ##################################################################
@@ -3001,10 +3040,20 @@ void InstantiateMassFit (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, ve
   // ###########################################################
   // # Define mass fit variables and pdf for mistag background #
   // ###########################################################
-  sigmaMisTag   = new RooRealVar("sigmaMisTag","Bkg mistag sigma",0.0,"GeV");
-  BkgMassMisTag = new RooGaussian("BkgMassMisTag","Bkg mistag",*x,*meanS,*sigmaMisTag);
+  sigmaMisTag1   = new RooRealVar("sigmaMisTag1","Bkg mistag sigma-1",0.0,"GeV");
+  BkgMassMisTag1 = new RooGaussian("BkgMassMisTag1","Bkg mistag-1",*x,*meanS,*sigmaMisTag1);
 
-  sigmaMisTag->setConstant(false);
+  sigmaMisTag2   = new RooRealVar("sigmaMisTag2","Bkg mistag sigma-2",0.0,"GeV");
+  BkgMassMisTag2 = new RooGaussian("BkgMassMisTag2","Bkg mistag-2",*x,*meanS,*sigmaMisTag2);
+
+  sigmaMisTag1->setConstant(false);
+  sigmaMisTag2->setConstant(false);
+
+  fracMisTag = new RooRealVar("fracMisTag","Fraction bkg mistag Gaussian",0.0,0.0,1.0);
+  fracMisTag->setConstant(false);
+
+  if (useBMisTag == 2) BkgMassMisTag = new RooAddPdf("BkgMassMisTag","Bkg mass mistag",RooArgList(*BkgMassMisTag1,*BkgMassMisTag2),RooArgList(*fracMisTag));
+  else                 BkgMassMisTag = new RooGaussian(*((RooGaussian*)BkgMassMisTag1),"BkgMassMisTag");
 
 
   // ############################################################
@@ -3066,8 +3115,7 @@ void InstantiateMassFit (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, ve
 
   nSig->setConstant(false);
   nBkgComb->setConstant(false);
-  if (MISTAGRATE != 0.0) nBkgMisTag->setConstant(true);
-  else                   nBkgMisTag->setConstant(false);
+  nBkgMisTag->setConstant(false);
   nBkgPeak->setConstant(false);
 
   if (FitPeakBkg == 1) *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgList(*BkgMassPeak),RooArgList(*nBkgPeak));
@@ -3386,7 +3434,9 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // # Apply constraints #
       // #####################
       ClearVars(vecConstr);
-      BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"All");
+      BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"sign");
+      BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
+      if (CONTROLMisTag == "leave&NoFit") BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
 
 
       // ###################################
@@ -3502,7 +3552,9 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   // # Apply constraints #
   // #####################
   ClearVars(vecConstr);
-  BuildMassConstraints(vecConstr,TotalPDF,"All");
+  BuildMassConstraints(vecConstr,TotalPDF,"sign");
+  BuildMassConstraints(vecConstr,TotalPDF,"peak");
+  if (CONTROLMisTag == "leave&NoFit") BuildMassConstraints(vecConstr,TotalPDF,"mistag");
 
 
   // ###################################
@@ -3615,13 +3667,40 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
       myFrame->Draw();
     }
 
-  if ((GetVar(TotalPDF,"sigmaMisTag") != NULL) && (GetVar(TotalPDF,"sigmaMisTag")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaMisTag") == false))
+  if ((GetVar(TotalPDF,"sigmaMisTag1") != NULL) && (GetVar(TotalPDF,"sigmaMisTag1")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaMisTag1") == false))
     {
-      tmpVar = GetVar(TotalPDF,"sigmaMisTag");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag"))->operator[](specBin).c_str()) -
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag"))->operator[](specBin).c_str()) +
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag"))->operator[](specBin).c_str())));
+      tmpVar = GetVar(TotalPDF,"sigmaMisTag1");
+      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str()) -
+  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str())),
+  			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str()) +
+  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str())));
+      MyToy->plotParamOn(myFrame);
+      Canv->cd(it++);
+      myFrame->Draw();
+      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+      Canv->cd(it++);
+      myFrame->Draw();
+    }
+
+  if ((GetVar(TotalPDF,"sigmaMisTag2") != NULL) && (GetVar(TotalPDF,"sigmaMisTag2")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaMisTag2") == false))
+    {
+      tmpVar = GetVar(TotalPDF,"sigmaMisTag2");
+      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str()) -
+  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str())),
+  			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str()) +
+  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str())));
+      MyToy->plotParamOn(myFrame);
+      Canv->cd(it++);
+      myFrame->Draw();
+      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+      Canv->cd(it++);
+      myFrame->Draw();
+    }
+
+  if ((GetVar(TotalPDF,"fracMisTag") != NULL) && (GetVar(TotalPDF,"fracMisTag")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMisTag") == false))
+    {
+      tmpVar = GetVar(TotalPDF,"fracMisTag");
+      myFrame = tmpVar->frame(-0.1,1.1);
       MyToy->plotParamOn(myFrame);
       Canv->cd(it++);
       myFrame->Draw();
@@ -4069,19 +4148,30 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   fracMassBExp = new RooRealVar("fracMassBExp","Fraction of background Exponential",0.0,0.0,1.0);
   fracMassBExp->setConstant(false);
 
- 
-  // ###########################################################
-  // # Define mass fit variables and pdf for mistag background #
-  // ###########################################################
-  sigmaMisTag   = new RooRealVar("sigmaMisTag","Bkg mistag sigma",0.0,"GeV");
-  BkgMassMisTag = new RooGaussian("BkgMassMisTag","Bkg mistag",*x,*meanS,*sigmaMisTag);
-  
-  sigmaMisTag->setConstant(false);
-
   if (use2ExpB == true) BkgMassComb = new RooAddPdf("BkgMassComb","Background mass comb. bkg pdf",RooArgList(*BkgMassExp1,*BkgMassExp2),RooArgList(*fracMassBExp));
   else                  BkgMassComb = new RooGenericPdf(*((RooGenericPdf*)BkgMassExp1),"BkgMassComb");
 
   BkgMassAngleComb   = new RooProdPdf("BkgMassAngleComb","Comb bkg Mass*Angle",RooArgList(*BkgMassComb,*BkgAnglesC));
+
+ 
+  // ###########################################################
+  // # Define mass fit variables and pdf for mistag background #
+  // ###########################################################
+  sigmaMisTag1   = new RooRealVar("sigmaMisTag1","Bkg mistag sigma-1",0.0,"GeV");
+  BkgMassMisTag1 = new RooGaussian("BkgMassMisTag1","Bkg mistag-1",*x,*meanS,*sigmaMisTag1);
+
+  sigmaMisTag2   = new RooRealVar("sigmaMisTag2","Bkg mistag sigma-2",0.0,"GeV");
+  BkgMassMisTag2 = new RooGaussian("BkgMassMisTag2","Bkg mistag-2",*x,*meanS,*sigmaMisTag2);
+
+  sigmaMisTag1->setConstant(false);
+  sigmaMisTag2->setConstant(false);
+
+  fracMisTag = new RooRealVar("fracMisTag","Fraction bkg mistag Gaussian",0.0,0.0,1.0);
+  fracMisTag->setConstant(false);
+
+  if (useBMisTag == 2) BkgMassMisTag = new RooAddPdf("BkgMassMisTag","Bkg mass mistag",RooArgList(*BkgMassMisTag1,*BkgMassMisTag2),RooArgList(*fracMisTag));
+  else                 BkgMassMisTag = new RooGaussian(*((RooGaussian*)BkgMassMisTag1),"BkgMassMisTag");
+
   BkgMassAngleMisTag = new RooProdPdf("BkgMassAngleMisTag","Mistag bkg Mass*Angle",RooArgList(*BkgMassMisTag,*BkgAnglesC));
 
 
@@ -4169,8 +4259,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
 
   nSig->setConstant(false);
   nBkgComb->setConstant(false);
-  if (MISTAGRATE != 0.0) nBkgMisTag->setConstant(true);
-  else                   nBkgMisTag->setConstant(false);
+  nBkgMisTag->setConstant(false);
   nBkgPeak->setConstant(false);
 
   if ((FitType == 36) || (FitType == 56) || (FitType == 76))
@@ -5155,7 +5244,9 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       ClearVars(vecConstr);
       if ((FitType != 36) && (FitType != 56) && (FitType != 76))
 	{
-	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"All");
+	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"sign");
+	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
+	  if (CONTROLMisTag == "leave&NoFit") BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
 	  if (configParam->operator[](Utility->GetConfigParamIndx("FitPeakBkg"))->operator[](i) != 1) BuildAngularConstraints(vecConstr,TotalPDFq2Bins[i]);
 	}
       if (((FitType != 46) && (FitType != 56) &&
@@ -5273,7 +5364,9 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   // # Apply constraints #
   // #####################
   ClearVars(vecConstr);
-  BuildMassConstraints(vecConstr,TotalPDF,"All");
+  BuildMassConstraints(vecConstr,TotalPDF,"sign");
+  BuildMassConstraints(vecConstr,TotalPDF,"peak");
+  if (CONTROLMisTag == "leave&NoFit") BuildMassConstraints(vecConstr,TotalPDF,"mistag");
   BuildAngularConstraints(vecConstr,TotalPDF);
   if ((specBin != Utility->GetJPsiBin(q2Bins)) && (specBin != Utility->GetPsiPBin(q2Bins)))
     {
@@ -5396,13 +5489,40 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       myFrame->Draw();
     }
   
-  if ((GetVar(TotalPDF,"sigmaMisTag") != NULL) && (GetVar(TotalPDF,"sigmaMisTag")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaMisTag") == false))
+  if ((GetVar(TotalPDF,"sigmaMisTag1") != NULL) && (GetVar(TotalPDF,"sigmaMisTag1")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaMisTag1") == false))
     {
-      tmpVar = GetVar(TotalPDF,"sigmaMisTag");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag"))->operator[](specBin).c_str()) -
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag"))->operator[](specBin).c_str()) +
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag"))->operator[](specBin).c_str())));
+      tmpVar = GetVar(TotalPDF,"sigmaMisTag1");
+      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str()) -
+  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str())),
+  			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str()) +
+  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str())));
+      MyToy->plotParamOn(myFrame);
+      Canv->cd(it++);
+      myFrame->Draw();
+      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+      Canv->cd(it++);
+      myFrame->Draw();
+    }
+
+  if ((GetVar(TotalPDF,"sigmaMisTag2") != NULL) && (GetVar(TotalPDF,"sigmaMisTag2")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaMisTag2") == false))
+    {
+      tmpVar = GetVar(TotalPDF,"sigmaMisTag2");
+      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str()) -
+  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str())),
+  			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str()) +
+  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str())));
+      MyToy->plotParamOn(myFrame);
+      Canv->cd(it++);
+      myFrame->Draw();
+      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+      Canv->cd(it++);
+      myFrame->Draw();
+    }
+
+  if ((GetVar(TotalPDF,"fracMisTag") != NULL) && (GetVar(TotalPDF,"fracMisTag")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMisTag") == false))
+    {
+      tmpVar = GetVar(TotalPDF,"fracMisTag");
+      myFrame = tmpVar->frame(-0.1,1.1);
       MyToy->plotParamOn(myFrame);
       Canv->cd(it++);
       myFrame->Draw();
@@ -5970,7 +6090,7 @@ int main(int argc, char** argv)
 	  if ((correct4Efficiency != "noEffCorr") && (correct4Efficiency != "EffCorrAnalyPDF") && (correct4Efficiency != "EffCorrGenAnalyPDF"))
 	    {
 	      cout << "[ExtractYield::main]\tIncorrect option parameter " << correct4Efficiency << endl;
-	      exit(1);
+	      exit (EXIT_FAILURE);
 	    }
 
 
@@ -6018,7 +6138,6 @@ int main(int argc, char** argv)
 	  cout << "SLEWRATECONSTR = "  << SLEWRATECONSTR << endl;
 	  cout << "POLYCOEFRANGE = "   << POLYCOEFRANGE << endl;
 	  cout << "NORMJPSInotPSIP = " << NORMJPSInotPSIP << endl;
-	  cout << "MISTAGRATE = "      << MISTAGRATE << endl;
 
 	  cout << "\nApplyConstr = "  << ApplyConstr << endl;
 	  cout << "SAVEPOLY = "       << SAVEPOLY << endl;
@@ -6029,6 +6148,12 @@ int main(int argc, char** argv)
 	  cout << "FUNCERRBAND = "    << FUNCERRBAND << endl;
 	  cout << "MakeMuMuPlots = "  << MakeMuMuPlots << endl;
 	  cout << "MAKEGRAPHSCAN = "  << MAKEGRAPHSCAN << endl;
+	  cout << "CONTROLMisTag = "  << CONTROLMisTag << endl;
+	  if ((CONTROLMisTag != "remove") && (CONTROLMisTag != "leave&Fit") && (CONTROLMisTag != "leave&NoFit"))
+	    {
+	      cout << "[ExtractYield::main]\tInternal setting error : " << CONTROLMisTag << endl;
+	      exit (EXIT_FAILURE);
+	    }
 	  cout << "USEMINOS = "       << USEMINOS << endl;
 	  cout << "UseSPwave = "      << UseSPwave << endl;
 
@@ -6356,6 +6481,7 @@ int main(int argc, char** argv)
 		      CopyFitResults(TotalPDFRejectPsi,0,&fitParam);
 		      ClearVars(&vecConstr);
 		      BuildMassConstraints(&vecConstr,TotalPDFRejectPsi,"sign");
+		      if (CONTROLMisTag == "leave&NoFit") BuildMassConstraints(&vecConstr,TotalPDFRejectPsi,"mistag");
 		      PrintVariables(TotalPDFRejectPsi->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
 		      MakeMassFit(SingleCandNTuple_RejectPsi,&TotalPDFRejectPsi,B0MassArb,cB0MassArbRejectPsi,FitType,&vecConstr,&NLLvalue,NULL,fileIndx);
@@ -6385,6 +6511,7 @@ int main(int argc, char** argv)
 		      CopyFitResults(TotalPDFPsi,1,&fitParam);
 		      ClearVars(&vecConstr);
 		      BuildMassConstraints(&vecConstr,TotalPDFPsi,"sign");
+		      if (CONTROLMisTag == "leave&NoFit") BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
 		      PrintVariables(TotalPDFPsi->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
 		      MakeMassFit(SingleCandNTuple_JPsi,&TotalPDFPsi,B0MassArb,cB0MassArbJPsi,FitType,&vecConstr,&NLLvalue,NULL,fileIndx);
@@ -6403,6 +6530,7 @@ int main(int argc, char** argv)
 		      CopyFitResults(TotalPDFPsi,2,&fitParam);
 		      ClearVars(&vecConstr);
 		      BuildMassConstraints(&vecConstr,TotalPDFPsi,"sign");
+		      if (CONTROLMisTag == "leave&NoFit") BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
 		      PrintVariables(TotalPDFPsi->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
 		      MakeMassFit(SingleCandNTuple_PsiP,&TotalPDFPsi,B0MassArb,cB0MassArbPsiP,FitType,&vecConstr,&NLLvalue,NULL,fileIndx);

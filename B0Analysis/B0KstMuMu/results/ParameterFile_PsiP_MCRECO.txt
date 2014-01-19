@@ -1,6 +1,6 @@
-############################################
-# Parameter file to run on RECOMC: psi(2S) #
-############################################
+#############################################
+# Parameter file to run on MC-RECO: psi(2S) #
+#############################################
 
 
 ###########################
@@ -264,8 +264,8 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ###########################
 # 9th block of parameters #
 ###########################
-# Number of starting values for fit [65 double; 5 unsigned int] x 3 (global sign, global J/psi, global psi(2S))
-210
+# Number of starting values for fit [67 double; 5 unsigned int] x 3 (global sign, global J/psi, global psi(2S))
+216
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@  signal   @@@@@@@@@@@@@@@@@@@@@@@@@@@#
 # Signal mean [GeV/c2]
@@ -284,7 +284,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.0
 ###################################################################
-# Bkg sigma mistag [GeV/c2]
+# Bkg sigma-1 mistag [GeV/c2]
+0.0
+# Bkg sigma-2 mistag [GeV/c2]
+0.0
+# Fraction
 0.0
 ###################################################################
 # Bkg mean right-peak-1 [GeV/c2]
@@ -434,7 +438,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.0
 ###################################################################
-# Bkg sigma mistag [GeV/c2]
+# Bkg sigma-1 mistag [GeV/c2]
+0.0
+# Bkg sigma-2 mistag [GeV/c2]
+0.0
+# Fraction
 0.0
 ###################################################################
 # Bkg mean right-peak-1 [GeV/c2]
@@ -569,23 +577,27 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@  psi(2S)  @@@@@@@@@@@@@@@@@@@@@@@@@@@#
 # Signal mean [GeV/c2]
-5.27876   -0.000208086   0.000208086
+5.27874   -0.000208488   0.000208488
 # Signal sigma-1 [GeV/c2]
-0.0244742   -0.00102263   0.00102263
+0.0271101   -0.000669586   0.000669586
 # Signal sigma-2 [GeV/c2]
-0.0445094   -0.0012006   0.0012006
+0.0497929   -0.00112089   0.00112089
 # Fraction
-0.439334   -0.0496802   0.0496802
+0.598821   -0.0338147   0.0338147
 ###################################################################
 # Bkg tau-1 [GeV/c2]
-0.3468   -0.122108   0.122108
+0.598318   -0.159397   0.159397
 # Bkg tau-2 [GeV/c2]
 0.0
 # Fraction
 0.0
 ###################################################################
-# Bkg sigma mistag [GeV/c2]
-0.0875307   -0.00251613   0.00251613
+# Bkg sigma-1 mistag [GeV/c2]
+0.0756474   -0.00209504   0.00209504
+# Bkg sigma-2 mistag [GeV/c2]
+0.0
+# Fraction
+0.0
 ###################################################################
 # Bkg mean right-peak-1 [GeV/c2]
 0.0
@@ -611,13 +623,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # Combinatorial bkg yield
-201.048   -54.7677   54.7677
+391.145   -52.1649   52.1649
 # Mistag bkg yield
-3539.22   -1   1
+4628.08   -247.334   247.334
 # Peaking bkg yield
 0.0
 # Signal yield
-32073.9   -196.362   196.362
+30804.9   -173.3   173.3
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -720,8 +732,8 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ############################
 # 10th block of parameters #
 ############################
-# Number of starting values for fit [65 double; 5 unsigned int] x 9 q^2 bins
-630
+# Number of starting values for fit [67 double; 5 unsigned int] x 9 q^2 bins
+648
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@ q^2 bin 0 @@@@@@@@@@@@@@@@@@@@@@@@@@@#
 # Signal mean [GeV/c2]
@@ -740,7 +752,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.0
 ###################################################################
-# Bkg sigma mistag [GeV/c2]
+# Bkg sigma-1 mistag [GeV/c2]
+0.0
+# Bkg sigma-2 mistag [GeV/c2]
+0.0
+# Fraction
 0.0
 ###################################################################
 # Bkg mean right-peak-1 [GeV/c2]
@@ -890,7 +906,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.0
 ###################################################################
-# Bkg sigma mistag [GeV/c2]
+# Bkg sigma-1 mistag [GeV/c2]
+0.0
+# Bkg sigma-2 mistag [GeV/c2]
+0.0
+# Fraction
 0.0
 ###################################################################
 # Bkg mean right-peak-1 [GeV/c2]
@@ -1040,7 +1060,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.0
 ###################################################################
-# Bkg sigma mistag [GeV/c2]
+# Bkg sigma-1 mistag [GeV/c2]
+0.0
+# Bkg sigma-2 mistag [GeV/c2]
+0.0
+# Fraction
 0.0
 ###################################################################
 # Bkg mean right-peak-1 [GeV/c2]
@@ -1190,7 +1214,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.0
 ###################################################################
-# Bkg sigma mistag [GeV/c2]
+# Bkg sigma-1 mistag [GeV/c2]
+0.0
+# Bkg sigma-2 mistag [GeV/c2]
+0.0
+# Fraction
 0.0
 ###################################################################
 # Bkg mean right-peak-1 [GeV/c2]
@@ -1340,7 +1368,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.0
 ###################################################################
-# Bkg sigma mistag [GeV/c2]
+# Bkg sigma-1 mistag [GeV/c2]
+0.0
+# Bkg sigma-2 mistag [GeV/c2]
+0.0
+# Fraction
 0.0
 ###################################################################
 # Bkg mean right-peak-1 [GeV/c2]
@@ -1490,7 +1522,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.0
 ###################################################################
-# Bkg sigma mistag [GeV/c2]
+# Bkg sigma-1 mistag [GeV/c2]
+0.0
+# Bkg sigma-2 mistag [GeV/c2]
+0.0
+# Fraction
 0.0
 ###################################################################
 # Bkg mean right-peak-1 [GeV/c2]
@@ -1625,23 +1661,27 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@ q^2 bin 6 @@@@@@@@@@@@@@@@@@@@@@@@@@@#
 # Signal mean [GeV/c2]
-5.27836   -0.000204279   0.000204279
+5.27838   -0.000204692   0.000204692
 # Signal sigma-1 [GeV/c2]
-0.0205489   -0.00135743   0.00135743
+0.0218493   -0.00124121   0.00124121
 # Signal sigma-2 [GeV/c2]
-0.0386716   -0.000673421   0.000673421
+0.0397114   -0.000615074   0.000615074
 # Fraction
-0.237878   -0.0407015   0.0407015
+0.289459   -0.0410928   0.0410928
 ###################################################################
 # Bkg tau-1 [GeV/c2]
-0.448342   -0.11732   0.11732
+0.549814   -0.12495   0.12495
 # Bkg tau-2 [GeV/c2]
 0.0
 # Fraction
 0.0
 ###################################################################
-# Bkg sigma mistag [GeV/c2]
-0.0800092   -0.00212408   0.00212408
+# Bkg sigma-1 mistag [GeV/c2]
+0.0715353   -0.00175562   0.00175562
+# Bkg sigma-2 mistag [GeV/c2]
+0.0
+# Fraction
+0.0
 ###################################################################
 # Bkg mean right-peak-1 [GeV/c2]
 0.0
@@ -1667,13 +1707,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # Combinatorial bkg yield
-291.668   -49.8204   49.8204
+407.584   -47.3149   47.3149
 # Mistag bkg yield
-3475.2   -1   1
+4666.69   -219.454   219.454
 # Peaking bkg yield
 0.0
 # Signal yield
-31431.6   -192.957   192.957
+30227.7   -163.124   163.124
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1749,9 +1789,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.588103   -0.0040977   0.0040977
+0.592871   -0.00430836   0.00430836
 # AFB +/- err
--0.00251961   -0.00398402   0.00398402
+-0.00284982   -0.0042776   0.0042776
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
@@ -1790,7 +1830,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.0
 ###################################################################
-# Bkg sigma mistag [GeV/c2]
+# Bkg sigma-1 mistag [GeV/c2]
+0.0
+# Bkg sigma-2 mistag [GeV/c2]
+0.0
+# Fraction
 0.0
 ###################################################################
 # Bkg mean right-peak-1 [GeV/c2]
@@ -1940,7 +1984,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.0
 ###################################################################
-# Bkg sigma mistag [GeV/c2]
+# Bkg sigma-1 mistag [GeV/c2]
+0.0
+# Bkg sigma-2 mistag [GeV/c2]
+0.0
+# Fraction
 0.0
 ###################################################################
 # Bkg mean right-peak-1 [GeV/c2]
