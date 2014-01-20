@@ -789,7 +789,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-3e6
+1e6
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -943,7 +943,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-3e6
+1e6
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1097,7 +1097,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-3e6
+1e6
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1251,7 +1251,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-3e6
+1e6
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1405,7 +1405,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-3e6
+1e6
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1559,7 +1559,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-3e6
+1e6
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1713,7 +1713,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-3e6
+1e6
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1867,7 +1867,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-3e6
+1e6
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -2021,7 +2021,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-3e6
+1e6
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
