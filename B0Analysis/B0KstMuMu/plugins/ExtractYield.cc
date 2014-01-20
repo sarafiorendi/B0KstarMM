@@ -2894,7 +2894,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
       if (strcmp(CONTROLMisTag,"remove") == 0) myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && ";
       if (FitType == 36)
 	{
-	  myString << "truthMatchSignal == 1 && && rightFlavorTag == 1 && "
+	  myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && "
 		   << "(mumuMass > (" << Utility->JPsiMass << "-" << Utility->GetGenericParam("NSigmaPsiBig") << "*mumuMassE) && mumuMass < ("
 	           << Utility->JPsiMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE))";
 	}
@@ -3418,6 +3418,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       myString << "(mumuMass*mumuMass) > " << q2Bins->operator[](i) << " && (mumuMass*mumuMass) <= " << q2Bins->operator[](i+1);
       cout << "\nCut string: " << myString.str() << endl;
       dataSet_q2Bins[i] = (RooDataSet*)dataSet->reduce(myString.str().c_str());
+      cout << "Number of events: " << dataSet_q2Bins[i]->sumEntries() << endl;
 
       myString.clear(); myString.str("");
       myString << "TotalPDFq2Bin_" << i;
@@ -5226,6 +5227,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       myString << "(mumuMass*mumuMass) > " << q2Bins->operator[](i) << " && (mumuMass*mumuMass) <= " << q2Bins->operator[](i+1);
       cout << "Cut string: " << myString.str() << endl;
       dataSet_q2Bins[i] = (RooDataSet*)dataSet->reduce(myString.str().c_str());
+      cout << "Number of events: " << dataSet_q2Bins[i]->sumEntries() << endl;
 
       myString.clear(); myString.str("");
       myString << "TotalPDFq2Bin_" << i;
@@ -6788,7 +6790,8 @@ int main(int argc, char** argv)
 	    }
 	  else
 	    {
-	      system("say \"Let's rock and roll !\"");
+	      // @TMP@
+	      // system("say \"Let's rock and roll !\"");
  	      theApp->Run (); // Eventloop on air
 	    }
 	}
