@@ -2854,9 +2854,8 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 	  if ((!(FitType == 36) && !(FitType == 56) && !(FitType == 76) &&
 	       (NTuple->B0MassArb > Utility->B0Mass - Utility->GetGenericParam("B0MassIntervalLeft")) &&
 	       (NTuple->B0MassArb < Utility->B0Mass + Utility->GetGenericParam("B0MassIntervalRight"))) ||
-	      
-	      (((FitType == 36) || (FitType == 56) || (FitType == 76)) && 
-	       (NTuple->B0pT > Utility->GetSeleCut("B0pT")) && (fabs(NTuple->B0Eta) < Utility->GetSeleCut("B0Eta"))))
+
+	      ((FitType == 36) || (FitType == 56) || (FitType == 76)))
 	    {
 	      Vars.setRealValue("B0MassArb",         NTuple->B0MassArb);
 	      Vars.setRealValue("mumuMass",          NTuple->mumuMass->at(0));
@@ -3505,7 +3504,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 	{
 	  VecHistoMeas->operator[](0)->SetBinContent(i+1,(GetVar(TotalPDFq2Bins[i],"nSig")->getVal() / effMuMu) / (PsiYield / effPsi) * (NORMJPSInotPSIP == true ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7);
 	  VecHistoMeas->operator[](0)->SetBinError(i+1,VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getError() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)));
-	  
+
 	  fileFitResults << "@@@@@@ dBF/dq^2 @@@@@@" << endl;
 	  fileFitResults << "dBF/dq^2: " << VecHistoMeas->operator[](0)->GetBinContent(i+1) << " -/+ " << VecHistoMeas->operator[](0)->GetBinError(i+1) << " (";
 	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorLo() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)) << "/";
@@ -6549,8 +6548,13 @@ int main(int argc, char** argv)
 		      // ######################################
 		      // # 1D-fit to B0 inv. mass per q^2 bin #
 		      // ######################################
+		      TCanvas* cHistoMeas = new TCanvas("cHistoMeas","cHistoMeas",10, 10, 900, 600);
+		      cHistoMeas->Divide(2,2);
+
 		      vector<TH1D*> VecHistoMeas;
-		      VecHistoMeas.push_back(new TH1D("histoMeas0", "B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) \\mu#lower[0.4]{^{#font[122]{+}}} \\mu#lower[0.4]{^{#font[122]{\55}}} / B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) J/\\psi(\\mu#lower[0.4]{^{#font[122]{+}}}\\mu#lower[0.4]{^{#font[122]{\55}}}) Branching Fraction",q2Bins.size()-1, q2BinsHisto));
+
+		      cHistoMeas->cd(1);
+		      VecHistoMeas.push_back(new TH1D("histoMeas0", "B0 --> K*0(K+ pi-) mu+ mu- / B0 --> K*0(K+ pi-) J/psi(mu+ mu-) Branching Fraction", q2Bins.size()-1, q2BinsHisto));
 		      VecHistoMeas[0]->SetStats(false);
 		      VecHistoMeas[0]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
 		      VecHistoMeas[0]->SetYTitle("dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
@@ -6599,14 +6603,12 @@ int main(int argc, char** argv)
 						  &effFuncs,
 						  &vecConstr,
 						  fileIndx);
-		      
-		      TCanvas* cHistoMeas = new TCanvas("cHistoMeas","cHistoMeas",10, 10, 900, 600);
-		      cHistoMeas->Divide(2,2);
+
 		      cHistoMeas->cd(1);
 		      VecHistoMeas[0]->SetMarkerStyle(20);
 		      VecHistoMeas[0]->Draw("pe1");
 		      DrawString(LUMI);
-		      
+
 		      cHistoMeas->Update();
 		    }
 		}
@@ -6615,22 +6617,30 @@ int main(int argc, char** argv)
 		  // #############################
 		  // # 3D-fit Afb-Fl per q^2 bin #
 		  // #############################
+		  TCanvas* cHistoMeas = new TCanvas("cHistoMeas","cHistoMeas",10, 10, 900, 600);
+		  cHistoMeas->Divide(2,2);
+
 		  vector<TH1D*> VecHistoMeas;
 
-		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) \\mu#lower[0.4]{^{#font[122]{+}}} \\mu#lower[0.4]{^{#font[122]{\55}}} : F_{L} vs dimuon q#lower[0.4]{^{2}}", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) \\mu#lower[0.4]{^{#font[122]{+}}} \\mu#lower[0.4]{^{#font[122]{\55}}} : A_{FB} vs dimuon q#lower[0.4]{^{2}}", q2Bins.size()-1, q2BinsHisto));
-		  VecHistoMeas.push_back(new TH1D("histoMeas2", "B#lower[0.4]{^{0}} \\rightarrow #font[122]{K}#lower[0.4]{^{*0}}(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}\\pi#lower[0.4]{^{#font[122]{\55}}}) \\mu#lower[0.4]{^{#font[122]{+}}} \\mu#lower[0.4]{^{#font[122]{\55}}} : dBF/dq#lower[0.4]{^{2}} vs dimuon q#lower[0.4]{^{2}}", q2Bins.size()-1, q2BinsHisto));
+		  cHistoMeas->cd(1);
+		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B0 --> K*0(K+ pi-) mu+ mu- : FL vs dimuon q2", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas[0]->SetStats(false);
-		  VecHistoMeas[1]->SetStats(false);
-		  VecHistoMeas[2]->SetStats(false);
 		  VecHistoMeas[0]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
-		  VecHistoMeas[1]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
-		  VecHistoMeas[2]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
 		  VecHistoMeas[0]->SetYTitle("F_{L}");
-		  VecHistoMeas[1]->SetYTitle("A_{FB}");
-		  VecHistoMeas[2]->SetYTitle("dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
 		  VecHistoMeas[0]->GetYaxis()->SetRangeUser(-0.01,1.01);
+
+		  cHistoMeas->cd(1);
+		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B0 --> K*0(K+ pi-) mu+ mu- : AFB vs dimuon q2", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas[1]->SetStats(false);
+		  VecHistoMeas[1]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		  VecHistoMeas[1]->SetYTitle("A_{FB}");
 		  VecHistoMeas[1]->GetYaxis()->SetRangeUser(-1.0 - 0.01,1.0 + 0.01);
+
+		  cHistoMeas->cd(2);
+		  VecHistoMeas.push_back(new TH1D("histoMeas2", "B0 --> K*0(K+ pi-) mu+ mu- : dBF/dq2 vs dimuon q2", q2Bins.size()-1, q2BinsHisto));
+		  VecHistoMeas[2]->SetStats(false);
+		  VecHistoMeas[2]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		  VecHistoMeas[2]->SetYTitle("dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
 		  VecHistoMeas[2]->GetYaxis()->SetRangeUser(0.0,1.2);
 
 		  cout << "\n@@@ Now fit invariant mass, cos(theta_K) and cos(theta_l) per mumu q^2 bins @@@" << endl;
@@ -6676,9 +6686,7 @@ int main(int argc, char** argv)
 		  				     &effFuncs,
 		  				     &vecConstr,
 		  				     fileIndx);
-		  
-		  TCanvas* cHistoMeas = new TCanvas("cHistoMeas","cHistoMeas",10, 10, 900, 600);
-		  cHistoMeas->Divide(2,2);
+
 		  cHistoMeas->cd(1);
 		  VecHistoMeas[0]->SetMarkerStyle(20);
 		  VecHistoMeas[0]->Draw("pe1");

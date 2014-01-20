@@ -255,55 +255,66 @@ void TruthMatching (string fileName, bool truthMatch)
 
 
 // #########################################################
-// # Sub-program to make the dBF/dq2 vs d2 plot for GEN-MC #
+// # Sub-program to make the dBF/dq2 vs q2 plot for GEN-MC #
 // #########################################################
 void dBFfromGEN (string fileName)
 {
   TFile* _file0 = TFile::Open(fileName.c_str(),"READ");
-  TList* myList = _file0->GetListOfKeys();
-  TH1D* h1 = (TH1D*)((dynamic_cast<TKey*>(myList->At(0)))->ReadObj());
+  TCanvas* c0 = (TCanvas*)_file0->Get("cHistoMeas");
+  TPad* p0 = (TPad*)c0->GetPrimitive("cHistoMeas_1");
+  TH1D* h0 = (TH1D*)p0->GetPrimitive("histoMeas0");
 
 
-  double GENMClumi = 294500.0;
+  // ##########
+  // # Signal #
+  // ##########
+  double GENsigMCev = 5e9;
+  double BFsig      = 1.06e-6;
+  double BFsigErr   = 0.1e-6;
+  double scaleF     = 1.0;
 
   // #########
   // # J/psi #
   // #########
-  double BFPsi = 7.9e-5;
-  double scale = 9883.6 / GENMClumi * BFPsi / 1e-7; // Lumi ratio * BF[B0 --> J/psi or psi(2S) (mu mu) K*0 (K pi)]
+  double GENpsiEv = 4.996e9;
+
 
   // ###########
   // # psi(2S) #
   // ###########
-  // double BFPsi = 46.97e-7;
-  // double scale = 9883.6 / GENMClumi * BFPsi / 1e-7; // Lumi ratio * BF[B0 --> J/psi or psi(2S) (mu mu) K*0 (K pi)]
+  // double GENpsiEv = 5e9;
 
 
-  h1->SetBinContent(1,2888976.0 / 9122980.0 * scale / h1->GetBinWidth(1));
-  h1->SetBinContent(2,5760931.0 / 9122980.0 * scale / h1->GetBinWidth(2));
-  h1->SetBinContent(3,12899167.0 / 9122980.0 * scale / h1->GetBinWidth(3));
-  h1->SetBinContent(4,4833302.0 / 9122980.0 * scale / h1->GetBinWidth(5));
-  h1->SetBinContent(5,10130407.0 / 9122980.0 * scale / h1->GetBinWidth(5));
-  h1->SetBinContent(6,4580382.0 / 9122980.0 * scale / h1->GetBinWidth(7));
-  h1->SetBinContent(7,6009085.0 / 9122980.0 * scale / h1->GetBinWidth(7));
-  h1->SetBinContent(8,6363197.0 / 9122980.0 * scale / h1->GetBinWidth(8));
+  // ##################################################################################################################
+  // # The differential branching-fraction is: Y_Signal / Y_Ctr[35021242] * Y_GENctr / Y_GENsignal * BF[Signal] / dq2 #
+  // ##################################################################################################################
+  h0->SetBinContent(1,188693.0 / 35021242.0 * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(1) * scaleF);
+  h0->SetBinContent(2,376036.0 / 35021242.0 * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(2) * scaleF);
+  h0->SetBinContent(3,295169.0 / 35021242.0 * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(3) * scaleF);
+  h0->SetBinContent(4,546954.0 / 35021242.0 * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(4) * scaleF);
+  h0->SetBinContent(5,315122.0 / 35021242.0 * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(5) * scaleF);
+  h0->SetBinContent(6,652703.0 / 35021242.0 * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(6) * scaleF);
+  h0->SetBinContent(7,308195.0 / 35021242.0 * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(7) * scaleF);
+  h0->SetBinContent(8,393081.0 / 35021242.0 * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(8) * scaleF);
+  h0->SetBinContent(9,415492.0 / 35021242.0 * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(9) * scaleF);
   
-  h1->SetBinError(1,h1->GetBinContent(1) * sqrt(1./2888976.0 + 1./9122980.0));
-  h1->SetBinError(2,h1->GetBinContent(2) * sqrt(1./5760931.0 + 1./9122980.0));
-  h1->SetBinError(3,h1->GetBinContent(3) * sqrt(1./12899167.0 + 1./9122980.0));
-  h1->SetBinError(4,h1->GetBinContent(3) * sqrt(1./4833302.0 + 1./9122980.0));
-  h1->SetBinError(5,h1->GetBinContent(5) * sqrt(1./10130407.0 + 1./9122980.0));
-  h1->SetBinError(6,h1->GetBinContent(7) * sqrt(1./4580382.0 + 1./9122980.0));
-  h1->SetBinError(7,h1->GetBinContent(7) * sqrt(1./6009085.0 + 1./9122980.0));
-  h1->SetBinError(8,h1->GetBinContent(8) * sqrt(1./6363197.0 + 1./9122980.0));
-  
+  h0->SetBinError(1,h0->GetBinContent(1) * sqrt(1./188693.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev + (BFsigErr*BFsigErr) / (BFsig*BFsig)));
+  h0->SetBinError(2,h0->GetBinContent(2) * sqrt(1./376036.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev + (BFsigErr*BFsigErr) / (BFsig*BFsig)));
+  h0->SetBinError(3,h0->GetBinContent(3) * sqrt(1./295169.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev + (BFsigErr*BFsigErr) / (BFsig*BFsig)));
+  h0->SetBinError(4,h0->GetBinContent(4) * sqrt(1./546954.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev + (BFsigErr*BFsigErr) / (BFsig*BFsig)));
+  h0->SetBinError(5,h0->GetBinContent(5) * sqrt(1./315122.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev + (BFsigErr*BFsigErr) / (BFsig*BFsig)));
+  h0->SetBinError(6,h0->GetBinContent(6) * sqrt(1./652703.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev + (BFsigErr*BFsigErr) / (BFsig*BFsig)));
+  h0->SetBinError(7,h0->GetBinContent(7) * sqrt(1./308195.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev + (BFsigErr*BFsigErr) / (BFsig*BFsig)));
+  h0->SetBinError(8,h0->GetBinContent(8) * sqrt(1./393081.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev + (BFsigErr*BFsigErr) / (BFsig*BFsig)));
+  h0->SetBinError(9,h0->GetBinContent(9) * sqrt(1./415492.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev + (BFsigErr*BFsigErr) / (BFsig*BFsig)));
 
-  for (int i = 0; i < h1->GetNbinsX(); i++) cout << "--> bin #" << i+1 << "\tentry: " << h1->GetBinContent(i+1) << " +/- " << h1->GetBinError(i+1) << "\twidth: " << h1->GetBinWidth(i+1) << endl;
 
-  TCanvas* c0 = new TCanvas("cHistoMeas","cHistoMeas",10,10,700,500);
-  c0->cd();
-  h1->Draw();
-  c0->Update();
+  for (int i = 0; i < h0->GetNbinsX(); i++) cout << "--> bin #" << i+1 << "\tentry: " << h0->GetBinContent(i+1) << " +/- " << h0->GetBinError(i+1) << "\twidth: " << h0->GetBinWidth(i+1) << endl;
+
+  TCanvas* c1 = new TCanvas("c1","c1",10,10,700,500);
+  c1->cd();
+  h0->Draw();
+  c1->Update();
 }
 
 

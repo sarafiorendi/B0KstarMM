@@ -28,9 +28,9 @@ Utils::Utils ()
   JPsiBF       =  7.95e-5; // B0 --> J/psi(mu+mu-) K*0          (1.34+/-0.06 * 5.93+/-0.06)
   JPsiKpiBF    =  5.30e-5; // B0 --> J/psi(mu+mu-) K*0(K+pi-)   (1.34+/-0.06 * 5.93+/-0.06 * 2/3)
   KstMuMuBF    =  1.06e-6; // B0 --> K*0 mu+mu-
-  KstKpiMuMuBF =  7.07e-7; // B0 --> K*0(K+pi-) mu+mu-          (1.06+/-0.10 * 2/3)
-  PsiPBF       = 46.97e-7; // B0 --> psi(2S)(mu+mu-) K*0        (6.1+/-0.5 * 7.7+/-0.8)
-  PsiPKpiBF    = 31.31e-7; // B0 --> psi(2S)(mu+mu-) K*0(K+pi-) (6.1+/-0.5 * 7.7+/-0.8 * 2/3)
+  KstKpiMuMuBF =  7.07e-7; // B0 --> K*0(K+pi-) mu+mu-          (1.06+/-0.1 * 2/3)
+  PsiPBF       = 46.97e-7; // B0 --> psi(2S)(mu+mu-) K*0        (6.10+/-0.5 * 7.7+/-0.8)
+  PsiPKpiBF    = 31.31e-7; // B0 --> psi(2S)(mu+mu-) K*0(K+pi-) (6.10+/-0.5 * 7.7+/-0.8 * 2/3)
 
   muonMassErr  = 3.5e-9;
   pionMassErr  = 3.5e-7;
