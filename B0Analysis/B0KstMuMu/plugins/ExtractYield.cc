@@ -856,7 +856,7 @@ string MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar
 
 
   if ((FitType == 1) || (FitType == 41) || (FitType == 61) || (FitType == 81) || // Branching fraction
-      (FitType == 6) || (FitType == 26) || (FitType == 36) || (FitType == 46) || (FitType == 56) || (FitType == 66) || (FitType == 76) || (FitType == 86) || (FitType == 96)) // Fl-Afb-fit
+      (FitType == 6) || (FitType == 26) || (FitType == 46) || (FitType == 66) || (FitType == 86) || (FitType == 96)) // Fl-Afb-fit
     {
       // #######################################################
       // # Make 2D signal*efficiency p.d.f.: integral over phi #

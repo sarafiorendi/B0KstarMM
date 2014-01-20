@@ -789,7 +789,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-188696   -434.396   434.396
+3e6
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -865,9 +865,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.709679   -0.00148873   0.00148873
+0.5
 # AFB +/- err
--0.157187   -0.00127842   0.00127842
+0.0
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
@@ -943,7 +943,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-376037   -613.219   613.219
+3e6
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1019,9 +1019,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.798097   -0.000971225   0.000971225
+0.5
 # AFB +/- err
--0.0633741   -0.000841928   0.000841928
+0.0
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
@@ -1097,7 +1097,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-295169   -543.296   543.296
+3e6
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1173,9 +1173,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.726767   -0.00118935   0.00118935
+0.5
 # AFB +/- err
-0.0833987   -0.00106426   0.00106426
+0.0
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
@@ -1251,7 +1251,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-546955   -739.565   739.565
+3e6
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1327,9 +1327,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.611484   -0.000920289   0.000920289
+0.5
 # AFB +/- err
-0.239232   -0.000793558   0.000793558
+0.0
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
@@ -1405,7 +1405,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-1e6
+3e6
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1481,9 +1481,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.5   0.0   0.0
+0.5
 # AFB +/- err
-0.0   0.0   0.0
+0.0
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
@@ -1559,7 +1559,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-652707   -807.905   807.905
+3e6
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1635,9 +1635,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.454125   -0.000854012   0.000854012
+0.5
 # AFB +/- err
-0.375968   -0.000728506   0.000728506
+0.0
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
@@ -1713,7 +1713,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-1e6
+3e6
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1789,9 +1789,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.5   0.0   0.0
+0.5
 # AFB +/- err
-0.0   0.0   0.0
+0.0
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
@@ -1867,7 +1867,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-393083   -626.964   626.964
+3e6
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1943,9 +1943,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.368827   -0.00110152   0.00110152
+0.5
 # AFB +/- err
-0.419843   -0.000991998   0.000991998
+0.0
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
@@ -2021,7 +2021,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-415489   -644.582   644.582
+3e6
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -2097,9 +2097,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.34132   -0.00106168   0.00106168
+0.5
 # AFB +/- err
-0.372736   -0.00106168   0.00106168
+0.0
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
@@ -2125,7 +2125,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # 11th block of parameters #
 ############################
 # Number of dBF/dq2 -/+ err [x 10-7]
-# dBF/dq2 = Y_Signal / Y_Ctr[35021242] * Y_GENctr / Y_GENsignal * BF[ctr] / dq2
+# dBF/dq2 = Y_Signal / Y_Ctr[35021242] * Y_GENctr / Y_GENsignal * BF[Signal] / dq2
 9
 
 # q^2 bin 0 [188693]
