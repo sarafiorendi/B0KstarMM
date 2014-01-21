@@ -2837,7 +2837,11 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
       Vars.add(*truthMatchSignal);
       Vars.add(*rightFlavorTag);
 
-      SingleCandNTuple = new RooDataSet("SingleCandNTuple","SingleCandNTuple",Vars);
+      SingleCandNTuple           = new RooDataSet("SingleCandNTuple"          ,"SingleCandNTuple"          ,Vars);
+      SingleCandNTuple_JPsi      = new RooDataSet("SingleCandNTuple_JPsi"     ,"SingleCandNTuple_JPsi"     ,Vars);
+      SingleCandNTuple_PsiP      = new RooDataSet("SingleCandNTuple_PsiP"     ,"SingleCandNTuple_PsiP"     ,Vars);
+      SingleCandNTuple_RejectPsi = new RooDataSet("SingleCandNTuple_RejectPsi","SingleCandNTuple_RejectPsi",Vars);
+      SingleCandNTuple_KeepPsi   = new RooDataSet("SingleCandNTuple_KeepPsi"  ,"SingleCandNTuple_KeepPsi"  ,Vars);
 
 
       // #############################
@@ -2866,91 +2870,97 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 	      Vars.setRealValue("truthMatchSignal",  NTuple->truthMatchSignal->at(0));
 	      Vars.setRealValue("rightFlavorTag",    NTuple->rightFlavorTag);
 
+
+	      // ########################
+	      // # NTuple with all data #
+	      // ########################
 	      SingleCandNTuple->add(Vars);
+
+
+	      // ###########################################################################
+	      // # J/psi and psi(2S) keeping based on the event-by-event dimuon mass error #
+	      // ###########################################################################
+	      if (((FitType == 36) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true) && 
+		   (NTuple->mumuMass->at(0) > (Utility->JPsiMass - Utility->GetGenericParam("NSigmaPsiBig")   * NTuple->mumuMassE->at(0))) &&
+		   (NTuple->mumuMass->at(0) < (Utility->JPsiMass + Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))) ||
+		  
+		  (((FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+		  
+		  ((((strcmp(CONTROLMisTag,"remove") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) || (strcmp(CONTROLMisTag,"remove") != 0)) &&
+		   (NTuple->mumuMass->at(0) > (Utility->JPsiMass - Utility->GetGenericParam("NSigmaPsiBig")   * NTuple->mumuMassE->at(0))) &&
+		   (NTuple->mumuMass->at(0) < (Utility->JPsiMass + Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))))
+		SingleCandNTuple_JPsi->add(Vars);
+
+	      if (((FitType == 36) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true) && 
+		   (NTuple->mumuMass->at(0) > (Utility->PsiPMass - Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0))) &&
+		   (NTuple->mumuMass->at(0) < (Utility->PsiPMass + Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))) ||
+		  
+		  (((FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+		  
+		  ((((strcmp(CONTROLMisTag,"remove") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) || (strcmp(CONTROLMisTag,"remove") != 0)) &&
+		   (NTuple->mumuMass->at(0) > (Utility->PsiPMass - Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0))) &&
+		   (NTuple->mumuMass->at(0) < (Utility->PsiPMass + Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))))
+		SingleCandNTuple_PsiP->add(Vars);
+
+
+	      // #############################################################################
+	      // # J/psi and psi(2S) rejection based on the event-by-event dimuon mass error #
+	      // #############################################################################
+	      if (((!(FitType == 36) && !(FitType == 56) && !(FitType == 76)) &&
+
+		   (((strcmp(CONTROLMisTag,"remove") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) || (strcmp(CONTROLMisTag,"remove") != 0)) &&
+		   
+		   ((NTuple->mumuMass->at(0)  < (Utility->JPsiMass - Utility->GetGenericParam("NSigmaPsiBig")   * NTuple->mumuMassE->at(0))) ||
+		    (NTuple->mumuMass->at(0)  > (Utility->PsiPMass + Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0))) ||
+		    ((NTuple->mumuMass->at(0) > (Utility->JPsiMass + Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0))) &&
+		     (NTuple->mumuMass->at(0) < (Utility->PsiPMass - Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))))) ||
+		  
+		  (((FitType == 36) || (FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)))
+		SingleCandNTuple_RejectPsi->add(Vars);
+
+
+	      // ###########################################################################
+	      // # J/psi and psi(2S) keeping based on the event-by-event dimuon mass error #
+	      // ###########################################################################
+	      if (((!(FitType == 36) && !(FitType == 56) && !(FitType == 76)) &&
+		   
+		   (((strcmp(CONTROLMisTag,"remove") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) || (strcmp(CONTROLMisTag,"remove") != 0)) &&
+		   
+		   (((NTuple->mumuMass->at(0) > (Utility->JPsiMass - Utility->GetGenericParam("NSigmaPsiBig")   * NTuple->mumuMassE->at(0))) &&
+		     (NTuple->mumuMass->at(0) < (Utility->JPsiMass + Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))) ||
+		    ((NTuple->mumuMass->at(0) > (Utility->PsiPMass - Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0))) &&
+		     (NTuple->mumuMass->at(0) < (Utility->PsiPMass + Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))))) ||
+		  
+		  (((FitType == 36) || (FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)))
+		SingleCandNTuple_KeepPsi->add(Vars);
 	    }
 	}
+
+
+      cout << "\n@@@ NTuple with all data @@@" << endl;
       SingleCandNTuple->Print("v");
 
+      cout << "\n@@@ NTuple with J/psi region @@@" << endl;
+      SingleCandNTuple_JPsi->Print("v");
+      
+      cout << "\n@@@ NTuple with psi(2S) region @@@" << endl;
+      SingleCandNTuple_PsiP->Print("v");
+      
+      cout << "\n@@@ NTuple without J/psi and psi(2S) regions @@@" << endl;
+      SingleCandNTuple_RejectPsi->Print("v");
 
-      // ###################################################################
-      // # Measure the J/psi and psi(2S) widths before applying rejections #
-      // ###################################################################
+      cout << "\n@@@ NTuple with just J/psi and psi(2S) regions @@@" << endl;
+      SingleCandNTuple_KeepPsi->Print("v");
+
+
+      // ########################################
+      // # Measure the J/psi and psi(2S) widths #
+      // ########################################
       if (MakeMuMuPlots == true)
 	{
 	  TCanvas* cmumuMass_beforeRej = new TCanvas("cmumuMass_beforeRej","cmumuMass_beforeRej",10, 10, 700, 900);
 	  FitDimuonInvMass(SingleCandNTuple,&TotalPDFJPsi,&TotalPDFPsiP,mumuMass,cmumuMass_beforeRej,false,false,"TotalPDFPsi_beforeRej");
-	}
 
-
-      // ######################
-      // # Define useful cuts #
-      // ######################
-
-      // ###########################################################################
-      // # J/psi and psi(2S) keeping based on the event-by-event dimuon mass error #
-      // ###########################################################################
-      myString.clear(); myString.str("");
-      if (strcmp(CONTROLMisTag,"remove") == 0) myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && ";
-      if (FitType == 36)
-	{
-	  myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && "
-		   << "(mumuMass > (" << Utility->JPsiMass << "-" << Utility->GetGenericParam("NSigmaPsiBig") << "*mumuMassE) && mumuMass < ("
-	           << Utility->JPsiMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE))";
-	}
-      else if ((FitType == 56) || (FitType == 76)) myString << "truthMatchSignal == 1 && rightFlavorTag == 1";
-      else myString << "(mumuMass > (" << Utility->JPsiMass << "-" << Utility->GetGenericParam("NSigmaPsiBig") << "*mumuMassE) && mumuMass < ("
-		    << Utility->JPsiMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE))";
-      cout << "Cut for B0 --> J/psi K*0: " << myString.str().c_str() << endl;
-      SingleCandNTuple_JPsi = (RooDataSet*)SingleCandNTuple->reduce(myString.str().c_str());
-
-      myString.clear(); myString.str("");
-      if (strcmp(CONTROLMisTag,"remove") == 0) myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && ";
-      if (FitType == 36)
-	{
-	  myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && "
-		   << "(mumuMass > (" << Utility->PsiPMass << "-" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE) && mumuMass < ("
-		   << Utility->PsiPMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE))";
-	}
-      else if ((FitType == 56) || (FitType == 76)) myString << "truthMatchSignal == 1 && rightFlavorTag == 1";
-      else myString << "(mumuMass > (" << Utility->PsiPMass << "-" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE) && mumuMass < ("
-		    << Utility->PsiPMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE))";
-      cout << "Cut for B0 --> psi(2S) K*0: " << myString.str().c_str() << endl;
-      SingleCandNTuple_PsiP = (RooDataSet*)SingleCandNTuple->reduce(myString.str().c_str());
-
-
-      // #############################################################################
-      // # J/psi and psi(2S) rejection based on the event-by-event dimuon mass error #
-      // #############################################################################
-      myString.clear(); myString.str("");
-      if (strcmp(CONTROLMisTag,"remove") == 0) myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && ";
-      myString << "(mumuMass < (" << Utility->JPsiMass << "-" << Utility->GetGenericParam("NSigmaPsiBig") << "*mumuMassE)";
-      myString << " || mumuMass > (" << Utility->PsiPMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)";
-      myString << " || (mumuMass > (" << Utility->JPsiMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)";
-      myString << " && mumuMass < (" << Utility->PsiPMass << "-" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)))";
-      cout << "Cut for B0 --> mu+ mu- K*0 (outside Psi-region): " << myString.str().c_str() << endl;
-      if (!(FitType == 36) && !(FitType == 56) && !(FitType == 76)) SingleCandNTuple_RejectPsi = (RooDataSet*)SingleCandNTuple->reduce(myString.str().c_str());
-      else                                                          SingleCandNTuple_RejectPsi = (RooDataSet*)SingleCandNTuple->reduce("truthMatchSignal == 1 && rightFlavorTag == 1 && mumuMass > 0");
-
-
-      // ###########################################################################
-      // # J/psi and psi(2S) keeping based on the event-by-event dimuon mass error #
-      // ###########################################################################
-      myString.clear(); myString.str("");
-      if (strcmp(CONTROLMisTag,"remove") == 0) myString << "truthMatchSignal == 1 && rightFlavorTag == 1 && ";
-      myString << "((mumuMass > (" << Utility->JPsiMass << "-" << Utility->GetGenericParam("NSigmaPsiBig") << "*mumuMassE)";
-      myString << " && mumuMass < (" << Utility->JPsiMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)) ||";
-      myString << " (mumuMass > (" << Utility->PsiPMass << "-" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)";
-      myString << " && mumuMass < (" << Utility->PsiPMass << "+" << Utility->GetGenericParam("NSigmaPsiSmall") << "*mumuMassE)))";
-      cout << "Cut for B0 --> mu+ mu- K*0 (inside Psi-region): " << myString.str().c_str() << endl;
-      if (!(FitType == 36) && !(FitType == 56) && !(FitType == 76)) SingleCandNTuple_KeepPsi = (RooDataSet*)SingleCandNTuple->reduce(myString.str().c_str());
-      else                                                          SingleCandNTuple_KeepPsi = (RooDataSet*)SingleCandNTuple->reduce("truthMatchSignal == 1 && rightFlavorTag == 1 && mumuMass > 0");
-
-
-      // ##################################################################
-      // # Measure the J/psi and psi(2S) widths after applying rejections #
-      // ##################################################################
-      if (MakeMuMuPlots == true)
-	{
 	  TCanvas* cmumuMass_JPsi = new TCanvas("cmumuMass_JPsi","cmumuMass_JPsi",10, 10, 700, 900);
 	  FitDimuonInvMass(SingleCandNTuple_JPsi,&TotalPDFJPsi_JPsi,&TotalPDFPsiP_JPsi,mumuMass,cmumuMass_JPsi,false,true,"TotalPDFPsi_JPsi");
 
@@ -6452,15 +6462,6 @@ int main(int argc, char** argv)
 	      // #################
 	      cout << "\n@@@ Making datasets @@@" << endl;
 	      MakeDataSets(NTuple,FitType);
-
-	      cout << "\n@@@ NTuple with J/psi region @@@" << endl;
-	      SingleCandNTuple_JPsi->Print("v");
-
-	      cout << "\n@@@ NTuple with psi(2S) region @@@" << endl;
-	      SingleCandNTuple_PsiP->Print("v");
-
-	      cout << "\n@@@ NTuple without J/psi and psi(2S) regions @@@" << endl;
-	      SingleCandNTuple_RejectPsi->Print("v");
 
 
 	      // ##############################
