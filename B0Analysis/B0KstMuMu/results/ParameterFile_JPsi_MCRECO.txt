@@ -1222,9 +1222,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # Bkg mean right-peak-1 [GeV/c2]
-0.0
+5.0947   -0.00366859   0.00366859
 # Bkg sigma right-peak-1 [GeV/c2]
-0.0
+0.0611634   -0.00286764   0.00286764
 # Bkg mean right-peak-2 [GeV/c2]
 0.0
 # Bkg sigma right-peak-2 [GeV/c2]
@@ -1249,24 +1249,24 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Mistag bkg yield
 0.0
 # Peaking bkg yield
-100
+444.001   -21.0713   21.0713
 # Signal yield
 0.0
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
-5
+4
 # Bkg angle1 poly coeff. p0
-0.0
+-0.0591462   -0.185141   0.185141
 # Bkg angle1 poly coeff. p1
-0.0
+0.517187   -0.371901   0.371901
 # Bkg angle1 poly coeff. p2
-0.0
+-0.0730896   -0.252111   0.252111
 # Bkg angle1 poly coeff. p3
-0.0
+-1.28198   -0.416771   0.416771
 # Bkg angle1 poly coeff. p4
 0.0
 ### Number of coefficients of the comb/mistag bkg angle1 poly ###
-1
+5
 # Bkg angle1 poly coeff. c0
 0.0
 # Bkg angle1 poly coeff. c1
@@ -1280,17 +1280,17 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the peak.bkg angle2 poly ###
 5
 # Bkg angle2 poly coeff. p0
-0.0
+0.454788   -0.197065   0.197065
 # Bkg angle2 poly coeff. p1
-0.0
+1.39093   -0.333488   0.333488
 # Bkg angle2 poly coeff. p2
-0.0
+-3.16715   -0.416417   0.416417
 # Bkg angle2 poly coeff. p3
-0.0
+-1.036   -0.3476   0.3476
 # Bkg angle2 poly coeff. p4
-0.0
+1.41816   -0.376147   0.376147
 ### Number of coefficients of the comb/mistag bkg angle2 poly ###
-1
+5
 # Bkg angle2 poly coeff. c0
 0.0
 # Bkg angle2 poly coeff. c1
@@ -1314,7 +1314,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle3 poly coeff. p4
 0.0
 ### Number of coefficients of the comb/mistag bkg angle3 poly ###
-1
+5
 # Bkg angle3 poly coeff. c0
 0.0
 # Bkg angle3 poly coeff. c1
@@ -1340,9 +1340,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0   0.0
 ###################################################################
 # Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
-0
-# Use two gaussians signal: 0 = no; 1 = yes
 1
+# Use two gaussians signal: 0 = no; 1 = yes
+0
 # Use two gaussians peaking bkg: 0 = no; 1 = yes
 0
 # Use two exponentials combinatorial bkg: 0 = no; 1 = yes
@@ -1530,15 +1530,15 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # Bkg mean right-peak-1 [GeV/c2]
-0.0
+5.38018   -0.000686512   0.000686512
 # Bkg sigma right-peak-1 [GeV/c2]
-0.0
+0.029503   -0.00069942   0.00069942
 # Bkg mean right-peak-2 [GeV/c2]
-0.0
+5.38441   -0.00837554   0.00837554
 # Bkg sigma right-peak-2 [GeV/c2]
-0.0
+0.111694   -0.00875284   0.00875284
 # Fraction
-0.0
+0.869626   -0.0152593   0.0152593
 # Bkg mean left-peak-1 [GeV/c2]
 0.0
 # Bkg sigma left-peak-1 [GeV/c2]
@@ -1557,24 +1557,24 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Mistag bkg yield
 0.0
 # Peaking bkg yield
-100
+2789.94   -52.8193   52.8193
 # Signal yield
 0.0
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
-5
+4
 # Bkg angle1 poly coeff. p0
-0.0
+0.0441188   -0.0779409   0.0779409
 # Bkg angle1 poly coeff. p1
-0.0
+0.405222   -0.168895   0.168895
 # Bkg angle1 poly coeff. p2
-0.0
+-0.0209751   -0.110481   0.110481
 # Bkg angle1 poly coeff. p3
-0.0
+-0.904218   -0.186512   0.186512
 # Bkg angle1 poly coeff. p4
 0.0
 ### Number of coefficients of the comb/mistag bkg angle1 poly ###
-1
+5
 # Bkg angle1 poly coeff. c0
 0.0
 # Bkg angle1 poly coeff. c1
@@ -1586,19 +1586,19 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle1 poly coeff. c4
 0.0
 ### Number of coefficients of the peak.bkg angle2 poly ###
-5
+3
 # Bkg angle2 poly coeff. p0
-0.0
+-0.0104635   -0.0859119   0.0859119
 # Bkg angle2 poly coeff. p1
-0.0
+0.667924   -0.0923226   0.0923226
 # Bkg angle2 poly coeff. p2
-0.0
+-1.43328   -0.145155   0.145155
 # Bkg angle2 poly coeff. p3
 0.0
 # Bkg angle2 poly coeff. p4
 0.0
 ### Number of coefficients of the comb/mistag bkg angle2 poly ###
-1
+5
 # Bkg angle2 poly coeff. c0
 0.0
 # Bkg angle2 poly coeff. c1
@@ -1622,7 +1622,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle3 poly coeff. p4
 0.0
 ### Number of coefficients of the comb/mistag bkg angle3 poly ###
-1
+5
 # Bkg angle3 poly coeff. c0
 0.0
 # Bkg angle3 poly coeff. c1
@@ -1648,11 +1648,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0   0.0
 ###################################################################
 # Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
-0
-# Use two gaussians signal: 0 = no; 1 = yes
 1
-# Use two gaussians peaking bkg: 0 = no; 1 = yes
+# Use two gaussians signal: 0 = no; 1 = yes
 0
+# Use two gaussians peaking bkg: 0 = no; 1 = yes
+1
 # Use two exponentials combinatorial bkg: 0 = no; 1 = yes
 0
 # Use mistag bkg: 0 = no; 1 = one gaussian; 2 = two gaussians

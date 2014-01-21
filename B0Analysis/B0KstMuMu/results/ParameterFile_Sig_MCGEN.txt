@@ -412,7 +412,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
-1
+0
 # Use two gaussians peaking bkg: 0 = no; 1 = yes
 0
 # Use two exponentials combinatorial bkg: 0 = no; 1 = yes
@@ -566,7 +566,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
-1
+0
 # Use two gaussians peaking bkg: 0 = no; 1 = yes
 0
 # Use two exponentials combinatorial bkg: 0 = no; 1 = yes
@@ -720,7 +720,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
-1
+0
 # Use two gaussians peaking bkg: 0 = no; 1 = yes
 0
 # Use two exponentials combinatorial bkg: 0 = no; 1 = yes
@@ -789,7 +789,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-1e6
+833344   -912.876   912.876
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -865,9 +865,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.5
+0.710936   -0.000706589   0.000706589
 # AFB +/- err
-0.0
+-0.158507   -0.000604912   0.000604912
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
@@ -880,7 +880,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
-1
+0
 # Use two gaussians peaking bkg: 0 = no; 1 = yes
 0
 # Use two exponentials combinatorial bkg: 0 = no; 1 = yes
@@ -943,7 +943,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-2e6
+1.66161e+06   -1289.03   1289.03
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1019,9 +1019,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.5
+0.798863   -0.000461117   0.000461117
 # AFB +/- err
-0.0
+-0.0627619   -0.000399644   0.000399644
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
@@ -1034,7 +1034,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
-1
+0
 # Use two gaussians peaking bkg: 0 = no; 1 = yes
 0
 # Use two exponentials combinatorial bkg: 0 = no; 1 = yes
@@ -1097,7 +1097,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-3e6
+1.30394e+06   -1141.9   1141.9
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1173,9 +1173,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.5
+0.72686   -0.000565613   0.000565613
 # AFB +/- err
-0.0
+0.0842332   -0.000506107   0.000506107
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
@@ -1188,7 +1188,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
-1
+0
 # Use two gaussians peaking bkg: 0 = no; 1 = yes
 0
 # Use two exponentials combinatorial bkg: 0 = no; 1 = yes
@@ -1251,7 +1251,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-5e6
+2.41581e+06   -1554.29   1554.29
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1327,9 +1327,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.5
+0.611017   -0.000438099   0.000438099
 # AFB +/- err
-0.0
+0.238622   -0.000378237   0.000378237
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
@@ -1342,7 +1342,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
-1
+0
 # Use two gaussians peaking bkg: 0 = no; 1 = yes
 0
 # Use two exponentials combinatorial bkg: 0 = no; 1 = yes
@@ -1405,7 +1405,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-3e6
+1.39274e+06   -1180.14   1180.14
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1481,9 +1481,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.5
+0.523463   -0.000586168   0.000586168
 # AFB +/- err
-0.0
+0.317749   -0.000501147   0.000501147
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
@@ -1496,7 +1496,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
-1
+0
 # Use two gaussians peaking bkg: 0 = no; 1 = yes
 0
 # Use two exponentials combinatorial bkg: 0 = no; 1 = yes
@@ -1559,7 +1559,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-6e6
+2.88175e+06   -1697.57   1697.57
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1635,9 +1635,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.5
+0.453627   -0.000421732   0.000421732
 # AFB +/- err
-0.0
+0.37555   -0.000360206   0.000360206
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
@@ -1650,7 +1650,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
-1
+0
 # Use two gaussians peaking bkg: 0 = no; 1 = yes
 0
 # Use two exponentials combinatorial bkg: 0 = no; 1 = yes
@@ -1713,7 +1713,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-3e6
+1.36433e+06   -1168.05   1168.05
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1789,9 +1789,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.5
+0.39917   -0.000602035   0.000602035
 # AFB +/- err
-0.0
+0.411568   -0.00052447   0.00052447
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
@@ -1804,7 +1804,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
-1
+0
 # Use two gaussians peaking bkg: 0 = no; 1 = yes
 0
 # Use two exponentials combinatorial bkg: 0 = no; 1 = yes
@@ -1867,7 +1867,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-3e6
+1.73495e+06   -1317.18   1317.18
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1943,9 +1943,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.5
+0.369924   -0.000515672   0.000515672
 # AFB +/- err
-0.0
+0.419342   -0.000464092   0.000464092
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
@@ -1958,7 +1958,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
-1
+0
 # Use two gaussians peaking bkg: 0 = no; 1 = yes
 0
 # Use two exponentials combinatorial bkg: 0 = no; 1 = yes
@@ -2021,7 +2021,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg yield
 0.0
 # Signal yield
-4e6
+1.83607e+06   -1355.02   1355.02
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -2097,9 +2097,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.5
+0.342313   -0.000505494   0.000505494
 # AFB +/- err
-0.0
+0.372347   -0.000505213   0.000505213
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
@@ -2112,7 +2112,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
 0
 # Use two gaussians signal: 0 = no; 1 = yes
-1
+0
 # Use two gaussians peaking bkg: 0 = no; 1 = yes
 0
 # Use two exponentials combinatorial bkg: 0 = no; 1 = yes
@@ -2125,35 +2125,35 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # 11th block of parameters #
 ############################
 # Number of dBF/dq2 -/+ err [x 10-7]
-# dBF/dq2 = Y_Signal / Y_Ctr[35021242] * Y_GENctr / Y_GENsignal * BF[Signal] / dq2
+# dBF/dq2 = Y_Signal / Y_Ctr[35021242/2] * Y_GENctr / Y_GENsignal * BF[Signal] / dq2
 9
 
-# q^2 bin 0 [188693]
-0.0   0.0   0.0
+# q^2 bin 0 [833344]
+0.504059   0.047556   0.047556
 
-# q^2 bin 1 [376036]
-0.0   0.0   0.0
+# q^2 bin 1 [1661610]
+0.436976   0.0412257   0.0412257
 
-# q^2 bin 2 [295169]
-0.0   0.0   0.0
+# q^2 bin 2 [1303940]
+0.463944   0.0437702   0.0437702
 
-# q^2 bin 3 [546954]
-0.0   0.0   0.0
+# q^2 bin 3 [2415800]
+0.545234   0.0514384   0.0514384
 
-# q^2 bin 4 [315122]
-0.0   0.0   0.0
+# q^2 bin 4 [1392740]
+0.597458   0.0563664   0.0563664
 
-# q^2 bin 5 [652703]
-0.0   0.0   0.0
+# q^2 bin 5 [2881760]
+0.629267   0.059366   0.059366
 
-# q^2 bin 6 [308195]
-0.0   0.0   0.0
+# q^2 bin 6 [1364330]
+0.625176   0.0589814   0.0589814
 
-# q^2 bin 7 [393081]
-0.0   0.0   0.0
+# q^2 bin 7 [1734950]
+0.576597   0.0543978   0.0543978
 
-# q^2 bin 8 [415492]
-0.0   0.0   0.0
+# q^2 bin 8 [1836080]
+0.370192   0.0349249   0.0349249
 
 
 ############################

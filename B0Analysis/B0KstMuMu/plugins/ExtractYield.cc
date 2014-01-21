@@ -101,7 +101,7 @@ using namespace RooFit;
 // # Internal flags to control the workflow #
 // ##########################################
 #define ApplyConstr   false // Apply Gaussian constraints in the likelihood
-#define SAVEPOLY      false // "true" = save bkg polynomial coefficients in new parameter file; "false" = save original values
+#define SAVEPOLY      true  // "true" = save bkg polynomial coefficients in new parameter file; "false" = save original values
 #define RESETOBS      false // Reset polynomial coefficients for combinatorial background and angular observables for a fresh start
 #define SETBATCH      false
 #define TESTeffFUNC   false // Check whether efficiency goes negative
@@ -376,14 +376,14 @@ void MakeMassToy            (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, 
 // ==================
 // ===> 3D MODEL <===
 // ==================
-void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
-				bool useEffPDF,
-				RooRealVar* x, RooRealVar* y, RooRealVar* z,
-				string fitName, unsigned int FitType,
-				vector<vector<unsigned int>*>* configParam,
-				vector<vector<string>*>* fitParam,
-				unsigned int parIndx,
-				TF2* effFunc);
+void InstantiateMass2AnglesFit    (RooAbsPdf** TotalPDF,
+				   bool useEffPDF,
+				   RooRealVar* x, RooRealVar* y, RooRealVar* z,
+				   string fitName, unsigned int FitType,
+				   vector<vector<unsigned int>*>* configParam,
+				   vector<vector<string>*>* fitParam,
+				   unsigned int parIndx,
+				   TF2* effFunc);
 RooFitResult* MakeMass2AnglesFit   (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar* x, RooRealVar* y, RooRealVar* z, TCanvas* Canv, unsigned int FitType, vector<vector<unsigned int>*>* configParam, unsigned int parIndx, RooArgSet* vecConstr, double* NLLvalue, TPaveText* extText, int ID = 0);
 void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 				    bool useEffPDF,
@@ -397,7 +397,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 				    vector<TF2*>* effFuncs,
 				    RooArgSet* vecConstr,
 				    unsigned int ID = 0);
-void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooRealVar* z, TCanvas* Canv, unsigned int FitType, unsigned int nToy, vector<vector<unsigned int>*>* configParam, int specBin, vector<vector<string>*>* fitParam, RooArgSet* vecConstr, string fileName);
+void MakeMass2AnglesToy            (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooRealVar* z, TCanvas* Canv, unsigned int FitType, unsigned int nToy, vector<vector<unsigned int>*>* configParam, int specBin, vector<vector<string>*>* fitParam, RooArgSet* vecConstr, string fileName);
 
 
 // ###########################
@@ -6835,39 +6835,39 @@ int main(int argc, char** argv)
       cout << " --> EffCorrAnalyPDF    = analytical eff. correction used in the p.d.f." << endl;
       cout << " --> EffCorrGenAnalyPDF = compute systematic error realted to analytical eff. correction used in the p.d.f." << endl;
 
-      cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  Signa  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+      cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  Signa  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "FitType = 1: 1D branching fraction per q^2 bin" << endl;
       cout << "FitType = 2: 1D (B0Mass) peak" << endl;
       cout << "FitType = 6: 3D Afb-Fl (B0Mass, cos(theta_K), cos(theta_l)) per q^2 bin" << endl;
-      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "FitType = 21: toy-MC 1D (B0Mass) peak per q^2 bin" << endl;
       cout << "FitType = 26: toy-MC 3D Afb-Fl (B0Mass, cos(theta_K), cos(theta_l)) per q^2 bin" << endl;
-      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "FitType = 36: 2D Afb-Fl (cos(theta_K), cos(theta_l)) per q^2 bin on GEN variables" << endl;
-      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
 
-      cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  J/psi  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+      cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  J/psi  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "FitType = 41: 1D (B0Mass) peak for B0 --> J/psi(mumu) K*0 in appropriate q^2 bin" << endl;
       cout << "FitType = 46: 3D Afb-Fl (B0Mass, cos(theta_K), cos(theta_l)) for B0 --> J/psi(mumu) K*0" << endl;
-      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "FitType = 56: 2D Afb-Fl (cos(theta_K), cos(theta_l)) for B0 --> J/psi(mumu) K*0 on GEN variables" << endl;
-      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
 
-      cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Psi(2S) @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+      cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Psi(2S) @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "FitType = 61: 1D (B0Mass) peak for B0 --> psi(2S)(mumu) K*0 in appropriate q^2 bin" << endl;
       cout << "FitType = 66: 3D Afb-Fl (B0Mass, cos(theta_K), cos(theta_l)) for B0 --> psi(2S)(mumu) K*0" << endl;
-      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "FitType = 76: 2D Afb-Fl (cos(theta_K), cos(theta_l)) for B0 --> psi(2S)(mumu) K*0 on GEN variables" << endl;
-      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
 
-      cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Genera dataset @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+      cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Genera dataset @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "FitType = 81: 1D generare dataset with (B0Mass) distribution from pdf" << endl;
       cout << "FitType = 86: 3D generare dataset with (B0Mass, cos(theta_K), cos(theta_l)) distribution from pdf" << endl;
-      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       
-      cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Genera parameter @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+      cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Genera parameter @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "FitType = 96: 3D generate paramter with (B0Mass, cos(theta_K), cos(theta_l)) distribution from pdf" << endl;
-      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       
       return EXIT_FAILURE;
     }
