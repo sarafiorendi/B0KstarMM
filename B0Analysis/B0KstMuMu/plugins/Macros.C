@@ -78,7 +78,6 @@ void dBFfromGEN             (string fileName);
 void CompareCosMassGENRECO  (string fileNameRECO, string fileNameGEN);
 void ComputePileUp          (string fileName);
 void PlotVtxWithPileUpW     (string fileNameMC, string fileNameData, unsigned int TrigCat, bool withWeights);
-void PlotPileUp             (string fileNameMC1, string fileNameMC2);
 void PlotCutScans           (string fileName, string type);
 void PlotEffPlots           (string fileName, unsigned int plotN, unsigned int binN);
 void PlotB0vsMuMu           (string fileName, bool rejectPsi);
@@ -529,7 +528,6 @@ void PlotVtxWithPileUpW (string fileNameMC, string fileNameData, unsigned int Tr
   hMC->SetFillColor(kAzure+6);
   hMC->SetXTitle("Vtx[#]");
   hMC->SetYTitle("a.u.");
-  hMC->GetXaxis()->SetRangeUser(0.0,30.0);
   hMC->GetYaxis()->SetRangeUser(0.0,0.14);
 
   for (int entry = 0; entry < nEntries; entry++)
@@ -562,7 +560,6 @@ void PlotVtxWithPileUpW (string fileNameMC, string fileNameData, unsigned int Tr
   hData->SetMarkerStyle(20);
   hData->SetXTitle("Vtx[#]");
   hData->SetYTitle("a.u.");
-  hData->GetXaxis()->SetRangeUser(0.0,30.0);
   hData->GetYaxis()->SetRangeUser(0.0,0.14);
 
   for (int entry = 0; entry < nEntries; entry++)
@@ -589,94 +586,6 @@ void PlotVtxWithPileUpW (string fileNameMC, string fileNameData, unsigned int Tr
   TLegend* leg = new TLegend(0.7, 0.79, 0.89, 0.89, "");
   leg->AddEntry(hMC,"MC");
   leg->AddEntry(hData,"Data");
-  leg->SetFillColor(0);
-  leg->SetBorderSize(0);
-  leg->Draw();
-
-  c0->Update();
-}
-
-
-// ############################################################
-// # Sub-program to plot the pileup of two different MC files #
-// ############################################################
-void PlotPileUp (string fileNameMC1, string fileNameMC2)
-// #############################
-// # fileNameMC1 = original MC #
-// # fileNameMC2 = sampled MC  #
-// #############################
-{
-  // ##########################
-  // # Set histo layout style #
-  // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetPalette(1);
-  gStyle->SetOptFit(1112);
-  gStyle->SetOptStat(0);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
-
-
-  int nEntries;
-
-  TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
-
-  TFile* fileMC1 = TFile::Open(fileNameMC1.c_str(),"READ");
-  TTree* theTreeInMC1 = (TTree*)fileMC1->Get("B0KstMuMu/B0KstMuMuNTuple");
-
-  nEntries = theTreeInMC1->GetEntries();
-  cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
-
-  TH1D* hMC1 = new TH1D("hMC1","hMC1",50,0,50);
-  hMC1->Sumw2();
-  hMC1->SetMarkerStyle(20);
-  hMC1->SetXTitle("pileup[#]");
-  hMC1->SetYTitle("a.u.");
-  hMC1->GetXaxis()->SetRangeUser(0.0,35.0);
-  hMC1->GetYaxis()->SetRangeUser(0.0,0.11);
-  theTreeInMC1->Draw("numInteractionsMC>>hMC1","evWeight*(bunchXingMC == 0)");
-  hMC1->Scale(1. / hMC1->Integral());
-
-  TH1D* hMC3 = new TH1D("hMC3","hMC3",50,0,50);
-  hMC3->Sumw2();
-  hMC3->SetFillColor(kGreen-7);
-  hMC3->SetXTitle("pileup[#]");
-  hMC3->SetYTitle("a.u."); 
-  hMC3->GetXaxis()->SetRangeUser(0.0,35.0);
-  hMC3->GetYaxis()->SetRangeUser(0.0,0.11);
-  theTreeInMC1->Draw("numInteractionsMC>>hMC3","bunchXingMC == 0");
-  hMC3->Scale(1. / hMC3->Integral());
-
-
-  TFile* fileMC2 = TFile::Open(fileNameMC2.c_str(),"READ");
-  TTree* theTreeInMC2 = (TTree*)fileMC2->Get("B0KstMuMu/B0KstMuMuNTuple");
-
-  nEntries = theTreeInMC2->GetEntries();
-  cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
-
-  TH1D* hMC2 = new TH1D("hMC2","hMC2",50,0,50);
-  hMC2->Sumw2();
-  hMC2->SetFillColor(kAzure+6);
-  hMC2->SetXTitle("pileup[#]");
-  hMC2->SetYTitle("a.u.");
-  hMC2->GetXaxis()->SetRangeUser(0.0,35.0);
-  hMC2->GetYaxis()->SetRangeUser(0.0,0.11);
-  theTreeInMC2->Draw("numInteractionsMC>>hMC2","bunchXingMC == 0");
-  hMC2->Scale(1. / hMC2->Integral());
-
-
-  c0->cd();
-  hMC3->Draw("e3");
-  hMC2->Draw("e3 same");
-  hMC1->Draw("e1p same");
-
-  TLegend* leg = new TLegend(0.6, 0.7, 0.89, 0.89, "");
-  leg->AddEntry(hMC3,"Original MC");
-  leg->AddEntry(hMC1,"Original MC weighted");
-  leg->AddEntry(hMC2,"Sampled MC");
   leg->SetFillColor(0);
   leg->SetBorderSize(0);
   leg->Draw();
@@ -1264,7 +1173,7 @@ void DivideNTuple (string fileNameIn, string fileNameOut, unsigned int n)
   // ###################################################
   // # Divide the input tree in the HLT sub-categories #
   // ###################################################
-  cout << "\n@@@ Dividing the input tree in the HLT sub-categories @@@" << endl;
+  cout << "\n@@@ Dividing the input tree in ==> FOUR <== HLT sub-categories @@@" << endl;
   TFile* fileTmp = TFile::Open("fileTmp.root","RECREATE");
   fileTmp->mkdir("B0KstMuMu");
   fileTmp->cd("B0KstMuMu");
@@ -1357,7 +1266,7 @@ void SampleNTuple (string fileNameIn, string fileNameOut, double fraction)
   // ###################################################
   // # Divide the input tree in the HLT sub-categories #
   // ###################################################
-  cout << "Dividing the input tree in the HLT sub-categories" << endl;
+  cout << "Dividing the input tree in the ==> FOUR <== HLT sub-categories" << endl;
   theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 1"));
   theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 2"));
   theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 3"));

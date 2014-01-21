@@ -53,13 +53,13 @@ using std::vector;
 #define SMBINAFB "../../SMprediction/BinnedAFB.dat"
 #define SMBINBF  "../../SMprediction/BinneddBFdq2.dat"
 
-#define SingleCand_MCkstJPsi  "Data2012B0KstMuMuResults/MonteCarlo/SingleCand/singleCand_B0ToPsi2SKst_MC_NTuple.root"
-#define SingleCand_MCkstPsi2S "Data2012B0KstMuMuResults/MonteCarlo/SingleCand/singleCand_B0ToJPsiKst_MC_NTuple.root"
+#define SingleCand_MCkstJPsi  "Data2012B0KstMuMuResults/MonteCarlo2012/SingleCand/singleCand_B0ToJPsiKst_MC_NTuple.root"
+#define SingleCand_MCkstPsi2S "Data2012B0KstMuMuResults/MonteCarlo2012/SingleCand/singleCand_B0ToPsi2SKst_MC_NTuple.root"
 #define SingleCand_Data       "Data2012B0KstMuMuResults/Data2012/SingleCand/singleCand_B0ToKstMuMu_Data2012ABCD_NTuples.root"
 
 #define FitSysFILE "../../Efficiency/EffSystematicsData/FitSystematics_q2Bin.txt"
 #define YvalueOutsideLimits 10.0 // Value given to bins with zero error in order not to show them
-#define FORPAPER true // "true" = make special layout for publication
+#define FORPAPER true // "true" = make special layout for publication in "MakePhysicsPlots" member function
 
 
 // ####################
@@ -960,6 +960,9 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
 
 
+  // #########################################
+  // # Rescale MCs by the Branching Fraction #
+  // #########################################
   // # B0 --> K* J/psi #
   h1DVec[0]->Scale(1./h1DVec[0]->Integral() * Utility->JPsiKpiBF);
   // # B0 --> K* psi(2S) #
@@ -1634,8 +1637,8 @@ void MakePhysicsPlots (unsigned int PlotType)
   if ((PlotType == 0) || (PlotType == 1) || (PlotType == 2)) // Fl OR Afb OR Branching fraction
     {
       ge0->Draw("ape1");
-      ge1->Draw("same pe1");
       ge11->Draw("same e2");
+      ge1->Draw("same pe1");
 
       leg->AddEntry(ge0,"GEN-MC","PL");
       leg->AddEntry(ge11,"RECO-MC","EPFL");
@@ -1671,6 +1674,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       exhd.clear();
       eyld.clear();
       eyhd.clear();
+      // @TMP@
       // geb->Draw("same pe1");
       ge0->Draw("same pez");
 
@@ -2397,7 +2401,7 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
   hKstSig->SetMarkerStyle(20);
 
   TH2D* hDalitzSig = new TH2D("hDalitzSig","hDalitzSig",nBins,DalitzminX,DalitzmaxX,nBins,DalitzminY,DalitzmaxY);
-  hDalitzSig->SetXTitle("M^#lower[0.4]{^{2}}(K #pi) (GeV#lower[0.4]{^{2}})");
+  hDalitzSig->SetXTitle("M#lower[0.4]{^{2}}(K #pi) (GeV#lower[0.4]{^{2}})");
   hDalitzSig->SetYTitle("M#lower[0.4]{^{2}}(J/#psi K) (GeV#lower[0.4]{^{2}})");
   hDalitzSig->SetZTitle("Entries / (0.03x0.125 (GeV#lower[0.4]{^{4}}))");
 

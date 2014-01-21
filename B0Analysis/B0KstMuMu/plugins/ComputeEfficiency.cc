@@ -74,7 +74,7 @@ using std::vector;
 // ####################
 #define INPUT_THETAL            "ThetaL_B0ToKstMuMu.txt"
 #define INPUT_PHI               "Phi_B0ToKstMuMu.txt"
-#define INPUT_THETAL_THETAK     "ThetaK_B0ToKstMuMu.txt" // "ThetaK_B0ToKstMuMu.txt" OR "ThetaKThetaL_B0ToKstMuMu.txt"
+#define INPUT_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu.txt" // "ThetaK_B0ToKstMuMu.txt" OR "ThetaKThetaL_B0ToKstMuMu.txt"
 #define INPUT_THETAL_THETAK_PHI "ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
 #define SavePlot       false

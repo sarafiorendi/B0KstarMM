@@ -30,7 +30,6 @@ using std::vector;
 // ####################
 #define PileUpMCFileName   "PileUp/PileupMCkstJPsi.root" // "PileupMCkstMuMu.root"  OR "PileupMCkstJPsi.root" OR "PileupMCkstPsi2S.root"
 #define PileUpDataFileName "PileUp/PileupData_HLTx"
-#define B0pTFileName       "B0pTDataMC.root"
 #define HadppTFileName     "HadppTDataMC.root"
 #define HadmpTFileName     "HadmpTDataMC.root"
 #define ParameterFILE      "../python/ParameterFile.txt"
@@ -51,7 +50,6 @@ B0KstMuMuSingleCandTreeContent* NTupleOut;
 // #######################
 void AddGenVariables                     (string option, int SignalType);
 template<class T> void AddEvWeightPileup (T* NTupleOut);
-template<class T> void AddEvWeightB0pT   (T* NTupleOut);
 template<class T> void AddEvWeightHadpT  (T* NTupleOut, string trkSign);
 
 
@@ -300,6 +298,7 @@ template<class T> void AddEvWeightPileup (T* NTupleOut)
   double value = 0.0;
   int HLTpathIndx;
 
+
   NTupleOut->ClearNTuple();
   NTupleOut->MakeTreeBranches(theTreeOut);
 
@@ -361,55 +360,6 @@ template<class T> void AddEvWeightPileup (T* NTupleOut)
 
   for (unsigned int i = 0; i < Utility->GetNHLTCat(); i++) fileData[i]->Close();
   fileMC->Close();
-}
-
-
-template<class T> void AddEvWeightB0pT (T* NTupleOut)
-{
-  stringstream myString;
-  double value = 0.0;
-  int nEntries;
-
-
-  NTupleOut->ClearNTuple();
-  NTupleOut->MakeTreeBranches(theTreeOut);
-
-  NTupleIn->ClearNTuple();
-  NTupleIn->SetBranchAddresses(theTreeIn);
-  nEntries = theTreeIn->GetEntries();
-  cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
-
-
-  TFile* fileDataMC = TFile::Open(B0pTFileName,"READ");
-  TCanvas* cTmp     = (TCanvas*)fileDataMC->Get("c0");
-  TH1D* hMC         = (TH1D*)cTmp->GetPrimitive("hM1D");
-  TH1D* hData       = (TH1D*)cTmp->GetPrimitive("hDsig1D");
- 
-  TH1D* hW = (TH1D*)hData->Clone();
-  hW->SetName("B0pTWeights");
-  hW->Divide(hMC);
-
-
-  cout << "\n@@@ Assigning the weights to the events @@@" << endl;
-  for (int entry = 0; entry < nEntries; entry++)
-    {
-      theTreeIn->GetEntry(entry);      
-      NTupleOut->CopyAllCandidates(NTupleIn);
-
-      value = NTupleIn->B0pT;
-      if ((hW->FindBin(value) != 0) && (hW->FindBin(value) != hW->GetNbinsX()+1))
-	{
-	  NTupleOut->evWeightE2 = NTupleOut->evWeightE2 * pow(hW->GetBinContent(hW->FindBin(value)),2.0) +
-	    pow(hW->GetBinError(hW->FindBin(value)) * NTupleOut->evWeight,2.0);
-	  NTupleOut->evWeight = NTupleOut->evWeight * hW->GetBinContent(hW->FindBin(value));
-	}
-
-      theTreeOut->Fill();
-      NTupleOut->ClearNTuple();
-    }
-  
-
-  fileDataMC->Close();
 }
 
 
@@ -477,96 +427,72 @@ template<class T> void AddEvWeightHadpT (T* NTupleOut, string trkSign)
 
 int main (int argc, char** argv)
 {
-  if (argc >= 4)
+  string option = argv[1];
+  if (((option == "pileupW") || (option == "HadpTW") || (option == "addSingleCandGENvars")) && (argc == 5))
     {
-      string option = argv[1];
-      if ((((option == "pileupW") || (option == "HadpTW") || (option == "addSingleCandGENvars")) && (argc == 5)) ||
-	  ((option == "B0pTW") && (argc == 4)))
+      string fileNameIn  = argv[2];
+      string fileNameOut = argv[3];
+      string localVar    = argv[4];
+
+      Utility = new Utils();
+      Utility->ReadTriggerPathsANDCutsANDEntries(ParameterFILE);
+
+      TFile* NtplFileIn = new TFile(fileNameIn.c_str(), "READ");
+      theTreeIn = (TTree*) NtplFileIn->Get("B0KstMuMu/B0KstMuMuNTuple");
+      NTupleIn  = new B0KstMuMuSingleCandTreeContent();
+      NTupleIn->Init();
+
+      TFile* NtplFileOut = new TFile(fileNameOut.c_str(), "RECREATE");
+      NTupleOut = NULL;
+      NtplFileOut->mkdir("B0KstMuMu");
+      NtplFileOut->cd("B0KstMuMu");
+      theTreeOut = new TTree("B0KstMuMuNTuple","B0KstMuMuNTuple");
+      NTupleOut  = new B0KstMuMuSingleCandTreeContent();
+      NTupleOut->Init();
+
+
+      cout << "\n@@@ Settings @@@" << endl;
+      cout << "PileUp MC file name: "                  << PileUpMCFileName << endl;
+      cout << "PileUp data file name: "                << PileUpDataFileName << endl;
+      cout << "Positive hadron pT data-MC file name: " << HadppTFileName << endl;
+      cout << "Negative hadron pT data-MC file name: " << HadmpTFileName << endl;
+      cout << "ParameterFILE: "                        << ParameterFILE << endl;
+
+
+      if (option == "pileupW")
 	{
-	  string fileNameIn  = argv[2];
-	  string fileNameOut = argv[3];
-	  string localVar = "";
-	  if ((option == "pileupW") || (option == "HadpTW") || (option == "addSingleCandGENvars")) localVar = argv[4];
-
-	  Utility = new Utils();
-	  Utility->ReadTriggerPathsANDCutsANDEntries(ParameterFILE);
-
-	  TFile* NtplFileIn = new TFile(fileNameIn.c_str(), "READ");
-	  theTreeIn = (TTree*) NtplFileIn->Get("B0KstMuMu/B0KstMuMuNTuple");
-	  NTupleIn  = new B0KstMuMuSingleCandTreeContent();
-	  NTupleIn->Init();
-
-	  TFile* NtplFileOut = new TFile(fileNameOut.c_str(), "RECREATE");
-	  NTupleOut = NULL;
-	  NtplFileOut->mkdir("B0KstMuMu");
-	  NtplFileOut->cd("B0KstMuMu");
-	  theTreeOut = new TTree("B0KstMuMuNTuple","B0KstMuMuNTuple");
-	  NTupleOut  = new B0KstMuMuSingleCandTreeContent();
-	  NTupleOut->Init();
-
-
-	  cout << "\n@@@ Settings @@@" << endl;
-	  cout << "PileUp MC file name: "                  << PileUpMCFileName << endl;
-	  cout << "PileUp data file name: "                << PileUpDataFileName << endl;
-	  cout << "B0 pT data-MC file name: "              << B0pTFileName << endl;
-	  cout << "Positive hadron pT data-MC file name: " << HadppTFileName << endl;
-	  cout << "Negative hadron pT data-MC file name: " << HadmpTFileName << endl;
-	  cout << "ParameterFILE: "                        << ParameterFILE << endl;
-
-
-	  if (option == "pileupW")
-	    {
-	      if (localVar == "single") AddEvWeightPileup<B0KstMuMuSingleCandTreeContent>(NTupleOut);
-	      else                      AddEvWeightPileup<B0KstMuMuTreeContent>(NTupleOut);
-	      cout << "\n@@@ Added new event weight from pileup @@@" << endl;
-	    }
-	  else if (option == "B0pTW")
-	    {
-	      AddEvWeightB0pT<B0KstMuMuSingleCandTreeContent>(NTupleOut);
-	      cout << "\n@@@ Added new event weight from B0 pT @@@" << endl;
-	    }
-	  else if (option == "HadpTW")
-	    {
-	      AddEvWeightHadpT<B0KstMuMuSingleCandTreeContent>(NTupleOut,localVar);
-	      cout << "\n@@@ Added new event weight from hadron pT @@@" << endl;
-	    }
-	  else if (option == "addSingleCandGENvars")
-	    {
-	      AddGenVariables(option,atoi(localVar.c_str()));
-	      cout << "\n@@@ Added new variables to gen-events @@@" << endl;
-	    }
-
-
-	  NtplFileOut->cd("B0KstMuMu");
-	  theTreeOut->Write();
-	  NtplFileOut->Close();
-	  delete NTupleOut;
-
-	  NtplFileIn->Close();
-	  delete NTupleIn;
-	  delete Utility;
-
-	  return EXIT_SUCCESS;
+	  if (localVar == "single") AddEvWeightPileup<B0KstMuMuSingleCandTreeContent>(NTupleOut);
+	  else                      AddEvWeightPileup<B0KstMuMuTreeContent>(NTupleOut);
+	  cout << "\n@@@ Added new event weight from pileup @@@" << endl;
 	}
-      else
+      else if (option == "HadpTW")
 	{
-	  cout << "Parameter missing: " << endl;
-	  cout << "./AddVarsToCandidates [pileupW B0pTW HadpTW addSingleCandGENvars] inputFile.root outputFile.root [[if pileupW]outputFile-type(single/multi)] [[if HadpT]pos/neg] [[if addSingleCandGENvars]SignalType]" << endl;
-	  cout << "- pileupW              : change the weight to all single/multiple candidates according to pileup weight" << endl;
-	  cout << "- B0pTW                : change the weight to all single candidates according to B0 pT weight" << endl;
-	  cout << "- HadpTW               : change the weight to all single candidates according to hadron pT weight" << endl;
-	  cout << "- addSingleCandGENvars : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC" << endl;
-	  cout << "- SignalType           : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
-
-	  return EXIT_FAILURE;
+	  AddEvWeightHadpT<B0KstMuMuSingleCandTreeContent>(NTupleOut,localVar);
+	  cout << "\n@@@ Added new event weight from hadron pT @@@" << endl;
 	}
+      else if (option == "addSingleCandGENvars")
+	{
+	  AddGenVariables(option,atoi(localVar.c_str()));
+	  cout << "\n@@@ Added new variables to gen-events @@@" << endl;
+	}
+
+
+      NtplFileOut->cd("B0KstMuMu");
+      theTreeOut->Write();
+      NtplFileOut->Close();
+      delete NTupleOut;
+
+      NtplFileIn->Close();
+      delete NTupleIn;
+      delete Utility;
+
+      return EXIT_SUCCESS;
     }
   else
     {
       cout << "Parameter missing: " << endl;
-      cout << "./AddVarsToCandidates [pileupW B0pTW HadpTW addSingleCandGENvars] inputFile.root outputFile.root [[if pileupW]outputFile-type(single/multi)] [[if HadpT]pos/neg] [[if addSingleCandGENvars]SignalType]" << endl;
+      cout << "./AddVarsToCandidates [pileupW HadpTW addSingleCandGENvars] inputFile.root outputFile.root [[if pileupW]outputFile-type(single/multi)] [[if HadpT]pos/neg] [[if addSingleCandGENvars]SignalType]" << endl;
       cout << "- pileupW              : change the weight to all single/multiple candidates according to pileup weight" << endl;
-      cout << "- B0pTW                : change the weight to all single candidates according to B0 pT weight" << endl;
       cout << "- HadpTW               : change the weight to all single candidates according to hadron pT weight" << endl;
       cout << "- addSingleCandGENvars : generate new NTupleOut adding the GEN single candidate variables to each gen-event to an NTuple computed from GEN-MC" << endl;
       cout << "- SignalType           : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
