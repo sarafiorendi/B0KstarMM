@@ -79,7 +79,7 @@ void CheckPhysicsRegion    ();
 void MakePhysicsPlots      (unsigned int PlotType);
 void EvalMultyRun          (unsigned int sysType, unsigned int q2BinIndx, string fileName, double NLLinterval, double NLLlessThan);
 void PlotMuMu              (string fileName, bool bkgSub);
-void PlotKst               (string fileName, bool bkgSub);
+void PlotKst               (string fileName, bool bkgSub, bool fitParamAreFixed);
 void PlotKK                (string fileName, bool bkgSub, string RECOorGEN);
 void PlotMuHadMass         (string fileName);
 void MakeupNLLandPULLplots (string fileName, string plotType);
@@ -393,21 +393,21 @@ void MakeComparisonDataMC (unsigned int plotType)
   // ###########
   else if (plotType == 14)
     {
-      Xtitle = "#font[122]{K}^{*0} trk#font[122]{+} p_{T} (GeV)";
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} p_{T} (GeV)";
       maxX = 20.0;
 
       fileName = "KstTrkppT.pdf";
     }
   else if (plotType == 15)
     {
-      Xtitle = "#font[122]{K}^{*0} trk{#font[122]{\55}} p_{T} (GeV)";
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk{#font[122]{\55}} p_{T} (GeV)";
       maxX = 20.0;
 
       fileName = "KstTrkmpT.pdf";
     }
   else if (plotType == 16)
     {
-      Xtitle = "#font[122]{K}^{*0} trk#font[122]{+} #eta";
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} #eta";
       minX = -3.0;
       maxX = 3.0;
 
@@ -415,7 +415,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 17)
     {
-      Xtitle = "#font[122]{K}^{*0} trk{#font[122]{\55}} #eta";
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk{#font[122]{\55}} #eta";
       minX = -3.0;
       maxX = 3.0;
 
@@ -423,7 +423,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 18)
     {
-      Xtitle = "#font[122]{K}^{*0} trk#font[122]{+} #phi";
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -437,7 +437,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 19)
     {
-      Xtitle = "#font[122]{K}^{*0} trk#font[122]{+} #phi";
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -451,7 +451,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 20)
     {
-      Xtitle = "#font[122]{K}^{*0} trk#font[122]{+} #phi";
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -465,7 +465,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 21)
     {
-      Xtitle = "#font[122]{K}^{*0} trk#font[122]{+} #phi";
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -479,7 +479,7 @@ void MakeComparisonDataMC (unsigned int plotType)
    }
   else if (plotType == 22)
     {
-      Xtitle = "#font[122]{K}^{*0} trk{#font[122]{\55}} #phi";
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk{#font[122]{\55}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -493,7 +493,7 @@ void MakeComparisonDataMC (unsigned int plotType)
    }
   else if (plotType == 23)
     {
-      Xtitle = "#font[122]{K}^{*0} trk{#font[122]{\55}} #phi";
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk{#font[122]{\55}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -507,7 +507,7 @@ void MakeComparisonDataMC (unsigned int plotType)
    }
   else if (plotType == 24)
     {
-      Xtitle = "#font[122]{K}^{*0} trk{#font[122]{\55}} #phi";
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk{#font[122]{\55}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -521,7 +521,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 25)
     {
-      Xtitle = "#font[122]{K}^{*0} trk{#font[122]{\55}} #phi";
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk{#font[122]{\55}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -2121,12 +2121,12 @@ void PlotMuMu (string fileName, bool bkgSub)
 }
 
 
-void PlotKst (string fileName, bool bkgSub)
+void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
 {
   int nEntries;
   double minX  = 0.81;
-  double maxX  = 0.97;
-  double extra = 0.02;
+  double maxX  = 0.98;
+  double extra = 0.015;
   unsigned int nBins = 50;
   stringstream myString;
   string sigMassQuery = "";
@@ -2177,24 +2177,24 @@ void PlotKst (string fileName, bool bkgSub)
   cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
   TH1D* h1Dsig = new TH1D("h1Dsig","h1Dsig",nBins,minX - extra,maxX + extra);
-  h1Dsig->SetXTitle("M(#font[122]{K}^{*0}) (GeV)");
+  h1Dsig->SetXTitle("M(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
   h1Dsig->SetYTitle("Entries / (0.004 GeV)");
   h1Dsig->SetMarkerStyle(20);
 
   TH1D* h2Dsig = new TH1D("h2Dsig","h2Dsig",nBins,minX - extra,maxX + extra);
-  h2Dsig->SetXTitle("M(#font[122]{K}^{*0}) (GeV)");
+  h2Dsig->SetXTitle("M(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
   h2Dsig->SetYTitle("Entries / (0.004 GeV)");
   h2Dsig->SetMarkerStyle(21);
   h2Dsig->SetMarkerColor(kRed);
 
 
   TH1D* h1Dbkg = new TH1D("h1Dbkg","h1Dbkg",nBins,minX - extra,maxX + extra);
-  h1Dbkg->SetXTitle("M(#font[122]{K}^{*0}) (GeV)");
+  h1Dbkg->SetXTitle("M(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
   h1Dbkg->SetYTitle("Entries / (0.004 GeV)");
   h1Dbkg->SetMarkerStyle(20);
 
   TH1D* h2Dbkg = new TH1D("h2Dbkg","h2Dbkg",nBins,minX - extra,maxX + extra);
-  h2Dbkg->SetXTitle("M(#font[122]{K}^{*0}) (GeV)");
+  h2Dbkg->SetXTitle("M(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
   h2Dbkg->SetYTitle("Entries / (0.004 GeV)");
   h2Dbkg->SetMarkerStyle(21);
   h2Dbkg->SetMarkerColor(kRed);
@@ -2225,34 +2225,38 @@ void PlotKst (string fileName, bool bkgSub)
   f0->SetParName(10,"Ampli-B");
 
 
-  // #######################################
-  // # From fit to RECO B0 --> J/psi K* MC #
-  // #######################################
-  f0->FixParameter(0,8.93802e-01);
-  f0->FixParameter(1,1.40485e-02);
-  f0->FixParameter(2,8.96142e-01);
-  f0->FixParameter(3,3.59670e-02);
-  f0->FixParameter(4,9.69695e-01);
-  f0->FixParameter(5,1.59102e-02);
-  f0->FixParameter(6,6.93082e+02);
-  f0->FixParameter(7,1.04683e+03);
-  f0->FixParameter(8,1.06662e+02);
-
-  // ####################
-  // # Starting valiues #
-  // ####################
-  // f0->SetParameter(0,0.88);
-  // f0->SetParameter(1,0.015);
-  // f0->SetParameter(2,0.88);
-  // f0->SetParameter(3,0.04);
-  // f0->SetParameter(4,0.95);
-  // f0->SetParameter(5,0.015);
-  // f0->SetParameter(6,800);
-  // f0->SetParameter(7,400);
-  // f0->SetParameter(8,200);
-
-  f0->SetParameter(9,1.0);
-  f0->SetParameter(10,100);
+  if (fitParamAreFixed == true)
+    {
+      // #######################################
+      // # From fit to RECO B0 --> J/psi K* MC #
+      // #######################################
+      f0->FixParameter(0, 8.94874e-01);
+      f0->FixParameter(1, 1.51833e-02);
+      f0->FixParameter(2, 9.06088e-01);
+      f0->FixParameter(3, 3.43700e-02);
+      f0->FixParameter(4, 8.64557e-01);
+      f0->FixParameter(5, 1.82772e-02);
+      f0->FixParameter(6, 1.44773e+04);
+      f0->FixParameter(7, 6.97267e+03);
+      f0->FixParameter(8, 2.59535e+03);
+    }
+  else
+    {
+      // ####################
+      // # Starting valiues #
+      // ####################
+      f0->SetParameter(0,0.892);
+      f0->SetParameter(1,0.02);
+      f0->SetParameter(2,0.892);
+      f0->SetParameter(3,0.04);
+      f0->SetParameter(4,0.892);
+      f0->SetParameter(5,0.05);
+      f0->SetParameter(6,24000);
+      f0->SetParameter(7,12000);
+      f0->SetParameter(8,04000);
+    }
+  f0->SetParameter(9,1.6);
+  f0->SetParameter(10,2000);
 
 
   tmpstring = "(B0notB0bar == 1)";
@@ -2264,7 +2268,7 @@ void PlotKst (string fileName, bool bkgSub)
   theTree->Draw("kstBarMass>>h2Dsig",tmpstring.c_str());
 
   TH1D* h3Dsig = (TH1D*)h1Dsig->Clone("h3Dsig");
-  h3Dsig->SetXTitle("M(#font[122]{K}^{*0}) (GeV)");
+  h3Dsig->SetXTitle("M(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
   h3Dsig->SetYTitle("Entries / (0.004 GeV)");
   h3Dsig->SetMarkerStyle(20);
 
@@ -2280,7 +2284,7 @@ void PlotKst (string fileName, bool bkgSub)
   theTree->Draw("kstBarMass>>h2Dbkg",tmpstring.c_str());
 
   TH1D* h3Dbkg = (TH1D*)h1Dbkg->Clone("h3Dbkg");
-  h3Dbkg->SetXTitle("M(#font[122]{K}^{*0}) (GeV)");
+  h3Dbkg->SetXTitle("M(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
   h3Dbkg->SetYTitle("Entries / (0.004 GeV)");
   h3Dbkg->SetMarkerStyle(20);
 
@@ -2328,11 +2332,11 @@ void PlotKst (string fileName, bool bkgSub)
 
   c1->cd();
   h1Dsig->Draw("e1p");
-  h2Dsig->Draw("e1p same");
+  h2Dsig->Draw("e1p sames");
 
   TLegend* leg1 = new TLegend(0.15, 0.6, 0.25, 0.85, "");
-  leg1->AddEntry(h1Dsig,"#font[122]{K}^{*0}");
-  leg1->AddEntry(h2Dsig,"#font[122]{K}^{*0}_{bar}");
+  leg1->AddEntry(h1Dsig,"#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}");
+  leg1->AddEntry(h2Dsig,"#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}#lower[-0.4]{_{bar}}");
   leg1->SetFillColor(0);
   leg1->SetBorderSize(0);
   leg1->Draw();
@@ -2859,7 +2863,7 @@ int main (int argc, char** argv)
       else if (option == "makeupNLL")    MakeupNLLandPULLplots(fileName,tmpStr,q2BinIndx);
       else if (option == "MuMuMass")     PlotMuMu(fileName,intVal);
       else if (option == "KKMass")       PlotKK(fileName,intVal,tmpStr);
-      else if (option == "KstMass")      PlotKst(fileName,intVal);
+      else if (option == "KstMass")      PlotKst(fileName,intVal,true);
       else if (option == "MuHadMass")    PlotMuHadMass(fileName);
       else
 	{

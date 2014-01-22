@@ -92,10 +92,10 @@ using namespace RooFit;
 #define POLYCOEFRANGE   2.0  // Polynomial coefficients range for parameter regeneration
 #define NORMJPSInotPSIP true // "true" = normalize yields to compute dBF/dq^2 with respect to J/psi; "false" use psi(2S) bin instead
 
-#define nJPSIS 70000.0
-#define nJPSIB  1000.0
-#define nPSIPS  5000.0
-#define nPSIPB   500.0
+#define nJPSIS 250000.0
+#define nJPSIB   2500.0
+#define nPSIPS  15000.0
+#define nPSIPB   1500.0
 
 // ##########################################
 // # Internal flags to control the workflow #
@@ -109,7 +109,7 @@ using namespace RooFit;
 #define FUNCERRBAND   false // Show the p.d.f. error band
 #define MakeMuMuPlots false
 #define MAKEGRAPHSCAN false // Make graphical scan of the physics-pdf*eff or physics-pdf alone (ony valid for GEN fit type options)
-#define CONTROLMisTag "leave&Fit"
+#define CONTROLMisTag "leave&NoFit"
 // ##############################################################################################
 // # ==> Control mis-tag work flow <==                                                          #
 // # --> "mistag"      = keep only mis-tagged ev.                                               #
@@ -445,7 +445,7 @@ void SetValueAndErrors (RooAbsPdf* pdf, string varName, double multi, stringstre
       tmpStr.clear();
       (*myString) >> tmpStr;
       *val = atof(tmpStr.c_str()) * multi;
-      
+
       tmpStr.clear();
       (*myString) >> tmpStr;
       if (tmpStr.empty() == true) *errLo = -1.0;
@@ -779,7 +779,7 @@ void BuildMassConstraints (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string var
       (GetVar(TotalPDF,"nSig")           != NULL) && ((varName == "All") || (varName == "sign")))   AddGaussConstraint(vecConstr, TotalPDF, "nSig");
   if ((GetVar(TotalPDF,"nBkgPeak")       != NULL) && ((varName == "All") || (varName == "peak")))   AddGaussConstraint(vecConstr, TotalPDF, "nBkgPeak");
   // if ((GetVar(TotalPDF,"nBkgMisTag")     != NULL) && ((varName == "All") || (varName == "mistag"))) AddGaussConstraint(vecConstr, TotalPDF, "nBkgMisTag");
-  if ((GetVar(TotalPDF,"nBkgMisTag")     != NULL) && ((varName == "All") || (varName == "sign"))) AddGaussConstraint(vecConstr, TotalPDF, "nBkgMisTag");
+  // if ((GetVar(TotalPDF,"nBkgMisTag")     != NULL) && ((varName == "All") || (varName == "sign"))) AddGaussConstraint(vecConstr, TotalPDF, "nBkgMisTag");
 
   // if ((strcmp(CONTROLMisTag,"leave&Fit") == 0) &&
   //     (GetVar(TotalPDF,"nSig")           != NULL) && ((varName == "All") || (varName == "sign")))   AddPoissonConstraint(vecConstr, TotalPDF, "nSig");
@@ -3138,7 +3138,7 @@ void InstantiateMassFit (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, ve
   nSig->setConstant(false);
   nBkgComb->setConstant(false);
   // @TMP@
-  nBkgMisTag->setConstant(true);
+  nBkgMisTag->setConstant(false);
   nBkgPeak->setConstant(false);
 
   if (FitPeakBkg == 1) *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgList(*BkgMassPeak),RooArgList(*nBkgPeak));
@@ -3526,18 +3526,22 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // ########################################
       if (configParam->operator[](Utility->GetConfigParamIndx("FitPeakBkg"))->operator[](i) != 1)
 	{
-	  VecHistoMeas->operator[](0)->SetBinContent(i+1,(GetVar(TotalPDFq2Bins[i],"nSig")->getVal() / effMuMu) / (PsiYield / effPsi) * (NORMJPSInotPSIP == true ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7);
-	  VecHistoMeas->operator[](0)->SetBinError(i+1,VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getError() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)));
+	  double nEv      = GetVar(TotalPDFq2Bins[i],"nSig")->getVal() + GetVar(TotalPDFq2Bins[i],"nBkgMisTag")->getVal();
+	  double nEvErrLo = sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorLo(),2.) + pow(GetVar(TotalPDFq2Bins[i],"nBkgMisTag")->getErrorLo(),2.));
+	  double nEvErrHi = sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorHi(),2.) + pow(GetVar(TotalPDFq2Bins[i],"nBkgMisTag")->getErrorHi(),2.));
+
+	  VecHistoMeas->operator[](0)->SetBinContent(i+1,(nEv / effMuMu) / (PsiYield / effPsi) * (NORMJPSInotPSIP == true ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7);
+	  VecHistoMeas->operator[](0)->SetBinError(i+1,VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow((nEvErrLo+nEvErrHi)/2. / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)));
 
 	  fileFitResults << "@@@@@@ dBF/dq^2 @@@@@@" << endl;
 	  fileFitResults << "dBF/dq^2: " << VecHistoMeas->operator[](0)->GetBinContent(i+1) << " -/+ " << VecHistoMeas->operator[](0)->GetBinError(i+1) << " (";
-	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorLo() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)) << "/";
-	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorHi() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)) << ")" << endl;
+	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow(nEvErrLo / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)) << "/";
+	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow(nEvErrHi / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)) << ")" << endl;
 
 	  fileFitResults << "To cut and paste in config. file" << endl;
 	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) << "   ";
-	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorLo() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)) << "   ";
-	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorHi() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)) << endl;
+	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow(nEvErrLo / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)) << "   ";
+	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow(nEvErrHi / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)) << endl;
 	  fileFitResults << "====================================================================" << endl;
 
 	  myString.clear(); myString.str("");
@@ -4284,7 +4288,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   nSig->setConstant(false);
   nBkgComb->setConstant(false);
   // @TMP@
-  nBkgMisTag->setConstant(true);
+  nBkgMisTag->setConstant(false);
   nBkgPeak->setConstant(false);
 
   if ((FitType == 36) || (FitType == 56) || (FitType == 76))
@@ -5339,18 +5343,22 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 
 	  if ((FitType != 36) && (FitType != 56) && (FitType != 76))
 	    {
-	      VecHistoMeas->operator[](2)->SetBinContent(i+1,(GetVar(TotalPDFq2Bins[i],"nSig")->getVal() / effMuMu) / (PsiYield / effPsi) * (NORMJPSInotPSIP == true ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7);
-	      VecHistoMeas->operator[](2)->SetBinError(i+1,VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getError() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)));
-	      
+	      double nEv      = GetVar(TotalPDFq2Bins[i],"nSig")->getVal() + GetVar(TotalPDFq2Bins[i],"nBkgMisTag")->getVal();
+	      double nEvErrLo = sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorLo(),2.) + pow(GetVar(TotalPDFq2Bins[i],"nBkgMisTag")->getErrorLo(),2.));
+	      double nEvErrHi = sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorHi(),2.) + pow(GetVar(TotalPDFq2Bins[i],"nBkgMisTag")->getErrorHi(),2.));
+
+	      VecHistoMeas->operator[](2)->SetBinContent(i+1,(nEv / effMuMu) / (PsiYield / effPsi) * (NORMJPSInotPSIP == true ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7);
+	      VecHistoMeas->operator[](2)->SetBinError(i+1,VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow((nEvErrLo+nEvErrHi)/2. / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)));
+
 	      fileFitResults << "@@@@@@ dBF/dq^2 @@@@@@" << endl;
 	      fileFitResults << "dBF/dq^2: " << VecHistoMeas->operator[](2)->GetBinContent(i+1) << " -/+ " << VecHistoMeas->operator[](2)->GetBinError(i+1) << " (";
-	      fileFitResults << VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorLo() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) +pow(PsiYieldErr / PsiYield,2.)) << "/";
-	      fileFitResults << VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorHi() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)) << ")" << endl;
-	      
+	      fileFitResults << VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow(nEvErrLo / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)) << "/";
+	      fileFitResults << VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow(nEvErrHi / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)) << ")" << endl;
+
 	      fileFitResults << "To cut and paste in config. file" << endl;
 	      fileFitResults << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   ";
-	      fileFitResults << VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorLo() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) +pow(PsiYieldErr / PsiYield,2.)) << "   ";
-	      fileFitResults << VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorHi() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(PsiYieldErr / PsiYield,2.)) << endl;
+	      fileFitResults << VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow(nEvErrLo / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)) << "   ";
+	      fileFitResults << VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow(nEvErrHi / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)) << endl;
 	      fileFitResults << "====================================================================" << endl;
 	    }
 
@@ -6253,10 +6261,21 @@ int main(int argc, char** argv)
 	  Utility->ReadGenericParam(ParameterFILE);
 	  Utility->ReadSelectionCuts(ParameterFILE);
 	  Utility->ReadFitStartingValues(ParameterFILE,&fitParam,&configParam,Utility->ParFileBlockN("fitValGlob"));
+
+	  double tmpYield, tmpYieldErr;
+
 	  myString.clear(); myString.str("");
-	  myString << fitParam[Utility->GetFitParamIndx("nSig")]->operator[]((NORMJPSInotPSIP == true ? 1 : 2)).c_str(); // Read J/psi yield from global-fit results
+	  myString << fitParam[Utility->GetFitParamIndx("nSig")]->operator[]((NORMJPSInotPSIP == true ? 1 : 2)).c_str(); // Read ctr. chn. yield from global-fit results
+	  SetValueAndErrors(NULL,"",1.0,&myString,&tmpYield,&tmpYieldErr,&tmpYieldErr);
+
+	  myString.clear(); myString.str("");
+	  myString << fitParam[Utility->GetFitParamIndx("nBkgMisTag")]->operator[]((NORMJPSInotPSIP == true ? 1 : 2)).c_str(); // Read ctr. chn. yield from global-fit results
 	  SetValueAndErrors(NULL,"",1.0,&myString,&PsiYield,&PsiYerr,&PsiYerr);
+
+	  PsiYield = PsiYield + tmpYield;
+	  PsiYerr  = sqrt(PsiYerr*PsiYerr + tmpYieldErr*tmpYieldErr);
 	  fileFitResults << "Normalization channel yield: " << PsiYield << " +/- " << PsiYerr << endl;
+
 	  for (unsigned int i = 0; i < fitParam.size(); i++)
 	    {
 	      fitParam[i]->clear();

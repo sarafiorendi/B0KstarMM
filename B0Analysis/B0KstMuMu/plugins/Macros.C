@@ -259,17 +259,16 @@ void TruthMatching (string fileName, bool truthMatch)
 void dBFfromGEN (string fileName)
 {
   TFile* _file0 = TFile::Open(fileName.c_str(),"READ");
-  TCanvas* c0 = (TCanvas*)_file0->Get("cHistoMeas");
-  TPad* p0 = (TPad*)c0->GetPrimitive("cHistoMeas_1");
-  TH1D* h0 = (TH1D*)p0->GetPrimitive("histoMeas0");
+  TCanvas* c0   = (TCanvas*)_file0->Get("cHistoMeas");
+  TPad* p0      = (TPad*)c0->GetPrimitive("cHistoMeas_1");
+  TH1D* h0      = (TH1D*)p0->GetPrimitive("histoMeas0");
 
 
   // ##########
   // # Signal #
   // ##########
   double GENsigMCev = 5e9;
-  double BFsig      = 1.06e-6;
-  double BFsigErr   = 0.1e-6;
+  double BFsig      = 1.06e-6; // As from MC configuration file (no error associated because it's known)
   double scaleF     = 1e7;
 
   // #########
@@ -304,16 +303,16 @@ void dBFfromGEN (string fileName)
   h0->SetBinContent(7,1364330.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(7) * scaleF);
   h0->SetBinContent(8,1734950.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(8) * scaleF);
   h0->SetBinContent(9,1836080.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(9) * scaleF);
-  
-  h0->SetBinError(1,h0->GetBinContent(1) * sqrt(1./0833344.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev + (BFsigErr*BFsigErr) / (BFsig*BFsig)));
-  h0->SetBinError(2,h0->GetBinContent(2) * sqrt(1./1661610.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev + (BFsigErr*BFsigErr) / (BFsig*BFsig)));
-  h0->SetBinError(3,h0->GetBinContent(3) * sqrt(1./1303940.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev + (BFsigErr*BFsigErr) / (BFsig*BFsig)));
-  h0->SetBinError(4,h0->GetBinContent(4) * sqrt(1./2415800.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev + (BFsigErr*BFsigErr) / (BFsig*BFsig)));
-  h0->SetBinError(5,h0->GetBinContent(5) * sqrt(1./1392740.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev + (BFsigErr*BFsigErr) / (BFsig*BFsig)));
-  h0->SetBinError(6,h0->GetBinContent(6) * sqrt(1./2881760.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev + (BFsigErr*BFsigErr) / (BFsig*BFsig)));
-  h0->SetBinError(7,h0->GetBinContent(7) * sqrt(1./1364330.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev + (BFsigErr*BFsigErr) / (BFsig*BFsig)));
-  h0->SetBinError(8,h0->GetBinContent(8) * sqrt(1./1734950.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev + (BFsigErr*BFsigErr) / (BFsig*BFsig)));
-  h0->SetBinError(9,h0->GetBinContent(9) * sqrt(1./1836080.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev + (BFsigErr*BFsigErr) / (BFsig*BFsig)));
+
+  h0->SetBinError(1,h0->GetBinContent(1) * sqrt(1./0833344.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
+  h0->SetBinError(2,h0->GetBinContent(2) * sqrt(1./1661610.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
+  h0->SetBinError(3,h0->GetBinContent(3) * sqrt(1./1303940.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
+  h0->SetBinError(4,h0->GetBinContent(4) * sqrt(1./2415800.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
+  h0->SetBinError(5,h0->GetBinContent(5) * sqrt(1./1392740.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
+  h0->SetBinError(6,h0->GetBinContent(6) * sqrt(1./2881760.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
+  h0->SetBinError(7,h0->GetBinContent(7) * sqrt(1./1364330.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
+  h0->SetBinError(8,h0->GetBinContent(8) * sqrt(1./1734950.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
+  h0->SetBinError(9,h0->GetBinContent(9) * sqrt(1./1836080.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
 
 
   for (int i = 0; i < h0->GetNbinsX(); i++) cout << "--> bin #" << i+1 << "\tentry: " << h0->GetBinContent(i+1) << " +/- " << h0->GetBinError(i+1) << "\twidth: " << h0->GetBinWidth(i+1) << endl;
@@ -728,8 +727,8 @@ void PlotB0vsMuMu (string fileName, bool rejectPsi)
   vector<double>* vec2 = new vector<double>;
 
   TH2D* histo = new TH2D("histo","histo",100,minX,maxX,100,minY,maxY);
-  histo->SetXTitle("M(K #pi #mu^{+} #mu^{-}) (GeV)");
-  histo->SetYTitle("M(#mu^{+} #mu^{-}) (GeV)");
+  histo->SetXTitle("M(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{+}}}}#kern[-0.3]{#pi}#kern[-0.3]{#lower[0.6]{^{#font[122]{\55}}}}#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
+  histo->SetYTitle("M(#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
   histo->SetZTitle("Entries / ((0.056 GeV)x(0.042 GeV))");
 
   for (int entry = 0; entry < nEntries; entry++)
