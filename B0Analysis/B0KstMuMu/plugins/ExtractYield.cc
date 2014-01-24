@@ -100,7 +100,7 @@ using namespace RooFit;
 // ##########################################
 // # Internal flags to control the workflow #
 // ##########################################
-#define ApplyConstr   true  // Apply Gaussian constraints in the likelihood
+#define ApplyConstr   false // Apply Gaussian constraints in the likelihood
 #define SAVEPOLY      false // "true" = save bkg polynomial coefficients in new parameter file; "false" = save original values
 #define RESETOBS      false // Reset polynomial coefficients for combinatorial background and angular observables for a fresh start
 #define SETBATCH      false
@@ -109,7 +109,7 @@ using namespace RooFit;
 #define FUNCERRBAND   false // Show the p.d.f. error band
 #define MakeMuMuPlots false
 #define MAKEGRAPHSCAN false // Make graphical scan of the physics-pdf*eff or physics-pdf alone (ony valid for GEN fit type options)
-#define CONTROLMisTag "leave&Fit"
+#define CONTROLMisTag "mistag"
 // ##############################################################################################
 // # ==> Control mis-tag work flow <==                                                          #
 // # --> "mistag"      = keep only mis-tagged ev.                                               #
@@ -876,60 +876,60 @@ string MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar
 
       myString.clear(); myString.str("");
       if (UseSPwave == false)
-	{
-	  // #####################
-	  // # P-wave decay rate #
-	  // #####################
-	  myString << "(3/4 * (3/2 * FlS * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-	  myString << "(3/8 * (1-FlS) * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + AfbS*" << y->getPlotLabel() << ") * ";
-	  myString << "(1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ")))";
-	}
+    	{
+    	  // #####################
+    	  // # P-wave decay rate #
+    	  // #####################
+    	  myString << "(3/4 * (3/2 * FlS * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+    	  myString << "(3/8 * (1-FlS) * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + AfbS*" << y->getPlotLabel() << ") * ";
+    	  myString << "(1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ")))";
+    	}
       else
-	{
-	  FsS = new RooRealVar("FsS","F_{s}",0.0,0.0,1.0);
-	  AsS = new RooRealVar("AsS","A_{s}",0.0,-1.0,1.0);
-	  FsS->setConstant(false);
-	  AsS->setConstant(false);
-	  Vars->add(*FsS);
-	  Vars->add(*AsS);
+    	{
+    	  FsS = new RooRealVar("FsS","F_{s}",0.0,0.0,1.0);
+    	  AsS = new RooRealVar("AsS","A_{s}",0.0,-1.0,1.0);
+    	  FsS->setConstant(false);
+    	  AsS->setConstant(false);
+    	  Vars->add(*FsS);
+    	  Vars->add(*AsS);
 
-	  // ###########################
-	  // # S and P-wave decay rate #
-	  // ###########################
-	  myString << "(9/16 * ((2/3*FsS + 4/3*AsS*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
-	  myString << "(1-FsS) * ";
-	  myString << "(2*FlS*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
-	  myString << "1/2*(1-FlS) * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
-	  myString << "4/3*AfbS * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * " << y->getPlotLabel() << ")))";
-	}
+    	  // ###########################
+    	  // # S and P-wave decay rate #
+    	  // ###########################
+    	  myString << "(9/16 * ((2/3*FsS + 4/3*AsS*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+    	  myString << "(1-FsS) * ";
+    	  myString << "(2*FlS*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+    	  myString << "1/2*(1-FlS) * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+    	  myString << "4/3*AfbS * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * " << y->getPlotLabel() << ")))";
+    	}
 
       if (useEffPDF == true)
-	{
-	  // #############################
-	  // # Make 2D efficiency p.d.f. #
-	  // #############################
-	  myString << " * ";
-	  myString << "((P0 + P1*" << z->getPlotLabel() << " + P2*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-	  myString << "P3*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") + ";
+    	{
+    	  // #############################
+    	  // # Make 2D efficiency p.d.f. #
+    	  // #############################
+    	  myString << " * ";
+    	  myString << "((P0 + P1*" << z->getPlotLabel() << " + P2*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+    	  myString << "P3*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") + ";
 	  
-	  myString << "(P4 + P5*" << z->getPlotLabel() << " + P6*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-	  myString << "P7*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
+    	  myString << "(P4 + P5*" << z->getPlotLabel() << " + P6*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+    	  myString << "P7*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
+    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
 	  
-	  myString << "(P8 + P9*" << z->getPlotLabel() << " + P10*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-	  myString << "P11*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
+    	  myString << "(P8 + P9*" << z->getPlotLabel() << " + P10*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+    	  myString << "P11*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
+    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
 	  
-	  myString << "(P12 + P13*" << z->getPlotLabel() << " + P14*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-	  myString << "P15*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
+    	  myString << "(P12 + P13*" << z->getPlotLabel() << " + P14*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+    	  myString << "P15*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
+    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
 
-	  myString << "(P16 + P17*" << z->getPlotLabel() << " + P18*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-	  myString << "P19*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << ")";
+    	  myString << "(P16 + P17*" << z->getPlotLabel() << " + P18*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+    	  myString << "P19*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
+    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << ")";
 
-	  for (int i = 0; i < effFunc->GetNpar(); i++) Vars->add(*vecParam[i]);
-	}
+    	  for (int i = 0; i < effFunc->GetNpar(); i++) Vars->add(*vecParam[i]);
+    	}
 
       Vars->add(*y);
       Vars->add(*z);
@@ -1915,9 +1915,11 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
   vecParStr->push_back("###################################################################");
 
 
-  vecParStr->push_back("# Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest");
+  // @TMP@ : rivedere stringa in config files
+  // Aggiungere Fit Option per mistag-only fit
+  vecParStr->push_back("# Fit options: peak.bkg 0 = doesn't exist, 1 = 1 peak alone, 2 = 1 peak with rest, 3 = 2 peaks with rest");
   myString.clear(); myString.str("");
-  myString << configParam->operator[](Utility->GetConfigParamIndx("FitPeakBkg"))->operator[](fitParamIndx);
+  myString << configParam->operator[](Utility->GetConfigParamIndx("FitOptions"))->operator[](fitParamIndx);
   vecParStr->push_back(myString.str());
 
   vecParStr->push_back("# Use two gaussians signal: 0 = no; 1 = yes");
@@ -3063,7 +3065,7 @@ void InstantiateMassFit (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, ve
   // ################################
   // # Read configuration variables #
   // ################################
-  unsigned int FitPeakBkg = configParam->operator[](Utility->GetConfigParamIndx("FitPeakBkg"))->operator[](parIndx);
+  unsigned int FitOptions = configParam->operator[](Utility->GetConfigParamIndx("FitOptions"))->operator[](parIndx);
   bool use2GaussS         = configParam->operator[](Utility->GetConfigParamIndx("SigType"))->operator[](parIndx);
   bool use2GaussB         = configParam->operator[](Utility->GetConfigParamIndx("PeakBkgType"))->operator[](parIndx);
   bool use2ExpB           = configParam->operator[](Utility->GetConfigParamIndx("CombBkgType"))->operator[](parIndx);
@@ -3181,7 +3183,7 @@ void InstantiateMassFit (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, ve
   
   fracMassBPeak->setConstant(false);
   
-  if ((FitPeakBkg == 1) || (FitPeakBkg == 2))
+  if ((FitOptions == 1) || (FitOptions == 2))
     if (use2GaussB == true) BkgMassPeak = new RooAddPdf(*((RooAddPdf*)BkgMassRPeak),"BkgMassPeak");
     else                    BkgMassPeak = new RooGaussian(*((RooGaussian*)BkgMassRPeak1),"BkgMassPeak");
   else
@@ -3203,15 +3205,15 @@ void InstantiateMassFit (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, ve
   nMisTagFrac->setConstant(false);
   nBkgPeak->setConstant(false);
 
-  if (FitPeakBkg == 1) *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgList(*BkgMassPeak),RooArgList(*nBkgPeak));
+  if (FitOptions == 1) *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgList(*BkgMassPeak),RooArgList(*nBkgPeak));
   else if (useBMisTag == 0)
     {
-      if (FitPeakBkg == 0) *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgList(*MassSignal,*BkgMassComb),RooArgList(*nSig,*nBkgComb));
+      if (FitOptions == 0) *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgList(*MassSignal,*BkgMassComb),RooArgList(*nSig,*nBkgComb));
       else                 *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgList(*MassSignal,*BkgMassComb,*BkgMassPeak),RooArgList(*nSig,*nBkgComb,*nBkgPeak));
     }
   else
     {
-      if (FitPeakBkg == 0) *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgList(*MassSignal,*BkgMassComb,*MassMisTag),RooArgList(*nSig,*nBkgComb,*nMisTag));
+      if (FitOptions == 0) *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgList(*MassSignal,*BkgMassComb,*MassMisTag),RooArgList(*nSig,*nBkgComb,*nMisTag));
       else                 *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgList(*MassSignal,*BkgMassComb,*MassMisTag,*BkgMassPeak),RooArgList(*nSig,*nBkgComb,*nMisTag,*nBkgPeak));
     }
 }
@@ -3586,7 +3588,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // ########################################
       // # Save outcome of the fit in histogram #
       // ########################################
-      if (configParam->operator[](Utility->GetConfigParamIndx("FitPeakBkg"))->operator[](i) != 1)
+      if (configParam->operator[](Utility->GetConfigParamIndx("FitOptions"))->operator[](i) != 1)
 	{
 	  double nEv      = GetVar(TotalPDFq2Bins[i],"nSig")->getVal() * (GetVar(TotalPDFq2Bins[i],"nMisTagFrac") != NULL ? (1.0-GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()) : 1.0);
 	  double nEvErrLo = nEv*sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorLo() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) +
@@ -4132,7 +4134,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // ################################
   // # Read configuration variables #
   // ################################
-  unsigned int FitPeakBkg = configParam->operator[](Utility->GetConfigParamIndx("FitPeakBkg"))->operator[](parIndx);
+  unsigned int FitOptions = configParam->operator[](Utility->GetConfigParamIndx("FitOptions"))->operator[](parIndx);
   bool use2GaussS         = configParam->operator[](Utility->GetConfigParamIndx("SigType"))->operator[](parIndx);
   bool use2GaussB         = configParam->operator[](Utility->GetConfigParamIndx("PeakBkgType"))->operator[](parIndx);
   bool use2ExpB           = configParam->operator[](Utility->GetConfigParamIndx("CombBkgType"))->operator[](parIndx);
@@ -4268,8 +4270,10 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   myString.clear(); myString.str("");
   myString << MakeAngWithEffPDF(effFunc,NULL,y,z,FitType*10,useEffPDF,Vars);
   AngleMisTag = new RooGenericPdf("AngleMisTag",myString.str().c_str(),*Vars);
-  
-  MassAngleMisTag = new RooProdPdf("MassAngleMisTag","Mistag bkg Mass*Angle",RooArgList(*MassMisTag,*AngleMisTag));
+
+  // @TMP@
+  // MassAngleMisTag = new RooProdPdf("MassAngleMisTag","Mistag bkg Mass*Angle",RooArgList(*MassMisTag,*AngleMisTag));
+  MassAngleMisTag = new RooProdPdf("MassAngleMisTag","Mistag bkg Mass*Angle",RooArgList(*MassMisTag,*BkgAnglesC));
 
 
   // #############################################################
@@ -4337,7 +4341,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   
   fracMassBPeak->setConstant(false);
 
-  if ((FitPeakBkg == 1) || (FitPeakBkg == 2))
+  if ((FitOptions == 1) || (FitOptions == 2))
     if (use2GaussB == true) BkgMassPeak = new RooAddPdf(*((RooAddPdf*)BkgMassRPeak),"BkgMassPeak");
     else      	            BkgMassPeak = new RooGaussian(*((RooGaussian*)BkgMassRPeak1),"BkgMassPeak");
   else
@@ -4357,20 +4361,21 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
 
   nSig->setConstant(false);
   nBkgComb->setConstant(false);
-  nMisTagFrac->setConstant(false);
+  // @TMP@
+  nMisTagFrac->setConstant(true);
   nBkgPeak->setConstant(false);
 
   if ((FitType == 36) || (FitType == 56) || (FitType == 76))
                             *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgList(*AngleS),RooArgList(*nSig));
-  else if (FitPeakBkg == 1) *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgList(*BkgMassAnglePeak),RooArgList(*nBkgPeak));
+  else if (FitOptions == 1) *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgList(*BkgMassAnglePeak),RooArgList(*nBkgPeak));
   else if (useBMisTag == 0)
     {
-      if (FitPeakBkg == 0) *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgList(*Signal,*BkgMassAngleComb),RooArgList(*nSig,*nBkgComb));
+      if (FitOptions == 0) *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgList(*Signal,*BkgMassAngleComb),RooArgList(*nSig,*nBkgComb));
       else                 *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgList(*Signal,*BkgMassAngleComb,*BkgMassAnglePeak),RooArgList(*nSig,*nBkgComb,*nBkgPeak));
     }
   else
     {
-      if (FitPeakBkg == 0) *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgList(*Signal,*BkgMassAngleComb,*MassAngleMisTag),RooArgList(*nSig,*nBkgComb,*nMisTag));
+      if (FitOptions == 0) *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgList(*Signal,*BkgMassAngleComb,*MassAngleMisTag),RooArgList(*nSig,*nBkgComb,*nMisTag));
       else                 *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgList(*Signal,*BkgMassAngleComb,*MassAngleMisTag,*BkgMassAnglePeak),RooArgList(*nSig,*nBkgComb,*nMisTag,*nBkgPeak));
     }
 }
@@ -5346,7 +5351,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"sign");
 	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
 	  if (strcmp(CONTROLMisTag,"leave&NoFit") == 0) BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
-	  if (configParam->operator[](Utility->GetConfigParamIndx("FitPeakBkg"))->operator[](i) != 1) BuildAngularConstraints(vecConstr,TotalPDFq2Bins[i]);
+	  if (configParam->operator[](Utility->GetConfigParamIndx("FitOptions"))->operator[](i) != 1) BuildAngularConstraints(vecConstr,TotalPDFq2Bins[i]);
 	}
       if (((FitType != 46) && (FitType != 56) &&
 	   (FitType != 66) && (FitType != 76)) ||
@@ -5401,7 +5406,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // ########################################
       // # Save outcome of the fit in histogram #
       // ########################################
-      if (configParam->operator[](Utility->GetConfigParamIndx("FitPeakBkg"))->operator[](i) != 1)
+      if (configParam->operator[](Utility->GetConfigParamIndx("FitOptions"))->operator[](i) != 1)
 	{
 	  VecHistoMeas->operator[](0)->SetBinContent(i+1,GetVar(TotalPDFq2Bins[i],"FlS")->getVal());
 	  VecHistoMeas->operator[](0)->SetBinError(i+1,GetVar(TotalPDFq2Bins[i],"FlS")->getError());

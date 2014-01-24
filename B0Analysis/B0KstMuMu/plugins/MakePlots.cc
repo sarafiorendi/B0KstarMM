@@ -46,12 +46,12 @@ using std::vector;
 #define ParameterFILE_MCGEN  "../results/ParameterFile_Sig_MCGEN.txt"
 #define ParameterFILE_MCRECO "../results/ParameterFile_Sig_MCRECO.txt"
 
-#define SMFL     "../../SMprediction/FLErr.dat"
-#define SMAFB    "../../SMprediction/AFBErr.dat"
-#define SMBF     "../../SMprediction/dBFdq2.dat"
-#define SMBINFL  "../../SMprediction/BinnedFL.dat"
-#define SMBINAFB "../../SMprediction/BinnedAFB.dat"
-#define SMBINBF  "../../SMprediction/BinneddBFdq2.dat"
+#define SMFL     "../../PredictionSM/FLErr.dat"
+#define SMAFB    "../../PredictionSM/AFBErr.dat"
+#define SMBF     "../../PredictionSM/dBFdq2.dat"
+#define SMBINFL  "../../PredictionSM/BinnedFL.dat"
+#define SMBINAFB "../../PredictionSM/BinnedAFB.dat"
+#define SMBINBF  "../../PredictionSM/BinneddBFdq2.dat"
 
 #define SingleCand_MCkstJPsi  "Data2012B0KstMuMuResults/MonteCarlo2012/SingleCand/singleCand_B0ToJPsiKst_MC_NTuple.root"
 #define SingleCand_MCkstPsi2S "Data2012B0KstMuMuResults/MonteCarlo2012/SingleCand/singleCand_B0ToPsi2SKst_MC_NTuple.root"

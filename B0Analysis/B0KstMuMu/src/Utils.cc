@@ -2950,7 +2950,7 @@ unsigned int Utils::GetFitParamIndx (std::string varName)
   else if (varName == "fracMassBPeak")  return 20;
 
   else if (varName == "nBkgComb")       return 21;
-  else if (varName == "nMisTag")        return 22;
+  else if (varName == "nMisTagFrac")    return 22;
   else if (varName == "nBkgPeak")       return 23;
   else if (varName == "nSig")           return 24;
 
@@ -3009,7 +3009,7 @@ unsigned int Utils::GetFitParamIndx (std::string varName)
 
 unsigned int Utils::GetConfigParamIndx (std::string varName)
 {
-  if      (varName == "FitPeakBkg")     return 0;
+  if      (varName == "FitOptions")     return 0;
   else if (varName == "SigType")        return 1;
   else if (varName == "PeakBkgType")    return 2;
   else if (varName == "CombBkgType")    return 3;

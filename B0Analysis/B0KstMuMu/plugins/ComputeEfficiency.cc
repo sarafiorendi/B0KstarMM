@@ -291,14 +291,14 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   double totalEffSignal;
   double totalEffJPsi;
   double totalEffPsiP;
-  double num2;
   double* q2Bins_        = Utility->MakeBinning(q2Bins);
   double* cosThetaKBins_ = Utility->MakeBinning(cosThetaKBins);
   double* cosThetaLBins_ = Utility->MakeBinning(cosThetaLBins);
   double* phiBins_       = Utility->MakeBinning(phiBins);
-  // ################
+  // ###################
+  string NumOrDen2Plot = "N2"; // It can be: "N1", "N2", "D2", "D2"
   double Zaxes = 1e3;
-  // ################
+  // ###################
 
 
   TCanvas* cEff = new TCanvas("cEff", "cEff", 10, 10, 1200, 800);
@@ -527,8 +527,11 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 	  for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
 	    for (unsigned int l = 0; l < phiBins->size()-1; l++)
 	      {
-		num2 = myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-		vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetBinContent(k+1,l+1,num2);
+		if      (NumOrDen2Plot == "N1") Eff = myEff.Num1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		else if (NumOrDen2Plot == "N2") Eff = myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		else if (NumOrDen2Plot == "D1") Eff = myEff.Den1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		else                            Eff = myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetBinContent(k+1,l+1,Eff);
 	      }
 	  
 	  cNumCosThetaL->cd(j+1)->SetLogz();
@@ -538,7 +541,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetLineWidth(2);
 	  if (i == 0) vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->Draw("surf bb fb");
 	  else        vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->Draw("sames surf bb fb");
-	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(1.0,Zaxes);
+	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(0.1,Zaxes);
 
 	  myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
 	  legHq2ANDcosThetaK[j]->AddEntry(vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i],myString.str().c_str());
@@ -560,8 +563,11 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 	  for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
 	    for (unsigned int l = 0; l < phiBins->size()-1; l++)
 	      {
-		num2 = myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-		vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetBinContent(j+1,l+1,num2);
+		if      (NumOrDen2Plot == "N1") Eff = myEff.Num1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		else if (NumOrDen2Plot == "N2") Eff = myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		else if (NumOrDen2Plot == "D1") Eff = myEff.Den1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		else                            Eff = myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetBinContent(j+1,l+1,Eff);
 	      }
 
 	  cNumCosThetaK->cd(k+1)->SetLogz();
@@ -571,7 +577,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetLineWidth(2);
 	  if (i == 0) vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->Draw("surf bb fb");
 	  else vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->Draw("sames surf bb fb");
-	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(1.0,Zaxes);
+	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(0.1,Zaxes);
 
 	  myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
 	  legHq2ANDcosThetaL[k]->AddEntry(vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i],myString.str().c_str());
@@ -593,8 +599,11 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 	  for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
 	    for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
 	      {
-		num2 = myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
-		vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetBinContent(k+1,j+1,num2);
+		if      (NumOrDen2Plot == "N1") Eff = myEff.Num1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		else if (NumOrDen2Plot == "N2") Eff = myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		else if (NumOrDen2Plot == "D1") Eff = myEff.Den1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		else                            Eff = myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetBinContent(k+1,j+1,Eff);
 	      }
 
 	  cNumPhi->cd(l+1)->SetLogz();
@@ -604,7 +613,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetLineWidth(2);
 	  if (i == 0) vecHq2ANDphi[l*(q2Bins->size()-1)+i]->Draw("surf bb fb");
 	  else        vecHq2ANDphi[l*(q2Bins->size()-1)+i]->Draw("sames surf bb fb");
-	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(1.0,Zaxes);
+	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(0.1,Zaxes);
 
 	  myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
 	  legHq2ANDphi[l]->AddEntry(vecHq2ANDphi[l*(q2Bins->size()-1)+i],myString.str().c_str());

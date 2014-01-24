@@ -1,4 +1,4 @@
-echo @@@ Produce binned efficiency @@@
+echo @@@ Producing binned efficiency @@@
 
 Qsub -l lnxfarm -e -o EffSign.log -N EffSign .././ComputeEfficiency Make /nfs/data37/cms/dinardo/Data2012B0KstMuMuResults/MonteCarlo2012/ForEfficiency/B0ToKstMuMu_GEN_NoFilter_MC_NTuples_addGENvars.root /nfs/data37/cms/dinardo/Data2012B0KstMuMuResults/MonteCarlo2012/ForEfficiency/B0ToKstMuMu_MC_NTuple_addGENvars.root /nfs/data37/cms/dinardo/Data2012B0KstMuMuResults/MonteCarlo2012/SingleCand/singleCand_B0ToKstMuMu_MC_NTuple.root Efficiency4D_B0ToKstMuMu.txt 1
 
