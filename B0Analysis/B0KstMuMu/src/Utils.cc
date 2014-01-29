@@ -3009,11 +3009,11 @@ unsigned int Utils::GetFitParamIndx (std::string varName)
 
 unsigned int Utils::GetConfigParamIndx (std::string varName)
 {
-  if      (varName == "FitOptions")     return 0;
-  else if (varName == "SigType")        return 1;
-  else if (varName == "PeakBkgType")    return 2;
-  else if (varName == "CombBkgType")    return 3;
-  else if (varName == "MistagBkgType")  return 4;
+  if      (varName == "FitOptions")   return 0;
+  else if (varName == "SigType")      return 1;
+  else if (varName == "PeakBkgType")  return 2;
+  else if (varName == "CombBkgType")  return 3;
+  else if (varName == "MistagType")   return 4;
 
   std::cout << "[Utils::GetConfigParamIndx]\tError wrong index name : " << varName << std::endl;
   exit (EXIT_FAILURE);
