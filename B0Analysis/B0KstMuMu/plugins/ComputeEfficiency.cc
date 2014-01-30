@@ -72,9 +72,9 @@ using std::vector;
 // ####################
 // # Global constants #
 // ####################
-#define INPUT_THETAL            "ThetaL_B0ToKstMuMu.txt"
-#define INPUT_PHI               "Phi_B0ToKstMuMu.txt"
-#define INPUT_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu.txt" // "ThetaK_B0ToKstMuMu.txt" OR "ThetaKThetaL_B0ToKstMuMu.txt"
+#define INPUT_THETAL            "ThetaL_B0ToKstMuMu_MisTagged.txt"
+#define INPUT_PHI               "Phi_B0ToKstMuMu_MisTagged.txt"
+#define INPUT_THETAL_THETAK     "ThetaK_B0ToKstMuMu_MisTagged.txt" // "ThetaK_B0ToKstMuMu.txt" OR "ThetaKThetaL_B0ToKstMuMu.txt"
 #define INPUT_THETAL_THETAK_PHI "ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
 #define SavePlot       false
@@ -534,7 +534,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 		vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetBinContent(k+1,l+1,Eff);
 	      }
 	  
-	  cNumCosThetaL->cd(j+1)->SetLogz();
+	  cNumCosThetaK->cd(j+1)->SetLogz();
 	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetMarkerStyle(1);
 	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetMarkerColor(1+i);
 	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetLineColor(1+i);
@@ -570,7 +570,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 		vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetBinContent(j+1,l+1,Eff);
 	      }
 
-	  cNumCosThetaK->cd(k+1)->SetLogz();
+	  cNumCosThetaL->cd(k+1)->SetLogz();
 	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetMarkerStyle(1);
 	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetMarkerColor(1+i);
 	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetLineColor(1+i);
@@ -605,7 +605,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 		else                            Eff = myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 		vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetBinContent(k+1,j+1,Eff);
 	      }
-
+	  
 	  cNumPhi->cd(l+1)->SetLogz();
 	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetMarkerStyle(1);
 	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetMarkerColor(1+i);
@@ -1099,7 +1099,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  cout << "@@@ Value at " << cosThetaLBins->operator[](0) << " : " << effFunc1D->Eval(cosThetaLBins->operator[](0)) << " @@@" << endl;
 	  cout << "@@@ Value at " << cosThetaLBins->operator[](cosThetaLBins->size()-1) << " : " << effFunc1D->Eval(cosThetaLBins->operator[](cosThetaLBins->size()-1)) << " @@@\n" << endl;
 
-	  if (Utility->EffMinValue1D(cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),effFunc1D) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
+	  if (Utility->EffMinValue1D(cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),effFunc1D) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; /*exit (EXIT_FAILURE);*/ }
 	}
 
 

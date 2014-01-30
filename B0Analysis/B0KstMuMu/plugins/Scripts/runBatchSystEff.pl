@@ -46,5 +46,5 @@ if (@ARGV == 2)
 else
 {
     print "Parameter missing:\n" ;
-    print "./RunBatchSystEff.pl [FitType] [q^2 bin to fit (0 - ...)]\n" ;
+    print "./runBatchSystEff.pl [FitType] [q^2 bin to fit (0 - ...)]\n" ;
 }

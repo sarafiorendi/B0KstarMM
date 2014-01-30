@@ -2146,13 +2146,17 @@ void Utils::InitEffFuncThetaL (TF1* fitFun, unsigned int q2BinIndx)
   else if (q2BinIndx == 3)
     {
       fitFun->SetParameter(2,0.0);
-      fitFun->SetParameter(3,0.0);
+      // @TMP@
+      // fitFun->SetParameter(3,0.0); // For good tagged events
+      fitFun->FixParameter(3,0.0); // For mis-tagged events
       fitFun->FixParameter(4,0.0);
     }
   else if (q2BinIndx == 4)
     {
       fitFun->SetParameter(2,0.0);
-      fitFun->SetParameter(3,0.0);
+      // @TMP@
+      // fitFun->SetParameter(3,0.0); // For good tagged events
+      fitFun->FixParameter(3,0.0); // For mis-tagged events
       fitFun->FixParameter(4,0.0);
     }
   else if (q2BinIndx == 5)
@@ -2164,19 +2168,25 @@ void Utils::InitEffFuncThetaL (TF1* fitFun, unsigned int q2BinIndx)
   else if (q2BinIndx == 6)
     {
       fitFun->SetParameter(2,0.0);
-      fitFun->FixParameter(3,0.0);
+      // @TMP@
+      // fitFun->FixParameter(3,0.0); // For good tagged events
+      fitFun->SetParameter(3,0.0); // For mis-tagged events
       fitFun->FixParameter(4,0.0);
     }
   else if (q2BinIndx == 7)
     {
       fitFun->SetParameter(2,0.0);
-      fitFun->FixParameter(3,0.0);
+      // @TMP@
+      // fitFun->FixParameter(3,0.0); // For good tagged events
+      fitFun->SetParameter(3,0.0); // For mis-tagged events
       fitFun->FixParameter(4,0.0);
     }
   else if (q2BinIndx == 8)
     {
       fitFun->SetParameter(2,0.0);
-      fitFun->FixParameter(3,0.0);
+      // @TMP@
+      // fitFun->FixParameter(3,0.0); // For good tagged events
+      fitFun->SetParameter(3,0.0); // For mis-tagged events
       fitFun->FixParameter(4,0.0);
     }
 }
@@ -2293,6 +2303,7 @@ void Utils::AddConstraint1D (TH1D** histo, std::string constrType, double err, d
 
 void Utils::AddConstraintThetaL (TH1D** histo, unsigned int q2BinIndx, unsigned int cosThetaKBinIndx, double constrXerr, double constrYval, double constrYerr, unsigned int ID)
 {
+  // @TMP@ : for good tagged events
   if (q2BinIndx == 0) AddConstraint1D(histo,"both",constrXerr,constrYval,constrYerr,ID);
 
   if (q2BinIndx == 1) AddConstraint1D(histo,"both",constrXerr,constrYval,constrYerr,ID);
@@ -2305,6 +2316,26 @@ void Utils::AddConstraintThetaL (TH1D** histo, unsigned int q2BinIndx, unsigned 
 
   if ((q2BinIndx == 3) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"high",constrXerr,constrYval,constrYerr,ID);
   if ((q2BinIndx == 3) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"low",constrXerr,constrYval,constrYerr,ID);
+
+
+  // @TMP@ : for mis-tagged events
+  // if ((q2BinIndx == 0) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"low",constrXerr,constrYval,constrYerr,ID);
+  // if ((q2BinIndx == 0) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"low",constrXerr,constrYval,constrYerr,ID);
+  // if ((q2BinIndx == 0) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"low",constrXerr,constrYval,constrYerr,ID);
+  // if ((q2BinIndx == 0) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"both",constrXerr,constrYval,constrYerr,ID);
+  // if ((q2BinIndx == 0) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",constrXerr,constrYval,constrYerr,ID);
+
+  // if ((q2BinIndx == 1) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"low",constrXerr,constrYval,constrYerr,ID);
+  // if ((q2BinIndx == 1) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"low",constrXerr,constrYval,constrYerr,ID);
+  // if ((q2BinIndx == 1) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"low",constrXerr,constrYval,constrYerr,ID);
+  // if ((q2BinIndx == 1) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"both",constrXerr,constrYval,constrYerr,ID);
+  // if ((q2BinIndx == 1) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",constrXerr,constrYval,constrYerr,ID);
+
+  // if ((q2BinIndx == 2) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"high",constrXerr,constrYval,constrYerr,ID);
+  // if ((q2BinIndx == 2) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"high",constrXerr,constrYval,constrYerr,ID);
+  // if ((q2BinIndx == 2) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"high",constrXerr,constrYval,constrYerr,ID);
+  // if ((q2BinIndx == 2) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"high",constrXerr,constrYval,constrYerr,ID);
+  // if ((q2BinIndx == 2) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",constrXerr,constrYval,constrYerr,ID);
 }
 
 void Utils::AddConstraint2D (TH2D** histo, double err, double Zval, double Zerr, unsigned int ID, std::string toBeConstr, std::vector<std::string>* toBeAdded)
@@ -2451,18 +2482,41 @@ void Utils::AddConstraintThetaK (TH2D** histo, std::vector<double>* cosThetaKBin
 
   for (unsigned int i = 0; i < cosThetaKBins->size()-1; i++) toBeAdded.push_back("no");
 
-  if (q2BinIndx == 0) for (unsigned int i = 0; i < cosThetaKBins->size()-1; i++) toBeAdded[i] = "both";
 
-  if (q2BinIndx == 1) for (unsigned int i = 0; i < cosThetaKBins->size()-1; i++) toBeAdded[i] = "both";
+  // @TMP@ : for good tagged events
+  // if (q2BinIndx == 0) for (unsigned int i = 0; i < cosThetaKBins->size()-1; i++) toBeAdded[i] = "both";
 
-  if (q2BinIndx == 2) toBeAdded[0] = "both";
-  if (q2BinIndx == 2) toBeAdded[1] = "both";
-  if (q2BinIndx == 2) toBeAdded[2] = "both";
-  if (q2BinIndx == 2) toBeAdded[3] = "low";
+  // if (q2BinIndx == 1) for (unsigned int i = 0; i < cosThetaKBins->size()-1; i++) toBeAdded[i] = "both";
+
+  // if (q2BinIndx == 2) toBeAdded[0] = "both";
+  // if (q2BinIndx == 2) toBeAdded[1] = "both";
+  // if (q2BinIndx == 2) toBeAdded[2] = "both";
+  // if (q2BinIndx == 2) toBeAdded[3] = "low";
+  // if (q2BinIndx == 2) toBeAdded[4] = "low";
+
+  // if (q2BinIndx == 3) toBeAdded[1] = "high";
+  // if (q2BinIndx == 3) toBeAdded[2] = "low";
+
+
+  // @TMP@ : for mis-tagged events
+  if (q2BinIndx == 0) toBeAdded[0] = "low";
+  if (q2BinIndx == 0) toBeAdded[1] = "low";
+  if (q2BinIndx == 0) toBeAdded[2] = "low";
+  if (q2BinIndx == 0) toBeAdded[3] = "both";
+  if (q2BinIndx == 0) toBeAdded[4] = "low";
+
+  if (q2BinIndx == 1) toBeAdded[0] = "low";
+  if (q2BinIndx == 1) toBeAdded[1] = "low";
+  if (q2BinIndx == 1) toBeAdded[2] = "low";
+  if (q2BinIndx == 1) toBeAdded[3] = "both";
+  if (q2BinIndx == 1) toBeAdded[4] = "low";
+
+  if (q2BinIndx == 2) toBeAdded[0] = "high";
+  if (q2BinIndx == 2) toBeAdded[1] = "high";
+  if (q2BinIndx == 2) toBeAdded[2] = "high";
+  if (q2BinIndx == 2) toBeAdded[3] = "high";
   if (q2BinIndx == 2) toBeAdded[4] = "low";
 
-  if (q2BinIndx == 3) toBeAdded[1] = "high";
-  if (q2BinIndx == 3) toBeAdded[2] = "low";
 
   AddConstraint2D(histo,constrXYerr,constrZval,constrZerr,ID,"Y",&toBeAdded);
 }

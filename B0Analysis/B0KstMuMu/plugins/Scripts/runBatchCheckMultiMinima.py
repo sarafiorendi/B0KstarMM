@@ -8,7 +8,7 @@ from os import system
 import sys
 
 if len(sys.argv) < 6:
-    print "Synopsis: python RunBatchCheckMuliMinima.py [FitType] [File.root] [FitEff] [q^2 bin] [nFiles] [[runJobs[true / false]] [parFileName]]"
+    print "Synopsis: python runBatchCheckMuliMinima.py [FitType] [File.root] [FitEff] [q^2 bin] [nFiles] [For fits[runJobs[true / false]] [parFileName]]"
     sys.exit()
 
 FitType  = sys.argv[1]
@@ -19,7 +19,7 @@ nFiles   = int(sys.argv[5])
 runJobs  = "false"
 
 if not (int(sys.argv[1]) == 96) and len(sys.argv) != 8:
-    print "Synopsis: python RunBatchCheckMuliMinima.py [FitType] [File.root] [FitEff] [q^2 bin] [nFiles] [[runJobs[true / false]] [parFileName]]"
+    print "Synopsis: python RunBatchCheckMuliMinima.py [FitType] [File.root] [FitEff] [q^2 bin] [nFiles]"
     sys.exit()
 elif not(int(sys.argv[1]) == 96):
     runJobs = sys.argv[6]
