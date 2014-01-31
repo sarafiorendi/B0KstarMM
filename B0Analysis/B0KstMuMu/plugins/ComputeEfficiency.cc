@@ -88,7 +88,7 @@ using std::vector;
 // # Fit constraints #
 // ###################
 #define abscissaErr   1e-2
-#define ordinateVal   1e-4 // bin #0: 4e-4; bin #1: 1e-4; bin #2-#8: 1e-3;
+#define ordinateVal   1e-5 // @TMP@ 1e-4 // bin #0: 4e-4; bin #1: 1e-4; bin #2-#8: 1e-3;
 #define ordinateErr   1e-5
 #define ordinateRange 1e-2
 
@@ -201,7 +201,7 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
 	    (fabs(Utility->computeEta(NTuple->genMumPx,NTuple->genMumPy,NTuple->genMumPz)) < Utility->GetPreCut("MuEta"))   &&
 	    (fabs(Utility->computeEta(NTuple->genMupPx,NTuple->genMupPy,NTuple->genMupPz)) < Utility->GetPreCut("MuEta")))  ||
 
-	   ((type == 4) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true))))
+	   ((type == 4) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == Utility->RIGHTflavorTAG))))
 	{
 	  mumuq2          = NTuple->mumuMass->at(0)*NTuple->mumuMass->at(0);
 
@@ -2008,12 +2008,12 @@ int main (int argc, char** argv)
       cout << "INPUT_THETAL_THETAK: "     << INPUT_THETAL_THETAK << endl;
       cout << "INPUT_THETAL_THETAK_PHI: " << INPUT_THETAL_THETAK_PHI << endl;
 
-      cout << "\nSave plot: "    << SavePlot << endl;
-      cout << "CHECKEFFatREAD: " << CHECKEFFatREAD << endl;
-      cout << "NFILES: "         << NFILES << endl;
-      cout << "INPUTGenEff: "    << INPUTGenEff << endl;
-      cout << "SETBATCH: "       << SETBATCH << endl;
-      cout << "ParameterFILE: "  << ParameterFILE << endl;
+      cout << "\nSavePlot: "         << SavePlot << endl;
+      cout << "CHECKEFFatREAD: "   << CHECKEFFatREAD << endl;
+      cout << "NFILES: "           << NFILES << endl;
+      cout << "INPUTGenEff: "      << INPUTGenEff << endl;
+      cout << "SETBATCH: "         << SETBATCH << endl;
+      cout << "ParameterFILE: "    << ParameterFILE << endl;
 
       cout << "\nabscissaErr: " << abscissaErr << endl;
       cout << "ordinateVal: "   << ordinateVal << endl;

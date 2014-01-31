@@ -277,6 +277,8 @@ class Utils
   unsigned int NcoeffThetaK;
   unsigned int NcoeffPhi;
 
+  bool RIGHTflavorTAG;
+
  
  private:
 
