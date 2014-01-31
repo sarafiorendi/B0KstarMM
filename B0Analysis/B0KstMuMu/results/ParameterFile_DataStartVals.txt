@@ -183,13 +183,13 @@ HLT_DoubleMu5_LowMass_Displaced_v
 # Lower edge bin 1:
 -0.7
 
-# Lower edge bin 2:
+# Lower edge bin 2: [0.0 / N.A.]
 0.0
 
-# Lower edge bin 3:
+# Lower edge bin 3: [0.4 / 0.0]
 0.4
 
-# Lower edge bin 4:
+# Lower edge bin 4: [0.8 / 0.7]
 0.8
 
 # Upper edge bin 5:
@@ -205,19 +205,19 @@ HLT_DoubleMu5_LowMass_Displaced_v
 # Lower edge bin 0:
 -1
 
-# Lower edge bin 1:
+# Lower edge bin 1: [-0.7 / -0.6]
 -0.7
 
-# Lower edge bin 2:
+# Lower edge bin 2: [-0.3 / -0.2]
 -0.3
 
-# Lower edge bin 3:
+# Lower edge bin 3: [0.0 / N.A.]
 0.0
 
-# Lower edge bin 4:
+# Lower edge bin 4: [0.3 / 0.2]
 0.3
 
-# Upper edge bin 5:
+# Upper edge bin 5: [0.7 / 0.6]
 0.7
 
 # Upper edge bin 6:
@@ -1859,216 +1859,9 @@ HLT_Dimuon6p5_LowMass_Displaced_v
 ############################
 # 14th block of parameters #
 ############################
-# Parameters for the function fitting the efficiency shape [5 parameters for theta_l x 8 q^2bins]
-# Every theta_l parameter depends upon 4 theta_k parameters
-# HLT path: 1
-40
+# Efficiency parameters for good-tagged events averaged over all HLT paths
+45
 
-# q^2 ----- 1st theta ----- err ----- 2nd theta ----- err ----- 3rd theta ----- err ----- 4th theta ----- err
-1.5   0   0   0   0   0   0   0   0
-1.5   0   0   0   0   0   0   0   0
-1.5   0   0   0   0   0   0   0   0
-1.5   0   0   0   0   0   0   0   0
-1.5   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-
-
-############################
-# 15th block of parameters #
-############################
-# Parameters for the function fitting the efficiency shape [5 parameters for theta_l x 8 q^2bins]
-# Every theta_l parameter depends upon 4 theta_k parameters
-# HLT path: 2
-40
-
-# q^2 ----- 1st theta ----- err ----- 2nd theta ----- err ----- 3rd theta ----- err ----- 4th theta ----- err
-1.5   0   0   0   0   0   0   0   0
-1.5   0   0   0   0   0   0   0   0
-1.5   0   0   0   0   0   0   0   0
-1.5   0   0   0   0   0   0   0   0
-1.5   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-
-
-############################
-# 15th block of parameters #
-############################
-# Parameters for the function fitting the efficiency shape [5 parameters for theta_l x 8 q^2bins]
-# Every theta_l parameter depends upon 4 theta_k parameters
-# HLT path: 3
-40
-
-# q^2 ----- 1st theta ----- err ----- 2nd theta ----- err ----- 3rd theta ----- err ----- 4th theta ----- err
-1.5   0   0   0   0   0   0   0   0
-1.5   0   0   0   0   0   0   0   0
-1.5   0   0   0   0   0   0   0   0
-1.5   0   0   0   0   0   0   0   0
-1.5   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-
-
-############################
-# 17th block of parameters #
-############################
-# Parameters for the function fitting the efficiency shape [5 parameters for theta_l x 8 q^2bins]
-# Every theta_l parameter depends upon 4 theta_k parameters
-# HLT path: 4
-40
-
-# q^2 ----- 1st theta ----- err ----- 2nd theta ----- err ----- 3rd theta ----- err ----- 4th theta ----- err
-1.5   0   0   0   0   0   0   0   0
-1.5   0   0   0   0   0   0   0   0
-1.5   0   0   0   0   0   0   0   0
-1.5   0   0   0   0   0   0   0   0
-1.5   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-3.15   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-6.49   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-9.385   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-11.475   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-13.52   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-15.09   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-17.5   0   0   0   0   0   0   0   0
-
-
-############################
-# 18th block of parameters #
-############################
-# Parameters for the function fitting the efficiency shape [5 parameters for theta_l x 8 q^2bins]
-# Every theta_l parameter depends upon 4 theta_k parameters
-# Average over all HLT paths
-40
-
-# q^2 ----- 1st theta ----- err ----- 2nd theta ----- err ----- 3rd theta ----- err ----- 4th theta ----- err
 1.5   0.0017687   9.77352e-06   -8.73499e-06   1.45679e-05   -0.000935262   1.44267e-05   -0.000787674   1.71613e-05
 1.5   -0.00529644   1.7851e-05   0.00155626   2.42707e-05   0.00356542   2.66439e-05   0.000171319   2.89112e-05
 1.5   0   0   0   0   0   0   0   0
@@ -2112,7 +1905,60 @@ HLT_Dimuon6p5_LowMass_Displaced_v
 
 
 ############################
-# 19th block of parameters #
+# 15th block of parameters #
+############################
+# Efficiency parameters for mis-tagged events averaged over all HLT paths
+45
+
+1.5   0   0   0   0   0   0   0   0
+1.5   0   0   0   0   0   0   0   0
+1.5   0   0   0   0   0   0   0   0
+1.5   0   0   0   0   0   0   0   0
+1.5   0   0   0   0   0   0   0   0
+3.15   0   0   0   0   0   0   0   0
+3.15   0   0   0   0   0   0   0   0
+3.15   0   0   0   0   0   0   0   0
+3.15   0   0   0   0   0   0   0   0
+3.15   0   0   0   0   0   0   0   0
+5.15   0   0   0   0   0   0   0   0
+5.15   0   0   0   0   0   0   0   0
+5.15   0   0   0   0   0   0   0   0
+5.15   0   0   0   0   0   0   0   0
+5.15   0   0   0   0   0   0   0   0
+7.34   0   0   0   0   0   0   0   0
+7.34   0   0   0   0   0   0   0   0
+7.34   0   0   0   0   0   0   0   0
+7.34   0   0   0   0   0   0   0   0
+7.34   0   0   0   0   0   0   0   0
+9.385   0   0   0   0   0   0   0   0
+9.385   0   0   0   0   0   0   0   0
+9.385   0   0   0   0   0   0   0   0
+9.385   0   0   0   0   0   0   0   0
+9.385   0   0   0   0   0   0   0   0
+11.475   0   0   0   0   0   0   0   0
+11.475   0   0   0   0   0   0   0   0
+11.475   0   0   0   0   0   0   0   0
+11.475   0   0   0   0   0   0   0   0
+11.475   0   0   0   0   0   0   0   0
+13.52   0   0   0   0   0   0   0   0
+13.52   0   0   0   0   0   0   0   0
+13.52   0   0   0   0   0   0   0   0
+13.52   0   0   0   0   0   0   0   0
+13.52   0   0   0   0   0   0   0   0
+15.09   0   0   0   0   0   0   0   0
+15.09   0   0   0   0   0   0   0   0
+15.09   0   0   0   0   0   0   0   0
+15.09   0   0   0   0   0   0   0   0
+15.09   0   0   0   0   0   0   0   0
+17.5   0   0   0   0   0   0   0   0
+17.5   0   0   0   0   0   0   0   0
+17.5   0   0   0   0   0   0   0   0
+17.5   0   0   0   0   0   0   0   0
+17.5   0   0   0   0   0   0   0   0
+
+
+############################
+# 16th block of parameters #
 ############################
 # Number of generic parameters
 10
@@ -2138,28 +1984,28 @@ HLT_Dimuon6p5_LowMass_Displaced_v
 # N-sigma psi big interval [5.0]
 5.0
 
-# B0 peak sigma-1 [GeV/c2]
-0.0274469
+# B0 peak sigma-1 from signal MC, whole q2 spectrum [GeV/c2]
+0.0267428
 
-# B0 peak sigma-2 [GeV/c2]
-0.0654364
+# B0 peak sigma-2 from signal MC, whole q2 spectrum [GeV/c2]
+0.0557447
 
-# B0 peak gaussian fraction
-0.661096
+# B0 peak gaussian fraction from signal MC, whole q2 spectrum
+0.660678
 
 
 ############################
-# 20th block of parameters #
+# 17th block of parameters #
 ############################
 # Integrated luminosity
 1
 
 # Luminosity [fb-1]
-5.1803
+20.5
 
 
 ############################
-# 21st block of parameters #
+# 18st block of parameters #
 ############################
 # Data type
 1

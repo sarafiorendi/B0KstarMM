@@ -182,13 +182,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Lower edge bin 1:
 -0.7
 
-# Lower edge bin 2:
+# Lower edge bin 2: [0.0 / N.A.]
 0.0
 
-# Lower edge bin 3:
+# Lower edge bin 3: [0.4 / 0.0]
 0.4
 
-# Lower edge bin 4:
+# Lower edge bin 4: [0.8 / 0.7]
 0.8
 
 # Upper edge bin 5:
@@ -204,19 +204,19 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Lower edge bin 0:
 -1
 
-# Lower edge bin 1:
+# Lower edge bin 1: [-0.7 / -0.6]
 -0.7
 
-# Lower edge bin 2:
+# Lower edge bin 2: [-0.3 / -0.2]
 -0.3
 
-# Lower edge bin 3:
+# Lower edge bin 3: [0.0 / N.A.]
 0.0
 
-# Lower edge bin 4:
+# Lower edge bin 4: [0.3 / 0.2]
 0.3
 
-# Upper edge bin 5:
+# Upper edge bin 5: [0.7 / 0.6]
 0.7
 
 # Upper edge bin 6:
@@ -2388,7 +2388,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ############################
 # 14th block of parameters #
 ############################
-# Eficiency parameters averaged over all HLT paths
+# Efficiency parameters for good-tagged events averaged over all HLT paths
 45
 
 1.5   0   0   0   0   0   0   0   0
@@ -2441,6 +2441,59 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ############################
 # 15th block of parameters #
 ############################
+# Efficiency parameters for mis-tagged events averaged over all HLT paths
+45
+
+1.5   0   0   0   0   0   0   0   0
+1.5   0   0   0   0   0   0   0   0
+1.5   0   0   0   0   0   0   0   0
+1.5   0   0   0   0   0   0   0   0
+1.5   0   0   0   0   0   0   0   0
+3.15   0   0   0   0   0   0   0   0
+3.15   0   0   0   0   0   0   0   0
+3.15   0   0   0   0   0   0   0   0
+3.15   0   0   0   0   0   0   0   0
+3.15   0   0   0   0   0   0   0   0
+5.15   0   0   0   0   0   0   0   0
+5.15   0   0   0   0   0   0   0   0
+5.15   0   0   0   0   0   0   0   0
+5.15   0   0   0   0   0   0   0   0
+5.15   0   0   0   0   0   0   0   0
+7.34   0   0   0   0   0   0   0   0
+7.34   0   0   0   0   0   0   0   0
+7.34   0   0   0   0   0   0   0   0
+7.34   0   0   0   0   0   0   0   0
+7.34   0   0   0   0   0   0   0   0
+9.385   0   0   0   0   0   0   0   0
+9.385   0   0   0   0   0   0   0   0
+9.385   0   0   0   0   0   0   0   0
+9.385   0   0   0   0   0   0   0   0
+9.385   0   0   0   0   0   0   0   0
+11.475   0   0   0   0   0   0   0   0
+11.475   0   0   0   0   0   0   0   0
+11.475   0   0   0   0   0   0   0   0
+11.475   0   0   0   0   0   0   0   0
+11.475   0   0   0   0   0   0   0   0
+13.52   0.000935872   2.46462e-05   -0.000364208   4.1654e-05   -0.000957036   3.88154e-05   0.000386427   5.39868e-05
+13.52   -0.000214032   5.91299e-05   -0.000837612   9.67507e-05   0.000905055   0.000111294   0.00015318   0.00013259
+13.52   -7.61879e-05   4.87247e-05   0.00019862   7.83415e-05   0.000244709   0.000103692   -0.000364636   0.000113185
+13.52   0   0   0   0   0   0   0   0
+13.52   0   0   0   0   0   0   0   0
+15.09   0   0   0   0   0   0   0   0
+15.09   0   0   0   0   0   0   0   0
+15.09   0   0   0   0   0   0   0   0
+15.09   0   0   0   0   0   0   0   0
+15.09   0   0   0   0   0   0   0   0
+17.5   0   0   0   0   0   0   0   0
+17.5   0   0   0   0   0   0   0   0
+17.5   0   0   0   0   0   0   0   0
+17.5   0   0   0   0   0   0   0   0
+17.5   0   0   0   0   0   0   0   0
+
+
+############################
+# 16th block of parameters #
+############################
 # Number of generic parameters
 10
 
@@ -2476,7 +2529,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 
 ############################
-# 16th block of parameters #
+# 17th block of parameters #
 ############################
 # Integrated luminosity
 1
@@ -2486,7 +2539,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 
 ############################
-# 17th block of parameters #
+# 18th block of parameters #
 ############################
 # Data type
 1

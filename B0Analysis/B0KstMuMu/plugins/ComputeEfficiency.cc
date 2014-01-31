@@ -72,9 +72,9 @@ using std::vector;
 // ####################
 // # Global constants #
 // ####################
-#define INPUT_THETAL            "ThetaL_B0ToKstMuMu_MisTagged.txt"
-#define INPUT_PHI               "Phi_B0ToKstMuMu_MisTagged.txt"
-#define INPUT_THETAL_THETAK     "ThetaK_B0ToKstMuMu_MisTagged.txt" // "ThetaK_B0ToKstMuMu.txt" OR "ThetaKThetaL_B0ToKstMuMu.txt"
+#define INPUT_THETAL            "ThetaL_B0ToKstMuMu.txt"
+#define INPUT_PHI               "Phi_B0ToKstMuMu.txt"
+#define INPUT_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu.txt" // "ThetaK_B0ToKstMuMu.txt" OR "ThetaKThetaL_B0ToKstMuMu.txt"
 #define INPUT_THETAL_THETAK_PHI "ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
 #define SavePlot       false
@@ -88,7 +88,7 @@ using std::vector;
 // # Fit constraints #
 // ###################
 #define abscissaErr   1e-2
-#define ordinateVal   1e-5 // @TMP@ 1e-4 // bin #0: 4e-4; bin #1: 1e-4; bin #2-#8: 1e-3;
+#define ordinateVal   1e-4 // bin #0: 4e-4; bin #1: 1e-4; bin #2-#8: 1e-3;
 #define ordinateErr   1e-5
 #define ordinateRange 1e-2
 
@@ -1099,7 +1099,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  cout << "@@@ Value at " << cosThetaLBins->operator[](0) << " : " << effFunc1D->Eval(cosThetaLBins->operator[](0)) << " @@@" << endl;
 	  cout << "@@@ Value at " << cosThetaLBins->operator[](cosThetaLBins->size()-1) << " : " << effFunc1D->Eval(cosThetaLBins->operator[](cosThetaLBins->size()-1)) << " @@@\n" << endl;
 
-	  if (Utility->EffMinValue1D(cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),effFunc1D) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; /*exit (EXIT_FAILURE);*/ }
+	  if (Utility->EffMinValue1D(cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),effFunc1D) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
 	}
 
 
