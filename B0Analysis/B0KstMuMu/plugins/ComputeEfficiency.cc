@@ -83,14 +83,7 @@ using std::vector;
 #define INPUTGenEff    "../../Efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
 #define SETBATCH       true // Set batch mode when making binned efficiency
 #define ParameterFILE  "../python/ParameterFile.txt"
-
-// ###################
-// # Fit constraints #
-// ###################
-#define abscissaErr   1e-2
-#define ordinateVal   1e-4 // bin #0: 4e-4; bin #1: 1e-4; bin #2-#8: 1e-3;
-#define ordinateErr   1e-5
-#define ordinateRange 1e-2
+#define ordinateRange  1e-2
 
 
 // ####################
@@ -763,7 +756,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
 		((cosThetaKBins->operator[](cosThetaKBins->size()-1)-cosThetaKBins->operator[](0)) *
 		 (cosThetaLBins->operator[](cosThetaLBins->size()-1)-cosThetaLBins->operator[](0)) *
 		 (phiBins->operator[](phiBins->size()-1)-phiBins->operator[](0)));
-	      EffErr = ordinateErr;
+	      EffErr = 0.0;
 	    }
 	  Hq2[itF]->SetBinContent(i+1,Eff);
 	  Hq2[itF]->SetBinError(i+1,EffErr);
@@ -785,7 +778,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
       		  ((cosThetaKBins->operator[](j+1)-cosThetaKBins->operator[](j)) *
 		   (cosThetaLBins->operator[](cosThetaLBins->size()-1)-cosThetaLBins->operator[](0)) *
 		   (phiBins->operator[](phiBins->size()-1)-phiBins->operator[](0)));
-      	      EffErr = ordinateErr;
+      	      EffErr = 0.0;
       	    }
       	  HcosThetaK[itF]->SetBinContent(j+1,Eff);
       	  HcosThetaK[itF]->SetBinError(j+1,EffErr);
@@ -807,7 +800,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
       		  ((cosThetaKBins->operator[](cosThetaKBins->size()-1)-cosThetaKBins->operator[](0)) *
 		   (cosThetaLBins->operator[](k+1)-cosThetaLBins->operator[](k)) *
 		   (phiBins->operator[](phiBins->size()-1)-phiBins->operator[](0)));
-      	      EffErr = ordinateErr;
+      	      EffErr = 0.0;
       	    }
       	  HcosThetaL[itF]->SetBinContent(k+1,Eff);
       	  HcosThetaL[itF]->SetBinError(k+1,EffErr);
@@ -829,7 +822,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
 		  ((cosThetaKBins->operator[](cosThetaKBins->size()-1)-cosThetaKBins->operator[](0)) *
 		   (cosThetaLBins->operator[](cosThetaLBins->size()-1)-cosThetaLBins->operator[](0)) *
 		   (phiBins->operator[](l+1)-phiBins->operator[](l)));
-	      EffErr = ordinateErr;
+	      EffErr = 0.0;
 	    }
 	  Hphi[itF]->SetBinContent(l+1,Eff);
 	  Hphi[itF]->SetBinError(l+1,EffErr);
@@ -1049,7 +1042,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
       // ##############################
       // # Read analytical efficiency #
       // ##############################
-      effFunc1D = new TF1("effFunc1D",Utility->TellMeEffFuncThetaL().c_str(),-1.0 - abscissaErr,1.0 + abscissaErr);
+      effFunc1D = new TF1("effFunc1D",Utility->TellMeEffFuncThetaL().c_str(),-1.0,1.0);
 
 
       for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
@@ -1072,7 +1065,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  // ######################################################################
 	  // # Add constraint where it is necessary to bound the function at zero #
 	  // ######################################################################
-	  Utility->AddConstraintThetaL(&histFit.back(),q2BinIndx,j,abscissaErr,ordinateVal,ordinateErr,q2BinIndx);
+	  Utility->AddConstraintThetaL(&histFit.back(),q2BinIndx,j,q2BinIndx);
 
 
 	  // #########################################################################
@@ -1118,7 +1111,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
       // ##############################
       // # Read analytical efficiency #
       // ##############################
-      effFunc1D = new TF1("effFunc1D",Utility->TellMeEffFuncThetaK().c_str(),-1.0 - abscissaErr,1.0 + abscissaErr);
+      effFunc1D = new TF1("effFunc1D",Utility->TellMeEffFuncThetaK().c_str(),-1.0,1.0);
 
 
       for (unsigned int k = 0; k < Utility->NcoeffThetaL; k++)
@@ -1203,7 +1196,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
       // ##############################
       // # Read analytical efficiency #
       // ##############################
-      effFunc1D = new TF1("effFunc1D",Utility->TellMeEffFuncPhi().c_str(),-Utility->PI - abscissaErr,Utility->PI + abscissaErr);
+      effFunc1D = new TF1("effFunc1D",Utility->TellMeEffFuncPhi().c_str(),-Utility->PI,Utility->PI);
       Utility->InitEffFuncPhi(effFunc1D,q2BinIndx);
 
 
@@ -1283,9 +1276,9 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // ##############################
   Utility->ReadAnalyticalEff(INPUT_THETAL_THETAK,q2Bins,cosThetaKBins,cosThetaLBins,&effFuncs2D,"effFuncs2D",0);
   effFuncs2D[q2BinIndx]->SetRange(cosThetaKBins->operator[](0),
-				  cosThetaLBins->operator[](0) - abscissaErr,
-				  cosThetaKBins->operator[](cosThetaKBins->size()-1) + abscissaErr,
-				  cosThetaLBins->operator[](cosThetaLBins->size()-1) + abscissaErr);
+				  cosThetaLBins->operator[](0),
+				  cosThetaKBins->operator[](cosThetaKBins->size()-1),
+				  cosThetaLBins->operator[](cosThetaLBins->size()-1));
 
   for (int i = 0; i < effFuncs2D[q2BinIndx]->GetNpar(); i++)
     if (effFuncs2D[q2BinIndx]->GetParError(i) == 0.0) effFuncs2D[q2BinIndx]->FixParameter(i,effFuncs2D[q2BinIndx]->GetParameter(i));
@@ -1294,14 +1287,14 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // ############################################################################################
   // # Add constraint along Y (= cosThetaL) where it is necessary to bound the function at zero #
   // ############################################################################################
-  Utility->AddConstraintThetaK(&hisFunc2D,cosThetaKBins,q2BinIndx,abscissaErr,ordinateVal,ordinateErr,q2BinIndx);
+  Utility->AddConstraintThetaK(&hisFunc2D,cosThetaKBins,q2BinIndx,q2BinIndx);
 
 
   // #########################################################################
   // # Perform the fit of the analytical efficiency to the binned efficiency #
   // #########################################################################
   cTestGlobalFit->cd();
-  fitResults = hisFunc2D->Fit(effFuncs2D[q2BinIndx]->GetName(),"VMRS");
+  fitResults = hisFunc2D->Fit(effFuncs2D[q2BinIndx]->GetName(),"VMS");
   TMatrixTSym<double> covMatrix(fitResults->GetCovarianceMatrix());
   effFuncs2D[q2BinIndx]->Draw("surf1 fb");
   hisFunc2D->Draw("lego2 fb");
@@ -1311,41 +1304,13 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   cout << "\tCL : " << TMath::Prob(effFuncs2D[q2BinIndx]->GetChisquare(),effFuncs2D[q2BinIndx]->GetNDF()) << " @@@" << endl;
 
 
-  // ############################################################################################
-  // # Add constraint along X (= cosThetaK) where it is necessary to bound the function at zero #
-  // ############################################################################################
-  if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncs2D[q2BinIndx]) < 0.0)
-    {
-      cout << "@@@ Efficiency is still negative ! @@@" << endl;
-
-      Utility->AddConstraint2D(&hisFunc2D,abscissaErr,ordinateVal,ordinateErr,q2BinIndx,"X");
-
-      cTestGlobalFit->cd();
-      fitResults = hisFunc2D->Fit(effFuncs2D[q2BinIndx]->GetName(),"VMRS");
-      TMatrixTSym<double> covMatrixConstr(fitResults->GetCovarianceMatrix());
-      effFuncs2D[q2BinIndx]->Draw("surf1 fb");
-      hisFunc2D->Draw("lego2 fb");
-      cTestGlobalFit->Update();
-
-      cout << "@@@ chi2/DoF = " << effFuncs2D[q2BinIndx]->GetChisquare() / effFuncs2D[q2BinIndx]->GetNDF() << " (" << effFuncs2D[q2BinIndx]->GetChisquare() << "/" << effFuncs2D[q2BinIndx]->GetNDF() << ")";
-      cout << "\tCL : " << TMath::Prob(effFuncs2D[q2BinIndx]->GetChisquare(),effFuncs2D[q2BinIndx]->GetNDF()) << " @@@" << endl;
-
-      Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFuncs2D[q2BinIndx],(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
-      fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
-      Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrixConstr,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
-
-      covMatrixConstr.Clear();
-
-      if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncs2D[q2BinIndx]) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
-    }
-  else
-    {
-      Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFuncs2D[q2BinIndx],(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
-      fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
-      Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrix,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
-
-      covMatrix.Clear();
-    }
+  // ################################################
+  // # Check if analytical efficiency goes negative #
+  // ################################################
+  if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncs2D[q2BinIndx]) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
+  Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFuncs2D[q2BinIndx],(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
+  fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
+  Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrix,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
 
 
   // ########################################
@@ -1367,6 +1332,7 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
 
   effFuncs2D.clear();
+  covMatrix.Clear();
   covMatrices->clear();
   delete covMatrices;
 }
@@ -1399,8 +1365,8 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   double Zmin, Zmax;
   // #######################
   double parErrorPhi = 1e-4;
-  double Yaxes  = 2e-1;
-  double Zscale =  1.1;
+  double Yaxes       = 2e-1;
+  double Zscale      = 1.1;
   // #######################
 
 
@@ -1469,9 +1435,9 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // # Putting together cos(theta_k), cos(theta_l), and phi #
   // ########################################################
   effFunc3D = new TF3("effFunc3D",Utility->TellMeEffFuncThetaKThetaLPhi().c_str(),
-		      cosThetaKBins->operator[](0) - abscissaErr,cosThetaKBins->operator[](cosThetaKBins->size()-1) + abscissaErr,
-		      cosThetaLBins->operator[](0) - abscissaErr,cosThetaLBins->operator[](cosThetaLBins->size()-1) + abscissaErr,
-		      phiBins->operator[](0)       - abscissaErr,phiBins->operator[](phiBins->size()-1)             + abscissaErr);
+		      cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),
+		      cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),
+		      phiBins->operator[](0)      ,phiBins->operator[](phiBins->size()-1)            );
   effFunc3D->SetMarkerStyle(20);
   effFunc3D->SetMarkerColor(kBlack);
 
@@ -1491,7 +1457,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // ##################################################################
   // # Add constraint along X or Y or Z to bound the function at zero #
   // ##################################################################
-  Utility->AddConstraintThetaKThetaLPhi(&hisFunc3D,q2BinIndx,abscissaErr,ordinateVal,ordinateErr,q2BinIndx);
+  Utility->AddConstraintThetaKThetaLPhi(&hisFunc3D,q2BinIndx,q2BinIndx);
   hisFunc3D->SetMarkerStyle(20);
   hisFunc3D->SetMarkerColor(kBlack);
   hisFunc3D->GetXaxis()->SetTitleOffset(1.35);
@@ -1502,12 +1468,12 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // #########################################################################
   // # Perform the fit of the analytical efficiency to the binned efficiency #
   // #########################################################################
-  fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VMRS");
+  fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VMS");
   cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: " << fitResults << endl;
 
   if (fitResults != 0)
     {
-      fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VRS");
+      fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VS");
       cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: " << fitResults << endl;
     }
 
@@ -1519,7 +1485,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  effFunc3D->SetParError(effFuncs2D[q2BinIndx]->GetNpar()+i,parErrorPhi);
 	}
 
-      fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VRS");
+      fitResults = hisFunc3D->Fit(effFunc3D->GetName(),"VS");
       cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: " << fitResults << endl;
     }
 
@@ -1636,14 +1602,14 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   cout << "\tCL : " << TMath::Prob(fitResults->Chi2(),fitResults->Ndf()) << " @@@" << endl;
 
 
+  // ################################################
+  // # Check if analytical efficiency goes negative #
+  // ################################################
   if (Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,effFunc3D) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
-  
   Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFunc3D,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
   fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
   Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrix,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
   
-  covMatrix.Clear();
-
 
   // ########################################
   // # Check integrity of covariance matrix #
@@ -1671,6 +1637,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
     }
 
 
+  covMatrix.Clear();
   covMatrices->clear();
   delete covMatrices;
   delete effHis3D;
@@ -2014,10 +1981,6 @@ int main (int argc, char** argv)
       cout << "INPUTGenEff: "      << INPUTGenEff << endl;
       cout << "SETBATCH: "         << SETBATCH << endl;
       cout << "ParameterFILE: "    << ParameterFILE << endl;
-
-      cout << "\nabscissaErr: " << abscissaErr << endl;
-      cout << "ordinateVal: "   << ordinateVal << endl;
-      cout << "ordinateErr: "   << ordinateErr << endl;
       cout << "ordinateRange: " << ordinateRange << endl;
 
 
