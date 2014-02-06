@@ -86,12 +86,12 @@ using namespace RooFit;
 #define FUNCERRBAND   false // Show the p.d.f. error band
 #define MakeMuMuPlots false
 #define MAKEGRAPHSCAN false // Make graphical scan of the physics-pdf*eff or physics-pdf alone (ony valid for GEN fit type options)
-#define CONTROLMisTag "goodtag"
+#define CONTROLMisTag "mistag"
 // ##############################################################################
 // # ==> Control mis-tag work flow <==                                          #
 // # --> "mistag"      = keep only mis-tagged ev.                               #
 // # --> "goodtag"     = keep only good-tagged ev.                              #
-// # --> "all&FitFrac" = kepp all ev. and fit just for mis-tag fraction         #
+// # --> "all&FitFrac" = keep all ev. and fit just for mis-tag fraction         #
 // # --> "all&NoFit"   = keep all ev. and do not fit for it (apply constraints) #
 // ##############################################################################
 #define USEMINOS      false
@@ -757,6 +757,7 @@ void BuildMassConstraints (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string var
 
   if ((GetVar(TotalPDF,"fracMassBPeak")  != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, TotalPDF, "fracMassBPeak");
 
+  // @TMP@
   if (strcmp(CONTROLMisTag,"all&FitFrac") == 0)
     {
       if ((GetVar(TotalPDF,"nSig")         != NULL) && ((varName == "All") || (varName == "sign")))   AddGaussConstraint(vecConstr, TotalPDF, "nSig");
@@ -830,6 +831,7 @@ string MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar
 // ###################
 {
   stringstream myString;
+  stringstream misTagAngPDF;
   stringstream finalSignalAngPDF;
   vector<RooRealVar*> vecParam;
 
@@ -898,19 +900,23 @@ string MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar
 	  
     	  myString << "(P4 + P5*" << z->getPlotLabel() << " + P6*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
     	  myString << "P7*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
+    	  myString << y->getPlotLabel() << " + ";
 	  
     	  myString << "(P8 + P9*" << z->getPlotLabel() << " + P10*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
     	  myString << "P11*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
+    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
 	  
     	  myString << "(P12 + P13*" << z->getPlotLabel() << " + P14*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
     	  myString << "P15*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
+    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
 
     	  myString << "(P16 + P17*" << z->getPlotLabel() << " + P18*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
     	  myString << "P19*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << ")";
+    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
+
+    	  myString << "(P20 + P21*" << z->getPlotLabel() << " + P22*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+    	  myString << "P23*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
+    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << ")";
 	  
     	  for (int i = 0; i < effFunc->GetNpar(); i++) VarsPoly->add(*vecParam[i]);
     	}
@@ -964,31 +970,44 @@ string MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar
 	  // #############################
 	  myString << " * ";
 	  myString << "((Q0 - Q1*" << z->getPlotLabel() << " + Q2*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " - ";
-	  myString << "Q3*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") + ";
+	  myString << "Q3*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") - ";
 	  
 	  myString << "(Q4 - Q5*" << z->getPlotLabel() << " + Q6*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " - ";
 	  myString << "Q7*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << " - ";
+	  myString << y->getPlotLabel() << " + ";
 	  
 	  myString << "(Q8 - Q9*" << z->getPlotLabel() << " + Q10*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " - ";
 	  myString << "Q11*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
+	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << " - ";
 	  
 	  myString << "(Q12 - Q13*" << z->getPlotLabel() << " + Q14*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " - ";
 	  myString << "Q15*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
+	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
 
 	  myString << "(Q16 - Q17*" << z->getPlotLabel() << " + Q18*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " - ";
 	  myString << "Q19*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << ")";
+	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << " - ";
+
+	  myString << "(Q20 - Q21*" << z->getPlotLabel() << " + Q22*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " - ";
+	  myString << "Q23*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
+	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << ")";
+
+	  // @TMP@
+	  misTagAngPDF.clear(); misTagAngPDF.str("");
+	  misTagAngPDF << "(" << myString.str().c_str() << " + " << "abs(" << myString.str().c_str() << "))/2";
+
+	  myString.clear(); myString.str("");
+	  myString << misTagAngPDF.str().c_str();
 
     	  for (int i = 0; i < effFunc->GetNpar(); i++) VarsPoly->add(*vecParam[i]);
 	}
     }
   
 
+  // @TMP@
   finalSignalAngPDF.clear(); finalSignalAngPDF.str("");
-  finalSignalAngPDF << "(" << myString.str().c_str() << " + " << "abs(" << myString.str().c_str() << "))/2";
+  // finalSignalAngPDF << "(" << myString.str().c_str() << " + " << "abs(" << myString.str().c_str() << "))/2";
+  finalSignalAngPDF << myString.str().c_str();
 
   VarsPoly->add(*y);
   VarsPoly->add(*z);
@@ -4569,60 +4588,61 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // #####################
       // # Make sideband fit #
       // #####################
-      if (GetVar(*TotalPDF,"nSig") != NULL)
-	{
-	  RooAbsPdf* TmpPDF = NULL;
-	  RooDataSet* sideBands = NULL;
-	  RooRealVar frac("frac","Fraction",0.5,0.0,1.0);
-	  RooArgSet constrSidebads;
-	  ClearVars(&constrSidebads);
-	  BuildAngularConstraints(&constrSidebads,*TotalPDF);
+      // @TMP@
+      // if (GetVar(*TotalPDF,"nSig") != NULL)
+	// {
+	//   RooAbsPdf* TmpPDF = NULL;
+	//   RooDataSet* sideBands = NULL;
+	//   RooRealVar frac("frac","Fraction",0.5,0.0,1.0);
+	//   RooArgSet constrSidebads;
+	//   ClearVars(&constrSidebads);
+	//   BuildAngularConstraints(&constrSidebads,*TotalPDF);
 
 
-	  // ################
-	  // # Save results #
-	  // ################
-	  fileFitResults << "====================================================================" << endl;
-	  fileFitResults << "@@@@@@ B0 mass sideband fit @@@@@@" << endl;
-	  fileFitResults << "Amplitude of signal region (+/- n*< Sigma >): " << Utility->GetGenericParam("NSigmaB0S") << " * " << Utility->GetB0Width() << endl;
+	//   // ################
+	//   // # Save results #
+	//   // ################
+	//   fileFitResults << "====================================================================" << endl;
+	//   fileFitResults << "@@@@@@ B0 mass sideband fit @@@@@@" << endl;
+	//   fileFitResults << "Amplitude of signal region (+/- n*< Sigma >): " << Utility->GetGenericParam("NSigmaB0S") << " * " << Utility->GetB0Width() << endl;
 
 
-	  // ##############
-	  // # Get p.d.f. #
-	  // ##############
-	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) TmpPDF = new RooAddPdf("TmpPDF","Temporary p.d.f.",RooArgSet(*BkgAnglesC,*BkgAnglesP),RooArgSet(frac));
-	  else                                      TmpPDF = new RooProdPdf(*((RooProdPdf*)BkgAnglesC),"TmpPDF");
+	//   // ##############
+	//   // # Get p.d.f. #
+	//   // ##############
+	//   if (GetVar(*TotalPDF,"nBkgPeak") != NULL) TmpPDF = new RooAddPdf("TmpPDF","Temporary p.d.f.",RooArgSet(*BkgAnglesC,*BkgAnglesP),RooArgSet(frac));
+	//   else                                      TmpPDF = new RooProdPdf(*((RooProdPdf*)BkgAnglesC),"TmpPDF");
 
 
-	  // #############
-	  // # Sidebands #
-	  // #############
-	  myString.clear(); myString.str("");
-	  myString << "B0MassArb < " << (*TotalPDF)->getVariables()->getRealValue("meanS") - Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
-	  myString << " || B0MassArb > " << (*TotalPDF)->getVariables()->getRealValue("meanS") + Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
-	  cout << "Cut for B0 sidebands: " << myString.str().c_str() << endl;
-	  sideBands = (RooDataSet*)dataSet->reduce(myString.str().c_str());
+	//   // #############
+	//   // # Sidebands #
+	//   // #############
+	//   myString.clear(); myString.str("");
+	//   myString << "B0MassArb < " << (*TotalPDF)->getVariables()->getRealValue("meanS") - Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
+	//   myString << " || B0MassArb > " << (*TotalPDF)->getVariables()->getRealValue("meanS") + Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
+	//   cout << "Cut for B0 sidebands: " << myString.str().c_str() << endl;
+	//   sideBands = (RooDataSet*)dataSet->reduce(myString.str().c_str());
 
 
-	  // ###################
-	  // # Make actual fit #
-	  // ###################
-	  if (ApplyConstr == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebads),Save(true));
-	  else                     fitResult = TmpPDF->fitTo(*sideBands,Save(true));
-	  if (fitResult != NULL) fitResult->Print("v");
+	//   // ###################
+	//   // # Make actual fit #
+	//   // ###################
+	//   if (ApplyConstr == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebads),Save(true));
+	//   else                     fitResult = TmpPDF->fitTo(*sideBands,Save(true));
+	//   if (fitResult != NULL) fitResult->Print("v");
 
 	  
-	  // ####################
-	  // # Save fit results #
-	  // ####################
-	  StorePolyResultsInFile(TotalPDF);
+	//   // ####################
+	//   // # Save fit results #
+	//   // ####################
+	//   StorePolyResultsInFile(TotalPDF);
 
 
-	  delete TmpPDF;
-	  delete sideBands;
-	  ClearVars(&constrSidebads);
-	  if (fitResult != NULL) delete fitResult;
-	}
+	//   delete TmpPDF;
+	//   delete sideBands;
+	//   ClearVars(&constrSidebads);
+	//   if (fitResult != NULL) delete fitResult;
+	// }
 
 
       // ###################

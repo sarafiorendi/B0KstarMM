@@ -22,9 +22,9 @@ class Utils
 
  public:
   
-  Utils();
+  Utils(bool rightFlavorTag = true);
   ~Utils() {};
-  
+
 
   // #################################
   // # Data structure for efficiency #
@@ -133,8 +133,8 @@ class Utils
 			double WyzCov,
 			double* cosAlpha,
 			double* cosAlphaErr);
-  
-  void ReadBins     (std::string fileName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins);
+
+  void ReadBins     (std::string fileName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, std::string signalType = "goodTag");
   void Readq2Bins   (std::string fileName, std::vector<double>* q2Bins);
   void ReadHLTpaths (std::string fileName, std::vector<std::string>* TrigTable);
 
@@ -198,7 +198,7 @@ class Utils
   void ReadAnalyticalEff (std::string fileNameEffParams,
 			  std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins,
 			  std::vector<TF3*>* effFuncs, std::string effID, const unsigned int dataBlockN);
-  void ReadAnalyticalEffFullCovariance (std::string fileNameEffParams, std::vector<TMatrixTSym<double>*>* covMatrices, const unsigned int dataBlockN);
+  void ReadAnalyticalEffFullCovariance (std::string fileNameEffParams, std::vector<TMatrixTSym<double>*>* covMatrices, std::string dimensions, const unsigned int dataBlockN);
 
   double EffMinValue1D (double minX, double maxX, TF1* effFunc);
   double EffMinValue2D (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, TF2* effFunc);
@@ -212,12 +212,10 @@ class Utils
 
   void AddConstraint1D              (TH1D** histo, std::string constrType, double err, double Yval, double Yerr, unsigned int ID);
   void AddConstraintThetaL          (TH1D** histo, unsigned int q2BinIndx, unsigned int cosThetaKBinIndx, unsigned int ID);
-  void AddConstraint2D              (TH2D** histo, double abscissaErr, double ZerrRescale, unsigned int ID, std::string toBeConstr, double constrXval, double constrXerr, std::vector< std::pair <double,double> >* constraints = NULL, std::vector<std::string>* toBeAdded = NULL);
+  void AddConstraint2D              (TH2D** histo, double abscissaErr, double ZerrRescale, unsigned int ID, std::string toBeConstr, double scaleConstr, double constrXerr, std::vector< std::pair <double,double> >* constraints = NULL, std::vector<std::string>* toBeAdded = NULL);
   void AddConstraintThetaK          (TH2D** histo, std::vector<double>* cosThetaKBins, unsigned int q2BinIndx, unsigned int ID);
   void AddConstraint3D              (TH3D** histo, double abscissaErr, double Tval, double Terr, double TerrRescale, unsigned int ID, std::vector<int> toBeAdded[]);
   void AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2BinIndx, unsigned int ID);
-
-  bool IsThereOddDegree (TF2* effFunc);
 
   bool IsThisData (std::string fileName);
 

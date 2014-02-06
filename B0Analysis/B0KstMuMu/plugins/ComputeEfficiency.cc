@@ -72,11 +72,13 @@ using std::vector;
 // ####################
 // # Global constants #
 // ####################
-#define INPUT_THETAL            "ThetaL_B0ToKstMuMu.txt"
-#define INPUT_PHI               "Phi_B0ToKstMuMu.txt"
-#define INPUT_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu.txt" // "ThetaK_B0ToKstMuMu.txt" OR "ThetaKThetaL_B0ToKstMuMu.txt"
-#define INPUT_THETAL_THETAK_PHI "ThetaKThetaLPhi_B0ToKstMuMu.txt"
+#define INPUT_THETAL           "ThetaL_B0ToKstMuMu.txt"
+#define INPUT_PHI              "Phi_B0ToKstMuMu.txt"
+#define INPUT_THETAL_THETAK    "ThetaK_B0ToKstMuMu.txt"
+#define TEST_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu.txt"
+#define TEST_THETAL_THETAK_PHI "ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
+#define RIGHTtag       true
 #define SavePlot       false
 #define CHECKEFFatREAD false // Check if 2D or 3D efficiency go negative
 #define NFILES         200
@@ -1293,9 +1295,30 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // #########################################################################
   // # Perform the fit of the analytical efficiency to the binned efficiency #
   // #########################################################################
-  cTestGlobalFit->cd();
   fitResults = hisFunc2D->Fit(effFuncs2D[q2BinIndx]->GetName(),"VMS");
+  cout << "[ComputeEfficiency::Fit2DEfficiencies]\tFit status: " << fitResults << endl;
+
+  if (fitResults != 0)
+    {
+      fitResults = hisFunc2D->Fit(effFuncs2D[q2BinIndx]->GetName(),"VS");
+      cout << "[ComputeEfficiency::Fit2DEfficiencies]\tFit status: " << fitResults << endl;
+    }
+
   TMatrixTSym<double> covMatrix(fitResults->GetCovarianceMatrix());
+
+  if (fitResults != 0) exit (EXIT_FAILURE);
+  else if (covMatrix.Determinant() <= 0.0)
+    {
+      cout << "[ComputeEfficiency::Fit2DEfficiencies]\tFit status: covariance matrix with negative determinant" << endl;
+      exit (EXIT_FAILURE);
+    }
+  else if (covMatrix.IsSymmetric() == false)
+    {
+      cout << "[ComputeEfficiency::Fit2DEfficiencies]\tFit status: covariance matrix not symmetric" << endl;
+      exit (EXIT_FAILURE);
+    }
+
+  cTestGlobalFit->cd();
   effFuncs2D[q2BinIndx]->Draw("surf1 fb");
   hisFunc2D->Draw("lego2 fb");
   cTestGlobalFit->Update();
@@ -1317,7 +1340,7 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // # Check integrity of covariance matrix #
   // ########################################
   vector<TMatrixTSym<double>*>* covMatrices = new vector<TMatrixTSym<double>*>;
-  Utility->ReadAnalyticalEffFullCovariance(fileNameOut.c_str(),covMatrices,0);
+  Utility->ReadAnalyticalEffFullCovariance(fileNameOut.c_str(),covMatrices,"2D",0);
 
 
   // #############
@@ -1494,7 +1517,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   if (fitResults != 0) exit (EXIT_FAILURE);
   else if (covMatrix.Determinant() <= 0.0)
     {
-      cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: covariance matrix not positive-defined" << endl;
+      cout << "[ComputeEfficiency::Fit3DEfficiencies]\tFit status: covariance matrix with negative determinant" << endl;
       exit (EXIT_FAILURE);
     }
   else if (covMatrix.IsSymmetric() == false)
@@ -1615,7 +1638,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // # Check integrity of covariance matrix #
   // ########################################
   vector<TMatrixTSym<double>*>* covMatrices = new vector<TMatrixTSym<double>*>;
-  Utility->ReadAnalyticalEffFullCovariance(fileNameOut.c_str(),covMatrices,0);
+  Utility->ReadAnalyticalEffFullCovariance(fileNameOut.c_str(),covMatrices,"3D",0);
 
 
   // #############
@@ -1649,21 +1672,16 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   // ###################
   // # Local variables #
   // ###################
-  double Eff, EffErr;
-  double averagePerBin;
-  double chi2point = 0.0;
-  double chi2avg   = 0.0;
-  double DoF       = 0.0;
+  stringstream myString;
+  string tmpString;
   vector<TF2*> effFuncs2D;
   TF2* effFunc2D;
   vector<TF12*> effFuncSlice;
   vector<TH1D*> histoSlice;
-  string tmpString;
-  stringstream myString;
   // ###################
 
 
-  TCanvas* cEff      = new TCanvas("cEff", "cEff", 10, 10, 1200, 800);
+  TCanvas* cEff = new TCanvas("cEff", "cEff", 10, 10, 1200, 800);
   cEff->Divide(7,2);
 
 
@@ -1681,41 +1699,11 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   // ##############################
   // # Read analytical efficiency #
   // ##############################
-  Utility->ReadAnalyticalEff(INPUT_THETAL_THETAK,q2Bins,cosThetaKBins,cosThetaLBins,&effFuncs2D,"effFuncs2D",0);
+  Utility->ReadAnalyticalEff(TEST_THETAL_THETAK,q2Bins,cosThetaKBins,cosThetaLBins,&effFuncs2D,"effFuncs2D",0);
   effFunc2D = effFuncs2D[q2BinIndx];
   cEff->cd(2);
   effFunc2D->GetZaxis()->SetTitleOffset(1.25);
   effFunc2D->Draw("surf2 fb");
-
-
-  // ##############################
-  // # Count number of parameters #
-  // ##############################
-  for (int i = 0; i < effFunc2D->GetNpar(); i++) if (effFunc2D->GetParError(i) != 0.0) DoF += 1.0;
-
-
-  // #######################################
-  // # Compute chi2 Binned - AnalyticalRef #
-  // #######################################
-  for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
-    for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
-      {
-	Eff    = hisFunc2D->GetBinContent(j+1,k+1);
-	EffErr = hisFunc2D->GetBinError(j+1,k+1);
-	
-	averagePerBin = effFunc2D->Integral(cosThetaKBins->operator[](j),cosThetaKBins->operator[](j+1),cosThetaLBins->operator[](k),cosThetaLBins->operator[](k+1)) /
-	  ((cosThetaKBins->operator[](j+1)-cosThetaKBins->operator[](j)) * (cosThetaLBins->operator[](k+1)-cosThetaLBins->operator[](k)));
-	
-	chi2avg   = chi2avg + pow((Eff - averagePerBin) / EffErr,2.);
-	chi2point = chi2point + pow((Eff - effFunc2D->Eval((cosThetaKBins->operator[](j)+cosThetaKBins->operator[](j+1))/2.,
-							   (cosThetaLBins->operator[](k)+cosThetaLBins->operator[](k+1))/2.)) / EffErr,2.);
-      }
-  DoF = (cosThetaKBins->size()-1)*(cosThetaLBins->size()-1) - DoF; // DoF = number of bins - number of fit parameters
-  cout << "\n@@@ chi2 test between binned and analytical efficiencies @@@" << endl;
-  cout << "- chi2/DoF (average over the bin) = " << chi2avg / DoF << " (" << chi2avg << "/" << DoF << ")";
-  cout << "\tCL : " << TMath::Prob(chi2avg,static_cast<int>(DoF)) << endl;
-  cout << "- chi2/DoF (by point) = " << chi2point / DoF << " (" << chi2point << "/" << DoF << ")";
-  cout << "\tCL : " << TMath::Prob(chi2point,static_cast<int>(DoF)) << endl;
   Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFunc2D);
 
 
@@ -1776,7 +1764,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   cEff->Update();
   if (savePlot == true)
     {
-      tmpString = INPUT_THETAL_THETAK;
+      tmpString = TEST_THETAL_THETAK;
       tmpString.erase(tmpString.find(".txt"),4);
       myString.str("");
       myString << tmpString << "_" << q2BinIndx << ".pdf";
@@ -1800,11 +1788,6 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   stringstream myString;
   string tmpString;
   double coeff;
-  double Eff, EffErr;
-  double averagePerBin;
-  double chi2point = 0.0;
-  double chi2avg   = 0.0;
-  double DoF       = 0.0;
   TH1* tmpHist1D;
   TH2* tmpHist2D;
   vector<TF3*> effFuncs3D;
@@ -1817,7 +1800,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   // ##################
 
 
-  TCanvas* cEff      = new TCanvas("cEff", "cEff", 10, 10, 1000, 1200);
+  TCanvas* cEff = new TCanvas("cEff", "cEff", 10, 10, 1000, 1200);
   cEff->Divide(3,3);
 
 
@@ -1838,54 +1821,26 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   // ##############################
   // # Read analytical efficiency #
   // ##############################
-  Utility->ReadAnalyticalEff(INPUT_THETAL_THETAK_PHI,q2Bins,cosThetaKBins,cosThetaLBins,phiBins,&effFuncs3D,"effFuncs3D",0);
+  Utility->ReadAnalyticalEff(TEST_THETAL_THETAK_PHI,q2Bins,cosThetaKBins,cosThetaLBins,phiBins,&effFuncs3D,"effFuncs3D",0);
   EffFunc3D = effFuncs3D[q2BinIndx];
-
-
-  // ##############################
-  // # Count number of parameters #
-  // ##############################
-  for (int i = 0; i < EffFunc3D->GetNpar(); i++) if (EffFunc3D->GetParError(i) != 0.0) DoF += 1.0;
-
-
-  // #######################################
-  // # Compute chi2 Binned - AnalyticalRef #
-  // #######################################
+  Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,EffFunc3D);
+  
   effHis3D = Utility->Get3DEffHitoq2Bin("effHis3D",q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
   effHis3D->SetMarkerStyle(22);
   effHis3D->SetMarkerColor(kRed);
   for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
     for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
       for (unsigned int l = 0; l < phiBins->size()-1; l++)
-      {
-	Eff    = hisFunc3D->GetBinContent(j+1,k+1,l+1);
-	EffErr = hisFunc3D->GetBinError(j+1,k+1,l+1);
-	
-	averagePerBin = EffFunc3D->Integral(cosThetaKBins->operator[](j),cosThetaKBins->operator[](j+1),
-					    cosThetaLBins->operator[](k),cosThetaLBins->operator[](k+1),
-					    phiBins->operator[](l),phiBins->operator[](l+1)) /
-	  ((cosThetaKBins->operator[](j+1)-cosThetaKBins->operator[](j)) *
-	   (cosThetaLBins->operator[](k+1)-cosThetaLBins->operator[](k)) *
-	   (phiBins->operator[](l+1)-phiBins->operator[](l)));
-	
-	coeff = EffFunc3D->Eval((cosThetaKBins->operator[](j)+cosThetaKBins->operator[](j+1))/2.,
-				(cosThetaLBins->operator[](k)+cosThetaLBins->operator[](k+1))/2.,
-				(phiBins->operator[](l)+phiBins->operator[](l+1))/2.);
-	effHis3D->SetBinContent(j+1,k+1,l+1,coeff);
-	effHis3D->SetBinError(j+1,k+1,l+1,0.0);
-	
-	chi2avg   = chi2avg + pow((Eff - averagePerBin) / EffErr,2.);
-	chi2point = chi2point + pow((Eff - coeff) / EffErr,2.);
-      }
-  DoF = (cosThetaKBins->size()-1)*(cosThetaLBins->size()-1)*(phiBins->size()-1) - DoF; // DoF = number of bins - number of fit parameters
-  cout << "\n@@@ chi2 test between binned and analytical efficiencies @@@" << endl;
-  cout << "- chi2/DoF (average over the bin) = " << chi2avg / DoF << " (" << chi2avg << "/" << DoF << ")";
-  cout << "\tCL : " << TMath::Prob(chi2avg,static_cast<int>(DoF)) << endl;
-  cout << "- chi2/DoF (by point) = " << chi2point / DoF << " (" << chi2point << "/" << DoF << ")";
-  cout << "\tCL : " << TMath::Prob(chi2point,static_cast<int>(DoF)) << endl;
-  Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,EffFunc3D);
-  
-  
+	{
+	  coeff = EffFunc3D->Eval((cosThetaKBins->operator[](j)+cosThetaKBins->operator[](j+1))/2.,
+				  (cosThetaLBins->operator[](k)+cosThetaLBins->operator[](k+1))/2.,
+				  (phiBins->operator[](l)+phiBins->operator[](l+1))/2.);
+	  
+	  effHis3D->SetBinContent(j+1,k+1,l+1,coeff);
+	  effHis3D->SetBinError(j+1,k+1,l+1,0.0);
+	}
+
+
   // #######################
   // # Make 2D projections #
   // #######################
@@ -1951,7 +1906,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   cEff->Update();
   if (savePlot == true)
     {
-      tmpString = INPUT_THETAL_THETAK_PHI;
+      tmpString = TEST_THETAL_THETAK_PHI;
       tmpString.erase(tmpString.find(".txt"),4);
       myString.str("");
       myString << tmpString << "_" << q2BinIndx << ".pdf";
@@ -1970,18 +1925,20 @@ int main (int argc, char** argv)
 
 
       cout << "\n@@@ Settings @@@" << endl;
-      cout << "INPUT_THETAL: "            << INPUT_THETAL << endl;
-      cout << "INPUT_PHI: "               << INPUT_PHI << endl;
-      cout << "INPUT_THETAL_THETAK: "     << INPUT_THETAL_THETAK << endl;
-      cout << "INPUT_THETAL_THETAK_PHI: " << INPUT_THETAL_THETAK_PHI << endl;
+      cout << "INPUT_THETAL: "           << INPUT_THETAL << endl;
+      cout << "INPUT_PHI: "              << INPUT_PHI << endl;
+      cout << "INPUT_THETAL_THETAK: "    << INPUT_THETAL_THETAK << endl;
+      cout << "TEST_THETAL_THETAK: "     << TEST_THETAL_THETAK << endl;
+      cout << "TEST_THETAL_THETAK_PHI: " << TEST_THETAL_THETAK_PHI << endl;
 
-      cout << "\nSavePlot: "         << SavePlot << endl;
-      cout << "CHECKEFFatREAD: "   << CHECKEFFatREAD << endl;
-      cout << "NFILES: "           << NFILES << endl;
-      cout << "INPUTGenEff: "      << INPUTGenEff << endl;
-      cout << "SETBATCH: "         << SETBATCH << endl;
-      cout << "ParameterFILE: "    << ParameterFILE << endl;
-      cout << "ordinateRange: " << ordinateRange << endl;
+      cout << "\nRIGHTtag: "     << RIGHTtag << endl;
+      cout << "SavePlot: "       << SavePlot << endl;
+      cout << "CHECKEFFatREAD: " << CHECKEFFatREAD << endl;
+      cout << "NFILES: "         << NFILES << endl;
+      cout << "INPUTGenEff: "    << INPUTGenEff << endl;
+      cout << "SETBATCH: "       << SETBATCH << endl;
+      cout << "ParameterFILE: "  << ParameterFILE << endl;
+      cout << "ordinateRange: "  << ordinateRange << endl;
 
 
       // ##########################
@@ -2030,8 +1987,9 @@ int main (int argc, char** argv)
 	  NTupleSingleCand->Init();
 
 
-	  Utility = new Utils();
-	  Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
+	  Utility = new Utils(RIGHTtag);
+	  if (Utility->RIGHTflavorTAG == true) Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
+	  else                                 Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
 	  Utility->ReadPreselectionCut(ParameterFILE);
 	  Utility->ReadSelectionCuts(ParameterFILE);
 
@@ -2069,8 +2027,9 @@ int main (int argc, char** argv)
 	  TApplication theApp ("Applications", &argc, argv);
 
     
-	  Utility = new Utils();
-	  Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
+	  Utility = new Utils(RIGHTtag);
+	  if (Utility->RIGHTflavorTAG == true) Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
+	  else                                 Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
 
 	  if (option == "ReadBin") Read3DEfficiencies(true,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,false,&myEff,CHECKEFFatREAD,SavePlot,specBin);
 	  else                     Read3DEfficiencies(true,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,true,&myEff,CHECKEFFatREAD,SavePlot,specBin);
@@ -2089,8 +2048,9 @@ int main (int argc, char** argv)
 	  TApplication theApp ("Applications", &argc, argv);
 
 
-	  Utility = new Utils();
-	  Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
+	  Utility = new Utils(RIGHTtag);
+	  if (Utility->RIGHTflavorTAG == true) Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
+	  else                                 Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
 	  
 	  Read3DEfficiencies(false,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,true,&myEff,CHECKEFFatREAD,SavePlot,specBin);
 
@@ -2110,8 +2070,9 @@ int main (int argc, char** argv)
 	  TApplication theApp ("Applications", &argc, argv);
 
 
-	  Utility = new Utils();
-	  Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
+	  Utility = new Utils(RIGHTtag);
+	  if (Utility->RIGHTflavorTAG == true) Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
+	  else                                 Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
 	  Utility->ReadEfficiency(fileNameInput.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,&myEff);
 
 	  if      (option == "Fit1DEff") Fit1DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,whichVar2Fit,q2BinIndx,"Theta.txt");
@@ -2131,8 +2092,9 @@ int main (int argc, char** argv)
 	  TApplication theApp ("Applications", &argc, argv);
 
 
-	  Utility = new Utils();
-	  Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
+	  Utility = new Utils(RIGHTtag);
+	  if (Utility->RIGHTflavorTAG == true) Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
+	  else                                 Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
 	  Utility->ReadEfficiency(fileNameInput.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,&myEff);
 	  
 	  if      (option == "Test2DEff") Test2DEfficiency(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,SavePlot);
