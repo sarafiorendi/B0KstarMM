@@ -78,7 +78,7 @@ using std::vector;
 #define TEST_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu.txt"
 #define TEST_THETAL_THETAK_PHI "ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
-#define RIGHTtag       true
+#define RIGHTtag       false
 #define SavePlot       false
 #define CHECKEFFatREAD false // Check if 2D or 3D efficiency go negative
 #define NFILES         200
@@ -2030,7 +2030,6 @@ int main (int argc, char** argv)
 	  Utility = new Utils(RIGHTtag);
 	  if (Utility->RIGHTflavorTAG == true) Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
 	  else                                 Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
-
 	  if (option == "ReadBin") Read3DEfficiencies(true,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,false,&myEff,CHECKEFFatREAD,SavePlot,specBin);
 	  else                     Read3DEfficiencies(true,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,true,&myEff,CHECKEFFatREAD,SavePlot,specBin);
 
@@ -2051,7 +2050,6 @@ int main (int argc, char** argv)
 	  Utility = new Utils(RIGHTtag);
 	  if (Utility->RIGHTflavorTAG == true) Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
 	  else                                 Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
-	  
 	  Read3DEfficiencies(false,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,true,&myEff,CHECKEFFatREAD,SavePlot,specBin);
 
 

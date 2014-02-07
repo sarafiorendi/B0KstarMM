@@ -139,14 +139,6 @@ if (run2012not2011 == True):
         resolveAmbiguities    = cms.bool(True),
         resolveByMatchQuality = cms.bool(True))
 else:
-    process.cleanMuonTriggerMatchHLT0 = cms.EDProducer(
-        'PATTriggerMatcherDRLessByR',
-        src                   = cms.InputTag('cleanPatMuons'),
-        matched               = cms.InputTag('patTrigger'),
-        matchedCuts           = cms.string('path("HLT_Dimuon6p5_LowMass_Displaced_v*")'),
-        maxDeltaR             = cms.double(0.1),
-        resolveAmbiguities    = cms.bool(True),
-        resolveByMatchQuality = cms.bool(True))
     process.cleanMuonTriggerMatchHLT1 = cms.EDProducer(
         'PATTriggerMatcherDRLessByR',
         src                   = cms.InputTag('cleanPatMuons'),
@@ -188,7 +180,7 @@ from PhysicsTools.PatAlgos.tools.trigTools import *
 if (run2012not2011 == True):
     switchOnTriggerMatchEmbedding(process, triggerMatchers = ['cleanMuonTriggerMatchHLT'], hltProcess = triggerProcessName, outputModule = '')
 else:
-    switchOnTriggerMatchEmbedding(process, triggerMatchers = ['cleanMuonTriggerMatchHLT0','cleanMuonTriggerMatchHLT1','cleanMuonTriggerMatchHLT2','cleanMuonTriggerMatchHLT3','cleanMuonTriggerMatchHLT4'], hltProcess = triggerProcessName, outputModule = '')
+    switchOnTriggerMatchEmbedding(process, triggerMatchers = ['cleanMuonTriggerMatchHLT1','cleanMuonTriggerMatchHLT2','cleanMuonTriggerMatchHLT3','cleanMuonTriggerMatchHLT4'], hltProcess = triggerProcessName, outputModule = '')
 
 
 #########################

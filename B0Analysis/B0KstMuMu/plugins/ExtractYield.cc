@@ -947,9 +947,11 @@ string MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar
 	  // #####################
 	  // # P-wave decay rate #
 	  // #####################
-	  myString << "(3/4 * (3/2 * FlS * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-	  myString << "(3/8 * (1-FlS) * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - AfbS*" << y->getPlotLabel() << ") * ";
-	  myString << "(1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ")))";
+	  // myString << "(3/4 * (3/2 * FlS * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+	  // myString << "(3/8 * (1-FlS) * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - AfbS*" << y->getPlotLabel() << ") * ";
+	  // myString << "(1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ")))";
+
+	  myString << "(3/4)";
 	}
       else
 	{
@@ -993,11 +995,11 @@ string MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar
 	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << ")";
 
 	  // @TMP@
-	  misTagAngPDF.clear(); misTagAngPDF.str("");
-	  misTagAngPDF << "(" << myString.str().c_str() << " + " << "abs(" << myString.str().c_str() << "))/2";
+	  // misTagAngPDF.clear(); misTagAngPDF.str("");
+	  // misTagAngPDF << "(" << myString.str().c_str() << " + " << "abs(" << myString.str().c_str() << "))/2";
 
-	  myString.clear(); myString.str("");
-	  myString << misTagAngPDF.str().c_str();
+	  // myString.clear(); myString.str("");
+	  // myString << misTagAngPDF.str().c_str();
 
     	  for (int i = 0; i < effFunc->GetNpar(); i++) VarsPoly->add(*vecParam[i]);
 	}
@@ -4220,11 +4222,6 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // ##################################################################
   // # Define angle fit variables and pdf for correctly tagged signal #
   // ##################################################################
-  FlS  = new RooRealVar("FlS","F_{L}",0.0,0.0,1.0);
-  AfbS = new RooRealVar("AfbS","A_{FB}",0.0,-1.0,1.0);
-  FlS->setConstant(false);
-  AfbS->setConstant(false);
-  
   RooArgSet* VarsPolyGT = new RooArgSet("VarsPolyGT");
   myString.clear(); myString.str("");
   myString << MakeAngWithEffPDF(effFunc.first,NULL,y,z,FitType,useEffPDF,VarsAng,VarsPolyGT);

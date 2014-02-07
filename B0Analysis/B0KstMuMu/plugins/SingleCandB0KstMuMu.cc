@@ -29,10 +29,10 @@ using std::string;
 // ####################
 // # Global constants #
 // ####################
-#define DoTrigCheck 1
-#define SaveHistos   false
-#define DoMCTruth    false // Compute the single candidate variables from MC-GEN values
-#define TagFromTruth false // Assign the CP-eigenstate from MC-GEN
+#define DoTrigCheck   1
+#define SaveHistos    false
+#define DoMCTruth     false // Compute the single candidate variables from MC-GEN values
+#define TagFromTruth  false // Assign the CP-eigenstate from MC-GEN
 #define ParameterFILE "../python/ParameterFile.txt"
 
 
