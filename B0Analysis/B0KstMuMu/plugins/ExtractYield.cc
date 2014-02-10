@@ -947,9 +947,9 @@ string MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar
 	  // #####################
 	  // # P-wave decay rate #
 	  // #####################
-	  // myString << "(3/4 * (3/2 * FlS * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-	  // myString << "(3/8 * (1-FlS) * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - AfbS*" << y->getPlotLabel() << ") * ";
-	  // myString << "(1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ")))";
+	  myString << "(3/4 * (3/2 * FlS * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+	  myString << "(3/8 * (1-FlS) * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - AfbS*" << y->getPlotLabel() << ") * ";
+	  myString << "(1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ")))";
 
 	  myString << "(3/4)";
 	}
@@ -970,29 +970,29 @@ string MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar
 	  // #############################
 	  // # Make 2D efficiency p.d.f. #
 	  // #############################
-	  myString << " * ";
-	  myString << "((Q0 - Q1*" << z->getPlotLabel() << " + Q2*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " - ";
-	  myString << "Q3*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") - ";
-	  
-	  myString << "(Q4 - Q5*" << z->getPlotLabel() << " + Q6*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " - ";
-	  myString << "Q7*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-	  myString << y->getPlotLabel() << " + ";
-	  
-	  myString << "(Q8 - Q9*" << z->getPlotLabel() << " + Q10*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " - ";
-	  myString << "Q11*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << " - ";
-	  
-	  myString << "(Q12 - Q13*" << z->getPlotLabel() << " + Q14*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " - ";
-	  myString << "Q15*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
+   	  myString << " * ";
+    	  myString << "((Q0 + Q1*" << z->getPlotLabel() << " + Q2*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+    	  myString << "Q3*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") + ";
 
-	  myString << "(Q16 - Q17*" << z->getPlotLabel() << " + Q18*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " - ";
-	  myString << "Q19*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << " - ";
+    	  myString << "(Q4 + Q5*" << z->getPlotLabel() << " + Q6*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+    	  myString << "Q7*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
+    	  myString << y->getPlotLabel() << " + ";
+	  
+    	  myString << "(Q8 + Q9*" << z->getPlotLabel() << " + Q10*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+    	  myString << "Q11*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
+    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
+	  
+    	  myString << "(Q12 + Q13*" << z->getPlotLabel() << " + Q14*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+    	  myString << "Q15*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
+    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
 
-	  myString << "(Q20 - Q21*" << z->getPlotLabel() << " + Q22*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " - ";
-	  myString << "Q23*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << ")";
+    	  myString << "(Q16 + Q17*" << z->getPlotLabel() << " + Q18*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+    	  myString << "Q19*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
+    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
+
+    	  myString << "(Q20 + Q21*" << z->getPlotLabel() << " + Q22*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+    	  myString << "Q23*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
+    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << ")";
 
 	  // @TMP@
 	  // misTagAngPDF.clear(); misTagAngPDF.str("");

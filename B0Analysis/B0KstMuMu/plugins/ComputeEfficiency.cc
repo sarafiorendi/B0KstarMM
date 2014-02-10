@@ -72,13 +72,13 @@ using std::vector;
 // ####################
 // # Global constants #
 // ####################
-#define INPUT_THETAL           "ThetaL_B0ToKstMuMu.txt"
-#define INPUT_PHI              "Phi_B0ToKstMuMu.txt"
-#define INPUT_THETAL_THETAK    "ThetaK_B0ToKstMuMu.txt"
-#define TEST_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu.txt"
+#define INPUT_THETAL           "ThetaL_B0ToKstMuMu_MisTag_newThetaKThetaLbins.txt"
+#define INPUT_PHI              "Phi_B0ToKstMuMu_MisTag_newThetaKThetaLbins.txt"
+#define INPUT_THETAL_THETAK    "ThetaK_B0ToKstMuMu_MisTag_newThetaKThetaLbins.txt"
+#define TEST_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu_MisTag_newThetaKThetaLbins.txt"
 #define TEST_THETAL_THETAK_PHI "ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
-#define RIGHTtag       false
+#define RIGHTtag       true
 #define SavePlot       false
 #define CHECKEFFatREAD false // Check if 2D or 3D efficiency go negative
 #define NFILES         200
@@ -291,11 +291,15 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   double* cosThetaLBins_ = Utility->MakeBinning(cosThetaLBins);
   double* phiBins_       = Utility->MakeBinning(phiBins);
   // ###################
-  string NumOrDen2Plot = "N2"; // It can be: "N1", "N2", "D2", "D2"
+  string NumOrDen2Plot = "N2"; // It can be: "N1", "N2", "D1", "D2"
+  double Yaxes = 2e5;
   double Zaxes = 1e3;
   // ###################
 
 
+  // ##########################
+  // # Efficiency projections #
+  // ##########################
   TCanvas* cEff = new TCanvas("cEff", "cEff", 10, 10, 1200, 800);
   cEff->Divide(2,2);
 
@@ -306,21 +310,22 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   vector<TH1D*> vecHcosThetaK;
   vector<TH1D*> vecHcosThetaL;
   vector<TH1D*> vecHphi;
+
   for (unsigned int i = 0; i < q2Bins->size()-1; i++)
     {
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "vecHcosThetaK_" << i;
       vecHcosThetaK.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), cosThetaKBins->size()-1, cosThetaKBins_));
       vecHcosThetaK.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
       vecHcosThetaK.back()->SetYTitle("Efficiency");
 
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "vecHcosThetaL_" << i;
       vecHcosThetaL.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), cosThetaLBins->size()-1, cosThetaLBins_));
       vecHcosThetaL.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
       vecHcosThetaL.back()->SetYTitle("Efficiency");
 
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "vecHphi_" << i;
       vecHphi.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), phiBins->size()-1, phiBins_));
       vecHphi.back()->SetXTitle("#phi");
@@ -385,7 +390,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   vecHcosThetaK[0]->Draw("e1");
   vecHcosThetaK[0]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
   TLegend* legThetaK = new TLegend(0.88, 0.65, 0.97, 0.89, "");
-  myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
+  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
   legThetaK->AddEntry(vecHcosThetaK[0],myString.str().c_str());
   for (unsigned int i = 1; i < q2Bins->size()-1; i++)
     {
@@ -395,7 +400,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
       vecHcosThetaK[i]->SetLineWidth(2);
       vecHcosThetaK[i]->Draw("sames e1");
       vecHcosThetaK[i]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
-      myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
+      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
       legThetaK->AddEntry(vecHcosThetaK[i],myString.str().c_str());
     }
   legThetaK->SetFillColor(0);
@@ -410,7 +415,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   vecHcosThetaL[0]->Draw("e1");
   vecHcosThetaL[0]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
   TLegend* legThetaL = new TLegend(0.88, 0.65, 0.97, 0.89, "");
-  myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
+  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
   legThetaL->AddEntry(vecHcosThetaL[0],myString.str().c_str());
   for (unsigned int i = 1; i < q2Bins->size()-1; i++)
     {
@@ -420,7 +425,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
       vecHcosThetaL[i]->SetLineWidth(2);
       vecHcosThetaL[i]->Draw("sames e1");
       vecHcosThetaL[i]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
-      myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
+      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
       legThetaL->AddEntry(vecHcosThetaL[i],myString.str().c_str());
     }
   legThetaL->SetFillColor(0);
@@ -434,9 +439,9 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   vecHphi[0]->SetLineWidth(2);
   vecHphi[0]->Draw("e1");
   vecHphi[0]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
-  TLegend* legphi = new TLegend(0.88, 0.65, 0.97, 0.89, "");
-  myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
-  legphi->AddEntry(vecHphi[0],myString.str().c_str());
+  TLegend* legPhi = new TLegend(0.88, 0.65, 0.97, 0.89, "");
+  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
+  legPhi->AddEntry(vecHphi[0],myString.str().c_str());
   for (unsigned int i = 1; i < q2Bins->size()-1; i++)
     {
       vecHphi[i]->SetMarkerStyle(20+i);
@@ -445,16 +450,19 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
       vecHphi[i]->SetLineWidth(2);
       vecHphi[i]->Draw("sames e1");
       vecHphi[i]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
-      myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
-      legphi->AddEntry(vecHphi[i],myString.str().c_str());
+      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
+      legPhi->AddEntry(vecHphi[i],myString.str().c_str());
     }
-  legphi->SetFillColor(0);
-  legphi->SetBorderSize(0);
-  legphi->Draw();
+  legPhi->SetFillColor(0);
+  legPhi->SetBorderSize(0);
+  legPhi->Draw();
 
   cEff->Update();
 
 
+  // #############################
+  // # Eff. Terms 2D projections #
+  // #############################
   TCanvas* cNumCosThetaK = new TCanvas("cNumCosThetaK", "cNumCosThetaK", 10, 10, 1200, 800);
   cNumCosThetaK->Divide(2,3);
 
@@ -476,36 +484,36 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
     {
       for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
 	{
-	  myString.str("");
+	  myString.clear(); myString.str("");
 	  myString << "vecHq2ANDcosThetaK_" << i << "_" << j;
 	  vecHq2ANDcosThetaK.push_back(new TH2D(myString.str().c_str(), myString.str().c_str(), cosThetaLBins->size()-1, cosThetaLBins_, phiBins->size()-1, phiBins_));
 	  vecHq2ANDcosThetaK.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
 	  vecHq2ANDcosThetaK.back()->SetYTitle("#phi");
-	  vecHq2ANDcosThetaK.back()->SetZTitle("Numerator single cand. [#]");
+	  vecHq2ANDcosThetaK.back()->SetZTitle("Eff. Terms [#]");
 
 	  legHq2ANDcosThetaK.push_back(new TLegend(0.88, 0.6, 0.97, 0.89, ""));
 	}
 
       for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
 	{
-	  myString.str("");
+	  myString.clear(); myString.str("");
 	  myString << "vecHq2ANDcosThetaL_" << i << "_" << k;
 	  vecHq2ANDcosThetaL.push_back(new TH2D(myString.str().c_str(), myString.str().c_str(), cosThetaKBins->size()-1, cosThetaKBins_, phiBins->size()-1, phiBins_));
 	  vecHq2ANDcosThetaL.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
 	  vecHq2ANDcosThetaL.back()->SetYTitle("#phi");
-	  vecHq2ANDcosThetaL.back()->SetZTitle("Numerator single cand. [#]");
+	  vecHq2ANDcosThetaL.back()->SetZTitle("Eff. Terms [#]");
 
 	  legHq2ANDcosThetaL.push_back(new TLegend(0.88, 0.6, 0.97, 0.89, ""));
 	}
 
       for (unsigned int l = 0; l < phiBins->size()-1; l++)
 	{
-	  myString.str("");
+	  myString.clear(); myString.str("");
 	  myString << "vecHq2ANDphi_" << i << "_" << l;
 	  vecHq2ANDphi.push_back(new TH2D(myString.str().c_str(), myString.str().c_str(), cosThetaLBins->size()-1, cosThetaLBins_, cosThetaKBins->size()-1, cosThetaKBins_));
 	  vecHq2ANDphi.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
 	  vecHq2ANDphi.back()->SetYTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
-	  vecHq2ANDphi.back()->SetZTitle("Numerator single cand. [#]");
+	  vecHq2ANDphi.back()->SetZTitle("Eff. Terms [#]");
 
 	  legHq2ANDphi.push_back(new TLegend(0.88, 0.6, 0.97, 0.89, ""));
 	}
@@ -526,6 +534,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 		else if (NumOrDen2Plot == "N2") Eff = myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 		else if (NumOrDen2Plot == "D1") Eff = myEff.Den1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 		else                            Eff = myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+
 		vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->SetBinContent(k+1,l+1,Eff);
 	      }
 	  
@@ -538,7 +547,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 	  else        vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->Draw("sames surf bb fb");
 	  vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(0.1,Zaxes);
 
-	  myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
+	  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
 	  legHq2ANDcosThetaK[j]->AddEntry(vecHq2ANDcosThetaK[j*(q2Bins->size()-1)+i],myString.str().c_str());
 	}
 
@@ -562,6 +571,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 		else if (NumOrDen2Plot == "N2") Eff = myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 		else if (NumOrDen2Plot == "D1") Eff = myEff.Den1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 		else                            Eff = myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+
 		vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->SetBinContent(j+1,l+1,Eff);
 	      }
 
@@ -574,7 +584,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 	  else vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->Draw("sames surf bb fb");
 	  vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(0.1,Zaxes);
 
-	  myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
+	  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
 	  legHq2ANDcosThetaL[k]->AddEntry(vecHq2ANDcosThetaL[k*(q2Bins->size()-1)+i],myString.str().c_str());
 	}
 
@@ -598,6 +608,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 		else if (NumOrDen2Plot == "N2") Eff = myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 		else if (NumOrDen2Plot == "D1") Eff = myEff.Den1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 		else                            Eff = myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+
 		vecHq2ANDphi[l*(q2Bins->size()-1)+i]->SetBinContent(k+1,j+1,Eff);
 	      }
 	  
@@ -610,7 +621,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 	  else        vecHq2ANDphi[l*(q2Bins->size()-1)+i]->Draw("sames surf bb fb");
 	  vecHq2ANDphi[l*(q2Bins->size()-1)+i]->GetZaxis()->SetRangeUser(0.1,Zaxes);
 
-	  myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
+	  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
 	  legHq2ANDphi[l]->AddEntry(vecHq2ANDphi[l*(q2Bins->size()-1)+i],myString.str().c_str());
 	}
 
@@ -623,6 +634,182 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   cNumCosThetaL->Update();
   cNumCosThetaK->Update();
   cNumPhi->Update();
+
+
+  // #############################
+  // # Eff. Terms 1D projections #
+  // #############################
+  TCanvas* cNum = new TCanvas("cNum", "cNum", 10, 10, 1200, 800);
+  cNum->Divide(2,2);
+
+  vector<TH1D*> vecHq2ANDNumcosThetaK;
+  vector<TH1D*> vecHq2ANDNumcosThetaL;
+  vector<TH1D*> vecHq2ANDNumPhi;
+
+  for (unsigned int i = 0; i < q2Bins->size()-1; i++)
+    {
+      myString.clear(); myString.str("");
+      myString << "vecHq2ANDNumcosThetaK_" << i;
+      vecHq2ANDNumcosThetaK.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), cosThetaKBins->size()-1, cosThetaKBins_));
+      vecHq2ANDNumcosThetaK.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
+      vecHq2ANDNumcosThetaK.back()->SetYTitle("Eff. Terms [#]");
+
+      myString.clear(); myString.str("");
+      myString << "vecHq2ANDNumcosThetaL_" << i;
+      vecHq2ANDNumcosThetaL.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), cosThetaLBins->size()-1, cosThetaLBins_));
+      vecHq2ANDNumcosThetaL.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
+      vecHq2ANDNumcosThetaL.back()->SetYTitle("Eff. Terms [#]");
+
+      myString.clear(); myString.str("");
+      myString << "vecHq2ANDNumPhi_" << i;
+      vecHq2ANDNumPhi.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), phiBins->size()-1, phiBins_));
+      vecHq2ANDNumPhi.back()->SetXTitle("#phi");
+      vecHq2ANDNumPhi.back()->SetYTitle("Eff. Terms [#]");
+    }
+
+
+  for (unsigned int i = 0; i < q2Bins->size()-1; i++)
+    {
+      for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
+	{
+	  Eff = 0.0;
+	  
+	  // ########################################################################
+	  // # Fill histogram : efficiency vs cos(theta_K) for different dimuon q^2 #
+	  // ########################################################################
+	  for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
+	    for (unsigned int l = 0; l < phiBins->size()-1; l++)
+	      {
+		if      (NumOrDen2Plot == "N1") Eff += myEff.Num1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		else if (NumOrDen2Plot == "N2") Eff += myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		else if (NumOrDen2Plot == "D1") Eff += myEff.Den1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		else                            Eff += myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	      }
+
+	  Eff = Eff / (cosThetaKBins->operator[](j+1) - cosThetaKBins->operator[](j));
+	  vecHq2ANDNumcosThetaK[i]->SetBinContent(j+1,Eff);
+	}
+
+
+      for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
+	{
+	  Eff = 0.0;
+
+	  // ########################################################################
+	  // # Fill histogram : efficiency vs cos(theta_l) for different dimuon q^2 #
+	  // ########################################################################
+	  for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
+	    for (unsigned int l = 0; l < phiBins->size()-1; l++)
+	      {
+		if      (NumOrDen2Plot == "N1") Eff += myEff.Num1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		else if (NumOrDen2Plot == "N2") Eff += myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		else if (NumOrDen2Plot == "D1") Eff += myEff.Den1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		else                            Eff += myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	      }
+
+	  Eff = Eff / (cosThetaLBins->operator[](k+1) - cosThetaLBins->operator[](k));
+	  vecHq2ANDNumcosThetaL[i]->SetBinContent(k+1,Eff);
+	}
+
+
+      for (unsigned int l = 0; l < phiBins->size()-1; l++)
+	{
+	  Eff = 0.0;
+
+	  // ###############################################################
+	  // # Fill histogram : efficiency vs phi for different dimuon q^2 #
+	  // ###############################################################
+	  for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
+	    for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
+	      {
+		if      (NumOrDen2Plot == "N1") Eff += myEff.Num1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		else if (NumOrDen2Plot == "N2") Eff += myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		else if (NumOrDen2Plot == "D1") Eff += myEff.Den1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+		else                            Eff += myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
+	      }
+
+	  Eff = Eff / (phiBins->operator[](l+1) - phiBins->operator[](l));
+	  vecHq2ANDNumPhi[i]->SetBinContent(l+1,Eff);
+	}
+    }
+
+
+  cNum->cd(2);
+  vecHq2ANDNumcosThetaK[0]->SetMarkerStyle(20);
+  vecHq2ANDNumcosThetaK[0]->SetMarkerColor(1);
+  vecHq2ANDNumcosThetaK[0]->SetLineColor(1);
+  vecHq2ANDNumcosThetaK[0]->SetLineWidth(2);
+  vecHq2ANDNumcosThetaK[0]->Draw("p");
+  vecHq2ANDNumcosThetaK[0]->GetYaxis()->SetRangeUser(0.1,Yaxes);
+  TLegend* legNumThetaK = new TLegend(0.88, 0.65, 0.97, 0.89, "");
+  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
+  legNumThetaK->AddEntry(vecHq2ANDNumcosThetaK[0],myString.str().c_str());
+  for (unsigned int i = 1; i < q2Bins->size()-1; i++)
+    {
+      vecHq2ANDNumcosThetaK[i]->SetMarkerStyle(20+i);
+      vecHq2ANDNumcosThetaK[i]->SetMarkerColor(1+i);
+      vecHq2ANDNumcosThetaK[i]->SetLineColor(1+i);
+      vecHq2ANDNumcosThetaK[i]->SetLineWidth(2);
+      vecHq2ANDNumcosThetaK[i]->Draw("sames p");
+      vecHq2ANDNumcosThetaK[i]->GetYaxis()->SetRangeUser(0.1,Yaxes);
+      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
+      legNumThetaK->AddEntry(vecHq2ANDNumcosThetaK[i],myString.str().c_str());
+    }
+  legNumThetaK->SetFillColor(0);
+  legNumThetaK->SetBorderSize(0);
+  legNumThetaK->Draw();
+
+  cNum->cd(3);
+  vecHq2ANDNumcosThetaL[0]->SetMarkerStyle(20);
+  vecHq2ANDNumcosThetaL[0]->SetMarkerColor(1);
+  vecHq2ANDNumcosThetaL[0]->SetLineColor(1);
+  vecHq2ANDNumcosThetaL[0]->SetLineWidth(2);
+  vecHq2ANDNumcosThetaL[0]->Draw("p");
+  vecHq2ANDNumcosThetaL[0]->GetYaxis()->SetRangeUser(0.1,Yaxes);
+  TLegend* legNumThetaL = new TLegend(0.88, 0.65, 0.97, 0.89, "");
+  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
+  legNumThetaL->AddEntry(vecHq2ANDNumcosThetaL[0],myString.str().c_str());
+  for (unsigned int i = 1; i < q2Bins->size()-1; i++)
+    {
+      vecHq2ANDNumcosThetaL[i]->SetMarkerStyle(20+i);
+      vecHq2ANDNumcosThetaL[i]->SetMarkerColor(1+i);
+      vecHq2ANDNumcosThetaL[i]->SetLineColor(1+i);
+      vecHq2ANDNumcosThetaL[i]->SetLineWidth(2);
+      vecHq2ANDNumcosThetaL[i]->Draw("sames p");
+      vecHq2ANDNumcosThetaL[i]->GetYaxis()->SetRangeUser(0.1,Yaxes);
+      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
+      legNumThetaL->AddEntry(vecHq2ANDNumcosThetaL[i],myString.str().c_str());
+    }
+  legNumThetaL->SetFillColor(0);
+  legNumThetaL->SetBorderSize(0);
+  legNumThetaL->Draw();
+
+  cNum->cd(4);
+  vecHq2ANDNumPhi[0]->SetMarkerStyle(20);
+  vecHq2ANDNumPhi[0]->SetMarkerColor(1);
+  vecHq2ANDNumPhi[0]->SetLineColor(1);
+  vecHq2ANDNumPhi[0]->SetLineWidth(2);
+  vecHq2ANDNumPhi[0]->Draw("p");
+  vecHq2ANDNumPhi[0]->GetYaxis()->SetRangeUser(0.1,Yaxes);
+  TLegend* legNumPhi = new TLegend(0.88, 0.65, 0.97, 0.89, "");
+  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
+  legNumPhi->AddEntry(vecHq2ANDNumPhi[0],myString.str().c_str());
+  for (unsigned int i = 1; i < q2Bins->size()-1; i++)
+    {
+      vecHq2ANDNumPhi[i]->SetMarkerStyle(20+i);
+      vecHq2ANDNumPhi[i]->SetMarkerColor(1+i);
+      vecHq2ANDNumPhi[i]->SetLineColor(1+i);
+      vecHq2ANDNumPhi[i]->SetLineWidth(2);
+      vecHq2ANDNumPhi[i]->Draw("sames p");
+      vecHq2ANDNumPhi[i]->GetYaxis()->SetRangeUser(0.1,Yaxes);
+      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
+      legNumPhi->AddEntry(vecHq2ANDNumPhi[i],myString.str().c_str());
+    }
+  legNumPhi->SetFillColor(0);
+  legNumPhi->SetBorderSize(0);
+  legNumPhi->Draw();
+
+  cNum->Update();
 
 
   Utility->IntegrateEffAll(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,myEff,&totalEffAll,&EffErr);
@@ -670,7 +857,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
   vector<TH1D*> Hq2;
   for (unsigned int i = 0; i < MAXVAL; i++)
     {
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "Hq2_" << i;
       Hq2.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), q2Bins->size()-1, q2Bins_));
       Hq2.back()->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
@@ -680,7 +867,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
   vector<TH1D*> HcosThetaK;
   for (unsigned int i = 0; i < MAXVAL; i++)
     {
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "HcosThetaK_" << i;
       HcosThetaK.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), cosThetaKBins->size()-1, cosThetaKBins_));
       HcosThetaK.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
@@ -690,7 +877,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
   vector<TH1D*> HcosThetaL;
   for (unsigned int i = 0; i < MAXVAL; i++)
     {
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "HcosThetaL_" << i;
       HcosThetaL.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), cosThetaLBins->size()-1, cosThetaLBins_));
       HcosThetaL.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
@@ -700,7 +887,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
   vector<TH1D*> Hphi;
   for (unsigned int i = 0; i < MAXVAL; i++)
     {
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "Hphi_" << i;
       Hphi.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), phiBins->size()-1, phiBins_));
       Hphi.back()->SetXTitle("#phi");
@@ -726,7 +913,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
 	}
       else
 	{
-	  myString.str("");
+	  myString.clear(); myString.str("");
 	  myString << tmpString << "_" << itF << ".txt";
 	  effFuncIDs << "effFuncs3D_" << itF;
  	  if (isAnalyEff == false) Utility->ReadEfficiency(myString.str().c_str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,myEff);
@@ -907,7 +1094,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
   vector<TH1D*> HstatK;
   for (unsigned int i = 0; i < cosThetaKBins->size()-1; i++)
     {
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "HstatK_" << i;
       HstatK.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), 50, -Xaxes, Xaxes));
       HstatK.back()->SetXTitle("Diff. to reference");
@@ -924,7 +1111,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
   vector<TH1D*> HstatL;
   for (unsigned int i = 0; i < cosThetaLBins->size()-1; i++)
     {
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "HstatL_" << i;
       HstatL.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), 50, -Xaxes, Xaxes));
       HstatL.back()->SetXTitle("Diff. to reference");
@@ -941,7 +1128,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
   vector<TH1D*> HstatPhi;
   for (unsigned int i = 0; i < phiBins->size()-1; i++)
     {
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "HstatPhi_" << i;
       HstatPhi.push_back(new TH1D(myString.str().c_str(), myString.str().c_str(), 50, -Xaxes, Xaxes));
       HstatPhi.back()->SetXTitle("Diff. to reference");
@@ -1051,7 +1238,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	{
 	  Utility->InitEffFuncThetaL(effFunc1D,q2BinIndx);
 
-	  myString.str("");
+	  myString.clear(); myString.str("");
 	  myString << "histFit_" << j;
 	  histFit.push_back(new TH1D(myString.str().c_str(),myString.str().c_str(),cosThetaLBins->size()-1,cosThetaLBins_));
 
@@ -1120,7 +1307,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	{
 	  Utility->InitEffFuncThetaK(effFunc1D,q2BinIndx);
 
-	  myString.str("");
+	  myString.clear(); myString.str("");
 	  myString << "histFit_" << k;
 	  histFit.push_back(new TH1D(myString.str().c_str(),myString.str().c_str(),cosThetaKBins->size()-1,cosThetaKBins_));
 
@@ -1202,7 +1389,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
       Utility->InitEffFuncPhi(effFunc1D,q2BinIndx);
 
 
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "histFit";
       histFit.push_back(new TH1D(myString.str().c_str(),myString.str().c_str(),phiBins->size()-1,phiBins_));
 
@@ -1268,7 +1455,7 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // ##########################
   // # Read binned efficiency #
   // ##########################
-  myString.str("");
+  myString.clear(); myString.str("");
   myString << "Histo_q2Bin_" << q2BinIndx;
   TH2D* hisFunc2D = Utility->Get2DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
 
@@ -1348,7 +1535,7 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // #############
   if (savePlot == true)
     {
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "Eff2D_q2Bin_" << q2BinIndx << ".pdf";
       cTestGlobalFit->Print(myString.str().c_str());
     }
@@ -1406,7 +1593,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // ##########################
   // # Read binned efficiency #
   // ##########################
-  myString.str("");
+  myString.clear(); myString.str("");
   myString << "Histo_q2Bin_" << q2BinIndx;
   TH3D* hisFunc3D = Utility->Get3DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
   Zmin = hisFunc3D->GetMinimum();
@@ -1646,15 +1833,15 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // #############
   if (savePlot == true)
     {
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "Eff1D_q2Bin_" << q2BinIndx << ".pdf";
       cTestGlobalFit1D->Print(myString.str().c_str());
 
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "Eff2D_q2Bin_" << q2BinIndx << ".pdf";
       cTestGlobalFit2D->Print(myString.str().c_str());
 
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "Eff2Danaly_q2Bin_" << q2BinIndx << ".pdf";
       cShow2DAnaEff->Print(myString.str().c_str());
     }
@@ -1688,7 +1875,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   // ##########################
   // # Read binned efficiency #
   // ##########################
-  myString.str("");
+  myString.clear(); myString.str("");
   myString << "Histo_q2Bin_" << q2BinIndx;
   TH2D* hisFunc2D = Utility->Get2DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
 
@@ -1714,7 +1901,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
     {
       cEff->cd(binIndx+3);
 
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "effFuncSlice_binK_" << binIndx;
       effFuncSlice.push_back(new TF12(myString.str().c_str(),effFunc2D,(cosThetaKBins->operator[](binIndx)+cosThetaKBins->operator[](binIndx+1))/2.,"y"));
       effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
@@ -1722,7 +1909,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
       effFuncSlice.back()->GetYaxis()->SetRangeUser(0.0,ordinateRange);
       effFuncSlice.back()->Draw();
 
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "histoSlice_binK_" << binIndx;
       histoSlice.push_back(hisFunc2D->ProjectionY(myString.str().c_str(),binIndx+1,binIndx+1));
       histoSlice.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
@@ -1740,7 +1927,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
     {
       cEff->cd(binIndx+3+cosThetaKBins->size()-1);
 
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "effFuncSlice_binL_" << binIndx;
       effFuncSlice.push_back(new TF12(myString.str().c_str(),effFunc2D,(cosThetaLBins->operator[](binIndx)+cosThetaLBins->operator[](binIndx+1))/2.,"x"));
       effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
@@ -1748,7 +1935,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
       effFuncSlice.back()->GetYaxis()->SetRangeUser(0.0,ordinateRange);
       effFuncSlice.back()->Draw();
 
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "histoSlice_binL_" << binIndx;
       histoSlice.push_back(hisFunc2D->ProjectionX(myString.str().c_str(),binIndx+1,binIndx+1));
       histoSlice.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
@@ -1766,7 +1953,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
     {
       tmpString = TEST_THETAL_THETAK;
       tmpString.erase(tmpString.find(".txt"),4);
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << tmpString << "_" << q2BinIndx << ".pdf";
       cEff->Print(myString.str().c_str());
     }
@@ -1807,7 +1994,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   // ##########################
   // # Read binned efficiency #
   // ##########################
-  myString.str("");
+  myString.clear(); myString.str("");
   myString << "Histo_q2Bin_" << q2BinIndx;
   TH3D* hisFunc3D = Utility->Get3DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
   Zmin = hisFunc3D->GetMinimum();
@@ -1908,7 +2095,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
     {
       tmpString = TEST_THETAL_THETAK_PHI;
       tmpString.erase(tmpString.find(".txt"),4);
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << tmpString << "_" << q2BinIndx << ".pdf";
       cEff->Print(myString.str().c_str());
     }
