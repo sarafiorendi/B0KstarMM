@@ -947,22 +947,20 @@ string MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar
 	  // #####################
 	  // # P-wave decay rate #
 	  // #####################
-	  myString << "(3/4 * (3/2 * FlS * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-	  myString << "(3/8 * (1-FlS) * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - AfbS*" << y->getPlotLabel() << ") * ";
-	  myString << "(1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ")))";
-
-	  myString << "(3/4)";
+    	  myString << "(3/4 * (3/2 * FlS * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+    	  myString << "(3/8 * (1-FlS) * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + AfbS*" << y->getPlotLabel() << ") * ";
+    	  myString << "(1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ")))";
 	}
       else
 	{
 	  // ###########################
 	  // # S and P-wave decay rate #
 	  // ###########################
-	  myString << "(9/16 * ((2/3*FsS - 4/3*AsS*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - ";
-	  myString << "(1-FsS) * ";
-	  myString << "(2*FlS*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
-	  myString << "1/2*(1-FlS) * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
-	  myString << "4/3*AfbS * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * " << y->getPlotLabel() << ")))";
+    	  myString << "(9/16 * ((2/3*FsS + 4/3*AsS*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+    	  myString << "(1-FsS) * ";
+    	  myString << "(2*FlS*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+    	  myString << "1/2*(1-FlS) * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+    	  myString << "4/3*AfbS * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * " << y->getPlotLabel() << ")))";
 	}
 
       if (useEffPDF == true)
@@ -997,7 +995,6 @@ string MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar
 	  // @TMP@
 	  // misTagAngPDF.clear(); misTagAngPDF.str("");
 	  // misTagAngPDF << "(" << myString.str().c_str() << " + " << "abs(" << myString.str().c_str() << "))/2";
-
 	  // myString.clear(); myString.str("");
 	  // myString << misTagAngPDF.str().c_str();
 
@@ -2950,7 +2947,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 	  if ((!(FitType == 36) && !(FitType == 56) && !(FitType == 76) &&
 	       (NTuple->B0MassArb > Utility->B0Mass - Utility->GetGenericParam("B0MassIntervalLeft")) &&
 	       (NTuple->B0MassArb < Utility->B0Mass + Utility->GetGenericParam("B0MassIntervalRight"))) ||
-
+	      
 	      ((FitType == 36) || (FitType == 56) || (FitType == 76)))
 	    {
 	      Vars.setRealValue("B0MassArb",         NTuple->B0MassArb);

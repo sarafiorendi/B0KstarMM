@@ -72,10 +72,10 @@ using std::vector;
 // ####################
 // # Global constants #
 // ####################
-#define INPUT_THETAL           "ThetaL_B0ToKstMuMu_MisTag_newThetaKThetaLbins.txt"
-#define INPUT_PHI              "Phi_B0ToKstMuMu_MisTag_newThetaKThetaLbins.txt"
-#define INPUT_THETAL_THETAK    "ThetaK_B0ToKstMuMu_MisTag_newThetaKThetaLbins.txt"
-#define TEST_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu_MisTag_newThetaKThetaLbins.txt"
+#define INPUT_THETAL           "ThetaL_B0ToKstMuMu.txt"
+#define INPUT_PHI              "Phi_B0ToKstMuMu.txt"
+#define INPUT_THETAL_THETAK    "ThetaK_B0ToKstMuMu.txt"
+#define TEST_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu.txt"
 #define TEST_THETAL_THETAK_PHI "ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
 #define RIGHTtag       true
@@ -200,8 +200,16 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
 	{
 	  mumuq2          = NTuple->mumuMass->at(0)*NTuple->mumuMass->at(0);
 
-	  cosThetaK       = NTuple->CosThetaKArb;
-	  cosThetaMu      = NTuple->CosThetaMuArb;
+	  if (NTuple->rightFlavorTag == true)
+	    {
+	      cosThetaK  = NTuple->CosThetaKArb;
+	      cosThetaMu = NTuple->CosThetaMuArb;
+	    }
+	  else
+	    {
+	      cosThetaK  = - NTuple->CosThetaKArb;
+	      cosThetaMu = - NTuple->CosThetaMuArb;
+	    }
 	  phiKstMuMuPlane = NTuple->PhiKstMuMuPlaneArb;
 
 	  mumuq2BinIndx          = Utility->SearchBin(mumuq2,q2Bins);

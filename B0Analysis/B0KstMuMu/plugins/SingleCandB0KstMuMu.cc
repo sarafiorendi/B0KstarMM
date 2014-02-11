@@ -171,7 +171,7 @@ void SelectBestCand (int SignalType)
 		  TVector3 MuMuPlane = LoreVecMup.Vect().Cross(LoreVecMum.Vect());
 		  TVector3 KstPlane  = LoreVecK.Vect().Cross(LoreVecPi.Vect());
 		  if (MuMuPlane.Cross(KstPlane).Dot(-LoreVecB0.Vect()) > 0.0) phiKstMuMuPlane = MuMuPlane.Angle(KstPlane);
-		  else phiKstMuMuPlane = -MuMuPlane.Angle(KstPlane);
+		  else                                                        phiKstMuMuPlane = -MuMuPlane.Angle(KstPlane);
  		}
 	      else if (DoMCTruth == true)
 		{
@@ -254,7 +254,7 @@ void SelectBestCand (int SignalType)
 		  TVector3 MuMuPlane = LoreVecMup.Vect().Cross(LoreVecMum.Vect());
 		  TVector3 KstPlane  = LoreVecK.Vect().Cross(LoreVecPi.Vect());
 		  if (MuMuPlane.Cross(KstPlane).Dot(-LoreVecB0.Vect()) > 0.0) phiKstMuMuPlane = MuMuPlane.Angle(KstPlane);
-		  else phiKstMuMuPlane = -MuMuPlane.Angle(KstPlane);
+		  else                                                        phiKstMuMuPlane = -MuMuPlane.Angle(KstPlane);
 		}
 
 	      NTupleOut->B0MassArb          = NTupleIn->bMass->at(BestCandIndx);
@@ -347,7 +347,7 @@ void SelectBestCand (int SignalType)
 		  TVector3 MuMuPlane = LoreVecMum.Vect().Cross(LoreVecMup.Vect());
 		  TVector3 KstPlane  = LoreVecK.Vect().Cross(LoreVecPi.Vect());
 		  if (MuMuPlane.Cross(KstPlane).Dot(-LoreVecB0.Vect()) > 0.0) phiKstMuMuPlane = MuMuPlane.Angle(KstPlane);
-		  else phiKstMuMuPlane = -MuMuPlane.Angle(KstPlane);
+		  else                                                        phiKstMuMuPlane = -MuMuPlane.Angle(KstPlane);
  		}
 	      else if (DoMCTruth == true)
 		{
@@ -430,7 +430,7 @@ void SelectBestCand (int SignalType)
 		  TVector3 MuMuPlane = LoreVecMum.Vect().Cross(LoreVecMup.Vect());
 		  TVector3 KstPlane  = LoreVecK.Vect().Cross(LoreVecPi.Vect());
 		  if (MuMuPlane.Cross(KstPlane).Dot(-LoreVecB0.Vect()) > 0.0) phiKstMuMuPlane = MuMuPlane.Angle(KstPlane);
-		  else phiKstMuMuPlane = -MuMuPlane.Angle(KstPlane);
+		  else                                                        phiKstMuMuPlane = -MuMuPlane.Angle(KstPlane);
  		}
 
 	      NTupleOut->B0MassArb          = NTupleIn->bBarMass->at(BestCandIndx);
