@@ -427,9 +427,9 @@ template<class T> void AddEvWeightHadpT (T* NTupleOut, string trkSign)
 
 int main (int argc, char** argv)
 {
-  string option = argv[1];
-  if (((option == "pileupW") || (option == "HadpTW") || (option == "addSingleCandGENvars")) && (argc == 5))
+  if ((argc == 5) && ((strcmp(argv[1],"pileupW") == 0) || (strcmp(argv[1],"HadpTW") == 0) || (strcmp(argv[1],"addSingleCandGENvars") == 0)))
     {
+      string option      = argv[1];
       string fileNameIn  = argv[2];
       string fileNameOut = argv[3];
       string localVar    = argv[4];
