@@ -1286,6 +1286,8 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  fileOutput << endl;
 
 	  cout << "\n@@@ Fit for for bin n." << j << " @@@" << endl;
+	  cout << "@@@ chi2/DoF = " << effFunc1D->GetChisquare() / effFunc1D->GetNDF() << " (" << effFunc1D->GetChisquare() << "/" << effFunc1D->GetNDF() << ")";
+	  cout << "\tCL : " << TMath::Prob(effFunc1D->GetChisquare(),effFunc1D->GetNDF()) << " @@@" << endl;
 	  cout << "@@@ Value at " << cosThetaLBins->operator[](0) << " : " << effFunc1D->Eval(cosThetaLBins->operator[](0)) << " @@@" << endl;
 	  cout << "@@@ Value at " << cosThetaLBins->operator[](cosThetaLBins->size()-1) << " : " << effFunc1D->Eval(cosThetaLBins->operator[](cosThetaLBins->size()-1)) << " @@@\n" << endl;
 
