@@ -103,7 +103,7 @@ using namespace RooFit;
 #define PARAMETERFILEIN  "../python/ParameterFile.txt"
 #define PARAMETERFILEOUT "ParameterFile.txt"
 #define FitSysFILEOutput "FitSystematics_q2Bin"
-#define FitSysFILEInput  "../../Efficiency/EffSystematics/FitSystematics_q2Bin" // The protocol for this file is: ID --- FL --- AFB --- dBF/dq^2 --- NLL
+#define FitSysFILEInput  "../efficiency/EffSystematics/FitSystematics_q2Bin" // The protocol for this file is: ID --- FL --- AFB --- dBF/dq^2 --- NLL
 
 
 // ####################

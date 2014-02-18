@@ -21,10 +21,10 @@ for i = 1:nFiles
     %%%%%%%%%%%%%%
     % Parameters %
     %%%%%%%%%%%%%%
-    fidINval    = fopen('../../../Efficiency/ThetaKThetaLPhi_B0ToKstMuMu_B0ToJPsiKst_B0ToPsi2SKst.txt','r');
-    fidINcov    = fopen('../../../Efficiency/ThetaKThetaLPhiFullCovariance_B0ToKstMuMu_B0ToJPsiKst_B0ToPsi2SKst.txt','r');
+    fidINval    = fopen('../../efficiency/ThetaKThetaLPhi_B0ToKstMuMu_B0ToJPsiKst_B0ToPsi2SKst.txt','r');
+    fidINcov    = fopen('../../efficiency/ThetaKThetaLPhiFullCovariance_B0ToKstMuMu_B0ToJPsiKst_B0ToPsi2SKst.txt','r');
 
-    fileNameOut = sprintf('../../../Efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen_%d.txt',i-1);
+    fileNameOut = sprintf('../../efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen_%d.txt',i-1);
     fidOUT      = fopen(fileNameOut,'w+');
     fprintf('Generating file %d \n',i);
 

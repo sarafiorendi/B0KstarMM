@@ -82,7 +82,7 @@ using std::vector;
 #define SavePlot       false
 #define CHECKEFFatREAD false // Check if 2D or 3D efficiency go negative
 #define NFILES         200
-#define INPUTGenEff    "../../Efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
+#define INPUTGenEff    "../efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
 #define SETBATCH       true // Set batch mode when making binned efficiency
 #define ParameterFILE  "../python/ParameterFile.txt"
 #define ordinateRange  1e-2

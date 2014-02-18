@@ -57,7 +57,7 @@ using std::vector;
 #define SingleCand_MCkstPsi2S "Data2012B0KstMuMuResults/MonteCarlo2012/SingleCand/singleCand_B0ToPsi2SKst_MC_NTuple.root"
 #define SingleCand_Data       "Data2012B0KstMuMuResults/Data2012/SingleCand/singleCand_B0ToKstMuMu_Data2012ABCD_NTuples.root"
 
-#define FitSysFILE "../../Efficiency/EffSystematicsData/FitSystematics_q2Bin.txt"
+#define FitSysFILE "../efficiency/EffSystematicsData/FitSystematics_q2Bin.txt"
 #define YvalueOutsideLimits 10.0 // Value given to bins with zero error in order not to show them
 #define FORPAPER true // "true" = make special layout for publication in "MakePhysicsPlots" member function
 
