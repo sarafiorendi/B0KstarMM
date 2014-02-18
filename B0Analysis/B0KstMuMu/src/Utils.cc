@@ -2378,11 +2378,60 @@ void Utils::AddConstraintThetaL (TH1D** histo, unsigned int q2BinIndx, unsigned 
       if ((q2BinIndx == 2) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"both",abscissaErr,1.0,1e-5,1e-5,ID);
       if ((q2BinIndx == 2) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"both",abscissaErr,1.0,1e-5,1e-5,ID);
       if ((q2BinIndx == 2) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"high",abscissaErr,1.0,1e-5,1e-5,ID);
+      if ((q2BinIndx == 2) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,4e-4,1e-5,ID);
 
+      if ((q2BinIndx == 3) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"low",abscissaErr,1.0,4e-4,1e-5,ID);
       if ((q2BinIndx == 3) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"high",abscissaErr,1.0,1e-5,1e-5,ID);
       if ((q2BinIndx == 3) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"low",abscissaErr,1.0,1e-5,1e-5,ID);
       if ((q2BinIndx == 3) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"high",abscissaErr,1.0,1e-5,1e-5,ID);
-    }
+      if ((q2BinIndx == 3) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,64e-5,1e-5,ID);
+
+      if ((q2BinIndx == 4) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,85e-5,1e-5,ID);
+
+      if ((q2BinIndx == 5) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"low",abscissaErr,1.0,44e-4,1e-5,ID);
+      if ((q2BinIndx == 5) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"low",abscissaErr,1.0,3e-3,1e-5,ID);
+      if ((q2BinIndx == 5) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"high",abscissaErr,1.0,445e-5,1e-5,ID);
+      if ((q2BinIndx == 5) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,136e-5,1e-5,ID);
+
+      if ((q2BinIndx == 6) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"high",abscissaErr,1.0,55e-4,1e-5,ID);
+      if ((q2BinIndx == 6) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"low",abscissaErr,1.0,48e-4,1e-5,ID);
+      if ((q2BinIndx == 6) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"high",abscissaErr,1.0,56e-4,1e-5,ID);
+      if ((q2BinIndx == 6) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"high",abscissaErr,1.0,6e-3,1e-5,ID);
+      if ((q2BinIndx == 6) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"low",abscissaErr,1.0,26e-4,1e-5,ID);
+
+      if ((q2BinIndx == 7) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"high",abscissaErr,1.0,56e-4,1e-5,ID);
+      if ((q2BinIndx == 7) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,16e-4,1e-5,ID);
+      if ((q2BinIndx == 7) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,18e-4,1e-5,ID);
+
+      if ((q2BinIndx == 8) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"high",abscissaErr,1.0,42e-4,1e-5,ID);
+      if ((q2BinIndx == 8) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"low",abscissaErr,1.0,47e-4,1e-5,ID);
+      if ((q2BinIndx == 8) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"high",abscissaErr,1.0,44e-4,1e-5,ID);
+      if ((q2BinIndx == 8) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"low",abscissaErr,1.0,33e-4,1e-5,ID);
+      if ((q2BinIndx == 8) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"high",abscissaErr,1.0,32e-4,1e-5,ID);
+      if ((q2BinIndx == 8) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,2e-3,1e-5,ID);
+      if ((q2BinIndx == 8) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,264e-5,1e-5,ID);
+ 
+      // ###################
+      // # Boosting errors #
+      // ###################
+      if ((q2BinIndx == 0) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"justErrors",abscissaErr,3.0,0.0,0.0,ID);
+      if ((q2BinIndx == 0) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"justErrors",abscissaErr,3.0,0.0,0.0,ID);
+      if ((q2BinIndx == 0) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"justErrors",abscissaErr,2.0,0.0,0.0,ID);
+
+      if ((q2BinIndx == 1) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"justErrors",abscissaErr,3.0,0.0,0.0,ID);
+      if ((q2BinIndx == 1) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"justErrors",abscissaErr,2.0,0.0,0.0,ID);
+      if ((q2BinIndx == 1) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"justErrors",abscissaErr,2.0,0.0,0.0,ID);
+      if ((q2BinIndx == 1) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"justErrors",abscissaErr,2.0,0.0,0.0,ID);
+
+      if ((q2BinIndx == 2) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"justErrors",abscissaErr,3.0,0.0,0.0,ID);
+      if ((q2BinIndx == 2) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"justErrors",abscissaErr,2.0,0.0,0.0,ID);
+      if ((q2BinIndx == 2) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"justErrors",abscissaErr,2.0,0.0,0.0,ID);
+      if ((q2BinIndx == 2) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"justErrors",abscissaErr,2.0,0.0,0.0,ID);
+
+      if ((q2BinIndx == 3) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"justErrors",abscissaErr,2.0,0.0,0.0,ID);
+
+      if ((q2BinIndx == 4) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"justErrors",abscissaErr,2.0,0.0,0.0,ID);
+     }
   else
     {
       if ((q2BinIndx == 0) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"both",abscissaErr,1.0,1e-6,1e-5,ID);
@@ -2760,7 +2809,7 @@ void Utils::AddConstraintThetaK (TH2D** histo, std::vector<double>* cosThetaKBin
 	  constraints[3] = std::make_pair(2e-4,1e-5);
 
 	  toBeAdded[4]   = "both";
-	  constraints[4] = std::make_pair(2e-4,1e-5);
+	  constraints[4] = std::make_pair(1e-4,1e-5);
 	}
       else if (q2BinIndx == 1)
 	{
@@ -2792,28 +2841,119 @@ void Utils::AddConstraintThetaK (TH2D** histo, std::vector<double>* cosThetaKBin
 
 	  toBeAdded[3]   = "high";
 	  constraints[3] = std::make_pair(1e-5,1e-5);
+
+	  toBeAdded[4]   = "low";
+	  constraints[4] = std::make_pair(4e-4,1e-5);
 	}
       else if (q2BinIndx == 3)
 	{
-	  toBeAdded[0]   = "high";
-	  constraints[0] = std::make_pair(11e-4,1e-5);
+	  toBeAdded[0]   = "both";
+	  constraints[0] = std::make_pair(4e-4,1e-5);
 
 	  toBeAdded[1]   = "both";
-	  constraints[1] = std::make_pair(1e-3,1e-5);
+	  constraints[1] = std::make_pair(1e-5,1e-5);
 
 	  toBeAdded[2]   = "both";
-	  constraints[2] = std::make_pair(1e-3,1e-5);
+	  constraints[2] = std::make_pair(1e-5,1e-5);
 
 	  toBeAdded[3]   = "high";
-	  constraints[3] = std::make_pair(5e-4,1e-5);
+	  constraints[3] = std::make_pair(1e-5,1e-5);
 
 	  toBeAdded[4]   = "both";
-	  constraints[4] = std::make_pair(6e-4,1e-5);
+	  constraints[4] = std::make_pair(64e-5,1e-5);
+	}
+      else if (q2BinIndx == 4)
+	{
+	  toBeAdded[4]   = "low";
+	  constraints[4] = std::make_pair(85e-5,1e-5);
+
+	  AddConstraint2D(histo,abscissaErr,1.0,ID,"Y",0.0,0.0,&constraints,&toBeAdded);
+
+	  toBeAdded[4]   = "high";
+	  constraints[4] = std::make_pair(2e-3,1e-5);
+	}
+      else if (q2BinIndx == 5)
+	{
+	  toBeAdded[1]   = "low";
+	  constraints[1] = std::make_pair(44e-4,1e-5);
+
+	  toBeAdded[2]   = "low";
+	  constraints[2] = std::make_pair(3e-3,1e-5);
+
+	  AddConstraint2D(histo,abscissaErr,1.0,ID,"Y",0.0,0.0,&constraints,&toBeAdded);
+
+	  toBeAdded[1]   = "no";
+
+	  toBeAdded[2]   = "high";
+	  constraints[2] = std::make_pair(445e-5,1e-5);
+
+	  toBeAdded[4]   = "high";
+	  constraints[4] = std::make_pair(136e-5,1e-5);
 	}
       else if (q2BinIndx == 6)
 	{
-	  toBeAdded[4]   = "both";
-	  constraints[4] = std::make_pair(1e-3,1e-5);
+	  toBeAdded[0]   = "high";
+	  constraints[0] = std::make_pair(55e-4,1e-5);
+
+	  toBeAdded[1]   = "low";
+	  constraints[1] = std::make_pair(48e-4,1e-5);
+
+	  AddConstraint2D(histo,abscissaErr,1.0,ID,"Y",0.0,0.0,&constraints,&toBeAdded);
+
+	  toBeAdded[0]   = "no";
+
+	  toBeAdded[1]   = "high";
+	  constraints[1] = std::make_pair(56e-4,1e-5);
+
+	  toBeAdded[2]   = "high";
+	  constraints[2] = std::make_pair(6e-3,1e-5);
+
+	  toBeAdded[3]   = "low";
+	  constraints[3] = std::make_pair(26e-4,1e-5);
+	}
+      else if (q2BinIndx == 7)
+	{
+	  toBeAdded[0]   = "high";
+	  constraints[0] = std::make_pair(56e-4,1e-5);
+
+	  toBeAdded[4]   = "low";
+	  constraints[4] = std::make_pair(16e-4,1e-5);
+
+	  AddConstraint2D(histo,abscissaErr,1.0,ID,"Y",0.0,0.0,&constraints,&toBeAdded);
+
+	  toBeAdded[0]   = "no";
+
+	  toBeAdded[4]   = "high";
+	  constraints[4] = std::make_pair(18e-4,1e-5);
+	}
+      else if (q2BinIndx == 8)
+	{
+	  toBeAdded[0]   = "high";
+	  constraints[0] = std::make_pair(42e-4,1e-5);
+
+	  toBeAdded[1]   = "low";
+	  constraints[1] = std::make_pair(47e-4,1e-5);
+
+	  toBeAdded[2]   = "high";
+	  constraints[2] = std::make_pair(44e-4,1e-5);
+
+	  toBeAdded[3]   = "low";
+	  constraints[3] = std::make_pair(33e-4,1e-5);
+
+	  toBeAdded[4]   = "low";
+	  constraints[4] = std::make_pair(2e-3,1e-5);
+
+	  AddConstraint2D(histo,abscissaErr,1.0,ID,"Y",0.0,0.0,&constraints,&toBeAdded);
+
+	  toBeAdded[0]   = "no";
+	  toBeAdded[1]   = "no";
+	  toBeAdded[2]   = "no";
+
+	  toBeAdded[3]   = "high";
+	  constraints[3] = std::make_pair(32e-4,1e-5);
+
+	  toBeAdded[4]   = "high";
+	  constraints[4] = std::make_pair(264e-5,1e-5);
 	}
     }
   else
@@ -3048,21 +3188,21 @@ void Utils::AddConstraintThetaK (TH2D** histo, std::vector<double>* cosThetaKBin
       if      (q2BinIndx == 0) AddConstraint2D(histo,abscissaErr,4.0,ID,"justErrors",0.0,0.0);
       else if (q2BinIndx == 1) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
       else if (q2BinIndx == 2) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
-      else if (q2BinIndx == 3) AddConstraint2D(histo,abscissaErr,7.0,ID,"justErrors",0.0,0.0);
+      else if (q2BinIndx == 3) AddConstraint2D(histo,abscissaErr,5.0,ID,"justErrors",0.0,0.0);
 
       // ###################
       // # B0 --> K* mu mu #
       // ###################
-      else if (q2BinIndx == 4) AddConstraint2D(histo,abscissaErr,5.0,ID,"Xhigh",2.0,1e-5);
+      else if (q2BinIndx == 4) AddConstraint2D(histo,abscissaErr,3.0,ID,"justErrors",0.0,0.0);
       // ###################
       // # B0 --> J/psi K* #
       // ###################
       // else if (q2BinIndx == 4) AddConstraint2D(histo,abscissaErr,8.0,ID,"Xhigh",2.0,1e-5);
 
-      else if (q2BinIndx == 5) AddConstraint2D(histo,abscissaErr,3.0,ID,"justErrors",0.0,0.0);
-      else if (q2BinIndx == 6) AddConstraint2D(histo,abscissaErr,2.0,ID,"Xhigh",2.0,1e-5);
-      else if (q2BinIndx == 7) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
-      else if (q2BinIndx == 8) AddConstraint2D(histo,abscissaErr,1.0,ID,"justErrors",0.0,0.0);
+      // else if (q2BinIndx == 5) AddConstraint2D(histo,abscissaErr,3.0,ID,"justErrors",0.0,0.0);
+      // else if (q2BinIndx == 6) AddConstraint2D(histo,abscissaErr,2.0,ID,"Xhigh",2.0,1e-5);
+      // else if (q2BinIndx == 7) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
+      // else if (q2BinIndx == 8) AddConstraint2D(histo,abscissaErr,1.0,ID,"justErrors",0.0,0.0);
     }
   else
     {

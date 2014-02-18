@@ -1208,6 +1208,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // ###################
   // # Local variables #
   // ###################
+  TFitResultPtr fitResults;
   double Eff, EffErr;
   double* cosThetaKBins_ = Utility->MakeBinning(cosThetaKBins);
   double* cosThetaLBins_ = Utility->MakeBinning(cosThetaLBins);
@@ -1274,9 +1275,10 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  histFit.back()->GetYaxis()->SetRangeUser(-ordinateRange,ordinateRange);
 
 	  cEff->cd(j+1);
-	  histFit.back()->Fit("effFunc1D","V");
+	  fitResults = histFit.back()->Fit("effFunc1D","V");
 	  histFit.back()->Draw("pe1");
-	  
+	  if (fitResults != 0) exit (EXIT_FAILURE);
+
 
 	  // ################
 	  // # Save results #
@@ -1361,8 +1363,9 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  histFit.back()->GetYaxis()->SetRangeUser(-ordinateRange,ordinateRange);
 
 	  cEff->cd(k+1);
-	  histFit.back()->Fit("effFunc1D","V");
+	  fitResults = histFit.back()->Fit("effFunc1D","V");
 	  histFit.back()->Draw("pe1");
+	  if (fitResults != 0) exit (EXIT_FAILURE);
 
 
 	  // ################
@@ -1421,9 +1424,10 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
       histFit.back()->GetYaxis()->SetRangeUser(-ordinateRange,ordinateRange);
 
       cEff->cd(1);
-      histFit.back()->Fit("effFunc1D","V");
+      fitResults = histFit.back()->Fit("effFunc1D","V");
       histFit.back()->Draw("pe1");
-
+      if (fitResults != 0) exit (EXIT_FAILURE);
+	  
 
       // ################
       // # Save results #
@@ -1527,7 +1531,7 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // ################################################
   // # Check if analytical efficiency goes negative #
   // ################################################
-  if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncs2D[q2BinIndx]) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
+  if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncs2D[q2BinIndx]) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; /*exit (EXIT_FAILURE);*/ } // @TMP@
   Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFuncs2D[q2BinIndx],(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
   fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
   Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrix,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
@@ -1537,7 +1541,8 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // # Check integrity of covariance matrix #
   // ########################################
   vector<TMatrixTSym<double>*>* covMatrices = new vector<TMatrixTSym<double>*>;
-  Utility->ReadAnalyticalEffFullCovariance(fileNameOut.c_str(),covMatrices,"2D",0);
+  // @TMP@
+  // Utility->ReadAnalyticalEffFullCovariance(fileNameOut.c_str(),covMatrices,"2D",0);
 
 
   // #############
