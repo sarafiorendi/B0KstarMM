@@ -9,7 +9,7 @@ if (@ARGV == 2)
     ############################
     # Configuration parameters #
     ############################
-    $dirEffRndGen = "../../../Efficiency/EffRndGenAnalyFiles/" ;
+    $dirEffRndGen = "../../efficiency/EffRndGenAnalyFiles/" ;
     $dataFile     = "../Data2012B0KstMuMuResults/Data2012/SingleCand/singleCand_B0ToKstMuMu_Data2012ABCD_NTuples.root" ;
     $parFile      = "../../python/ParameterFile.txt" ;
     ############################
