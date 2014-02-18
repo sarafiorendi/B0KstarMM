@@ -248,7 +248,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # 8th block of parameters #
 ###########################
 # Number of cos(theta_k) bins mis-tagged events 
-5
+6
 
 # Lower edge bin 0:
 -1
@@ -257,12 +257,15 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 -0.6
 
 # Lower edge bin 2:
-0.0
+-0.2
 
 # Lower edge bin 3:
+0.2
+
+# Lower edge bin 4:
 0.6
 
-# Upper edge bin 4:
+# Upper edge bin 5:
 1.0
 
 
