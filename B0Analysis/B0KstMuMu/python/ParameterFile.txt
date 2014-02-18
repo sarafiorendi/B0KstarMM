@@ -254,13 +254,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 -1
 
 # Lower edge bin 1:
--0.7
+-0.6
 
 # Lower edge bin 2:
 0.0
 
 # Lower edge bin 3:
-0.7
+0.6
 
 # Upper edge bin 4:
 1.0
