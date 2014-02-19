@@ -158,16 +158,18 @@ class B0KstMuMuTreeContent
   // #########################
   // # Generated Observables #
   // #########################
-  int                       genSignal; // 1 = B0 --> K*0(K+pi-) mu+mu-
-                                       // 2 = B0bar --> K*0bar(K-pi+) mu+mu-
-                                       // 3 = B0 --> K*0(K+pi-) J/psi(mu+mu-)
-                                       // 4 = B0bar --> K*0bar(K-pi+) J/psi(mu+mu-)
-                                       // 5 = B0 --> K*0(K-pi+) psi(2S)(mu+mu-)
-                                       // 6 = B0bar --> K*0bar(K-pi+) psi(2S)(mu+mu-)
+  int                       genSignal; // ###############################################
+                                       // # 1 = B0 --> K*0(K+pi-) mu+mu-                #
+                                       // # 2 = B0bar --> K*0bar(K-pi+) mu+mu-          #
+                                       // # 3 = B0 --> K*0(K+pi-) J/psi(mu+mu-)         #
+                                       // # 4 = B0bar --> K*0bar(K-pi+) J/psi(mu+mu-)   #
+                                       // # 5 = B0 --> K*0(K-pi+) psi(2S)(mu+mu-)       #
+                                       // # 6 = B0bar --> K*0bar(K-pi+) psi(2S)(mu+mu-) #
+                                       // ###############################################
   int                       genMuMuBG, genMuMuBGnTrksm, genMuMuBGnTrksp;
   bool                      genPsiPrompt;
   bool                      genSignHasFSR, genSignKstHasFSR, genSignPsiHasFSR;
-  
+
   // ############################
   // # Generated Primary Vertex #
   // ############################

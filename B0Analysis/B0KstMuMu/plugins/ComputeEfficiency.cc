@@ -78,7 +78,7 @@ using std::vector;
 #define TEST_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu.txt"
 #define TEST_THETAL_THETAK_PHI "ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
-#define RIGHTtag       true
+#define RIGHTtag       false
 #define SavePlot       false
 #define CHECKEFFatREAD false // Check if 2D or 3D efficiency go negative
 #define NFILES         200
@@ -120,11 +120,11 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 void Read3DEfficiencies    (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			    string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool savePlot, int specBin = -1);
 void Fit1DEfficiencies     (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			    Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut);
+			    unsigned int SignalType, Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut);
 void Fit2DEfficiencies     (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			    Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
+			    unsigned int SignalType, Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
 void Fit3DEfficiencies     (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			    Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
+			    unsigned int SignalType, Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
 void Test2DEfficiency      (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool savePlot);
 void Test3DEfficiency      (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool savePlot);
 
@@ -133,7 +133,7 @@ void Test3DEfficiency      (vector<double>* q2Bins, vector<double>* cosThetaKBin
 // # Function Implementation #
 // ###########################
 void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, double* Vector, double* VectorErr2Pois, double* VectorErr2Weig, unsigned int type,
-			vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, int SignalType)
+			vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, unsigned int SignalType)
 // ##########################################################
 // # Efficiency type = 1 --> total gen events before filter #
 // # Efficiency type = 2 --> total gen events after filter  #
@@ -1203,7 +1203,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
 
 
 void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut)
+			unsigned int SignalType, Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut)
 {
   // ###################
   // # Local variables #
@@ -1263,7 +1263,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  // ######################################################################
 	  // # Add constraint where it is necessary to bound the function at zero #
 	  // ######################################################################
-	  Utility->AddConstraintThetaL(&histFit.back(),q2BinIndx,j,q2BinIndx);
+	  Utility->AddConstraintThetaL(&histFit.back(),q2BinIndx,j,SignalType,q2BinIndx);
 
 
 	  // #########################################################################
@@ -1452,7 +1452,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
 
 void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut, bool savePlot)
+			unsigned int SignalType, Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut, bool savePlot)
 {
   // ###################
   // # Local variables #
@@ -1490,7 +1490,7 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // ############################################################################################
   // # Add constraint along Y (= cosThetaL) where it is necessary to bound the function at zero #
   // ############################################################################################
-  Utility->AddConstraintThetaK(&hisFunc2D,cosThetaKBins,q2BinIndx,q2BinIndx);
+  Utility->AddConstraintThetaK(&hisFunc2D,cosThetaKBins,q2BinIndx,SignalType,q2BinIndx);
 
 
   // #########################################################################
@@ -1531,7 +1531,7 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // ################################################
   // # Check if analytical efficiency goes negative #
   // ################################################
-  if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncs2D[q2BinIndx]) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; /*exit (EXIT_FAILURE);*/ } // @TMP@
+  if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncs2D[q2BinIndx]) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
   Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFuncs2D[q2BinIndx],(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
   fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
   Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrix,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
@@ -1541,8 +1541,7 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // # Check integrity of covariance matrix #
   // ########################################
   vector<TMatrixTSym<double>*>* covMatrices = new vector<TMatrixTSym<double>*>;
-  // @TMP@
-  // Utility->ReadAnalyticalEffFullCovariance(fileNameOut.c_str(),covMatrices,"2D",0);
+  Utility->ReadAnalyticalEffFullCovariance(fileNameOut.c_str(),covMatrices,"2D",0);
 
 
   // #############
@@ -1564,7 +1563,7 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
 
 void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut, bool savePlot)
+			unsigned int SignalType, Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut, bool savePlot)
 {
   // ##########################
   // # Set histo layout style #
@@ -1682,7 +1681,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // ##################################################################
   // # Add constraint along X or Y or Z to bound the function at zero #
   // ##################################################################
-  Utility->AddConstraintThetaKThetaLPhi(&hisFunc3D,q2BinIndx,q2BinIndx);
+  Utility->AddConstraintThetaKThetaLPhi(&hisFunc3D,q2BinIndx,SignalType,q2BinIndx);
   hisFunc3D->SetMarkerStyle(20);
   hisFunc3D->SetMarkerColor(kBlack);
   hisFunc3D->GetXaxis()->SetTitleOffset(1.35);
@@ -2259,12 +2258,13 @@ int main (int argc, char** argv)
 	  theApp.Run (); // Eventloop on air
 	  return EXIT_SUCCESS;
 	}
-      else if (((option == "Fit1DEff") && (argc == 5)) || ((option == "Fit2DEff") && (argc == 4)) || ((option == "Fit3DEff") && (argc == 4)))
+      else if (((option == "Fit1DEff") && (argc == 6)) || ((option == "Fit2DEff") && (argc == 5)) || ((option == "Fit3DEff") && (argc == 5)))
 	{
-	  string fileNameInput   = argv[2];
-	  unsigned int q2BinIndx = atoi(argv[3]);
+	  string SignalType      = argv[2];
+	  string fileNameInput   = argv[3];
+	  unsigned int q2BinIndx = atoi(argv[4]);
 	  string whichVar2Fit = "";
-	  if (option == "Fit1DEff") whichVar2Fit = argv[4];
+	  if (option == "Fit1DEff") whichVar2Fit = argv[5];
 	  cout << "Which Var to Fit: " << whichVar2Fit << endl;
 
 	  TApplication theApp ("Applications", &argc, argv);
@@ -2275,9 +2275,9 @@ int main (int argc, char** argv)
 	  else                                 Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
 	  Utility->ReadEfficiency(fileNameInput.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,&myEff);
 
-	  if      (option == "Fit1DEff") Fit1DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,whichVar2Fit,q2BinIndx,"Theta.txt");
-	  else if (option == "Fit2DEff") Fit2DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,"ThetaKThetaL.txt",SavePlot);
-	  else if (option == "Fit3DEff") Fit3DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,"ThetaKThetaLPhi.txt",SavePlot);
+	  if      (option == "Fit1DEff") Fit1DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,atoi(SignalType.c_str()),myEff,whichVar2Fit,q2BinIndx,"Theta.txt");
+	  else if (option == "Fit2DEff") Fit2DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,atoi(SignalType.c_str()),myEff,q2BinIndx,"ThetaKThetaL.txt",SavePlot);
+	  else if (option == "Fit3DEff") Fit3DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,atoi(SignalType.c_str()),myEff,q2BinIndx,"ThetaKThetaLPhi.txt",SavePlot);
 
 
 	  delete Utility;
@@ -2309,26 +2309,25 @@ int main (int argc, char** argv)
 	{
 	  cout << "Efficiency = [#ev. after filter (GEN-level) / #ev. generated (GEN-level before filter)] * [#ev. in single cand. (reco-level truth-matched) / #ev. after filter (GEN-level in multi cand.)]" << endl;
 	  cout << "1. process inputFileGenCandidatesNoFilter.root with AddVars2Candidates nvGen" << endl;
-	  cout << "2. process inputFileGenCandidatesNoFilter.root with AddVars2Candidates nvGen" << endl;
-	  cout << "3. process inputRecoCandidates.root with AddVars2Candidates nvGen" << endl;
-	  cout << "4. make inputFileSingleCand.root from inputRecoCandidates.root" << endl; 
+	  cout << "2. process inputRecoCandidates.root with AddVars2Candidates nvGen" << endl;
+	  cout << "3. make inputFileSingleCand.root from inputRecoCandidates.root" << endl; 
 
 	  cout << "\nParameter missing: " << endl;
 	  cout << "./ComputeEfficiency [Make ReadBin Read3DAnaly Read3DGenAnaly Fit1DEff Fit2DEff Fit3DEff Test2DEff Test3DEff] " << endl;
 	  cout << "[inputFileGenCandidatesNoFilter.root inputRecoCandidates.root inputFileSingleCand.root] " << endl;
 	  cout << "[out/in]putFile.txt [SignalType] [q2 bin indx.]" << endl;
+	  cout << "SignalType : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
 
-	  cout << "Make           --> root files for efficiency computation AND outputFile.txt AND SignalType" << endl;
-	  cout << "               --> SignalType : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
+	  cout << "\nMake           --> root files for efficiency computation AND outputFile.txt AND SignalType" << endl;
 
 	  cout << "ReadBin        --> (read file with binned eff.) file with binned efficiency AND [q2 bin indx.(optional)]" << endl;
 	  cout << "Read3DAnaly    --> (read file with analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
 	  
 	  cout << "Read3DGenAnaly --> (read files generated from analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
 
-	  cout << "Fit1DEff       --> file with binned efficiency AND [q2 bin indx.] [thetaL thetaK phi]" << endl;
-	  cout << "Fit2DEff       --> file with binned efficiency AND [q2 bin indx.]" << endl;
-	  cout << "Fit3DEff       --> file with binned efficiency AND [q2 bin indx.]" << endl;
+	  cout << "Fit1DEff       --> SignalType AND file with binned efficiency AND [q2 bin indx.] [thetaL thetaK phi]" << endl;
+	  cout << "Fit2DEff       --> SignalType AND file with binned efficiency AND [q2 bin indx.]" << endl;
+	  cout << "Fit3DEff       --> SignalType AND file with binned efficiency AND [q2 bin indx.]" << endl;
 
 	  cout << "Test2DEff      --> file with binned efficiency AND [q2 bin indx.]" << endl;
 	  cout << "Test3DEff      --> file with binned efficiency AND [q2 bin indx.]" << endl;
@@ -2340,27 +2339,26 @@ int main (int argc, char** argv)
     {
       cout << "Efficiency = [#ev. after filter (GEN-level) / #ev. generated (GEN-level before filter)] * [#ev. in single cand. (reco-level truth-matched) / #ev. after filter (GEN-level in multi cand.)]" << endl;
       cout << "1. process inputFileGenCandidatesNoFilter.root with AddVars2Candidates nvGen" << endl;
-      cout << "2. process inputFileGenCandidatesNoFilter.root with AddVars2Candidates nvGen" << endl;
-      cout << "3. process inputRecoCandidates.root with AddVars2Candidates nvGen" << endl;
-      cout << "4. make inputFileSingleCand.root from inputRecoCandidates.root" << endl; 
+      cout << "2. process inputRecoCandidates.root with AddVars2Candidates nvGen" << endl;
+      cout << "3. make inputFileSingleCand.root from inputRecoCandidates.root" << endl; 
 
       cout << "\nParameter missing: " << endl;
       cout << "./ComputeEfficiency [Make ReadBin Read3DAnaly Read3DGenAnaly Fit1DEff Fit2DEff Fit3DEff Test2DEff Test3DEff] " << endl;
       cout << "[inputFileGenCandidatesNoFilter.root inputRecoCandidates.root inputFileSingleCand.root] " << endl;
       cout << "[out/in]putFile.txt [SignalType] [q2 bin indx.]" << endl;
-      
-      cout << "Make           --> root files for efficiency computation AND outputFile.txt AND SignalType" << endl;
-      cout << "               --> SignalType : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
-      
+      cout << "SignalType : if B0 --> K*0 mumu : 1; if B0 --> J/psi K*0 : 3; if B0 --> psi(2S) K*0 : 5" << endl;
+
+      cout << "\nMake           --> root files for efficiency computation AND outputFile.txt AND SignalType" << endl;
+
       cout << "ReadBin        --> (read file with binned eff.) file with binned efficiency AND [q2 bin indx.(optional)]" << endl;
       cout << "Read3DAnaly    --> (read file with analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
-      
+	  
       cout << "Read3DGenAnaly --> (read files generated from analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
-      
-      cout << "Fit1DEff       --> file with binned efficiency AND [q2 bin indx.] [thetaL thetaK phi]" << endl;
-      cout << "Fit2DEff       --> file with binned efficiency AND [q2 bin indx.]" << endl;
-      cout << "Fit3DEff       --> file with binned efficiency AND [q2 bin indx.]" << endl;
-      
+
+      cout << "Fit1DEff       --> SignalType AND file with binned efficiency AND [q2 bin indx.] [thetaL thetaK phi]" << endl;
+      cout << "Fit2DEff       --> SignalType AND file with binned efficiency AND [q2 bin indx.]" << endl;
+      cout << "Fit3DEff       --> SignalType AND file with binned efficiency AND [q2 bin indx.]" << endl;
+
       cout << "Test2DEff      --> file with binned efficiency AND [q2 bin indx.]" << endl;
       cout << "Test3DEff      --> file with binned efficiency AND [q2 bin indx.]" << endl;
 

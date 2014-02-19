@@ -211,11 +211,11 @@ class Utils
   void InitEffFuncPhi    (TF1* fitFun, unsigned int q2BinIndx);
 
   void AddConstraint1D              (TH1D** histo, std::string constrType, double abscissaErr, double YerrRescale, double Yval, double Yerr, unsigned int ID);
-  void AddConstraintThetaL          (TH1D** histo, unsigned int q2BinIndx, unsigned int cosThetaKBinIndx, unsigned int ID);
+  void AddConstraintThetaL          (TH1D** histo, unsigned int q2BinIndx, unsigned int cosThetaKBinIndx, unsigned int SignalType, unsigned int ID);
   void AddConstraint2D              (TH2D** histo, double abscissaErr, double ZerrRescale, unsigned int ID, std::string toBeConstr, double scaleConstr, double constrXerr, std::vector< std::pair <double,double> >* constraints = NULL, std::vector<std::string>* toBeAdded = NULL);
-  void AddConstraintThetaK          (TH2D** histo, std::vector<double>* cosThetaKBins, unsigned int q2BinIndx, unsigned int ID);
+  void AddConstraintThetaK          (TH2D** histo, std::vector<double>* cosThetaKBins, unsigned int q2BinIndx, unsigned int SignalType, unsigned int ID);
   void AddConstraint3D              (TH3D** histo, double abscissaErr, double Tval, double Terr, double TerrRescale, unsigned int ID, std::vector<int> toBeAdded[]);
-  void AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2BinIndx, unsigned int ID);
+  void AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2BinIndx, unsigned int SignalType, unsigned int ID);
 
   bool IsThisData (std::string fileName);
 
@@ -298,6 +298,10 @@ class Utils
   unsigned int nFitParam;
   unsigned int nConfigParam;
   unsigned int nFitObserv;
+
+  unsigned int B0ToKstMuMu;
+  unsigned int B0ToJPsiKst;
+  unsigned int B0ToPsi2SKst;
 
 };
 
