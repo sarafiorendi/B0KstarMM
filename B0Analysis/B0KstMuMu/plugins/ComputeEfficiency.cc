@@ -78,7 +78,7 @@ using std::vector;
 #define TEST_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu.txt"
 #define TEST_THETAL_THETAK_PHI "ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
-#define RIGHTtag       false
+#define RIGHTtag       true
 #define SavePlot       false
 #define CHECKEFFatREAD false // Check if 2D or 3D efficiency go negative
 #define NFILES         200
@@ -299,7 +299,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   double* cosThetaLBins_ = Utility->MakeBinning(cosThetaLBins);
   double* phiBins_       = Utility->MakeBinning(phiBins);
   // ###################
-  string NumOrDen2Plot = "N2"; // It can be: "N1", "N2", "D1", "D2"
+  string NumOrDen2Plot = "N1"; // It can be: "N1", "N2", "D1", "D2"
   double Yaxes = 2e5;
   double Zaxes = 1e3;
   // ###################
@@ -1376,6 +1376,8 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  fileOutput << endl;
 
 	  cout << "\n@@@ Fit for for bin n." << k << " @@@" << endl;
+	  cout << "@@@ chi2/DoF = " << effFunc1D->GetChisquare() / effFunc1D->GetNDF() << " (" << effFunc1D->GetChisquare() << "/" << effFunc1D->GetNDF() << ")";
+	  cout << "\tCL : " << TMath::Prob(effFunc1D->GetChisquare(),effFunc1D->GetNDF()) << " @@@" << endl;
 	  cout << "@@@ Value at " << cosThetaKBins->operator[](0) << " : " << effFunc1D->Eval(cosThetaKBins->operator[](0)) << " @@@" << endl;
 	  cout << "@@@ Value at " << cosThetaKBins->operator[](cosThetaKBins->size()-1) << " : " << effFunc1D->Eval(cosThetaKBins->operator[](cosThetaKBins->size()-1)) << " @@@\n" << endl;
 
@@ -1490,7 +1492,7 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // ############################################################################################
   // # Add constraint along Y (= cosThetaL) where it is necessary to bound the function at zero #
   // ############################################################################################
-  Utility->AddConstraintThetaK(&hisFunc2D,cosThetaKBins,q2BinIndx,SignalType,q2BinIndx);
+  Utility->AddConstraintThetaKThetaL(&hisFunc2D,cosThetaKBins,q2BinIndx,SignalType,q2BinIndx);
 
 
   // #########################################################################
