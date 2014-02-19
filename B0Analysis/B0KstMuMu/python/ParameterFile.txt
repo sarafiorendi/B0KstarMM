@@ -172,7 +172,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ###########################
 # 5th block of parameters #
 ###########################
-# Number of cos(theta_k) bins good-tagged events 
+# Number of cos(theta_K) bins good-tagged events 
 6
 
 # Lower edge bin 0:
@@ -247,7 +247,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ###########################
 # 8th block of parameters #
 ###########################
-# Number of cos(theta_k) bins mis-tagged events 
+# Number of cos(theta_K) bins mis-tagged events 
 6
 
 # Lower edge bin 0:
