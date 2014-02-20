@@ -2475,10 +2475,6 @@ void Utils::AddConstraintThetaL (TH1D** histo, unsigned int q2BinIndx, unsigned 
       if ((q2BinIndx == 3) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"justErrors",abscissaErr,2.0,0.0,0.0,ID);
 
       if ((q2BinIndx == 4) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"justErrors",abscissaErr,2.0,0.0,0.0,ID);
-     }
-  else
-    {
-      // @TMP@
     }
 }
 
@@ -2957,10 +2953,6 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
 	  constraints[4] = std::make_pair(264e-5,1e-5);
 	}
     }
-  else
-    {
-      // @TMP@
-    }
   
   
   AddConstraint2D(histo,abscissaErr,1.0,ID,"Y",0.0,0.0,&constraints,&toBeAdded);
@@ -2987,10 +2979,6 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
       else if (q2BinIndx == 6) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
 
       else if (q2BinIndx == 7) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
-    }
-  else
-    {
-      // @TMP@
     }
 }
 
