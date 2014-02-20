@@ -924,18 +924,6 @@ string MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar
   else if ((FitType == 10) || (FitType == 410) || (FitType == 610) || (FitType == 810) || // Branching fraction
 	   (FitType == 60) || (FitType == 260) || (FitType == 360) || (FitType == 460) || (FitType == 560) || (FitType == 660) || (FitType == 760) || (FitType == 860) || (FitType == 960)) // Fl-Afb-fit
     {
-      // ############################################
-      // # Copy parameters from efficiency function #
-      // ############################################
-      for (int i = 0; i < effFunc->GetNpar(); i++)
-	{
-	  myString.clear(); myString.str("");
-	  myString << "Q" << i;
-	  vecParam.push_back(new RooRealVar(myString.str().c_str(),myString.str().c_str(),effFunc->GetParameter(i),-1.0,1.0));
-	  vecParam.back()->setConstant(true);
-	}
-
-
       // #######################################################
       // # Make 2D signal*efficiency p.d.f.: integral over phi #
       // # For incorrectly tagged events                       #
@@ -968,40 +956,11 @@ string MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar
 	  // #############################
 	  // # Make 2D efficiency p.d.f. #
 	  // #############################
-   	  myString << " * ";
-    	  myString << "((Q0 - Q1*" << z->getPlotLabel() << " + Q2*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " - ";
-    	  myString << "Q3*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") - ";
-
-    	  myString << "(Q4 - Q5*" << z->getPlotLabel() << " + Q6*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " - ";
-    	  myString << "Q7*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-    	  myString << y->getPlotLabel() << " + ";
 	  
-    	  myString << "(Q8 - Q9*" << z->getPlotLabel() << " + Q10*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " - ";
-    	  myString << "Q11*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << " - ";
-	  
-    	  myString << "(Q12 - Q13*" << z->getPlotLabel() << " + Q14*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " - ";
-    	  myString << "Q15*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << " + ";
-
-    	  myString << "(Q16 - Q17*" << z->getPlotLabel() << " + Q18*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " - ";
-    	  myString << "Q19*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << " - ";
-
-    	  myString << "(Q20 - Q21*" << z->getPlotLabel() << " + Q22*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " - ";
-    	  myString << "Q23*" << z->getPlotLabel() << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * ";
-    	  myString << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << "*" << y->getPlotLabel() << ")";
-
-	  // @TMP@
-	  // misTagAngPDF.clear(); misTagAngPDF.str("");
-	  // misTagAngPDF << "(" << myString.str().c_str() << " + " << "abs(" << myString.str().c_str() << "))/2";
-	  // myString.clear(); myString.str("");
-	  // myString << misTagAngPDF.str().c_str();
-
-    	  for (int i = 0; i < effFunc->GetNpar(); i++) VarsPoly->add(*vecParam[i]);
+	  Utility->Get2DEffHitoq2Bin(q2BinIndx);
 	}
     }
-  
+
 
   // @TMP@
   finalSignalAngPDF.clear(); finalSignalAngPDF.str("");

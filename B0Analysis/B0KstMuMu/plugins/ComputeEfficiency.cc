@@ -78,7 +78,7 @@ using std::vector;
 #define TEST_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu.txt"
 #define TEST_THETAL_THETAK_PHI "ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
-#define RIGHTtag       true
+#define RIGHTtag       false
 #define SavePlot       false
 #define CHECKEFFatREAD false // Check if 2D or 3D efficiency go negative
 #define NFILES         200
@@ -299,7 +299,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   double* cosThetaLBins_ = Utility->MakeBinning(cosThetaLBins);
   double* phiBins_       = Utility->MakeBinning(phiBins);
   // ###################
-  string NumOrDen2Plot = "N1"; // It can be: "N1", "N2", "D1", "D2"
+  string NumOrDen2Plot = "N2"; // It can be: "N1", "N2", "D1", "D2"
   double Yaxes = 2e5;
   double Zaxes = 1e3;
   // ###################
