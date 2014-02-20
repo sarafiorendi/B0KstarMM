@@ -299,7 +299,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   double* cosThetaLBins_ = Utility->MakeBinning(cosThetaLBins);
   double* phiBins_       = Utility->MakeBinning(phiBins);
   // ###################
-  string NumOrDen2Plot = "N1"; // It can be: "N1", "N2", "D1", "D2"
+  string NumOrDen2Plot = "N2"; // It can be: "N1", "N2", "D1", "D2"
   double Yaxes = 2e5;
   double Zaxes = 1e3;
   // ###################
