@@ -623,7 +623,7 @@ TH3D* Utils::Get3DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bi
   Histo->GetYaxis()->SetTitleOffset(1.8);
   Histo->SetZTitle("#phi");
   Histo->GetZaxis()->SetTitleOffset(1.8);
-  
+
   for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
     for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
       for (unsigned int l = 0; l < phiBins->size()-1; l++)

@@ -299,7 +299,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   double* cosThetaLBins_ = Utility->MakeBinning(cosThetaLBins);
   double* phiBins_       = Utility->MakeBinning(phiBins);
   // ###################
-  string NumOrDen2Plot = "N2"; // It can be: "N1", "N2", "D1", "D2"
+  string NumOrDen2Plot = "N1"; // It can be: "N1", "N2", "D1", "D2"
   double Yaxes = 2e5;
   double Zaxes = 1e3;
   // ###################
@@ -916,8 +916,39 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
     {
       if ((isSingleEff == true) || (itF == MAXVAL-1))
 	{
-	  if (isAnalyEff == false) Utility->ReadEfficiency(fileNameInput.c_str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,myEff);
-	  else                     Utility->ReadAnalyticalEff(fileNameInput.c_str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,&effFuncs3D,"effFuncs3D",0);
+	  if (isAnalyEff == false)
+	    {
+	      Utility->ReadEfficiency(fileNameInput.c_str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,myEff);
+
+
+	      // ##########################
+	      // # Save binned efficiency #
+	      // ##########################
+	      if (savePlot == true)
+		for (unsigned int q2BinIndx = (specBin == -1 ? 0 : specBin); q2BinIndx < (specBin == -1 ? q2Bins->size()-1 : specBin+1); q2BinIndx++)
+		  {
+		    TFile* _file0;
+
+		    myString.clear(); myString.str("");
+		    myString << "H2Deff_q2Bin_" << q2BinIndx;
+		    TH2D* hisFunc2D = Utility->Get2DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,*myEff);
+		    myString << ".root";
+		    _file0 = new TFile(myString.str().c_str(),"RECREATE");
+		    _file0->cd();
+		    hisFunc2D->Write();
+		    _file0->Close();
+
+		    myString.clear(); myString.str("");
+		    myString << "H3Deff_q2Bin_" << q2BinIndx;
+		    TH3D* hisFunc3D = Utility->Get3DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,*myEff);
+		    myString << ".root";
+		    _file0 = new TFile(myString.str().c_str(),"RECREATE");
+		    _file0->cd();
+		    hisFunc3D->Write();
+		    _file0->Close();
+		  }
+	    }
+	  else Utility->ReadAnalyticalEff(fileNameInput.c_str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,&effFuncs3D,"effFuncs3D",0);
 	}
       else
 	{
