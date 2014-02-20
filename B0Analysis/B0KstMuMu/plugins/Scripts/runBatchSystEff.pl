@@ -6,14 +6,17 @@
 
 if (@ARGV == 2)
 {
+    system("source InitAnalysis.sh") ;
+
     ############################
     # Configuration parameters #
     ############################
     $dirEffRndGen = "../../efficiency/EffRndGenAnalyFiles/" ;
-    $dataFile     = "../Data2012B0KstMuMuResults/Data2012/SingleCand/singleCand_B0ToKstMuMu_Data2012ABCD_NTuples.root" ;
+    $dataFile     = $ENV{'DATADIR'} . "/Data2012/SingleCand/singleCand_B0ToKstMuMu_Data2012ABCD_NTuples.root" ;
     $parFile      = "../../python/ParameterFile.txt" ;
     ############################
 
+    print "Directory with data: $ENV{'DATADIR'} \n" ;
     print "Directory with randomly generated efficiencies: $dirEffRndGen \n" ;
     print "Data (or MC) file: $dataFile \n" ;
     print "Parameter file: $parFile \n" ;
@@ -28,7 +31,7 @@ if (@ARGV == 2)
     
     $listStart = 0 ;
     $listEnd = @list - 1 ;
-    $listIndx = 0;
+    $listIndx = 0 ;
     foreach $file (@list[$listStart..$listEnd])
     {
 	chomp $file ;
