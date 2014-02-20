@@ -12,6 +12,7 @@
 #include <TTree.h>
 #include <TH1D.h>
 #include <TH2D.h>
+#include <TH3D.h>
 #include <TF1.h>
 #include <TLegend.h>
 #include <TLeaf.h>
@@ -23,6 +24,12 @@
 #include <TLatex.h>
 #include <TCutG.h>
 #include <TKey.h>
+#include <TMath.h>
+
+#include <RooRealVar.h>
+#include <RooPlot.h>
+#include <RooDataHist.h>
+#include <RooHistPdf.h>
 
 #include <cmath>
 #include <cstdlib>
@@ -36,6 +43,7 @@ using std::endl;
 using std::string;
 using std::stringstream;
 using std::vector;
+using namespace RooFit;
 
 
 // ####################
@@ -73,6 +81,7 @@ using std::vector;
 // # Function Definition #
 // #######################
 TH1D* ComputeCumulative     (TH1D* hIN, string hCumulName);
+void PlotHistoEff           (string fileName, unsigned int smothDegree, string effType);
 void TruthMatching          (string fileName, bool truthMatch);
 void dBFfromGEN             (string fileName);
 void CompareCosMassGENRECO  (string fileNameRECO, string fileNameGEN);
@@ -118,6 +127,75 @@ TH1D* ComputeCumulative(TH1D* hIN, string hCumulName)
 
   cout << "Maximum of comulative: " << hCumul->GetMaximum() << endl;
   return hCumul;
+}
+
+
+// #########################################################################
+// # Sub-program to plot the binned efficicency as "seen" in the final pdf #
+// #########################################################################
+void PlotHistoEff (string fileName, unsigned int smothDegree, string effType)
+// ##################
+// # effType = "2D" #
+// # effType = "3D" #
+// ##################
+{
+  gROOT->SetStyle("Plain");
+  gROOT->ForceStyle();
+  gStyle->SetPalette(1);
+  gStyle->SetOptFit(1112);
+  gStyle->SetOptStat(1110);
+  gStyle->SetOptTitle(0);
+  gStyle->SetPadRightMargin(0.02);
+  gStyle->SetTitleOffset(1.25,"y"); 
+  TGaxis::SetMaxDigits(3);
+
+  
+  TFile* _file0 = new TFile(fileName.c_str());
+  fileName.replace(fileName.find(".root"),5,"");
+  
+  TH2D* histoEff2D;
+  TH3D* histoEff3D;
+  if      (effType == "2D") histoEff2D = (TH2D*)_file0->Get(fileName.c_str());
+  else if (effType == "3D") histoEff3D = (TH3D*)_file0->Get(fileName.c_str());
+  else exit (EXIT_FAILURE);
+
+
+  TCanvas* c0 = new TCanvas("c0","c0",900,600);
+  c0->Divide(4,0);
+
+  c0->cd(1);
+  if (effType == "2D") histoEff2D->Draw("lego fb");
+  else                 histoEff3D->Draw();
+
+  RooRealVar thetaK("thetaK","cos(#theta#lower[-0.4]{_{#font[122]{K}}})",-1.0,1.0,"");
+  RooRealVar thetaL("thetaL","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",-1.0,1.0,"");
+  RooRealVar phi("phi","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",-TMath::Pi(),TMath::Pi(),"rad");
+
+  RooPlot* xframe= thetaK.frame(Name("thetaK"));
+  RooPlot* yframe= thetaL.frame(Name("thetaL"));
+  RooPlot* zframe= phi.frame(Name("phi"));
+
+  RooDataHist* _histoEff;
+  if (effType == "2D") _histoEff = new RooDataHist("_histoEff","_histoEff",RooArgSet(thetaK,thetaL),histoEff2D);
+  else                 _histoEff = new RooDataHist("_histoEff","_histoEff",RooArgSet(thetaK,thetaL,phi),histoEff3D);
+  RooHistPdf* histoEffPDF = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(thetaK,thetaL),*_histoEff,smothDegree);
+
+  c0->cd(2);
+  histoEffPDF->plotOn(xframe);
+  xframe->Draw();
+
+  c0->cd(3);
+  histoEffPDF->plotOn(yframe);
+  yframe->Draw();
+
+  if (effType == "3D")
+    {
+      c0->cd(4);
+      histoEffPDF->plotOn(zframe);
+      zframe->Draw();
+    }
+
+  c0->Update();
 }
 
 
@@ -670,7 +748,7 @@ void PlotEffPlots (string fileName, unsigned int plotN, unsigned int binN)
   if      (plotN == 2) myString << "vecHcosThetaK_" << binN;
   else if (plotN == 3) myString << "vecHcosThetaL_" << binN;
   else if (plotN == 4) myString << "vecHphi_" << binN;
-  else exit(1);
+  else exit (EXIT_FAILURE);
   TH1D* h0 = (TH1D*)p0->GetPrimitive(myString.str().c_str());
   h0->GetYaxis()->SetRangeUser(0.0,ordinateRange);
 

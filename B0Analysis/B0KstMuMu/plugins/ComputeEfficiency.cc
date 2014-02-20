@@ -78,7 +78,7 @@ using std::vector;
 #define TEST_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu.txt"
 #define TEST_THETAL_THETAK_PHI "ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
-#define RIGHTtag       true
+#define RIGHTtag       false
 #define SavePlot       false
 #define CHECKEFFatREAD false // Check if 2D or 3D efficiency go negative
 #define NFILES         200
