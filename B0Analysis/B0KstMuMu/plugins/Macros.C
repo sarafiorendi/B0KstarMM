@@ -81,7 +81,7 @@ using namespace RooFit;
 // # Function Definition #
 // #######################
 TH1D* ComputeCumulative     (TH1D* hIN, string hCumulName);
-void PlotHistoEff           (string fileName, unsigned int smothDegree, string effType);
+void PlotHistoEff           (string fileName, unsigned int smothDegree, string effDimension);
 void TruthMatching          (string fileName, bool truthMatch);
 void dBFfromGEN             (string fileName);
 void CompareCosMassGENRECO  (string fileNameRECO, string fileNameGEN);
@@ -133,12 +133,14 @@ TH1D* ComputeCumulative(TH1D* hIN, string hCumulName)
 // #########################################################################
 // # Sub-program to plot the binned efficicency as "seen" in the final pdf #
 // #########################################################################
-void PlotHistoEff (string fileName, unsigned int smothDegree, string effType)
-// ##################
-// # effType = "2D" #
-// # effType = "3D" #
-// ##################
+void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimension)
+// #######################
+// # effDimension = "2D" #
+// # effDimension = "3D" #
+// #######################
 {
+  double cont;
+
   gROOT->SetStyle("Plain");
   gROOT->ForceStyle();
   gStyle->SetPalette(1);
@@ -153,19 +155,45 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effType)
   TFile* _file0 = new TFile(fileName.c_str());
   fileName.replace(fileName.find(".root"),5,"");
   
+  TCanvas* c0 = new TCanvas("c0","c0",1200,600);
+  c0->Divide(4,0);
+  c0->cd(1);
+
   TH2D* histoEff2D;
+  TH2D* histoEff2D_clone;
   TH3D* histoEff3D;
-  if      (effType == "2D") histoEff2D = (TH2D*)_file0->Get(fileName.c_str());
-  else if (effType == "3D") histoEff3D = (TH3D*)_file0->Get(fileName.c_str());
+  TH3D* histoEff3D_clone;
+  if (effDimension == "2D")
+    {
+      histoEff2D = (TH2D*)_file0->Get(fileName.c_str());
+      histoEff2D_clone = (TH2D*)histoEff2D->Clone();
+
+      for (int i = 1; i <= histoEff2D->GetNbinsX(); i++)
+	for (int j = 1; j <= histoEff2D->GetNbinsY(); j++)
+	  {
+	    cont = histoEff2D_clone->GetBinContent(i,j) * histoEff2D_clone->GetXaxis()->GetBinWidth(i) * histoEff2D_clone->GetYaxis()->GetBinWidth(j);
+	    histoEff2D_clone->SetBinContent(i,j,cont);
+	  }
+
+      histoEff2D->Draw("lego fb");
+    }
+  else if (effDimension == "3D")
+    {
+      histoEff3D = (TH3D*)_file0->Get(fileName.c_str());
+      histoEff3D_clone = (TH3D*)histoEff3D->Clone();
+      
+      for (int i = 1; i <= histoEff3D->GetNbinsX(); i++)
+	for (int j = 1; j <= histoEff3D->GetNbinsY(); j++)
+	  for (int k = 1; k <= histoEff3D->GetNbinsZ(); k++)
+	    {
+	      cont = histoEff3D_clone->GetBinContent(i,j,k) * histoEff3D_clone->GetXaxis()->GetBinWidth(i) * histoEff3D_clone->GetYaxis()->GetBinWidth(j) * histoEff3D_clone->GetZaxis()->GetBinWidth(k);
+	      histoEff3D_clone->SetBinContent(i,j,k,cont);
+	    }
+
+      histoEff3D->Draw();
+    }
   else exit (EXIT_FAILURE);
 
-
-  TCanvas* c0 = new TCanvas("c0","c0",900,600);
-  c0->Divide(4,0);
-
-  c0->cd(1);
-  if (effType == "2D") histoEff2D->Draw("lego fb");
-  else                 histoEff3D->Draw();
 
   RooRealVar thetaK("thetaK","cos(#theta#lower[-0.4]{_{#font[122]{K}}})",-1.0,1.0,"");
   RooRealVar thetaL("thetaL","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",-1.0,1.0,"");
@@ -176,9 +204,18 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effType)
   RooPlot* zframe= phi.frame(Name("phi"));
 
   RooDataHist* _histoEff;
-  if (effType == "2D") _histoEff = new RooDataHist("_histoEff","_histoEff",RooArgSet(thetaK,thetaL),histoEff2D);
-  else                 _histoEff = new RooDataHist("_histoEff","_histoEff",RooArgSet(thetaK,thetaL,phi),histoEff3D);
-  RooHistPdf* histoEffPDF = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(thetaK,thetaL),*_histoEff,smothDegree);
+  RooHistPdf* histoEffPDF;
+  if (effDimension == "2D")
+    {
+      _histoEff   = new RooDataHist("_histoEff","_histoEff",RooArgSet(thetaK,thetaL),histoEff2D_clone);
+      histoEffPDF = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(thetaK,thetaL),*_histoEff,smothDegree);
+    }
+  else
+    {
+      _histoEff   = new RooDataHist("_histoEff","_histoEff",RooArgSet(thetaK,thetaL,phi),histoEff3D_clone);
+      histoEffPDF = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(thetaK,thetaL,phi),*_histoEff,smothDegree);
+    }
+
 
   c0->cd(2);
   histoEffPDF->plotOn(xframe);
@@ -188,7 +225,7 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effType)
   histoEffPDF->plotOn(yframe);
   yframe->Draw();
 
-  if (effType == "3D")
+  if (effDimension == "3D")
     {
       c0->cd(4);
       histoEffPDF->plotOn(zframe);

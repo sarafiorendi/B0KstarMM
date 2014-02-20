@@ -78,7 +78,7 @@ using std::vector;
 #define TEST_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu.txt"
 #define TEST_THETAL_THETAK_PHI "ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
-#define RIGHTtag       false
+#define RIGHTtag       true
 #define SavePlot       false
 #define CHECKEFFatREAD false // Check if 2D or 3D efficiency go negative
 #define NFILES         200
@@ -930,7 +930,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
 		    TFile* _file0;
 
 		    myString.clear(); myString.str("");
-		    myString << "H2Deff_q2Bin_" << q2BinIndx;
+		    myString << Utility->Histo2DEffName.c_str() << "_" << q2BinIndx;
 		    TH2D* hisFunc2D = Utility->Get2DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,*myEff);
 		    myString << ".root";
 		    _file0 = new TFile(myString.str().c_str(),"RECREATE");
@@ -939,7 +939,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
 		    _file0->Close();
 
 		    myString.clear(); myString.str("");
-		    myString << "H3Deff_q2Bin_" << q2BinIndx;
+		    myString << Utility->Histo3DEffName.c_str() << "_" << q2BinIndx;
 		    TH3D* hisFunc3D = Utility->Get3DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,*myEff);
 		    myString << ".root";
 		    _file0 = new TFile(myString.str().c_str(),"RECREATE");

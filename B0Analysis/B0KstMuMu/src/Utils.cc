@@ -3,6 +3,7 @@
 
 #include <TAxis.h>
 #include <TMath.h>
+#include <TFile.h>
 
 #include <cmath>
 #include <cstdlib>
@@ -65,6 +66,10 @@ Utils::Utils (bool rightFlavorTag)
   // Define whether to compute the efficiency with good-tagged or mis-tagged events
   RIGHTflavorTAG = rightFlavorTag;
 
+  // Define names of the files containing the histogram of the efficiency
+  Histo2DEffName = "../efficiency/H2Deff_q2Bin";
+  Histo3DEffName = "../efficiency/H3Deff_q2Bin";
+
   // ###############################################
   // # Define codes to identify MC type:           #
   // # 1 = B0 --> K*0(K+pi-) mu+mu-                #
@@ -95,6 +100,8 @@ Utils::Utils (bool rightFlavorTag)
   std::cout << "NcoeffThetaK: "     << NcoeffThetaK << std::endl;
   std::cout << "NcoeffPhi: "        << NcoeffPhi << std::endl;
   std::cout << "RIGHTflavorTAG: "   << RIGHTflavorTAG << std::endl;
+  std::cout << "Histo2DEffName: "   << Histo2DEffName << std::endl;
+  std::cout << "Histo3DEffName: "   << Histo3DEffName << std::endl;
   std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 }
 
@@ -638,6 +645,59 @@ TH3D* Utils::Get3DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bi
 	}
   
   return Histo;
+}
+
+TH2D* Utils::Get2DEffHitoq2Bin (unsigned int q2BinIndx)
+{
+  std::stringstream myString;
+  double cont;
+
+  myString.clear(); myString.str("");
+  myString << Histo2DEffName.c_str() << "_" << q2BinIndx << ".root";
+  TFile* _file0 = new TFile(myString.str().c_str());
+  myString.clear(); myString.str("");
+  myString << Histo2DEffName.c_str() << "_" << q2BinIndx;
+
+  TH2D* histoEff2D = (TH2D*)_file0->Get(myString.str().c_str());
+  TH2D* histoEff2D_clone = (TH2D*)histoEff2D->Clone();
+  
+  for (int i = 1; i <= histoEff2D->GetNbinsX(); i++)
+    for (int j = 1; j <= histoEff2D->GetNbinsY(); j++)
+      {
+	cont = histoEff2D_clone->GetBinContent(i,j) * histoEff2D_clone->GetXaxis()->GetBinWidth(i) * histoEff2D_clone->GetYaxis()->GetBinWidth(j);
+	if (RIGHTflavorTAG == true) histoEff2D_clone->SetBinContent(i,j,cont);
+	else                        histoEff2D_clone->SetBinContent(histoEff2D->GetNbinsX()-i+1,histoEff2D->GetNbinsY()-j+1,cont);
+      }
+  
+  _file0->Close();
+  return histoEff2D;
+}
+
+TH3D* Utils::Get3DEffHitoq2Bin (unsigned int q2BinIndx)
+{
+  std::stringstream myString;
+  double cont;
+
+  myString.clear(); myString.str("");
+  myString << Histo3DEffName.c_str() << "_" << q2BinIndx << ".root";
+  TFile* _file0 = new TFile(myString.str().c_str());
+  myString.clear(); myString.str("");
+  myString << Histo3DEffName.c_str() << "_" << q2BinIndx;
+
+  TH3D* histoEff3D = (TH3D*)_file0->Get(myString.str().c_str());
+  TH3D* histoEff3D_clone = (TH3D*)histoEff3D->Clone();
+  
+  for (int i = 1; i <= histoEff3D->GetNbinsX(); i++)
+    for (int j = 1; j <= histoEff3D->GetNbinsY(); j++)
+      for (int k = 1; k <= histoEff3D->GetNbinsZ(); k++)
+	{
+	  cont = histoEff3D_clone->GetBinContent(i,j,k) * histoEff3D_clone->GetXaxis()->GetBinWidth(i) * histoEff3D_clone->GetYaxis()->GetBinWidth(j) * histoEff3D_clone->GetZaxis()->GetBinWidth(k);
+	  if (RIGHTflavorTAG == true) histoEff3D_clone->SetBinContent(i,j,k,cont);
+	  else                        histoEff3D_clone->SetBinContent(histoEff3D->GetNbinsX()-i+1,histoEff3D->GetNbinsY()-j+1,histoEff3D->GetNbinsZ()-k+1,cont);
+	}
+
+  _file0->Close();
+  return histoEff3D;
 }
 
 void Utils::DeleteEfficiency (effStruct myEff)
@@ -1843,7 +1903,7 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
 
   for (unsigned int q2BinIndx = 0; q2BinIndx < q2Bins->size()-1; q2BinIndx++)
     {
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << effID << "_" << q2BinIndx;
       effFuncs->push_back(new TF2(myString.str().c_str(),TellMeEffFuncThetaKThetaL().c_str(),
 				  cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),
@@ -1903,7 +1963,7 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
 
   for (unsigned int q2BinIndx = 0; q2BinIndx < q2Bins->size()-1; q2BinIndx++)
     {
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << effID << "_" << q2BinIndx;
       effFuncs->push_back(new TF3(myString.str().c_str(),TellMeEffFuncThetaKThetaLPhi().c_str(),
 				  cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),
@@ -2314,7 +2374,7 @@ void Utils::AddConstraint1D (TH1D** histo, std::string constrType, double abscis
     }
 
 
-  myString.str("");
+  myString.clear(); myString.str("");
   myString << (*histo)->GetName() << "_" << ID;
   newHisto = new TH1D(myString.str().c_str(),myString.str().c_str(),nNewBins-1,reBins);
 
@@ -2527,7 +2587,7 @@ void Utils::AddConstraint2D (TH2D** histo, double abscissaErr, double ZerrRescal
       reBinsY[(*histo)->GetNbinsY()+2] = reBinsY[(*histo)->GetNbinsY()+1] + abscissaErr;
       
       
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << (*histo)->GetName() << "_" << ID;
       newHisto = new TH2D(myString.str().c_str(),myString.str().c_str(),nNewBinsX-1,reBinsX,nNewBinsY-1,reBinsY);
       
@@ -2574,7 +2634,7 @@ void Utils::AddConstraint2D (TH2D** histo, double abscissaErr, double ZerrRescal
       reBinsY[(*histo)->GetNbinsY()] = YAxis->GetBinLowEdge((*histo)->GetNbinsY()) + YAxis->GetBinWidth((*histo)->GetNbinsY());
 
       
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << (*histo)->GetName() << "_" << ID;
       newHisto = new TH2D(myString.str().c_str(),myString.str().c_str(),nNewBinsX-1,reBinsX,nNewBinsY-1,reBinsY);
 
@@ -2613,7 +2673,7 @@ void Utils::AddConstraint2D (TH2D** histo, double abscissaErr, double ZerrRescal
       reBinsY[(*histo)->GetNbinsY()] = YAxis->GetBinLowEdge((*histo)->GetNbinsY()) + YAxis->GetBinWidth((*histo)->GetNbinsY());
 
       
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << (*histo)->GetName() << "_" << ID;
       newHisto = new TH2D(myString.str().c_str(),myString.str().c_str(),nNewBinsX-1,reBinsX,nNewBinsY-1,reBinsY);
 
@@ -2653,7 +2713,7 @@ void Utils::AddConstraint2D (TH2D** histo, double abscissaErr, double ZerrRescal
       reBinsY[(*histo)->GetNbinsY()] = YAxis->GetBinLowEdge((*histo)->GetNbinsY()) + YAxis->GetBinWidth((*histo)->GetNbinsY());
 
       
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << (*histo)->GetName() << "_" << ID;
       newHisto = new TH2D(myString.str().c_str(),myString.str().c_str(),nNewBinsX-1,reBinsX,nNewBinsY-1,reBinsY);
 
@@ -2694,7 +2754,7 @@ void Utils::AddConstraint2D (TH2D** histo, double abscissaErr, double ZerrRescal
       reBinsY[(*histo)->GetNbinsY()] = YAxis->GetBinLowEdge((*histo)->GetNbinsY()) + YAxis->GetBinWidth((*histo)->GetNbinsY());
 
       
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << (*histo)->GetName() << "_" << ID;
       newHisto = new TH2D(myString.str().c_str(),myString.str().c_str(),nNewBinsX-1,reBinsX,nNewBinsY-1,reBinsY);
 
@@ -3086,7 +3146,7 @@ void Utils::AddConstraint3D (TH3D** histo, double abscissaErr, double Tval, doub
     }
 
 
-  myString.str("");
+  myString.clear(); myString.str("");
   myString << (*histo)->GetName() << "_" << ID;
   newHisto = new TH3D(myString.str().c_str(),myString.str().c_str(),nNewBinsX-1,reBinsX,nNewBinsY-1,reBinsY,nNewBinsZ-1,reBinsZ);
 
