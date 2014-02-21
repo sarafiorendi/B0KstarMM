@@ -116,7 +116,7 @@ Utils::effStruct myEff;
 // #######################
 void ComputeEfficiency     (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, double* Vector, double* VectorErr2Pois, double* VectorErr2Weig, unsigned int type,
 			    vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, int SignalType);
-void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff);
+void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, int specBin);
 void Read3DEfficiencies    (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			    string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool savePlot, int specBin = -1);
 void Fit1DEfficiencies     (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
@@ -283,7 +283,7 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
 }
 
 
-void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff)
+void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, int specBin)
 {
   // ###################
   // # Local variables #
@@ -341,7 +341,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
     }
 
 
-  for (unsigned int i = 0; i < q2Bins->size()-1; i++)
+  for (unsigned int i = (specBin == -1 ? 0 : specBin); i < (specBin == -1 ? q2Bins->size()-1 : specBin+1); i++)
     {
       // #############################################
       // # Fill histogram : efficiency vs dimuon q^2 #
@@ -391,75 +391,123 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   Hq2->Draw("e1");
 
   cEff->cd(2);
-  vecHcosThetaK[0]->SetMarkerStyle(20);
-  vecHcosThetaK[0]->SetMarkerColor(1);
-  vecHcosThetaK[0]->SetLineColor(1);
-  vecHcosThetaK[0]->SetLineWidth(2);
-  vecHcosThetaK[0]->Draw("e1");
-  vecHcosThetaK[0]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
-  TLegend* legThetaK = new TLegend(0.88, 0.65, 0.97, 0.89, "");
-  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
-  legThetaK->AddEntry(vecHcosThetaK[0],myString.str().c_str());
-  for (unsigned int i = 1; i < q2Bins->size()-1; i++)
+  TLegend* legThetaK;
+  if (specBin == -1)
     {
-      vecHcosThetaK[i]->SetMarkerStyle(20+i);
-      vecHcosThetaK[i]->SetMarkerColor(1+i);
-      vecHcosThetaK[i]->SetLineColor(1+i);
-      vecHcosThetaK[i]->SetLineWidth(2);
-      vecHcosThetaK[i]->Draw("sames e1");
-      vecHcosThetaK[i]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
-      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
-      legThetaK->AddEntry(vecHcosThetaK[i],myString.str().c_str());
+      vecHcosThetaK[0]->SetMarkerStyle(20);
+      vecHcosThetaK[0]->SetMarkerColor(1);
+      vecHcosThetaK[0]->SetLineColor(1);
+      vecHcosThetaK[0]->SetLineWidth(2);
+      vecHcosThetaK[0]->Draw("e1");
+      vecHcosThetaK[0]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
+      legThetaK = new TLegend(0.88, 0.65, 0.97, 0.89, "");
+      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
+      legThetaK->AddEntry(vecHcosThetaK[0],myString.str().c_str());
+      for (unsigned int i = 1; i < q2Bins->size()-1; i++)
+	{
+	  vecHcosThetaK[i]->SetMarkerStyle(20+i);
+	  vecHcosThetaK[i]->SetMarkerColor(1+i);
+	  vecHcosThetaK[i]->SetLineColor(1+i);
+	  vecHcosThetaK[i]->SetLineWidth(2);
+	  vecHcosThetaK[i]->Draw("sames e1");
+	  vecHcosThetaK[i]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
+	  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
+	  legThetaK->AddEntry(vecHcosThetaK[i],myString.str().c_str());
+	}
+    }
+  else
+    {
+      vecHcosThetaK[specBin]->SetMarkerStyle(20);
+      vecHcosThetaK[specBin]->SetMarkerColor(1);
+      vecHcosThetaK[specBin]->SetLineColor(1);
+      vecHcosThetaK[specBin]->SetLineWidth(2);
+      vecHcosThetaK[specBin]->Draw("e1");
+      vecHcosThetaK[specBin]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
+      legThetaK = new TLegend(0.88, 0.65, 0.97, 0.89, "");
+      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
+      legThetaK->AddEntry(vecHcosThetaK[specBin],myString.str().c_str());
     }
   legThetaK->SetFillColor(0);
   legThetaK->SetBorderSize(0);
   legThetaK->Draw();
 
   cEff->cd(3);
-  vecHcosThetaL[0]->SetMarkerStyle(20);
-  vecHcosThetaL[0]->SetMarkerColor(1);
-  vecHcosThetaL[0]->SetLineColor(1);
-  vecHcosThetaL[0]->SetLineWidth(2);
-  vecHcosThetaL[0]->Draw("e1");
-  vecHcosThetaL[0]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
-  TLegend* legThetaL = new TLegend(0.88, 0.65, 0.97, 0.89, "");
-  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
-  legThetaL->AddEntry(vecHcosThetaL[0],myString.str().c_str());
-  for (unsigned int i = 1; i < q2Bins->size()-1; i++)
+  TLegend* legThetaL;
+  if (specBin == -1)
     {
-      vecHcosThetaL[i]->SetMarkerStyle(20+i);
-      vecHcosThetaL[i]->SetMarkerColor(1+i);
-      vecHcosThetaL[i]->SetLineColor(1+i);
-      vecHcosThetaL[i]->SetLineWidth(2);
-      vecHcosThetaL[i]->Draw("sames e1");
-      vecHcosThetaL[i]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
-      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
-      legThetaL->AddEntry(vecHcosThetaL[i],myString.str().c_str());
+      vecHcosThetaL[0]->SetMarkerStyle(20);
+      vecHcosThetaL[0]->SetMarkerColor(1);
+      vecHcosThetaL[0]->SetLineColor(1);
+      vecHcosThetaL[0]->SetLineWidth(2);
+      vecHcosThetaL[0]->Draw("e1");
+      vecHcosThetaL[0]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
+      legThetaL = new TLegend(0.88, 0.65, 0.97, 0.89, "");
+      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
+      legThetaL->AddEntry(vecHcosThetaL[0],myString.str().c_str());
+      for (unsigned int i = 1; i < q2Bins->size()-1; i++)
+	{
+	  vecHcosThetaL[i]->SetMarkerStyle(20+i);
+	  vecHcosThetaL[i]->SetMarkerColor(1+i);
+	  vecHcosThetaL[i]->SetLineColor(1+i);
+	  vecHcosThetaL[i]->SetLineWidth(2);
+	  vecHcosThetaL[i]->Draw("sames e1");
+	  vecHcosThetaL[i]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
+	  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
+	  legThetaL->AddEntry(vecHcosThetaL[i],myString.str().c_str());
+	}
+    }
+  else
+    {
+      vecHcosThetaL[specBin]->SetMarkerStyle(20);
+      vecHcosThetaL[specBin]->SetMarkerColor(1);
+      vecHcosThetaL[specBin]->SetLineColor(1);
+      vecHcosThetaL[specBin]->SetLineWidth(2);
+      vecHcosThetaL[specBin]->Draw("e1");
+      vecHcosThetaL[specBin]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
+      legThetaL = new TLegend(0.88, 0.65, 0.97, 0.89, "");
+      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
+      legThetaL->AddEntry(vecHcosThetaL[specBin],myString.str().c_str());
     }
   legThetaL->SetFillColor(0);
   legThetaL->SetBorderSize(0);
   legThetaL->Draw();
 
   cEff->cd(4);
-  vecHphi[0]->SetMarkerStyle(20);
-  vecHphi[0]->SetMarkerColor(1);
-  vecHphi[0]->SetLineColor(1);
-  vecHphi[0]->SetLineWidth(2);
-  vecHphi[0]->Draw("e1");
-  vecHphi[0]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
-  TLegend* legPhi = new TLegend(0.88, 0.65, 0.97, 0.89, "");
-  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
-  legPhi->AddEntry(vecHphi[0],myString.str().c_str());
-  for (unsigned int i = 1; i < q2Bins->size()-1; i++)
+  TLegend* legPhi;
+  if (specBin == -1)
     {
-      vecHphi[i]->SetMarkerStyle(20+i);
-      vecHphi[i]->SetMarkerColor(1+i);
-      vecHphi[i]->SetLineColor(1+i);
-      vecHphi[i]->SetLineWidth(2);
-      vecHphi[i]->Draw("sames e1");
-      vecHphi[i]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
-      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
-      legPhi->AddEntry(vecHphi[i],myString.str().c_str());
+      vecHphi[0]->SetMarkerStyle(20);
+      vecHphi[0]->SetMarkerColor(1);
+      vecHphi[0]->SetLineColor(1);
+      vecHphi[0]->SetLineWidth(2);
+      vecHphi[0]->Draw("e1");
+      vecHphi[0]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
+      legPhi = new TLegend(0.88, 0.65, 0.97, 0.89, "");
+      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
+      legPhi->AddEntry(vecHphi[0],myString.str().c_str());
+      for (unsigned int i = 1; i < q2Bins->size()-1; i++)
+	{
+	  vecHphi[i]->SetMarkerStyle(20+i);
+	  vecHphi[i]->SetMarkerColor(1+i);
+	  vecHphi[i]->SetLineColor(1+i);
+	  vecHphi[i]->SetLineWidth(2);
+	  vecHphi[i]->Draw("sames e1");
+	  vecHphi[i]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
+	  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
+	  legPhi->AddEntry(vecHphi[i],myString.str().c_str());
+	}
+    }
+  else
+    {
+      vecHphi[specBin]->SetMarkerStyle(20);
+      vecHphi[specBin]->SetMarkerColor(1);
+      vecHphi[specBin]->SetLineColor(1);
+      vecHphi[specBin]->SetLineWidth(2);
+      vecHphi[specBin]->Draw("e1");
+      vecHphi[specBin]->GetYaxis()->SetRangeUser(0.0,ordinateRange);
+      legPhi = new TLegend(0.88, 0.65, 0.97, 0.89, "");
+      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
+      legPhi->AddEntry(vecHphi[specBin],myString.str().c_str());
     }
   legPhi->SetFillColor(0);
   legPhi->SetBorderSize(0);
@@ -530,7 +578,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 
   for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
     {
-      for (unsigned int i = 0; i < q2Bins->size()-1; i++)
+      for (unsigned int i = (specBin == -1 ? 0 : specBin); i < (specBin == -1 ? q2Bins->size()-1 : specBin+1); i++)
 	{
 	  // ###############################################################################################################
 	  // # Fill histogram : numerator of the efficiency vs cos(theta_l) in bins of dimuon q^2 and cos(theta_K) and phi #
@@ -567,7 +615,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 
   for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
     {
-      for (unsigned int i = 0; i < q2Bins->size()-1; i++)
+      for (unsigned int i = (specBin == -1 ? 0 : specBin); i < (specBin == -1 ? q2Bins->size()-1 : specBin+1); i++)
 	{
 	  // #######################################################################################################
 	  // # Fill histogram : numerator of the efficiency vs cos(theta_K) in bins of dimuon q^2 and cos(theta_l) #
@@ -604,7 +652,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 
   for (unsigned int l = 0; l < phiBins->size()-1; l++)
     {
-      for (unsigned int i = 0; i < q2Bins->size()-1; i++)
+      for (unsigned int i = (specBin == -1 ? 0 : specBin); i < (specBin == -1 ? q2Bins->size()-1 : specBin+1); i++)
 	{
 	  // ###############################################################################################################
 	  // # Fill histogram : numerator of the efficiency vs phi in bins of dimuon q^2 and cos(theta_l) and cos(theta_k) #
@@ -676,7 +724,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
     }
 
 
-  for (unsigned int i = 0; i < q2Bins->size()-1; i++)
+  for (unsigned int i = (specBin == -1 ? 0 : specBin); i < (specBin == -1 ? q2Bins->size()-1 : specBin+1); i++)
     {
       for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
 	{
@@ -743,75 +791,123 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 
 
   cNum->cd(2);
-  vecHq2ANDNumcosThetaK[0]->SetMarkerStyle(20);
-  vecHq2ANDNumcosThetaK[0]->SetMarkerColor(1);
-  vecHq2ANDNumcosThetaK[0]->SetLineColor(1);
-  vecHq2ANDNumcosThetaK[0]->SetLineWidth(2);
-  vecHq2ANDNumcosThetaK[0]->Draw("p");
-  vecHq2ANDNumcosThetaK[0]->GetYaxis()->SetRangeUser(0.1,Yaxes);
-  TLegend* legNumThetaK = new TLegend(0.88, 0.65, 0.97, 0.89, "");
-  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
-  legNumThetaK->AddEntry(vecHq2ANDNumcosThetaK[0],myString.str().c_str());
-  for (unsigned int i = 1; i < q2Bins->size()-1; i++)
+  TLegend* legNumThetaK;
+  if (specBin == -1)
     {
-      vecHq2ANDNumcosThetaK[i]->SetMarkerStyle(20+i);
-      vecHq2ANDNumcosThetaK[i]->SetMarkerColor(1+i);
-      vecHq2ANDNumcosThetaK[i]->SetLineColor(1+i);
-      vecHq2ANDNumcosThetaK[i]->SetLineWidth(2);
-      vecHq2ANDNumcosThetaK[i]->Draw("sames p");
-      vecHq2ANDNumcosThetaK[i]->GetYaxis()->SetRangeUser(0.1,Yaxes);
-      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
-      legNumThetaK->AddEntry(vecHq2ANDNumcosThetaK[i],myString.str().c_str());
+      vecHq2ANDNumcosThetaK[0]->SetMarkerStyle(20);
+      vecHq2ANDNumcosThetaK[0]->SetMarkerColor(1);
+      vecHq2ANDNumcosThetaK[0]->SetLineColor(1);
+      vecHq2ANDNumcosThetaK[0]->SetLineWidth(2);
+      vecHq2ANDNumcosThetaK[0]->Draw("p");
+      vecHq2ANDNumcosThetaK[0]->GetYaxis()->SetRangeUser(0.1,Yaxes);
+      legNumThetaK = new TLegend(0.88, 0.65, 0.97, 0.89, "");
+      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
+      legNumThetaK->AddEntry(vecHq2ANDNumcosThetaK[0],myString.str().c_str());
+      for (unsigned int i = 1; i < q2Bins->size()-1; i++)
+	{
+	  vecHq2ANDNumcosThetaK[i]->SetMarkerStyle(20+i);
+	  vecHq2ANDNumcosThetaK[i]->SetMarkerColor(1+i);
+	  vecHq2ANDNumcosThetaK[i]->SetLineColor(1+i);
+	  vecHq2ANDNumcosThetaK[i]->SetLineWidth(2);
+	  vecHq2ANDNumcosThetaK[i]->Draw("sames p");
+	  vecHq2ANDNumcosThetaK[i]->GetYaxis()->SetRangeUser(0.1,Yaxes);
+	  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
+	  legNumThetaK->AddEntry(vecHq2ANDNumcosThetaK[i],myString.str().c_str());
+	}
+    }
+  else
+    {
+      vecHq2ANDNumcosThetaK[specBin]->SetMarkerStyle(20);
+      vecHq2ANDNumcosThetaK[specBin]->SetMarkerColor(1);
+      vecHq2ANDNumcosThetaK[specBin]->SetLineColor(1);
+      vecHq2ANDNumcosThetaK[specBin]->SetLineWidth(2);
+      vecHq2ANDNumcosThetaK[specBin]->Draw("p");
+      vecHq2ANDNumcosThetaK[specBin]->GetYaxis()->SetRangeUser(0.1,Yaxes);
+      legNumThetaK = new TLegend(0.88, 0.65, 0.97, 0.89, "");
+      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
+      legNumThetaK->AddEntry(vecHq2ANDNumcosThetaK[specBin],myString.str().c_str());
     }
   legNumThetaK->SetFillColor(0);
   legNumThetaK->SetBorderSize(0);
   legNumThetaK->Draw();
 
   cNum->cd(3);
-  vecHq2ANDNumcosThetaL[0]->SetMarkerStyle(20);
-  vecHq2ANDNumcosThetaL[0]->SetMarkerColor(1);
-  vecHq2ANDNumcosThetaL[0]->SetLineColor(1);
-  vecHq2ANDNumcosThetaL[0]->SetLineWidth(2);
-  vecHq2ANDNumcosThetaL[0]->Draw("p");
-  vecHq2ANDNumcosThetaL[0]->GetYaxis()->SetRangeUser(0.1,Yaxes);
-  TLegend* legNumThetaL = new TLegend(0.88, 0.65, 0.97, 0.89, "");
-  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
-  legNumThetaL->AddEntry(vecHq2ANDNumcosThetaL[0],myString.str().c_str());
-  for (unsigned int i = 1; i < q2Bins->size()-1; i++)
+  TLegend* legNumThetaL;
+  if (specBin == -1)
     {
-      vecHq2ANDNumcosThetaL[i]->SetMarkerStyle(20+i);
-      vecHq2ANDNumcosThetaL[i]->SetMarkerColor(1+i);
-      vecHq2ANDNumcosThetaL[i]->SetLineColor(1+i);
-      vecHq2ANDNumcosThetaL[i]->SetLineWidth(2);
-      vecHq2ANDNumcosThetaL[i]->Draw("sames p");
-      vecHq2ANDNumcosThetaL[i]->GetYaxis()->SetRangeUser(0.1,Yaxes);
-      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
-      legNumThetaL->AddEntry(vecHq2ANDNumcosThetaL[i],myString.str().c_str());
+      vecHq2ANDNumcosThetaL[0]->SetMarkerStyle(20);
+      vecHq2ANDNumcosThetaL[0]->SetMarkerColor(1);
+      vecHq2ANDNumcosThetaL[0]->SetLineColor(1);
+      vecHq2ANDNumcosThetaL[0]->SetLineWidth(2);
+      vecHq2ANDNumcosThetaL[0]->Draw("p");
+      vecHq2ANDNumcosThetaL[0]->GetYaxis()->SetRangeUser(0.1,Yaxes);
+      legNumThetaL = new TLegend(0.88, 0.65, 0.97, 0.89, "");
+      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
+      legNumThetaL->AddEntry(vecHq2ANDNumcosThetaL[0],myString.str().c_str());
+      for (unsigned int i = 1; i < q2Bins->size()-1; i++)
+	{
+	  vecHq2ANDNumcosThetaL[i]->SetMarkerStyle(20+i);
+	  vecHq2ANDNumcosThetaL[i]->SetMarkerColor(1+i);
+	  vecHq2ANDNumcosThetaL[i]->SetLineColor(1+i);
+	  vecHq2ANDNumcosThetaL[i]->SetLineWidth(2);
+	  vecHq2ANDNumcosThetaL[i]->Draw("sames p");
+	  vecHq2ANDNumcosThetaL[i]->GetYaxis()->SetRangeUser(0.1,Yaxes);
+	  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
+	  legNumThetaL->AddEntry(vecHq2ANDNumcosThetaL[i],myString.str().c_str());
+	}
+    }
+  else
+    {
+      vecHq2ANDNumcosThetaL[specBin]->SetMarkerStyle(20);
+      vecHq2ANDNumcosThetaL[specBin]->SetMarkerColor(1);
+      vecHq2ANDNumcosThetaL[specBin]->SetLineColor(1);
+      vecHq2ANDNumcosThetaL[specBin]->SetLineWidth(2);
+      vecHq2ANDNumcosThetaL[specBin]->Draw("p");
+      vecHq2ANDNumcosThetaL[specBin]->GetYaxis()->SetRangeUser(0.1,Yaxes);
+      legNumThetaL = new TLegend(0.88, 0.65, 0.97, 0.89, "");
+      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
+      legNumThetaL->AddEntry(vecHq2ANDNumcosThetaL[specBin],myString.str().c_str());
     }
   legNumThetaL->SetFillColor(0);
   legNumThetaL->SetBorderSize(0);
   legNumThetaL->Draw();
 
   cNum->cd(4);
-  vecHq2ANDNumPhi[0]->SetMarkerStyle(20);
-  vecHq2ANDNumPhi[0]->SetMarkerColor(1);
-  vecHq2ANDNumPhi[0]->SetLineColor(1);
-  vecHq2ANDNumPhi[0]->SetLineWidth(2);
-  vecHq2ANDNumPhi[0]->Draw("p");
-  vecHq2ANDNumPhi[0]->GetYaxis()->SetRangeUser(0.1,Yaxes);
-  TLegend* legNumPhi = new TLegend(0.88, 0.65, 0.97, 0.89, "");
-  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
-  legNumPhi->AddEntry(vecHq2ANDNumPhi[0],myString.str().c_str());
-  for (unsigned int i = 1; i < q2Bins->size()-1; i++)
+  TLegend* legNumPhi;
+  if (specBin == -1)
     {
-      vecHq2ANDNumPhi[i]->SetMarkerStyle(20+i);
-      vecHq2ANDNumPhi[i]->SetMarkerColor(1+i);
-      vecHq2ANDNumPhi[i]->SetLineColor(1+i);
-      vecHq2ANDNumPhi[i]->SetLineWidth(2);
-      vecHq2ANDNumPhi[i]->Draw("sames p");
-      vecHq2ANDNumPhi[i]->GetYaxis()->SetRangeUser(0.1,Yaxes);
-      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
-      legNumPhi->AddEntry(vecHq2ANDNumPhi[i],myString.str().c_str());
+      vecHq2ANDNumPhi[0]->SetMarkerStyle(20);
+      vecHq2ANDNumPhi[0]->SetMarkerColor(1);
+      vecHq2ANDNumPhi[0]->SetLineColor(1);
+      vecHq2ANDNumPhi[0]->SetLineWidth(2);
+      vecHq2ANDNumPhi[0]->Draw("p");
+      vecHq2ANDNumPhi[0]->GetYaxis()->SetRangeUser(0.1,Yaxes);
+      legNumPhi = new TLegend(0.88, 0.65, 0.97, 0.89, "");
+      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
+      legNumPhi->AddEntry(vecHq2ANDNumPhi[0],myString.str().c_str());
+      for (unsigned int i = 1; i < q2Bins->size()-1; i++)
+	{
+	  vecHq2ANDNumPhi[i]->SetMarkerStyle(20+i);
+	  vecHq2ANDNumPhi[i]->SetMarkerColor(1+i);
+	  vecHq2ANDNumPhi[i]->SetLineColor(1+i);
+	  vecHq2ANDNumPhi[i]->SetLineWidth(2);
+	  vecHq2ANDNumPhi[i]->Draw("sames p");
+	  vecHq2ANDNumPhi[i]->GetYaxis()->SetRangeUser(0.1,Yaxes);
+	  myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin " << i;
+	  legNumPhi->AddEntry(vecHq2ANDNumPhi[i],myString.str().c_str());
+	}
+    }
+  else
+    {
+      vecHq2ANDNumPhi[specBin]->SetMarkerStyle(20);
+      vecHq2ANDNumPhi[specBin]->SetMarkerColor(1);
+      vecHq2ANDNumPhi[specBin]->SetLineColor(1);
+      vecHq2ANDNumPhi[specBin]->SetLineWidth(2);
+      vecHq2ANDNumPhi[specBin]->Draw("p");
+      vecHq2ANDNumPhi[specBin]->GetYaxis()->SetRangeUser(0.1,Yaxes);
+      legNumPhi = new TLegend(0.88, 0.65, 0.97, 0.89, "");
+      myString.clear(); myString.str(""); myString << "q#lower[0.4]{^{2}} bin 0";
+      legNumPhi->AddEntry(vecHq2ANDNumPhi[specBin],myString.str().c_str());
     }
   legNumPhi->SetFillColor(0);
   legNumPhi->SetBorderSize(0);
@@ -1229,7 +1325,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
   cout << "\tTotal J/psi efficiency: " << totalEffJPsi << "\tTotal psi(2S) efficiency: " << totalEffPsiP << endl;
 
 
-  if ((isSingleEff == true) && (isAnalyEff == false)) MakeHistogramsAllBins(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,*myEff);
+  if ((isSingleEff == true) && (isAnalyEff == false)) MakeHistogramsAllBins(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,*myEff,specBin);
 }
 
 
@@ -2244,7 +2340,7 @@ int main (int argc, char** argv)
 
 
 	  Utility->SaveEfficiency(fileNameOutput.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff);
-	  if (SETBATCH == false) MakeHistogramsAllBins(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff);
+	  if (SETBATCH == false) MakeHistogramsAllBins(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,-1);
 	  cout << "\n@@@ Efficiency computation is done @@@" << endl;
 
 
