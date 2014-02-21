@@ -308,6 +308,8 @@ class Utils
   unsigned int B0ToJPsiKst;
   unsigned int B0ToPsi2SKst;
 
+  double minimalEfficiency;
+
 };
 
 #endif

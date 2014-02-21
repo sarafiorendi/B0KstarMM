@@ -83,25 +83,30 @@ Utils::Utils (bool rightFlavorTag)
   B0ToJPsiKst  = 3;
   B0ToPsi2SKst = 5;
 
+  // Define the minimal efficiency to be assiged to empty efficiency bins
+  minimalEfficiency = 1e-5;
+
   // ################################
   // # Print out internal variables #
   // ################################
   std::cout << "\n@@@ Utils class settings : private @@@" << std::endl;
-  std::cout << "nFitParam: "        << nFitParam << std::endl;
-  std::cout << "nConfigParam: "     << nConfigParam << std::endl;
-  std::cout << "nFitObserv: "       << nFitObserv << std::endl;
-  std::cout << "ProbThreshold: "    << ProbThreshold << std::endl;
-  std::cout << "scrambleFraction: " << scrambleFraction << std::endl;
-  std::cout << "B0ToKstMuMu: "      << B0ToKstMuMu << std::endl;
-  std::cout << "B0ToJPsiKst: "      << B0ToJPsiKst << std::endl;
-  std::cout << "B0ToPsi2SKst: "     << B0ToPsi2SKst << std::endl;
+  std::cout << "nFitParam: "         << nFitParam << std::endl;
+  std::cout << "nConfigParam: "      << nConfigParam << std::endl;
+  std::cout << "nFitObserv: "        << nFitObserv << std::endl;
+  std::cout << "ProbThreshold: "     << ProbThreshold << std::endl;
+  std::cout << "scrambleFraction: "  << scrambleFraction << std::endl;
+  std::cout << "B0ToKstMuMu: "       << B0ToKstMuMu << std::endl;
+  std::cout << "B0ToJPsiKst: "       << B0ToJPsiKst << std::endl;
+  std::cout << "B0ToPsi2SKst: "      << B0ToPsi2SKst << std::endl;
+  std::cout << "minimalEfficiency: " << minimalEfficiency << std::endl;
+
   std::cout << "@@@ Utils class settings : public  @@@" << std::endl;
-  std::cout << "NcoeffThetaL: "     << NcoeffThetaL << std::endl;
-  std::cout << "NcoeffThetaK: "     << NcoeffThetaK << std::endl;
-  std::cout << "NcoeffPhi: "        << NcoeffPhi << std::endl;
-  std::cout << "RIGHTflavorTAG: "   << RIGHTflavorTAG << std::endl;
-  std::cout << "Histo2DEffName: "   << Histo2DEffName << std::endl;
-  std::cout << "Histo3DEffName: "   << Histo3DEffName << std::endl;
+  std::cout << "NcoeffThetaL: "   << NcoeffThetaL << std::endl;
+  std::cout << "NcoeffThetaK: "   << NcoeffThetaK << std::endl;
+  std::cout << "NcoeffPhi: "      << NcoeffPhi << std::endl;
+  std::cout << "RIGHTflavorTAG: " << RIGHTflavorTAG << std::endl;
+  std::cout << "Histo2DEffName: " << Histo2DEffName << std::endl;
+  std::cout << "Histo3DEffName: " << Histo3DEffName << std::endl;
   std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 }
 
@@ -665,6 +670,7 @@ TH2D* Utils::Get2DEffHitoq2Bin (unsigned int q2BinIndx)
     for (int j = 1; j <= histoEff2D->GetNbinsY(); j++)
       {
 	cont = histoEff2D_clone->GetBinContent(i,j) * histoEff2D_clone->GetXaxis()->GetBinWidth(i) * histoEff2D_clone->GetYaxis()->GetBinWidth(j);
+	if (cont == 0.0) cont = minimalEfficiency;
 	if (RIGHTflavorTAG == true) histoEff2D_clone->SetBinContent(i,j,cont);
 	else                        histoEff2D_clone->SetBinContent(histoEff2D->GetNbinsX()-i+1,histoEff2D->GetNbinsY()-j+1,cont);
       }
@@ -692,6 +698,7 @@ TH3D* Utils::Get3DEffHitoq2Bin (unsigned int q2BinIndx)
       for (int k = 1; k <= histoEff3D->GetNbinsZ(); k++)
 	{
 	  cont = histoEff3D_clone->GetBinContent(i,j,k) * histoEff3D_clone->GetXaxis()->GetBinWidth(i) * histoEff3D_clone->GetYaxis()->GetBinWidth(j) * histoEff3D_clone->GetZaxis()->GetBinWidth(k);
+	  if (cont == 0.0) cont = minimalEfficiency;
 	  if (RIGHTflavorTAG == true) histoEff3D_clone->SetBinContent(i,j,k,cont);
 	  else                        histoEff3D_clone->SetBinContent(histoEff3D->GetNbinsX()-i+1,histoEff3D->GetNbinsY()-j+1,histoEff3D->GetNbinsZ()-k+1,cont);
 	}

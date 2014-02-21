@@ -38,6 +38,8 @@
 #include <Roo1DTable.h>
 #include <RooConstVar.h>
 #include <RooRandom.h>
+#include <RooDataHist.h>
+#include <RooHistPdf.h>
 
 #include <ctime>
 #include <iostream>
@@ -306,7 +308,7 @@ void BuildMassConstraints      (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, strin
 void BuildAngularConstraints   (RooArgSet* vecConstr, RooAbsPdf* TotalPDF);
 void BuildPhysicsConstraints   (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
 
-string MakeAngWithEffPDF       (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly);
+RooAbsPdf* MakeAngWithEffPDF   (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, int parIndx);
 void DeleteFit                 (RooAbsPdf* TotalPDF, string DeleteType);
 void ResetCombPolyParam        (vector<vector<string>*>* fitParam, vector<double>* q2Bins);
 void ResetAngularParam         (vector<vector<string>*>* fitParam, vector<double>* q2Bins);
@@ -823,7 +825,7 @@ void BuildPhysicsConstraints (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string 
 }
 
 
-string MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly)
+RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, int parIndx)
 // ###################
 // # x: angle phi    #
 // # y: cos(theta_l) #
@@ -834,6 +836,7 @@ string MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar
   stringstream misTagAngPDF;
   stringstream finalSignalAngPDF;
   vector<RooRealVar*> vecParam;
+  RooAbsPdf* AnglesPDF = NULL;
 
   if ((FitType == 1) || (FitType == 41) || (FitType == 61) || (FitType == 81) || // Branching fraction
       (FitType == 6) || (FitType == 26) || (FitType == 36) || (FitType == 46) || (FitType == 56) || (FitType == 66) || (FitType == 76) || (FitType == 86) || (FitType == 96)) // Fl-Afb-fit
@@ -920,6 +923,13 @@ string MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar
 	  
     	  for (int i = 0; i < effFunc->GetNpar(); i++) VarsPoly->add(*vecParam[i]);
     	}
+      VarsPoly->add(*y);
+      VarsPoly->add(*z);
+
+      cout << "\n@@@ 2D angular*efficiency p.d.f. @@@" << endl;
+      cout << myString.str().c_str() << endl;
+
+      AnglesPDF = new RooGenericPdf("AngleS",myString.str().c_str(),RooArgSet(*VarsAng,*VarsPoly));
     }
   else if ((FitType == 10) || (FitType == 410) || (FitType == 610) || (FitType == 810) || // Branching fraction
 	   (FitType == 60) || (FitType == 260) || (FitType == 360) || (FitType == 460) || (FitType == 560) || (FitType == 660) || (FitType == 760) || (FitType == 860) || (FitType == 960)) // Fl-Afb-fit
@@ -951,32 +961,27 @@ string MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar
     	  myString << "4/3*AfbS * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * " << y->getPlotLabel() << ")))";
 	}
 
+      cout << "\n@@@ 2D angular p.d.f. @@@" << endl;
+      cout << myString.str().c_str() << endl;
+
+      RooHistPdf* histoEffPDF;
       if (useEffPDF == true)
 	{
+	  RooGenericPdf* _AnglesPDF = new RooGenericPdf("_AnglesPDF",myString.str().c_str(),RooArgSet(*VarsAng));
+
 	  // #############################
 	  // # Make 2D efficiency p.d.f. #
 	  // #############################
-	  
-	  Utility->Get2DEffHitoq2Bin(q2BinIndx);
-	  // @TMP@
+	  RooDataHist* histoEff = new RooDataHist("histoEff","histoEff",RooArgSet(*z,*y),Utility->Get2DEffHitoq2Bin(parIndx));
+	  histoEffPDF           = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(*z,*y),*histoEff,0);
+	  AnglesPDF             = new RooProdPdf("AngleMisTag","MisTag * Efficiency",RooArgSet(*_AnglesPDF,*histoEffPDF));
 	}
+      else AnglesPDF = new RooGenericPdf("AngleMisTag",myString.str().c_str(),RooArgSet(*VarsAng));
     }
 
 
-  // @TMP@
-  finalSignalAngPDF.clear(); finalSignalAngPDF.str("");
-  // finalSignalAngPDF << "(" << myString.str().c_str() << " + " << "abs(" << myString.str().c_str() << "))/2";
-  finalSignalAngPDF << myString.str().c_str();
-
-  VarsPoly->add(*y);
-  VarsPoly->add(*z);
-
-  cout << "\n@@@ 2D angular*efficiency p.d.f. @@@" << endl;
-  cout << finalSignalAngPDF.str().c_str() << endl;
-
-
   vecParam.clear();
-  return finalSignalAngPDF.str(); 
+  return AnglesPDF;
 }
 
 
@@ -3436,7 +3441,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // # Reference to normalization channel #
       // ######################################
       myString.clear(); myString.str("");
-      myString << MakeAngWithEffPDF(effFuncs.first->operator[]((NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins))),NULL,y,z,FitType,useEffPDF,&VarsAng,&VarsPolyGT);
+      myString << MakeAngWithEffPDF(effFuncs.first->operator[]((NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins))),NULL,y,z,FitType,useEffPDF,&VarsAng,&VarsPolyGT,(NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
       EffPDFnorm = new RooGenericPdf("Efficiency",myString.str().c_str(),RooArgSet(VarsAng,VarsPolyGT));
  
       myString.clear(); myString.str("");
@@ -3556,7 +3561,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 	  VarsAng.removeAll();
 	  VarsPolyGT.removeAll();
 	  myString.clear(); myString.str("");
-	  myString << MakeAngWithEffPDF(effFuncs.first->operator[](i),NULL,y,z,FitType,useEffPDF,&VarsAng,&VarsPolyGT);
+	  myString << MakeAngWithEffPDF(effFuncs.first->operator[](i),NULL,y,z,FitType,useEffPDF,&VarsAng,&VarsPolyGT,i);
 	  EffPDFsign = new RooGenericPdf("Efficiency",myString.str().c_str(),RooArgSet(VarsAng,VarsPolyGT));
 
 	  myString.clear(); myString.str("");
@@ -4184,10 +4189,8 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // # Define angle fit variables and pdf for correctly tagged signal #
   // ##################################################################
   RooArgSet* VarsPolyGT = new RooArgSet("VarsPolyGT");
-  myString.clear(); myString.str("");
-  myString << MakeAngWithEffPDF(effFunc.first,NULL,y,z,FitType,useEffPDF,VarsAng,VarsPolyGT);
-  AngleS = new RooGenericPdf("AngleS",myString.str().c_str(),RooArgSet(*VarsAng,*VarsPolyGT));
-  
+  AngleS = MakeAngWithEffPDF(effFunc.first,NULL,y,z,FitType,useEffPDF,VarsAng,VarsPolyGT,parIndx);
+
   Signal = new RooProdPdf("Signal","Signal Mass*Angle",RooArgSet(*MassSignal,*AngleS));
 			     
   
@@ -4263,13 +4266,9 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // # Define angle fit variables and pdf for mis-tagged signal #
   // ############################################################
   RooArgSet* VarsPolyMT = new RooArgSet("VarsPolyMT");
-  myString.clear(); myString.str("");
-  myString << MakeAngWithEffPDF(effFunc.second,NULL,y,z,FitType*10,useEffPDF,VarsAng,VarsPolyMT);
-  AngleMisTag = new RooGenericPdf("AngleMisTag",myString.str().c_str(),RooArgSet(*VarsAng,*VarsPolyMT));
+  AngleMisTag = MakeAngWithEffPDF(effFunc.second,NULL,y,z,FitType*10,useEffPDF,VarsAng,VarsPolyMT,parIndx);
 
-  // @TMP@
   MassAngleMisTag = new RooProdPdf("MassAngleMisTag","Mistag bkg Mass*Angle",RooArgSet(*MassMisTag,*AngleMisTag));
-  // MassAngleMisTag = new RooProdPdf("MassAngleMisTag","Mistag bkg Mass*Angle",RooArgSet(*MassMisTag,*BkgAnglesC));
 
 
   // #############################################################
@@ -5294,7 +5293,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // # Reference to normalization channel #
       // ######################################
       myString.clear(); myString.str("");
-      myString << MakeAngWithEffPDF(effFuncs.first->operator[]((NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins))),NULL,y,z,FitType,useEffPDF,&VarsAng,&VarsPolyGT);
+      myString << MakeAngWithEffPDF(effFuncs.first->operator[]((NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins))),NULL,y,z,FitType,useEffPDF,&VarsAng,&VarsPolyGT,(NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
       EffPDFnorm = new RooGenericPdf("Efficiency",myString.str().c_str(),RooArgSet(VarsAng,VarsPolyGT));
  
       myString.clear(); myString.str("");
