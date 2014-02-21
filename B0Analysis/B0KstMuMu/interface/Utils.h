@@ -310,6 +310,8 @@ class Utils
 
   double minimalEfficiency;
 
+  std::string DirEfficiency;
+
 };
 
 #endif

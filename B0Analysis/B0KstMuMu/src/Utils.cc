@@ -67,8 +67,9 @@ Utils::Utils (bool rightFlavorTag)
   RIGHTflavorTAG = rightFlavorTag;
 
   // Define names of the files containing the histogram of the efficiency
-  Histo2DEffName = "../efficiency/H2Deff_q2Bin";
-  Histo3DEffName = "../efficiency/H3Deff_q2Bin";
+  DirEfficiency  = "../efficiency/";
+  Histo2DEffName = "H2Deff_MisTag_q2Bin";
+  Histo3DEffName = "H3Deff_MisTag_q2Bin";
 
   // ###############################################
   // # Define codes to identify MC type:           #
@@ -99,6 +100,7 @@ Utils::Utils (bool rightFlavorTag)
   std::cout << "B0ToJPsiKst: "       << B0ToJPsiKst << std::endl;
   std::cout << "B0ToPsi2SKst: "      << B0ToPsi2SKst << std::endl;
   std::cout << "minimalEfficiency: " << minimalEfficiency << std::endl;
+  std::cout << "DirEfficiency: "     << DirEfficiency << std::endl;
 
   std::cout << "@@@ Utils class settings : public  @@@" << std::endl;
   std::cout << "NcoeffThetaL: "   << NcoeffThetaL << std::endl;
@@ -658,7 +660,7 @@ TH2D* Utils::Get2DEffHitoq2Bin (unsigned int q2BinIndx)
   double cont;
 
   myString.clear(); myString.str("");
-  myString << Histo2DEffName.c_str() << "_" << q2BinIndx << ".root";
+  myString << DirEfficiency.c_str() << Histo2DEffName.c_str() << "_" << q2BinIndx << ".root";
   TFile* _file0 = new TFile(myString.str().c_str());
   myString.clear(); myString.str("");
   myString << Histo2DEffName.c_str() << "_" << q2BinIndx;
@@ -685,7 +687,7 @@ TH3D* Utils::Get3DEffHitoq2Bin (unsigned int q2BinIndx)
   double cont;
 
   myString.clear(); myString.str("");
-  myString << Histo3DEffName.c_str() << "_" << q2BinIndx << ".root";
+  myString << DirEfficiency.c_str() << Histo3DEffName.c_str() << "_" << q2BinIndx << ".root";
   TFile* _file0 = new TFile(myString.str().c_str());
   myString.clear(); myString.str("");
   myString << Histo3DEffName.c_str() << "_" << q2BinIndx;

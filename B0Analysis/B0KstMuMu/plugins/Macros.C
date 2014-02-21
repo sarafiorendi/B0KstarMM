@@ -81,7 +81,7 @@ using namespace RooFit;
 // # Function Definition #
 // #######################
 TH1D* ComputeCumulative     (TH1D* hIN, string hCumulName);
-void PlotHistoEff           (string fileName, unsigned int smothDegree, string effDimension);
+void PlotHistoEff           (string fileName, string histoName, unsigned int smothDegree, string effDimension);
 void TruthMatching          (string fileName, bool truthMatch);
 void dBFfromGEN             (string fileName);
 void CompareCosMassGENRECO  (string fileNameRECO, string fileNameGEN);
@@ -133,7 +133,7 @@ TH1D* ComputeCumulative(TH1D* hIN, string hCumulName)
 // #########################################################################
 // # Sub-program to plot the binned efficicency as "seen" in the final pdf #
 // #########################################################################
-void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimension)
+void PlotHistoEff (string fileName, string histoName, unsigned int smothDegree, string effDimension)
 // #######################
 // # effDimension = "2D" #
 // # effDimension = "3D" #
@@ -153,8 +153,6 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
 
   
   TFile* _file0 = new TFile(fileName.c_str());
-  fileName.replace(fileName.find(".root"),5,"");
-  
   TCanvas* c0 = new TCanvas("c0","c0",1200,600);
   c0->Divide(4,0);
   c0->cd(1);
@@ -165,7 +163,7 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
   TH3D* histoEff3D_clone;
   if (effDimension == "2D")
     {
-      histoEff2D = (TH2D*)_file0->Get(fileName.c_str());
+      histoEff2D = (TH2D*)_file0->Get(histoName.c_str());
       histoEff2D_clone = (TH2D*)histoEff2D->Clone();
 
       for (int i = 1; i <= histoEff2D->GetNbinsX(); i++)
@@ -179,7 +177,7 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
     }
   else if (effDimension == "3D")
     {
-      histoEff3D = (TH3D*)_file0->Get(fileName.c_str());
+      histoEff3D = (TH3D*)_file0->Get(histoName.c_str());
       histoEff3D_clone = (TH3D*)histoEff3D->Clone();
       
       for (int i = 1; i <= histoEff3D->GetNbinsX(); i++)
