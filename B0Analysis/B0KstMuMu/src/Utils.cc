@@ -85,7 +85,7 @@ Utils::Utils (bool rightFlavorTag)
   B0ToPsi2SKst = 5;
 
   // Define the minimal efficiency to be assiged to empty efficiency bins
-  minimalEfficiency = 1e-5;
+  minimalEfficiency = 1e-5; // @TMP@ : to be verified
 
   // ################################
   // # Print out internal variables #
@@ -661,9 +661,12 @@ TH2D* Utils::Get2DEffHitoq2Bin (unsigned int q2BinIndx)
 
   myString.clear(); myString.str("");
   myString << DirEfficiency.c_str() << Histo2DEffName.c_str() << "_" << q2BinIndx << ".root";
+  std::cout << "[Utils::Get2DEffHitoq2Bin]\tReading 2D binned efficiency file: " << myString.str().c_str() << std::endl;
   TFile* _file0 = new TFile(myString.str().c_str());
+
   myString.clear(); myString.str("");
   myString << Histo2DEffName.c_str() << "_" << q2BinIndx;
+  std::cout << "[Utils::Get2DEffHitoq2Bin]\tReading 2D binned efficiency histogram: " << myString.str().c_str() << std::endl;
 
   TH2D* histoEff2D = (TH2D*)_file0->Get(myString.str().c_str());
   TH2D* histoEff2D_clone = (TH2D*)histoEff2D->Clone();
@@ -671,14 +674,21 @@ TH2D* Utils::Get2DEffHitoq2Bin (unsigned int q2BinIndx)
   for (int i = 1; i <= histoEff2D->GetNbinsX(); i++)
     for (int j = 1; j <= histoEff2D->GetNbinsY(); j++)
       {
-	cont = histoEff2D_clone->GetBinContent(i,j) * histoEff2D_clone->GetXaxis()->GetBinWidth(i) * histoEff2D_clone->GetYaxis()->GetBinWidth(j);
-	if (cont == 0.0) cont = minimalEfficiency;
-	if (RIGHTflavorTAG == true) histoEff2D_clone->SetBinContent(i,j,cont);
-	else                        histoEff2D_clone->SetBinContent(histoEff2D->GetNbinsX()-i+1,histoEff2D->GetNbinsY()-j+1,cont);
+	if (RIGHTflavorTAG == true)
+	  {
+	    cont = histoEff2D->GetBinContent(i,j) * histoEff2D->GetXaxis()->GetBinWidth(i) * histoEff2D->GetYaxis()->GetBinWidth(j);
+	    if (cont == 0.0) cont = minimalEfficiency;
+	    histoEff2D_clone->SetBinContent(i,j,cont);
+	  }
+	else
+	  {
+	    cont = histoEff2D->GetBinContent(i,j) * histoEff2D->GetXaxis()->GetBinWidth(histoEff2D->GetNbinsX()-i+1) * histoEff2D->GetYaxis()->GetBinWidth(histoEff2D->GetNbinsY()-j+1);
+	    if (cont == 0.0) cont = minimalEfficiency;
+	    histoEff2D_clone->SetBinContent(histoEff2D->GetNbinsX()-i+1,histoEff2D->GetNbinsY()-j+1,cont);
+	  }
       }
-  
-  _file0->Close();
-  return histoEff2D;
+
+  return histoEff2D_clone;
 }
 
 TH3D* Utils::Get3DEffHitoq2Bin (unsigned int q2BinIndx)
@@ -688,9 +698,12 @@ TH3D* Utils::Get3DEffHitoq2Bin (unsigned int q2BinIndx)
 
   myString.clear(); myString.str("");
   myString << DirEfficiency.c_str() << Histo3DEffName.c_str() << "_" << q2BinIndx << ".root";
+  std::cout << "[Utils::Get3DEffHitoq2Bin]\tReading 3D binned efficiency file: " << myString.str().c_str() << std::endl;
   TFile* _file0 = new TFile(myString.str().c_str());
+
   myString.clear(); myString.str("");
   myString << Histo3DEffName.c_str() << "_" << q2BinIndx;
+  std::cout << "[Utils::Get3DEffHitoq2Bin]\tReading 3D binned efficiency histogram: " << myString.str().c_str() << std::endl;
 
   TH3D* histoEff3D = (TH3D*)_file0->Get(myString.str().c_str());
   TH3D* histoEff3D_clone = (TH3D*)histoEff3D->Clone();
@@ -699,14 +712,21 @@ TH3D* Utils::Get3DEffHitoq2Bin (unsigned int q2BinIndx)
     for (int j = 1; j <= histoEff3D->GetNbinsY(); j++)
       for (int k = 1; k <= histoEff3D->GetNbinsZ(); k++)
 	{
-	  cont = histoEff3D_clone->GetBinContent(i,j,k) * histoEff3D_clone->GetXaxis()->GetBinWidth(i) * histoEff3D_clone->GetYaxis()->GetBinWidth(j) * histoEff3D_clone->GetZaxis()->GetBinWidth(k);
-	  if (cont == 0.0) cont = minimalEfficiency;
-	  if (RIGHTflavorTAG == true) histoEff3D_clone->SetBinContent(i,j,k,cont);
-	  else                        histoEff3D_clone->SetBinContent(histoEff3D->GetNbinsX()-i+1,histoEff3D->GetNbinsY()-j+1,histoEff3D->GetNbinsZ()-k+1,cont);
+	  if (RIGHTflavorTAG == true)
+	    {
+	      cont = histoEff3D->GetBinContent(i,j,k) * histoEff3D->GetXaxis()->GetBinWidth(i) * histoEff3D->GetYaxis()->GetBinWidth(j) * histoEff3D->GetZaxis()->GetBinWidth(k);
+	      if (cont == 0.0) cont = minimalEfficiency;
+	      histoEff3D_clone->SetBinContent(i,j,k,cont);
+	    }
+	  else
+	    {
+	      cont = histoEff3D->GetBinContent(i,j,k) * histoEff3D->GetXaxis()->GetBinWidth(histoEff3D->GetNbinsX()-i+1) * histoEff3D->GetYaxis()->GetBinWidth(histoEff3D->GetNbinsY()-j+1) * histoEff3D->GetZaxis()->GetBinWidth(histoEff3D->GetNbinsZ()-k+1);
+	      if (cont == 0.0) cont = minimalEfficiency;
+	      histoEff3D_clone->SetBinContent(histoEff3D->GetNbinsX()-i+1,histoEff3D->GetNbinsY()-j+1,histoEff3D->GetNbinsZ()-k+1,cont);
+	    }
 	}
 
-  _file0->Close();
-  return histoEff3D;
+  return histoEff3D_clone;
 }
 
 void Utils::DeleteEfficiency (effStruct myEff)
@@ -2535,13 +2555,13 @@ void Utils::AddConstraint2D (TH2D** histo, double abscissaErr, double ZerrRescal
 // # toBeConstr = X --> Add constraints to X axes (= cosThetaK) to the whole positive or negative side, according to the toBeConstr variable      #
 // ################################################################################################################################################
 // # toBeConstr = "justErrors" : simply rescale the errors                                                                                        #
-// # toBeConstr = "Xlow"  : at lower side                                                                                                         #
-// # toBeConstr = "Xboth" : at both sides                                                                                                         #
-// # toBeConstr = "Xhigh" : at higher side                                                                                                        #
+// # toBeConstr = "Xlow"       : at lower boundary                                                                                                #
+// # toBeConstr = "Xboth"      : at both boundaries                                                                                               #
+// # toBeConstr = "Xhigh"      : at higher boundary                                                                                               #
 // # toBeConstr = "Y" :                                                                                                                           #
-// # toBeAdded = "low"  : at lower boundary                                                                                                       #
-// # toBeAdded = "both" : at both boundaries                                                                                                      #
-// # toBeAdded = "high" : at higher boundary                                                                                                      #
+// # toBeAdded = "low"         : at lower boundary                                                                                                #
+// # toBeAdded = "both"        : at both boundaries                                                                                               #
+// # toBeAdded = "high"        : at higher boundary                                                                                               #
 // ################################################################################################################################################
 {
   std::stringstream myString;
@@ -2637,7 +2657,7 @@ void Utils::AddConstraint2D (TH2D** histo, double abscissaErr, double ZerrRescal
 	    newHisto->SetBinError(i,j,(*histo)->GetBinError(i,j) * ZerrRescale);
 	  }
 
-      for (int j = 2; j < newHisto->GetNbinsY(); j++)
+      for (int j = 1; j <= newHisto->GetNbinsY(); j++)
       	{
       	  newHisto->SetBinContent(newHisto->GetNbinsX(),j,newHisto->GetBinContent(newHisto->GetNbinsX()-1,j) / scaleConstr);
       	  newHisto->SetBinError(newHisto->GetNbinsX(),j,constrXerr * ZerrRescale);
@@ -2676,7 +2696,7 @@ void Utils::AddConstraint2D (TH2D** histo, double abscissaErr, double ZerrRescal
 	    newHisto->SetBinError(i+1,j,(*histo)->GetBinError(i,j) * ZerrRescale);
 	  }
 
-      for (int j = 2; j < newHisto->GetNbinsY(); j++)
+      for (int j = 1; j <= newHisto->GetNbinsY(); j++)
 	{
 	  newHisto->SetBinContent(1,j,newHisto->GetBinContent(2,j) / scaleConstr);
 	  newHisto->SetBinError(1,j,constrXerr * ZerrRescale);
@@ -2716,7 +2736,7 @@ void Utils::AddConstraint2D (TH2D** histo, double abscissaErr, double ZerrRescal
 	    newHisto->SetBinError(i+1,j,(*histo)->GetBinError(i,j) * ZerrRescale);
 	  }
 
-      for (int j = 1; j < newHisto->GetNbinsY(); j++)
+      for (int j = 1; j <= newHisto->GetNbinsY(); j++)
 	{
       	  newHisto->SetBinContent(newHisto->GetNbinsX(),j,newHisto->GetBinContent(newHisto->GetNbinsX()-1,j) / scaleConstr);
       	  newHisto->SetBinError(newHisto->GetNbinsX(),j,constrXerr * ZerrRescale);
@@ -3051,6 +3071,7 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
 }
 
 void Utils::AddConstraint3D (TH3D** histo, double abscissaErr, double Tval, double Terr, double TerrRescale, unsigned int ID, std::vector<int> toBeAdded[])
+// @TMP@
 {
   std::stringstream myString;
   

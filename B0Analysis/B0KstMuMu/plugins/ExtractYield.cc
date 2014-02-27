@@ -138,6 +138,7 @@ vector<double> phiBins;
 vector<vector<string>*>             fitParam;    // Vector containing the pointers to the vectors containing the starting values for the fit
 vector<vector<unsigned int>*>       configParam; // Vector containing the pointers to the vectors containing the configuration parameters for the fit
 pair< vector<TF2*>*,vector<TF2*>* > effFuncs;    // Vector containing the analytical descriptions of the efficiency per q^2 bin for good and mis-tagged events
+                                                 // The first vector is for good-tagged events, while the second vecor is for mis-tagged events
 
 
 // ####################################
@@ -862,6 +863,8 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRea
       AfbS->setConstant(false);
       VarsAng->add(*FlS);
       VarsAng->add(*AfbS);
+      VarsAng->add(*y);
+      VarsAng->add(*z);
 
       myString.clear(); myString.str("");
       if (UseSPwave == false)
@@ -923,8 +926,6 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRea
 	  
     	  for (int i = 0; i < effFunc->GetNpar(); i++) VarsPoly->add(*vecParam[i]);
     	}
-      VarsPoly->add(*y);
-      VarsPoly->add(*z);
 
       cout << "\n@@@ 2D angular*efficiency p.d.f. @@@" << endl;
       cout << myString.str().c_str() << endl;
@@ -946,7 +947,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRea
 	  // # P-wave decay rate #
 	  // #####################
     	  myString << "(3/4 * (3/2 * FlS * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-    	  myString << "(3/8 * (1-FlS) * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + AfbS*" << y->getPlotLabel() << ") * ";
+    	  myString << "(3/8 * (1-FlS) * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - AfbS*" << y->getPlotLabel() << ") * ";
     	  myString << "(1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ")))";
 	}
       else
@@ -954,10 +955,10 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRea
 	  // ###########################
 	  // # S and P-wave decay rate #
 	  // ###########################
-    	  myString << "(9/16 * ((2/3*FsS + 4/3*AsS*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+    	  myString << "(9/16 * ((2/3*FsS - 4/3*AsS*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
     	  myString << "(1-FsS) * ";
     	  myString << "(2*FlS*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
-    	  myString << "1/2*(1-FlS) * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+    	  myString << "1/2*(1-FlS) * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - ";
     	  myString << "4/3*AfbS * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * " << y->getPlotLabel() << ")))";
 	}
 
@@ -2872,9 +2873,8 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
   B0MassArb          = new RooRealVar("B0MassArb","M(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{+}}}}#kern[-0.3]{#pi}#kern[-0.3]{#lower[0.6]{^{#font[122]{\55}}}}#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}})",Utility->B0Mass - Utility->GetGenericParam("B0MassIntervalLeft"),Utility->B0Mass + Utility->GetGenericParam("B0MassIntervalRight"),"GeV");
   mumuMass           = new RooRealVar("mumuMass","#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}} inv. mass",0.0,6.0,"GeV");
   mumuMassE          = new RooRealVar("mumuMassE","#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}} inv. mass error",0.0,0.5,"GeV");
-  // @TMP@
-  CosThetaKArb       = new RooRealVar("CosThetaKArb","cos(#theta#lower[-0.4]{_{#font[122]{K}}})",-0.7,0.7,"");
-  CosThetaMuArb      = new RooRealVar("CosThetaMuArb","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",-0.7,0.7,"");
+  CosThetaKArb       = new RooRealVar("CosThetaKArb","cos(#theta#lower[-0.4]{_{#font[122]{K}}})",-1.0,1.0,"");
+  CosThetaMuArb      = new RooRealVar("CosThetaMuArb","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",-1.0,1.0,"");
   PhiKstMuMuPlaneArb = new RooRealVar("PhiKstMuMuPlaneArb","Angle (#mu#mu)--(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}#pi#lower[0.4]{^{#font[122]{\55}}}) planes",-Utility->PI,Utility->PI,"rad");
   truthMatchSignal   = new RooRealVar("truthMatchSignal","Truth matching",0.0,1.0,"bool");
   rightFlavorTag     = new RooRealVar("rightFlavorTag","Right flavor tag",0.0,1.0,"bool");
@@ -2912,10 +2912,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 
 	  if ((!(FitType == 36) && !(FitType == 56) && !(FitType == 76) &&
 	       (NTuple->B0MassArb > Utility->B0Mass - Utility->GetGenericParam("B0MassIntervalLeft")) &&
-	       (NTuple->B0MassArb < Utility->B0Mass + Utility->GetGenericParam("B0MassIntervalRight")) &&
-	       
-	       // @TMP@
-	       (fabs(NTuple->CosThetaKArb) < 0.7) && (fabs(NTuple->CosThetaMuArb) < 0.7)) ||
+	       (NTuple->B0MassArb < Utility->B0Mass + Utility->GetGenericParam("B0MassIntervalRight"))) ||
 	      
 	      ((FitType == 36) || (FitType == 56) || (FitType == 76)))
 	    {
@@ -4545,61 +4542,60 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // #####################
       // # Make sideband fit #
       // #####################
-      // @TMP@
-      // if (GetVar(*TotalPDF,"nSig") != NULL)
-	// {
-	//   RooAbsPdf* TmpPDF = NULL;
-	//   RooDataSet* sideBands = NULL;
-	//   RooRealVar frac("frac","Fraction",0.5,0.0,1.0);
-	//   RooArgSet constrSidebads;
-	//   ClearVars(&constrSidebads);
-	//   BuildAngularConstraints(&constrSidebads,*TotalPDF);
+      if (GetVar(*TotalPDF,"nSig") != NULL)
+	{
+	  RooAbsPdf* TmpPDF = NULL;
+	  RooDataSet* sideBands = NULL;
+	  RooRealVar frac("frac","Fraction",0.5,0.0,1.0);
+	  RooArgSet constrSidebads;
+	  ClearVars(&constrSidebads);
+	  BuildAngularConstraints(&constrSidebads,*TotalPDF);
 
 
-	//   // ################
-	//   // # Save results #
-	//   // ################
-	//   fileFitResults << "====================================================================" << endl;
-	//   fileFitResults << "@@@@@@ B0 mass sideband fit @@@@@@" << endl;
-	//   fileFitResults << "Amplitude of signal region (+/- n*< Sigma >): " << Utility->GetGenericParam("NSigmaB0S") << " * " << Utility->GetB0Width() << endl;
+	  // ################
+	  // # Save results #
+	  // ################
+	  fileFitResults << "====================================================================" << endl;
+	  fileFitResults << "@@@@@@ B0 mass sideband fit @@@@@@" << endl;
+	  fileFitResults << "Amplitude of signal region (+/- n*< Sigma >): " << Utility->GetGenericParam("NSigmaB0S") << " * " << Utility->GetB0Width() << endl;
 
 
-	//   // ##############
-	//   // # Get p.d.f. #
-	//   // ##############
-	//   if (GetVar(*TotalPDF,"nBkgPeak") != NULL) TmpPDF = new RooAddPdf("TmpPDF","Temporary p.d.f.",RooArgSet(*BkgAnglesC,*BkgAnglesP),RooArgSet(frac));
-	//   else                                      TmpPDF = new RooProdPdf(*((RooProdPdf*)BkgAnglesC),"TmpPDF");
+	  // ##############
+	  // # Get p.d.f. #
+	  // ##############
+	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) TmpPDF = new RooAddPdf("TmpPDF","Temporary p.d.f.",RooArgSet(*BkgAnglesC,*BkgAnglesP),RooArgSet(frac));
+	  else                                      TmpPDF = new RooProdPdf(*((RooProdPdf*)BkgAnglesC),"TmpPDF");
 
 
-	//   // #############
-	//   // # Sidebands #
-	//   // #############
-	//   myString.clear(); myString.str("");
-	//   myString << "B0MassArb < " << (*TotalPDF)->getVariables()->getRealValue("meanS") - Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
-	//   myString << " || B0MassArb > " << (*TotalPDF)->getVariables()->getRealValue("meanS") + Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
-	//   cout << "Cut for B0 sidebands: " << myString.str().c_str() << endl;
-	//   sideBands = (RooDataSet*)dataSet->reduce(myString.str().c_str());
+	  // #############
+	  // # Sidebands #
+	  // #############
+	  myString.clear(); myString.str("");
+	  myString << "B0MassArb < " << (*TotalPDF)->getVariables()->getRealValue("meanS") - Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
+	  myString << " || B0MassArb > " << (*TotalPDF)->getVariables()->getRealValue("meanS") + Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
+	  cout << "Cut for B0 sidebands: " << myString.str().c_str() << endl;
+	  sideBands = (RooDataSet*)dataSet->reduce(myString.str().c_str());
 
 
-	//   // ###################
-	//   // # Make actual fit #
-	//   // ###################
-	//   if (ApplyConstr == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebads),Save(true));
-	//   else                     fitResult = TmpPDF->fitTo(*sideBands,Save(true));
-	//   if (fitResult != NULL) fitResult->Print("v");
+	  // ###################
+	  // # Make actual fit #
+	  // ###################
+	  if (ApplyConstr == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebads),Save(true));
+	  else                     fitResult = TmpPDF->fitTo(*sideBands,Save(true));
+	  if (fitResult != NULL) fitResult->Print("v");
 
 	  
-	//   // ####################
-	//   // # Save fit results #
-	//   // ####################
-	//   StorePolyResultsInFile(TotalPDF);
+	  // ####################
+	  // # Save fit results #
+	  // ####################
+	  StorePolyResultsInFile(TotalPDF);
 
 
-	//   delete TmpPDF;
-	//   delete sideBands;
-	//   ClearVars(&constrSidebads);
-	//   if (fitResult != NULL) delete fitResult;
-	// }
+	  delete TmpPDF;
+	  delete sideBands;
+	  ClearVars(&constrSidebads);
+	  if (fitResult != NULL) delete fitResult;
+	}
 
 
       // ###################
@@ -6200,7 +6196,7 @@ int main(int argc, char** argv)
  	  // ###################
 	  // # Read parameters #
  	  // ###################
-	  Utility = new Utils();
+	  Utility = new Utils(false);
 	  Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
 
 

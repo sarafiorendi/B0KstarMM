@@ -49,7 +49,7 @@ using namespace RooFit;
 // ####################
 // # Global constants #
 // ####################
-#define DIREXPTCOMP "./ExperimentComparison/"
+#define DIREXPTCOMP "./PredictionSM/"
 
 #define ordinateRange 1e-2
 
@@ -81,7 +81,7 @@ using namespace RooFit;
 // # Function Definition #
 // #######################
 TH1D* ComputeCumulative     (TH1D* hIN, string hCumulName);
-void PlotHistoEff           (string fileName, string histoName, unsigned int smothDegree, string effDimension);
+void PlotHistoEff           (string fileName, string histoName, unsigned int smothDegree, string effDimension, double minimalEfficiency, bool RIGHTflavorTAG);
 void TruthMatching          (string fileName, bool truthMatch);
 void dBFfromGEN             (string fileName);
 void CompareCosMassGENRECO  (string fileNameRECO, string fileNameGEN);
@@ -133,7 +133,7 @@ TH1D* ComputeCumulative(TH1D* hIN, string hCumulName)
 // #########################################################################
 // # Sub-program to plot the binned efficicency as "seen" in the final pdf #
 // #########################################################################
-void PlotHistoEff (string fileName, string histoName, unsigned int smothDegree, string effDimension)
+void PlotHistoEff (string fileName, string histoName, unsigned int smothDegree, string effDimension, double minimalEfficiency, bool RIGHTflavorTAG)
 // #######################
 // # effDimension = "2D" #
 // # effDimension = "3D" #
@@ -151,7 +151,6 @@ void PlotHistoEff (string fileName, string histoName, unsigned int smothDegree, 
   gStyle->SetTitleOffset(1.25,"y"); 
   TGaxis::SetMaxDigits(3);
 
-  
   TFile* _file0 = new TFile(fileName.c_str());
   TCanvas* c0 = new TCanvas("c0","c0",1200,600);
   c0->Divide(4,0);
@@ -169,11 +168,21 @@ void PlotHistoEff (string fileName, string histoName, unsigned int smothDegree, 
       for (int i = 1; i <= histoEff2D->GetNbinsX(); i++)
 	for (int j = 1; j <= histoEff2D->GetNbinsY(); j++)
 	  {
-	    cont = histoEff2D_clone->GetBinContent(i,j) * histoEff2D_clone->GetXaxis()->GetBinWidth(i) * histoEff2D_clone->GetYaxis()->GetBinWidth(j);
-	    histoEff2D_clone->SetBinContent(i,j,cont);
+	    if (RIGHTflavorTAG == true)
+	      {
+		cont = histoEff2D->GetBinContent(i,j) * histoEff2D->GetXaxis()->GetBinWidth(i) * histoEff2D->GetYaxis()->GetBinWidth(j);
+		if (cont == 0.0) cont = minimalEfficiency;
+		histoEff2D_clone->SetBinContent(i,j,cont);
+	      }
+	    else
+	      {
+		cont = histoEff2D->GetBinContent(i,j) * histoEff2D->GetXaxis()->GetBinWidth(histoEff2D->GetNbinsX()-i+1) * histoEff2D->GetYaxis()->GetBinWidth(histoEff2D->GetNbinsY()-j+1);
+		if (cont == 0.0) cont = minimalEfficiency;
+		histoEff2D_clone->SetBinContent(histoEff2D->GetNbinsX()-i+1,histoEff2D->GetNbinsY()-j+1,cont);
+	      }
 	  }
 
-      histoEff2D->Draw("lego fb");
+      histoEff2D_clone->Draw("lego fb");
     }
   else if (effDimension == "3D")
     {
@@ -184,11 +193,21 @@ void PlotHistoEff (string fileName, string histoName, unsigned int smothDegree, 
 	for (int j = 1; j <= histoEff3D->GetNbinsY(); j++)
 	  for (int k = 1; k <= histoEff3D->GetNbinsZ(); k++)
 	    {
-	      cont = histoEff3D_clone->GetBinContent(i,j,k) * histoEff3D_clone->GetXaxis()->GetBinWidth(i) * histoEff3D_clone->GetYaxis()->GetBinWidth(j) * histoEff3D_clone->GetZaxis()->GetBinWidth(k);
-	      histoEff3D_clone->SetBinContent(i,j,k,cont);
+	      if (RIGHTflavorTAG == true)
+		{
+		  cont = histoEff3D->GetBinContent(i,j,k) * histoEff3D->GetXaxis()->GetBinWidth(i) * histoEff3D->GetYaxis()->GetBinWidth(j) * histoEff3D->GetZaxis()->GetBinWidth(k);
+		  if (cont == 0.0) cont = minimalEfficiency;
+		  histoEff3D_clone->SetBinContent(i,j,k,cont);
+		}
+	      else
+		{
+		  cont = histoEff3D->GetBinContent(i,j,k) * histoEff3D->GetXaxis()->GetBinWidth(histoEff3D->GetNbinsX()-i+1) * histoEff3D->GetYaxis()->GetBinWidth(histoEff3D->GetNbinsY()-j+1) * histoEff3D->GetZaxis()->GetBinWidth(histoEff3D->GetNbinsZ()-k+1);
+		  if (cont == 0.0) cont = minimalEfficiency;
+		  histoEff3D_clone->SetBinContent(histoEff3D->GetNbinsX()-i+1,histoEff3D->GetNbinsY()-j+1,histoEff3D->GetNbinsZ()-k+1,cont);
+		}
 	    }
 
-      histoEff3D->Draw();
+      histoEff3D_clone->Draw();
     }
   else exit (EXIT_FAILURE);
 
