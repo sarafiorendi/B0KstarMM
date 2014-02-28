@@ -79,7 +79,7 @@ using namespace RooFit;
 // ##########################################
 // # Internal flags to control the workflow #
 // ##########################################
-#define ApplyConstr   false // Apply Gaussian constraints in the likelihood
+#define ApplyConstr   true  // Apply Gaussian constraints in the likelihood
 #define SAVEPOLY      false // "true" = save bkg polynomial coefficients in new parameter file; "false" = save original values
 #define RESETOBS      false // Reset polynomial coefficients for combinatorial background and angular observables for a fresh start
 #define SETBATCH      false
@@ -88,7 +88,7 @@ using namespace RooFit;
 #define FUNCERRBAND   false // Show the p.d.f. error band
 #define MakeMuMuPlots false
 #define MAKEGRAPHSCAN false // Make graphical scan of the physics-pdf*eff or physics-pdf alone (ony valid for GEN fit type options)
-#define CONTROLMisTag "mistag"
+#define CONTROLMisTag "all&NoFit"
 // ##############################################################################
 // # ==> Control mis-tag work flow <==                                          #
 // # --> "mistag"      = keep only mis-tagged ev.                               #
@@ -302,7 +302,6 @@ string MakeName                (RooDataSet* data, int ID);
 void DrawString                (double Lumi, RooPlot* myFrame = NULL);
 
 bool IsInConstraints           (RooArgSet* vecConstr, string varName);
-void AddPoissonConstraint      (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
 void AddGaussConstraint        (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
 void AddPhysicsConstraint      (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
 void BuildMassConstraints      (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
@@ -653,22 +652,6 @@ bool IsInConstraints (RooArgSet* vecConstr, string varName)
 }
 
 
-void AddPoissonConstraint (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName)
-{
-  stringstream myString;
-  
-  myString.clear(); myString.str("");
-  myString << varName;
-
-  RooRealVar* varConstr = GetVar(TotalPDF,myString.str().c_str());
-  double mean  = TotalPDF->getVariables()->getRealValue(myString.str().c_str());
-  
-  myString << "_constr";
-  RooPoisson* newConstr = new RooPoisson(myString.str().c_str(), myString.str().c_str(), *varConstr, RooConst(mean));
-  vecConstr->add(*newConstr);
-}
-
-
 void AddGaussConstraint (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName)
 {
   stringstream myString;
@@ -759,21 +742,10 @@ void BuildMassConstraints (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string var
   if ((GetVar(TotalPDF,"fracMassBLPeak") != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, TotalPDF, "fracMassBLPeak");
 
   if ((GetVar(TotalPDF,"fracMassBPeak")  != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, TotalPDF, "fracMassBPeak");
-
-  // @TMP@
-  if (strcmp(CONTROLMisTag,"all&FitFrac") == 0)
-    {
-      if ((GetVar(TotalPDF,"nSig")         != NULL) && ((varName == "All") || (varName == "sign")))   AddGaussConstraint(vecConstr, TotalPDF, "nSig");
-    }
-  else if ((GetVar(TotalPDF,"nMisTagFrac") != NULL) && ((varName == "All") || (varName == "mistag"))) AddGaussConstraint(vecConstr, TotalPDF, "nMisTagFrac");
-  if ((GetVar(TotalPDF,"nBkgPeak")         != NULL) && ((varName == "All") || (varName == "peak")))   AddGaussConstraint(vecConstr, TotalPDF, "nBkgPeak");
-
-  // if (strcmp(CONTROLMisTag,"all&FitFrac") == 0)
-  //   {
-  //     if ((GetVar(TotalPDF,"nSig")         != NULL) && ((varName == "All") || (varName == "sign")))   AddPoissonConstraint(vecConstr, TotalPDF, "nSig");
-  //   }
-  // else if ((GetVar(TotalPDF,"nMisTagFrac") != NULL) && ((varName == "All") || (varName == "mistag"))) AddPoissonConstraint(vecConstr, TotalPDF, "nMisTagFrac");
-  // if ((GetVar(TotalPDF,"nBkgPeak")         != NULL) && ((varName == "All") || (varName == "peak")))   AddPoissonConstraint(vecConstr, TotalPDF, "nBkgPeak");
+  
+  if (strcmp(CONTROLMisTag,"all&FitFrac") != 0)
+    if ((GetVar(TotalPDF,"nMisTagFrac") != NULL) && ((varName == "All") || (varName == "mistag"))) AddGaussConstraint(vecConstr, TotalPDF, "nMisTagFrac");
+  if ((GetVar(TotalPDF,"nBkgPeak")      != NULL) && ((varName == "All") || (varName == "peak")))   AddGaussConstraint(vecConstr, TotalPDF, "nBkgPeak");
 }
 
 
@@ -3592,10 +3564,9 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       if ((configParam->operator[](Utility->GetConfigParamIndx("FitOptions"))->operator[](i) != 1) &&
 	  (configParam->operator[](Utility->GetConfigParamIndx("FitOptions"))->operator[](i) != 4))
 	{
-	  // @TMP@ : to be verified
-	  double nEv      = GetVar(TotalPDFq2Bins[i],"nSig")->getVal();
-	  double nEvErrLo = nEv * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorLo() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.));
-	  double nEvErrHi = nEv * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorHi() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.));
+	  double nEv      = GetVar(TotalPDFq2Bins[i],"nSig")->getVal() / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal());
+	  double nEvErrLo = nEv * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorLo() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getErrorLo() / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()),2.));
+	  double nEvErrHi = nEv * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorHi() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getErrorHi() / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()),2.));
 
 	  VecHistoMeas->operator[](0)->SetBinContent(i+1,(nEv / effMuMu) / (PsiYield / effPsi) * (NORMJPSInotPSIP == true ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7);
 	  VecHistoMeas->operator[](0)->SetBinError(i+1,VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow((nEvErrLo+nEvErrHi)/2. / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)));
@@ -5446,10 +5417,9 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 
 	  if ((FitType != 36) && (FitType != 56) && (FitType != 76))
 	    {
-	      // @TMP@ : to be verified
-	      double nEv      = GetVar(TotalPDFq2Bins[i],"nSig")->getVal();
-	      double nEvErrLo = nEv * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorLo() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.));
-	      double nEvErrHi = nEv * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorHi() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.));
+	      double nEv      = GetVar(TotalPDFq2Bins[i],"nSig")->getVal() / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal());
+	      double nEvErrLo = nEv * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorLo() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getErrorLo() / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()),2.));
+	      double nEvErrHi = nEv * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorHi() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getErrorHi() / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()),2.));
 
 	      VecHistoMeas->operator[](2)->SetBinContent(i+1,(nEv / effMuMu) / (PsiYield / effPsi) * (NORMJPSInotPSIP == true ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7);
 	      VecHistoMeas->operator[](2)->SetBinError(i+1,VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow((nEvErrLo+nEvErrHi)/2. / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)));
@@ -6363,9 +6333,20 @@ int main(int argc, char** argv)
 	  Utility->ReadSelectionCuts(ParameterFILE);
 	  Utility->ReadFitStartingValues(ParameterFILE,&fitParam,&configParam,Utility->ParFileBlockN("fitValGlob"));
 
+	  // ################################################
+	  // # Read ctr. chn. yield from global-fit results #
+	  // ################################################
 	  myString.clear(); myString.str("");
-	  myString << fitParam[Utility->GetFitParamIndx("nSig")]->operator[]((NORMJPSInotPSIP == true ? 1 : 2)).c_str(); // Read ctr. chn. yield from global-fit results
+	  myString << fitParam[Utility->GetFitParamIndx("nSig")]->operator[]((NORMJPSInotPSIP == true ? 1 : 2)).c_str();
 	  SetValueAndErrors(NULL,"",1.0,&myString,&PsiYield,&PsiYerr,&PsiYerr);
+	  
+	  double MisTagFrac, MisTagFerr;
+	  myString.clear(); myString.str("");
+	  myString << fitParam[Utility->GetFitParamIndx("nMisTagFrac")]->operator[]((NORMJPSInotPSIP == true ? 1 : 2)).c_str();
+	  SetValueAndErrors(NULL,"",1.0,&myString,&MisTagFrac,&MisTagFerr,&MisTagFerr);
+
+	  PsiYerr  = PsiYield / (1. - MisTagFrac) * sqrt(pow(PsiYerr / PsiYield,2.) + pow(MisTagFerr / (1. - MisTagFrac),2.));
+	  PsiYield = PsiYield / (1. - MisTagFrac);
 
 	  fileFitResults << "Normalization channel yield: " << PsiYield << " +/- " << PsiYerr << endl;
 
@@ -6430,9 +6411,8 @@ int main(int argc, char** argv)
 	  effFuncs.second = new vector<TF2*>;
 	  if (correct4Efficiency == "EffCorrGenAnalyPDF")
 	    {
-	      // @TMP@ : to be verified
-	      Utility->ReadAnalyticalEff(tmpFileName.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,effFuncs.first,"effFuncs",0);
-	      Utility->ReadAnalyticalEff(tmpFileName.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,effFuncs.second,"effFuncs",1);
+	      Utility->ReadAnalyticalEff(tmpFileName.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,effFuncs.first,"effFuncs",1);
+	      Utility->ReadAnalyticalEff(tmpFileName.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,effFuncs.second,"effFuncs",2);
 	    }
 	  else
 	    {
@@ -6949,7 +6929,7 @@ int main(int argc, char** argv)
 	  else
 	    {
 	      // @TMP@
-	      // system("say \"Let's rock and roll !\"");
+	      // system("say \" Let's rock and roll ! \"");
  	      theApp->Run (); // Eventloop on air
 	    }
 	}

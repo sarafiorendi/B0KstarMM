@@ -2196,7 +2196,8 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # 14th block of parameters #
 ############################
 # Number of dBF/dq2 -/+ err [x 10-7]
-# dBF/dq2 = Y_Signal / Y_Ctr[35021242/2] * Y_GENctr / Y_GENsignal * BF[Signal] / dq2
+# dBF/dq2(w.r.t. J/psi)   = Y_Signal / Y_Ctr[35021242/2] * Y_GENctr / Y_GENsignal * BF[Signal] / dq2
+# dBF/dq2(w.r.t. psi(2S)) = Y_Signal / Y_Ctr[35033720/2] * Y_GENctr / Y_GENsignal * BF[Signal] / dq2
 9
 
 # q^2 bin 0 [833344]

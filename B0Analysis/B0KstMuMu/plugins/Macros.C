@@ -423,9 +423,9 @@ void dBFfromGEN (string fileName)
   double MCfrac = 0.5;
 
 
-  // ##################################################################################################################
-  // # The differential branching-fraction is: Y_Signal / Y_Ctr[35021242] * Y_GENctr / Y_GENsignal * BF[Signal] / dq2 #
-  // ##################################################################################################################
+  // ###################################################################################################################################################
+  // # The differential branching-fraction is: Y_Signal / Y_Ctr[35021242 for J/psi (35033720 for psi(2S))] * Y_GENctr / Y_GENsignal * BF[Signal] / dq2 #
+  // ###################################################################################################################################################
   h0->SetBinContent(1,0833344.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(1) * scaleF);
   h0->SetBinContent(2,1661610.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(2) * scaleF);
   h0->SetBinContent(3,1303940.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(3) * scaleF);

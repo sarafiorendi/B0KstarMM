@@ -25,10 +25,10 @@ for i = 1:nFiles
     fidINcov    = fopen('../../efficiency/ThetaKThetaLPhiFullCovariance_B0ToKstMuMu_B0ToJPsiKst_B0ToPsi2SKst.txt','r');
 
     fileNameOut = sprintf('../../efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen_%d.txt',i-1);
-    fidOUT      = fopen(fileNameOut,'w+');
+    fidOUT      = fopen(fileNameOut,'a+'); %%% @TMP@ : add number of rows before the efficiency + order to generate : (1) good-signal; (2) mis-tag %%%
     fprintf('Generating file %d \n',i);
 
-    
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Skip bins if you want to %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%

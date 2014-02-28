@@ -90,7 +90,7 @@ Utils::Utils (bool rightFlavorTag)
   // ################################
   // # Print out internal variables #
   // ################################
-  std::cout << "\n@@@ Utils class settings : private @@@" << std::endl;
+  std::cout << "\n@@@@@@ Utils class settings : private @@@@@@" << std::endl;
   std::cout << "nFitParam: "         << nFitParam << std::endl;
   std::cout << "nConfigParam: "      << nConfigParam << std::endl;
   std::cout << "nFitObserv: "        << nFitObserv << std::endl;
@@ -109,7 +109,12 @@ Utils::Utils (bool rightFlavorTag)
   std::cout << "RIGHTflavorTAG: " << RIGHTflavorTAG << std::endl;
   std::cout << "Histo2DEffName: " << Histo2DEffName << std::endl;
   std::cout << "Histo3DEffName: " << Histo3DEffName << std::endl;
-  std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+  std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+  std::cout << "@@@ Consider to double-check values for: @@@" << std::endl;
+  std::cout << "- AddConstraintThetaL" << std::endl;
+  std::cout << "- AddConstraintThetaKThetaL" << std::endl;
+  std::cout << "- AddConstraintThetaKThetaLPhi" << std::endl;
+  std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 }
 
 double Utils::computeInvMass (double Px1,
@@ -2457,9 +2462,6 @@ void Utils::AddConstraint1D (TH1D** histo, std::string constrType, double abscis
 }
 
 void Utils::AddConstraintThetaL (TH1D** histo, unsigned int q2BinIndx, unsigned int cosThetaKBinIndx, unsigned int SignalType, unsigned int ID)
-// #################################################################
-// # @TMP@ : double-check values when making analytical efficiency #
-// #################################################################
 {
   double abscissaErr = 1e-2;
 
@@ -2799,9 +2801,6 @@ void Utils::AddConstraint2D (TH2D** histo, double abscissaErr, double ZerrRescal
 }
 
 void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThetaKBins, unsigned int q2BinIndx, unsigned int SignalType, unsigned int ID)
-// #################################################################
-// # @TMP@ : double-check values when making analytical efficiency #
-// #################################################################
 {
   double abscissaErr = 1e-2;
   std::vector<std::string> toBeAdded;
@@ -3230,9 +3229,6 @@ void Utils::AddConstraint3D (TH3D** histo, double abscissaErr, double Tval, doub
 }
 
 void Utils::AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2BinIndx, unsigned int SignalType, unsigned int ID)
-// #################################################################
-// # @TMP@ : double-check values when making analytical efficiency #
-// #################################################################
 {
   double abscissaErr = 1e-2;
   std::vector<int> toBeAdded[3]; // Push_back bin-numbers                                                                                                                                                                                                                                                             
