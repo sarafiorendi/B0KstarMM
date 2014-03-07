@@ -89,13 +89,13 @@ using namespace RooFit;
 #define MakeMuMuPlots false
 #define MAKEGRAPHSCAN false // Make graphical scan of the physics-pdf*eff or physics-pdf alone (ony valid for GEN fit type options)
 #define CONTROLMisTag "all&NoFit"
-// ##############################################################################
-// # ==> Control mis-tag work flow <==                                          #
-// # --> "mistag"      = keep only mis-tagged ev.                               #
-// # --> "goodtag"     = keep only good-tagged ev.                              #
-// # --> "all&FitFrac" = keep all ev. and fit just for mis-tag fraction         #
-// # --> "all&NoFit"   = keep all ev. and do not fit for it (apply constraints) #
-// ##############################################################################
+// ######################################################################
+// # ==> Control mis-tag work flow <==                                  #
+// # --> "mistag"      = keep only mis-tagged ev.                       #
+// # --> "goodtag"     = keep only good-tagged ev.                      #
+// # --> "all&FitFrac" = keep all ev. and fit just for mis-tag fraction #
+// # --> "all&NoFit"   = keep all ev. and do not fit for mis-tag        #
+// ######################################################################
 #define USEMINOS      false
 #define UseSPwave     false
 
@@ -119,8 +119,8 @@ ofstream fileFitResults;
 ofstream fileFitSystematics;
 ifstream fileFitSystematicsInput;
 
-double PsiYield;
-double PsiYerr;
+double PsiYieldGoodTag, PsiYieldGoodTagErr;
+double PsiYieldMisTag,  PsiYieldMisTagErr;
 
 double LUMI;
 
@@ -333,7 +333,8 @@ void InstantiateMassFit     (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName
 RooFitResult* MakeMassFit   (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned int FitType, vector<vector<unsigned int>*>* configParam, int parIndx, RooArgSet* vecConstr, double* NLLvalue, TPaveText* extText, int ID = 0);
 void IterativeMassFitq2Bins (RooDataSet* dataSet,
 			     bool useEffPDF,
-			     double PsiYield, double PsiYieldErr,
+			     double PsiYieldGoodTag, double PsiYieldGoodTagErr,
+			     double PsiYieldMisTag, double PsiYieldMisTagErr,
 			     RooRealVar* x, RooRealVar* y, RooRealVar* z,
 			     int specBin,
 			     unsigned int FitType,
@@ -359,7 +360,8 @@ void InstantiateMass2AnglesFit    (RooAbsPdf** TotalPDF,
 RooFitResult* MakeMass2AnglesFit   (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar* x, RooRealVar* y, RooRealVar* z, TCanvas* Canv, unsigned int FitType, vector<vector<unsigned int>*>* configParam, unsigned int parIndx, RooArgSet* vecConstr, double* NLLvalue, TPaveText* extText, int ID = 0);
 void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 				    bool useEffPDF,
-				    double PsiYield, double PsiYieldErr,
+				    double PsiYieldGoodTag, double PsiYieldGoodTagErr,
+				    double PsiYieldMisTag, double PsiYieldMisTagErr,
 				    RooRealVar* x, RooRealVar* y, RooRealVar* z,
 				    int specBin,
 				    unsigned int FitType,
@@ -745,7 +747,7 @@ void BuildMassConstraints (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string var
   
   if (strcmp(CONTROLMisTag,"all&FitFrac") != 0)
     if ((GetVar(TotalPDF,"nMisTagFrac") != NULL) && ((varName == "All") || (varName == "mistag"))) AddGaussConstraint(vecConstr, TotalPDF, "nMisTagFrac");
-  if ((GetVar(TotalPDF,"nBkgPeak")      != NULL) && ((varName == "All") || (varName == "peak")))   AddGaussConstraint(vecConstr, TotalPDF, "nBkgPeak");
+  if ((GetVar(TotalPDF,"nBkgPeak") != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, TotalPDF, "nBkgPeak");
 }
 
 
@@ -831,8 +833,9 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRea
       // #######################################################
       FlS  = new RooRealVar("FlS","F_{L}",0.0,0.0,1.0);
       AfbS = new RooRealVar("AfbS","A_{FB}",0.0,-1.0,1.0);
-      FlS->setConstant(false);
-      AfbS->setConstant(false);
+      // @TMP@
+      FlS->setConstant(true);
+      AfbS->setConstant(true);
       VarsAng->add(*FlS);
       VarsAng->add(*AfbS);
       VarsAng->add(*y);
@@ -867,6 +870,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRea
     	  myString << "4/3*AfbS * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * " << y->getPlotLabel() << ")))";
     	}
 
+      VarsPoly->removeAll();
       if (useEffPDF == true)
     	{
     	  // #############################
@@ -937,6 +941,8 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRea
       cout << "\n@@@ 2D angular p.d.f. @@@" << endl;
       cout << myString.str().c_str() << endl;
 
+      // @TMP@ : for the mis-tag I use the binned efficiency, and NOT the analytical efficiency, due to problems in fitting the binned efficiency
+      VarsPoly->removeAll();
       RooHistPdf* histoEffPDF;
       if (useEffPDF == true)
 	{
@@ -945,7 +951,12 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRea
 	  // #############################
 	  // # Make 2D efficiency p.d.f. #
 	  // #############################
-	  RooDataHist* histoEff = new RooDataHist("histoEff","histoEff",RooArgSet(*z,*y),Utility->Get2DEffHitoq2Bin(parIndx));
+	  unsigned int SignalType;
+	  if      ((FitType >= 01*10) && (FitType < 40*10)) SignalType = 1;
+	  else if ((FitType >= 41*10) && (FitType < 60*10)) SignalType = 3;
+	  else if ((FitType >= 61*10) && (FitType < 80*10)) SignalType = 5;
+	  else SignalType = 1;
+	  RooDataHist* histoEff = new RooDataHist("histoEff","histoEff",RooArgSet(*z,*y),Utility->Get2DEffHitoq2Bin(parIndx,SignalType));
 	  histoEffPDF           = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(*z,*y),*histoEff,0);
 	  AnglesPDF             = new RooProdPdf("AngleMisTag","MisTag * Efficiency",RooArgSet(*_AnglesPDF,*histoEffPDF));
 	}
@@ -1268,7 +1279,7 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
 
       if (GetVar(*TotalPDF,"nMisTagFrac") != NULL)
 	{
-	  fileFitResults << "Mistag bkg yield: " << GetVar(*TotalPDF,"nMisTagFrac")->getVal() << " +/- " << GetVar(*TotalPDF,"nMisTagFrac")->getError();
+	  fileFitResults << "Mistag fraction: " << GetVar(*TotalPDF,"nMisTagFrac")->getVal() << " +/- " << GetVar(*TotalPDF,"nMisTagFrac")->getError();
 	  fileFitResults << " (" << GetVar(*TotalPDF,"nMisTagFrac")->getErrorHi() << "/" << GetVar(*TotalPDF,"nMisTagFrac")->getErrorLo() << ")" << endl;
 	}
 
@@ -1642,7 +1653,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
     }
   else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](fitParamIndx).c_str());
   vecParStr->push_back("# Mistag fraction");
-  if (((TotalPDF != NULL) && (GetVar(TotalPDF,"nMisTagFrac") != NULL))  && ((ApplyConstr == false) || ((ApplyConstr == true) && (vecConstr->find(string(string("nMisTagFrac") + string("_constr")).c_str()) == NULL))))
+  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"nMisTagFrac") != NULL)  && ((ApplyConstr == false) || ((ApplyConstr == true) && (vecConstr->find(string(string("nMisTagFrac") + string("_constr")).c_str()) == NULL))))
     {
       myString.clear(); myString.str("");
       myString << TotalPDF->getVariables()->getRealValue("nMisTagFrac") << "   " << GetVar(TotalPDF,"nMisTagFrac")->getErrorLo() << "   " << GetVar(TotalPDF,"nMisTagFrac")->getErrorHi();
@@ -1658,7 +1669,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
     }
   else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](fitParamIndx).c_str());
   vecParStr->push_back("# Signal yield");
-  if (((TotalPDF != NULL) && (GetVar(TotalPDF,"nSig") != NULL)) && ((ApplyConstr == false) || ((ApplyConstr == true) && (vecConstr->find(string(string("nSig") + string("_constr")).c_str()) == NULL))))
+  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"nSig") != NULL) && ((ApplyConstr == false) || ((ApplyConstr == true) && (vecConstr->find(string(string("nSig") + string("_constr")).c_str()) == NULL))))
     {
       myString.clear(); myString.str("");
       myString << TotalPDF->getVariables()->getRealValue("nSig") << "   " << GetVar(TotalPDF,"nSig")->getErrorLo() << "   " << GetVar(TotalPDF,"nSig")->getErrorHi();
@@ -2256,9 +2267,6 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
 
 
 void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2Bins, int specBin, vector<vector<string>*>* fitParam, string fileName)
-// ################################################################
-// # Use "MULTYIELD" to rescale the entries of the parameter file #
-// ################################################################
 {
   TFile* NtplFileOut;
   TTree* theTreeOut;
@@ -3364,7 +3372,8 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
 
 void IterativeMassFitq2Bins (RooDataSet* dataSet,
 			     bool useEffPDF,
-			     double PsiYield, double PsiYieldErr,
+			     double PsiYieldGoodTag, double PsiYieldGoodTagErr,
+			     double PsiYieldMisTag, double PsiYieldMisTagErr,
 			     RooRealVar* x, RooRealVar* y, RooRealVar* z,
 			     int specBin,
 			     unsigned int FitType,
@@ -3378,68 +3387,57 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
   // ###################
   // # Local variables #
   // ###################
-  double value, errLo, errHi;
-
-  vector<string>* vecParStr;
+  vector<string>* vecParStr = NULL;
   stringstream myString;
 
-  double effPsi  = 1.0;
-  double effMuMu = 1.0;
+  double effPsiGoodTag     = 1.0;
+  double effPsiGoodTagErr  = 0.0;
 
-  RooArgSet   VarsAng, VarsPolyGT;
+  double effPsiMisTag      = 1.0;
+  double effPsiMisTagErr   = 0.0;
+
+  double effMuMuGoodTag    = 1.0;
+  double effMuMuGoodTagErr = 0.0;
+
+  double effMuMuMisTag     = 1.0;
+  double effMuMuMisTagErr  = 0.0;
+
   TCanvas*    cq2Bins[q2Bins->size()-1];
   RooDataSet* dataSet_q2Bins[q2Bins->size()-1];
   RooAbsPdf*  TotalPDFq2Bins[q2Bins->size()-1];
   TPaveText*  extText[q2Bins->size()-1];
 
   RooFitResult* fitResult;
-  RooAbsReal*   EffPDFintegral = NULL;
-  RooAbsPdf*    EffPDFnorm     = NULL;
-  RooAbsPdf*    EffPDFsign     = NULL;
 
   double NLLvalue;
 
 
+  // ####################################
+  // # Read I[S*E] for resonant channel #
+  // ####################################
   if ((useEffPDF == true) && (fitParam->operator[](0)->size() > 1))
     {
-      // ##############################################################
-      // # Compute integral of S*E for resonant channel and its error #
-      // ##############################################################
- 
-      // ######################################
-      // # Reference to normalization channel #
-      // ######################################
+      // ######################
+      // # Good-tagged events #
+      // ######################
+      Utility->ReadParVsq2Bins(PARAMETERFILEIN,"I[S*E]okTag",&vecParStr);
       myString.clear(); myString.str("");
-      myString << MakeAngWithEffPDF(effFuncs.first->operator[]((NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins))),NULL,y,z,FitType,useEffPDF,&VarsAng,&VarsPolyGT,(NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
-      EffPDFnorm = new RooGenericPdf("Efficiency",myString.str().c_str(),RooArgSet(VarsAng,VarsPolyGT));
- 
-      myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[]((NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
-      SetValueAndErrors(EffPDFnorm,"FlS",1.0,&myString,&value,&errLo,&errHi);
+      myString << vecParStr->operator[](NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)).c_str();
+      SetValueAndErrors(NULL,"",1.0,&myString,&effPsiGoodTag,&effPsiGoodTagErr,&effPsiGoodTagErr);
+      cout << "\n@@@ Integral of S*E over angular variables for normalization channel good-tagged events: " << effPsiGoodTag << " +/- " << effPsiGoodTagErr << " @@@" << endl;
 
-      myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[]((NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
-      SetValueAndErrors(EffPDFnorm,"AfbS",1.0,&myString,&value,&errLo,&errHi);
 
+      // #####################
+      // # Mis-tagged events #
+      // #####################
+      Utility->ReadParVsq2Bins(PARAMETERFILEIN,"I[S*E]misTag",&vecParStr);
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[]((NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
-      SetValueAndErrors(EffPDFnorm,"FsS",1.0,&myString,&value,&errLo,&errHi);
-
-      myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[]((NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
-      SetValueAndErrors(EffPDFnorm,"AsS",1.0,&myString,&value,&errLo,&errHi);
-
-      PrintVariables(EffPDFnorm->getVariables(),"vars");
-      EffPDFintegral = EffPDFnorm->createIntegral(RooArgSet(*y,*z));
-      effPsi = EffPDFintegral->getVal();
-      
-      PrintVariables(EffPDFnorm->getVariables(),"vars");
-      cout << "\n@@@ Integral of S*E over (theta_l,theta_K) for normalization channel: " << effPsi << " @@@" << endl;
-      
-      delete EffPDFnorm;
+      myString << vecParStr->operator[](NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)).c_str();
+      SetValueAndErrors(NULL,"",1.0,&myString,&effPsiMisTag,&effPsiMisTagErr,&effPsiMisTagErr);
+      cout << "\n@@@ Integral of S*E over angular variables for normalization channel mis-tagged events: " << effPsiMisTag << " +/- " << effPsiMisTagErr << " @@@" << endl;
     }
-
-
+ 
+ 
   fileFitResults << "@@@@@@ Differential branching fraction @@@@@@" << endl;
   for (unsigned int i = (specBin == -1 ? 0 : specBin); i < (specBin == -1 ? q2Bins->size()-1 : specBin+1); i++)
     {
@@ -3522,39 +3520,24 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 
       if (useEffPDF == true)
 	{
-	  if (EffPDFsign != NULL) delete EffPDFsign;
-	  // ####################################################
-	  // # Compute integral of S*E for signal and its error #
-	  // ####################################################
-
-	  VarsAng.removeAll();
-	  VarsPolyGT.removeAll();
+	  // ######################
+	  // # Good-tagged events #
+	  // ######################
+	  Utility->ReadParVsq2Bins(PARAMETERFILEIN,"I[S*E]okTag",&vecParStr);
 	  myString.clear(); myString.str("");
-	  myString << MakeAngWithEffPDF(effFuncs.first->operator[](i),NULL,y,z,FitType,useEffPDF,&VarsAng,&VarsPolyGT,i);
-	  EffPDFsign = new RooGenericPdf("Efficiency",myString.str().c_str(),RooArgSet(VarsAng,VarsPolyGT));
+	  myString << vecParStr->operator[](i).c_str();
+	  SetValueAndErrors(NULL,"",1.0,&myString,&effMuMuGoodTag,&effMuMuGoodTagErr,&effMuMuGoodTagErr);
+	  cout << "\n@@@ Integral of S*E over angular variables for normalization channel good-tagged events: " << effMuMuGoodTag << " +/- " << effMuMuGoodTagErr << " @@@" << endl;
 
+	  
+	  // #####################
+	  // # Mis-tagged events #
+	  // #####################
+	  Utility->ReadParVsq2Bins(PARAMETERFILEIN,"I[S*E]misTag",&vecParStr);
 	  myString.clear(); myString.str("");
-	  myString << fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](i);
-	  SetValueAndErrors(EffPDFsign,"FlS",1.0,&myString,&value,&errLo,&errHi);
-
-	  myString.clear(); myString.str("");
-	  myString << fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](i);
-	  SetValueAndErrors(EffPDFsign,"AfbS",1.0,&myString,&value,&errLo,&errHi);
-
-	  myString.clear(); myString.str("");
-	  myString << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](i);
-	  SetValueAndErrors(EffPDFsign,"FsS",1.0,&myString,&value,&errLo,&errHi);
-
-	  myString.clear(); myString.str("");
-	  myString << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](i);
-	  SetValueAndErrors(EffPDFsign,"AsS",1.0,&myString,&value,&errLo,&errHi);
-
-	  PrintVariables(EffPDFsign->getVariables(),"vars");
-	  EffPDFintegral = EffPDFsign->createIntegral(RooArgSet(*y,*z));
-	  effMuMu = EffPDFintegral->getVal();
-
-	  PrintVariables(EffPDFsign->getVariables(),"vars");
-	  cout << "\n@@@ Integral of S*E over (theta_l,theta_K) for signal: " << effMuMu << " @@@" << endl;
+	  myString << vecParStr->operator[](i).c_str();
+	  SetValueAndErrors(NULL,"",1.0,&myString,&effMuMuMisTag,&effMuMuMisTagErr,&effMuMuMisTagErr);
+	  cout << "\n@@@ Integral of S*E over angular variables for normalization channel mis-tagged events: " << effMuMuMisTag << " +/- " << effMuMuMisTagErr << " @@@" << endl;
 	}
 
 
@@ -3564,35 +3547,40 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       if ((configParam->operator[](Utility->GetConfigParamIndx("FitOptions"))->operator[](i) != 1) &&
 	  (configParam->operator[](Utility->GetConfigParamIndx("FitOptions"))->operator[](i) != 4))
 	{
-	  double nEv      = GetVar(TotalPDFq2Bins[i],"nSig")->getVal() / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal());
-	  double nEvErrLo = nEv * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorLo() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getErrorLo() / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()),2.));
-	  double nEvErrHi = nEv * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorHi() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getErrorHi() / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()),2.));
+	  double nEvGoodTag    = GetVar(TotalPDFq2Bins[i],"nSig")->getVal();
+	  double nEvGoodTagErr = GetVar(TotalPDFq2Bins[i],"nSig")->getError();
 
-	  VecHistoMeas->operator[](0)->SetBinContent(i+1,(nEv / effMuMu) / (PsiYield / effPsi) * (NORMJPSInotPSIP == true ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7);
-	  VecHistoMeas->operator[](0)->SetBinError(i+1,VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow((nEvErrLo+nEvErrHi)/2. / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)));
+	  double nEvMisTag    = 0.0;
+	  double nEvMisTagErr = 0.0;
+	  if (GetVar(TotalPDFq2Bins[i],"nMisTagFrac") != NULL)
+	    {
+	      nEvMisTag    = GetVar(TotalPDFq2Bins[i],"nSig")->getVal() / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()) * GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal();
+	      nEvMisTagErr = nEvMisTag * GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getError() / ((1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()) * GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal());
+	    }
+	  
+	  double num       = (nEvGoodTag / effMuMuGoodTag) + (nEvMisTag / effMuMuMisTag);
+	  double den       = (PsiYieldGoodTag / effPsiGoodTag) + (PsiYieldMisTag / effPsiMisTag);
+	  double dBFdq2    = num / den * (NORMJPSInotPSIP == true ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7;
+	  double dBFdq2Err = num / den * sqrt( pow(nEvGoodTag / effMuMuGoodTag / num,2.) * (pow(nEvGoodTagErr / nEvGoodTag,2.) + pow(effMuMuGoodTagErr / effMuMuGoodTag,2.)) + 
+					       pow(nEvMisTag  / effMuMuMisTag  / num,2.) * (pow(nEvMisTagErr  / nEvMisTag ,2.) + pow(effMuMuMisTagErr  / effMuMuMisTag ,2.)) + 
+					       pow(PsiYieldGoodTag / effPsiGoodTag / den,2.) * (pow(PsiYieldGoodTagErr / PsiYieldGoodTag,2.) + pow(effPsiGoodTagErr / effPsiGoodTag,2.)) +
+					       pow(PsiYieldMisTag  / effPsiMisTag  / den,2.) * (pow(PsiYieldMisTagErr  / PsiYieldMisTag ,2.) + pow(effPsiMisTagErr  / effPsiMisTag ,2.)) );
+
+	  VecHistoMeas->operator[](0)->SetBinContent(i+1,dBFdq2);
+	  VecHistoMeas->operator[](0)->SetBinError(i+1,dBFdq2Err);
 
 	  fileFitResults << "@@@@@@ dBF/dq^2 @@@@@@" << endl;
-	  fileFitResults << "dBF/dq^2: " << VecHistoMeas->operator[](0)->GetBinContent(i+1) << " -/+ " << VecHistoMeas->operator[](0)->GetBinError(i+1) << " (";
-	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow(nEvErrLo / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)) << "/";
-	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow(nEvErrHi / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)) << ")" << endl;
+	  fileFitResults << "dBF/dq^2: " << VecHistoMeas->operator[](2)->GetBinContent(i+1) << " -/+ " << VecHistoMeas->operator[](2)->GetBinError(i+1) << endl;
 
-	  fileFitResults << "To cut and paste in config. file" << endl;
-	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) << "   ";
-	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow(nEvErrLo / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)) << "   ";
-	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) * sqrt(pow(nEvErrHi / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)) << endl;
+	  fileFitResults << "===> dBF/dq^2 to cut and paste in config. file <===" << endl;
+	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) << "   " << dBFdq2Err << "   " << dBFdq2Err << endl;
+
 	  fileFitResults << "====================================================================" << endl;
 
 	  myString.clear(); myString.str("");
-	  if (CheckGoodFit(fitResult) == true)
-	    {
-	      myString << ID << "   ";
-	      myString << (((useEffPDF == true) && (GetVar(EffPDFsign,"FlS")  != NULL)) ? GetVar(EffPDFsign,"FlS")->getVal()  : -2.0) << "   ";
-	      myString << (((useEffPDF == true) && (GetVar(EffPDFsign,"AfbS") != NULL)) ? GetVar(EffPDFsign,"AfbS")->getVal() : -2.0) << "   ";
-	      myString << VecHistoMeas->operator[](0)->GetBinContent(i+1) << "   ";
-	      myString << NLLvalue;
-	    }
-	  else myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
-
+	  if (CheckGoodFit(fitResult) == true) myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << VecHistoMeas->operator[](0)->GetBinContent(i+1) << "   " << NLLvalue;
+	  else                                 myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
+	  
 	  fileFitSystematics << myString.str() << endl;
 	}
     }
@@ -4160,8 +4148,8 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   AngleS = MakeAngWithEffPDF(effFunc.first,NULL,y,z,FitType,useEffPDF,VarsAng,VarsPolyGT,parIndx);
 
   Signal = new RooProdPdf("Signal","Signal Mass*Angle",RooArgSet(*MassSignal,*AngleS));
-			     
-  
+
+
   // ###################################################################
   // # Define angle fit variables and pdf for combinatorial background #
   // ###################################################################
@@ -4333,7 +4321,8 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
 
   nSig->setConstant(false);
   nBkgComb->setConstant(false);
-  nMisTagFrac->setConstant(false);
+  // @TMP@
+  nMisTagFrac->setConstant(true);
   nBkgPeak->setConstant(false);
 
   if ((FitType == 36) || (FitType == 56) || (FitType == 76))
@@ -5214,7 +5203,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
 void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 				    bool useEffPDF,
-				    double PsiYield, double PsiYieldErr,
+				    double PsiYieldGoodTag, double PsiYieldGoodTagErr,
+				    double PsiYieldMisTag, double PsiYieldMisTagErr,
 				    RooRealVar* x, RooRealVar* y, RooRealVar* z,
 				    int specBin,
 				    unsigned int FitType,
@@ -5228,15 +5218,21 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
   // ###################
   // # Local variables #
   // ###################
-  double value, errLo, errHi;
-
-  vector<string>* vecParStr;
+  vector<string>* vecParStr = NULL;
   stringstream myString;
 
-  double effPsi  = 1.0;
-  double effMuMu = 1.0;
+  double effPsiGoodTag     = 1.0;
+  double effPsiGoodTagErr  = 0.0;
 
-  RooArgSet   VarsAng, VarsPolyGT;
+  double effPsiMisTag      = 1.0;
+  double effPsiMisTagErr   = 0.0;
+
+  double effMuMuGoodTag    = 1.0;
+  double effMuMuGoodTagErr = 0.0;
+
+  double effMuMuMisTag     = 1.0;
+  double effMuMuMisTagErr  = 0.0;
+
   TCanvas*    cq2Bins[q2Bins->size()-1];
   RooDataSet* dataSet_q2Bins[q2Bins->size()-1];
   RooAbsPdf*  TotalPDFq2Bins[q2Bins->size()-1];
@@ -5244,49 +5240,35 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 
   RooFitResult* fitResult;
   RooAbsReal*   EffPDFintegral = NULL;
-  RooAbsPdf*    EffPDFnorm     = NULL;
-  RooAbsPdf*    EffPDFsign     = NULL;
+  RooAbsPdf*    EffPDFgoodTag  = NULL;
+  RooAbsPdf*    EffPDFmisTag   = NULL;
 
   double NLLvalue;
   
 
+  // ####################################
+  // # Read I[S*E] for resonant channel #
+  // ####################################
   if ((useEffPDF == true) && (fitParam->operator[](0)->size() > 1))
     {
-      // ##############################################################
-      // # Compute integral of S*E for resonant channel and its error #
-      // ##############################################################
- 
-      // ######################################
-      // # Reference to normalization channel #
-      // ######################################
+      // ######################
+      // # Good-tagged events #
+      // ######################
+      Utility->ReadParVsq2Bins(PARAMETERFILEIN,"I[S*E]okTag",&vecParStr);
       myString.clear(); myString.str("");
-      myString << MakeAngWithEffPDF(effFuncs.first->operator[]((NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins))),NULL,y,z,FitType,useEffPDF,&VarsAng,&VarsPolyGT,(NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
-      EffPDFnorm = new RooGenericPdf("Efficiency",myString.str().c_str(),RooArgSet(VarsAng,VarsPolyGT));
- 
+      myString << vecParStr->operator[](NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)).c_str();
+      SetValueAndErrors(NULL,"",1.0,&myString,&effPsiGoodTag,&effPsiGoodTagErr,&effPsiGoodTagErr);
+      cout << "\n@@@ Integral of S*E over angular variables for normalization channel good-tagged events: " << effPsiGoodTag << " +/- " << effPsiGoodTagErr << " @@@" << endl;
+
+
+      // #####################
+      // # Mis-tagged events #
+      // #####################
+      Utility->ReadParVsq2Bins(PARAMETERFILEIN,"I[S*E]misTag",&vecParStr);
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[]((NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
-      SetValueAndErrors(EffPDFnorm,"FlS",1.0,&myString,&value,&errLo,&errHi);
-
-      myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[]((NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
-      SetValueAndErrors(EffPDFnorm,"AfbS",1.0,&myString,&value,&errLo,&errHi);
-
-      myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[]((NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
-      SetValueAndErrors(EffPDFnorm,"FsS",1.0,&myString,&value,&errLo,&errHi);
-
-      myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[]((NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)));
-      SetValueAndErrors(EffPDFnorm,"AsS",1.0,&myString,&value,&errLo,&errHi);
-
-      PrintVariables(EffPDFnorm->getVariables(),"vars");
-      EffPDFintegral = EffPDFnorm->createIntegral(RooArgSet(*y,*z));
-      effPsi = EffPDFintegral->getVal();
-      
-      PrintVariables(EffPDFnorm->getVariables(),"vars");
-      cout << "\n@@@ Integral of S*E over (theta_l,theta_K) for normalization channel: " << effPsi << " @@@" << endl;
-
-      delete EffPDFnorm;
+      myString << vecParStr->operator[](NORMJPSInotPSIP == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)).c_str();
+      SetValueAndErrors(NULL,"",1.0,&myString,&effPsiMisTag,&effPsiMisTagErr,&effPsiMisTagErr);
+      cout << "\n@@@ Integral of S*E over angular variables for normalization channel mis-tagged events: " << effPsiMisTag << " +/- " << effPsiMisTagErr << " @@@" << endl;
     }
 
 
@@ -5384,22 +5366,39 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,(ID == 0 ? i : 0));
       delete vecParStr;
 
-
+      
+      // #############################
+      // # Compute I[S*E] for signal #
+      // #############################
       if (useEffPDF == true)
 	{
-	  if (EffPDFsign != NULL) delete EffPDFsign;
-	  // ####################################################
-	  // # Compute integral of S*E for signal and its error #
-	  // ####################################################
+	  // ######################
+	  // # Good-tagged events #
+	  // ######################
+	  EffPDFgoodTag = AngleS;
+	  PrintVariables(EffPDFgoodTag->getVariables(),"vars");
 
-	  EffPDFsign = new RooGenericPdf(*((RooGenericPdf*)AngleS),"EffPDFsign");
+	  EffPDFintegral    = EffPDFgoodTag->createIntegral(RooArgSet(*y,*z));
+	  effMuMuGoodTag    = EffPDFintegral->getVal();
+	  effMuMuGoodTagErr = EffPDFintegral->getPropagatedError(*fitResult);
 
-	  PrintVariables(EffPDFsign->getVariables(),"vars");
-	  EffPDFintegral = EffPDFsign->createIntegral(RooArgSet(*y,*z));
-	  effMuMu = EffPDFintegral->getVal();
+	  cout << "\n@@@ Integral of S*E over angular variables for signal good-tagged events: " << effMuMuGoodTag << " +/- " << effMuMuGoodTagErr << " @@@" << endl;
 
-	  PrintVariables(EffPDFsign->getVariables(),"vars");
-	  cout << "\n@@@ Integral of S*E over (theta_l,theta_K) for signal: " << effMuMu << " @@@" << endl;
+
+	  // #####################
+	  // # Mis-tagged events #
+	  // #####################
+	  if (GetVar(TotalPDFq2Bins[i],"nMisTagFrac") != NULL)
+	    {
+	      EffPDFmisTag = AngleMisTag;
+	      PrintVariables(EffPDFmisTag->getVariables(),"vars");
+
+	      EffPDFintegral   = EffPDFmisTag->createIntegral(RooArgSet(*y,*z));
+	      effMuMuMisTag    = EffPDFintegral->getVal();
+	      effMuMuMisTagErr = EffPDFintegral->getPropagatedError(*fitResult);
+	      
+	      cout << "\n@@@ Integral of S*E over angular variables for signal mis-tagged events: " << effMuMuMisTag << " +/- " << effMuMuMisTagErr << " @@@" << endl;
+	    }
 	}
 
  
@@ -5417,22 +5416,40 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 
 	  if ((FitType != 36) && (FitType != 56) && (FitType != 76))
 	    {
-	      double nEv      = GetVar(TotalPDFq2Bins[i],"nSig")->getVal() / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal());
-	      double nEvErrLo = nEv * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorLo() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getErrorLo() / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()),2.));
-	      double nEvErrHi = nEv * sqrt(pow(GetVar(TotalPDFq2Bins[i],"nSig")->getErrorHi() / GetVar(TotalPDFq2Bins[i],"nSig")->getVal(),2.) + pow(GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getErrorHi() / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()),2.));
+	      double nEvGoodTag    = GetVar(TotalPDFq2Bins[i],"nSig")->getVal();
+	      double nEvGoodTagErr = GetVar(TotalPDFq2Bins[i],"nSig")->getError();
 
-	      VecHistoMeas->operator[](2)->SetBinContent(i+1,(nEv / effMuMu) / (PsiYield / effPsi) * (NORMJPSInotPSIP == true ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7);
-	      VecHistoMeas->operator[](2)->SetBinError(i+1,VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow((nEvErrLo+nEvErrHi)/2. / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)));
+	      double nEvMisTag    = 0.0;
+	      double nEvMisTagErr = 0.0;
+	      if (GetVar(TotalPDFq2Bins[i],"nMisTagFrac") != NULL)
+		{
+		  nEvMisTag    = GetVar(TotalPDFq2Bins[i],"nSig")->getVal() / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()) * GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal();
+		  nEvMisTagErr = nEvMisTag * GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getError() / ((1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()) * GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal());
+		}
+	      
+	      double num       = (nEvGoodTag / effMuMuGoodTag) + (nEvMisTag / effMuMuMisTag);
+	      double den       = (PsiYieldGoodTag / effPsiGoodTag) + (PsiYieldMisTag / effPsiMisTag);
+	      double dBFdq2    = num / den * (NORMJPSInotPSIP == true ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7;
+	      double dBFdq2Err = num / den * sqrt( pow(nEvGoodTag / effMuMuGoodTag / num,2.) * (pow(nEvGoodTagErr / nEvGoodTag,2.) + pow(effMuMuGoodTagErr / effMuMuGoodTag,2.)) + 
+						   pow(nEvMisTag  / effMuMuMisTag  / num,2.) * (pow(nEvMisTagErr  / nEvMisTag ,2.) + pow(effMuMuMisTagErr  / effMuMuMisTag ,2.)) + 
+						   pow(PsiYieldGoodTag / effPsiGoodTag / den,2.) * (pow(PsiYieldGoodTagErr / PsiYieldGoodTag,2.) + pow(effPsiGoodTagErr / effPsiGoodTag,2.)) +
+						   pow(PsiYieldMisTag  / effPsiMisTag  / den,2.) * (pow(PsiYieldMisTagErr  / PsiYieldMisTag ,2.) + pow(effPsiMisTagErr  / effPsiMisTag ,2.)) );
 
+	      VecHistoMeas->operator[](2)->SetBinContent(i+1,dBFdq2);
+	      VecHistoMeas->operator[](2)->SetBinError(i+1,dBFdq2Err);
+	      
 	      fileFitResults << "@@@@@@ dBF/dq^2 @@@@@@" << endl;
-	      fileFitResults << "dBF/dq^2: " << VecHistoMeas->operator[](2)->GetBinContent(i+1) << " -/+ " << VecHistoMeas->operator[](2)->GetBinError(i+1) << " (";
-	      fileFitResults << VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow(nEvErrLo / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)) << "/";
-	      fileFitResults << VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow(nEvErrHi / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)) << ")" << endl;
+	      fileFitResults << "dBF/dq^2: " << VecHistoMeas->operator[](2)->GetBinContent(i+1) << " -/+ " << VecHistoMeas->operator[](2)->GetBinError(i+1) << endl;
 
-	      fileFitResults << "To cut and paste in config. file" << endl;
-	      fileFitResults << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   ";
-	      fileFitResults << VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow(nEvErrLo / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)) << "   ";
-	      fileFitResults << VecHistoMeas->operator[](2)->GetBinContent(i+1) * sqrt(pow(nEvErrHi / nEv,2.) + pow(PsiYieldErr / PsiYield,2.)) << endl;
+	      fileFitResults << "===> dBF/dq^2 to cut and paste in config. file <===" << endl;
+	      fileFitResults << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   " << dBFdq2Err << "   " << dBFdq2Err << endl;
+
+	      fileFitResults << "===> I[S*E] good-tagged to cut and paste in config. file <===" << endl;
+	      fileFitResults << effMuMuGoodTag << "   " << effMuMuGoodTagErr << "   " << effMuMuGoodTagErr << endl;
+
+	      fileFitResults << "===> I[S*E] mis-tagged to cut and paste in config. file <===" << endl;
+	      fileFitResults << effMuMuMisTag << "   " << effMuMuMisTagErr << "   " << effMuMuMisTagErr << endl;
+
 	      fileFitResults << "====================================================================" << endl;
 	    }
 
@@ -6167,7 +6184,7 @@ int main(int argc, char** argv)
 	  // # Read parameters #
  	  // ###################
 	  Utility = new Utils(false);
-	  Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
+	  Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
 
 
 	  // #################################
@@ -6338,17 +6355,18 @@ int main(int argc, char** argv)
 	  // ################################################
 	  myString.clear(); myString.str("");
 	  myString << fitParam[Utility->GetFitParamIndx("nSig")]->operator[]((NORMJPSInotPSIP == true ? 1 : 2)).c_str();
-	  SetValueAndErrors(NULL,"",1.0,&myString,&PsiYield,&PsiYerr,&PsiYerr);
+	  SetValueAndErrors(NULL,"",1.0,&myString,&PsiYieldGoodTag,&PsiYieldGoodTagErr,&PsiYieldGoodTagErr);
 	  
-	  double MisTagFrac, MisTagFerr;
+	  double MisTagFrac, MisTagFracErr;
 	  myString.clear(); myString.str("");
 	  myString << fitParam[Utility->GetFitParamIndx("nMisTagFrac")]->operator[]((NORMJPSInotPSIP == true ? 1 : 2)).c_str();
-	  SetValueAndErrors(NULL,"",1.0,&myString,&MisTagFrac,&MisTagFerr,&MisTagFerr);
+	  SetValueAndErrors(NULL,"",1.0,&myString,&MisTagFrac,&MisTagFracErr,&MisTagFracErr);
 
-	  PsiYerr  = PsiYield / (1. - MisTagFrac) * sqrt(pow(PsiYerr / PsiYield,2.) + pow(MisTagFerr / (1. - MisTagFrac),2.));
-	  PsiYield = PsiYield / (1. - MisTagFrac);
+	  PsiYieldMisTag    = PsiYieldGoodTag / (1. - MisTagFrac) * MisTagFrac;
+	  PsiYieldMisTagErr = PsiYieldMisTag  * MisTagFracErr / ((1. - MisTagFrac) * MisTagFrac);
 
-	  fileFitResults << "Normalization channel yield: " << PsiYield << " +/- " << PsiYerr << endl;
+	  fileFitResults << "Normalization channel yield good-tagged events: " << PsiYieldGoodTag << " +/- " << PsiYieldGoodTagErr << endl;
+	  fileFitResults << "Normalization channel yield mis-tagged events: "  << PsiYieldMisTag  << " +/- " << PsiYieldMisTagErr  << endl;
 
 	  for (unsigned int i = 0; i < fitParam.size(); i++)
 	    {
@@ -6411,6 +6429,7 @@ int main(int argc, char** argv)
 	  effFuncs.second = new vector<TF2*>;
 	  if (correct4Efficiency == "EffCorrGenAnalyPDF")
 	    {
+	      // @TMP@ : the EffCorrGenAnalyPDF has to be made accordingly
 	      Utility->ReadAnalyticalEff(tmpFileName.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,effFuncs.first,"effFuncs",1);
 	      Utility->ReadAnalyticalEff(tmpFileName.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,effFuncs.second,"effFuncs",2);
 	    }
@@ -6427,14 +6446,14 @@ int main(int argc, char** argv)
 	  if ((TESTeffFUNC == true) && (correct4Efficiency != "EffCorrGenAnalyPDF"))
 	    for (unsigned int i = (specBin == -1 ? 0 : specBin); i < (specBin == -1 ? q2Bins.size()-1 : specBin+1); i++)
 	      {
-		if (Utility->EffMinValue2D(&cosThetaKBins,&cosThetaLBins,effFuncs.first->operator[](i)) < 0.0)
+		if (Utility->EffMinValue2D(&cosThetaKBins,&cosThetaLBins,effFuncs.first->operator[](i)) < 0.0) // @TMP@ : to be changed for 3D efficiency
 		  {
 		    cout << "[ExtractYield::main]\tNegative good-tagged efficiency function for q^2 bin #" << i << endl;
 		    CloseAllAndQuit(theApp,NtplFile);
 		  }
 		else cout << "[ExtractYield::main]\tEfficiency good-tagged for bin " << i << " is always positive !" << endl;
 
-		if (Utility->EffMinValue2D(&cosThetaKBins,&cosThetaLBins,effFuncs.second->operator[](i)) < 0.0)
+		if (Utility->EffMinValue2D(&cosThetaKBins,&cosThetaLBins,effFuncs.second->operator[](i)) < 0.0) // @TMP@ : to be changed for 3D efficiency
 		  {
 		    cout << "[ExtractYield::main]\tNegative mis-tagged efficiency function for q^2 bin #" << i << endl;
 		    CloseAllAndQuit(theApp,NtplFile);
@@ -6443,9 +6462,9 @@ int main(int argc, char** argv)
 	      }
 
 
- 	  // ####################################################################################################
-	  // # Read other parameters : this also allow also to understand if the parameter file is well written #
- 	  // ####################################################################################################
+ 	  // ###############################################################################################
+	  // # Read other parameters : this also allow to understand if the parameter file is well written #
+ 	  // ###############################################################################################
 	  LUMI = Utility->ReadLumi(ParameterFILE);
 	  bool IsThisData = Utility->IsThisData(ParameterFILE);
 	  if (IsThisData == true) cout << "\n@@@ I recognize that this is a DATA file @@@" << endl;
@@ -6693,7 +6712,8 @@ int main(int argc, char** argv)
 		      cout << "\n@@@ Now fit invariant mass per mumu q^2 bins @@@" << endl;
 		      if (FitType == 1) IterativeMassFitq2Bins(SingleCandNTuple_RejectPsi,
 							       useEffPDF,
-							       PsiYield,PsiYerr,
+							       PsiYieldGoodTag,PsiYieldGoodTagErr,
+							       PsiYieldMisTag,PsiYieldMisTagErr,
 							       B0MassArb,
 							       CosThetaMuArb,
 							       CosThetaKArb,
@@ -6707,7 +6727,8 @@ int main(int argc, char** argv)
 							       fileIndx);
 		      else if (FitType == 41) IterativeMassFitq2Bins(SingleCandNTuple_JPsi,
 								     useEffPDF,
-								     PsiYield,PsiYerr,
+								     PsiYieldGoodTag,PsiYieldGoodTagErr,
+								     PsiYieldMisTag,PsiYieldMisTagErr,
 								     B0MassArb,
 								     CosThetaMuArb,
 								     CosThetaKArb,
@@ -6721,7 +6742,8 @@ int main(int argc, char** argv)
 								     fileIndx);
 		      else IterativeMassFitq2Bins(SingleCandNTuple_PsiP,
 						  useEffPDF,
-						  PsiYield,PsiYerr,
+						  PsiYieldGoodTag,PsiYieldGoodTagErr,
+						  PsiYieldMisTag,PsiYieldMisTagErr,
 						  B0MassArb,
 						  CosThetaMuArb,
 						  CosThetaKArb,
@@ -6776,7 +6798,8 @@ int main(int argc, char** argv)
 		  cout << "\n@@@ Now fit invariant mass, cos(theta_K) and cos(theta_l) per mumu q^2 bins @@@" << endl;
 		  if ((FitType == 6) || (FitType == 36)) IterativeMass2AnglesFitq2Bins(SingleCandNTuple_RejectPsi,
 		  								       useEffPDF,
-		  								       PsiYield,PsiYerr,
+										       PsiYieldGoodTag,PsiYieldGoodTagErr,
+										       PsiYieldMisTag,PsiYieldMisTagErr,
 		  								       B0MassArb,
 		  								       CosThetaMuArb,
 		  								       CosThetaKArb,
@@ -6790,7 +6813,8 @@ int main(int argc, char** argv)
 		  								       fileIndx);
 		  else if ((FitType == 46) || (FitType == 56)) IterativeMass2AnglesFitq2Bins(SingleCandNTuple_JPsi,
 		  									     useEffPDF,
-		  									     PsiYield,PsiYerr,
+											     PsiYieldGoodTag,PsiYieldGoodTagErr,
+											     PsiYieldMisTag,PsiYieldMisTagErr,
 		  									     B0MassArb,
 		  									     CosThetaMuArb,
 		  									     CosThetaKArb,
@@ -6804,7 +6828,8 @@ int main(int argc, char** argv)
 		  									     fileIndx);
 		  else IterativeMass2AnglesFitq2Bins(SingleCandNTuple_PsiP,
 		  				     useEffPDF,
-		  				     PsiYield,PsiYerr,
+						     PsiYieldGoodTag,PsiYieldGoodTagErr,
+						     PsiYieldMisTag,PsiYieldMisTagErr,
 		  				     B0MassArb,
 		  				     CosThetaMuArb,
 		  				     CosThetaKArb,
@@ -6928,8 +6953,7 @@ int main(int argc, char** argv)
 	    }
 	  else
 	    {
-	      // @TMP@
-	      // system("say \" Let's rock and roll ! \"");
+	      system("say \" Let's rock and roll ! \"");
  	      theApp->Run (); // Eventloop on air
 	    }
 	}
@@ -6945,7 +6969,7 @@ int main(int argc, char** argv)
 
 	  cout << "\n --> noEffCorr          = no eff. correction" << endl;
 	  cout << " --> EffCorrAnalyPDF    = analytical eff. correction used in the p.d.f." << endl;
-	  cout << " --> EffCorrGenAnalyPDF = compute systematic error related to analytical eff. correction used in the p.d.f." << endl;
+	  cout << " --> EffCorrGenAnalyPDF = compute systematic error related to eff. correction used in the p.d.f." << endl;
 
 	  return EXIT_FAILURE;
 	}
@@ -6962,7 +6986,7 @@ int main(int argc, char** argv)
 
       cout << "\n --> noEffCorr          = no eff. correction" << endl;
       cout << " --> EffCorrAnalyPDF    = analytical eff. correction used in the p.d.f." << endl;
-      cout << " --> EffCorrGenAnalyPDF = compute systematic error relsted to analytical eff. correction used in the p.d.f." << endl;
+      cout << " --> EffCorrGenAnalyPDF = compute systematic error related to eff. correction used in the p.d.f." << endl;
 
       cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  Signa  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "FitType = 1: 1D branching fraction per q^2 bin" << endl;

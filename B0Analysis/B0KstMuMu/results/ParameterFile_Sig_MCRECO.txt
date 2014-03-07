@@ -2195,6 +2195,74 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ############################
 # 14th block of parameters #
 ############################
+# Signal*Efficiency integral +/- err good-tagged events
+9
+
+# q^2 bin 0
+1.0   0.0   0.0
+
+# q^2 bin 1
+1.0   0.0   0.0
+
+# q^2 bin 2
+1.0   0.0   0.0
+
+# q^2 bin 3
+1.0   0.0   0.0
+
+# q^2 bin 4
+1.0   0.0   0.0
+
+# q^2 bin 5
+1.0   0.0   0.0
+
+# q^2 bin 6
+1.0   0.0   0.0
+
+# q^2 bin 7
+1.0   0.0   0.0
+
+# q^2 bin 8
+1.0   0.0   0.0
+
+
+############################
+# 15th block of parameters #
+############################
+# Signal*Efficiency integral +/- err mis-tagged events
+9
+
+# q^2 bin 0
+1.0   0.0   0.0
+
+# q^2 bin 1
+1.0   0.0   0.0
+
+# q^2 bin 2
+1.0   0.0   0.0
+
+# q^2 bin 3
+1.0   0.0   0.0
+
+# q^2 bin 4
+1.0   0.0   0.0
+
+# q^2 bin 5
+1.0   0.0   0.0
+
+# q^2 bin 6
+1.0   0.0   0.0
+
+# q^2 bin 7
+1.0   0.0   0.0
+
+# q^2 bin 8
+1.0   0.0   0.0
+
+
+############################
+# 16th block of parameters #
+############################
 # Number of dBF/dq2 -/+ err [x 10-7]
 9
 
@@ -2227,7 +2295,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 
 ############################
-# 15th block of parameters #
+# 17th block of parameters #
 ############################
 # Number of systematic errors from different sources [5 parameters x 9 q^2bins]
 45
@@ -2342,7 +2410,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 
 ############################
-# 16th block of parameters #
+# 18th block of parameters #
 ############################
 # Number of NLL for profile likelihood [5 parameters x 9 q^2bins]
 45
@@ -2457,7 +2525,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 
 ############################
-# 17th block of parameters #
+# 19th block of parameters #
 ############################
 # Efficiency parameters for good-tagged events averaged over all HLT paths
 54
@@ -2519,7 +2587,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 
 ############################
-# 18th block of parameters #
+# 20th block of parameters #
 ############################
 # Efficiency parameters for mis-tagged events averaged over all HLT paths
 54
@@ -2581,7 +2649,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 
 ############################
-# 19th block of parameters #
+# 21st block of parameters #
 ############################
 # Number of generic parameters
 10
@@ -2618,7 +2686,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 
 ############################
-# 20th block of parameters #
+# 22nd block of parameters #
 ############################
 # Integrated luminosity
 1
@@ -2628,7 +2696,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 
 ############################
-# 21st block of parameters #
+# 23rd block of parameters #
 ############################
 # Data type
 1

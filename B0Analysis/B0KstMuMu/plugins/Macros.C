@@ -60,7 +60,7 @@ using namespace RooFit;
 
 #define B0Mass       5.27953  // [GeV/c2]
 #define JPsiMass     3.096916 // [GeV/c2]
-#define PsiPrimeMass 3.68609  // [GeV/c2]
+#define PsiPrimeMass 3.686109 // [GeV/c2]
 
 // ###########################
 // # From B0 --> J/psi K* MC #

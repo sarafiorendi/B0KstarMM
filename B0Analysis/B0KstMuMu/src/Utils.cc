@@ -28,8 +28,10 @@ Utils::Utils (bool rightFlavorTag)
 
   JPsiBF       =  7.95e-5; // B0 --> J/psi(mu+mu-) K*0          (1.34+/-0.06 * 5.93+/-0.06)
   JPsiKpiBF    =  5.30e-5; // B0 --> J/psi(mu+mu-) K*0(K+pi-)   (1.34+/-0.06 * 5.93+/-0.06 * 2/3)
+
   KstMuMuBF    =  1.06e-6; // B0 --> K*0 mu+mu-
   KstKpiMuMuBF =  7.07e-7; // B0 --> K*0(K+pi-) mu+mu-          (1.06+/-0.1 * 2/3)
+
   PsiPBF       = 46.97e-7; // B0 --> psi(2S)(mu+mu-) K*0        (6.10+/-0.5 * 7.7+/-0.8)
   PsiPKpiBF    = 31.31e-7; // B0 --> psi(2S)(mu+mu-) K*0(K+pi-) (6.10+/-0.5 * 7.7+/-0.8 * 2/3)
 
@@ -68,16 +70,25 @@ Utils::Utils (bool rightFlavorTag)
 
   // Define names of the files containing the histogram of the efficiency
   DirEfficiency  = "../efficiency/";
-  Histo2DEffName = "H2Deff_MisTag_q2Bin";
-  Histo3DEffName = "H3Deff_MisTag_q2Bin";
+
+  Histo2DEffNameSig   = "H2Deff_MisTag_q2Bin";
+  Histo2DEffNameJPsi  = "H2Deff_MisTagJPsi_q2Bin";
+  Histo2DEffNamePsi2S = "H2Deff_MisTagPsi2S_q2Bin";
+
+  Histo3DEffNameSig   = "H3Deff_MisTag_q2Bin";
+  Histo3DEffNameJPsi  = "H3Deff_MisTagJPsi_q2Bin";
+  Histo3DEffNamePsi2S = "H3Deff_MisTagPsi2S_q2Bin";
 
   // ###############################################
-  // # Define codes to identify MC type:           #
-  // # 1 = B0 --> K*0(K+pi-) mu+mu-                #
+  // # ===> Define codes to identify MC type <===  #
+  // #                                             #
+  // # 1 = B0    --> K*0(K+pi-) mu+mu-             #
   // # 2 = B0bar --> K*0bar(K-pi+) mu+mu-          #
-  // # 3 = B0 --> K*0(K+pi-) J/psi(mu+mu-)         #
+  // #                                             #
+  // # 3 = B0    --> K*0(K+pi-) J/psi(mu+mu-)      #
   // # 4 = B0bar --> K*0bar(K-pi+) J/psi(mu+mu-)   #
-  // # 5 = B0 --> K*0(K-pi+) psi(2S)(mu+mu-)       #
+  // #                                             #
+  // # 5 = B0    --> K*0(K-pi+) psi(2S)(mu+mu-)    #
   // # 6 = B0bar --> K*0bar(K-pi+) psi(2S)(mu+mu-) #
   // ###############################################
   B0ToKstMuMu  = 1;
@@ -103,17 +114,21 @@ Utils::Utils (bool rightFlavorTag)
   std::cout << "DirEfficiency: "     << DirEfficiency << std::endl;
 
   std::cout << "@@@ Utils class settings : public  @@@" << std::endl;
-  std::cout << "NcoeffThetaL: "   << NcoeffThetaL << std::endl;
-  std::cout << "NcoeffThetaK: "   << NcoeffThetaK << std::endl;
-  std::cout << "NcoeffPhi: "      << NcoeffPhi << std::endl;
-  std::cout << "RIGHTflavorTAG: " << RIGHTflavorTAG << std::endl;
-  std::cout << "Histo2DEffName: " << Histo2DEffName << std::endl;
-  std::cout << "Histo3DEffName: " << Histo3DEffName << std::endl;
+  std::cout << "NcoeffThetaL: "        << NcoeffThetaL << std::endl;
+  std::cout << "NcoeffThetaK: "        << NcoeffThetaK << std::endl;
+  std::cout << "NcoeffPhi: "           << NcoeffPhi << std::endl;
+  std::cout << "RIGHTflavorTAG: "      << RIGHTflavorTAG << std::endl;
+  std::cout << "Histo2DEffNameSig: "   << Histo2DEffNameSig << std::endl;
+  std::cout << "Histo2DEffNameJPsi: "  << Histo2DEffNameJPsi << std::endl;
+  std::cout << "Histo2DEffNamePsi2S: " << Histo2DEffNamePsi2S << std::endl;
+  std::cout << "Histo3DEffNameSig: "   << Histo3DEffNameSig << std::endl;
+  std::cout << "Histo3DEffNameJPsi: "  << Histo3DEffNameJPsi << std::endl;
+  std::cout << "Histo3DEffNamePsi2S: " << Histo3DEffNamePsi2S << std::endl;
   std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
   std::cout << "@@@ Consider to double-check values for: @@@" << std::endl;
-  std::cout << "- AddConstraintThetaL" << std::endl;
-  std::cout << "- AddConstraintThetaKThetaL" << std::endl;
-  std::cout << "- AddConstraintThetaKThetaLPhi" << std::endl;
+  std::cout << "- Utils::AddConstraintThetaL" << std::endl;
+  std::cout << "- Utils::AddConstraintThetaKThetaL" << std::endl;
+  std::cout << "- Utils::AddConstraintThetaKThetaLPhi" << std::endl;
   std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 }
 
@@ -257,7 +272,7 @@ void Utils::computeCosAlpha (double Vx,
     }
 }
 
-void Utils::ReadBins (std::string fileName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, std::string signalType)
+void Utils::ReadAllBins (std::string fileName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, std::string signalType)
 // ##########################
 // # signalType = "goodtag" #
 // # signalType = "mistag"  #
@@ -270,7 +285,7 @@ void Utils::ReadBins (std::string fileName, std::vector<double>* q2Bins, std::ve
   // #################
   // # Read q^2 bins #
   // #################
-  std::cout << "\n@@@ q^2 bins from file @@@" << std::endl;
+  std::cout << "\n[Utils::ReadAllBins]\tAll bins from file : " << fileName.c_str() << std::endl;
   ParVector.clear();
   ParameterFile->ReadFromFile(ParFileBlockN("q2"),&ParVector);
   for (unsigned int i = 0; i < ParVector.size(); i++)
@@ -362,7 +377,7 @@ void Utils::ReadBins (std::string fileName, std::vector<double>* q2Bins, std::ve
     }
   else
     {
-      std::cout << "[Utils::ReadBins]\tError wrong parameter name : " << signalType << std::endl;
+      std::cout << "[Utils::ReadAllBins]\tError wrong parameter name : " << signalType << std::endl;
       exit (EXIT_FAILURE);
     }
 
@@ -372,25 +387,20 @@ void Utils::ReadBins (std::string fileName, std::vector<double>* q2Bins, std::ve
 
 void Utils::Readq2Bins (std::string fileName, std::vector<double>* q2Bins)
 {
-  std::vector<std::string> ParVector;
-  ReadParameters* ParameterFile = new ReadParameters(fileName.c_str());
+  std::vector<std::string>* ParVector;
+  ReadParVsq2Bins(fileName,"q2",&ParVector);
 
 
-  // #################
-  // # Read q^2 bins #
-  // #################
-  std::cout << "\n@@@ q^2 bins from file @@@" << std::endl;
-  ParVector.clear();
-  ParameterFile->ReadFromFile(ParFileBlockN("q2"),&ParVector);
-  for (unsigned int i = 0; i < ParVector.size(); i++)
+  std::cout << "\n[Utils::Readq2Bins]\tq^2 bins from file : " << fileName.c_str() << std::endl;
+  for (unsigned int i = 0; i < ParVector->size(); i++)
     {
-      q2Bins->push_back(atof(ParVector[i].c_str()));
+      q2Bins->push_back(atof(ParVector->operator[](i).c_str()));
       std::cout << "Bin " << i << "\t" << q2Bins->back() << std::endl;
     }
-
-
-  ParVector.clear();
-  delete ParameterFile;
+  
+  
+  ParVector->clear();
+  delete ParVector;
 }
 
 void Utils::ReadHLTpaths (std::string fileName, std::vector<std::string>* TrigTable)
@@ -402,13 +412,13 @@ void Utils::ReadHLTpaths (std::string fileName, std::vector<std::string>* TrigTa
   // ###############################
   // # Read HLT-trigger table bins #
   // ###############################
-  std::cout << "\n@@@ HLT-trigger table from file @@@" << std::endl;
+  std::cout << "\n[Utils::ReadHLTpaths]\tHLT-trigger table from file : " << fileName.c_str() << std::endl;
   ParVector.clear();
   ParameterFile->ReadFromFile(ParFileBlockN("HLTpath"),&ParVector);
   for (unsigned int i = 0; i < ParVector.size(); i++)
     {
       TrigTable->push_back(ParVector[i]);
-      std::cout << "Trigger path from config file: " << TrigTable->operator[](i).c_str() << std::endl;
+      std::cout << "Trigger path from config file : " << TrigTable->operator[](i).c_str() << std::endl;
     }
 
 
@@ -659,20 +669,23 @@ TH3D* Utils::Get3DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bi
   return Histo;
 }
 
-TH2D* Utils::Get2DEffHitoq2Bin (unsigned int q2BinIndx)
+TH2D* Utils::Get2DEffHitoq2Bin (unsigned int q2BinIndx, unsigned int SignalType)
 {
   std::stringstream myString;
   double cont;
 
   myString.clear(); myString.str("");
-  myString << DirEfficiency.c_str() << Histo2DEffName.c_str() << "_" << q2BinIndx << ".root";
-  std::cout << "[Utils::Get2DEffHitoq2Bin]\tReading 2D binned efficiency file: " << myString.str().c_str() << std::endl;
+  if      (SignalType == B0ToKstMuMu)  myString << DirEfficiency.c_str() << Histo2DEffNameSig.c_str() << "_" << q2BinIndx << ".root";
+  else if (SignalType == B0ToJPsiKst)  myString << DirEfficiency.c_str() << Histo2DEffNameJPsi.c_str() << "_" << q2BinIndx << ".root";
+  else if (SignalType == B0ToPsi2SKst) myString << DirEfficiency.c_str() << Histo2DEffNamePsi2S.c_str() << "_" << q2BinIndx << ".root";
+  std::cout << "[Utils::Get2DEffHitoq2Bin]\tReading 2D binned efficiency file : " << myString.str().c_str() << std::endl;
   TFile* _file0 = new TFile(myString.str().c_str());
 
   myString.clear(); myString.str("");
-  myString << Histo2DEffName.c_str() << "_" << q2BinIndx;
+  if      (SignalType == B0ToKstMuMu)  myString << Histo2DEffNameSig.c_str() << "_" << q2BinIndx;
+  else if (SignalType == B0ToJPsiKst)  myString << Histo2DEffNameJPsi.c_str() << "_" << q2BinIndx;
+  else if (SignalType == B0ToPsi2SKst) myString << Histo2DEffNamePsi2S.c_str() << "_" << q2BinIndx;
   std::cout << "[Utils::Get2DEffHitoq2Bin]\tReading 2D binned efficiency histogram: " << myString.str().c_str() << std::endl;
-
   TH2D* histoEff2D = (TH2D*)_file0->Get(myString.str().c_str());
   TH2D* histoEff2D_clone = (TH2D*)histoEff2D->Clone();
   
@@ -696,20 +709,23 @@ TH2D* Utils::Get2DEffHitoq2Bin (unsigned int q2BinIndx)
   return histoEff2D_clone;
 }
 
-TH3D* Utils::Get3DEffHitoq2Bin (unsigned int q2BinIndx)
+TH3D* Utils::Get3DEffHitoq2Bin (unsigned int q2BinIndx, unsigned int SignalType)
 {
   std::stringstream myString;
   double cont;
 
   myString.clear(); myString.str("");
-  myString << DirEfficiency.c_str() << Histo3DEffName.c_str() << "_" << q2BinIndx << ".root";
-  std::cout << "[Utils::Get3DEffHitoq2Bin]\tReading 3D binned efficiency file: " << myString.str().c_str() << std::endl;
+  if      (SignalType == B0ToKstMuMu)  myString << DirEfficiency.c_str() << Histo3DEffNameSig.c_str() << "_" << q2BinIndx << ".root";
+  else if (SignalType == B0ToJPsiKst)  myString << DirEfficiency.c_str() << Histo3DEffNameJPsi.c_str() << "_" << q2BinIndx << ".root";
+  else if (SignalType == B0ToPsi2SKst) myString << DirEfficiency.c_str() << Histo3DEffNamePsi2S.c_str() << "_" << q2BinIndx << ".root";
+  std::cout << "[Utils::Get3DEffHitoq2Bin]\tReading 3D binned efficiency file : " << myString.str().c_str() << std::endl;
   TFile* _file0 = new TFile(myString.str().c_str());
 
   myString.clear(); myString.str("");
-  myString << Histo3DEffName.c_str() << "_" << q2BinIndx;
+  if      (SignalType == B0ToKstMuMu)  myString << Histo3DEffNameSig.c_str() << "_" << q2BinIndx;
+  else if (SignalType == B0ToJPsiKst)  myString << Histo3DEffNameJPsi.c_str() << "_" << q2BinIndx;
+  else if (SignalType == B0ToPsi2SKst) myString << Histo3DEffNamePsi2S.c_str() << "_" << q2BinIndx;
   std::cout << "[Utils::Get3DEffHitoq2Bin]\tReading 3D binned efficiency histogram: " << myString.str().c_str() << std::endl;
-
   TH3D* histoEff3D = (TH3D*)_file0->Get(myString.str().c_str());
   TH3D* histoEff3D_clone = (TH3D*)histoEff3D->Clone();
   
@@ -1726,7 +1742,7 @@ void Utils::ReadTriggerPathsANDCutsANDEntries (std::string fileName)
       VecHLTCutVar2.push_back(atof(ParVector[i+2].c_str()));
       VecHLTentries.push_back(atof(ParVector[i+3].c_str()));
 
-      std::cout << "\nRead trigger path from config file: " << HLTpath.back() << std::endl;
+      std::cout << "\nRead trigger path from config file : " << HLTpath.back() << std::endl;
       std::cout << "Read first cut value: " << VecHLTCutVar1.back() << std::endl;
       std::cout << "Read second cut value: " << VecHLTCutVar2.back() << std::endl;
       std::cout << "Read entries in Data: " << VecHLTentries.back() << std::endl;
@@ -1819,6 +1835,22 @@ void Utils::ReadFitSystematics (std::string fileName, std::vector<std::vector<do
   delete ParameterFile;
 }
 
+void Utils::ReadParVsq2Bins (std::string fileName, std::string praName, std::vector<std::string>** vecParam)
+{
+  ReadParameters* ParameterFile = new ReadParameters(fileName.c_str());
+
+  if (*vecParam == NULL) *vecParam = new std::vector<std::string>;
+  else                  (*vecParam)->clear();
+
+  ParameterFile->ReadFromFile(ParFileBlockN(praName.c_str()),*vecParam);
+
+  std::cout << "\n[Utils::ReadParVsq2Bins]\tReading parameters vs q^2 from file : " << fileName << std::endl;
+  for (unsigned int i = 0; i < (*vecParam)->size(); i++)
+    std::cout << "Parameter value and errors for q2 bin " << i << ": " << (*vecParam)->operator[](i) << std::endl;
+  
+  delete ParameterFile;
+}
+
 void Utils::SaveAnalyticalEff (std::string fileName, TF2* effFunc, double q2Val, std::vector<double>* q2Bins)
 {
   ofstream fileOutput;
@@ -1885,7 +1917,7 @@ void Utils::SaveAnalyticalEffFullCovariance (std::string fileName, TMatrixTSym<d
 
 std::string Utils::TellMeEffFuncThetaKThetaLPhi ()
 {
-  std::string myString = "(([0]+[1]*x+[2]*x*x+[3]*x*x*x) + ([4]+[5]*x+[6]*x*x+[7]*x*x*x)*y + ([8]+[9]*x+[10]*x*x+[11]*x*x*x)*y*y + ([12]+[13]*x+[14]*x*x+[15]*x*x*x)*y*y*y + ([16]+[17]*x+[18]*x*x+[19]*x*x*x)*y*y*y*y) + ([20] + [21]*x*x + [22]*y+[23]*y*y)*z*z";
+  std::string myString = "([0]+[1]*x+[2]*x*x+[3]*x*x*x) + ([4]+[5]*x+[6]*x*x+[7]*x*x*x)*y + ([8]+[9]*x+[10]*x*x+[11]*x*x*x)*y*y + ([12]+[13]*x+[14]*x*x+[15]*x*x*x)*y*y*y + ([16]+[17]*x+[18]*x*x+[19]*x*x*x)*y*y*y*y + ([20]+[21]*x+[22]*x*x+[23]*x*x*x)*y*y*y*y*y +  ([24] + [25]*x*x + [26]*y+[27]*y*y)*z*z";
   std::cout << "[Utils::TellMeEffFuncThetaKThetaLPhi]\tEfficiency shape: " << myString << std::endl;
   return myString;
 }
@@ -1943,7 +1975,7 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
 				  cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),
 				  cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1)));
       
-      std::cout << "\n@@@ Reading coefficients for analytical efficiency for set-" << q2BinIndx << " from file " << fileNameEffParams.c_str() << " @@@" << std::endl;
+      std::cout << "\n@@@ Reading coefficients for analytical efficiency for set-" << q2BinIndx << " from file : " << fileNameEffParams.c_str() << " @@@" << std::endl;
       
       for (unsigned int k = 0; k < NcoeffThetaL; k++)
 	{
@@ -2004,7 +2036,7 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
 				  cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),
 				  phiBins->operator[](0),      phiBins->operator[](cosThetaLBins->size()-1)));
       
-      std::cout << "\n@@@ Reading coefficients for analytical efficiency for set-" << q2BinIndx << " from file " << fileNameEffParams.c_str() << " @@@" << std::endl;
+      std::cout << "\n@@@ Reading coefficients for analytical efficiency for set-" << q2BinIndx << " from file : " << fileNameEffParams.c_str() << " @@@" << std::endl;
       
       for (unsigned int k = 0; k < NcoeffThetaL; k++)
 	{
@@ -2089,7 +2121,7 @@ void Utils::ReadAnalyticalEffFullCovariance (std::string fileNameEffParams, std:
 
   for (int q2BinIndx = 0; q2BinIndx < static_cast<int>(rint(ParVector.size()/Ncoeff)); q2BinIndx++)
     {
-      std::cout << "\n@@@ Reading covariance matrix for analytical efficiency for set-" << q2BinIndx << " from file " << fileNameEffParams.c_str() << " @@@" << std::endl;
+      std::cout << "\n@@@ Reading covariance matrix for analytical efficiency for set-" << q2BinIndx << " from file : " << fileNameEffParams.c_str() << " @@@" << std::endl;
       
       covMatrices->push_back(new TMatrixTSym<double>(Ncoeff));
       
@@ -2235,7 +2267,7 @@ double Utils::EffMinValue3D (std::vector<double>* cosThetaKBins, std::vector<dou
   return minVal;
 }
 
-void Utils::MakeGraphVar (std::string parFileName, TGraphAsymmErrors** graph, std::string varName, bool allBins, double offset)
+void Utils::MakeGraphVar (std::string fileName, TGraphAsymmErrors** graph, std::string varName, bool allBins, double offset)
 // ###################
 // # varName = "Fl"  #
 // # varName = "Afb" #
@@ -2248,7 +2280,7 @@ void Utils::MakeGraphVar (std::string parFileName, TGraphAsymmErrors** graph, st
 
   std::vector<std::vector<std::string>*> vecParam;
   std::vector<std::vector<unsigned int>*> configParam;
-  std::vector<std::string> ParVector;
+  std::vector<std::string>* ParVector;
   std::vector<double> vxs;
   std::vector<double> vys;
   std::vector<double> vxel;
@@ -2261,16 +2293,15 @@ void Utils::MakeGraphVar (std::string parFileName, TGraphAsymmErrors** graph, st
   // # Read values from config file #
   // ################################
   std::vector<double> q2Bins;
-  Readq2Bins(parFileName,&q2Bins);
-  ReadFitStartingValues(parFileName,&vecParam,&configParam,ParFileBlockN("fitValBins"));
-  ReadParameters* ParameterFile = new ReadParameters(parFileName.c_str());
-  ParameterFile->ReadFromFile(ParFileBlockN("BF"),&ParVector);
+  Readq2Bins(fileName,&q2Bins);
+  ReadFitStartingValues(fileName,&vecParam,&configParam,ParFileBlockN("fitValBins"));
+  ReadParVsq2Bins(fileName,"BF",&ParVector);
 
 
   for (unsigned int i = 0; i < q2Bins.size()-1; i++)
     {
       std::stringstream rawString;
-      if      (varName == "BF")  rawString << ParVector[i];
+      if      (varName == "BF")  rawString << ParVector->operator[](i);
       else if (varName == "Fl")  rawString << vecParam[GetFitParamIndx("FlS")]->operator[](i);
       else if (varName == "Afb") rawString << vecParam[GetFitParamIndx("AfbS")]->operator[](i);
       else if (varName == "P1")  rawString << vecParam[GetFitParamIndx("P1S")]->operator[](i);
@@ -2308,7 +2339,8 @@ void Utils::MakeGraphVar (std::string parFileName, TGraphAsymmErrors** graph, st
   // # Clear vectors #
   // #################
   q2Bins.clear();
-  ParVector.clear();
+  ParVector->clear();
+  delete ParVector;
   for (unsigned int i = 0; i < vecParam.size(); i++) vecParam[i]->clear();
   vecParam.clear();
   vxs.clear();
@@ -2317,7 +2349,6 @@ void Utils::MakeGraphVar (std::string parFileName, TGraphAsymmErrors** graph, st
   vxeh.clear();
   vyel.clear();
   vyeh.clear();
-  delete ParameterFile;
 }
 
 void Utils::InitEffFuncThetaL (TF1* fitFun, unsigned int q2BinIndx)
@@ -3309,16 +3340,19 @@ unsigned int Utils::ParFileBlockN (std::string blockName)
   else if (blockName == "fitValGlob")     return 12;
   else if (blockName == "fitValBins")     return 13;
 
-  else if (blockName == "BF")             return 14;
-  else if (blockName == "fitSyst")        return 15;
-  else if (blockName == "fitNLL")         return 16;
+  else if (blockName == "I[S*E]okTag")    return 14;
+  else if (blockName == "I[S*E]misTag")   return 15;
 
-  else if (blockName == "analyEffokTag")  return 17;
-  else if (blockName == "analyEffmisTag") return 18;
+  else if (blockName == "BF")             return 16;
+  else if (blockName == "fitSyst")        return 17;
+  else if (blockName == "fitNLL")         return 18;
 
-  else if (blockName == "genericpar")     return 19;
-  else if (blockName == "lumi")           return 20;
-  else if (blockName == "dtype")          return 21;
+  else if (blockName == "analyEffokTag")  return 19;
+  else if (blockName == "analyEffmisTag") return 20;
+
+  else if (blockName == "genericpar")     return 21;
+  else if (blockName == "lumi")           return 22;
+  else if (blockName == "dtype")          return 23;
 
   std::cout << "[Utils::ParFileBlockN]\tError wrong index name : " << blockName << std::endl;
   exit (EXIT_FAILURE);
@@ -3660,13 +3694,13 @@ void Utils::ReadSelectionCuts (std::string fileName)
   // #######################
   // # Read selection cuts #
   // #######################
-  std::cout << "\n@@@ Selection cuts from file @@@" << std::endl;
+  std::cout << "\n[Utils::ReadSelectionCuts]\tSelection cuts from file : " << fileName.c_str() << std::endl;
   ParVector.clear();
   ParameterFile->ReadFromFile(ParFileBlockN("selecuts"),&ParVector);
   for (unsigned int i = 0; i < ParVector.size(); i++)
     {
       SeleCuts.push_back(atof(ParVector[i].c_str()));
-      std::cout << "Selection cut #" << i << " from config file: " << SeleCuts[i] << std::endl;
+      std::cout << "Selection cut #" << i << " from config file : " << SeleCuts[i] << std::endl;
     }
 
 
@@ -3749,13 +3783,13 @@ void Utils::ReadPreselectionCut (std::string fileName)
   // ###########################
   // # Read pre-selection cuts #
   // ###########################
-  std::cout << "\n@@@ Pre-selection cuts from file @@@" << std::endl;
+  std::cout << "\n[Utils::ReadPreselectionCut]\tPre-selection cuts from file : " << fileName.c_str() << std::endl;
   ParVector.clear();
   ParameterFile->ReadFromFile(ParFileBlockN("precuts"),&ParVector);
   for (unsigned int i = 0; i < ParVector.size(); i++)
     {
       PreCuts.push_back(atof(ParVector[i].c_str()));
-      std::cout << "Pre-selection cut #" << i << " from config file: " << PreCuts[i] << std::endl;
+      std::cout << "Pre-selection cut #" << i << " from config file : " << PreCuts[i] << std::endl;
     }
 
 
@@ -3832,13 +3866,13 @@ void Utils::ReadGenericParam (std::string fileName)
   // ###########################
   // # Read generic parameters #
   // ###########################
-  std::cout << "\n@@@ Generic parameters from file @@@" << std::endl;
+  std::cout << "\n[Utils::ReadGenericParam]\tGeneric parameters from file : " << fileName.c_str() << std::endl;
   ParVector.clear();
   ParameterFile->ReadFromFile(ParFileBlockN("genericpar"),&ParVector);
   for (unsigned int i = 0; i < ParVector.size(); i++)
     {
       GenericPars.push_back(atof(ParVector[i].c_str()));
-      std::cout << "Generic parameter #" << i << " from config file: " << GenericPars[i] << std::endl;
+      std::cout << "Generic parameter #" << i << " from config file : " << GenericPars[i] << std::endl;
     }
 
 

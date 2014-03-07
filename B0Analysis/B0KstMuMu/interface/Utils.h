@@ -134,7 +134,7 @@ class Utils
 			double* cosAlpha,
 			double* cosAlphaErr);
 
-  void ReadBins     (std::string fileName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, std::string signalType = "goodTag");
+  void ReadAllBins  (std::string fileName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, std::string signalType = "goodTag");
   void Readq2Bins   (std::string fileName, std::vector<double>* q2Bins);
   void ReadHLTpaths (std::string fileName, std::vector<std::string>* TrigTable);
 
@@ -145,8 +145,8 @@ class Utils
   void GetEffq2Bin        (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int cosThetaKIndx, unsigned int cosThetaMuIndx, unsigned int phiIndx, effStruct myEff, double* Eff, double* EffErr);
   TH2D* Get2DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff);
   TH3D* Get3DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff);
-  TH2D* Get2DEffHitoq2Bin (unsigned int q2BinIndx);
-  TH3D* Get3DEffHitoq2Bin (unsigned int q2BinIndx);
+  TH2D* Get2DEffHitoq2Bin (unsigned int q2BinIndx, unsigned int SignalType);
+  TH3D* Get3DEffHitoq2Bin (unsigned int q2BinIndx, unsigned int SignalType);
   void DeleteEfficiency   (effStruct myEff);
 
   int SearchBin  (double val2Search, std::vector<double>* bins);
@@ -183,6 +183,7 @@ class Utils
   void ReadTriggerPathsANDCutsANDEntries (std::string fileName);
   void ReadFitStartingValues (std::string fileName, std::vector<std::vector<std::string>*>* vecParam, std::vector<std::vector<unsigned int>*>* configParam, const unsigned int dataBlockN);
   void ReadFitSystematics (std::string fileName, std::vector<std::vector<double>*>* vecParam);
+  void ReadParVsq2Bins (std::string fileName, std::string praName, std::vector<std::string>** vecParam);
 
   void SaveAnalyticalEff (std::string fileName, TF2* effFunc, double q2Val, std::vector<double>* q2Bins);
   void SaveAnalyticalEff (std::string fileName, TF3* effFunc, double q2Val, std::vector<double>* q2Bins);
@@ -206,7 +207,7 @@ class Utils
   double EffMinValue2D (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, TF2* effFunc);
   double EffMinValue3D (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, TF3* effFunc);
 
-  void MakeGraphVar (std::string parFileName, TGraphAsymmErrors** graph, std::string varName, bool allBins, double offset = 0.0);
+  void MakeGraphVar (std::string fileName, TGraphAsymmErrors** graph, std::string varName, bool allBins, double offset = 0.0);
 
   void InitEffFuncThetaL (TF1* fitFun, unsigned int q2BinIndx);
   void InitEffFuncThetaK (TF1* fitFun, unsigned int q2BinIndx);
@@ -279,8 +280,13 @@ class Utils
 
   bool RIGHTflavorTAG;
 
-  std::string Histo2DEffName;
-  std::string Histo3DEffName;
+  std::string Histo2DEffNameSig;
+  std::string Histo2DEffNameJPsi;
+  std::string Histo2DEffNamePsi2S;
+
+  std::string Histo3DEffNameSig;
+  std::string Histo3DEffNameJPsi;
+  std::string Histo3DEffNamePsi2S;
 
 
  private:

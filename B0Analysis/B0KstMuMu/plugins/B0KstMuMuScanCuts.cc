@@ -437,7 +437,7 @@ int main (int argc, char** argv)
 
 
       Utility = new Utils();
-      Utility->ReadBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
+      Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
       Utility->ReadTriggerPathsANDCutsANDEntries(ParameterFILE);
       Utility->ReadSelectionCuts(ParameterFILE);
       Utility->ReadGenericParam(ParameterFILE);
