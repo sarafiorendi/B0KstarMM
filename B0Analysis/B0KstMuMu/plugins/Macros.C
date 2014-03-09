@@ -81,7 +81,6 @@ using namespace RooFit;
 // # Function Definition #
 // #######################
 TH1D* ComputeCumulative     (TH1D* hIN, string hCumulName);
-void PlotHistoEff           (string fileName, string histoName, unsigned int smothDegree, string effDimension, double minimalEfficiency, bool RIGHTflavorTAG);
 void TruthMatching          (string fileName, bool truthMatch);
 void dBFfromGEN             (string fileName);
 void CompareCosMassGENRECO  (string fileNameRECO, string fileNameGEN);
@@ -130,136 +129,10 @@ TH1D* ComputeCumulative(TH1D* hIN, string hCumulName)
 }
 
 
-// #########################################################################
-// # Sub-program to plot the binned efficicency as "seen" in the final pdf #
-// #########################################################################
-void PlotHistoEff (string fileName, string histoName, unsigned int smothDegree, string effDimension, double minimalEfficiency, bool RIGHTflavorTAG)
-// #######################
-// # effDimension = "2D" #
-// # effDimension = "3D" #
-// #######################
-{
-  double cont;
-
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetPalette(1);
-  gStyle->SetOptFit(1112);
-  gStyle->SetOptStat(1110);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
-
-  TFile* _file0 = new TFile(fileName.c_str());
-  TCanvas* c0 = new TCanvas("c0","c0",1200,600);
-  c0->Divide(4,0);
-  c0->cd(1);
-
-  TH2D* histoEff2D;
-  TH2D* histoEff2D_clone;
-  TH3D* histoEff3D;
-  TH3D* histoEff3D_clone;
-  if (effDimension == "2D")
-    {
-      histoEff2D = (TH2D*)_file0->Get(histoName.c_str());
-      histoEff2D_clone = (TH2D*)histoEff2D->Clone();
-
-      for (int i = 1; i <= histoEff2D->GetNbinsX(); i++)
-	for (int j = 1; j <= histoEff2D->GetNbinsY(); j++)
-	  {
-	    if (RIGHTflavorTAG == true)
-	      {
-		cont = histoEff2D->GetBinContent(i,j) * histoEff2D->GetXaxis()->GetBinWidth(i) * histoEff2D->GetYaxis()->GetBinWidth(j);
-		if (cont == 0.0) cont = minimalEfficiency;
-		histoEff2D_clone->SetBinContent(i,j,cont);
-	      }
-	    else
-	      {
-		cont = histoEff2D->GetBinContent(i,j) * histoEff2D->GetXaxis()->GetBinWidth(histoEff2D->GetNbinsX()-i+1) * histoEff2D->GetYaxis()->GetBinWidth(histoEff2D->GetNbinsY()-j+1);
-		if (cont == 0.0) cont = minimalEfficiency;
-		histoEff2D_clone->SetBinContent(histoEff2D->GetNbinsX()-i+1,histoEff2D->GetNbinsY()-j+1,cont);
-	      }
-	  }
-
-      histoEff2D_clone->Draw("lego fb");
-    }
-  else if (effDimension == "3D")
-    {
-      histoEff3D = (TH3D*)_file0->Get(histoName.c_str());
-      histoEff3D_clone = (TH3D*)histoEff3D->Clone();
-      
-      for (int i = 1; i <= histoEff3D->GetNbinsX(); i++)
-	for (int j = 1; j <= histoEff3D->GetNbinsY(); j++)
-	  for (int k = 1; k <= histoEff3D->GetNbinsZ(); k++)
-	    {
-	      if (RIGHTflavorTAG == true)
-		{
-		  cont = histoEff3D->GetBinContent(i,j,k) * histoEff3D->GetXaxis()->GetBinWidth(i) * histoEff3D->GetYaxis()->GetBinWidth(j) * histoEff3D->GetZaxis()->GetBinWidth(k);
-		  if (cont == 0.0) cont = minimalEfficiency;
-		  histoEff3D_clone->SetBinContent(i,j,k,cont);
-		}
-	      else
-		{
-		  cont = histoEff3D->GetBinContent(i,j,k) * histoEff3D->GetXaxis()->GetBinWidth(histoEff3D->GetNbinsX()-i+1) * histoEff3D->GetYaxis()->GetBinWidth(histoEff3D->GetNbinsY()-j+1) * histoEff3D->GetZaxis()->GetBinWidth(histoEff3D->GetNbinsZ()-k+1);
-		  if (cont == 0.0) cont = minimalEfficiency;
-		  histoEff3D_clone->SetBinContent(histoEff3D->GetNbinsX()-i+1,histoEff3D->GetNbinsY()-j+1,histoEff3D->GetNbinsZ()-k+1,cont);
-		}
-	    }
-
-      histoEff3D_clone->Draw();
-    }
-  else exit (EXIT_FAILURE);
-
-
-  RooRealVar thetaK("thetaK","cos(#theta#lower[-0.4]{_{#font[122]{K}}})",-1.0,1.0,"");
-  RooRealVar thetaL("thetaL","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",-1.0,1.0,"");
-  RooRealVar phi("phi","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",-TMath::Pi(),TMath::Pi(),"rad");
-
-  RooPlot* xframe= thetaK.frame(Name("thetaK"));
-  RooPlot* yframe= thetaL.frame(Name("thetaL"));
-  RooPlot* zframe= phi.frame(Name("phi"));
-
-  RooDataHist* _histoEff;
-  RooHistPdf* histoEffPDF;
-  if (effDimension == "2D")
-    {
-      _histoEff   = new RooDataHist("_histoEff","_histoEff",RooArgSet(thetaK,thetaL),histoEff2D_clone);
-      histoEffPDF = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(thetaK,thetaL),*_histoEff,smothDegree);
-    }
-  else
-    {
-      _histoEff   = new RooDataHist("_histoEff","_histoEff",RooArgSet(thetaK,thetaL,phi),histoEff3D_clone);
-      histoEffPDF = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(thetaK,thetaL,phi),*_histoEff,smothDegree);
-    }
-
-
-  c0->cd(2);
-  histoEffPDF->plotOn(xframe);
-  xframe->Draw();
-
-  c0->cd(3);
-  histoEffPDF->plotOn(yframe);
-  yframe->Draw();
-
-  if (effDimension == "3D")
-    {
-      c0->cd(4);
-      histoEffPDF->plotOn(zframe);
-      zframe->Draw();
-    }
-
-  c0->Update();
-}
-
-
 // ###################################################################
 // # Sub-program script to check the goodness of truthMatching on MC #
 // ###################################################################
 void TruthMatching (string fileName, bool truthMatch)
-// #########################################
-// # Use file with single candidate events #
-// #########################################
 {
   // ##########################
   // # Set histo layout style #

@@ -145,8 +145,10 @@ class Utils
   void GetEffq2Bin        (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int cosThetaKIndx, unsigned int cosThetaMuIndx, unsigned int phiIndx, effStruct myEff, double* Eff, double* EffErr);
   TH2D* Get2DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff);
   TH3D* Get3DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff);
-  TH2D* Get2DEffHitoq2Bin (unsigned int q2BinIndx, unsigned int SignalType);
-  TH3D* Get3DEffHitoq2Bin (unsigned int q2BinIndx, unsigned int SignalType);
+  TH2D* Get2DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, unsigned int q2Indx, unsigned int SignalType);
+  TH3D* Get3DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int SignalType);
+  void Put2DEffHitoq2Bin  (std::string fileName, TH2D* histo);
+  void Put3DEffHitoq2Bin  (std::string fileName, TH3D* histo);
   void DeleteEfficiency   (effStruct myEff);
 
   int SearchBin  (double val2Search, std::vector<double>* bins);
@@ -178,7 +180,7 @@ class Utils
   double ReadLumi                   (std::string fileName);
 
   void ReadNLLval  (std::string fileName, std::vector<std::vector<double>*>* vecParam);
-  double GetNLLval (std::vector<std::vector<double>*>* NLLvals, std::string varName, unsigned int q2BinIndx);
+  double GetNLLval (std::vector<std::vector<double>*>* NLLvals, std::string varName, unsigned int q2Indx);
 
   void ReadTriggerPathsANDCutsANDEntries (std::string fileName);
   void ReadFitStartingValues (std::string fileName, std::vector<std::vector<std::string>*>* vecParam, std::vector<std::vector<unsigned int>*>* configParam, const unsigned int dataBlockN);
@@ -209,16 +211,16 @@ class Utils
 
   void MakeGraphVar (std::string fileName, TGraphAsymmErrors** graph, std::string varName, bool allBins, double offset = 0.0);
 
-  void InitEffFuncThetaL (TF1* fitFun, unsigned int q2BinIndx);
-  void InitEffFuncThetaK (TF1* fitFun, unsigned int q2BinIndx);
-  void InitEffFuncPhi    (TF1* fitFun, unsigned int q2BinIndx);
+  void InitEffFuncThetaL (TF1* fitFun, unsigned int q2Indx);
+  void InitEffFuncThetaK (TF1* fitFun, unsigned int q2Indx);
+  void InitEffFuncPhi    (TF1* fitFun, unsigned int q2Indx);
 
   void AddConstraint1D              (TH1D** histo, std::string constrType, double abscissaErr, double YerrRescale, double Yval, double Yerr, unsigned int ID);
-  void AddConstraintThetaL          (TH1D** histo, unsigned int q2BinIndx, unsigned int cosThetaKBinIndx, unsigned int SignalType, unsigned int ID);
+  void AddConstraintThetaL          (TH1D** histo, unsigned int q2Indx, unsigned int cosThetaKBinIndx, unsigned int SignalType, unsigned int ID);
   void AddConstraint2D              (TH2D** histo, double abscissaErr, double ZerrRescale, unsigned int ID, std::string toBeConstr, double scaleConstr, double constrXerr, std::vector< std::pair <double,double> >* constraints = NULL, std::vector<std::string>* toBeAdded = NULL);
-  void AddConstraintThetaKThetaL    (TH2D** histo, std::vector<double>* cosThetaKBins, unsigned int q2BinIndx, unsigned int SignalType, unsigned int ID);
+  void AddConstraintThetaKThetaL    (TH2D** histo, std::vector<double>* cosThetaKBins, unsigned int q2Indx, unsigned int SignalType, unsigned int ID);
   void AddConstraint3D              (TH3D** histo, double abscissaErr, double Tval, double Terr, double TerrRescale, unsigned int ID, std::vector<int> toBeAdded[]);
-  void AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2BinIndx, unsigned int SignalType, unsigned int ID);
+  void AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2Indx, unsigned int SignalType, unsigned int ID);
 
   bool IsThisData (std::string fileName);
 
@@ -250,6 +252,9 @@ class Utils
 
   void ResetEffValue (effValue* myEffVal, double value);
 
+  std::string GetHisto2DEffName (unsigned int SignalType);
+  std::string GetHisto3DEffName (unsigned int SignalType);
+
 
   double muonMass;
   double pionMass;
@@ -280,14 +285,6 @@ class Utils
 
   bool RIGHTflavorTAG;
 
-  std::string Histo2DEffNameSig;
-  std::string Histo2DEffNameJPsi;
-  std::string Histo2DEffNamePsi2S;
-
-  std::string Histo3DEffNameSig;
-  std::string Histo3DEffNameJPsi;
-  std::string Histo3DEffNamePsi2S;
-
 
  private:
 
@@ -317,6 +314,22 @@ class Utils
   double minimalEfficiency;
 
   std::string DirEfficiency;
+
+  std::string Histo2DEffNameOkTagSig;
+  std::string Histo2DEffNameOkTagJPsi;
+  std::string Histo2DEffNameOkTagPsi2S;
+
+  std::string Histo3DEffNameOkTagSig;
+  std::string Histo3DEffNameOkTagJPsi;
+  std::string Histo3DEffNameOkTagPsi2S;
+
+  std::string Histo2DEffNameMisTagSig;
+  std::string Histo2DEffNameMisTagJPsi;
+  std::string Histo2DEffNameMisTagPsi2S;
+
+  std::string Histo3DEffNameMisTagSig;
+  std::string Histo3DEffNameMisTagJPsi;
+  std::string Histo3DEffNameMisTagPsi2S;
 
 };
 

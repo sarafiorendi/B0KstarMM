@@ -71,13 +71,21 @@ Utils::Utils (bool rightFlavorTag)
   // Define names of the files containing the histogram of the efficiency
   DirEfficiency  = "../efficiency/";
 
-  Histo2DEffNameSig   = "H2Deff_MisTag_q2Bin";
-  Histo2DEffNameJPsi  = "H2Deff_MisTagJPsi_q2Bin";
-  Histo2DEffNamePsi2S = "H2Deff_MisTagPsi2S_q2Bin";
+  Histo2DEffNameOkTagSig   = "H2Deff_OkTag_q2Bin";
+  Histo2DEffNameOkTagJPsi  = "H2Deff_OkTagJPsi_q2Bin";
+  Histo2DEffNameOkTagPsi2S = "H2Deff_OkTagPsi2S_q2Bin";
 
-  Histo3DEffNameSig   = "H3Deff_MisTag_q2Bin";
-  Histo3DEffNameJPsi  = "H3Deff_MisTagJPsi_q2Bin";
-  Histo3DEffNamePsi2S = "H3Deff_MisTagPsi2S_q2Bin";
+  Histo3DEffNameOkTagSig   = "H3Deff_OkTag_q2Bin";
+  Histo3DEffNameOkTagJPsi  = "H3Deff_OkTagJPsi_q2Bin";
+  Histo3DEffNameOkTagPsi2S = "H3Deff_OkTagPsi2S_q2Bin";
+
+  Histo2DEffNameMisTagSig   = "H2Deff_MisTag_q2Bin";
+  Histo2DEffNameMisTagJPsi  = "H2Deff_MisTagJPsi_q2Bin";
+  Histo2DEffNameMisTagPsi2S = "H2Deff_MisTagPsi2S_q2Bin";
+
+  Histo3DEffNameMisTagSig   = "H3Deff_MisTag_q2Bin";
+  Histo3DEffNameMisTagJPsi  = "H3Deff_MisTagJPsi_q2Bin";
+  Histo3DEffNameMisTagPsi2S = "H3Deff_MisTagPsi2S_q2Bin";
 
   // ###############################################
   // # ===> Define codes to identify MC type <===  #
@@ -113,17 +121,27 @@ Utils::Utils (bool rightFlavorTag)
   std::cout << "minimalEfficiency: " << minimalEfficiency << std::endl;
   std::cout << "DirEfficiency: "     << DirEfficiency << std::endl;
 
+  std::cout << "Histo2DEffNameOkTagSig: "    << Histo2DEffNameOkTagSig << std::endl;
+  std::cout << "Histo2DEffNameOkTagJPsi: "   << Histo2DEffNameOkTagJPsi << std::endl;
+  std::cout << "Histo2DEffNameOkTagPsi2S: "  << Histo2DEffNameOkTagPsi2S << std::endl;
+
+  std::cout << "Histo3DEffNameOkTagSig: "    << Histo3DEffNameOkTagSig << std::endl;
+  std::cout << "Histo3DEffNameOkTagJPsi: "   << Histo3DEffNameOkTagJPsi << std::endl;
+  std::cout << "Histo3DEffNameOkTagPsi2S: "  << Histo3DEffNameOkTagPsi2S << std::endl;
+
+  std::cout << "Histo2DEffNameMisTagSig: "   << Histo2DEffNameMisTagSig << std::endl;
+  std::cout << "Histo2DEffNameMisTagJPsi: "  << Histo2DEffNameMisTagJPsi << std::endl;
+  std::cout << "Histo2DEffNameMisTagPsi2S: " << Histo2DEffNameMisTagPsi2S << std::endl;
+
+  std::cout << "Histo3DEffNameMisTagSig: "   << Histo3DEffNameMisTagSig << std::endl;
+  std::cout << "Histo3DEffNameMisTagJPsi: "  << Histo3DEffNameMisTagJPsi << std::endl;
+  std::cout << "Histo3DEffNameMisTagPsi2S: " << Histo3DEffNameMisTagPsi2S << std::endl;
+
   std::cout << "@@@ Utils class settings : public  @@@" << std::endl;
-  std::cout << "NcoeffThetaL: "        << NcoeffThetaL << std::endl;
-  std::cout << "NcoeffThetaK: "        << NcoeffThetaK << std::endl;
-  std::cout << "NcoeffPhi: "           << NcoeffPhi << std::endl;
-  std::cout << "RIGHTflavorTAG: "      << RIGHTflavorTAG << std::endl;
-  std::cout << "Histo2DEffNameSig: "   << Histo2DEffNameSig << std::endl;
-  std::cout << "Histo2DEffNameJPsi: "  << Histo2DEffNameJPsi << std::endl;
-  std::cout << "Histo2DEffNamePsi2S: " << Histo2DEffNamePsi2S << std::endl;
-  std::cout << "Histo3DEffNameSig: "   << Histo3DEffNameSig << std::endl;
-  std::cout << "Histo3DEffNameJPsi: "  << Histo3DEffNameJPsi << std::endl;
-  std::cout << "Histo3DEffNamePsi2S: " << Histo3DEffNamePsi2S << std::endl;
+  std::cout << "NcoeffThetaL: "   << NcoeffThetaL << std::endl;
+  std::cout << "NcoeffThetaK: "   << NcoeffThetaK << std::endl;
+  std::cout << "NcoeffPhi: "      << NcoeffPhi << std::endl;
+  std::cout << "RIGHTflavorTAG: " << RIGHTflavorTAG << std::endl;
   std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
   std::cout << "@@@ Consider to double-check values for: @@@" << std::endl;
   std::cout << "- Utils::AddConstraintThetaL" << std::endl;
@@ -669,85 +687,159 @@ TH3D* Utils::Get3DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bi
   return Histo;
 }
 
-TH2D* Utils::Get2DEffHitoq2Bin (unsigned int q2BinIndx, unsigned int SignalType)
+TH2D* Utils::Get2DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, unsigned int q2Indx, unsigned int SignalType)
 {
+  std::ifstream inputFile;
   std::stringstream myString;
-  double cont;
+  double xx, xw, yy, yw, cont, err;
+  double* cosThetaKBins_ = MakeBinning(cosThetaKBins);
+  double* cosThetaLBins_ = MakeBinning(cosThetaLBins);
+
+  TH2D* Histo = new TH2D(GetHisto2DEffName(SignalType).c_str(), GetHisto2DEffName(SignalType).c_str(), cosThetaKBins->size()-1, cosThetaKBins_, cosThetaLBins->size()-1, cosThetaLBins_);
+  Histo->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
+  Histo->GetXaxis()->SetTitleOffset(1.8);
+  Histo->SetYTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
+  Histo->GetYaxis()->SetTitleOffset(1.8);
+  Histo->SetZTitle("Efficiency");
+
 
   myString.clear(); myString.str("");
-  if      (SignalType == B0ToKstMuMu)  myString << DirEfficiency.c_str() << Histo2DEffNameSig.c_str() << "_" << q2BinIndx << ".root";
-  else if (SignalType == B0ToJPsiKst)  myString << DirEfficiency.c_str() << Histo2DEffNameJPsi.c_str() << "_" << q2BinIndx << ".root";
-  else if (SignalType == B0ToPsi2SKst) myString << DirEfficiency.c_str() << Histo2DEffNamePsi2S.c_str() << "_" << q2BinIndx << ".root";
+  myString << DirEfficiency.c_str() << GetHisto2DEffName(SignalType) << "_" << q2Indx << ".txt";
   std::cout << "[Utils::Get2DEffHitoq2Bin]\tReading 2D binned efficiency file : " << myString.str().c_str() << std::endl;
-  TFile* _file0 = new TFile(myString.str().c_str());
-
-  myString.clear(); myString.str("");
-  if      (SignalType == B0ToKstMuMu)  myString << Histo2DEffNameSig.c_str() << "_" << q2BinIndx;
-  else if (SignalType == B0ToJPsiKst)  myString << Histo2DEffNameJPsi.c_str() << "_" << q2BinIndx;
-  else if (SignalType == B0ToPsi2SKst) myString << Histo2DEffNamePsi2S.c_str() << "_" << q2BinIndx;
-  std::cout << "[Utils::Get2DEffHitoq2Bin]\tReading 2D binned efficiency histogram: " << myString.str().c_str() << std::endl;
-  TH2D* histoEff2D = (TH2D*)_file0->Get(myString.str().c_str());
-  TH2D* histoEff2D_clone = (TH2D*)histoEff2D->Clone();
+  inputFile.open(myString.str().c_str(), ifstream::in);
+  if (inputFile.good() == false)
+    {
+      std::cout << "[Utils::Get2DEffHitoq2Bin]\tError opening file : " << myString.str().c_str() << std::endl;
+      exit (EXIT_FAILURE);
+    }
   
-  for (int i = 1; i <= histoEff2D->GetNbinsX(); i++)
-    for (int j = 1; j <= histoEff2D->GetNbinsY(); j++)
+  for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
+    for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
       {
+	inputFile >> xx >> xw >> yy >> yw >> cont >> err;
+	Histo->SetBinContent(j,k,cont);
+	Histo->SetBinError(j,k,err);
+
 	if (RIGHTflavorTAG == true)
 	  {
-	    cont = histoEff2D->GetBinContent(i,j) * histoEff2D->GetXaxis()->GetBinWidth(i) * histoEff2D->GetYaxis()->GetBinWidth(j);
+	    cont = Histo->GetBinContent(j,k) * Histo->GetXaxis()->GetBinWidth(j) * Histo->GetYaxis()->GetBinWidth(k);
 	    if (cont == 0.0) cont = minimalEfficiency;
-	    histoEff2D_clone->SetBinContent(i,j,cont);
+	    Histo->SetBinContent(j,k,cont);
 	  }
 	else
 	  {
-	    cont = histoEff2D->GetBinContent(i,j) * histoEff2D->GetXaxis()->GetBinWidth(histoEff2D->GetNbinsX()-i+1) * histoEff2D->GetYaxis()->GetBinWidth(histoEff2D->GetNbinsY()-j+1);
+	    cont = Histo->GetBinContent(j,k) * Histo->GetXaxis()->GetBinWidth(Histo->GetNbinsX()-j+1) * Histo->GetYaxis()->GetBinWidth(Histo->GetNbinsY()-k+1);
 	    if (cont == 0.0) cont = minimalEfficiency;
-	    histoEff2D_clone->SetBinContent(histoEff2D->GetNbinsX()-i+1,histoEff2D->GetNbinsY()-j+1,cont);
+	    Histo->SetBinContent(Histo->GetNbinsX()-j+1,Histo->GetNbinsY()-k+1,cont);
 	  }
       }
 
-  return histoEff2D_clone;
+
+  inputFile.close();
+  return Histo;
 }
 
-TH3D* Utils::Get3DEffHitoq2Bin (unsigned int q2BinIndx, unsigned int SignalType)
+TH3D* Utils::Get3DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int SignalType)
 {
+  std::ifstream inputFile;
   std::stringstream myString;
-  double cont;
+  double xx, xw, yy, yw, zz, zw, cont, err;
+  double* cosThetaKBins_ = MakeBinning(cosThetaKBins);
+  double* cosThetaLBins_ = MakeBinning(cosThetaLBins);
+  double* phiBins_       = MakeBinning(phiBins);
+
+  TH3D* Histo = new TH3D(GetHisto3DEffName(SignalType).c_str(), GetHisto3DEffName(SignalType).c_str(), cosThetaKBins->size()-1, cosThetaKBins_, cosThetaLBins->size()-1, cosThetaLBins_, phiBins->size()-1, phiBins_);
+  Histo->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
+  Histo->GetXaxis()->SetTitleOffset(1.8);
+  Histo->SetYTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
+  Histo->GetYaxis()->SetTitleOffset(1.8);
+  Histo->SetZTitle("#phi");
+  Histo->GetZaxis()->SetTitleOffset(1.8);
+
 
   myString.clear(); myString.str("");
-  if      (SignalType == B0ToKstMuMu)  myString << DirEfficiency.c_str() << Histo3DEffNameSig.c_str() << "_" << q2BinIndx << ".root";
-  else if (SignalType == B0ToJPsiKst)  myString << DirEfficiency.c_str() << Histo3DEffNameJPsi.c_str() << "_" << q2BinIndx << ".root";
-  else if (SignalType == B0ToPsi2SKst) myString << DirEfficiency.c_str() << Histo3DEffNamePsi2S.c_str() << "_" << q2BinIndx << ".root";
+  myString << DirEfficiency.c_str() << GetHisto3DEffName(SignalType) << "_" << q2Indx << ".txt";
   std::cout << "[Utils::Get3DEffHitoq2Bin]\tReading 3D binned efficiency file : " << myString.str().c_str() << std::endl;
-  TFile* _file0 = new TFile(myString.str().c_str());
-
-  myString.clear(); myString.str("");
-  if      (SignalType == B0ToKstMuMu)  myString << Histo3DEffNameSig.c_str() << "_" << q2BinIndx;
-  else if (SignalType == B0ToJPsiKst)  myString << Histo3DEffNameJPsi.c_str() << "_" << q2BinIndx;
-  else if (SignalType == B0ToPsi2SKst) myString << Histo3DEffNamePsi2S.c_str() << "_" << q2BinIndx;
-  std::cout << "[Utils::Get3DEffHitoq2Bin]\tReading 3D binned efficiency histogram: " << myString.str().c_str() << std::endl;
-  TH3D* histoEff3D = (TH3D*)_file0->Get(myString.str().c_str());
-  TH3D* histoEff3D_clone = (TH3D*)histoEff3D->Clone();
+  inputFile.open(myString.str().c_str(), ifstream::in);
+  if (inputFile.good() == false)
+    {
+      std::cout << "[Utils::Get3DEffHitoq2Bin]\tError opening file : " << myString.str().c_str() << std::endl;
+      exit (EXIT_FAILURE);
+    }
   
-  for (int i = 1; i <= histoEff3D->GetNbinsX(); i++)
-    for (int j = 1; j <= histoEff3D->GetNbinsY(); j++)
-      for (int k = 1; k <= histoEff3D->GetNbinsZ(); k++)
+  for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
+    for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
+      for (unsigned int l = 0; l < phiBins->size()-1; l++)
 	{
+	  inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
+	  Histo->SetBinContent(j,k,l,cont);
+	  Histo->SetBinError(j,k,l,err);
+
 	  if (RIGHTflavorTAG == true)
 	    {
-	      cont = histoEff3D->GetBinContent(i,j,k) * histoEff3D->GetXaxis()->GetBinWidth(i) * histoEff3D->GetYaxis()->GetBinWidth(j) * histoEff3D->GetZaxis()->GetBinWidth(k);
+	      cont = Histo->GetBinContent(j,k,l) * Histo->GetXaxis()->GetBinWidth(j) * Histo->GetYaxis()->GetBinWidth(k) * Histo->GetZaxis()->GetBinWidth(l);
 	      if (cont == 0.0) cont = minimalEfficiency;
-	      histoEff3D_clone->SetBinContent(i,j,k,cont);
+	      Histo->SetBinContent(j,k,l,cont);
 	    }
 	  else
 	    {
-	      cont = histoEff3D->GetBinContent(i,j,k) * histoEff3D->GetXaxis()->GetBinWidth(histoEff3D->GetNbinsX()-i+1) * histoEff3D->GetYaxis()->GetBinWidth(histoEff3D->GetNbinsY()-j+1) * histoEff3D->GetZaxis()->GetBinWidth(histoEff3D->GetNbinsZ()-k+1);
+	      cont = Histo->GetBinContent(j,k,l) * Histo->GetXaxis()->GetBinWidth(Histo->GetNbinsX()-j+1) * Histo->GetYaxis()->GetBinWidth(Histo->GetNbinsY()-k+1) * Histo->GetZaxis()->GetBinWidth(Histo->GetNbinsZ()-l+1);
 	      if (cont == 0.0) cont = minimalEfficiency;
-	      histoEff3D_clone->SetBinContent(histoEff3D->GetNbinsX()-i+1,histoEff3D->GetNbinsY()-j+1,histoEff3D->GetNbinsZ()-k+1,cont);
+	      Histo->SetBinContent(Histo->GetNbinsX()-j+1,Histo->GetNbinsY()-k+1,Histo->GetNbinsZ()-l+1,cont);
 	    }
 	}
 
-  return histoEff3D_clone;
+
+  inputFile.close();
+  return Histo;
+}
+
+void Utils::Put2DEffHitoq2Bin (std::string fileName, TH2D* histo)
+{
+  std::ofstream outputFile;
+  TAxis* XAxis = histo->GetXaxis();
+  TAxis* YAxis = histo->GetYaxis();
+
+
+  outputFile.open(fileName.c_str(), std::ofstream::out);
+  if (outputFile.good() == false)
+    {
+      std::cout << "[Utils::Put2DEffHitoq2Bin]\tError opening file : " << fileName.c_str() << std::endl;
+      exit (EXIT_FAILURE);
+    }
+  
+  
+  for (int i = 1; i <= histo->GetNbinsX(); i++)
+    for (int j = 1; j <= histo->GetNbinsY(); j++)
+      outputFile << XAxis->GetBinLowEdge(i) << "   " << XAxis->GetBinWidth(i) << "   " << YAxis->GetBinLowEdge(j) << "   " << YAxis->GetBinWidth(j) << "   " << histo->GetBinContent(i,j) << "   " << histo->GetBinError(i,j) << std::endl;
+  
+  
+  outputFile.close();
+}
+
+void Utils::Put3DEffHitoq2Bin (std::string fileName, TH3D* histo)
+{
+  std::ofstream outputFile;
+  TAxis* XAxis = histo->GetXaxis();
+  TAxis* YAxis = histo->GetYaxis();
+  TAxis* ZAxis = histo->GetZaxis();
+
+
+  outputFile.open(fileName.c_str(), std::ofstream::out);
+  if (outputFile.good() == false)
+    {
+      std::cout << "[Utils::Put3DEffHitoq2Bin]\tError opening file : " << fileName.c_str() << std::endl;
+      exit (EXIT_FAILURE);
+    }
+  
+  
+  for (int i = 1; i <= histo->GetNbinsX(); i++)
+    for (int j = 1; j <= histo->GetNbinsY(); j++)
+      for (int k = 1; k <= histo->GetNbinsZ(); k++)
+	outputFile << XAxis->GetBinLowEdge(i) << "   " << XAxis->GetBinWidth(i) << "   " << YAxis->GetBinLowEdge(j) << "   " << YAxis->GetBinWidth(j) << "   " << ZAxis->GetBinLowEdge(k) << "   " << ZAxis->GetBinWidth(k) << "   " << histo->GetBinContent(i,j,k) << "   " << histo->GetBinError(i,j,k) << std::endl;
+  
+
+  outputFile.close();
 }
 
 void Utils::DeleteEfficiency (effStruct myEff)
@@ -810,23 +902,23 @@ bool Utils::ValIsBetweenJPsiAndPsiP (std::vector<double>* q2Bins, double q2Val)
 
 bool Utils::IsGoodq2CosThetaKCosThetaLBin (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, double mumuMass2, double cosThetaK, double cosThetaMu, bool PrintMsg)
 {
-  int mumuq2BinIndx;
+  int mumuq2Indx;
   int cosThetaKBinIndx;
   int cosThetaLBinIndx;
 
-  mumuq2BinIndx    = SearchBin(mumuMass2,q2Bins);
+  mumuq2Indx       = SearchBin(mumuMass2,q2Bins);
   cosThetaKBinIndx = SearchBin(cosThetaK,cosThetaKBins);
   cosThetaLBinIndx = SearchBin(cosThetaMu,cosThetaLBins);
 
   if (PrintMsg == true)
     {
       std::cout << "Bin assignement: ";
-      std::cout << "\tq2 = " << mumuMass2 << " --> bin: " << mumuq2BinIndx;
+      std::cout << "\tq2 = " << mumuMass2 << " --> bin: " << mumuq2Indx;
       std::cout << "\tcos(theta_K) = " << cosThetaK << " --> bin: " << cosThetaKBinIndx;
       std::cout << "\tcos(theta_l) = " << cosThetaMu << " --> bin: " << cosThetaLBinIndx << std::endl;
     }
 
-  if ((mumuq2BinIndx != -1) && (cosThetaKBinIndx != -1) && (cosThetaLBinIndx != -1)) return true;
+  if ((mumuq2Indx != -1) && (cosThetaKBinIndx != -1) && (cosThetaLBinIndx != -1)) return true;
   return false;
 }
 
@@ -1453,7 +1545,7 @@ void Utils::IntegrateEffCosThetaKCosThetaL (std::vector<double>* q2Bins, std::ve
 
 bool Utils::IntegrateEffPhi (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, double mumuMass2, double cosThetaK, double cosThetaMu, effStruct myEff, double* Eff, double* EffErr, bool PrintMsg)
 {
-  int mumuq2BinIndx;
+  int mumuq2Indx;
   int cosThetaKBinIndx;
   int cosThetaLBinIndx;
   
@@ -1465,7 +1557,7 @@ bool Utils::IntegrateEffPhi (std::vector<double>* q2Bins, std::vector<double>* c
 
   if (IsGoodq2CosThetaKCosThetaLBin(q2Bins,cosThetaKBins,cosThetaLBins,mumuMass2,cosThetaK,cosThetaMu,PrintMsg) == true)
     {
-      mumuq2BinIndx    = SearchBin(mumuMass2,q2Bins);
+      mumuq2Indx       = SearchBin(mumuMass2,q2Bins);
       cosThetaKBinIndx = SearchBin(cosThetaK,cosThetaKBins);
       cosThetaLBinIndx = SearchBin(cosThetaMu,cosThetaLBins);
 
@@ -1474,76 +1566,76 @@ bool Utils::IntegrateEffPhi (std::vector<double>* q2Bins, std::vector<double>* c
 	  myEffVal.Num1 = myEffVal.Num1 + myEff.Num1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 						     cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 						     cosThetaKBinIndx*(q2Bins->size()-1) +
-						     mumuq2BinIndx];
+						     mumuq2Indx];
 	  myEffVal.Num2 = myEffVal.Num2 + myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 						     cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 						     cosThetaKBinIndx*(q2Bins->size()-1) +
-						     mumuq2BinIndx];
+						     mumuq2Indx];
 	  myEffVal.Den1 = myEffVal.Den1 + myEff.Den1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 						     cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 						     cosThetaKBinIndx*(q2Bins->size()-1) +
-						     mumuq2BinIndx];
+						     mumuq2Indx];
 	  myEffVal.Den2 = myEffVal.Den2 + myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 						     cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 						     cosThetaKBinIndx*(q2Bins->size()-1) +
-						     mumuq2BinIndx];
+						     mumuq2Indx];
 
 	  if (myEff.Err2PoisNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 				 cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 				 cosThetaKBinIndx*(q2Bins->size()-1) +
-				 mumuq2BinIndx] > 0.0)
+				 mumuq2Indx] > 0.0)
 	    myEffValOrg.Num1 = myEffValOrg.Num1 + pow(myEff.Num1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 								 cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 								 cosThetaKBinIndx*(q2Bins->size()-1) +
-								 mumuq2BinIndx],2.0) /
+								 mumuq2Indx],2.0) /
 	      myEff.Err2PoisNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 				 cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 				 cosThetaKBinIndx*(q2Bins->size()-1) +
-				 mumuq2BinIndx];
+				 mumuq2Indx];
 	    
 	  if (myEff.Err2PoisNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 				 cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 				 cosThetaKBinIndx*(q2Bins->size()-1) +
-				 mumuq2BinIndx] > 0.0)
+				 mumuq2Indx] > 0.0)
 	    myEffValOrg.Num2 = myEffValOrg.Num2 + pow(myEff.Num2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 								 cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 								 cosThetaKBinIndx*(q2Bins->size()-1) +
-								 mumuq2BinIndx],2.0) /
+								 mumuq2Indx],2.0) /
 	      myEff.Err2PoisNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 				 cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 				 cosThetaKBinIndx*(q2Bins->size()-1) +
-				 mumuq2BinIndx];
+				 mumuq2Indx];
 
 	  if (myEff.Err2PoisDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 				 cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 				 cosThetaKBinIndx*(q2Bins->size()-1) +
-				 mumuq2BinIndx] > 0.0)
+				 mumuq2Indx] > 0.0)
 	    myEffValOrg.Den1 = myEffValOrg.Den1 + pow(myEff.Den1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 								 cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 								 cosThetaKBinIndx*(q2Bins->size()-1) +
-								 mumuq2BinIndx],2.0) /
+								 mumuq2Indx],2.0) /
 	      myEff.Err2PoisDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 				 cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 				 cosThetaKBinIndx*(q2Bins->size()-1) +
-				 mumuq2BinIndx];
+				 mumuq2Indx];
 	    
 	  if (myEff.Err2PoisDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 				 cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 				 cosThetaKBinIndx*(q2Bins->size()-1) +
-				 mumuq2BinIndx] > 0.0)
+				 mumuq2Indx] > 0.0)
 	    myEffValOrg.Den2 = myEffValOrg.Den2 + pow(myEff.Den2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 								 cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 								 cosThetaKBinIndx*(q2Bins->size()-1) +
-								 mumuq2BinIndx],2.0) /
+								 mumuq2Indx],2.0) /
 	      myEff.Err2PoisDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 				 cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) +
 				 cosThetaKBinIndx*(q2Bins->size()-1) +
-				 mumuq2BinIndx];
+				 mumuq2Indx];
 
-	  myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 + myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + mumuq2BinIndx];
-	  myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 + myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + mumuq2BinIndx];
-	  myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 + myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + mumuq2BinIndx];
-	  myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + mumuq2BinIndx];
+	  myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 + myEff.Err2WeigNum1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + mumuq2Indx];
+	  myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 + myEff.Err2WeigNum2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + mumuq2Indx];
+	  myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 + myEff.Err2WeigDen1[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + mumuq2Indx];
+	  myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + mumuq2Indx];
 	}
       
       if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
@@ -1704,7 +1796,7 @@ void Utils::ReadNLLval (std::string fileName, std::vector<std::vector<double>*>*
   delete ParameterFile;
 }
 
-double Utils::GetNLLval (std::vector<std::vector<double>*>* NLLvals, std::string varName, unsigned int q2BinIndx)
+double Utils::GetNLLval (std::vector<std::vector<double>*>* NLLvals, std::string varName, unsigned int q2Indx)
 // ####################
 // # varName = "Fl"   #
 // # varName = "Afb"  #
@@ -1713,11 +1805,11 @@ double Utils::GetNLLval (std::vector<std::vector<double>*>* NLLvals, std::string
 // # varName = "BF"   #
 // ####################
 {
-  if      (varName == "Fl")  return (*NLLvals)[0]->operator[](q2BinIndx);
-  else if (varName == "Afb") return (*NLLvals)[1]->operator[](q2BinIndx);
-  else if (varName == "P1")  return (*NLLvals)[2]->operator[](q2BinIndx);
-  else if (varName == "P2")  return (*NLLvals)[3]->operator[](q2BinIndx);
-  else if (varName == "BF")  return (*NLLvals)[4]->operator[](q2BinIndx);
+  if      (varName == "Fl")  return (*NLLvals)[0]->operator[](q2Indx);
+  else if (varName == "Afb") return (*NLLvals)[1]->operator[](q2Indx);
+  else if (varName == "P1")  return (*NLLvals)[2]->operator[](q2Indx);
+  else if (varName == "P2")  return (*NLLvals)[3]->operator[](q2Indx);
+  else if (varName == "BF")  return (*NLLvals)[4]->operator[](q2Indx);
   else
     {
       std::cout << "[Utils::GetNLLval]\tNLL parameter not valid : " << varName << std::endl;
@@ -1967,41 +2059,41 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
   // ######################################
   ParameterFile->ReadFromFile(dataBlockN,&ParVector);
 
-  for (unsigned int q2BinIndx = 0; q2BinIndx < q2Bins->size()-1; q2BinIndx++)
+  for (unsigned int q2Indx = 0; q2Indx < q2Bins->size()-1; q2Indx++)
     {
       myString.clear(); myString.str("");
-      myString << effID << "_" << q2BinIndx;
+      myString << effID << "_" << q2Indx;
       effFuncs->push_back(new TF2(myString.str().c_str(),TellMeEffFuncThetaKThetaL().c_str(),
 				  cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),
 				  cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1)));
       
-      std::cout << "\n@@@ Reading coefficients for analytical efficiency for set-" << q2BinIndx << " from file : " << fileNameEffParams.c_str() << " @@@" << std::endl;
+      std::cout << "\n@@@ Reading coefficients for analytical efficiency for set-" << q2Indx << " from file : " << fileNameEffParams.c_str() << " @@@" << std::endl;
       
       for (unsigned int k = 0; k < NcoeffThetaL; k++)
 	{
-	  std::stringstream rawStringK(ParVector[k+q2BinIndx*NcoeffThetaL]);
+	  std::stringstream rawStringK(ParVector[k+q2Indx*NcoeffThetaL]);
 	  rawStringK >> coeffVec[0]; // Discard q2 bin value
 	  indx = 0;
 	  for (unsigned int j = 0; j < NcoeffThetaK*2; j = j+2)
 	    {
 	      rawStringK >> coeffVec[indx];
-	      effFuncs->operator[](q2BinIndx)->SetParameter(indx+NcoeffThetaK*k,coeffVec[indx]);
+	      effFuncs->operator[](q2Indx)->SetParameter(indx+NcoeffThetaK*k,coeffVec[indx]);
 	      rawStringK >> coeffVec[indx];
-	      effFuncs->operator[](q2BinIndx)->SetParError(indx+NcoeffThetaK*k,coeffVec[indx]);
+	      effFuncs->operator[](q2Indx)->SetParError(indx+NcoeffThetaK*k,coeffVec[indx]);
 
 	      std::cout << "Theta_L coef. " << k << " --> reading coef. " << indx << " for var. theta_K: ";
-	      std::cout << effFuncs->operator[](q2BinIndx)->GetParameter(indx+NcoeffThetaK*k) << " +/- ";
-	      std::cout << effFuncs->operator[](q2BinIndx)->GetParError(indx+NcoeffThetaK*k) << std::endl;
+	      std::cout << effFuncs->operator[](q2Indx)->GetParameter(indx+NcoeffThetaK*k) << " +/- ";
+	      std::cout << effFuncs->operator[](q2Indx)->GetParError(indx+NcoeffThetaK*k) << std::endl;
 
 	      indx++;
 	    }
 	}
         
-      effFuncs->operator[](q2BinIndx)->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
-      effFuncs->operator[](q2BinIndx)->GetXaxis()->SetTitleOffset(1.8);
-      effFuncs->operator[](q2BinIndx)->GetYaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
-      effFuncs->operator[](q2BinIndx)->GetYaxis()->SetTitleOffset(1.8);
-      effFuncs->operator[](q2BinIndx)->GetZaxis()->SetTitle("Efficiency");
+      effFuncs->operator[](q2Indx)->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
+      effFuncs->operator[](q2Indx)->GetXaxis()->SetTitleOffset(1.8);
+      effFuncs->operator[](q2Indx)->GetYaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
+      effFuncs->operator[](q2Indx)->GetYaxis()->SetTitleOffset(1.8);
+      effFuncs->operator[](q2Indx)->GetZaxis()->SetTitle("Efficiency");
     }
 
 
@@ -2027,60 +2119,60 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
   // ######################################
   ParameterFile->ReadFromFile(dataBlockN,&ParVector);
 
-  for (unsigned int q2BinIndx = 0; q2BinIndx < q2Bins->size()-1; q2BinIndx++)
+  for (unsigned int q2Indx = 0; q2Indx < q2Bins->size()-1; q2Indx++)
     {
       myString.clear(); myString.str("");
-      myString << effID << "_" << q2BinIndx;
+      myString << effID << "_" << q2Indx;
       effFuncs->push_back(new TF3(myString.str().c_str(),TellMeEffFuncThetaKThetaLPhi().c_str(),
 				  cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),
 				  cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),
 				  phiBins->operator[](0),      phiBins->operator[](cosThetaLBins->size()-1)));
       
-      std::cout << "\n@@@ Reading coefficients for analytical efficiency for set-" << q2BinIndx << " from file : " << fileNameEffParams.c_str() << " @@@" << std::endl;
+      std::cout << "\n@@@ Reading coefficients for analytical efficiency for set-" << q2Indx << " from file : " << fileNameEffParams.c_str() << " @@@" << std::endl;
       
       for (unsigned int k = 0; k < NcoeffThetaL; k++)
 	{
-	  std::stringstream rawStringK(ParVector[k+q2BinIndx*(NcoeffThetaL+1)]);
+	  std::stringstream rawStringK(ParVector[k+q2Indx*(NcoeffThetaL+1)]);
 	  rawStringK >> coeffVec[0]; // Discard q2 bin value
 	  indx = 0;
 	  for (unsigned int j = 0; j < NcoeffThetaK*2; j = j+2)
 	    {
 	      rawStringK >> coeffVec[indx];
-	      effFuncs->operator[](q2BinIndx)->SetParameter(indx+NcoeffThetaK*k,coeffVec[indx]);
+	      effFuncs->operator[](q2Indx)->SetParameter(indx+NcoeffThetaK*k,coeffVec[indx]);
 	      rawStringK >> coeffVec[indx];
-	      effFuncs->operator[](q2BinIndx)->SetParError(indx+NcoeffThetaK*k,coeffVec[indx]);
+	      effFuncs->operator[](q2Indx)->SetParError(indx+NcoeffThetaK*k,coeffVec[indx]);
 
 	      std::cout << "Theta_L coef. " << k << " --> reading coef. " << indx << " for var. theta_K: ";
-	      std::cout << effFuncs->operator[](q2BinIndx)->GetParameter(indx+NcoeffThetaK*k) << " +/- ";
-	      std::cout << effFuncs->operator[](q2BinIndx)->GetParError(indx+NcoeffThetaK*k) << std::endl;
+	      std::cout << effFuncs->operator[](q2Indx)->GetParameter(indx+NcoeffThetaK*k) << " +/- ";
+	      std::cout << effFuncs->operator[](q2Indx)->GetParError(indx+NcoeffThetaK*k) << std::endl;
 
 	      indx++;
 	    }
 	}
 
-      std::stringstream rawStringK(ParVector[NcoeffThetaL+q2BinIndx*(NcoeffThetaL+1)]);
+      std::stringstream rawStringK(ParVector[NcoeffThetaL+q2Indx*(NcoeffThetaL+1)]);
       rawStringK >> coeffVec[0]; // Discard q2 bin value
       indx = 0;
       for (unsigned int l = 0; l < NcoeffPhi*2; l = l+2)
 	{
 	  rawStringK >> coeffVec[indx];
-	  effFuncs->operator[](q2BinIndx)->SetParameter(indx+NcoeffThetaK*NcoeffThetaL,coeffVec[indx]);
+	  effFuncs->operator[](q2Indx)->SetParameter(indx+NcoeffThetaK*NcoeffThetaL,coeffVec[indx]);
 	  rawStringK >> coeffVec[indx];
-	  effFuncs->operator[](q2BinIndx)->SetParError(indx+NcoeffThetaK*NcoeffThetaL,coeffVec[indx]);
+	  effFuncs->operator[](q2Indx)->SetParError(indx+NcoeffThetaK*NcoeffThetaL,coeffVec[indx]);
 	  
 	  std::cout << "Reading coef. " << indx << " for var. phi: ";
-	  std::cout << effFuncs->operator[](q2BinIndx)->GetParameter(indx+NcoeffThetaK*NcoeffThetaL) << " +/- ";
-	  std::cout << effFuncs->operator[](q2BinIndx)->GetParError(indx+NcoeffThetaK*NcoeffThetaL) << std::endl;
+	  std::cout << effFuncs->operator[](q2Indx)->GetParameter(indx+NcoeffThetaK*NcoeffThetaL) << " +/- ";
+	  std::cout << effFuncs->operator[](q2Indx)->GetParError(indx+NcoeffThetaK*NcoeffThetaL) << std::endl;
 
 	  indx++;
 	}
       
-      effFuncs->operator[](q2BinIndx)->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
-      effFuncs->operator[](q2BinIndx)->GetXaxis()->SetTitleOffset(1.8);
-      effFuncs->operator[](q2BinIndx)->GetYaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
-      effFuncs->operator[](q2BinIndx)->GetYaxis()->SetTitleOffset(1.8);
-      effFuncs->operator[](q2BinIndx)->GetZaxis()->SetTitle("#phi");
-      effFuncs->operator[](q2BinIndx)->GetZaxis()->SetTitleOffset(1.8);
+      effFuncs->operator[](q2Indx)->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
+      effFuncs->operator[](q2Indx)->GetXaxis()->SetTitleOffset(1.8);
+      effFuncs->operator[](q2Indx)->GetYaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
+      effFuncs->operator[](q2Indx)->GetYaxis()->SetTitleOffset(1.8);
+      effFuncs->operator[](q2Indx)->GetZaxis()->SetTitle("#phi");
+      effFuncs->operator[](q2Indx)->GetZaxis()->SetTitleOffset(1.8);
     }
 
 
@@ -2119,22 +2211,22 @@ void Utils::ReadAnalyticalEffFullCovariance (std::string fileNameEffParams, std:
   // ######################################
   ParameterFile->ReadFromFile(dataBlockN,&ParVector);
 
-  for (int q2BinIndx = 0; q2BinIndx < static_cast<int>(rint(ParVector.size()/Ncoeff)); q2BinIndx++)
+  for (int q2Indx = 0; q2Indx < static_cast<int>(rint(ParVector.size()/Ncoeff)); q2Indx++)
     {
-      std::cout << "\n@@@ Reading covariance matrix for analytical efficiency for set-" << q2BinIndx << " from file : " << fileNameEffParams.c_str() << " @@@" << std::endl;
+      std::cout << "\n@@@ Reading covariance matrix for analytical efficiency for set-" << q2Indx << " from file : " << fileNameEffParams.c_str() << " @@@" << std::endl;
       
       covMatrices->push_back(new TMatrixTSym<double>(Ncoeff));
       
       for (unsigned int j = 0; j < Ncoeff; j++)
 	{
-	  std::stringstream rawString(ParVector[j+q2BinIndx*Ncoeff]);
+	  std::stringstream rawString(ParVector[j+q2Indx*Ncoeff]);
 	  std::cout << "\nRow #" << j << ": " << rawString.str().c_str() << std::endl;
 	  rawString >> coeffVec[0]; // Discard q2 bin value
 
 	  for (unsigned int k = 0; k < Ncoeff; k++)
 	    {
 	      rawString >> coeffVec[k];
-	      (*covMatrices->operator[](q2BinIndx))[j][k] = coeffVec[k];
+	      (*covMatrices->operator[](q2Indx))[j][k] = coeffVec[k];
 	      std::cout << "Covariance [" << j << "][" << k << "] --> " << coeffVec[k] << std::endl;
 	    }
 	}
@@ -2351,7 +2443,7 @@ void Utils::MakeGraphVar (std::string fileName, TGraphAsymmErrors** graph, std::
   vyeh.clear();
 }
 
-void Utils::InitEffFuncThetaL (TF1* fitFun, unsigned int q2BinIndx)
+void Utils::InitEffFuncThetaL (TF1* fitFun, unsigned int q2Indx)
 {
   fitFun->ReleaseParameter(0);
   fitFun->ReleaseParameter(1);
@@ -2367,7 +2459,7 @@ void Utils::InitEffFuncThetaL (TF1* fitFun, unsigned int q2BinIndx)
   fitFun->SetParameter(5,0.0);
 }
 
-void Utils::InitEffFuncThetaK (TF1* fitFun, unsigned int q2BinIndx)
+void Utils::InitEffFuncThetaK (TF1* fitFun, unsigned int q2Indx)
 {
   fitFun->ReleaseParameter(0);
   fitFun->ReleaseParameter(1);
@@ -2380,7 +2472,7 @@ void Utils::InitEffFuncThetaK (TF1* fitFun, unsigned int q2BinIndx)
   fitFun->SetParameter(3,0.0);
 }
 
-void Utils::InitEffFuncPhi (TF1* fitFun, unsigned int q2BinIndx)
+void Utils::InitEffFuncPhi (TF1* fitFun, unsigned int q2Indx)
 {
   fitFun->ReleaseParameter(0);
   fitFun->ReleaseParameter(1);
@@ -2492,93 +2584,93 @@ void Utils::AddConstraint1D (TH1D** histo, std::string constrType, double abscis
   delete reBins;
 }
 
-void Utils::AddConstraintThetaL (TH1D** histo, unsigned int q2BinIndx, unsigned int cosThetaKBinIndx, unsigned int SignalType, unsigned int ID)
+void Utils::AddConstraintThetaL (TH1D** histo, unsigned int q2Indx, unsigned int cosThetaKBinIndx, unsigned int SignalType, unsigned int ID)
 {
   double abscissaErr = 1e-2;
 
 
   if (RIGHTflavorTAG == true)
     {
-      if ((q2BinIndx == 0) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"both",abscissaErr,1.0,2e-4,1e-5,ID);
-      if ((q2BinIndx == 0) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"both",abscissaErr,1.0,3e-4,1e-5,ID);
-      if ((q2BinIndx == 0) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"both",abscissaErr,1.0,4e-4,1e-5,ID);
-      if ((q2BinIndx == 0) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"both",abscissaErr,1.0,2e-4,1e-5,ID);
-      if ((q2BinIndx == 0) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"both",abscissaErr,1.0,1e-5,1e-5,ID);
+      if ((q2Indx == 0) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"both",abscissaErr,1.0,2e-4,1e-5,ID);
+      if ((q2Indx == 0) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"both",abscissaErr,1.0,3e-4,1e-5,ID);
+      if ((q2Indx == 0) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"both",abscissaErr,1.0,4e-4,1e-5,ID);
+      if ((q2Indx == 0) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"both",abscissaErr,1.0,2e-4,1e-5,ID);
+      if ((q2Indx == 0) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"both",abscissaErr,1.0,1e-5,1e-5,ID);
 
-      if ((q2BinIndx == 1) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"low",abscissaErr,1.0,1e-5,1e-5,ID);
-      if ((q2BinIndx == 1) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"both",abscissaErr,1.0,1e-5,1e-5,ID);
-      if ((q2BinIndx == 1) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"both",abscissaErr,1.0,1e-5,1e-5,ID);
-      if ((q2BinIndx == 1) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"both",abscissaErr,1.0,1e-5,1e-5,ID);
-      if ((q2BinIndx == 1) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"both",abscissaErr,1.0,1e-5,1e-5,ID);
+      if ((q2Indx == 1) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"low",abscissaErr,1.0,1e-5,1e-5,ID);
+      if ((q2Indx == 1) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"both",abscissaErr,1.0,1e-5,1e-5,ID);
+      if ((q2Indx == 1) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"both",abscissaErr,1.0,1e-5,1e-5,ID);
+      if ((q2Indx == 1) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"both",abscissaErr,1.0,1e-5,1e-5,ID);
+      if ((q2Indx == 1) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"both",abscissaErr,1.0,1e-5,1e-5,ID);
 
-      if ((q2BinIndx == 2) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"both",abscissaErr,1.0,1e-5,1e-5,ID);
-      if ((q2BinIndx == 2) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"both",abscissaErr,1.0,1e-5,1e-5,ID);
-      if ((q2BinIndx == 2) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"both",abscissaErr,1.0,1e-5,1e-5,ID);
-      if ((q2BinIndx == 2) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"high",abscissaErr,1.0,1e-5,1e-5,ID);
-      if ((q2BinIndx == 2) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,4e-4,1e-5,ID);
+      if ((q2Indx == 2) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"both",abscissaErr,1.0,1e-5,1e-5,ID);
+      if ((q2Indx == 2) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"both",abscissaErr,1.0,1e-5,1e-5,ID);
+      if ((q2Indx == 2) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"both",abscissaErr,1.0,1e-5,1e-5,ID);
+      if ((q2Indx == 2) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"high",abscissaErr,1.0,1e-5,1e-5,ID);
+      if ((q2Indx == 2) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,4e-4,1e-5,ID);
 
-      if ((q2BinIndx == 3) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"low",abscissaErr,1.0,4e-4,1e-5,ID);
-      if ((q2BinIndx == 3) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"high",abscissaErr,1.0,1e-4,1e-5,ID);
-      if ((q2BinIndx == 3) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"low",abscissaErr,1.0,1e-4,1e-5,ID);
-      if ((q2BinIndx == 3) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"high",abscissaErr,1.0,1e-4,1e-5,ID);
-      if ((q2BinIndx == 3) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,6e-4,1e-5,ID);
+      if ((q2Indx == 3) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"low",abscissaErr,1.0,4e-4,1e-5,ID);
+      if ((q2Indx == 3) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"high",abscissaErr,1.0,1e-4,1e-5,ID);
+      if ((q2Indx == 3) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"low",abscissaErr,1.0,1e-4,1e-5,ID);
+      if ((q2Indx == 3) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"high",abscissaErr,1.0,1e-4,1e-5,ID);
+      if ((q2Indx == 3) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,6e-4,1e-5,ID);
 
       if (SignalType == B0ToJPsiKst)
 	{
 	  // ###################
 	  // # B0 --> J/psi K* #
 	  // ###################
-	  if ((q2BinIndx == 4) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,107e-5,1e-5,ID);
+	  if ((q2Indx == 4) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,107e-5,1e-5,ID);
 	}
       else 
 	{
 	  // ###################
 	  // # B0 --> K* mu mu #
 	  // ###################
-	  if ((q2BinIndx == 4) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,85e-5,1e-5,ID);
+	  if ((q2Indx == 4) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,85e-5,1e-5,ID);
 	}
       
-      if ((q2BinIndx == 5) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"low",abscissaErr,1.0,43e-4,1e-5,ID);
-      if ((q2BinIndx == 5) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"high",abscissaErr,1.0,46e-4,1e-5,ID);
-      if ((q2BinIndx == 5) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"low",abscissaErr,1.0,36e-4,1e-5,ID);
-      if ((q2BinIndx == 5) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"high",abscissaErr,1.0,445e-5,1e-5,ID);
-      if ((q2BinIndx == 5) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"low",abscissaErr,1.0,23e-4,1e-5,ID);
-      if ((q2BinIndx == 5) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"high",abscissaErr,1.0,32e-4,1e-5,ID);
-      if ((q2BinIndx == 5) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,136e-5,1e-5,ID);
+      if ((q2Indx == 5) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"low",abscissaErr,1.0,43e-4,1e-5,ID);
+      if ((q2Indx == 5) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"high",abscissaErr,1.0,46e-4,1e-5,ID);
+      if ((q2Indx == 5) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"low",abscissaErr,1.0,36e-4,1e-5,ID);
+      if ((q2Indx == 5) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"high",abscissaErr,1.0,445e-5,1e-5,ID);
+      if ((q2Indx == 5) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"low",abscissaErr,1.0,23e-4,1e-5,ID);
+      if ((q2Indx == 5) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"high",abscissaErr,1.0,32e-4,1e-5,ID);
+      if ((q2Indx == 5) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,136e-5,1e-5,ID);
 
       if (SignalType == B0ToPsi2SKst)
 	{
 	  // #####################
 	  // # B0 --> psi(2s) K* #
 	  // #####################
-	  if ((q2BinIndx == 6) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"high",abscissaErr,1.0,56e-4,1e-5,ID);
-	  if ((q2BinIndx == 6) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"high",abscissaErr,1.0,36e-4,1e-5,ID);
-	  if ((q2BinIndx == 6) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,15e-4,1e-5,ID);
-	  if ((q2BinIndx == 6) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,8e-4,1e-5,ID);
+	  if ((q2Indx == 6) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"high",abscissaErr,1.0,56e-4,1e-5,ID);
+	  if ((q2Indx == 6) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"high",abscissaErr,1.0,36e-4,1e-5,ID);
+	  if ((q2Indx == 6) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,15e-4,1e-5,ID);
+	  if ((q2Indx == 6) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,8e-4,1e-5,ID);
 	}
       else
 	{
 	  // ###################
 	  // # B0 --> K* mu mu #
 	  // ###################
-	  if ((q2BinIndx == 6) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"high",abscissaErr,1.0,55e-4,1e-5,ID);
-	  if ((q2BinIndx == 6) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"low",abscissaErr,1.0,47e-4,1e-5,ID);
-	  if ((q2BinIndx == 6) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"high",abscissaErr,1.0,56e-4,1e-5,ID);
-	  if ((q2BinIndx == 6) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"high",abscissaErr,1.0,58e-4,1e-5,ID);
-	  if ((q2BinIndx == 6) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"low",abscissaErr,1.0,26e-4,1e-5,ID);
+	  if ((q2Indx == 6) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"high",abscissaErr,1.0,55e-4,1e-5,ID);
+	  if ((q2Indx == 6) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"low",abscissaErr,1.0,47e-4,1e-5,ID);
+	  if ((q2Indx == 6) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"high",abscissaErr,1.0,56e-4,1e-5,ID);
+	  if ((q2Indx == 6) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"high",abscissaErr,1.0,58e-4,1e-5,ID);
+	  if ((q2Indx == 6) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"low",abscissaErr,1.0,26e-4,1e-5,ID);
 	}
 
-      if ((q2BinIndx == 7) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"high",abscissaErr,1.0,56e-4,1e-5,ID);
-      if ((q2BinIndx == 7) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,16e-4,1e-5,ID);
-      if ((q2BinIndx == 7) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,18e-4,1e-5,ID);
+      if ((q2Indx == 7) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"high",abscissaErr,1.0,56e-4,1e-5,ID);
+      if ((q2Indx == 7) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,16e-4,1e-5,ID);
+      if ((q2Indx == 7) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,18e-4,1e-5,ID);
 
-      if ((q2BinIndx == 8) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"high",abscissaErr,1.0,42e-4,1e-5,ID);
-      if ((q2BinIndx == 8) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"low",abscissaErr,1.0,47e-4,1e-5,ID);
-      if ((q2BinIndx == 8) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"high",abscissaErr,1.0,45e-4,1e-5,ID);
-      if ((q2BinIndx == 8) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"low",abscissaErr,1.0,33e-4,1e-5,ID);
-      if ((q2BinIndx == 8) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"high",abscissaErr,1.0,32e-4,1e-5,ID);
-      if ((q2BinIndx == 8) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,2e-3,1e-5,ID);
-      if ((q2BinIndx == 8) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,264e-5,1e-5,ID);
+      if ((q2Indx == 8) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"high",abscissaErr,1.0,42e-4,1e-5,ID);
+      if ((q2Indx == 8) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"low",abscissaErr,1.0,47e-4,1e-5,ID);
+      if ((q2Indx == 8) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"high",abscissaErr,1.0,45e-4,1e-5,ID);
+      if ((q2Indx == 8) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"low",abscissaErr,1.0,33e-4,1e-5,ID);
+      if ((q2Indx == 8) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"high",abscissaErr,1.0,32e-4,1e-5,ID);
+      if ((q2Indx == 8) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,2e-3,1e-5,ID);
+      if ((q2Indx == 8) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,264e-5,1e-5,ID);
     }
 }
 
@@ -2831,7 +2923,7 @@ void Utils::AddConstraint2D (TH2D** histo, double abscissaErr, double ZerrRescal
   delete reBinsY;
 }
 
-void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThetaKBins, unsigned int q2BinIndx, unsigned int SignalType, unsigned int ID)
+void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThetaKBins, unsigned int q2Indx, unsigned int SignalType, unsigned int ID)
 {
   double abscissaErr = 1e-2;
   std::vector<std::string> toBeAdded;
@@ -2846,7 +2938,7 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
 
   if (RIGHTflavorTAG == true)
     {
-      if (q2BinIndx == 0)
+      if (q2Indx == 0)
 	{
 	  toBeAdded[0]   = "both";
 	  constraints[0] = std::make_pair(3e-4,1e-5);
@@ -2863,7 +2955,7 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
 	  toBeAdded[4]   = "both";
 	  constraints[4] = std::make_pair(1e-4,1e-5);
 	}
-      else if (q2BinIndx == 1)
+      else if (q2Indx == 1)
 	{
 	  toBeAdded[0]   = "low";
 	  constraints[0] = std::make_pair(1e-5,1e-5);
@@ -2880,7 +2972,7 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
 	  toBeAdded[4]   = "both";
 	  constraints[4] = std::make_pair(1e-5,1e-5);
 	}
-      else if (q2BinIndx == 2)
+      else if (q2Indx == 2)
 	{
 	  toBeAdded[0]   = "both";
 	  constraints[0] = std::make_pair(1e-5,1e-5);
@@ -2897,7 +2989,7 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
 	  toBeAdded[4]   = "low";
 	  constraints[4] = std::make_pair(4e-4,1e-5);
 	}
-      else if (q2BinIndx == 3)
+      else if (q2Indx == 3)
 	{
 	  toBeAdded[0]   = "low";
 	  constraints[0] = std::make_pair(4e-4,1e-5);
@@ -2927,7 +3019,7 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
 	  constraints[4] = std::make_pair(2e-4,1e-5);
 	}
 
-      else if ((SignalType == B0ToJPsiKst) && (q2BinIndx == 4))
+      else if ((SignalType == B0ToJPsiKst) && (q2Indx == 4))
       	{
 	  // ###################
 	  // # B0 --> J/psi K* #
@@ -2935,7 +3027,7 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
       	  toBeAdded[4]   = "high";
       	  constraints[4] = std::make_pair(107e-5,1e-5);
 	}
-      else if (q2BinIndx == 4)
+      else if (q2Indx == 4)
 	{
 	  // ###################
 	  // # B0 --> K* mu mu #
@@ -2947,7 +3039,7 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
       	  constraints[4] = std::make_pair(85e-5,1e-5);
       	}
 
-      else if (q2BinIndx == 5)
+      else if (q2Indx == 5)
 	{
 	  toBeAdded[1]   = "low";
 	  constraints[1] = std::make_pair(43e-4,1e-5);
@@ -2973,7 +3065,7 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
 	  constraints[4] = std::make_pair(136e-5,1e-5);
 	}
 
-      else if ((SignalType == B0ToPsi2SKst) && (q2BinIndx == 6))
+      else if ((SignalType == B0ToPsi2SKst) && (q2Indx == 6))
 	{
 	  // #####################
 	  // # B0 --> psi(2s) K* #
@@ -2995,7 +3087,7 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
 	  toBeAdded[4]   = "high";
 	  constraints[4] = std::make_pair(12e-4,1e-5);
 	}
-      else if (q2BinIndx == 6)
+      else if (q2Indx == 6)
 	{
 	  // ###################
 	  // # B0 --> K* mu mu #
@@ -3026,7 +3118,7 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
 	  constraints[4] = std::make_pair(13e-4,1e-5);
 	}
 
-      else if (q2BinIndx == 7)
+      else if (q2Indx == 7)
 	{
 	  toBeAdded[0]   = "high";
 	  constraints[0] = std::make_pair(56e-4,1e-5);
@@ -3041,7 +3133,7 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
 	  toBeAdded[4]   = "high";
 	  constraints[4] = std::make_pair(18e-4,1e-5);
 	}
-      else if (q2BinIndx == 8)
+      else if (q2Indx == 8)
 	{
  	  toBeAdded[0]   = "high";
 	  constraints[0] = std::make_pair(42e-4,1e-5);
@@ -3078,25 +3170,25 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
   
   if (RIGHTflavorTAG == true)
     {
-      if      (q2BinIndx == 0) AddConstraint2D(histo,abscissaErr,4.0,ID,"justErrors",0.0,0.0);
-      else if (q2BinIndx == 1) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
-      else if (q2BinIndx == 2) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
-      else if (q2BinIndx == 3) AddConstraint2D(histo,abscissaErr,3.0,ID,"justErrors",0.0,0.0);
+      if      (q2Indx == 0) AddConstraint2D(histo,abscissaErr,4.0,ID,"justErrors",0.0,0.0);
+      else if (q2Indx == 1) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
+      else if (q2Indx == 2) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
+      else if (q2Indx == 3) AddConstraint2D(histo,abscissaErr,3.0,ID,"justErrors",0.0,0.0);
 
       // ###################
       // # B0 --> J/psi K* #
       // ###################
-      else if ((SignalType == B0ToJPsiKst) && (q2BinIndx == 4)) AddConstraint2D(histo,abscissaErr,6.0,ID,"justErrors",0.0,0.0);
+      else if ((SignalType == B0ToJPsiKst) && (q2Indx == 4)) AddConstraint2D(histo,abscissaErr,6.0,ID,"justErrors",0.0,0.0);
       // ###################
       // # B0 --> K* mu mu #
       // ###################
-      else if (q2BinIndx == 4) AddConstraint2D(histo,abscissaErr,3.0,ID,"justErrors",0.0,0.0);
+      else if (q2Indx == 4) AddConstraint2D(histo,abscissaErr,3.0,ID,"justErrors",0.0,0.0);
 
-      else if (q2BinIndx == 5) AddConstraint2D(histo,abscissaErr,3.0,ID,"justErrors",0.0,0.0);
+      else if (q2Indx == 5) AddConstraint2D(histo,abscissaErr,3.0,ID,"justErrors",0.0,0.0);
 
-      else if (q2BinIndx == 6) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
+      else if (q2Indx == 6) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
 
-      else if (q2BinIndx == 7) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
+      else if (q2Indx == 7) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
     }
 }
 
@@ -3259,7 +3351,7 @@ void Utils::AddConstraint3D (TH3D** histo, double abscissaErr, double Tval, doub
   delete reBinsZ;
 }
 
-void Utils::AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2BinIndx, unsigned int SignalType, unsigned int ID)
+void Utils::AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2Indx, unsigned int SignalType, unsigned int ID)
 {
   double abscissaErr = 1e-2;
   std::vector<int> toBeAdded[3]; // Push_back bin-numbers                                                                                                                                                                                                                                                             
@@ -3948,4 +4040,56 @@ void Utils::ResetEffValue (effValue* myEffVal, double value)
   myEffVal->Err2WeigNum2 = value;
   myEffVal->Err2WeigDen1 = value;
   myEffVal->Err2WeigDen2 = value;
+}
+
+std::string Utils::GetHisto2DEffName (unsigned int SignalType)
+{
+  if (RIGHTflavorTAG == true)
+    {
+      if      (SignalType == B0ToKstMuMu)  return Histo2DEffNameOkTagSig;
+      else if (SignalType == B0ToJPsiKst)  return Histo2DEffNameOkTagJPsi;
+      else if (SignalType == B0ToPsi2SKst) return Histo2DEffNameOkTagPsi2S;
+      else
+	{
+	  std::cout << "[Utils::GetHisto2DEffName]\tSignalType not valid : " << SignalType << std::endl;
+	  exit (EXIT_FAILURE);
+	}
+    }
+  else
+    {
+      if      (SignalType == B0ToKstMuMu)  return Histo2DEffNameMisTagSig;
+      else if (SignalType == B0ToJPsiKst)  return Histo2DEffNameMisTagJPsi;
+      else if (SignalType == B0ToPsi2SKst) return Histo2DEffNameMisTagPsi2S;
+      else
+	{
+	  std::cout << "[Utils::GetHisto2DEffName]\tSignalType not valid : " << SignalType << std::endl;
+	  exit (EXIT_FAILURE);
+	}
+    }
+}
+
+std::string Utils::GetHisto3DEffName (unsigned int SignalType)
+{
+  if (RIGHTflavorTAG == true)
+    {
+      if      (SignalType == B0ToKstMuMu)  return Histo3DEffNameOkTagSig;
+      else if (SignalType == B0ToJPsiKst)  return Histo3DEffNameOkTagJPsi;
+      else if (SignalType == B0ToPsi2SKst) return Histo3DEffNameOkTagPsi2S;
+      else
+	{
+	  std::cout << "[Utils::GetHisto3DEffName]\tSignalType not valid : " << SignalType << std::endl;
+	  exit (EXIT_FAILURE);
+	}
+    }
+  else
+    {
+      if      (SignalType == B0ToKstMuMu)  return Histo3DEffNameMisTagSig;
+      else if (SignalType == B0ToJPsiKst)  return Histo3DEffNameMisTagJPsi;
+      else if (SignalType == B0ToPsi2SKst) return Histo3DEffNameMisTagPsi2S;
+      else
+	{
+	  std::cout << "[Utils::GetHisto3DEffName]\tSignalType not valid : " << SignalType << std::endl;
+	  exit (EXIT_FAILURE);
+	}
+    }
 }

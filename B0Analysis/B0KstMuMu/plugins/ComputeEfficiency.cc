@@ -78,8 +78,8 @@ using std::vector;
 #define TEST_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu.txt"
 #define TEST_THETAL_THETAK_PHI "ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
-#define RIGHTtag       true
-#define SavePlot       false
+#define RIGHTtag       false
+#define SAVEPLOT       true
 #define CHECKEFFatREAD false // Check if 2D or 3D efficiency go negative
 #define NFILES         200
 #define INPUTGenEff    "../efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
@@ -118,7 +118,7 @@ void ComputeEfficiency     (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTup
 			    vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, int SignalType);
 void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, int specBin);
 void Read3DEfficiencies    (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			    string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool savePlot, int specBin = -1);
+			    string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool savePlot, int specBin, unsigned int SignalType = 1);
 void Fit1DEfficiencies     (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			    unsigned int SignalType, Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut);
 void Fit2DEfficiencies     (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
@@ -926,7 +926,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 
 
 void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			 string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool savePlot, int specBin)
+			 string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool savePlot, int specBin, unsigned int SignalType)
 {
   // ###################
   // # Local variables #
@@ -1023,25 +1023,18 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
 	      if (savePlot == true)
 		for (unsigned int q2BinIndx = (specBin == -1 ? 0 : specBin); q2BinIndx < (specBin == -1 ? q2Bins->size()-1 : specBin+1); q2BinIndx++)
 		  {
-		    TFile* _file0;
-
 		    myString.clear(); myString.str("");
-		    myString << Utility->Histo2DEffName.c_str() << "_" << q2BinIndx;
+		    myString << Utility->GetHisto2DEffName(SignalType) << "_" << q2BinIndx;
 		    TH2D* hisFunc2D = Utility->Get2DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,*myEff);
-		    myString << ".root";
-		    _file0 = new TFile(myString.str().c_str(),"RECREATE");
-		    _file0->cd();
-		    hisFunc2D->Write();
-		    _file0->Close();
-
+		    myString << ".txt";
+		    Utility->Put2DEffHitoq2Bin(myString.str().c_str(),hisFunc2D);
+		    
+		    
 		    myString.clear(); myString.str("");
-		    myString << Utility->Histo3DEffName.c_str() << "_" << q2BinIndx;
+		    myString << Utility->GetHisto3DEffName(SignalType) << "_" << q2BinIndx;
 		    TH3D* hisFunc3D = Utility->Get3DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,*myEff);
-		    myString << ".root";
-		    _file0 = new TFile(myString.str().c_str(),"RECREATE");
-		    _file0->cd();
-		    hisFunc3D->Write();
-		    _file0->Close();
+		    myString << ".txt";
+		    Utility->Put3DEffHitoq2Bin(myString.str().c_str(),hisFunc3D);
 		  }
 	    }
 	  else Utility->ReadAnalyticalEff(fileNameInput.c_str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,&effFuncs3D,"effFuncs3D",0);
@@ -2262,7 +2255,7 @@ int main (int argc, char** argv)
       cout << "TEST_THETAL_THETAK_PHI: " << TEST_THETAL_THETAK_PHI << endl;
 
       cout << "\nRIGHTtag: "     << RIGHTtag << endl;
-      cout << "SavePlot: "       << SavePlot << endl;
+      cout << "SAVEPLOT: "       << SAVEPLOT << endl;
       cout << "CHECKEFFatREAD: " << CHECKEFFatREAD << endl;
       cout << "NFILES: "         << NFILES << endl;
       cout << "INPUTGenEff: "    << INPUTGenEff << endl;
@@ -2348,11 +2341,12 @@ int main (int argc, char** argv)
 	  if (SETBATCH == false) theApp.Run (); // Eventloop on air
 	  return EXIT_SUCCESS;
 	}
-      else if (((option == "ReadBin") || (option == "Read3DAnaly")) && (argc >= 3))
+      else if ((option == "ReadBin") && (argc >= 4))
 	{
 	  string fileNameInput = argv[2];
+	  string SignalType    = argv[3];
 	  int specBin = -1;
-	  if (argc == 4) specBin = atoi(argv[3]);
+	  if (argc == 5) specBin = atoi(argv[4]);
 
 	  TApplication theApp ("Applications", &argc, argv);
 
@@ -2360,15 +2354,14 @@ int main (int argc, char** argv)
 	  Utility = new Utils(RIGHTtag);
 	  if (Utility->RIGHTflavorTAG == true) Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
 	  else                                 Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
-	  if (option == "ReadBin") Read3DEfficiencies(true,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,false,&myEff,CHECKEFFatREAD,SavePlot,specBin);
-	  else                     Read3DEfficiencies(true,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,true,&myEff,CHECKEFFatREAD,SavePlot,specBin);
+	  Read3DEfficiencies(true,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,false,&myEff,CHECKEFFatREAD,SAVEPLOT,specBin,atoi(SignalType.c_str()));
 
 
 	  delete Utility;
 	  theApp.Run (); // Eventloop on air
 	  return EXIT_SUCCESS;
 	}
-      else if ((option == "Read3DGenAnaly") && (argc >= 3))
+      else if (((option == "Read3DAnaly") || (option == "Read3DGenAnaly")) && (argc >= 3))
 	{
 	  string fileNameInput = argv[2];
 	  int specBin = -1;
@@ -2380,7 +2373,8 @@ int main (int argc, char** argv)
 	  Utility = new Utils(RIGHTtag);
 	  if (Utility->RIGHTflavorTAG == true) Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
 	  else                                 Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
-	  Read3DEfficiencies(false,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,true,&myEff,CHECKEFFatREAD,SavePlot,specBin);
+	  if (option == "Read3DAnaly") Read3DEfficiencies(true, &q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,true,&myEff,CHECKEFFatREAD,SAVEPLOT,specBin);
+	  else                         Read3DEfficiencies(false,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,true,&myEff,CHECKEFFatREAD,SAVEPLOT,specBin);
 
 
 	  delete Utility;
@@ -2405,8 +2399,8 @@ int main (int argc, char** argv)
 	  Utility->ReadEfficiency(fileNameInput.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,&myEff);
 
 	  if      (option == "Fit1DEff") Fit1DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,atoi(SignalType.c_str()),myEff,whichVar2Fit,q2BinIndx,"Theta.txt");
-	  else if (option == "Fit2DEff") Fit2DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,atoi(SignalType.c_str()),myEff,q2BinIndx,"ThetaKThetaL.txt",SavePlot);
-	  else if (option == "Fit3DEff") Fit3DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,atoi(SignalType.c_str()),myEff,q2BinIndx,"ThetaKThetaLPhi.txt",SavePlot);
+	  else if (option == "Fit2DEff") Fit2DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,atoi(SignalType.c_str()),myEff,q2BinIndx,"ThetaKThetaL.txt",SAVEPLOT);
+	  else if (option == "Fit3DEff") Fit3DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,atoi(SignalType.c_str()),myEff,q2BinIndx,"ThetaKThetaLPhi.txt",SAVEPLOT);
 
 
 	  delete Utility;
@@ -2426,8 +2420,8 @@ int main (int argc, char** argv)
 	  else                                 Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
 	  Utility->ReadEfficiency(fileNameInput.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,&myEff);
 	  
-	  if      (option == "Test2DEff") Test2DEfficiency(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,SavePlot);
-	  else if (option == "Test3DEff") Test3DEfficiency(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,SavePlot);
+	  if      (option == "Test2DEff") Test2DEfficiency(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,SAVEPLOT);
+	  else if (option == "Test3DEff") Test3DEfficiency(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,SAVEPLOT);
 
 
 	  delete Utility;
@@ -2449,9 +2443,9 @@ int main (int argc, char** argv)
 
 	  cout << "\nMake           --> root files for efficiency computation AND outputFile.txt AND SignalType" << endl;
 
-	  cout << "ReadBin        --> (read file with binned eff.) file with binned efficiency AND [q2 bin indx.(optional)]" << endl;
-	  cout << "Read3DAnaly    --> (read file with analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
-	  
+	  cout << "ReadBin        --> (read file with binned eff.) file with binned efficiency AND [SignalType] AND [q2 bin indx.(optional)]" << endl;
+
+	  cout << "Read3DAnaly    --> (read file with analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;	  
 	  cout << "Read3DGenAnaly --> (read files generated from analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
 
 	  cout << "Fit1DEff       --> SignalType AND file with binned efficiency AND [q2 bin indx.] [thetaL thetaK phi]" << endl;
@@ -2479,9 +2473,9 @@ int main (int argc, char** argv)
 
       cout << "\nMake           --> root files for efficiency computation AND outputFile.txt AND SignalType" << endl;
 
-      cout << "ReadBin        --> (read file with binned eff.) file with binned efficiency AND [q2 bin indx.(optional)]" << endl;
+      cout << "ReadBin        --> (read file with binned eff.) file with binned efficiency AND [SignalType] AND [q2 bin indx.(optional)]" << endl;
+
       cout << "Read3DAnaly    --> (read file with analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
-	  
       cout << "Read3DGenAnaly --> (read files generated from analytical eff.) file with analytical efficiency AND [q2 bin indx.(optional)]" << endl;
 
       cout << "Fit1DEff       --> SignalType AND file with binned efficiency AND [q2 bin indx.] [thetaL thetaK phi]" << endl;

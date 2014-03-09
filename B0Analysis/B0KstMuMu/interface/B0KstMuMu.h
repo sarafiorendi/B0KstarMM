@@ -98,6 +98,7 @@ private:
   TTree* theTree;
   B0KstMuMuTreeContent* NTuple;
   Utils* Utility;
+
 };
 
 #endif
