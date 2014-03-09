@@ -2,17 +2,27 @@
 % Run the program to generate the new efficiency functions %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ==> How to run the program <==           %
+% (1) Set the global variables             %
+% (2) Run on good-tagged events            %
+% (3) Run on mis-tagged events             %
+% Output files must remain the same since  %
+% good and mis-tagged events should go one %
+% after the other in the same file         %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 %%%%%%%%%%%%%%%%%%%%
 % Global variables %
 %%%%%%%%%%%%%%%%%%%%
 nFiles   = 200; % Number of files to generate
-nBins    =   8; % Number of q^2 bins
+nBins    =   9; % Number of q^2 bins
 startBin =   1; % Start bin [1...nBins]
 
-NcoeffThetaL = 5;
+NcoeffThetaL = 6;
 NcoeffThetaK = 4;
-NcoeffPhi    = 4;
+NcoeffPhi    = 4; % If 0 then 2D function, else 3D function
 
 showPlot = true;
 
@@ -24,8 +34,9 @@ for i = 1:nFiles
     fidINval    = fopen('../../efficiency/ThetaKThetaLPhi_B0ToKstMuMu_B0ToJPsiKst_B0ToPsi2SKst.txt','r');
     fidINcov    = fopen('../../efficiency/ThetaKThetaLPhiFullCovariance_B0ToKstMuMu_B0ToJPsiKst_B0ToPsi2SKst.txt','r');
 
-    fileNameOut = sprintf('../../efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen_%d.txt',i-1);
-    fidOUT      = fopen(fileNameOut,'a+'); %%% @TMP@ : add number of rows before the efficiency + order to generate : (1) good-signal; (2) mis-tag %%%
+    fileNameOut = sprintf('../../efficiency/EffRndGenAnalyFiles_B0ToKstMuMu_B0ToJPsiKst_B0ToPsi2SKst/Efficiency_RndGen_%d.txt',i-1);
+    fidOUT      = fopen(fileNameOut,'a+');
+    fprintf(fidOUT,'%d\n',nBins*NcoeffThetaL+NcoeffPhi);
     fprintf('Generating file %d \n',i);
 
 
@@ -102,8 +113,9 @@ for i = 1:nFiles
         SaveMVNvecIntoFile(fidOUT,q2Bin,strechNewV,errV,...
             NcoeffThetaL,NcoeffThetaK,NcoeffPhi);
     end
-
     
+    
+fprintf(fidOUT,'\n');
 fclose(fidINval);
 fclose(fidINcov);
 fclose(fidOUT);

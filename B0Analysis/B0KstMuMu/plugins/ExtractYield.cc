@@ -833,9 +833,8 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRea
       // #######################################################
       FlS  = new RooRealVar("FlS","F_{L}",0.0,0.0,1.0);
       AfbS = new RooRealVar("AfbS","A_{FB}",0.0,-1.0,1.0);
-      // @TMP@
-      FlS->setConstant(true);
-      AfbS->setConstant(true);
+      FlS->setConstant(false);
+      AfbS->setConstant(false);
       VarsAng->add(*FlS);
       VarsAng->add(*AfbS);
       VarsAng->add(*y);
@@ -4321,8 +4320,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
 
   nSig->setConstant(false);
   nBkgComb->setConstant(false);
-  // @TMP@
-  nMisTagFrac->setConstant(true);
+  nMisTagFrac->setConstant(false);
   nBkgPeak->setConstant(false);
 
   if ((FitType == 36) || (FitType == 56) || (FitType == 76))
@@ -6429,7 +6427,6 @@ int main(int argc, char** argv)
 	  effFuncs.second = new vector<TF2*>;
 	  if (correct4Efficiency == "EffCorrGenAnalyPDF")
 	    {
-	      // @TMP@ : the EffCorrGenAnalyPDF has to be made accordingly
 	      Utility->ReadAnalyticalEff(tmpFileName.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,effFuncs.first,"effFuncs",1);
 	      Utility->ReadAnalyticalEff(tmpFileName.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,effFuncs.second,"effFuncs",2);
 	    }

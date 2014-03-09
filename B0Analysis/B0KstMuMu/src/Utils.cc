@@ -671,6 +671,10 @@ TH3D* Utils::Get3DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bi
   Histo->SetZTitle("#phi");
   Histo->GetZaxis()->SetTitleOffset(1.8);
 
+
+  // ##########################
+  // # Read binned efficiency #
+  // ##########################
   for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
     for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
       for (unsigned int l = 0; l < phiBins->size()-1; l++)
@@ -702,7 +706,7 @@ TH2D* Utils::Get2DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<
   Histo->GetYaxis()->SetTitleOffset(1.8);
   Histo->SetZTitle("Efficiency");
 
-
+  
   myString.clear(); myString.str("");
   myString << DirEfficiency.c_str() << GetHisto2DEffName(SignalType) << "_" << q2Indx << ".txt";
   std::cout << "[Utils::Get2DEffHitoq2Bin]\tReading 2D binned efficiency file : " << myString.str().c_str() << std::endl;
@@ -712,7 +716,11 @@ TH2D* Utils::Get2DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<
       std::cout << "[Utils::Get2DEffHitoq2Bin]\tError opening file : " << myString.str().c_str() << std::endl;
       exit (EXIT_FAILURE);
     }
-  
+
+
+  // ##########################
+  // # Read binned efficiency #
+  // ##########################
   for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
     for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
       {
@@ -767,6 +775,10 @@ TH3D* Utils::Get3DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<
       exit (EXIT_FAILURE);
     }
   
+
+  // ##########################
+  // # Read binned efficiency #
+  // ##########################
   for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
     for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
       for (unsigned int l = 0; l < phiBins->size()-1; l++)
@@ -809,6 +821,9 @@ void Utils::Put2DEffHitoq2Bin (std::string fileName, TH2D* histo)
     }
   
   
+  // ##########################
+  // # Save binned efficiency #
+  // ##########################
   for (int i = 1; i <= histo->GetNbinsX(); i++)
     for (int j = 1; j <= histo->GetNbinsY(); j++)
       outputFile << XAxis->GetBinLowEdge(i) << "   " << XAxis->GetBinWidth(i) << "   " << YAxis->GetBinLowEdge(j) << "   " << YAxis->GetBinWidth(j) << "   " << histo->GetBinContent(i,j) << "   " << histo->GetBinError(i,j) << std::endl;
@@ -833,6 +848,9 @@ void Utils::Put3DEffHitoq2Bin (std::string fileName, TH3D* histo)
     }
   
   
+  // ##########################
+  // # Save binned efficiency #
+  // ##########################
   for (int i = 1; i <= histo->GetNbinsX(); i++)
     for (int j = 1; j <= histo->GetNbinsY(); j++)
       for (int k = 1; k <= histo->GetNbinsZ(); k++)
