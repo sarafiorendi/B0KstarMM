@@ -145,8 +145,8 @@ class Utils
   void GetEffq2Bin        (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int cosThetaKIndx, unsigned int cosThetaMuIndx, unsigned int phiIndx, effStruct myEff, double* Eff, double* EffErr);
   TH2D* Get2DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff);
   TH3D* Get3DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff);
-  TH2D* Get2DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, unsigned int q2Indx, unsigned int SignalType);
-  TH3D* Get3DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int SignalType);
+  TH2D* Get2DEffHitoq2Bin (unsigned int q2Indx, unsigned int SignalType);
+  TH3D* Get3DEffHitoq2Bin (unsigned int q2Indx, unsigned int SignalType);
   void Put2DEffHitoq2Bin  (std::string fileName, TH2D* histo);
   void Put3DEffHitoq2Bin  (std::string fileName, TH3D* histo);
   void DeleteEfficiency   (effStruct myEff);
@@ -310,8 +310,6 @@ class Utils
   unsigned int B0ToKstMuMu;
   unsigned int B0ToJPsiKst;
   unsigned int B0ToPsi2SKst;
-
-  double minimalEfficiency;
 
   std::string DirEfficiency;
 

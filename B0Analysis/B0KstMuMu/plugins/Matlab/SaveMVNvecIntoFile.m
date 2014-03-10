@@ -5,7 +5,7 @@ function SaveMVNvecIntoFile(fid,q2Bin,meanV,errV,...
     NcoeffThetaL,NcoeffThetaK,NcoeffPhi)
 
 for i = 1:NcoeffThetaL
-    myS = sprintf('%f',q2Bin);    
+    myS = sprintf('%f',q2Bin);
     for j = 1:NcoeffThetaK
         if (errV(j+(i-1)*NcoeffThetaK) ~= 0)
             myS = strcat(myS,sprintf('   %e   0',...

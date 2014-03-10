@@ -955,7 +955,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRea
 	  else if ((FitType >= 41*10) && (FitType < 60*10)) SignalType = 3;
 	  else if ((FitType >= 61*10) && (FitType < 80*10)) SignalType = 5;
 	  else SignalType = 1;
-	  RooDataHist* histoEff = new RooDataHist("histoEff","histoEff",RooArgSet(*z,*y),Utility->Get2DEffHitoq2Bin(&cosThetaKBins,&cosThetaLBins,parIndx,SignalType));
+	  RooDataHist* histoEff = new RooDataHist("histoEff","histoEff",RooArgSet(*z,*y),Utility->Get2DEffHitoq2Bin(parIndx,SignalType));
 	  histoEffPDF           = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(*z,*y),*histoEff,0);
 	  AnglesPDF             = new RooProdPdf("AngleMisTag","MisTag * Efficiency",RooArgSet(*_AnglesPDF,*histoEffPDF));
 	}

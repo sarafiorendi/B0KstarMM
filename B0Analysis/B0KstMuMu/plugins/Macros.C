@@ -81,6 +81,7 @@ using namespace RooFit;
 // # Function Definition #
 // #######################
 TH1D* ComputeCumulative     (TH1D* hIN, string hCumulName);
+void PlotHistoEff           (string fileName, unsigned int smothDegree, string effDimension, bool RIGHTflavorTAG);
 void TruthMatching          (string fileName, bool truthMatch);
 void dBFfromGEN             (string fileName);
 void CompareCosMassGENRECO  (string fileNameRECO, string fileNameGEN);
@@ -126,6 +127,228 @@ TH1D* ComputeCumulative(TH1D* hIN, string hCumulName)
 
   cout << "Maximum of comulative: " << hCumul->GetMaximum() << endl;
   return hCumul;
+}
+
+
+// #########################################################################
+// # Sub-program to plot the binned efficicency as "seen" in the final pdf #
+// #########################################################################
+void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimension, bool RIGHTflavorTAG)
+// #######################
+// # effDimension = "2D" #
+// # effDimension = "3D" #
+// #######################
+{
+  ifstream inputFile;
+  double xx, xw, yy, yw, zz, zw, cont, err, tmp;
+  vector<double> cosThetaKBins;
+  vector<double> cosThetaLBins;
+  vector<double> phiBins;
+
+
+  gROOT->SetStyle("Plain");
+  gROOT->ForceStyle();
+  gStyle->SetPalette(1);
+  gStyle->SetOptFit(1112);
+  gStyle->SetOptStat(1110);
+  gStyle->SetOptTitle(0);
+  gStyle->SetPadRightMargin(0.02);
+  gStyle->SetTitleOffset(1.25,"y"); 
+  TGaxis::SetMaxDigits(3);
+
+
+  cout << "[Macros::PlotHistoEff]\tReading binned efficiency file : " << fileName.c_str() << endl;
+  inputFile.open(fileName.c_str(), ifstream::in);
+  if (inputFile.good() == false)
+    {
+      cout << "[Macros::PlotHistoEff]\tError opening file : " << fileName.c_str() << endl;
+      exit (EXIT_FAILURE);
+    }
+
+  // ##################
+  // # Reading Z bins #
+  // ##################
+  if (effDimension == "3D")
+    {
+      inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
+      tmp = yy;
+      while (yy == tmp)
+	{
+	  phiBins.push_back(zz);
+	  inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
+	}
+      phiBins.push_back(TMath::Pi());
+      inputFile.clear();
+      inputFile.seekg(0, ios::beg);
+    }
+
+  // ##################
+  // # Reading Y bins #
+  // ##################
+  if (effDimension == "2D") inputFile >> xx >> xw >> yy >> yw >> cont >> err;
+  else                      inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
+  tmp = xx;
+  while (xx == tmp)
+    {
+      cosThetaLBins.push_back(yy);
+      if (effDimension == "2D") inputFile >> xx >> xw >> yy >> yw >> cont >> err;
+      else                      inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
+    }
+  cosThetaLBins.push_back(1.0);
+  inputFile.clear();
+  inputFile.seekg(0, ios::beg);
+
+  // ##################
+  // # Reading X bins #
+  // ##################
+  if (effDimension == "2D") inputFile >> xx >> xw >> yy >> yw >> cont >> err;
+  else                      inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
+  tmp = xx;
+  while (inputFile.eof() == false)
+    {
+      cosThetaKBins.push_back(xx);
+      while ((xx == tmp) && (inputFile.eof() == false))
+	{
+	  if (effDimension == "2D") inputFile >> xx >> xw >> yy >> yw >> cont >> err;
+	  else                      inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
+	}
+      tmp = xx;
+    }
+  cosThetaKBins.push_back(1.0);
+  inputFile.clear();
+  inputFile.seekg(0, ios::beg);
+
+
+  double* cosThetaKBins_ = new double[cosThetaKBins.size()];
+  for (unsigned int i = 0; i < cosThetaKBins.size(); i++) cosThetaKBins_[i] = cosThetaKBins[i];
+  double* cosThetaLBins_ = new double[cosThetaLBins.size()];
+  for (unsigned int i = 0; i < cosThetaLBins.size(); i++) cosThetaLBins_[i] = cosThetaLBins[i];
+  double* phiBins_;
+  if (effDimension == "3D")
+    {
+      phiBins_ = new double[phiBins.size()];
+      for (unsigned int i = 0; i < phiBins.size(); i++) phiBins_[i] = phiBins[i];
+    }
+
+  TCanvas* c0 = new TCanvas("c0","c0",1200,600);
+  c0->Divide(4,0);
+  c0->cd(1);
+
+  TH2D* Histo2D;
+  TH2D* Histo2D_clone;
+  TH3D* Histo3D;
+  TH3D* Histo3D_clone;
+  if (effDimension == "2D")
+    {
+      Histo2D = new TH2D("Histo2D", "Histo2D", cosThetaKBins.size()-1, cosThetaKBins_, cosThetaLBins.size()-1, cosThetaLBins_);
+      Histo2D->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
+      Histo2D->GetXaxis()->SetTitleOffset(1.8);
+      Histo2D->SetYTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
+      Histo2D->GetYaxis()->SetTitleOffset(1.8);
+      Histo2D->SetZTitle("Efficiency");
+      Histo2D_clone = (TH2D*)Histo2D->Clone();
+
+      // ##########################
+      // # Read binned efficiency #
+      // ##########################
+      for (unsigned int j = 1; j <= cosThetaKBins.size()-1; j++)
+	for (unsigned int k = 1; k <= cosThetaLBins.size()-1; k++)
+	  {
+	    inputFile >> xx >> xw >> yy >> yw >> cont >> err;
+	    Histo2D->SetBinContent(j,k,cont);
+	    Histo2D->SetBinError(j,k,err);
+
+	    if (RIGHTflavorTAG == true)
+	      {
+		cont = Histo2D->GetBinContent(j,k) * Histo2D->GetXaxis()->GetBinWidth(j) * Histo2D->GetYaxis()->GetBinWidth(k);
+		Histo2D_clone->SetBinContent(j,k,cont);
+	      }
+	    else
+	      {
+		cont = Histo2D->GetBinContent(j,k) * Histo2D->GetXaxis()->GetBinWidth(Histo2D->GetNbinsX()-j+1) * Histo2D->GetYaxis()->GetBinWidth(Histo2D->GetNbinsY()-k+1);
+		Histo2D_clone->SetBinContent(Histo2D->GetNbinsX()-j+1,Histo2D->GetNbinsY()-k+1,cont);
+	      }
+	  }
+
+      Histo2D->Draw("lego fb");
+    }
+  else
+    {
+      Histo3D = new TH3D("Histo3D", "Histo3D", cosThetaKBins.size()-1, cosThetaKBins_, cosThetaLBins.size()-1, cosThetaLBins_, phiBins.size()-1, phiBins_);
+      Histo3D->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
+      Histo3D->GetXaxis()->SetTitleOffset(1.8);
+      Histo3D->SetYTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
+      Histo3D->GetYaxis()->SetTitleOffset(1.8);
+      Histo3D->SetZTitle("#phi");
+      Histo3D->GetZaxis()->SetTitleOffset(1.8);
+      Histo3D_clone = (TH3D*)Histo3D->Clone();
+
+      // ##########################
+      // # Read binned efficiency #
+      // ##########################
+      for (unsigned int j = 1; j <= cosThetaKBins.size()-1; j++)
+	for (unsigned int k = 1; k <= cosThetaLBins.size()-1; k++)
+	  for (unsigned int l = 1; l <= phiBins.size()-1; l++)
+	    {
+	      inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
+	      Histo3D->SetBinContent(j,k,l,cont);
+	      Histo3D->SetBinError(j,k,l,err);
+
+	      if (RIGHTflavorTAG == true)
+		{
+		  cont = Histo3D->GetBinContent(j,k,l) * Histo3D->GetXaxis()->GetBinWidth(j) * Histo3D->GetYaxis()->GetBinWidth(k) * Histo3D->GetZaxis()->GetBinWidth(l);
+		  Histo3D_clone->SetBinContent(j,k,l,cont);
+		}
+	      else
+		{
+		  cont = Histo3D->GetBinContent(j,k,l) * Histo3D->GetXaxis()->GetBinWidth(Histo3D->GetNbinsX()-j+1) * Histo3D->GetYaxis()->GetBinWidth(Histo3D->GetNbinsY()-k+1) * Histo3D->GetZaxis()->GetBinWidth(Histo3D->GetNbinsZ()-l+1);
+		  Histo3D_clone->SetBinContent(Histo3D->GetNbinsX()-j+1,Histo3D->GetNbinsY()-k+1,Histo3D->GetNbinsZ()-l+1,cont);
+		}
+	    }
+
+      Histo3D->Draw();
+    }
+
+
+
+  RooRealVar thetaK("thetaK","cos(#theta#lower[-0.4]{_{#font[122]{K}}})",-1.0,1.0,"");
+  RooRealVar thetaL("thetaL","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",-1.0,1.0,"");
+  RooRealVar phi("phi","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",-TMath::Pi(),TMath::Pi(),"rad");
+
+  RooPlot* xframe= thetaK.frame(Name("thetaK"));
+  RooPlot* yframe= thetaL.frame(Name("thetaL"));
+  RooPlot* zframe= phi.frame(Name("phi"));
+
+  RooDataHist* _histoEff;
+  RooHistPdf* histoEffPDF;
+  if (effDimension == "2D")
+    {
+      _histoEff   = new RooDataHist("_histoEff","_histoEff",RooArgSet(thetaK,thetaL),Histo2D_clone);
+      histoEffPDF = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(thetaK,thetaL),*_histoEff,smothDegree);
+    }
+  else
+    {
+      _histoEff   = new RooDataHist("_histoEff","_histoEff",RooArgSet(thetaK,thetaL,phi),Histo3D_clone);
+      histoEffPDF = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(thetaK,thetaL,phi),*_histoEff,smothDegree);
+    }
+
+
+  c0->cd(2);
+  histoEffPDF->plotOn(xframe);
+  xframe->Draw();
+
+  c0->cd(3);
+  histoEffPDF->plotOn(yframe);
+  yframe->Draw();
+
+  if (effDimension == "3D")
+    {
+      c0->cd(4);
+      histoEffPDF->plotOn(zframe);
+      zframe->Draw();
+    }
+
+  c0->Update();
 }
 
 

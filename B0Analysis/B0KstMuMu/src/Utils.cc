@@ -103,9 +103,6 @@ Utils::Utils (bool rightFlavorTag)
   B0ToJPsiKst  = 3;
   B0ToPsi2SKst = 5;
 
-  // Define the minimal efficiency to be assiged to empty efficiency bins
-  minimalEfficiency = 1e-5; // @TMP@ : to be verified
-
   // ################################
   // # Print out internal variables #
   // ################################
@@ -118,7 +115,6 @@ Utils::Utils (bool rightFlavorTag)
   std::cout << "B0ToKstMuMu: "       << B0ToKstMuMu << std::endl;
   std::cout << "B0ToJPsiKst: "       << B0ToJPsiKst << std::endl;
   std::cout << "B0ToPsi2SKst: "      << B0ToPsi2SKst << std::endl;
-  std::cout << "minimalEfficiency: " << minimalEfficiency << std::endl;
   std::cout << "DirEfficiency: "     << DirEfficiency << std::endl;
 
   std::cout << "Histo2DEffNameOkTagSig: "    << Histo2DEffNameOkTagSig << std::endl;
@@ -691,38 +687,71 @@ TH3D* Utils::Get3DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bi
   return Histo;
 }
 
-TH2D* Utils::Get2DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, unsigned int q2Indx, unsigned int SignalType)
+TH2D* Utils::Get2DEffHitoq2Bin (unsigned int q2Indx, unsigned int SignalType)
 {
   std::ifstream inputFile;
   std::stringstream myString;
-  double xx, xw, yy, yw, cont, err;
-  double* cosThetaKBins_ = MakeBinning(cosThetaKBins);
-  double* cosThetaLBins_ = MakeBinning(cosThetaLBins);
+  double xx, xw, yy, yw, cont, err, tmp;
+  std::vector<double> cosThetaKBins;
+  std::vector<double> cosThetaLBins;
 
-  TH2D* Histo = new TH2D(GetHisto2DEffName(SignalType).c_str(), GetHisto2DEffName(SignalType).c_str(), cosThetaKBins->size()-1, cosThetaKBins_, cosThetaLBins->size()-1, cosThetaLBins_);
-  Histo->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
-  Histo->GetXaxis()->SetTitleOffset(1.8);
-  Histo->SetYTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
-  Histo->GetYaxis()->SetTitleOffset(1.8);
-  Histo->SetZTitle("Efficiency");
 
-  
   myString.clear(); myString.str("");
   myString << DirEfficiency.c_str() << GetHisto2DEffName(SignalType) << "_" << q2Indx << ".txt";
   std::cout << "[Utils::Get2DEffHitoq2Bin]\tReading 2D binned efficiency file : " << myString.str().c_str() << std::endl;
-  inputFile.open(myString.str().c_str(), ifstream::in);
+  inputFile.open(myString.str().c_str(), std::ifstream::in);
   if (inputFile.good() == false)
     {
       std::cout << "[Utils::Get2DEffHitoq2Bin]\tError opening file : " << myString.str().c_str() << std::endl;
       exit (EXIT_FAILURE);
     }
 
+  // ##################
+  // # Reading Y bins #
+  // ##################
+  inputFile >> xx >> xw >> yy >> yw >> cont >> err;
+  tmp = xx;
+  while (xx == cont)
+    {
+      cosThetaLBins.push_back(yy);
+      inputFile >> xx >> xw >> yy >> yw >> cont >> err;
+    }
+  cosThetaLBins.push_back(1.0);
+  inputFile.clear();
+  inputFile.seekg(0, std::ios::beg);
+
+  // ##################
+  // # Reading X bins #
+  // ##################
+  inputFile >> xx >> xw >> yy >> yw >> cont >> err;
+  tmp = xx;
+  while (inputFile.eof() == false)
+    {
+      cosThetaKBins.push_back(xx);
+      while ((xx == tmp) && (inputFile.eof() == false)) inputFile >> xx >> xw >> yy >> yw >> cont >> err;
+      tmp = xx; 
+    }
+  cosThetaKBins.push_back(1.0);
+  inputFile.clear();
+  inputFile.seekg(0, std::ios::beg);
+
+
+  double* cosThetaKBins_ = MakeBinning(&cosThetaKBins);
+  double* cosThetaLBins_ = MakeBinning(&cosThetaLBins);
+
+  TH2D* Histo = new TH2D(GetHisto2DEffName(SignalType).c_str(), GetHisto2DEffName(SignalType).c_str(), cosThetaKBins.size()-1, cosThetaKBins_, cosThetaLBins.size()-1, cosThetaLBins_);
+  Histo->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
+  Histo->GetXaxis()->SetTitleOffset(1.8);
+  Histo->SetYTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
+  Histo->GetYaxis()->SetTitleOffset(1.8);
+  Histo->SetZTitle("Efficiency");
+ 
 
   // ##########################
   // # Read binned efficiency #
   // ##########################
-  for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
-    for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
+  for (unsigned int j = 1; j <= cosThetaKBins.size()-1; j++)
+    for (unsigned int k = 1; k <= cosThetaLBins.size()-1; k++)
       {
 	inputFile >> xx >> xw >> yy >> yw >> cont >> err;
 	Histo->SetBinContent(j,k,cont);
@@ -731,32 +760,91 @@ TH2D* Utils::Get2DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<
 	if (RIGHTflavorTAG == true)
 	  {
 	    cont = Histo->GetBinContent(j,k) * Histo->GetXaxis()->GetBinWidth(j) * Histo->GetYaxis()->GetBinWidth(k);
-	    if (cont == 0.0) cont = minimalEfficiency;
 	    Histo->SetBinContent(j,k,cont);
 	  }
 	else
 	  {
 	    cont = Histo->GetBinContent(j,k) * Histo->GetXaxis()->GetBinWidth(Histo->GetNbinsX()-j+1) * Histo->GetYaxis()->GetBinWidth(Histo->GetNbinsY()-k+1);
-	    if (cont == 0.0) cont = minimalEfficiency;
 	    Histo->SetBinContent(Histo->GetNbinsX()-j+1,Histo->GetNbinsY()-k+1,cont);
 	  }
       }
 
 
+  cosThetaKBins.clear();
+  cosThetaLBins.clear();
   inputFile.close();
   return Histo;
 }
 
-TH3D* Utils::Get3DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int SignalType)
+TH3D* Utils::Get3DEffHitoq2Bin (unsigned int q2Indx, unsigned int SignalType)
 {
   std::ifstream inputFile;
   std::stringstream myString;
-  double xx, xw, yy, yw, zz, zw, cont, err;
-  double* cosThetaKBins_ = MakeBinning(cosThetaKBins);
-  double* cosThetaLBins_ = MakeBinning(cosThetaLBins);
-  double* phiBins_       = MakeBinning(phiBins);
+  double xx, xw, yy, yw, zz, zw, cont, err, tmp;
+  std::vector<double> cosThetaKBins;
+  std::vector<double> cosThetaLBins;
+  std::vector<double> phiBins;
 
-  TH3D* Histo = new TH3D(GetHisto3DEffName(SignalType).c_str(), GetHisto3DEffName(SignalType).c_str(), cosThetaKBins->size()-1, cosThetaKBins_, cosThetaLBins->size()-1, cosThetaLBins_, phiBins->size()-1, phiBins_);
+
+  myString.clear(); myString.str("");
+  myString << DirEfficiency.c_str() << GetHisto3DEffName(SignalType) << "_" << q2Indx << ".txt";
+  std::cout << "[Utils::Get3DEffHitoq2Bin]\tReading 3D binned efficiency file : " << myString.str().c_str() << std::endl;
+  inputFile.open(myString.str().c_str(), std::ifstream::in);
+  if (inputFile.good() == false)
+    {
+      std::cout << "[Utils::Get3DEffHitoq2Bin]\tError opening file : " << myString.str().c_str() << std::endl;
+      exit (EXIT_FAILURE);
+    }
+
+  // ##################
+  // # Reading Z bins #
+  // ##################
+  inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
+  tmp = yy;
+  while (yy == tmp)
+    {
+      phiBins.push_back(zz);
+      inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
+    }
+  phiBins.push_back(PI);
+  inputFile.clear();
+  inputFile.seekg(0, std::ios::beg);
+
+  // ##################
+  // # Reading Y bins #
+  // ##################
+  inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
+  tmp = xx;
+  while (xx == cont)
+    {
+      cosThetaLBins.push_back(yy);
+      inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
+    }
+  cosThetaLBins.push_back(1.0);
+  inputFile.clear();
+  inputFile.seekg(0, std::ios::beg);
+
+  // ##################
+  // # Reading X bins #
+  // ##################
+  inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
+  tmp = xx;
+  while (inputFile.eof() == false)
+    {
+      cosThetaKBins.push_back(xx);
+       while ((xx == tmp) && (inputFile.eof() == false)) inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
+       tmp = xx;
+    }
+  cosThetaKBins.push_back(1.0);
+  inputFile.clear();
+  inputFile.seekg(0, std::ios::beg);
+
+
+  double* cosThetaKBins_ = MakeBinning(&cosThetaKBins);
+  double* cosThetaLBins_ = MakeBinning(&cosThetaLBins);
+  double* phiBins_       = MakeBinning(&phiBins);
+
+  TH3D* Histo = new TH3D(GetHisto3DEffName(SignalType).c_str(), GetHisto3DEffName(SignalType).c_str(), cosThetaKBins.size()-1, cosThetaKBins_, cosThetaLBins.size()-1, cosThetaLBins_, phiBins.size()-1, phiBins_);
   Histo->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
   Histo->GetXaxis()->SetTitleOffset(1.8);
   Histo->SetYTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
@@ -765,23 +853,12 @@ TH3D* Utils::Get3DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<
   Histo->GetZaxis()->SetTitleOffset(1.8);
 
 
-  myString.clear(); myString.str("");
-  myString << DirEfficiency.c_str() << GetHisto3DEffName(SignalType) << "_" << q2Indx << ".txt";
-  std::cout << "[Utils::Get3DEffHitoq2Bin]\tReading 3D binned efficiency file : " << myString.str().c_str() << std::endl;
-  inputFile.open(myString.str().c_str(), ifstream::in);
-  if (inputFile.good() == false)
-    {
-      std::cout << "[Utils::Get3DEffHitoq2Bin]\tError opening file : " << myString.str().c_str() << std::endl;
-      exit (EXIT_FAILURE);
-    }
-  
-
   // ##########################
   // # Read binned efficiency #
   // ##########################
-  for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
-    for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
-      for (unsigned int l = 0; l < phiBins->size()-1; l++)
+  for (unsigned int j = 1; j <= cosThetaKBins.size()-1; j++)
+    for (unsigned int k = 1; k <= cosThetaLBins.size()-1; k++)
+      for (unsigned int l = 1; l <= phiBins.size()-1; l++)
 	{
 	  inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
 	  Histo->SetBinContent(j,k,l,cont);
@@ -790,18 +867,19 @@ TH3D* Utils::Get3DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<
 	  if (RIGHTflavorTAG == true)
 	    {
 	      cont = Histo->GetBinContent(j,k,l) * Histo->GetXaxis()->GetBinWidth(j) * Histo->GetYaxis()->GetBinWidth(k) * Histo->GetZaxis()->GetBinWidth(l);
-	      if (cont == 0.0) cont = minimalEfficiency;
 	      Histo->SetBinContent(j,k,l,cont);
 	    }
 	  else
 	    {
 	      cont = Histo->GetBinContent(j,k,l) * Histo->GetXaxis()->GetBinWidth(Histo->GetNbinsX()-j+1) * Histo->GetYaxis()->GetBinWidth(Histo->GetNbinsY()-k+1) * Histo->GetZaxis()->GetBinWidth(Histo->GetNbinsZ()-l+1);
-	      if (cont == 0.0) cont = minimalEfficiency;
 	      Histo->SetBinContent(Histo->GetNbinsX()-j+1,Histo->GetNbinsY()-k+1,Histo->GetNbinsZ()-l+1,cont);
 	    }
 	}
 
 
+  cosThetaKBins.clear();
+  cosThetaLBins.clear();
+  phiBins.clear();
   inputFile.close();
   return Histo;
 }

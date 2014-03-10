@@ -1126,7 +1126,7 @@ TGraphAsymmErrors* ReadFromASCII (string fileName, unsigned int PlotType, vector
       exit (EXIT_FAILURE);
     }
   inputFile >> xs >> ys >> xel >> xeh >> yel >> yeh;
-  while (inputFile)
+  while (inputFile.eof() == false)
     {
       if ((Utility->ValIsInPsi(q2Bins,xs) == false) && (xs >= q2Bins->operator[](0)) && (xs <= q2Bins->operator[](q2Bins->size()-1)) && (Utility->ValIsBetweenJPsiAndPsiP(q2Bins,xs) == false))
 	{
@@ -1941,7 +1941,7 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
   double var3 = 0.0;
   double var4 = 0.0;
   inputFile >> var0 >> var1 >> var2 >> var3 >> var4;
-  while (inputFile)
+  while (inputFile.eof() == false)
     {
       if (var1 != -2.0) h1->Fill(var1);
       if (var2 != -2.0) h2->Fill(var2);
@@ -1987,7 +1987,7 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
       inputFile.clear();
       inputFile.seekg(0,inputFile.beg);
       inputFile >> var0 >> var1 >> var2 >> var3 >> var4;
-      while (inputFile)
+      while (inputFile.eof() == false)
 	{
 	  
 	  if (var4 < NLLlessThan)

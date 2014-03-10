@@ -79,7 +79,7 @@ using std::vector;
 #define TEST_THETAL_THETAK_PHI "ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
 #define RIGHTtag       false
-#define SAVEPLOT       true
+#define SAVEPLOT       false
 #define CHECKEFFatREAD false // Check if 2D or 3D efficiency go negative
 #define NFILES         200
 #define INPUTGenEff    "../efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"

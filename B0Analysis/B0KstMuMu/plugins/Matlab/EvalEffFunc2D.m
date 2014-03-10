@@ -47,7 +47,7 @@ if showPlot == true
     lighting phong;
     colorbar;
     title('Efficiency');
-    xlabel('cos(\theta_k)');
+    xlabel('cos(\theta_K)');
     ylabel('cos(\theta_l)');
 end
 end
