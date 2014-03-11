@@ -13,15 +13,16 @@ NstepsX = 100;
 NstepsY = 100;
 NbinsX = 5;
 NbinsY = 5;
-addContraints = true;
+addContraints = false;
 useMethodInterp2 = false; % If true 'interp2' else 'scatteredInterpolant'
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ==> Interpolation methods <==                          %
 % - for 'interp2': linear, nearest, cubic, spline        %
 % - for 'scatteredInterpolant': linear, nearest, natural %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-interpMethod = 'linear';
-minEff = 1e-6;
+interpMethod = 'natural';
+effAtBoundaries = 1e-4;
+effMinValue = 1e-5;
 
 
 if addContraints == true
@@ -68,13 +69,13 @@ if addContraints == true
     Yvec(NbinsY+delta) = 1;
     
     for i = 1:NbinsX+delta
-        Values(1,i) = minEff;
-        Values(NbinsY+delta,i) = minEff;
+        Values(1,i) = effAtBoundaries;
+        Values(NbinsY+delta,i) = effAtBoundaries;
     end
 
     for j = 1:NbinsY+delta
-        Values(j,1) = minEff;
-        Values(j,NbinsX+delta) = minEff;
+        Values(j,1) = effAtBoundaries;
+        Values(j,NbinsX+delta) = effAtBoundaries;
     end
 end
 
@@ -96,11 +97,30 @@ ylabel('cos(\theta_l)');
 [newXvec_,newYvec_] = meshgrid(Xvec, Yvec);
 if useMethodInterp2 == true
     [newXvec,newYvec] = meshgrid(linspace(-1,1,NstepsX), linspace(-1,1,NstepsY));
-    newValues = interp2(Xvec, Yvec, Values, newXvec, newYvec, interpMethod);
+    newValues = interp2(Xvec, Yvec, Values, newXvec, newYvec, interpMethod, effMinValue);
 else
-    newValues_ = scatteredInterpolant(newXvec_(:), newYvec_(:), Values(:), interpMethod);
+    newValues_ = scatteredInterpolant(newXvec_(:), newYvec_(:), Values(:), interpMethod, 'nearest');
     [newXvec,newYvec] = meshgrid(linspace(-1,1,NstepsX), linspace(-1,1,NstepsY));
     newValues = newValues_(newXvec, newYvec);
+end
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Check if new efficiency goes negative %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+isPOS = true;
+for i = 1:length(newXvec)
+    for j = 1:length(newYvec)
+        if newValues(j,i) < 0
+            isPOS = false;
+            newValues(j,i) = effMinValue;
+        end
+    end
+end
+if isPOS == false
+   fprintf('@@@ The efficiency is negative --> corrected to %e @@@\n',effMinValue);
+else
+    fprintf('@@@ The efficiency is OK @@@\n');
 end
 
 

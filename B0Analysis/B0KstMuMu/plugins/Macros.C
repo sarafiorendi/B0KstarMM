@@ -141,9 +141,11 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
 {
   ifstream inputFile;
   double xx, xw, yy, yw, zz, zw, cont, err, tmp;
-  vector<double> cosThetaKBins;
-  vector<double> cosThetaLBins;
-  vector<double> phiBins;
+  vector<double> Xbins;
+  vector<double> Ybins;
+  vector<double> Zbins;
+  double cosThetaBound = 1.0;
+  double phiBound      = TMath::Pi();
 
 
   gROOT->SetStyle("Plain");
@@ -174,10 +176,10 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
       tmp = yy;
       while (yy == tmp)
 	{
-	  phiBins.push_back(zz);
+	  Zbins.push_back(zz);
 	  inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
 	}
-      phiBins.push_back(TMath::Pi());
+      Zbins.push_back(phiBound);
       inputFile.clear();
       inputFile.seekg(0, ios::beg);
     }
@@ -190,11 +192,11 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
   tmp = xx;
   while (xx == tmp)
     {
-      cosThetaLBins.push_back(yy);
+      Ybins.push_back(yy);
       if (effDimension == "2D") inputFile >> xx >> xw >> yy >> yw >> cont >> err;
       else                      inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
     }
-  cosThetaLBins.push_back(1.0);
+  Ybins.push_back(cosThetaBound);
   inputFile.clear();
   inputFile.seekg(0, ios::beg);
 
@@ -206,7 +208,7 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
   tmp = xx;
   while (inputFile.eof() == false)
     {
-      cosThetaKBins.push_back(xx);
+      Xbins.push_back(xx);
       while ((xx == tmp) && (inputFile.eof() == false))
 	{
 	  if (effDimension == "2D") inputFile >> xx >> xw >> yy >> yw >> cont >> err;
@@ -214,21 +216,39 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
 	}
       tmp = xx;
     }
-  cosThetaKBins.push_back(1.0);
+  Xbins.push_back(cosThetaBound);
   inputFile.clear();
   inputFile.seekg(0, ios::beg);
 
 
-  double* cosThetaKBins_ = new double[cosThetaKBins.size()];
-  for (unsigned int i = 0; i < cosThetaKBins.size(); i++) cosThetaKBins_[i] = cosThetaKBins[i];
-  double* cosThetaLBins_ = new double[cosThetaLBins.size()];
-  for (unsigned int i = 0; i < cosThetaLBins.size(); i++) cosThetaLBins_[i] = cosThetaLBins[i];
-  double* phiBins_;
+  cout << "[Macros::PlotHistoEff]\tNew X-axis binning" << std::endl;
+  double* Xbins_ = new double[Xbins.size()];
+  for (unsigned int i = 0; i < Xbins.size(); i++)
+    {
+      Xbins_[i] = Xbins[i];
+      cout << "bin #" << i << " --> " << Xbins[i] << endl;
+    }
+
+  cout << "[Macros::PlotHistoEff]\tNew Y-axis binning" << std::endl;
+  double* Ybins_ = new double[Ybins.size()];
+  for (unsigned int i = 0; i < Ybins.size(); i++)
+    {
+      Ybins_[i] = Ybins[i];
+      cout << "bin #" << i << " --> " << Ybins[i] << endl;
+    }
+
+  double* Zbins_;
   if (effDimension == "3D")
     {
-      phiBins_ = new double[phiBins.size()];
-      for (unsigned int i = 0; i < phiBins.size(); i++) phiBins_[i] = phiBins[i];
+      cout << "[Macros::PlotHistoEff]\tNew Z-axis binning" << std::endl;
+      Zbins_ = new double[Zbins.size()];
+      for (unsigned int i = 0; i < Zbins.size(); i++)
+	{
+	  Zbins_[i] = Zbins[i];
+	  cout << "bin #" << i << " --> " << Zbins[i] << endl;
+	}
     }
+
 
   TCanvas* c0 = new TCanvas("c0","c0",1200,600);
   c0->Divide(4,0);
@@ -240,7 +260,7 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
   TH3D* Histo3D_clone;
   if (effDimension == "2D")
     {
-      Histo2D = new TH2D("Histo2D", "Histo2D", cosThetaKBins.size()-1, cosThetaKBins_, cosThetaLBins.size()-1, cosThetaLBins_);
+      Histo2D = new TH2D("Histo2D", "Histo2D", Xbins.size()-1, Xbins_, Ybins.size()-1, Ybins_);
       Histo2D->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
       Histo2D->GetXaxis()->SetTitleOffset(1.8);
       Histo2D->SetYTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
@@ -251,8 +271,8 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
       // ##########################
       // # Read binned efficiency #
       // ##########################
-      for (unsigned int j = 1; j <= cosThetaKBins.size()-1; j++)
-	for (unsigned int k = 1; k <= cosThetaLBins.size()-1; k++)
+      for (unsigned int j = 1; j <= Xbins.size()-1; j++)
+	for (unsigned int k = 1; k <= Ybins.size()-1; k++)
 	  {
 	    inputFile >> xx >> xw >> yy >> yw >> cont >> err;
 	    Histo2D->SetBinContent(j,k,cont);
@@ -274,7 +294,7 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
     }
   else
     {
-      Histo3D = new TH3D("Histo3D", "Histo3D", cosThetaKBins.size()-1, cosThetaKBins_, cosThetaLBins.size()-1, cosThetaLBins_, phiBins.size()-1, phiBins_);
+      Histo3D = new TH3D("Histo3D", "Histo3D", Xbins.size()-1, Xbins_, Ybins.size()-1, Ybins_, Zbins.size()-1, Zbins_);
       Histo3D->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
       Histo3D->GetXaxis()->SetTitleOffset(1.8);
       Histo3D->SetYTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
@@ -286,9 +306,9 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
       // ##########################
       // # Read binned efficiency #
       // ##########################
-      for (unsigned int j = 1; j <= cosThetaKBins.size()-1; j++)
-	for (unsigned int k = 1; k <= cosThetaLBins.size()-1; k++)
-	  for (unsigned int l = 1; l <= phiBins.size()-1; l++)
+      for (unsigned int j = 1; j <= Xbins.size()-1; j++)
+	for (unsigned int k = 1; k <= Ybins.size()-1; k++)
+	  for (unsigned int l = 1; l <= Zbins.size()-1; l++)
 	    {
 	      inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
 	      Histo3D->SetBinContent(j,k,l,cont);
@@ -311,25 +331,25 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
 
 
 
-  RooRealVar thetaK("thetaK","cos(#theta#lower[-0.4]{_{#font[122]{K}}})",-1.0,1.0,"");
-  RooRealVar thetaL("thetaL","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",-1.0,1.0,"");
-  RooRealVar phi("phi","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",-TMath::Pi(),TMath::Pi(),"rad");
+  RooRealVar thetaK("thetaK","cos(#theta#lower[-0.4]{_{#font[122]{K}}})",-cosThetaBound,cosThetaBound,"");
+  RooRealVar thetaL("thetaL","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",-cosThetaBound,cosThetaBound,"");
+  RooRealVar phi("phi","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",-phiBound,phiBound,"rad");
 
   RooPlot* xframe= thetaK.frame(Name("thetaK"));
   RooPlot* yframe= thetaL.frame(Name("thetaL"));
   RooPlot* zframe= phi.frame(Name("phi"));
 
-  RooDataHist* _histoEff;
+  RooDataHist* histoEff;
   RooHistPdf* histoEffPDF;
   if (effDimension == "2D")
     {
-      _histoEff   = new RooDataHist("_histoEff","_histoEff",RooArgSet(thetaK,thetaL),Histo2D_clone);
-      histoEffPDF = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(thetaK,thetaL),*_histoEff,smothDegree);
+      histoEff    = new RooDataHist("histoEff","histoEff",RooArgSet(thetaK,thetaL),Histo2D_clone);
+      histoEffPDF = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(thetaK,thetaL),*histoEff,smothDegree);
     }
   else
     {
-      _histoEff   = new RooDataHist("_histoEff","_histoEff",RooArgSet(thetaK,thetaL,phi),Histo3D_clone);
-      histoEffPDF = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(thetaK,thetaL,phi),*_histoEff,smothDegree);
+      histoEff    = new RooDataHist("histoEff","histoEff",RooArgSet(thetaK,thetaL,phi),Histo3D_clone);
+      histoEffPDF = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(thetaK,thetaL,phi),*histoEff,smothDegree);
     }
 
 

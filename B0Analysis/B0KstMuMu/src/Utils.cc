@@ -71,21 +71,21 @@ Utils::Utils (bool rightFlavorTag)
   // Define names of the files containing the histogram of the efficiency
   DirEfficiency  = "../efficiency/";
 
-  Histo2DEffNameOkTagSig   = "H2Deff_OkTag_q2Bin";
-  Histo2DEffNameOkTagJPsi  = "H2Deff_OkTagJPsi_q2Bin";
-  Histo2DEffNameOkTagPsi2S = "H2Deff_OkTagPsi2S_q2Bin";
+  Histo2DEffNameOkTagSig   = "H2Deff_OkTag_q2Bin_interp";
+  Histo2DEffNameOkTagJPsi  = "H2Deff_OkTagJPsi_q2Bin_interp";
+  Histo2DEffNameOkTagPsi2S = "H2Deff_OkTagPsi2S_q2Bin_interp";
 
-  Histo3DEffNameOkTagSig   = "H3Deff_OkTag_q2Bin";
-  Histo3DEffNameOkTagJPsi  = "H3Deff_OkTagJPsi_q2Bin";
-  Histo3DEffNameOkTagPsi2S = "H3Deff_OkTagPsi2S_q2Bin";
+  Histo3DEffNameOkTagSig   = "H3Deff_OkTag_q2Bin_interp";
+  Histo3DEffNameOkTagJPsi  = "H3Deff_OkTagJPsi_q2Bin_interp";
+  Histo3DEffNameOkTagPsi2S = "H3Deff_OkTagPsi2S_q2Bin_interp";
 
-  Histo2DEffNameMisTagSig   = "H2Deff_MisTag_q2Bin";
-  Histo2DEffNameMisTagJPsi  = "H2Deff_MisTagJPsi_q2Bin";
-  Histo2DEffNameMisTagPsi2S = "H2Deff_MisTagPsi2S_q2Bin";
+  Histo2DEffNameMisTagSig   = "H2Deff_MisTag_q2Bin_interp";
+  Histo2DEffNameMisTagJPsi  = "H2Deff_MisTagJPsi_q2Bin_interp";
+  Histo2DEffNameMisTagPsi2S = "H2Deff_MisTagPsi2S_q2Bin_interp";
 
-  Histo3DEffNameMisTagSig   = "H3Deff_MisTag_q2Bin";
-  Histo3DEffNameMisTagJPsi  = "H3Deff_MisTagJPsi_q2Bin";
-  Histo3DEffNameMisTagPsi2S = "H3Deff_MisTagPsi2S_q2Bin";
+  Histo3DEffNameMisTagSig   = "H3Deff_MisTag_q2Bin_interp";
+  Histo3DEffNameMisTagJPsi  = "H3Deff_MisTagJPsi_q2Bin_interp";
+  Histo3DEffNameMisTagPsi2S = "H3Deff_MisTagPsi2S_q2Bin_interp";
 
   // ###############################################
   // # ===> Define codes to identify MC type <===  #
@@ -133,7 +133,7 @@ Utils::Utils (bool rightFlavorTag)
   std::cout << "Histo3DEffNameMisTagJPsi: "  << Histo3DEffNameMisTagJPsi << std::endl;
   std::cout << "Histo3DEffNameMisTagPsi2S: " << Histo3DEffNameMisTagPsi2S << std::endl;
 
-  std::cout << "@@@ Utils class settings : public  @@@" << std::endl;
+  std::cout << "@@@@@@ Utils class settings : public  @@@@@@" << std::endl;
   std::cout << "NcoeffThetaL: "   << NcoeffThetaL << std::endl;
   std::cout << "NcoeffThetaK: "   << NcoeffThetaK << std::endl;
   std::cout << "NcoeffPhi: "      << NcoeffPhi << std::endl;
@@ -687,13 +687,13 @@ TH3D* Utils::Get3DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bi
   return Histo;
 }
 
-TH2D* Utils::Get2DEffHitoq2Bin (unsigned int q2Indx, unsigned int SignalType)
+TH2D* Utils::Get2DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, unsigned int q2Indx, unsigned int SignalType)
 {
   std::ifstream inputFile;
   std::stringstream myString;
   double xx, xw, yy, yw, cont, err, tmp;
-  std::vector<double> cosThetaKBins;
-  std::vector<double> cosThetaLBins;
+  std::vector<double> Xbins;
+  std::vector<double> Ybins;
 
 
   myString.clear(); myString.str("");
@@ -711,12 +711,12 @@ TH2D* Utils::Get2DEffHitoq2Bin (unsigned int q2Indx, unsigned int SignalType)
   // ##################
   inputFile >> xx >> xw >> yy >> yw >> cont >> err;
   tmp = xx;
-  while (xx == cont)
+  while (xx == tmp)
     {
-      cosThetaLBins.push_back(yy);
+      Ybins.push_back(yy);
       inputFile >> xx >> xw >> yy >> yw >> cont >> err;
     }
-  cosThetaLBins.push_back(1.0);
+  Ybins.push_back(cosThetaLBins->operator[](cosThetaLBins->size()-1));
   inputFile.clear();
   inputFile.seekg(0, std::ios::beg);
 
@@ -727,31 +727,39 @@ TH2D* Utils::Get2DEffHitoq2Bin (unsigned int q2Indx, unsigned int SignalType)
   tmp = xx;
   while (inputFile.eof() == false)
     {
-      cosThetaKBins.push_back(xx);
+      Xbins.push_back(xx);
       while ((xx == tmp) && (inputFile.eof() == false)) inputFile >> xx >> xw >> yy >> yw >> cont >> err;
       tmp = xx; 
     }
-  cosThetaKBins.push_back(1.0);
+  Xbins.push_back(cosThetaKBins->operator[](cosThetaKBins->size()-1));
   inputFile.clear();
   inputFile.seekg(0, std::ios::beg);
 
 
-  double* cosThetaKBins_ = MakeBinning(&cosThetaKBins);
-  double* cosThetaLBins_ = MakeBinning(&cosThetaLBins);
+  std::cout << "[Utils::Get2DEffHitoq2Bin]\tNew X-axis binning" << std::endl;
+  for (unsigned int j = 0; j < Xbins.size()-1; j++) std::cout << "bin #" << j << " --> " << Xbins[j] << std::endl;
 
-  TH2D* Histo = new TH2D(GetHisto2DEffName(SignalType).c_str(), GetHisto2DEffName(SignalType).c_str(), cosThetaKBins.size()-1, cosThetaKBins_, cosThetaLBins.size()-1, cosThetaLBins_);
+  std::cout << "[Utils::Get2DEffHitoq2Bin]\tNew Y-axis binning" << std::endl;
+  for (unsigned int k = 0; k < Ybins.size()-1; k++) std::cout << "bin #" << k << " --> " << Ybins[k] << std::endl;
+
+
+  double* Xbins_ = MakeBinning(&Xbins);
+  double* Ybins_ = MakeBinning(&Ybins);
+
+  TH2D* Histo = new TH2D(GetHisto2DEffName(SignalType).c_str(), GetHisto2DEffName(SignalType).c_str(), Xbins.size()-1, Xbins_, Ybins.size()-1, Ybins_);
   Histo->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
   Histo->GetXaxis()->SetTitleOffset(1.8);
   Histo->SetYTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
   Histo->GetYaxis()->SetTitleOffset(1.8);
   Histo->SetZTitle("Efficiency");
- 
+  TH2D* Histo_clone = (TH2D*)Histo->Clone();
+
 
   // ##########################
   // # Read binned efficiency #
   // ##########################
-  for (unsigned int j = 1; j <= cosThetaKBins.size()-1; j++)
-    for (unsigned int k = 1; k <= cosThetaLBins.size()-1; k++)
+  for (unsigned int j = 1; j <= Xbins.size()-1; j++)
+    for (unsigned int k = 1; k <= Ybins.size()-1; k++)
       {
 	inputFile >> xx >> xw >> yy >> yw >> cont >> err;
 	Histo->SetBinContent(j,k,cont);
@@ -760,30 +768,31 @@ TH2D* Utils::Get2DEffHitoq2Bin (unsigned int q2Indx, unsigned int SignalType)
 	if (RIGHTflavorTAG == true)
 	  {
 	    cont = Histo->GetBinContent(j,k) * Histo->GetXaxis()->GetBinWidth(j) * Histo->GetYaxis()->GetBinWidth(k);
-	    Histo->SetBinContent(j,k,cont);
+	    Histo_clone->SetBinContent(j,k,cont);
 	  }
 	else
 	  {
 	    cont = Histo->GetBinContent(j,k) * Histo->GetXaxis()->GetBinWidth(Histo->GetNbinsX()-j+1) * Histo->GetYaxis()->GetBinWidth(Histo->GetNbinsY()-k+1);
-	    Histo->SetBinContent(Histo->GetNbinsX()-j+1,Histo->GetNbinsY()-k+1,cont);
+	    Histo_clone->SetBinContent(Histo->GetNbinsX()-j+1,Histo->GetNbinsY()-k+1,cont);
 	  }
       }
 
 
-  cosThetaKBins.clear();
-  cosThetaLBins.clear();
+  Xbins.clear();
+  Ybins.clear();
   inputFile.close();
-  return Histo;
+  delete Histo;
+  return Histo_clone;
 }
 
-TH3D* Utils::Get3DEffHitoq2Bin (unsigned int q2Indx, unsigned int SignalType)
+TH3D* Utils::Get3DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int SignalType)
 {
   std::ifstream inputFile;
   std::stringstream myString;
   double xx, xw, yy, yw, zz, zw, cont, err, tmp;
-  std::vector<double> cosThetaKBins;
-  std::vector<double> cosThetaLBins;
-  std::vector<double> phiBins;
+  std::vector<double> Xbins;
+  std::vector<double> Ybins;
+  std::vector<double> Zbins;
 
 
   myString.clear(); myString.str("");
@@ -803,10 +812,10 @@ TH3D* Utils::Get3DEffHitoq2Bin (unsigned int q2Indx, unsigned int SignalType)
   tmp = yy;
   while (yy == tmp)
     {
-      phiBins.push_back(zz);
+      Zbins.push_back(zz);
       inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
     }
-  phiBins.push_back(PI);
+  Zbins.push_back(phiBins->operator[](phiBins->size()-1));
   inputFile.clear();
   inputFile.seekg(0, std::ios::beg);
 
@@ -815,12 +824,12 @@ TH3D* Utils::Get3DEffHitoq2Bin (unsigned int q2Indx, unsigned int SignalType)
   // ##################
   inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
   tmp = xx;
-  while (xx == cont)
+  while (xx == tmp)
     {
-      cosThetaLBins.push_back(yy);
+      Ybins.push_back(yy);
       inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
     }
-  cosThetaLBins.push_back(1.0);
+  Ybins.push_back(cosThetaLBins->operator[](cosThetaLBins->size()-1));
   inputFile.clear();
   inputFile.seekg(0, std::ios::beg);
 
@@ -831,34 +840,45 @@ TH3D* Utils::Get3DEffHitoq2Bin (unsigned int q2Indx, unsigned int SignalType)
   tmp = xx;
   while (inputFile.eof() == false)
     {
-      cosThetaKBins.push_back(xx);
-       while ((xx == tmp) && (inputFile.eof() == false)) inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
-       tmp = xx;
+      Xbins.push_back(xx);
+      while ((xx == tmp) && (inputFile.eof() == false)) inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
+      tmp = xx;
     }
-  cosThetaKBins.push_back(1.0);
+  Xbins.push_back(cosThetaKBins->operator[](cosThetaKBins->size()-1));
   inputFile.clear();
   inputFile.seekg(0, std::ios::beg);
 
 
-  double* cosThetaKBins_ = MakeBinning(&cosThetaKBins);
-  double* cosThetaLBins_ = MakeBinning(&cosThetaLBins);
-  double* phiBins_       = MakeBinning(&phiBins);
+  std::cout << "[Utils::Get3DEffHitoq2Bin]\tNew X-axis binning" << std::endl;
+  for (unsigned int j = 0; j < Xbins.size(); j++) std::cout << "bin #" << j << " --> " << Xbins[j] << std::endl;
 
-  TH3D* Histo = new TH3D(GetHisto3DEffName(SignalType).c_str(), GetHisto3DEffName(SignalType).c_str(), cosThetaKBins.size()-1, cosThetaKBins_, cosThetaLBins.size()-1, cosThetaLBins_, phiBins.size()-1, phiBins_);
+  std::cout << "[Utils::Get3DEffHitoq2Bin]\tNew Y-axis binning" << std::endl;
+  for (unsigned int k = 0; k < Ybins.size(); k++) std::cout << "bin #" << k << " --> " << Ybins[k] << std::endl;
+
+  std::cout << "[Utils::Get3DEffHitoq2Bin]\tNew Z-axis binning" << std::endl;
+  for (unsigned int l = 0; l < Zbins.size(); l++) std::cout << "bin #" << l << " --> " << Zbins[l] << std::endl;
+
+
+  double* Xbins_ = MakeBinning(&Xbins);
+  double* Ybins_ = MakeBinning(&Ybins);
+  double* Zbins_ = MakeBinning(&Zbins);
+
+  TH3D* Histo = new TH3D(GetHisto3DEffName(SignalType).c_str(), GetHisto3DEffName(SignalType).c_str(), Xbins.size()-1, Xbins_, Ybins.size()-1, Ybins_, Zbins.size()-1, Zbins_);
   Histo->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
   Histo->GetXaxis()->SetTitleOffset(1.8);
   Histo->SetYTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
   Histo->GetYaxis()->SetTitleOffset(1.8);
   Histo->SetZTitle("#phi");
   Histo->GetZaxis()->SetTitleOffset(1.8);
+  TH3D* Histo_clone = (TH3D*)Histo->Clone();
 
 
   // ##########################
   // # Read binned efficiency #
   // ##########################
-  for (unsigned int j = 1; j <= cosThetaKBins.size()-1; j++)
-    for (unsigned int k = 1; k <= cosThetaLBins.size()-1; k++)
-      for (unsigned int l = 1; l <= phiBins.size()-1; l++)
+  for (unsigned int j = 1; j <= Xbins.size()-1; j++)
+    for (unsigned int k = 1; k <= Ybins.size()-1; k++)
+      for (unsigned int l = 1; l <= Zbins.size()-1; l++)
 	{
 	  inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
 	  Histo->SetBinContent(j,k,l,cont);
@@ -867,21 +887,22 @@ TH3D* Utils::Get3DEffHitoq2Bin (unsigned int q2Indx, unsigned int SignalType)
 	  if (RIGHTflavorTAG == true)
 	    {
 	      cont = Histo->GetBinContent(j,k,l) * Histo->GetXaxis()->GetBinWidth(j) * Histo->GetYaxis()->GetBinWidth(k) * Histo->GetZaxis()->GetBinWidth(l);
-	      Histo->SetBinContent(j,k,l,cont);
+	      Histo_clone->SetBinContent(j,k,l,cont);
 	    }
 	  else
 	    {
 	      cont = Histo->GetBinContent(j,k,l) * Histo->GetXaxis()->GetBinWidth(Histo->GetNbinsX()-j+1) * Histo->GetYaxis()->GetBinWidth(Histo->GetNbinsY()-k+1) * Histo->GetZaxis()->GetBinWidth(Histo->GetNbinsZ()-l+1);
-	      Histo->SetBinContent(Histo->GetNbinsX()-j+1,Histo->GetNbinsY()-k+1,Histo->GetNbinsZ()-l+1,cont);
+	      Histo_clone->SetBinContent(Histo->GetNbinsX()-j+1,Histo->GetNbinsY()-k+1,Histo->GetNbinsZ()-l+1,cont);
 	    }
 	}
 
 
-  cosThetaKBins.clear();
-  cosThetaLBins.clear();
-  phiBins.clear();
+  Xbins.clear();
+  Ybins.clear();
+  Zbins.clear();
   inputFile.close();
-  return Histo;
+  delete Histo;
+  return Histo_clone;
 }
 
 void Utils::Put2DEffHitoq2Bin (std::string fileName, TH2D* histo)
@@ -4140,11 +4161,13 @@ void Utils::ResetEffValue (effValue* myEffVal, double value)
 
 std::string Utils::GetHisto2DEffName (unsigned int SignalType)
 {
+  std::string name;
+
   if (RIGHTflavorTAG == true)
     {
-      if      (SignalType == B0ToKstMuMu)  return Histo2DEffNameOkTagSig;
-      else if (SignalType == B0ToJPsiKst)  return Histo2DEffNameOkTagJPsi;
-      else if (SignalType == B0ToPsi2SKst) return Histo2DEffNameOkTagPsi2S;
+      if      (SignalType == B0ToKstMuMu)  name = Histo2DEffNameOkTagSig;
+      else if (SignalType == B0ToJPsiKst)  name = Histo2DEffNameOkTagJPsi;
+      else if (SignalType == B0ToPsi2SKst) name = Histo2DEffNameOkTagPsi2S;
       else
 	{
 	  std::cout << "[Utils::GetHisto2DEffName]\tSignalType not valid : " << SignalType << std::endl;
@@ -4153,24 +4176,29 @@ std::string Utils::GetHisto2DEffName (unsigned int SignalType)
     }
   else
     {
-      if      (SignalType == B0ToKstMuMu)  return Histo2DEffNameMisTagSig;
-      else if (SignalType == B0ToJPsiKst)  return Histo2DEffNameMisTagJPsi;
-      else if (SignalType == B0ToPsi2SKst) return Histo2DEffNameMisTagPsi2S;
+      if      (SignalType == B0ToKstMuMu)  name = Histo2DEffNameMisTagSig;
+      else if (SignalType == B0ToJPsiKst)  name = Histo2DEffNameMisTagJPsi;
+      else if (SignalType == B0ToPsi2SKst) name = Histo2DEffNameMisTagPsi2S;
       else
 	{
 	  std::cout << "[Utils::GetHisto2DEffName]\tSignalType not valid : " << SignalType << std::endl;
 	  exit (EXIT_FAILURE);
 	}
     }
+
+  std::cout << "[Utils::GetHisto2DEffName]\tChosen name : " << name.c_str() << std::endl;
+  return name;
 }
 
 std::string Utils::GetHisto3DEffName (unsigned int SignalType)
 {
+  std::string name;
+
   if (RIGHTflavorTAG == true)
     {
-      if      (SignalType == B0ToKstMuMu)  return Histo3DEffNameOkTagSig;
-      else if (SignalType == B0ToJPsiKst)  return Histo3DEffNameOkTagJPsi;
-      else if (SignalType == B0ToPsi2SKst) return Histo3DEffNameOkTagPsi2S;
+      if      (SignalType == B0ToKstMuMu)  name = Histo3DEffNameOkTagSig;
+      else if (SignalType == B0ToJPsiKst)  name = Histo3DEffNameOkTagJPsi;
+      else if (SignalType == B0ToPsi2SKst) name = Histo3DEffNameOkTagPsi2S;
       else
 	{
 	  std::cout << "[Utils::GetHisto3DEffName]\tSignalType not valid : " << SignalType << std::endl;
@@ -4179,13 +4207,16 @@ std::string Utils::GetHisto3DEffName (unsigned int SignalType)
     }
   else
     {
-      if      (SignalType == B0ToKstMuMu)  return Histo3DEffNameMisTagSig;
-      else if (SignalType == B0ToJPsiKst)  return Histo3DEffNameMisTagJPsi;
-      else if (SignalType == B0ToPsi2SKst) return Histo3DEffNameMisTagPsi2S;
+      if      (SignalType == B0ToKstMuMu)  name = Histo3DEffNameMisTagSig;
+      else if (SignalType == B0ToJPsiKst)  name = Histo3DEffNameMisTagJPsi;
+      else if (SignalType == B0ToPsi2SKst) name = Histo3DEffNameMisTagPsi2S;
       else
 	{
 	  std::cout << "[Utils::GetHisto3DEffName]\tSignalType not valid : " << SignalType << std::endl;
 	  exit (EXIT_FAILURE);
 	}
     }
+
+  std::cout << "[Utils::GetHisto3DEffName]\tChosen name : " << name.c_str() << std::endl;
+  return name;
 }
