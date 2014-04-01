@@ -4,7 +4,7 @@
 runDataMC          = 1 # 1 = Data; 2 = MC (Reco + Gen); 3 = MC (Gen)
 useJSON            = True
 printMsg           = False
-run2012not2011     = True
+run2012not2011     = False
 triggerProcessName = 'HLT' # 'GEN' or 'HLT' or 'RECO' or 'TEST' or ...
 
 print "\n@@@ CMSSW run configuration flags @@@"
@@ -43,7 +43,7 @@ else:
     if (run2012not2011 == True):
         process.GlobalTag.globaltag = cms.string('FT53_V21A_AN6::All')
     else:
-        process.GlobalTag.globaltag = cms.string('***::All')
+        process.GlobalTag.globaltag = cms.string('FT_53_LV5_AN1::All')
 
 
 #######################
