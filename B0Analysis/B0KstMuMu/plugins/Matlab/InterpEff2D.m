@@ -8,21 +8,21 @@ clear;
 % Global variables %
 %%%%%%%%%%%%%%%%%%%%
 q2Indx = 0; % q^2 bin index
-fileName = 'H2Deff_MisTag_q2Bin';
-NstepsX = 100;
-NstepsY = 100;
+fileName = '../../efficiency/H2Deff_MisTag_q2Bin';
+NstepsX = 100; % [100]
+NstepsY = 100; % [100]
 NbinsX = 5;
 NbinsY = 5;
-addContraints = false;
-useMethodInterp2 = false; % If true 'interp2' else 'scatteredInterpolant'
+addContraints = false;    % [false]
+useMethodInterp2 = false; % If true 'interp2' else 'scatteredInterpolant' [false]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ==> Interpolation methods <==                          %
 % - for 'interp2': linear, nearest, cubic, spline        %
 % - for 'scatteredInterpolant': linear, nearest, natural %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-interpMethod = 'natural';
-effAtBoundaries = 1e-4;
-effMinValue = 1e-5;
+interpMethod = 'linear'; % [linear]
+effAtBoundaries = 1e-4;  % [1e-4]
+effMinValue = 1e-5;      % [1e-5]
 
 
 if addContraints == true

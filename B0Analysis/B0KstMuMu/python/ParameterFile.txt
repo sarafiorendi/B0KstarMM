@@ -26,8 +26,8 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 16
 
 ### HLT-trigger cuts ###
-# mu-mu Vtx CL [0.10]
-0.10
+# mu-mu Vtx CL [0.1]
+0.1
 
 # mu-mu L/sigma w/respect to BS [3.0]
 3.0
@@ -856,7 +856,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Combinatorial bkg yield
 500
 # Mistag fraction
-0.121973   -0.0327637   0.0327637
+0.121973   -0.0327637e-3   0.0327637e-3
 # Peaking bkg yield
 0.0
 # Signal yield
@@ -936,9 +936,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.5
+0.710936
 # AFB +/- err
-0.0
+-0.158507
 # P1 +/- err
 0.0   0.0   0.0
 # P2 +/- err
