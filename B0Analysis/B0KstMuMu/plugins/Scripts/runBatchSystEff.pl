@@ -12,7 +12,7 @@ if (@ARGV == 2)
     # Configuration parameters #
     ############################
     $dirEffRndGen = "../../efficiency/EffRndGenAnalyFiles/" ;
-    $dataFile     = $ENV{'DATADIR'} . "/Data2012/SingleCand/singleCand_B0ToKstMuMu_Data2012ABCD_NTuples.root" ;
+    $dataFile     = $ENV{'DATADIR'} . "/Data" . $ENV{'DATAYEAR'} . "/SingleCand/singleCand_B0ToKstMuMu_Data" . $ENV{'DATAYEAR'} . "ABCD_NTuples.root" ;
     $parFile      = "../../python/ParameterFile.txt" ;
     ############################
 
