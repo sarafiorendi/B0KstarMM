@@ -511,12 +511,12 @@ void CloseAllAndQuit (TApplication* theApp, TFile* NtplFile)
   fileFitSystematics.close();
   fileFitSystematicsInput.close();
   
-  if (TotalPDFPsi != NULL)                DeleteFit(TotalPDFPsi,"All");
-  if (TotalPDFRejectPsi != NULL)          DeleteFit(TotalPDFRejectPsi,"All");
-  if (SingleCandNTuple_JPsi != NULL)      delete SingleCandNTuple_JPsi;
-  if (SingleCandNTuple_PsiP != NULL)      delete SingleCandNTuple_PsiP;
+  if (TotalPDFPsi                != NULL) DeleteFit(TotalPDFPsi,"All");
+  if (TotalPDFRejectPsi          != NULL) DeleteFit(TotalPDFRejectPsi,"All");
+  if (SingleCandNTuple_JPsi      != NULL) delete SingleCandNTuple_JPsi;
+  if (SingleCandNTuple_PsiP      != NULL) delete SingleCandNTuple_PsiP;
   if (SingleCandNTuple_RejectPsi != NULL) delete SingleCandNTuple_RejectPsi;
-  if (NtplFile != NULL)                   NtplFile->Close("R");
+  if (NtplFile                   != NULL) NtplFile->Close("R");
 
   for (unsigned int i = 0; i < effFuncs.first->size(); i++) delete effFuncs.first->operator[](i);
   effFuncs.first->erase(effFuncs.first->begin(),effFuncs.first->end());
@@ -6910,7 +6910,7 @@ int main(int argc, char** argv)
 		  cout << "\n@@@ Now make TOY-MC for fit to B0 total invariant mass and cos(theta_K) and cos(theta_l) @@@" << endl;
 		  TCanvas* cToyMC = new TCanvas("cToyMC","cToyMC",10, 10, 1200, 800);
 
-		  InstantiateMass2AnglesFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,CosThetaMuArb,CosThetaKArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,specBin,make_pair(effFuncs.first->operator[](specBin),effFuncs.first->operator[](specBin)));
+		  InstantiateMass2AnglesFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,CosThetaMuArb,CosThetaKArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,specBin,make_pair(effFuncs.first->operator[](specBin),effFuncs.second->operator[](specBin)));
 		  MakeMass2AnglesToy(TotalPDFRejectPsi,B0MassArb,CosThetaMuArb,CosThetaKArb,cToyMC,FitType,nToy,specBin,&fitParam,&vecConstr,fileName,&q2Bins);
 		}
 	    }
@@ -6936,7 +6936,7 @@ int main(int argc, char** argv)
 		  // ######################################################
 		  // # Generate dataset for B0 inv. mass and angles model #
 		  // ######################################################
-		  InstantiateMass2AnglesFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,CosThetaMuArb,CosThetaKArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,specBin,make_pair(effFuncs.first->operator[](specBin),effFuncs.first->operator[](specBin)));
+		  InstantiateMass2AnglesFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,CosThetaMuArb,CosThetaKArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,specBin,make_pair(effFuncs.first->operator[](specBin),effFuncs.second->operator[](specBin)));
 		  GenerateDataset(TotalPDFRejectPsi,RooArgSet(*B0MassArb,*CosThetaMuArb,*CosThetaKArb),&q2Bins,specBin,&fitParam,fileName);
 		}
 	    }
@@ -6954,7 +6954,7 @@ int main(int argc, char** argv)
                   // #################################################################
                   // # Generate new parameter file for B0 inv. mass and angles model #
                   // #################################################################
-                  InstantiateMass2AnglesFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,CosThetaMuArb,CosThetaKArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,specBin,make_pair(effFuncs.first->operator[](specBin),effFuncs.first->operator[](specBin)));
+                  InstantiateMass2AnglesFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,CosThetaMuArb,CosThetaKArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,specBin,make_pair(effFuncs.first->operator[](specBin),effFuncs.second->operator[](specBin)));
                 }
 	      GenerateParameterFile(TotalPDFRejectPsi,&fitParam,&configParam,&vecConstr,fileName,fileIndx,&q2Bins,specBin);
 	    }

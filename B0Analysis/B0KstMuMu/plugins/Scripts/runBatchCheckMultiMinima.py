@@ -1,6 +1,6 @@
 ############################################################
 # Program to fit with different parameter starting values: #
-# 1. generate new (random-)parameters files                #
+# 1. generate new (random-)parameter files                 #
 # 2. use files at 1. to perform the fits                   #
 ############################################################
 
