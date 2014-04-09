@@ -7,22 +7,22 @@
 #$dirName = "/nfs/data36/cms/dinardo/B0ToPsi2SKst_GEN_NoFilter_MC_NTuples/" ;
 
 ### RECO MC ###
-#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_B0ToKstMuMu/" ;
-#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_B0ToJPsiKst/" ;
-#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_B0ToPsi2SKst/" ;
-#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_BsToKstMuMu/" ;
+#$dirName = " /mnt/hadoop/store/user/dinardo/GridB0KstMuMu_B0ToKstMuMu/" ;
+#$dirName = " /mnt/hadoop/store/user/dinardo/GridB0KstMuMu_B0ToJPsiKst/" ;
+#$dirName = " /mnt/hadoop/store/user/dinardo/GridB0KstMuMu_B0ToPsi2SKst/" ;
+#$dirName = " /mnt/hadoop/store/user/dinardo/GridB0KstMuMu_BsToKstMuMu/" ;
 
-#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_v1_2011_B0ToKstMuMu/" ;
-#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_v1_2011_B0ToJPsiKst/" ;
-#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_v1_2011_B0ToPsi2SKst/" ;
+#$dirName = " /mnt/hadoop/store/user/dinardo/GridB0KstMuMu_v1_2011_B0ToKstMuMu/" ;
+#$dirName = " /mnt/hadoop/store/user/dinardo/GridB0KstMuMu_v1_2011_B0ToJPsiKst/" ;
+#$dirName = " /mnt/hadoop/store/user/dinardo/GridB0KstMuMu_v1_2011_B0ToPsi2SKst/" ;
 
-#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_B0ToPsiMuMu/" ;
-#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_BpToPsiMuMu/" ;
-#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_BsToPsiMuMu/" ;
-#$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_LambdaBToPsiMuMu/" ;
+#$dirName = " /mnt/hadoop/store/user/dinardo/GridB0KstMuMu_B0ToPsiMuMu/" ;
+#$dirName = " /mnt/hadoop/store/user/dinardo/GridB0KstMuMu_BpToPsiMuMu/" ;
+#$dirName = " /mnt/hadoop/store/user/dinardo/GridB0KstMuMu_BsToPsiMuMu/" ;
+#$dirName = " /mnt/hadoop/store/user/dinardo/GridB0KstMuMu_LambdaBToPsiMuMu/" ;
 
 ### Data ###
-$dirName = "/bestman/storage/cms/store/user/dinardo/GridB0KstMuMu_Data2012A/" ;
+$dirName = " /mnt/hadoop/store/user/dinardo/GridB0KstMuMu_Data2012A/" ;
 
 
 $listcmd = "ls " . $dirName ;

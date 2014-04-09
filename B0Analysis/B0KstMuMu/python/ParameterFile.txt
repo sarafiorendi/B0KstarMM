@@ -854,13 +854,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # Combinatorial bkg yield
-500
+400
 # Mistag fraction
-0.121973   -0.0327637e-3   0.0327637e-3
+0.121973   -0.0327637   0.0327637
 # Peaking bkg yield
 0.0
 # Signal yield
-32000
+30000
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
