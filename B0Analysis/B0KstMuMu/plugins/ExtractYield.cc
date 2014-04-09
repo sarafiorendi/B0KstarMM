@@ -523,7 +523,7 @@ void CloseAllAndQuit (TApplication* theApp, TFile* NtplFile)
   delete effFuncs.first;
 
   for (unsigned int i = 0; i < effFuncs.second->size(); i++) delete effFuncs.second->operator[](i);
-  effFuncs.first->erase(effFuncs.second->begin(),effFuncs.second->end());
+  effFuncs.second->erase(effFuncs.second->begin(),effFuncs.second->end());
   delete effFuncs.second;
 
   gROOT->CloseFiles();
