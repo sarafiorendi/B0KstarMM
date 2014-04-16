@@ -1,8 +1,8 @@
-############################################################
-# Program to fit with different parameter starting values: #
-# 1. generate new (random-)parameter files                 #
-# 2. use files at 1. to perform the fits                   #
-############################################################
+#####################################################################
+# Program to fit with different parameter starting values:          #
+# 1. generate new (random-)parameter files --> "name_bin_indx.txt"  #
+# 2. use files at 1. to perform the fits (parFileName = "name.txt") #
+#####################################################################
 
 from os import system
 import sys

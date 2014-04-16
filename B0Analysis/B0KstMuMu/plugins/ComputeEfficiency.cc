@@ -1025,14 +1025,14 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
 		  {
 		    myString.clear(); myString.str("");
 		    myString << Utility->GetHisto2DEffName(SignalType) << "_" << q2BinIndx;
-		    TH2D* hisFunc2D = Utility->Get2DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,*myEff);
+		    TH2D* hisFunc2D = Utility->Get2DEffHistoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,*myEff);
 		    myString << ".txt";
 		    Utility->Put2DEffHitoq2Bin(myString.str().c_str(),hisFunc2D);
 		    
 		    
 		    myString.clear(); myString.str("");
 		    myString << Utility->GetHisto3DEffName(SignalType) << "_" << q2BinIndx;
-		    TH3D* hisFunc3D = Utility->Get3DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,*myEff);
+		    TH3D* hisFunc3D = Utility->Get3DEffHistoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,*myEff);
 		    myString << ".txt";
 		    Utility->Put3DEffHitoq2Bin(myString.str().c_str(),hisFunc3D);
 		  }
@@ -1593,7 +1593,7 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // ##########################
   myString.clear(); myString.str("");
   myString << "Histo_q2Bin_" << q2BinIndx;
-  TH2D* hisFunc2D = Utility->Get2DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
+  TH2D* hisFunc2D = Utility->Get2DEffHistoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
 
 
   // ##############################
@@ -1731,7 +1731,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // ##########################
   myString.clear(); myString.str("");
   myString << "Histo_q2Bin_" << q2BinIndx;
-  TH3D* hisFunc3D = Utility->Get3DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
+  TH3D* hisFunc3D = Utility->Get3DEffHistoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
   Zmin = hisFunc3D->GetMinimum();
  
   cShow2DAnaEff->cd(1);
@@ -1849,7 +1849,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
       exit (EXIT_FAILURE);
     }
 
-  effHis3D = Utility->Get3DEffHitoq2Bin("effHis3D",q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
+  effHis3D = Utility->Get3DEffHistoq2Bin("effHis3D",q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
   effHis3D->SetMarkerStyle(22);
   effHis3D->SetMarkerColor(kRed);
   for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
@@ -2013,7 +2013,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   // ##########################
   myString.clear(); myString.str("");
   myString << "Histo_q2Bin_" << q2BinIndx;
-  TH2D* hisFunc2D = Utility->Get2DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
+  TH2D* hisFunc2D = Utility->Get2DEffHistoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
 
   cEff->cd(1);
   hisFunc2D->Draw("lego2 fb");
@@ -2132,7 +2132,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   // ##########################
   myString.clear(); myString.str("");
   myString << "Histo_q2Bin_" << q2BinIndx;
-  TH3D* hisFunc3D = Utility->Get3DEffHitoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
+  TH3D* hisFunc3D = Utility->Get3DEffHistoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
   Zmin = hisFunc3D->GetMinimum();
   hisFunc3D->SetMarkerStyle(20);
   hisFunc3D->SetMarkerColor(kBlack);
@@ -2148,7 +2148,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   EffFunc3D = effFuncs3D[q2BinIndx];
   Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,EffFunc3D);
   
-  effHis3D = Utility->Get3DEffHitoq2Bin("effHis3D",q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
+  effHis3D = Utility->Get3DEffHistoq2Bin("effHis3D",q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
   effHis3D->SetMarkerStyle(22);
   effHis3D->SetMarkerColor(kRed);
   for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)

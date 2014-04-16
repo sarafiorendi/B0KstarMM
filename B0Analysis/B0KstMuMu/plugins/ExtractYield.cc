@@ -32,6 +32,7 @@
 #include <RooFitResult.h>
 #include <RooProdPdf.h>
 #include <RooPolynomial.h>
+#include <RooBernstein.h>
 #include <RooMCStudy.h>
 #include <RooMinuit.h>
 #include <RooWorkspace.h>
@@ -71,6 +72,7 @@ using namespace RooFit;
 #define POLYCOEFRANGE   2.0  // Polynomial coefficients range for parameter regeneration
 #define NORMJPSInotPSIP true // "true" = normalize yields to compute dBF/dq^2 with respect to J/psi; "false" use psi(2S) instead
 #define DELTATYPE       10   // Multiplication factor to distinguish between good-tagged and mis-tagged
+#define DEGREEINTERPEFF 1    // Polynomial degree for efficiency histogram interpolation
 
 #define nJPSIS 250000.0
 #define nJPSIB   2500.0
@@ -203,9 +205,9 @@ RooAbsPdf*  BkgMassExp2;
 RooRealVar* fracMassBExp;
 RooAbsPdf*  BkgMassComb;
 
-// #############################
-// # Mistag background B0 mass #
-// #############################
+// #########################
+// # Mistag signal B0 mass #
+// #########################
 RooRealVar* sigmaMisTag1;
 RooAbsPdf*  MassMisTag1;
 RooRealVar* sigmaMisTag2;
@@ -430,7 +432,7 @@ void SetValueAndErrors (RooAbsPdf* pdf, string varName, double multi, stringstre
       (*myString) >> tmpStr;
       if (tmpStr.empty() == true) *errLo = -1.0;
       else *errLo = atof(tmpStr.c_str()) * multi;
-      
+
       tmpStr.clear();
       (*myString) >> tmpStr;
       if (tmpStr.empty() == true) *errHi = 1.0;
@@ -490,6 +492,21 @@ void PrintVariables (RooArgSet* setVar, string type)
     {
       cout << "[ExtractYield::PrintVariables]\tWrong parameter: " << type << endl;
       exit (EXIT_FAILURE);
+    }
+}
+
+
+// @TMP@
+void MakeAllConstants (RooArgSet* setVar, RooArgSet* vecConstr)
+{
+  RooRealVar* tmpVar;
+  int nEleSet = setVar->getSize();
+
+  TIterator* it = setVar->createIterator();
+  for (int i = 0; i < nEleSet; i++)
+    {
+      tmpVar = (RooRealVar*)it->Next();
+      if (IsInConstraints(vecConstr,tmpVar->GetName()) == true) tmpVar->setConstant(true);
     }
 }
 
@@ -610,6 +627,7 @@ void DrawString (double Lumi, RooPlot* myFrame)
   // ###################
   // # Nominal method: #
   // ###################
+  // @TMP@
   // myString.clear(); myString.str("");
   // myString << "#sqrt{  }";
   // TLatex* LumiTex3 = new TLatex(0.82,0.9,myString.str().c_str());
@@ -956,8 +974,8 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRea
 	  else if ((FitType >= 41*DELTATYPE) && (FitType < 60*DELTATYPE)) SignalType = 3;
 	  else if ((FitType >= 61*DELTATYPE) && (FitType < 80*DELTATYPE)) SignalType = 5;
 	  else SignalType = 1;
-	  RooDataHist* histoEff = new RooDataHist("histoEff","histoEff",RooArgSet(*z,*y),Utility->Get2DEffHitoq2Bin(&cosThetaKBins,&cosThetaLBins,parIndx,SignalType));
-	  histoEffPDF           = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(*z,*y),*histoEff,1);
+	  RooDataHist* histoEff = new RooDataHist("histoEff","histoEff",RooArgSet(*z,*y),Utility->Get2DEffHistoq2Bin(&cosThetaKBins,&cosThetaLBins,parIndx,SignalType,make_pair(-1.0,1.0),make_pair(-1.0,1.0)));
+	  histoEffPDF           = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(*z,*y),*histoEff,DEGREEINTERPEFF);
 	  AnglesPDF             = new RooProdPdf("AngleMisTag","MisTag * Efficiency",RooArgSet(*_AnglesPDF,*histoEffPDF));
 	}
       else AnglesPDF = new RooGenericPdf("AngleMisTag",myString.str().c_str(),RooArgSet(*VarsAng));
@@ -3017,6 +3035,15 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 	  FitDimuonInvMass(SingleCandNTuple_KeepPsi,&TotalPDFJPsi_KeepPsi,&TotalPDFPsiP_KeepPsi,mumuMass,cmumuMass_KeepPsi,false,true,"TotalPDFPsi_KeepPsi");
 	}
     }
+  
+
+  // ####################################################
+  // # Setting initial values for independent variables #
+  // ####################################################
+  B0MassArb->setVal(Utility->B0Mass);
+  CosThetaKArb->setVal(0.0);
+  CosThetaMuArb->setVal(0.0);
+  PhiKstMuMuPlaneArb->setVal(0.0);
 }
 
 
@@ -3089,9 +3116,9 @@ void InstantiateMassFit (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, ve
   else                  BkgMassComb = new RooGenericPdf(*((RooGenericPdf*)BkgMassExp1),"BkgMassComb");
 
 
-  // ###########################################################
-  // # Define mass fit variables and pdf for mistag background #
-  // ###########################################################
+  // #######################################################
+  // # Define mass fit variables and pdf for mistag signal #
+  // #######################################################
   sigmaMisTag1 = new RooRealVar("sigmaMisTag1","Mistag sigma-1",0.0,"GeV");
   MassMisTag1  = new RooGaussian("MassMisTag1","Mistag-1",*x,*meanS,*sigmaMisTag1);
 
@@ -4126,10 +4153,10 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   
   sigmaS1 = new RooRealVar("sigmaS1","Signal sigma-1",0.0,"GeV");
   MassS1  = new RooGaussian("MassS1","Signal Gaussian-1",*x,*meanS,*sigmaS1);
-  
+
   sigmaS2 = new RooRealVar("sigmaS2","Signal sigma-2",0.0,"GeV");
   MassS2  = new RooGaussian("MassS2","Signal Gaussian-2",*x,*meanS,*sigmaS2);
-  
+
   meanS->setConstant(false);
   sigmaS1->setConstant(false);
   sigmaS2->setConstant(false);
@@ -4157,7 +4184,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
     {
       myString.clear(); myString.str("");
       myString << "c1Poly" << i;
-      c1Poly[i] = new RooRealVar(myString.str().c_str(),"Comb.bkg.poly.coef.",0.0);
+      c1Poly[i] = new RooRealVar(myString.str().c_str(),"Comb.bkg.poly.coef.",0.0,0.0,1e6); // @TMP@
       c1Poly[i]->setConstant(false);
       VarsC1.add(*c1Poly[i]);
     }
@@ -4165,12 +4192,15 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
     {
       myString.clear(); myString.str("");
       myString << "c2Poly" << i;
-      c2Poly[i] = new RooRealVar(myString.str().c_str(),"Comb.bkg.poly.coef.",0.0);
+      c2Poly[i] = new RooRealVar(myString.str().c_str(),"Comb.bkg.poly.coef.",0.0,0.0,1e6); // @TMP@
       c2Poly[i]->setConstant(false);
       VarsC2.add(*c2Poly[i]);
     }
-  BkgAngleC1 = new RooPolynomial("BkgAngleC1","Comb.bkg angular shape",*y,VarsC1);
-  BkgAngleC2 = new RooPolynomial("BkgAngleC2","Comb.bkg angular shape",*z,VarsC2);
+  // @TMP@
+  // BkgAngleC1 = new RooPolynomial("BkgAngleC1","Comb.bkg angular shape",*y,VarsC1);
+  // BkgAngleC2 = new RooPolynomial("BkgAngleC2","Comb.bkg angular shape",*z,VarsC2);
+  BkgAngleC1 = new RooBernstein("BkgAngleC1","Comb.bkg angular shape",*y,VarsC1);
+  BkgAngleC2 = new RooBernstein("BkgAngleC2","Comb.bkg angular shape",*z,VarsC2);
   BkgAnglesC = new RooProdPdf("BkgAnglesC","Background Angle1*Angle2",RooArgSet(*BkgAngleC1,*BkgAngleC2));
 
 
@@ -4199,9 +4229,9 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   BkgMassAngleComb = new RooProdPdf("BkgMassAngleComb","Combinatorial bkg Mass*Angle",RooArgSet(*BkgMassComb,*BkgAnglesC));
 
  
-  // ###########################################################
-  // # Define mass fit variables and pdf for mistag background #
-  // ###########################################################
+  // #######################################################
+  // # Define mass fit variables and pdf for mistag signal #
+  // #######################################################
   sigmaMisTag1 = new RooRealVar("sigmaMisTag1","Mistag sigma-1",0.0,"GeV");
   MassMisTag1  = new RooGaussian("MassMisTag1","Mistag-1",*x,*meanS,*sigmaMisTag1);
 
@@ -4304,12 +4334,12 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // ###########################
   // # Define pdf coefficients #
   // ###########################
-  nSig     = new RooRealVar("nSig","Number of signal events",1.0);
-  nBkgComb = new RooRealVar("nBkgComb","Number of comb. background events",1.0);
+  nSig     = new RooRealVar("nSig","Number of signal events",1.0,0.0,1e6);
+  nBkgComb = new RooRealVar("nBkgComb","Number of comb. background events",1.0,0.0,1e6);
   RooFormulaVar* nMisTag;
   if (FitOptions == 4)
     {
-      nMisTagFrac = new RooRealVar("nMisTagFrac","Number of mistag events",1.0);
+      nMisTagFrac = new RooRealVar("nMisTagFrac","Number of mistag events",1.0,0.0,1e6);
       nMisTag     = new RooFormulaVar("nMisTag","nMisTagFrac", RooArgSet(*nMisTagFrac));
     }
   else
@@ -4317,7 +4347,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
       nMisTagFrac = new RooRealVar("nMisTagFrac","Fraction of mistag",0.0,0.0,1.0);
       nMisTag     = new RooFormulaVar("nMisTag","nSig * nMisTagFrac / (1 - nMisTagFrac)", RooArgSet(*nSig,*nMisTagFrac));
     }
-  nBkgPeak = new RooRealVar("nBkgPeak","Number of peaking background events",1.0);
+  nBkgPeak = new RooRealVar("nBkgPeak","Number of peaking background events",1.0,0.0,1e6);
 
   nSig->setConstant(false);
   nBkgComb->setConstant(false);
@@ -4502,76 +4532,78 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // # Make sideband fit #
       // #####################
       // @TMP@
-      if (GetVar(*TotalPDF,"nSig") != NULL)
-      	{
-      	  RooAbsPdf* TmpPDF = NULL;
-      	  RooDataSet* sideBands = NULL;
-      	  RooRealVar frac("frac","Fraction",0.5,0.0,1.0);
-      	  RooArgSet constrSidebads;
-      	  ClearVars(&constrSidebads);
-      	  BuildAngularConstraints(&constrSidebads,*TotalPDF);
+      // if (GetVar(*TotalPDF,"nSig") != NULL)
+      	// {
+      	//   RooAbsPdf* TmpPDF = NULL;
+      	//   RooDataSet* sideBands = NULL;
+      	//   RooRealVar frac("frac","Fraction",0.5,0.0,1.0);
+      	//   RooArgSet constrSidebads;
+      	//   ClearVars(&constrSidebads);
+      	//   BuildAngularConstraints(&constrSidebads,*TotalPDF);
 
 
-      	  // ################
-      	  // # Save results #
-      	  // ################
-      	  fileFitResults << "====================================================================" << endl;
-      	  fileFitResults << "@@@@@@ B0 mass sideband fit @@@@@@" << endl;
-      	  fileFitResults << "Amplitude of signal region (+/- n*< Sigma >): " << Utility->GetGenericParam("NSigmaB0S") << " * " << Utility->GetB0Width() << endl;
+      	//   // ################
+      	//   // # Save results #
+      	//   // ################
+      	//   fileFitResults << "====================================================================" << endl;
+      	//   fileFitResults << "@@@@@@ B0 mass sideband fit @@@@@@" << endl;
+      	//   fileFitResults << "Amplitude of signal region (+/- n*< Sigma >): " << Utility->GetGenericParam("NSigmaB0S") << " * " << Utility->GetB0Width() << endl;
 
 
-      	  // ##############
-      	  // # Get p.d.f. #
-      	  // ##############
-      	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) TmpPDF = new RooAddPdf("TmpPDF","Temporary p.d.f.",RooArgSet(*BkgAnglesC,*BkgAnglesP),RooArgSet(frac));
-      	  else                                      TmpPDF = new RooProdPdf(*((RooProdPdf*)BkgAnglesC),"TmpPDF");
+      	//   // ##############
+      	//   // # Get p.d.f. #
+      	//   // ##############
+      	//   if (GetVar(*TotalPDF,"nBkgPeak") != NULL) TmpPDF = new RooAddPdf("TmpPDF","Temporary p.d.f.",RooArgSet(*BkgAnglesC,*BkgAnglesP),RooArgSet(frac));
+      	//   else                                      TmpPDF = new RooProdPdf(*((RooProdPdf*)BkgAnglesC),"TmpPDF");
 
 
-      	  // #############
-      	  // # Sidebands #
-      	  // #############
-      	  myString.clear(); myString.str("");
-      	  myString << "B0MassArb < " << (*TotalPDF)->getVariables()->getRealValue("meanS") - Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
-      	  myString << " || B0MassArb > " << (*TotalPDF)->getVariables()->getRealValue("meanS") + Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
-      	  cout << "Cut for B0 sidebands: " << myString.str().c_str() << endl;
-      	  sideBands = (RooDataSet*)dataSet->reduce(myString.str().c_str());
+      	//   // #############
+      	//   // # Sidebands #
+      	//   // #############
+      	//   myString.clear(); myString.str("");
+      	//   myString << "B0MassArb < " << (*TotalPDF)->getVariables()->getRealValue("meanS") - Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
+      	//   myString << " || B0MassArb > " << (*TotalPDF)->getVariables()->getRealValue("meanS") + Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
+      	//   cout << "Cut for B0 sidebands: " << myString.str().c_str() << endl;
+      	//   sideBands = (RooDataSet*)dataSet->reduce(myString.str().c_str());
 
 
-      	  // ###################
-      	  // # Make actual fit #
-      	  // ###################
-      	  if (ApplyConstr == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebads),Save(true));
-      	  else                     fitResult = TmpPDF->fitTo(*sideBands,Save(true));
-      	  if (fitResult != NULL) fitResult->Print("v");
+      	//   // ###################
+      	//   // # Make actual fit #
+      	//   // ###################
+      	//   if (ApplyConstr == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebads),Save(true));
+      	//   else                     fitResult = TmpPDF->fitTo(*sideBands,Save(true));
+      	//   if (fitResult != NULL) fitResult->Print("v");
 
 	  
-      	  // ####################
-      	  // # Save fit results #
-      	  // ####################
-      	  StorePolyResultsInFile(TotalPDF);
+      	//   // ####################
+      	//   // # Save fit results #
+      	//   // ####################
+      	//   StorePolyResultsInFile(TotalPDF);
 
 
-      	  delete TmpPDF;
-      	  delete sideBands;
-      	  ClearVars(&constrSidebads);
-      	  if (fitResult != NULL) delete fitResult;
+      	//   delete TmpPDF;
+      	//   delete sideBands;
+      	//   ClearVars(&constrSidebads);
+      	//   if (fitResult != NULL) delete fitResult;
 
 
-      	  // ################################
-      	  // # Fix comb. angular background #
-      	  // ################################
-	  cout << "@@@ Fixing comb. angular background @@@" << endl;
-	  for (unsigned int i = 0 ; i < NCOEFFPOLYBKG; i++)
-	    {
-	      myString.clear(); myString.str("");
-	      myString << "c1Poly" << i;
-	      if (GetVar(*TotalPDF,myString.str().c_str()) != NULL) GetVar(*TotalPDF,myString.str().c_str())->setConstant(true);
+      	//   // ################################
+      	//   // # Fix comb. angular background #
+      	//   // ################################
+	//   cout << "@@@ Fixing comb. angular background after sideband fit @@@" << endl;
+	//   for (unsigned int i = 0 ; i < NCOEFFPOLYBKG; i++)
+	//     {
+	//       myString.clear(); myString.str("");
+	//       myString << "c1Poly" << i;
+	//       if (GetVar(*TotalPDF,myString.str().c_str()) != NULL) GetVar(*TotalPDF,myString.str().c_str())->setConstant(true);
 
-	      myString.clear(); myString.str("");
-	      myString << "c2Poly" << i;
-	      if (GetVar(*TotalPDF,myString.str().c_str()) != NULL) GetVar(*TotalPDF,myString.str().c_str())->setConstant(true);
-	    }
-      	}
+	//       myString.clear(); myString.str("");
+	//       myString << "c2Poly" << i;
+	//       if (GetVar(*TotalPDF,myString.str().c_str()) != NULL) GetVar(*TotalPDF,myString.str().c_str())->setConstant(true);
+	//     }
+      	// }
+      // @TMP@
+      MakeAllConstants((*TotalPDF)->getVariables(),vecConstr);
 
 
       // ###################
@@ -5345,19 +5377,19 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // #####################
       ClearVars(vecConstr);
       if ((FitType != 36) && (FitType != 56) && (FitType != 76))
-	{
-	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"sign");
-	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
-	  if ((strcmp(CONTROLMisTag,"all&NoFit") == 0) || (strcmp(CONTROLMisTag,"all&FitFrac") == 0)) BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
-	  if (configParam->operator[](Utility->GetConfigParamIndx("FitOptions"))->operator[](i) != 1) BuildAngularConstraints(vecConstr,TotalPDFq2Bins[i]);
-	}
+      	{
+      	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"sign");
+      	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
+      	  if ((strcmp(CONTROLMisTag,"all&NoFit") == 0) || (strcmp(CONTROLMisTag,"all&FitFrac") == 0)) BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
+      	  if (configParam->operator[](Utility->GetConfigParamIndx("FitOptions"))->operator[](i) != 1) BuildAngularConstraints(vecConstr,TotalPDFq2Bins[i]);
+      	}
       if (((FitType != 46) && (FitType != 56) &&
-	   (FitType != 66) && (FitType != 76)) ||
-	  ((FitType == 26) && (specBin != Utility->GetJPsiBin(q2Bins)) && (specBin != Utility->GetPsiPBin(q2Bins))))
-	{
-	  BuildPhysicsConstraints(vecConstr,TotalPDFq2Bins[i],"FsS");
-	  BuildPhysicsConstraints(vecConstr,TotalPDFq2Bins[i],"AsS");
-	}
+      	   (FitType != 66) && (FitType != 76)) ||
+      	  ((FitType == 26) && (specBin != Utility->GetJPsiBin(q2Bins)) && (specBin != Utility->GetPsiPBin(q2Bins))))
+      	{
+      	  BuildPhysicsConstraints(vecConstr,TotalPDFq2Bins[i],"FsS");
+      	  BuildPhysicsConstraints(vecConstr,TotalPDFq2Bins[i],"AsS");
+      	}
       BuildPhysicsConstraints(vecConstr,TotalPDFq2Bins[i],"AfbBound"); // # Special constraint for AFB boundaries #
       BuildPhysicsConstraints(vecConstr,TotalPDFq2Bins[i],"AsBound");  // # Special constraint for AS  boundaries #
 
@@ -6278,6 +6310,7 @@ int main(int argc, char** argv)
 	  cout << "POLYCOEFRANGE = "   << POLYCOEFRANGE << endl;
 	  cout << "NORMJPSInotPSIP = " << NORMJPSInotPSIP << endl;
 	  cout << "DELTATYPE = "       << DELTATYPE << endl;
+	  cout << "DEGREEINTERPEFF = " << DEGREEINTERPEFF << endl;
 
 	  cout << "\nApplyConstr = "  << ApplyConstr << endl;
 	  cout << "SAVEPOLY = "       << SAVEPOLY << endl;

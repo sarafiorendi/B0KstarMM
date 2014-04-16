@@ -618,7 +618,7 @@ void Utils::GetEffq2Bin (std::vector<double>* q2Bins, std::vector<double>* cosTh
     }
 }
 
-TH2D* Utils::Get2DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff)
+TH2D* Utils::Get2DEffHistoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff)
 {
   double Eff    = 0.0;
   double EffErr = 0.0;
@@ -651,7 +651,7 @@ TH2D* Utils::Get2DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bi
   return Histo;
 }
 
-TH3D* Utils::Get3DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff)
+TH3D* Utils::Get3DEffHistoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff)
 {
   double Eff    = 0.0;
   double EffErr = 0.0;
@@ -687,7 +687,7 @@ TH3D* Utils::Get3DEffHitoq2Bin (std::string histoName, std::vector<double>* q2Bi
   return Histo;
 }
 
-TH2D* Utils::Get2DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, unsigned int q2Indx, unsigned int SignalType)
+TH2D* Utils::Get2DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, unsigned int q2Indx, unsigned int SignalType, std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange)
 {
   std::ifstream inputFile;
   std::stringstream myString;
@@ -698,11 +698,11 @@ TH2D* Utils::Get2DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<
 
   myString.clear(); myString.str("");
   myString << DirEfficiency.c_str() << GetHisto2DEffName(SignalType) << "_" << q2Indx << ".txt";
-  std::cout << "[Utils::Get2DEffHitoq2Bin]\tReading 2D binned efficiency file : " << myString.str().c_str() << std::endl;
+  std::cout << "[Utils::Get2DEffHistoq2Bin]\tReading 2D binned efficiency file : " << myString.str().c_str() << std::endl;
   inputFile.open(myString.str().c_str(), std::ifstream::in);
   if (inputFile.good() == false)
     {
-      std::cout << "[Utils::Get2DEffHitoq2Bin]\tError opening file : " << myString.str().c_str() << std::endl;
+      std::cout << "[Utils::Get2DEffHistoq2Bin]\tError opening file : " << myString.str().c_str() << std::endl;
       exit (EXIT_FAILURE);
     }
 
@@ -713,10 +713,11 @@ TH2D* Utils::Get2DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<
   tmp = xx;
   while (xx == tmp)
     {
-      Ybins.push_back(yy);
+      if ((yy >= cosThetaLRange.first) && (yy < cosThetaLRange.second)) Ybins.push_back(yy);
       inputFile >> xx >> xw >> yy >> yw >> cont >> err;
     }
-  Ybins.push_back(cosThetaLBins->operator[](cosThetaLBins->size()-1));
+  if (cosThetaLBins->operator[](cosThetaLBins->size()-1) < cosThetaLRange.second) Ybins.push_back(cosThetaLBins->operator[](cosThetaLBins->size()-1));
+  else if (Ybins.back() < cosThetaLRange.second)                                  Ybins.push_back(cosThetaLRange.second);
   inputFile.clear();
   inputFile.seekg(0, std::ios::beg);
 
@@ -727,20 +728,21 @@ TH2D* Utils::Get2DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<
   tmp = xx;
   while (inputFile.eof() == false)
     {
-      Xbins.push_back(xx);
+      if ((xx >= cosThetaKRange.first) && (xx < cosThetaKRange.second)) Xbins.push_back(xx);
       while ((xx == tmp) && (inputFile.eof() == false)) inputFile >> xx >> xw >> yy >> yw >> cont >> err;
-      tmp = xx; 
+      tmp = xx;
     }
-  Xbins.push_back(cosThetaKBins->operator[](cosThetaKBins->size()-1));
+  if (cosThetaKBins->operator[](cosThetaKBins->size()-1) < cosThetaKRange.second) Xbins.push_back(cosThetaKBins->operator[](cosThetaKBins->size()-1));
+  else if (Xbins.back() < cosThetaKRange.second)                                  Xbins.push_back(cosThetaKRange.second);
   inputFile.clear();
   inputFile.seekg(0, std::ios::beg);
 
 
-  std::cout << "[Utils::Get2DEffHitoq2Bin]\tNew X-axis binning" << std::endl;
-  for (unsigned int j = 0; j < Xbins.size()-1; j++) std::cout << "bin #" << j << " --> " << Xbins[j] << std::endl;
+  std::cout << "[Utils::Get2DEffHistoq2Bin]\tNew X-axis binning" << std::endl;
+  for (unsigned int j = 0; j < Xbins.size(); j++) std::cout << "bin #" << j << " --> " << Xbins[j] << std::endl;
 
-  std::cout << "[Utils::Get2DEffHitoq2Bin]\tNew Y-axis binning" << std::endl;
-  for (unsigned int k = 0; k < Ybins.size()-1; k++) std::cout << "bin #" << k << " --> " << Ybins[k] << std::endl;
+  std::cout << "[Utils::Get2DEffHistoq2Bin]\tNew Y-axis binning" << std::endl;
+  for (unsigned int k = 0; k < Ybins.size(); k++) std::cout << "bin #" << k << " --> " << Ybins[k] << std::endl;
 
 
   double* Xbins_ = MakeBinning(&Xbins);
@@ -758,24 +760,35 @@ TH2D* Utils::Get2DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<
   // ##########################
   // # Read binned efficiency #
   // ##########################
-  for (unsigned int j = 1; j <= Xbins.size()-1; j++)
-    for (unsigned int k = 1; k <= Ybins.size()-1; k++)
-      {
-	inputFile >> xx >> xw >> yy >> yw >> cont >> err;
-	Histo->SetBinContent(j,k,cont);
-	Histo->SetBinError(j,k,err);
+  unsigned int j = 1;
+  while (j <= Xbins.size()-1)
+    {
+      unsigned int k = 1;
+      while (k <= Ybins.size()-1)
+	{
+	  inputFile >> xx >> xw >> yy >> yw >> cont >> err;
 
-	if (RIGHTflavorTAG == true)
-	  {
-	    cont = Histo->GetBinContent(j,k) * Histo->GetXaxis()->GetBinWidth(j) * Histo->GetYaxis()->GetBinWidth(k);
-	    Histo_clone->SetBinContent(j,k,cont);
-	  }
-	else
-	  {
-	    cont = Histo->GetBinContent(j,k) * Histo->GetXaxis()->GetBinWidth(Histo->GetNbinsX()-j+1) * Histo->GetYaxis()->GetBinWidth(Histo->GetNbinsY()-k+1);
-	    Histo_clone->SetBinContent(Histo->GetNbinsX()-j+1,Histo->GetNbinsY()-k+1,cont);
-	  }
-      }
+	  if ((xx >= Xbins[0]) && (xx <= Xbins[Xbins.size()-1]) &&
+	      (yy >= Ybins[0]) && (yy <= Ybins[Ybins.size()-1]))
+	    {
+	      Histo->SetBinContent(j,k,cont);
+	      Histo->SetBinError(j,k,err);
+
+	      if (RIGHTflavorTAG == true)
+		{
+		  cont = Histo->GetBinContent(j,k) * Histo->GetXaxis()->GetBinWidth(j) * Histo->GetYaxis()->GetBinWidth(k);
+		  Histo_clone->SetBinContent(j,k,cont);
+		}
+	      else
+		{
+		  cont = Histo->GetBinContent(j,k) * Histo->GetXaxis()->GetBinWidth(Histo->GetNbinsX()-j+1) * Histo->GetYaxis()->GetBinWidth(Histo->GetNbinsY()-k+1);
+		  Histo_clone->SetBinContent(Histo->GetNbinsX()-j+1,Histo->GetNbinsY()-k+1,cont);
+		}
+	      k++;
+	    }
+	}
+      if (k != 1 ) j++;
+    }
 
 
   Xbins.clear();
@@ -785,7 +798,7 @@ TH2D* Utils::Get2DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<
   return Histo_clone;
 }
 
-TH3D* Utils::Get3DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int SignalType)
+TH3D* Utils::Get3DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int SignalType,  std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange, std::pair <double,double> phiRange)
 {
   std::ifstream inputFile;
   std::stringstream myString;
@@ -797,11 +810,11 @@ TH3D* Utils::Get3DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<
 
   myString.clear(); myString.str("");
   myString << DirEfficiency.c_str() << GetHisto3DEffName(SignalType) << "_" << q2Indx << ".txt";
-  std::cout << "[Utils::Get3DEffHitoq2Bin]\tReading 3D binned efficiency file : " << myString.str().c_str() << std::endl;
+  std::cout << "[Utils::Get3DEffHistoq2Bin]\tReading 3D binned efficiency file : " << myString.str().c_str() << std::endl;
   inputFile.open(myString.str().c_str(), std::ifstream::in);
   if (inputFile.good() == false)
     {
-      std::cout << "[Utils::Get3DEffHitoq2Bin]\tError opening file : " << myString.str().c_str() << std::endl;
+      std::cout << "[Utils::Get3DEffHistoq2Bin]\tError opening file : " << myString.str().c_str() << std::endl;
       exit (EXIT_FAILURE);
     }
 
@@ -812,10 +825,11 @@ TH3D* Utils::Get3DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<
   tmp = yy;
   while (yy == tmp)
     {
-      Zbins.push_back(zz);
+      if ((zz >= phiRange.first) && (zz < phiRange.second)) Zbins.push_back(zz);
       inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
     }
-  Zbins.push_back(phiBins->operator[](phiBins->size()-1));
+  if (phiBins->operator[](phiBins->size()-1) < phiRange.second) Zbins.push_back(phiBins->operator[](phiBins->size()-1));
+  else if (Zbins.back() < phiRange.second)                      Zbins.push_back(phiRange.second);
   inputFile.clear();
   inputFile.seekg(0, std::ios::beg);
 
@@ -826,10 +840,12 @@ TH3D* Utils::Get3DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<
   tmp = xx;
   while (xx == tmp)
     {
+      if ((yy >= cosThetaLRange.first) && (yy < cosThetaLRange.second)) Ybins.push_back(yy);
       Ybins.push_back(yy);
       inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
     }
-  Ybins.push_back(cosThetaLBins->operator[](cosThetaLBins->size()-1));
+  if (cosThetaLBins->operator[](cosThetaLBins->size()-1) < cosThetaLRange.second) Ybins.push_back(cosThetaLBins->operator[](cosThetaLBins->size()-1));
+  else if (Ybins.back() < cosThetaLRange.second)                                  Ybins.push_back(cosThetaLRange.second);
   inputFile.clear();
   inputFile.seekg(0, std::ios::beg);
 
@@ -840,22 +856,23 @@ TH3D* Utils::Get3DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<
   tmp = xx;
   while (inputFile.eof() == false)
     {
-      Xbins.push_back(xx);
+      if ((xx >= cosThetaKRange.first) && (xx < cosThetaKRange.second)) Xbins.push_back(xx);
       while ((xx == tmp) && (inputFile.eof() == false)) inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
       tmp = xx;
     }
-  Xbins.push_back(cosThetaKBins->operator[](cosThetaKBins->size()-1));
+  if (cosThetaKBins->operator[](cosThetaKBins->size()-1) < cosThetaKRange.second) Xbins.push_back(cosThetaKBins->operator[](cosThetaKBins->size()-1));
+  else if (Xbins.back() < cosThetaKRange.second)                                  Xbins.push_back(cosThetaKRange.second);
   inputFile.clear();
   inputFile.seekg(0, std::ios::beg);
 
 
-  std::cout << "[Utils::Get3DEffHitoq2Bin]\tNew X-axis binning" << std::endl;
+  std::cout << "[Utils::Get3DEffHistoq2Bin]\tNew X-axis binning" << std::endl;
   for (unsigned int j = 0; j < Xbins.size(); j++) std::cout << "bin #" << j << " --> " << Xbins[j] << std::endl;
 
-  std::cout << "[Utils::Get3DEffHitoq2Bin]\tNew Y-axis binning" << std::endl;
+  std::cout << "[Utils::Get3DEffHistoq2Bin]\tNew Y-axis binning" << std::endl;
   for (unsigned int k = 0; k < Ybins.size(); k++) std::cout << "bin #" << k << " --> " << Ybins[k] << std::endl;
 
-  std::cout << "[Utils::Get3DEffHitoq2Bin]\tNew Z-axis binning" << std::endl;
+  std::cout << "[Utils::Get3DEffHistoq2Bin]\tNew Z-axis binning" << std::endl;
   for (unsigned int l = 0; l < Zbins.size(); l++) std::cout << "bin #" << l << " --> " << Zbins[l] << std::endl;
 
 
@@ -876,25 +893,41 @@ TH3D* Utils::Get3DEffHitoq2Bin (std::vector<double>* cosThetaKBins, std::vector<
   // ##########################
   // # Read binned efficiency #
   // ##########################
-  for (unsigned int j = 1; j <= Xbins.size()-1; j++)
-    for (unsigned int k = 1; k <= Ybins.size()-1; k++)
-      for (unsigned int l = 1; l <= Zbins.size()-1; l++)
+  unsigned int j = 1;
+  while (j <= Xbins.size()-1)
+    {
+      unsigned int k = 1;
+      while (k <= Ybins.size()-1)
 	{
-	  inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
-	  Histo->SetBinContent(j,k,l,cont);
-	  Histo->SetBinError(j,k,l,err);
+	  unsigned int l = 1;
+	  while (l <= Zbins.size()-1)
+	    {
+	      inputFile >> xx >> xw >> yy >> yw >> zz >> zw >> cont >> err;
 
-	  if (RIGHTflavorTAG == true)
-	    {
-	      cont = Histo->GetBinContent(j,k,l) * Histo->GetXaxis()->GetBinWidth(j) * Histo->GetYaxis()->GetBinWidth(k) * Histo->GetZaxis()->GetBinWidth(l);
-	      Histo_clone->SetBinContent(j,k,l,cont);
+	      if ((xx >= Xbins[0]) && (xx <= Xbins[Xbins.size()-1]) &&
+		  (yy >= Ybins[0]) && (yy <= Ybins[Ybins.size()-1]) &&
+		  (zz >= Zbins[0]) && (zz <= Zbins[Zbins.size()-1]))
+		{
+		  Histo->SetBinContent(j,k,l,cont);
+		  Histo->SetBinError(j,k,l,err);
+
+		  if (RIGHTflavorTAG == true)
+		    {
+		      cont = Histo->GetBinContent(j,k,l) * Histo->GetXaxis()->GetBinWidth(j) * Histo->GetYaxis()->GetBinWidth(k) * Histo->GetZaxis()->GetBinWidth(l);
+		      Histo_clone->SetBinContent(j,k,l,cont);
+		    }
+		  else
+		    {
+		      cont = Histo->GetBinContent(j,k,l) * Histo->GetXaxis()->GetBinWidth(Histo->GetNbinsX()-j+1) * Histo->GetYaxis()->GetBinWidth(Histo->GetNbinsY()-k+1) * Histo->GetZaxis()->GetBinWidth(Histo->GetNbinsZ()-l+1);
+		      Histo_clone->SetBinContent(Histo->GetNbinsX()-j+1,Histo->GetNbinsY()-k+1,Histo->GetNbinsZ()-l+1,cont);
+		    }
+		  l++;
+		}
 	    }
-	  else
-	    {
-	      cont = Histo->GetBinContent(j,k,l) * Histo->GetXaxis()->GetBinWidth(Histo->GetNbinsX()-j+1) * Histo->GetYaxis()->GetBinWidth(Histo->GetNbinsY()-k+1) * Histo->GetZaxis()->GetBinWidth(Histo->GetNbinsZ()-l+1);
-	      Histo_clone->SetBinContent(Histo->GetNbinsX()-j+1,Histo->GetNbinsY()-k+1,Histo->GetNbinsZ()-l+1,cont);
-	    }
+	  if (l != 1 ) k++;
 	}
+      if (k != 1 ) j++;
+    }
 
 
   Xbins.clear();
