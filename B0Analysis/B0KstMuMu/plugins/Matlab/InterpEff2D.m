@@ -20,9 +20,9 @@ useMethodInterp2 = false; % If true 'interp2' else 'scatteredInterpolant' [false
 % - for 'interp2': linear, nearest, cubic, spline        %
 % - for 'scatteredInterpolant': linear, nearest, natural %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-interpMethod    = 'linear'; % [linear]
-effAtBoundaries = 1e-4; % [1e-4]
-effMinValue     = 1e-5; % [1e-5]
+interpMethod    = 'natural'; % [natural]
+effAtBoundaries = 1e-4;      % [1e-4]
+effMinValue     = 1e-5;      % [1e-5]
 
 
 if addContraints == true
@@ -99,7 +99,7 @@ if useMethodInterp2 == true
     [newXvec,newYvec] = meshgrid(linspace(-1,1,NstepsX), linspace(-1,1,NstepsY));
     newValues = interp2(Xvec, Yvec, Values, newXvec, newYvec, interpMethod, effMinValue);
 else
-    newValues_ = scatteredInterpolant(newXvec_(:), newYvec_(:), Values(:), interpMethod, 'nearest');
+    newValues_ = scatteredInterpolant(newXvec_(:), newYvec_(:), Values(:), interpMethod, 'nearest'); % 'linear' 'nearest' 'none'
     [newXvec,newYvec] = meshgrid(linspace(-1,1,NstepsX), linspace(-1,1,NstepsY));
     newValues = newValues_(newXvec, newYvec);
 end

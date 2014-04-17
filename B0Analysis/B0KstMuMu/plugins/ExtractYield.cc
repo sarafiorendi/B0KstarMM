@@ -20,6 +20,7 @@
 #include <TLorentzVector.h>
 #include <TMinuit.h>
 #include <TLatex.h>
+#include <Math/Functor.h>
 
 #include <RooRealVar.h>
 #include <RooGaussian.h>
@@ -41,6 +42,8 @@
 #include <RooRandom.h>
 #include <RooDataHist.h>
 #include <RooHistPdf.h>
+#include <RooFunctorBinding.h>
+#include <RooStats/RooStatsUtils.h>
 
 #include <ctime>
 #include <iostream>
@@ -91,7 +94,7 @@ using namespace RooFit;
 #define FUNCERRBAND   false // Show the p.d.f. error band
 #define MakeMuMuPlots false
 #define MAKEGRAPHSCAN false // Make graphical scan of the physics-pdf*eff or physics-pdf alone (ony valid for GEN fit type options)
-#define CONTROLMisTag "all&NoFit"
+#define CONTROLMisTag "mistag"
 // ######################################################################
 // # ==> Control mis-tag work flow <==                                  #
 // # --> "mistag"      = keep only mis-tagged ev.                       #
@@ -294,6 +297,52 @@ RooArgSet vecConstr;
 // #######################
 // # Function Definition #
 // #######################
+
+// ################################################
+// # Structure to make the product of two p.d.f.s #
+// ################################################
+struct MyProdPdf
+{
+  MyProdPdf (RooAbsPdf& pdf1, RooAbsPdf& pdf2) : _pdf1(pdf1), _pdf2(pdf2)
+  { 
+    const RooArgSet* allvar1 = pdf1.getVariables();
+    const RooArgSet* allvar2 = pdf2.getVariables();
+    _vars.add(*allvar1);
+    _vars.add(*allvar2, true);
+
+    // #############################
+    // # Remove constant variables #
+    // #############################
+    RooStats::RemoveConstantParameters(_vars);
+    delete allvar1;
+    delete allvar2;
+  }
+
+  int ndim ()
+  {
+    return _vars.getSize();
+  }
+
+  const RooArgList& vars() const
+  {
+    return _vars;
+  }
+  
+  double operator() (const double* v)
+  {
+    for (int i = 0; i < ndim(); ++i)
+      {
+	((RooRealVar&)_vars[i]).setVal(v[i]);
+      }
+    
+    return _pdf1.getVal() * _pdf2.getVal();
+  }
+
+  RooAbsPdf& _pdf1; 
+  RooAbsPdf& _pdf2; 
+  RooArgList _vars; 
+}; 
+
 bool CheckGoodFit              (RooFitResult* fitResult, TPaveText* paveText = NULL);
 RooRealVar* GetVar             (RooAbsPdf* pdf, string varName);
 void SetValueAndErrors         (RooAbsPdf* pdf, string varName, double multi, stringstream* myString, double* val, double* errLo, double* errHi);
@@ -492,21 +541,6 @@ void PrintVariables (RooArgSet* setVar, string type)
     {
       cout << "[ExtractYield::PrintVariables]\tWrong parameter: " << type << endl;
       exit (EXIT_FAILURE);
-    }
-}
-
-
-// @TMP@
-void MakeAllConstants (RooArgSet* setVar, RooArgSet* vecConstr)
-{
-  RooRealVar* tmpVar;
-  int nEleSet = setVar->getSize();
-
-  TIterator* it = setVar->createIterator();
-  for (int i = 0; i < nEleSet; i++)
-    {
-      tmpVar = (RooRealVar*)it->Next();
-      if (IsInConstraints(vecConstr,tmpVar->GetName()) == true) tmpVar->setConstant(true);
     }
 }
 
@@ -976,7 +1010,9 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRea
 	  else SignalType = 1;
 	  RooDataHist* histoEff = new RooDataHist("histoEff","histoEff",RooArgSet(*z,*y),Utility->Get2DEffHistoq2Bin(&cosThetaKBins,&cosThetaLBins,parIndx,SignalType,make_pair(-1.0,1.0),make_pair(-1.0,1.0)));
 	  histoEffPDF           = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(*z,*y),*histoEff,DEGREEINTERPEFF);
-	  AnglesPDF             = new RooProdPdf("AngleMisTag","MisTag * Efficiency",RooArgSet(*_AnglesPDF,*histoEffPDF));
+	  MyProdPdf* myprodpdf  = new MyProdPdf(*_AnglesPDF,*histoEffPDF);
+	  ROOT::Math::Functor* prodFunctor = new ROOT::Math::Functor(*myprodpdf,myprodpdf->ndim());
+	  AnglesPDF             = new RooFunctorPdfBinding("AngleMisTag","MisTag * Efficiency",*prodFunctor,myprodpdf->vars());
 	}
       else AnglesPDF = new RooGenericPdf("AngleMisTag",myString.str().c_str(),RooArgSet(*VarsAng));
     }
@@ -2587,7 +2623,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // # Make actual fit #
       // ###################
       RooFitResult* JPsiFitResult;
-      JPsiFitResult = (*TotalPDFJPsi)->fitTo(*dataSetJPsi,Extended(true),Save(true),SumCoefRange("subRangeJPsi"),Range("subRangeJPsi"));
+      JPsiFitResult = (*TotalPDFJPsi)->fitTo(*dataSetJPsi,Extended(true),Save(true),SumCoefRange("subRangeJPsi"),Range("subRangeJPsi"),Minimizer("Minuit2"));
 
 
       // ##################################################
@@ -2708,7 +2744,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // # Make actual fit #
       // ###################
       RooFitResult* PsiPFitResult;
-      PsiPFitResult = (*TotalPDFPsiP)->fitTo(*dataSetPsiP,Extended(true),Save(true),SumCoefRange("subRangePsiP"),Range("subRangePsiP"));
+      PsiPFitResult = (*TotalPDFPsiP)->fitTo(*dataSetPsiP,Extended(true),Save(true),SumCoefRange("subRangePsiP"),Range("subRangePsiP"),Minimizer("Minuit2"));
 
 
       // ##################################################
@@ -3243,8 +3279,8 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   // ###################
   // # Make actual fit #
   // ###################
-  if (ApplyConstr == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(USEMINOS));
-  else                     fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(USEMINOS));
+  if (ApplyConstr == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(USEMINOS),Minimizer("Minuit2"));
+  else                     fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(USEMINOS),Minimizer("Minuit2"));
 
 
   // ##################################################
@@ -3648,7 +3684,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   // #############################
   // # Toy-MC generation and fit #
   // #############################
-  RooMCStudy* MyToy = new RooMCStudy(*TotalPDF,*x,Extended(true),ExternalConstraints(*vecConstr),FitOptions(Extended(true),ExternalConstraints(*vecConstr),Minos(USEMINOS))); // Possible options : "Binned()" = faster; Silence()
+  RooMCStudy* MyToy = new RooMCStudy(*TotalPDF,*x,Extended(true),FitOptions(Extended(true),ExternalConstraints(*vecConstr),Minos(USEMINOS))); // Possible options : "Binned()" = faster; Silence()
   MyToy->generateAndFit(nToy,nEntryToy,true);
   Canv->Divide(5,4);
 
@@ -4184,7 +4220,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
     {
       myString.clear(); myString.str("");
       myString << "c1Poly" << i;
-      c1Poly[i] = new RooRealVar(myString.str().c_str(),"Comb.bkg.poly.coef.",0.0,0.0,1e6); // @TMP@
+      c1Poly[i] = new RooRealVar(myString.str().c_str(),"Comb.bkg.poly.coef.",0.0);
       c1Poly[i]->setConstant(false);
       VarsC1.add(*c1Poly[i]);
     }
@@ -4192,15 +4228,12 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
     {
       myString.clear(); myString.str("");
       myString << "c2Poly" << i;
-      c2Poly[i] = new RooRealVar(myString.str().c_str(),"Comb.bkg.poly.coef.",0.0,0.0,1e6); // @TMP@
+      c2Poly[i] = new RooRealVar(myString.str().c_str(),"Comb.bkg.poly.coef.",0.0);
       c2Poly[i]->setConstant(false);
       VarsC2.add(*c2Poly[i]);
     }
-  // @TMP@
-  // BkgAngleC1 = new RooPolynomial("BkgAngleC1","Comb.bkg angular shape",*y,VarsC1);
-  // BkgAngleC2 = new RooPolynomial("BkgAngleC2","Comb.bkg angular shape",*z,VarsC2);
-  BkgAngleC1 = new RooBernstein("BkgAngleC1","Comb.bkg angular shape",*y,VarsC1);
-  BkgAngleC2 = new RooBernstein("BkgAngleC2","Comb.bkg angular shape",*z,VarsC2);
+  BkgAngleC1 = new RooPolynomial("BkgAngleC1","Comb.bkg angular shape",*y,VarsC1);
+  BkgAngleC2 = new RooPolynomial("BkgAngleC2","Comb.bkg angular shape",*z,VarsC2);
   BkgAnglesC = new RooProdPdf("BkgAnglesC","Background Angle1*Angle2",RooArgSet(*BkgAngleC1,*BkgAngleC2));
 
 
@@ -4334,12 +4367,12 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // ###########################
   // # Define pdf coefficients #
   // ###########################
-  nSig     = new RooRealVar("nSig","Number of signal events",1.0,0.0,1e6);
-  nBkgComb = new RooRealVar("nBkgComb","Number of comb. background events",1.0,0.0,1e6);
+  nSig     = new RooRealVar("nSig","Number of signal events",1.0);
+  nBkgComb = new RooRealVar("nBkgComb","Number of comb. background events",1.0);
   RooFormulaVar* nMisTag;
   if (FitOptions == 4)
     {
-      nMisTagFrac = new RooRealVar("nMisTagFrac","Number of mistag events",1.0,0.0,1e6);
+      nMisTagFrac = new RooRealVar("nMisTagFrac","Number of mistag events",1.0);
       nMisTag     = new RooFormulaVar("nMisTag","nMisTagFrac", RooArgSet(*nMisTagFrac));
     }
   else
@@ -4347,7 +4380,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
       nMisTagFrac = new RooRealVar("nMisTagFrac","Fraction of mistag",0.0,0.0,1.0);
       nMisTag     = new RooFormulaVar("nMisTag","nSig * nMisTagFrac / (1 - nMisTagFrac)", RooArgSet(*nSig,*nMisTagFrac));
     }
-  nBkgPeak = new RooRealVar("nBkgPeak","Number of peaking background events",1.0,0.0,1e6);
+  nBkgPeak = new RooRealVar("nBkgPeak","Number of peaking background events",1.0);
 
   nSig->setConstant(false);
   nBkgComb->setConstant(false);
@@ -4408,8 +4441,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  // ###################
 	  // # Make actual fit #
 	  // ###################
-	  if (ApplyConstr == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(USEMINOS));
-	  else                     fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(USEMINOS));
+	  if (ApplyConstr == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(USEMINOS),Minimizer("Minuit2"));
+	  else                     fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(USEMINOS),Minimizer("Minuit2"));
 
 
 	  // ##################################################
@@ -4531,86 +4564,83 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // #####################
       // # Make sideband fit #
       // #####################
-      // @TMP@
-      // if (GetVar(*TotalPDF,"nSig") != NULL)
-      	// {
-      	//   RooAbsPdf* TmpPDF = NULL;
-      	//   RooDataSet* sideBands = NULL;
-      	//   RooRealVar frac("frac","Fraction",0.5,0.0,1.0);
-      	//   RooArgSet constrSidebads;
-      	//   ClearVars(&constrSidebads);
-      	//   BuildAngularConstraints(&constrSidebads,*TotalPDF);
+      if (GetVar(*TotalPDF,"nBkgComb") != NULL)
+      	{
+      	  RooAbsPdf* TmpPDF = NULL;
+      	  RooDataSet* sideBands = NULL;
+      	  RooRealVar frac("frac","Fraction",0.5,0.0,1.0);
+      	  RooArgSet constrSidebads;
+      	  ClearVars(&constrSidebads);
+      	  BuildAngularConstraints(&constrSidebads,*TotalPDF);
 
 
-      	//   // ################
-      	//   // # Save results #
-      	//   // ################
-      	//   fileFitResults << "====================================================================" << endl;
-      	//   fileFitResults << "@@@@@@ B0 mass sideband fit @@@@@@" << endl;
-      	//   fileFitResults << "Amplitude of signal region (+/- n*< Sigma >): " << Utility->GetGenericParam("NSigmaB0S") << " * " << Utility->GetB0Width() << endl;
+      	  // ################
+      	  // # Save results #
+      	  // ################
+      	  fileFitResults << "====================================================================" << endl;
+      	  fileFitResults << "@@@@@@ B0 mass sideband fit @@@@@@" << endl;
+      	  fileFitResults << "Amplitude of signal region (+/- n*< Sigma >): " << Utility->GetGenericParam("NSigmaB0S") << " * " << Utility->GetB0Width() << endl;
 
 
-      	//   // ##############
-      	//   // # Get p.d.f. #
-      	//   // ##############
-      	//   if (GetVar(*TotalPDF,"nBkgPeak") != NULL) TmpPDF = new RooAddPdf("TmpPDF","Temporary p.d.f.",RooArgSet(*BkgAnglesC,*BkgAnglesP),RooArgSet(frac));
-      	//   else                                      TmpPDF = new RooProdPdf(*((RooProdPdf*)BkgAnglesC),"TmpPDF");
+      	  // ##############
+      	  // # Get p.d.f. #
+      	  // ##############
+      	  if (GetVar(*TotalPDF,"nBkgPeak") != NULL) TmpPDF = new RooAddPdf("TmpPDF","Temporary p.d.f.",RooArgSet(*BkgAnglesC,*BkgAnglesP),RooArgSet(frac));
+      	  else                                      TmpPDF = new RooProdPdf(*((RooProdPdf*)BkgAnglesC),"TmpPDF");
 
 
-      	//   // #############
-      	//   // # Sidebands #
-      	//   // #############
-      	//   myString.clear(); myString.str("");
-      	//   myString << "B0MassArb < " << (*TotalPDF)->getVariables()->getRealValue("meanS") - Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
-      	//   myString << " || B0MassArb > " << (*TotalPDF)->getVariables()->getRealValue("meanS") + Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
-      	//   cout << "Cut for B0 sidebands: " << myString.str().c_str() << endl;
-      	//   sideBands = (RooDataSet*)dataSet->reduce(myString.str().c_str());
+      	  // #############
+      	  // # Sidebands #
+      	  // #############
+      	  myString.clear(); myString.str("");
+      	  myString << "B0MassArb < " << (*TotalPDF)->getVariables()->getRealValue("meanS") - Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
+      	  myString << " || B0MassArb > " << (*TotalPDF)->getVariables()->getRealValue("meanS") + Utility->GetGenericParam("NSigmaB0S")*Utility->GetB0Width();
+      	  cout << "Cut for B0 sidebands: " << myString.str().c_str() << endl;
+      	  sideBands = (RooDataSet*)dataSet->reduce(myString.str().c_str());
 
 
-      	//   // ###################
-      	//   // # Make actual fit #
-      	//   // ###################
-      	//   if (ApplyConstr == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebads),Save(true));
-      	//   else                     fitResult = TmpPDF->fitTo(*sideBands,Save(true));
-      	//   if (fitResult != NULL) fitResult->Print("v");
+      	  // ###################
+      	  // # Make actual fit #
+      	  // ###################
+      	  if (ApplyConstr == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebads),Save(true),Minimizer("Minuit2"));
+      	  else                     fitResult = TmpPDF->fitTo(*sideBands,Save(true),Minimizer("Minuit2"));
+      	  if (fitResult != NULL) fitResult->Print("v");
 
 	  
-      	//   // ####################
-      	//   // # Save fit results #
-      	//   // ####################
-      	//   StorePolyResultsInFile(TotalPDF);
+      	  // ####################
+      	  // # Save fit results #
+      	  // ####################
+      	  StorePolyResultsInFile(TotalPDF);
 
 
-      	//   delete TmpPDF;
-      	//   delete sideBands;
-      	//   ClearVars(&constrSidebads);
-      	//   if (fitResult != NULL) delete fitResult;
+      	  delete TmpPDF;
+      	  delete sideBands;
+      	  ClearVars(&constrSidebads);
+      	  if (fitResult != NULL) delete fitResult;
 
 
-      	//   // ################################
-      	//   // # Fix comb. angular background #
-      	//   // ################################
-	//   cout << "@@@ Fixing comb. angular background after sideband fit @@@" << endl;
-	//   for (unsigned int i = 0 ; i < NCOEFFPOLYBKG; i++)
-	//     {
-	//       myString.clear(); myString.str("");
-	//       myString << "c1Poly" << i;
-	//       if (GetVar(*TotalPDF,myString.str().c_str()) != NULL) GetVar(*TotalPDF,myString.str().c_str())->setConstant(true);
+      	  // ################################
+      	  // # Fix comb. angular background #
+      	  // ################################
+	  cout << "@@@ Fixing comb. angular background after sideband fit @@@" << endl;
+	  for (unsigned int i = 0 ; i < NCOEFFPOLYBKG; i++)
+	    {
+	      myString.clear(); myString.str("");
+	      myString << "c1Poly" << i;
+	      if (GetVar(*TotalPDF,myString.str().c_str()) != NULL) GetVar(*TotalPDF,myString.str().c_str())->setConstant(true);
 
-	//       myString.clear(); myString.str("");
-	//       myString << "c2Poly" << i;
-	//       if (GetVar(*TotalPDF,myString.str().c_str()) != NULL) GetVar(*TotalPDF,myString.str().c_str())->setConstant(true);
-	//     }
-      	// }
-      // @TMP@
-      MakeAllConstants((*TotalPDF)->getVariables(),vecConstr);
+	      myString.clear(); myString.str("");
+	      myString << "c2Poly" << i;
+	      if (GetVar(*TotalPDF,myString.str().c_str()) != NULL) GetVar(*TotalPDF,myString.str().c_str())->setConstant(true);
+	    }
+      	}
 
-
+      
       // ###################
       // # Make actual fit #
       // ###################
-      if (ApplyConstr == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(USEMINOS));
-      else                     fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(USEMINOS));
+      if (ApplyConstr == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(USEMINOS),Minimizer("Minuit2"));
+      else                     fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(USEMINOS),Minimizer("Minuit2"));
 
 
       // ##################################################

@@ -198,17 +198,17 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
 
 	   ((type == 4) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == Utility->RIGHTflavorTAG))))
 	{
-	  mumuq2          = NTuple->mumuMass->at(0)*NTuple->mumuMass->at(0);
+	  mumuq2 = NTuple->mumuMass->at(0)*NTuple->mumuMass->at(0);
 
-	  if (NTuple->rightFlavorTag == true)
-	    {
-	      cosThetaK  = NTuple->CosThetaKArb;
-	      cosThetaMu = NTuple->CosThetaMuArb;
-	    }
-	  else
+	  if ((type == 4) && (NTuple->rightFlavorTag == false))
 	    {
 	      cosThetaK  = - NTuple->CosThetaKArb;
 	      cosThetaMu = - NTuple->CosThetaMuArb;
+	    }
+	  else
+	    {
+	      cosThetaK  = NTuple->CosThetaKArb;
+	      cosThetaMu = NTuple->CosThetaMuArb;
 	    }
 	  phiKstMuMuPlane = NTuple->PhiKstMuMuPlaneArb;
 
