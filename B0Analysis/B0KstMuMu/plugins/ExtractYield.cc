@@ -3494,7 +3494,8 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 	  myString.clear(); myString.str("");
 	  myString << vecParStr->operator[](i).c_str();
 	  SetValueAndErrors(NULL,"",1.0,&myString,&effMuMuGoodTag,&effMuMuGoodTagErr,&effMuMuGoodTagErr);
-	  cout << "\n@@@ Integral of S*E over angular variables for normalization channel good-tagged events: " << effMuMuGoodTag << " +/- " << effMuMuGoodTagErr << " @@@" << endl;
+	  cout << "\n===> Integral of S*E over angular variables for signal good-tagged events <===" << endl;
+	  cout << effMuMuGoodTag << "   -" << effMuMuGoodTagErr << "   " << effMuMuGoodTagErr << endl;
 
 	  
 	  // #####################
@@ -3504,7 +3505,8 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 	  myString.clear(); myString.str("");
 	  myString << vecParStr->operator[](i).c_str();
 	  SetValueAndErrors(NULL,"",1.0,&myString,&effMuMuMisTag,&effMuMuMisTagErr,&effMuMuMisTagErr);
-	  cout << "\n@@@ Integral of S*E over angular variables for normalization channel mis-tagged events: " << effMuMuMisTag << " +/- " << effMuMuMisTagErr << " @@@" << endl;
+	  cout << "\n===> Integral of S*E over angular variables for signal mis-tagged events <===" << endl;
+	  cout << effMuMuMisTag << "   -" << effMuMuMisTagErr << "   " << effMuMuMisTagErr << endl;
 	}
 
 
@@ -3540,7 +3542,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 	  fileFitResults << "dBF/dq^2: " << VecHistoMeas->operator[](0)->GetBinContent(i+1) << " -/+ " << VecHistoMeas->operator[](0)->GetBinError(i+1) << endl;
 
 	  fileFitResults << "===> dBF/dq^2 to cut and paste in config. file <===" << endl;
-	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) << "   " << dBFdq2Err << "   " << dBFdq2Err << endl;
+	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) << "   -" << dBFdq2Err << "   " << dBFdq2Err << endl;
 
 	  fileFitResults << "====================================================================" << endl;
 
@@ -5364,7 +5366,8 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 	  effMuMuGoodTag    = EffPDFintegral->getVal();
 	  effMuMuGoodTagErr = EffPDFintegral->getPropagatedError(*fitResult);
 
-	  cout << "\n@@@ Integral of S*E over angular variables for signal good-tagged events: " << effMuMuGoodTag << " +/- " << effMuMuGoodTagErr << " @@@" << endl;
+	  cout << "\n===> Integral of S*E over angular variables for signal good-tagged events <===" << endl;
+	  cout << effMuMuGoodTag << "   -" << effMuMuGoodTagErr << "   " << effMuMuGoodTagErr << endl;
 
 
 	  // #####################
@@ -5379,7 +5382,8 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 	      effMuMuMisTag    = EffPDFintegral->getVal();
 	      effMuMuMisTagErr = EffPDFintegral->getPropagatedError(*fitResult);
 	      
-	      cout << "\n@@@ Integral of S*E over angular variables for signal mis-tagged events: " << effMuMuMisTag << " +/- " << effMuMuMisTagErr << " @@@" << endl;
+	      cout << "\n===> Integral of S*E over angular variables for signal mis-tagged events <===" << endl;
+	      cout << effMuMuMisTag << "   -" << effMuMuMisTagErr << "   " << effMuMuMisTagErr << endl;
 	    }
 	}
 
@@ -5424,13 +5428,13 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 	      fileFitResults << "dBF/dq^2: " << VecHistoMeas->operator[](2)->GetBinContent(i+1) << " -/+ " << VecHistoMeas->operator[](2)->GetBinError(i+1) << endl;
 
 	      fileFitResults << "===> dBF/dq^2 to cut and paste in config. file <===" << endl;
-	      fileFitResults << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   " << dBFdq2Err << "   " << dBFdq2Err << endl;
+	      fileFitResults << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   -" << dBFdq2Err << "   " << dBFdq2Err << endl;
 
 	      fileFitResults << "===> I[S*E] good-tagged to cut and paste in config. file <===" << endl;
-	      fileFitResults << effMuMuGoodTag << "   " << effMuMuGoodTagErr << "   " << effMuMuGoodTagErr << endl;
+	      fileFitResults << effMuMuGoodTag << "   -" << effMuMuGoodTagErr << "   " << effMuMuGoodTagErr << endl;
 
 	      fileFitResults << "===> I[S*E] mis-tagged to cut and paste in config. file <===" << endl;
-	      fileFitResults << effMuMuMisTag << "   " << effMuMuMisTagErr << "   " << effMuMuMisTagErr << endl;
+	      fileFitResults << effMuMuMisTag << "   -" << effMuMuMisTagErr << "   " << effMuMuMisTagErr << endl;
 
 	      fileFitResults << "====================================================================" << endl;
 	    }
