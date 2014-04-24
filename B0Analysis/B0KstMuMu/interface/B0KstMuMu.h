@@ -29,8 +29,8 @@
 
 class B0KstMuMu : public edm::EDAnalyzer
 {
-  
-  
+
+
 public:
   explicit B0KstMuMu (const edm::ParameterSet&);
   ~B0KstMuMu ();

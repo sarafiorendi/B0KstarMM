@@ -2676,14 +2676,17 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # N-sigma psi big interval [5.0]
 5.0
 
+# B0 and Psi mass window cut [0.16 GeV/c2]
+0.16
+
 # B0 peak sigma-1 from signal MC, whole q2 spectrum [GeV/c2]
-0.0267428
+0.0267405
 
 # B0 peak sigma-2 from signal MC, whole q2 spectrum [GeV/c2]
-0.0557447
+0.0557422
 
 # B0 peak gaussian fraction from signal MC, whole q2 spectrum
-0.660678
+0.660607
 
 
 ############################

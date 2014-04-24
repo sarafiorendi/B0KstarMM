@@ -78,7 +78,7 @@ using std::vector;
 #define TEST_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu.txt"
 #define TEST_THETAL_THETAK_PHI "ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
-#define RIGHTtag       false
+#define RIGHTtag       true
 #define SAVEPLOT       false
 #define CHECKEFFatREAD false // Check if 2D or 3D efficiency go negative
 #define NFILES         200
@@ -950,10 +950,13 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
   // ###################
 
 
-  TCanvas* cEff0 = new TCanvas("cEff0", "cEff0", 10, 10, 700, 500);
-  TCanvas* cEff1 = new TCanvas("cEff1", "cEff1", 20, 20, 700, 500);
-  TCanvas* cEff2 = new TCanvas("cEff2", "cEff2", 30, 30, 700, 500);
-  TCanvas* cEff3 = new TCanvas("cEff3", "cEff3", 40, 40, 700, 500);
+  // # ###############################################################
+  // # Canvas for efficiencies integrated over all variables but one #
+  // # ###############################################################
+  TCanvas* cEff0 = new TCanvas("cEff0", "Efficiency integrated over all variables but one", 10, 10, 700, 500);
+  TCanvas* cEff1 = new TCanvas("cEff1", "Efficiency integrated over all variables but one", 20, 20, 700, 500);
+  TCanvas* cEff2 = new TCanvas("cEff2", "Efficiency integrated over all variables but one", 30, 30, 700, 500);
+  TCanvas* cEff3 = new TCanvas("cEff3", "Efficiency integrated over all variables but one", 40, 40, 700, 500);
 
   tmpString = INPUTGenEff;
   tmpString.erase(tmpString.find(".txt"),4);

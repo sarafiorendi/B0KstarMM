@@ -80,8 +80,11 @@ Utils::Utils (bool rightFlavorTag)
   Histo3DEffNameOkTagPsi2S = "H3Deff_OkTagPsi2S_q2Bin_interp";
 
   Histo2DEffNameMisTagSig   = "H2Deff_MisTag_q2Bin_interp";
-  Histo2DEffNameMisTagJPsi  = "H2Deff_MisTagJPsi_q2Bin_interp";
-  Histo2DEffNameMisTagPsi2S = "H2Deff_MisTagPsi2S_q2Bin_interp";
+  // @TMP@
+  Histo2DEffNameMisTagJPsi  = Histo2DEffNameMisTagSig;
+  Histo2DEffNameMisTagPsi2S = Histo2DEffNameMisTagSig;
+  // Histo2DEffNameMisTagJPsi  = "H2Deff_MisTagJPsi_q2Bin_interp";
+  // Histo2DEffNameMisTagPsi2S = "H2Deff_MisTagPsi2S_q2Bin_interp";
 
   Histo3DEffNameMisTagSig   = "H3Deff_MisTag_q2Bin_interp";
   Histo3DEffNameMisTagJPsi  = "H3Deff_MisTagJPsi_q2Bin_interp";
@@ -4088,18 +4091,19 @@ double Utils::GetPreCut (std::string cutName)
 }
 
 void Utils::ReadGenericParam (std::string fileName)
-// ########################################
-// # B0MassIntervalLeft  = GenericPars[0] #
-// # B0MassIntervalRight = GenericPars[1] #
-// # NSigmaB0            = GenericPars[2] #
-// # NSigmaB0S           = GenericPars[3] #
-// # NSigmaB0B           = GenericPars[4] #
-// # NSigmaPsiSmall      = GenericPars[5] #
-// # NSigmaPsiBig        = GenericPars[6] #
-// # SIGMAS1             = GenericPars[7] #
-// # SIGMAS2             = GenericPars[8] #
-// # FRACMASSS           = GenericPars[9] #
-// ########################################
+// #########################################
+// # B0MassIntervalLeft  = GenericPars[0]  #
+// # B0MassIntervalRight = GenericPars[1]  #
+// # NSigmaB0            = GenericPars[2]  #
+// # NSigmaB0S           = GenericPars[3]  #
+// # NSigmaB0B           = GenericPars[4]  #
+// # NSigmaPsiSmall      = GenericPars[5]  #
+// # NSigmaPsiBig        = GenericPars[6]  #
+// # B&PsiMassWindow     = GenericPars[7]  #
+// # SIGMAS1             = GenericPars[8]  #
+// # SIGMAS2             = GenericPars[9]  #
+// # FRACMASSS           = GenericPars[10] #
+// #########################################
 {
   std::vector<std::string> ParVector;
   ReadParameters* ParameterFile = new ReadParameters(fileName.c_str());
@@ -4131,9 +4135,10 @@ bool Utils::SetGenericParam (std::string parName, double val)
   else if (parName == "NSigmaB0B")           GenericPars[4]  = val;
   else if (parName == "NSigmaPsiSmall")      GenericPars[5]  = val;
   else if (parName == "NSigmaPsiBig")        GenericPars[6]  = val;
-  else if (parName == "SIGMAS1")             GenericPars[7]  = val;
-  else if (parName == "SIGMAS2")             GenericPars[8]  = val;
-  else if (parName == "FRACMASSS")           GenericPars[9]  = val;
+  else if (parName == "B&PsiMassWindow")     GenericPars[7]  = val;
+  else if (parName == "SIGMAS1")             GenericPars[8]  = val;
+  else if (parName == "SIGMAS2")             GenericPars[9]  = val;
+  else if (parName == "FRACMASSS")           GenericPars[10] = val;
   else return false;
 
   return true;
@@ -4148,9 +4153,10 @@ double Utils::GetGenericParam (std::string parName)
   else if (parName == "NSigmaB0B")           return GenericPars[4];
   else if (parName == "NSigmaPsiSmall")      return GenericPars[5];
   else if (parName == "NSigmaPsiBig")        return GenericPars[6];
-  else if (parName == "SIGMAS1")             return GenericPars[7];
-  else if (parName == "SIGMAS2")             return GenericPars[8];
-  else if (parName == "FRACMASSS")           return GenericPars[9];
+  else if (parName == "B&PsiMassWindow")     return GenericPars[7];
+  else if (parName == "SIGMAS1")             return GenericPars[8];
+  else if (parName == "SIGMAS2")             return GenericPars[9];
+  else if (parName == "FRACMASSS")           return GenericPars[10];
   else
     {
       std::cout << "[Utils::GetGenericParam]\tGeneric parameter not valid : " << parName << std::endl;

@@ -65,16 +65,16 @@ using namespace RooFit;
 // ###########################
 // # From B0 --> J/psi K* MC #
 // ###########################
-#define SIGMAS1JPSI 0.0272354 // [GeV/c2]
-#define SIGMAS2JPSI 0.0659195 // [GeV/c2]
-#define FRACJPSI    0.680522
+#define SIGMAS1JPSI 0.0269777 // [GeV/c2]
+#define SIGMAS2JPSI 0.0548912 // [GeV/c2]
+#define FRACJPSI    0.647565
 
 // #############################
 // # From B0 --> psi(2S) K* MC #
 // #############################
-#define SIGMAS1PSIP 0.026305  // [GeV/c2]
-#define SIGMAS2PSIP 0.0586605 // [GeV/c2]
-#define FRACPSIP    0.581335
+#define SIGMAS1PSIP 0.0270912 // [GeV/c2]
+#define SIGMAS2PSIP 0.0497828 // [GeV/c2]
+#define FRACPSIP    0.597891
 
 
 // #######################
@@ -240,7 +240,7 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
       cout << "bin #" << i << " --> " << Ybins[i] << endl;
     }
 
-  double* Zbins_;
+  double* Zbins_ = NULL;
   if (effDimension == "3D")
     {
       cout << "[Macros::PlotHistoEff]\tNew Z-axis binning" << std::endl;
@@ -258,9 +258,9 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
   c0->cd(1);
 
   TH2D* Histo2D;
-  TH2D* Histo2D_clone;
+  TH2D* Histo2D_clone = NULL;
   TH3D* Histo3D;
-  TH3D* Histo3D_clone;
+  TH3D* Histo3D_clone = NULL;
   if (effDimension == "2D")
     {
       Histo2D = new TH2D("Histo2D", "Histo2D", Xbins.size()-1, Xbins_, Ybins.size()-1, Ybins_);
@@ -304,7 +304,7 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
 	  if (k != 1 ) j++;
 	}
 
-      Histo2D->Draw("lego fb");
+      Histo2D->Draw("surf1");
     }
   else
     {
@@ -366,7 +366,7 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
   RooPlot* yframe = thetaL.frame(Name("thetaL"));
 
   RooRealVar phi;
-  RooPlot* zframe;
+  RooPlot* zframe = NULL;
   if (effDimension == "3D")
     {
       phi = RooRealVar("phi","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",Zbins[0],Zbins[Zbins.size()-1],"rad");
@@ -1667,6 +1667,7 @@ void DrawString (double Lumi)
   // ###################
   // # Nominal method: #
   // ###################
+  // @TMP@
   // myString.clear();
   // myString.str("");
   // myString << "#sqrt{  }";
@@ -1880,10 +1881,6 @@ void showData (int dataType, double offset, bool noHbar)
   myString << DIREXPTCOMP << "LHCb_1fb.data";
   dVar.push_back(readData(myString.str().c_str(),dataType,2,21,false,0,noHbar,0.0*offset));
 
-  // myString.clear(); myString.str("");
-  // myString << DIREXPTCOMP << "Atlas.data";
-  // if (dataType != 2) dVar.push_back(readData(myString.str().c_str(),dataType,6,22,false,0,noHbar,-3.0*offset));
-
   myString.clear(); myString.str("");
   myString << DIREXPTCOMP << "BaBar.data";
   dVar.push_back(readData(myString.str().c_str(),dataType,4,23,false,0,noHbar,2.0*offset));
@@ -1913,7 +1910,6 @@ void showData (int dataType, double offset, bool noHbar)
   leg->AddEntry(dVar[dVar.size()-1],"<SM>","F");
   leg->AddEntry(dVar[it++],"CMS","lp");
   leg->AddEntry(dVar[it++],"LHCb","lp");
-  // if (dataType != 2) leg->AddEntry(dVar[it++],"Atlas","lp");
   leg->AddEntry(dVar[it++],"BaBar","lp");
   leg->AddEntry(dVar[it++],"Belle","lp");
   leg->AddEntry(dVar[it++],"CDF","lp");

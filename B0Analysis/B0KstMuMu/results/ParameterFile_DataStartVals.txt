@@ -337,32 +337,32 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@  signal   @@@@@@@@@@@@@@@@@@@@@@@@@@@#
 # Signal mean [GeV/c2]
-5.27562   -0.00195704   0.00195704
+5.27859   -5.07812e-05   5.07812e-05
 # Signal sigma-1 [GeV/c2]
-0.0248305   -0.00181071   0.00181071
+0.0267405   -0.000115064   0.000115064
 # Signal sigma-2 [GeV/c2]
-0.0
+0.0557422   -0.000332676   0.000332676
 # Fraction
-0.0
+0.660607   -0.0053322   0.0053322
 ###################################################################
 # Bkg tau-1 [GeV/c2]
-0.186655   -0.00931943   0.00931943
+0.5
 # Bkg tau-2 [GeV/c2]
-0.0
+0.1
 # Fraction
-0.0
+0.5
 ###################################################################
-# Bkg sigma-1 mistag [GeV/c2]
-0.0
-# Bkg sigma-2 mistag [GeV/c2]
-0.0
+# Sigma-1 mistag [GeV/c2]
+0.108932   -0.00107131   0.00107131
+# Sigma-2 mistag [GeV/c2]
+0.0454834   -0.000604414   0.000604414
 # Fraction
-0.0
+0.489649   -0.0110701   0.0110701
 ###################################################################
 # Bkg mean right-peak-1 [GeV/c2]
-5.37133   -0.00487597   0.00487597
+5.37
 # Bkg sigma right-peak-1 [GeV/c2]
-0.0417182   -0.00464886   0.00464886
+0.02
 # Bkg mean right-peak-2 [GeV/c2]
 0.0
 # Bkg sigma right-peak-2 [GeV/c2]
@@ -370,9 +370,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.0
 # Bkg mean left-peak-1 [GeV/c2]
-5.12287   -0.00564991   0.00564991
+5.14
 # Bkg sigma left-peak-1 [GeV/c2]
-0.0635456   -0.00690518   0.00690518
+0.02
 # Bkg mean left-peak-2 [GeV/c2]
 0.0
 # Bkg sigma left-peak-2 [GeV/c2]
@@ -380,16 +380,16 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.0
 # Fraction of right-peak
-0.242987   -0.0276068   0.0276068
+0.5
 ###################################################################
 # Combinatorial bkg yield
-4011.76   -322.172   322.172
-# Mistag bkg yield
-0.0
+1000
+# Mistag fraction
+0.138174   -0.00948448   0.00948448
 # Peaking bkg yield
-2812.73   -342.337   342.337
+2000
 # Signal yield
-901.731   -77.4909   77.4909
+1100
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -403,7 +403,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 # Bkg angle1 poly coeff. p4
 0.0
-### Number of coefficients of the comb/mistag bkg angle1 poly ###
+### Number of coefficients of the comb.bkg angle1 poly ###
 5
 # Bkg angle1 poly coeff. c0
 0.0
@@ -427,7 +427,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 # Bkg angle2 poly coeff. p4
 0.0
-### Number of coefficients of the comb/mistag bkg angle2 poly ###
+### Number of coefficients of the comb.bkg angle2 poly ###
 5
 # Bkg angle2 poly coeff. c0
 0.0
@@ -451,7 +451,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 # Bkg angle3 poly coeff. p4
 0.0
-### Number of coefficients of the comb/mistag bkg angle3 poly ###
+### Number of coefficients of the comb.bkg angle3 poly ###
 5
 # Bkg angle3 poly coeff. c0
 0.0
@@ -477,16 +477,16 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # AS +/- err
 0.0   0.0   0.0
 ###################################################################
-# Peaking bkg: 0 = don't exist; 1 = exist 1 peak alone; 2 = exist 1 peak with rest; 3 = exist 2 peaks with rest
+# Fit options: peak.bkg 0 = doesn't exist, 1 = 1 peak alone, 2 = 1 peak with rest, 3 = 2 peaks with rest; 4 = mistag only fit
 3
 # Use two gaussians signal: 0 = no; 1 = yes
-0
+1
 # Use two gaussians peaking bkg: 0 = no; 1 = yes
 0
 # Use two exponentials combinatorial bkg: 0 = no; 1 = yes
-0
-# Use mistag bkg: 0 = no; 1 = one gaussian; 2 = two gaussians
-0
+1
+# Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
+2
 
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@   J/psi   @@@@@@@@@@@@@@@@@@@@@@@@@@@#
@@ -2654,14 +2654,17 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # N-sigma psi big interval [5.0]
 5.0
 
+# B0 and Psi mass window cut [0.16 GeV/c2]
+0.16
+
 # B0 peak sigma-1 from signal MC, whole q2 spectrum [GeV/c2]
-0.0267428
+0.0267405
 
 # B0 peak sigma-2 from signal MC, whole q2 spectrum [GeV/c2]
-0.0557447
+0.0557422
 
 # B0 peak gaussian fraction from signal MC, whole q2 spectrum
-0.660678
+0.660607
 
 
 ############################
