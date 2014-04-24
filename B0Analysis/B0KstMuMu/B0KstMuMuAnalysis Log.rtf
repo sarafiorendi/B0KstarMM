@@ -1308,10 +1308,13 @@ Whole mumu spectrum\
 \cf0 \ul All q2 bins\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ulnone - Fit mass-angles --- constraints&mistag			[X]\
-( extract angular variables and BF 
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 ( extract angular variables and yield 
 \i all events
-\i0  )\
-\
+\i0 ,\
+copy Signal*Efficiency integral in configuration file )\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \
 \
 
 \b ############## J/psi MC ##############\
@@ -1363,10 +1366,13 @@ Whole mumu spectrum\
 \cf0 \ul J/psi bin\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ulnone - Fit mass-angles --- constraints&mistag			[X]\
-( extract angular variables and BF 
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 ( extract angular variables and yield 
 \i all events
-\i0  )\
-\
+\i0 ,\
+copy Signal*Efficiency integral in configuration file )\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ul Bin #3 and #5\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
@@ -1425,15 +1431,17 @@ Whole mumu spectrum\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ul psi(2S) bin\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \ulnone - Fit mass-angles --- constraints&mistag			[-]\
-( extract angular variables and BF 
-\i all events
-\i0  )\
+\cf0 \ulnone - Fit mass-angles --- constraints&mistag			[X]\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \ul \
+\cf0 ( extract angular variables and yield 
+\i all events
+\i0 ,\
+copy Signal*Efficiency integral in configuration file )\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul \ulc0 \
 Bin #5 and #7\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \ulnone - Fit mass-angles --- NO-constraints				[-]\
+\cf0 \ulnone - Fit mass-angles --- NO-constraints				[X]\
 ( extract angular shape 
 \i all events
 \i0  )\
@@ -1443,18 +1451,18 @@ Bin #5 and #7\
 \b ############ peaking bkg ############
 \b0 \
 \
-- Report bin 
-\b #2
+[-]	Report bin 
+\b #3
 \b0  ( 
-\b #6
+\b #7
 \b0  ) to data config file rescaled by the 
 \b data / MC
 \b0  J/psi ( psi(2S) ) yield\
-- Rescale the J/psi MC ( psi(2S) MC ) yield by the 
+[-]	Rescale the J/psi MC ( psi(2S) MC ) yield by the 
 \b data / MC
 \b0  J/psi ( psi(2S) ) yield\
-- Rescale and merge bin 
-\b #4
+[-]	Rescale and merge bin 
+\b #5
 \b0  from J/psi and psi(2S) MC, report into data config file\
 \
 \
@@ -1463,8 +1471,7 @@ Bin #5 and #7\
 \b0 \
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \ul Adjust #ev. mistagged  to data\ulnone 		[-]\ul \
-Quantify mistag in data\ulnone 			[-]\
+\cf0 \ul Quantify mistag in data\ulnone 			[-]\
 \
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
@@ -1477,16 +1484,20 @@ Quantify mistag in data\ulnone 			[-]\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ulnone - Fit mass-angles --- constraints		[-] Multi minima scan\
 - Fit mass-angles --- constraints		[-]\
-( extract angular variables )\
+( extract angular variables and yield,\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \ul \
+\cf0 copy Signal*Efficiency integral in configuration file )\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul \ulc0 \
 psi(2S) bin\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ulnone - Fit mass-angles --- constraints		[-] Multi minima scan\
 - Fit mass-angles --- constraints		[-]\
-( extract angular variables )\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \ul \
+\cf0 ( extract angular variables and yield,\
+copy Signal*Efficiency integral in configuration file )\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ul \ulc0 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ulnone Whole mumu spectrum\
 - Fit mass --- constraints			[-]\
@@ -1497,8 +1508,11 @@ All q2 bins\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ulnone - Fit mass-angles --- constraints		[-] Multi minima scan\
 - Fit mass-angles --- constraints		[-]\
-( extract angular variables )\
-\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 ( extract angular variables and yield,\
+copy Signal*Efficiency integral in configuration file )\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \
 \
 \
 @@@@@@@@@@@@@\
