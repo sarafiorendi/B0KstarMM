@@ -92,13 +92,13 @@ using namespace RooFit;
 #define SAVEPLOT      false
 #define FUNCERRBAND   false // Show the p.d.f. error band
 #define MakeMuMuPlots false
-#define CONTROLMisTag "all&FitFrac"
+#define CONTROLMisTag "all&NoFFrac"
 // ######################################################################
 // # ==> Control mis-tag work flow <==                                  #
 // # --> "mistag"      = keep only mis-tagged ev.                       #
 // # --> "goodtag"     = keep only good-tagged ev.                      #
 // # --> "all&FitFrac" = keep all ev. and fit just for mis-tag fraction #
-// # --> "all&NoFrac"  = keep all ev. and do not fit for mis-tag        #
+// # --> "all&NoFFrac" = keep all ev. and do not fit for mis-tag        #
 // ######################################################################
 #define USEMINOS      false
 #define UseSPwave     false
@@ -2897,7 +2897,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 	      // # J/psi and psi(2S) rejection based on the event-by-event dimuon mass error #
 	      // #############################################################################
 	      if (((!(FitType == 36) && !(FitType == 56) && !(FitType == 76)) &&
-
+		   
 		   (((strcmp(CONTROLMisTag,"goodtag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
 		    ((strcmp(CONTROLMisTag,"mistag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
 		    ((strcmp(CONTROLMisTag,"goodtag") != 0) && (strcmp(CONTROLMisTag,"mistag") != 0))) &&
@@ -2927,7 +2927,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 		      (NTuple->mumuMass->at(0) < (Utility->JPsiMass + Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0))))  ||
 		     ((NTuple->mumuMass->at(0) > (Utility->PsiPMass - Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))   &&
 		      (NTuple->mumuMass->at(0) < (Utility->PsiPMass + Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0))))) &&
-
+		    
 		    ((fabs((NTuple->B0MassArb - Utility->B0Mass) - (NTuple->mumuMass->at(0) - Utility->JPsiMass)) < Utility->GetGenericParam("B&PsiMassWindow"))    ||
 		     (fabs((NTuple->B0MassArb - Utility->B0Mass) - (NTuple->mumuMass->at(0) - Utility->PsiPMass)) < Utility->GetGenericParam("B&PsiMassWindow"))))) ||
 		  
@@ -3460,7 +3460,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       ClearVars(vecConstr);
       BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"sign");
       BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
-      if ((strcmp(CONTROLMisTag,"all&NoFrac") == 0) || (strcmp(CONTROLMisTag,"all&FitFrac") == 0)) BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
+      if ((strcmp(CONTROLMisTag,"all&NoFFrac") == 0) || (strcmp(CONTROLMisTag,"all&FitFrac") == 0)) BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
 
 
       // ###################################
@@ -3575,7 +3575,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   ClearVars(vecConstr);
   BuildMassConstraints(vecConstr,TotalPDF,"sign");
   BuildMassConstraints(vecConstr,TotalPDF,"peak");
-  if ((strcmp(CONTROLMisTag,"all&NoFrac") == 0) || (strcmp(CONTROLMisTag,"all&FitFrac") == 0)) BuildMassConstraints(vecConstr,TotalPDF,"mistag");
+  if ((strcmp(CONTROLMisTag,"all&NoFFrac") == 0) || (strcmp(CONTROLMisTag,"all&FitFrac") == 0)) BuildMassConstraints(vecConstr,TotalPDF,"mistag");
 
 
   // ###################################
@@ -5314,7 +5314,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       	{
       	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"sign");
       	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
-      	  if ((strcmp(CONTROLMisTag,"all&NoFrac") == 0) || (strcmp(CONTROLMisTag,"all&FitFrac") == 0)) BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
+      	  if ((strcmp(CONTROLMisTag,"all&NoFFrac") == 0) || (strcmp(CONTROLMisTag,"all&FitFrac") == 0)) BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
       	  if (configParam->operator[](Utility->GetConfigParamIndx("FitOptions"))->operator[](i) != 1) BuildAngularConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
       	}
       if (((FitType != 46) && (FitType != 56) &&
@@ -5474,7 +5474,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   ClearVars(vecConstr);
   BuildMassConstraints(vecConstr,TotalPDF,"sign");
   BuildMassConstraints(vecConstr,TotalPDF,"peak");
-  if ((strcmp(CONTROLMisTag,"all&NoFrac") == 0) || (strcmp(CONTROLMisTag,"all&FitFrac") == 0)) BuildMassConstraints(vecConstr,TotalPDF,"mistag");
+  if ((strcmp(CONTROLMisTag,"all&NoFFrac") == 0) || (strcmp(CONTROLMisTag,"all&FitFrac") == 0)) BuildMassConstraints(vecConstr,TotalPDF,"mistag");
   BuildAngularConstraints(vecConstr,TotalPDF,"peak");
   if ((specBin != Utility->GetJPsiBin(q2Bins)) && (specBin != Utility->GetPsiPBin(q2Bins)))
     {
@@ -6254,7 +6254,7 @@ int main(int argc, char** argv)
 	  cout << "FUNCERRBAND = "    << FUNCERRBAND << endl;
 	  cout << "MakeMuMuPlots = "  << MakeMuMuPlots << endl;
 	  cout << "CONTROLMisTag = "  << CONTROLMisTag << endl;
-	  if ((strcmp(CONTROLMisTag,"mistag") != 0) && (strcmp(CONTROLMisTag,"goodtag") != 0) && (strcmp(CONTROLMisTag,"all&FitFrac") != 0) && (strcmp(CONTROLMisTag,"all&NoFrac") != 0))
+	  if ((strcmp(CONTROLMisTag,"mistag") != 0) && (strcmp(CONTROLMisTag,"goodtag") != 0) && (strcmp(CONTROLMisTag,"all&FitFrac") != 0) && (strcmp(CONTROLMisTag,"all&NoFFrac") != 0))
 	    {
 	      cout << "[ExtractYield::main]\tInternal setting error : " << CONTROLMisTag << endl;
 	      exit (EXIT_FAILURE);
@@ -6590,7 +6590,7 @@ int main(int argc, char** argv)
 		      CopyFitResults(TotalPDFRejectPsi,0,&fitParam);
 		      ClearVars(&vecConstr);
 		      BuildMassConstraints(&vecConstr,TotalPDFRejectPsi,"sign");
-		      if ((strcmp(CONTROLMisTag,"all&NoFrac") == 0) || (strcmp(CONTROLMisTag,"all&FitFrac") == 0)) BuildMassConstraints(&vecConstr,TotalPDFRejectPsi,"mistag");
+		      if ((strcmp(CONTROLMisTag,"all&NoFFrac") == 0) || (strcmp(CONTROLMisTag,"all&FitFrac") == 0)) BuildMassConstraints(&vecConstr,TotalPDFRejectPsi,"mistag");
 		      PrintVariables(TotalPDFRejectPsi->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
 		      MakeMassFit(SingleCandNTuple_RejectPsi,&TotalPDFRejectPsi,B0MassArb,cB0MassArbRejectPsi,FitType,&vecConstr,&NLLvalue,NULL,fileIndx);
@@ -6620,7 +6620,7 @@ int main(int argc, char** argv)
 		      CopyFitResults(TotalPDFPsi,1,&fitParam);
 		      ClearVars(&vecConstr);
 		      BuildMassConstraints(&vecConstr,TotalPDFPsi,"sign");
-		      if ((strcmp(CONTROLMisTag,"all&NoFrac") == 0) || (strcmp(CONTROLMisTag,"all&FitFrac") == 0)) BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
+		      if ((strcmp(CONTROLMisTag,"all&NoFFrac") == 0) || (strcmp(CONTROLMisTag,"all&FitFrac") == 0)) BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
 		      PrintVariables(TotalPDFPsi->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
 		      MakeMassFit(SingleCandNTuple_JPsi,&TotalPDFPsi,B0MassArb,cB0MassArbJPsi,FitType,&vecConstr,&NLLvalue,NULL,fileIndx);
@@ -6639,7 +6639,7 @@ int main(int argc, char** argv)
 		      CopyFitResults(TotalPDFPsi,2,&fitParam);
 		      ClearVars(&vecConstr);
 		      BuildMassConstraints(&vecConstr,TotalPDFPsi,"sign");
-		      if ((strcmp(CONTROLMisTag,"all&NoFrac") == 0) || (strcmp(CONTROLMisTag,"all&FitFrac") == 0)) BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
+		      if ((strcmp(CONTROLMisTag,"all&NoFFrac") == 0) || (strcmp(CONTROLMisTag,"all&FitFrac") == 0)) BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
 		      PrintVariables(TotalPDFPsi->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
 		      MakeMassFit(SingleCandNTuple_PsiP,&TotalPDFPsi,B0MassArb,cB0MassArbPsiP,FitType,&vecConstr,&NLLvalue,NULL,fileIndx);
@@ -6912,8 +6912,7 @@ int main(int argc, char** argv)
 	    }
 	  else
 	    {
-	      // @TMP@
-	      // system("say \" Let's rock and roll ! \"");
+	      system("say \" Let's rock and roll ! \"");
  	      theApp->Run (); // Eventloop on air
 	    }
 	}

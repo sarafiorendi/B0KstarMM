@@ -1,7 +1,7 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf190
 \cocoascreenfonts1{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
 {\colortbl;\red255\green255\blue255;}
-\paperw11900\paperh16840\margl1440\margr1440\vieww19300\viewh15480\viewkind0
+\paperw11900\paperh16840\margl1440\margr1440\vieww22420\viewh22260\viewkind0
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
 \f0\b\fs24 \cf0 @@@@@@@@@@@@@@@@@@@@@@@\
@@ -1288,18 +1288,26 @@ All q2 bins\
 \cf0 \ulnone - Fit mass --- constraints-mistag					[X]\
 ( extract 
 \i mis-tagged
-\i0  fraction )\
+\i0  fraction 
+\i all events
+\i0  )\
 \
 Whole mumu spectrum\
-- Fit mass --- NO-constraints&mistag\
-- Fit mass --- NO-constraints&NO-mistag\
-- Fit mass --- constraints&mistag				[-]\
+- Fit mass --- NO-constraints&mistag:  
+\i mis-tagged
+\i0 \
+- Fit mass --- NO-constraints&NO-mistag: 
+\i good-tagged
+\i0 \
+- Fit mass --- constraints&mistag: 
+\i all events
+\i0 		[X]\
 ( extract mass for \'93generic parameters\'94 and \'93signal\'94 )\
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ul All q2 bins\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \ulnone - Fit mass-angles --- constraints&mistag			[-]\
+\cf0 \ulnone - Fit mass-angles --- constraints&mistag			[X]\
 ( extract angular variables and BF 
 \i all events
 \i0  )\
@@ -1312,7 +1320,7 @@ Whole mumu spectrum\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ul J/psi bin\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \ulnone - Fit mass --- NO-constraints&mistag				[-]\
+\cf0 \ulnone - Fit mass --- NO-constraints&mistag				[X]\
 ( extract mass shape 
 \i mis-tagged
 \i0  )\
@@ -1320,27 +1328,41 @@ Whole mumu spectrum\
 \cf0 \ul \
 J/psi bin\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \ulnone - Fit mass-angles --- NO-constraints&NO-mistag	[-]\
-( extract mass shape )\
-\
+\cf0 \ulnone - Fit mass-angles --- NO-constraints&NO-mistag	[X]\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 ( extract mass shape 
+\i good-tagged
+\i0  )\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ul J/psi bin\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \ulnone - Fit mass --- constraints-mistag					[-]\
-( extract 
+\cf0 \ulnone - Fit mass --- constraints-mistag					[X]\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 ( extract 
 \i mis-tagged
-\i0  fraction )\
+\i0  fraction 
+\i all events
+\i0  )\
 \
 Whole mumu spectrum\
-- Fit mass --- NO-constraints&mistag\
-- Fit mass --- NO-constraints&NO-mistag\
-- Fit mass --- constraints&mistag				[-]\
-( extract mass for \'93generic parameters\'94 and \'93J/psi\'94 and \'93Macros\'94 )\
+- Fit mass --- NO-constraints&mistag:  
+\i mis-tagged
+\i0 \
+- Fit mass --- NO-constraints&NO-mistag: 
+\i good-tagged
+\i0 \
+- Fit mass --- constraints&mistag: 
+\i all events
+\i0 		[X]\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 ( extract mass for \'93J/psi\'94 and \'93generic parameters\'94 and \'93Macros\'94 )\
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ul J/psi bin\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \ulnone - Fit mass-angles --- constraints&mistag			[-]\
+\cf0 \ulnone - Fit mass-angles --- constraints&mistag			[X]\
 ( extract angular variables and BF 
 \i all events
 \i0  )\
@@ -1348,8 +1370,10 @@ Whole mumu spectrum\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ul Bin #3 and #5\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \ulnone - Fit mass-angles --- NO-constraints				[-]\
-( extract angular shape )\
+\cf0 \ulnone - Fit mass-angles --- NO-constraints				[X]\
+( extract angular shape 
+\i all events
+\i0  )\
 \
 \
 
@@ -1359,7 +1383,7 @@ Whole mumu spectrum\
 
 \b0 \cf0 \ul psi(2S) bin\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \ulnone - Fit mass --- NO-constraints&mistag				[-]\
+\cf0 \ulnone - Fit mass --- NO-constraints&mistag				[X]\
 ( extract mass shape 
 \i mis-tagged
 \i0  )\
@@ -1367,22 +1391,36 @@ Whole mumu spectrum\
 \cf0 \ul \
 psi(2S) bin\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \ulnone - Fit mass-angles --- NO-constraints&NO-mistag	[-]\
-( extract mass shape )\
-\
+\cf0 \ulnone - Fit mass-angles --- NO-constraints&NO-mistag	[X]\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 ( extract mass shape 
+\i good-tagged
+\i0  )\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ul psi(2S) bin\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \ulnone - Fit mass --- constraints-mistag					[-]\
-( extract 
+\cf0 \ulnone - Fit mass --- constraints-mistag					[X]\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 ( extract 
 \i mis-tagged
-\i0  fraction )\
+\i0  fraction 
+\i all events
+\i0  )\
 \
 Whole mumu spectrum\
-- Fit mass --- NO-constraints&mistag\
-- Fit mass --- NO-constraints&NO-mistag\
-- Fit mass --- constraints&mistag				[-]\
-( extract mass for \'93generic parameters\'94 and \'93Psi(2S)\'94 and \'93Macros\'94 )\
+- Fit mass --- NO-constraints&mistag:  
+\i mis-tagged
+\i0 \
+- Fit mass --- NO-constraints&NO-mistag: 
+\i good-tagged
+\i0 \
+- Fit mass --- constraints&mistag: 
+\i all events
+\i0 		[X]\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 ( extract mass for \'93Psi(2S)\'94 and \'93generic parameters\'94 and \'93Macros\'94 )\
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ul psi(2S) bin\
@@ -1396,7 +1434,9 @@ Whole mumu spectrum\
 Bin #5 and #7\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ulnone - Fit mass-angles --- NO-constraints				[-]\
-( extract angular shape )\
+( extract angular shape 
+\i all events
+\i0  )\
 \
 \
 
@@ -1539,11 +1579,10 @@ pp cross section at 7 TeV: 48.44 mb\
 \b0  @\
 @@@@@@@@@@@@@@\
 1. Mistag for S-wave (should be ~50%) much higher than mistag for P-wave\
-2. Error propagation from polynomial coefficients\
-3. Correct statistical errors by the sigmas of the Gaussian fits to the pulls\
+2. Correct statistical errors by the sigmas of the Gaussian fits to the pulls\
 \
-4. Search for Bs --> J/psi K* by restricting to the barrel region\
-5. LHCb discovered a new dimuon resonance from B+ --> mu+mu- K+ at m(mumu) ~4.2 (17.64) GeV and ~3.77 (14.21) GeV\
+3. Search for Bs --> J/psi K* by restricting to the barrel region\
+4. LHCb discovered a new dimuon resonance from B+ --> mu+mu- K+ at m(mumu) ~4.2 (17.64) GeV and ~3.77 (14.21) GeV\
 \
-6. Define PDF classes + virtual PDF class: implement PDF + save/load parameters + toy\
-7. Use XML for configuration file}
+5. Define PDF classes + virtual PDF class: implement PDF + save/load parameters + toy\
+6. Use XML for configuration file}

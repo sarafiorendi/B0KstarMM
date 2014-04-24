@@ -80,11 +80,8 @@ Utils::Utils (bool rightFlavorTag)
   Histo3DEffNameOkTagPsi2S = "H3Deff_OkTagPsi2S_q2Bin_interp";
 
   Histo2DEffNameMisTagSig   = "H2Deff_MisTag_q2Bin_interp";
-  // @TMP@
-  Histo2DEffNameMisTagJPsi  = Histo2DEffNameMisTagSig;
-  Histo2DEffNameMisTagPsi2S = Histo2DEffNameMisTagSig;
-  // Histo2DEffNameMisTagJPsi  = "H2Deff_MisTagJPsi_q2Bin_interp";
-  // Histo2DEffNameMisTagPsi2S = "H2Deff_MisTagPsi2S_q2Bin_interp";
+  Histo2DEffNameMisTagJPsi  = "H2Deff_MisTagJPsi_q2Bin_interp";
+  Histo2DEffNameMisTagPsi2S = "H2Deff_MisTagPsi2S_q2Bin_interp";
 
   Histo3DEffNameMisTagSig   = "H3Deff_MisTag_q2Bin_interp";
   Histo3DEffNameMisTagJPsi  = "H3Deff_MisTagJPsi_q2Bin_interp";

@@ -2653,7 +2653,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # 21st block of parameters #
 ############################
 # Number of generic parameters
-10
+11
 
 # B0 mass interval left [0.28 GeV/c2]
 0.28
