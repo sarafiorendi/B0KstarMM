@@ -118,13 +118,13 @@ void ComputeEfficiency     (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTup
 			    vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, int SignalType);
 void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, int specBin);
 void Read3DEfficiencies    (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			    string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool savePlot, int specBin, unsigned int SignalType = 1);
+			    string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool savePlot, int specBin, int SignalType = 1);
 void Fit1DEfficiencies     (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			    unsigned int SignalType, Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut);
+			    int SignalType, Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut);
 void Fit2DEfficiencies     (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			    unsigned int SignalType, Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
+			    int SignalType, Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
 void Fit3DEfficiencies     (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			    unsigned int SignalType, Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
+			    int SignalType, Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
 void Test2DEfficiency      (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool savePlot);
 void Test3DEfficiency      (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool savePlot);
 
@@ -928,7 +928,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 
 
 void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			 string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool savePlot, int specBin, unsigned int SignalType)
+			 string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool savePlot, int specBin, int SignalType)
 {
   // ###################
   // # Local variables #
@@ -1328,7 +1328,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
 
 
 void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			unsigned int SignalType, Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut)
+			int SignalType, Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut)
 {
   // ###################
   // # Local variables #
@@ -1579,7 +1579,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
 
 void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			unsigned int SignalType, Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut, bool savePlot)
+			int SignalType, Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut, bool savePlot)
 {
   // ###################
   // # Local variables #
@@ -1690,7 +1690,7 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
 
 void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			unsigned int SignalType, Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut, bool savePlot)
+			int SignalType, Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut, bool savePlot)
 {
   // ##########################
   // # Set histo layout style #

@@ -1009,7 +1009,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRea
 	  // #############################
 	  // # Make 2D efficiency p.d.f. #
 	  // #############################
-	  unsigned int SignalType;
+	  int SignalType;
 	  if      ((FitType >= 01*DELTATYPE) && (FitType < 40*DELTATYPE)) SignalType = 1;
 	  else if ((FitType >= 41*DELTATYPE) && (FitType < 60*DELTATYPE)) SignalType = 3;
 	  else if ((FitType >= 61*DELTATYPE) && (FitType < 80*DELTATYPE)) SignalType = 5;

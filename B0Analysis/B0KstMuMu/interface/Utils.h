@@ -143,8 +143,8 @@ class Utils
   void GetEffq2Bin         (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int cosThetaKIndx, unsigned int cosThetaMuIndx, unsigned int phiIndx, effStruct myEff, double* Eff, double* EffErr);
   TH2D* Get2DEffHistoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff);
   TH3D* Get3DEffHistoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff);
-  TH2D* Get2DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, unsigned int q2Indx, unsigned int SignalType, std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange);
-  TH3D* Get3DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int SignalType,  std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange, std::pair <double,double> phiRange);
+  TH2D* Get2DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, unsigned int q2Indx, int SignalType, std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange);
+  TH3D* Get3DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, int SignalType,  std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange, std::pair <double,double> phiRange);
   void Put2DEffHitoq2Bin   (std::string fileName, TH2D* histo);
   void Put3DEffHitoq2Bin   (std::string fileName, TH3D* histo);
   void DeleteEfficiency    (effStruct myEff);
@@ -214,11 +214,11 @@ class Utils
   void InitEffFuncPhi    (TF1* fitFun, unsigned int q2Indx);
 
   void AddConstraint1D              (TH1D** histo, std::string constrType, double abscissaErr, double YerrRescale, double Yval, double Yerr, unsigned int ID);
-  void AddConstraintThetaL          (TH1D** histo, unsigned int q2Indx, unsigned int cosThetaKBinIndx, unsigned int SignalType, unsigned int ID);
+  void AddConstraintThetaL          (TH1D** histo, unsigned int q2Indx, unsigned int cosThetaKBinIndx, int SignalType, unsigned int ID);
   void AddConstraint2D              (TH2D** histo, double abscissaErr, double ZerrRescale, unsigned int ID, std::string toBeConstr, double scaleConstr, double constrXerr, std::vector< std::pair <double,double> >* constraints = NULL, std::vector<std::string>* toBeAdded = NULL);
-  void AddConstraintThetaKThetaL    (TH2D** histo, std::vector<double>* cosThetaKBins, unsigned int q2Indx, unsigned int SignalType, unsigned int ID);
+  void AddConstraintThetaKThetaL    (TH2D** histo, std::vector<double>* cosThetaKBins, unsigned int q2Indx, int SignalType, unsigned int ID);
   void AddConstraint3D              (TH3D** histo, double abscissaErr, double Tval, double Terr, double TerrRescale, unsigned int ID, std::vector<int> toBeAdded[]);
-  void AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2Indx, unsigned int SignalType, unsigned int ID);
+  void AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2Indx, int SignalType, unsigned int ID);
 
   bool IsThisData (std::string fileName);
 
@@ -251,8 +251,8 @@ class Utils
 
   void ResetEffValue (effValue* myEffVal, double value);
 
-  std::string GetHisto2DEffName (unsigned int SignalType);
-  std::string GetHisto3DEffName (unsigned int SignalType);
+  std::string GetHisto2DEffName (int SignalType);
+  std::string GetHisto3DEffName (int SignalType);
 
 
   double muonMass;
@@ -284,9 +284,9 @@ class Utils
 
   bool RIGHTflavorTAG;
 
-  unsigned int B0ToKstMuMu;
-  unsigned int B0ToJPsiKst;
-  unsigned int B0ToPsi2SKst;
+  int B0ToKstMuMu;
+  int B0ToJPsiKst;
+  int B0ToPsi2SKst;
 
 
  private:

@@ -687,7 +687,7 @@ TH3D* Utils::Get3DEffHistoq2Bin (std::string histoName, std::vector<double>* q2B
   return Histo;
 }
 
-TH2D* Utils::Get2DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, unsigned int q2Indx, unsigned int SignalType, std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange)
+TH2D* Utils::Get2DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, unsigned int q2Indx, int SignalType, std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange)
 {
   std::ifstream inputFile;
   std::stringstream myString;
@@ -798,7 +798,7 @@ TH2D* Utils::Get2DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector
   return Histo_clone;
 }
 
-TH3D* Utils::Get3DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int SignalType,  std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange, std::pair <double,double> phiRange)
+TH3D* Utils::Get3DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, int SignalType,  std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange, std::pair <double,double> phiRange)
 {
   std::ifstream inputFile;
   std::stringstream myString;
@@ -2734,7 +2734,7 @@ void Utils::AddConstraint1D (TH1D** histo, std::string constrType, double abscis
   delete reBins;
 }
 
-void Utils::AddConstraintThetaL (TH1D** histo, unsigned int q2Indx, unsigned int cosThetaKBinIndx, unsigned int SignalType, unsigned int ID)
+void Utils::AddConstraintThetaL (TH1D** histo, unsigned int q2Indx, unsigned int cosThetaKBinIndx, int SignalType, unsigned int ID)
 {
   double abscissaErr = 1e-2;
 
@@ -3073,7 +3073,7 @@ void Utils::AddConstraint2D (TH2D** histo, double abscissaErr, double ZerrRescal
   delete reBinsY;
 }
 
-void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThetaKBins, unsigned int q2Indx, unsigned int SignalType, unsigned int ID)
+void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThetaKBins, unsigned int q2Indx, int SignalType, unsigned int ID)
 {
   double abscissaErr = 1e-2;
   std::vector<std::string> toBeAdded;
@@ -3501,7 +3501,7 @@ void Utils::AddConstraint3D (TH3D** histo, double abscissaErr, double Tval, doub
   delete reBinsZ;
 }
 
-void Utils::AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2Indx, unsigned int SignalType, unsigned int ID)
+void Utils::AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2Indx, int SignalType, unsigned int ID)
 {
   double abscissaErr = 1e-2;
   std::vector<int> toBeAdded[3]; // Push_back bin-numbers                                                                                                                                                                                                                                                             
@@ -4258,7 +4258,7 @@ void Utils::ResetEffValue (effValue* myEffVal, double value)
   myEffVal->Err2WeigDen2 = value;
 }
 
-std::string Utils::GetHisto2DEffName (unsigned int SignalType)
+std::string Utils::GetHisto2DEffName (int SignalType)
 {
   std::string name;
 
@@ -4289,7 +4289,7 @@ std::string Utils::GetHisto2DEffName (unsigned int SignalType)
   return name;
 }
 
-std::string Utils::GetHisto3DEffName (unsigned int SignalType)
+std::string Utils::GetHisto3DEffName (int SignalType)
 {
   std::string name;
 
