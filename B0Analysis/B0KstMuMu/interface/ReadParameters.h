@@ -8,8 +8,6 @@
 
 class ReadParameters
 {
-  
-  
  public:
 
   ReadParameters (const char* InputFileName, std::string howOpen = "in");
@@ -21,7 +19,6 @@ class ReadParameters
  private:
 
   std::fstream fileHandler;
-  
 };
 
 #endif

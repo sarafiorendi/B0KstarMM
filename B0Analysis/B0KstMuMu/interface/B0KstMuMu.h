@@ -29,9 +29,8 @@
 
 class B0KstMuMu : public edm::EDAnalyzer
 {
-
-
-public:
+ public:
+  
   explicit B0KstMuMu (const edm::ParameterSet&);
   ~B0KstMuMu ();
   
@@ -47,9 +46,10 @@ public:
 					unsigned int motherIndex,
 					std::vector<std::vector<unsigned int>* >* posDau,
 					std::vector<std::vector<unsigned int>* >* negDau);
-  
-  
-private:
+
+
+ private:
+
   virtual void beginJob ();
   virtual void analyze (const edm::Event&, const edm::EventSetup&);
   virtual void endJob ();
@@ -98,7 +98,6 @@ private:
   TTree* theTree;
   B0KstMuMuTreeContent* NTuple;
   Utils* Utility;
-
 };
 
 #endif

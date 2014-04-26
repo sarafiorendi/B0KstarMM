@@ -183,8 +183,7 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
     {
       theTree->GetEntry(entry);
 
-      if ((NTuple->B0pT        > Utility->GetSeleCut("B0pT"))  &&
-	  (fabs(NTuple->B0Eta) < Utility->GetSeleCut("B0Eta")) &&
+      if ((NTuple->B0pT > Utility->GetSeleCut("B0pT")) && (fabs(NTuple->B0Eta) < Utility->GetSeleCut("B0Eta")) &&
 	  
 	  ((NTuple->genSignal == SignalType || NTuple->genSignal == SignalType+1)) &&
 	  
@@ -196,7 +195,10 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
 	    (fabs(Utility->computeEta(NTuple->genMumPx,NTuple->genMumPy,NTuple->genMumPz)) < Utility->GetPreCut("MuEta"))   &&
 	    (fabs(Utility->computeEta(NTuple->genMupPx,NTuple->genMupPy,NTuple->genMupPz)) < Utility->GetPreCut("MuEta")))  ||
 
-	   ((type == 4) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == Utility->RIGHTflavorTAG))))
+	   ((type == 4) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == Utility->RIGHTflavorTAG)
+	    && ((((SignalType == Utility->B0ToKstMuMu)  || (SignalType == Utility->B0ToKstMuMu+1))  && (Utility->PsiRejection(NTuple,"rejectPsi",true) == true)) ||
+		(((SignalType == Utility->B0ToJPsiKst)  || (SignalType == Utility->B0ToJPsiKst+1))  && (Utility->PsiRejection(NTuple,"keepJpsi",true) == true))  ||
+		(((SignalType == Utility->B0ToPsi2SKst) || (SignalType == Utility->B0ToPsi2SKst+1)) && (Utility->PsiRejection(NTuple,"keepPsiP",true) == true))))))
 	{
 	  mumuq2 = NTuple->mumuMass->at(0)*NTuple->mumuMass->at(0);
 

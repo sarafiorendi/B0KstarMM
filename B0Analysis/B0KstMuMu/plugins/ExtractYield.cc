@@ -2862,34 +2862,26 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 	      // ###########################################################################
 	      // # J/psi and psi(2S) keeping based on the event-by-event dimuon mass error #
 	      // ###########################################################################
-	      if (((FitType == 36) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true) && 
-		   (NTuple->mumuMass->at(0) > (Utility->JPsiMass - Utility->GetGenericParam("NSigmaPsiBig")   * NTuple->mumuMassE->at(0)))  &&
-		   (NTuple->mumuMass->at(0) < (Utility->JPsiMass + Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))) ||
+	      if (((FitType == 36) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true) && (Utility->PsiRejection(NTuple,"keepJpsi",false) == true)) ||
 		  
 		  (((FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
 		  
-		  (((((strcmp(CONTROLMisTag,"goodtag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
-		     ((strcmp(CONTROLMisTag,"mistag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
-		     ((strcmp(CONTROLMisTag,"goodtag") != 0) && (strcmp(CONTROLMisTag,"mistag") != 0))) &&
-		    (NTuple->mumuMass->at(0) > (Utility->JPsiMass - Utility->GetGenericParam("NSigmaPsiBig")   * NTuple->mumuMassE->at(0)))  &&
-		    (NTuple->mumuMass->at(0) < (Utility->JPsiMass + Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))) &&
-		   
-		   (fabs((NTuple->B0MassArb - Utility->B0Mass) - (NTuple->mumuMass->at(0) - Utility->JPsiMass)) < Utility->GetGenericParam("B&PsiMassWindow"))))
+		  ((((strcmp(CONTROLMisTag,"goodtag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+		    ((strcmp(CONTROLMisTag,"mistag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
+		    ((strcmp(CONTROLMisTag,"goodtag") != 0) && (strcmp(CONTROLMisTag,"mistag") != 0))) &&
+		   (Utility->PsiRejection(NTuple,"keepJpsi",true) == true)))
+
 		SingleCandNTuple_JPsi->add(Vars);
 	      
-	      if (((FitType == 36) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true) && 
-		   (NTuple->mumuMass->at(0) > (Utility->PsiPMass - Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))  &&
-		   (NTuple->mumuMass->at(0) < (Utility->PsiPMass + Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))) ||
+	      if (((FitType == 36) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true) && (Utility->PsiRejection(NTuple,"keepPsiP",false) == true)) ||
 		  
 		  (((FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
 		  
-		  (((((strcmp(CONTROLMisTag,"goodtag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
-		     ((strcmp(CONTROLMisTag,"mistag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
-		     ((strcmp(CONTROLMisTag,"goodtag") != 0) && (strcmp(CONTROLMisTag,"mistag") != 0))) &&
-		    (NTuple->mumuMass->at(0) > (Utility->PsiPMass - Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))  &&
-		    (NTuple->mumuMass->at(0) < (Utility->PsiPMass + Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))) &&
-		   
-		   (fabs((NTuple->B0MassArb - Utility->B0Mass) - (NTuple->mumuMass->at(0) - Utility->PsiPMass)) < Utility->GetGenericParam("B&PsiMassWindow"))))
+		  ((((strcmp(CONTROLMisTag,"goodtag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+		    ((strcmp(CONTROLMisTag,"mistag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
+		    ((strcmp(CONTROLMisTag,"goodtag") != 0) && (strcmp(CONTROLMisTag,"mistag") != 0))) &&
+		   (Utility->PsiRejection(NTuple,"keepPsiP",true) == true)))
+
 		SingleCandNTuple_PsiP->add(Vars);
 
 
@@ -2901,16 +2893,10 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 		   (((strcmp(CONTROLMisTag,"goodtag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
 		    ((strcmp(CONTROLMisTag,"mistag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
 		    ((strcmp(CONTROLMisTag,"goodtag") != 0) && (strcmp(CONTROLMisTag,"mistag") != 0))) &&
-		   
-		   (((NTuple->mumuMass->at(0)  < (Utility->JPsiMass - Utility->GetGenericParam("NSigmaPsiBig")   * NTuple->mumuMassE->at(0)))   ||
-		     (NTuple->mumuMass->at(0)  > (Utility->PsiPMass + Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))   ||
-		     ((NTuple->mumuMass->at(0) > (Utility->JPsiMass + Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))   &&
-		      (NTuple->mumuMass->at(0) < (Utility->PsiPMass - Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0))))) &&
-		    
-		    ((fabs((NTuple->B0MassArb - Utility->B0Mass) - (NTuple->mumuMass->at(0) - Utility->JPsiMass)) > Utility->GetGenericParam("B&PsiMassWindow"))    &&
-		     (fabs((NTuple->B0MassArb - Utility->B0Mass) - (NTuple->mumuMass->at(0) - Utility->PsiPMass)) > Utility->GetGenericParam("B&PsiMassWindow"))))) ||
+		   (Utility->PsiRejection(NTuple,"rejectPsi",true) == true)) ||
 		  
 		  (((FitType == 36) || (FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)))
+
 		SingleCandNTuple_RejectPsi->add(Vars);
 
 
@@ -2922,16 +2908,10 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 		   (((strcmp(CONTROLMisTag,"goodtag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
 		    ((strcmp(CONTROLMisTag,"mistag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
 		    ((strcmp(CONTROLMisTag,"goodtag") != 0) && (strcmp(CONTROLMisTag,"mistag") != 0))) &&
-		   
-		   ((((NTuple->mumuMass->at(0) > (Utility->JPsiMass - Utility->GetGenericParam("NSigmaPsiBig")   * NTuple->mumuMassE->at(0)))   &&
-		      (NTuple->mumuMass->at(0) < (Utility->JPsiMass + Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0))))  ||
-		     ((NTuple->mumuMass->at(0) > (Utility->PsiPMass - Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))   &&
-		      (NTuple->mumuMass->at(0) < (Utility->PsiPMass + Utility->GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0))))) &&
-		    
-		    ((fabs((NTuple->B0MassArb - Utility->B0Mass) - (NTuple->mumuMass->at(0) - Utility->JPsiMass)) < Utility->GetGenericParam("B&PsiMassWindow"))    ||
-		     (fabs((NTuple->B0MassArb - Utility->B0Mass) - (NTuple->mumuMass->at(0) - Utility->PsiPMass)) < Utility->GetGenericParam("B&PsiMassWindow"))))) ||
+		   (Utility->PsiRejection(NTuple,"keepPsi",true) == true)) ||
 		  
 		  (((FitType == 36) || (FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)))
+
 		SingleCandNTuple_KeepPsi->add(Vars);
 	    }
 	}

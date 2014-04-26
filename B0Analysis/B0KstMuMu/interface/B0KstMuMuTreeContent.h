@@ -8,8 +8,6 @@
 
 class B0KstMuMuTreeContent
 {
-
-
  public:
   
   B0KstMuMuTreeContent ();
@@ -238,7 +236,6 @@ class B0KstMuMuTreeContent
   void ClearVectorsMonteCarlo ();
   void CopyScalars (B0KstMuMuTreeContent* NTupleIn);
   void CopyVectors (B0KstMuMuTreeContent* NTupleIn, int index);
-
 };
 
 #endif

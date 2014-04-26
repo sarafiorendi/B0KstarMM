@@ -112,9 +112,6 @@ Utils::Utils (bool rightFlavorTag)
   std::cout << "nFitObserv: "        << nFitObserv << std::endl;
   std::cout << "ProbThreshold: "     << ProbThreshold << std::endl;
   std::cout << "scrambleFraction: "  << scrambleFraction << std::endl;
-  std::cout << "B0ToKstMuMu: "       << B0ToKstMuMu << std::endl;
-  std::cout << "B0ToJPsiKst: "       << B0ToJPsiKst << std::endl;
-  std::cout << "B0ToPsi2SKst: "      << B0ToPsi2SKst << std::endl;
   std::cout << "DirEfficiency: "     << DirEfficiency << std::endl;
 
   std::cout << "Histo2DEffNameOkTagSig: "    << Histo2DEffNameOkTagSig << std::endl;
@@ -138,6 +135,9 @@ Utils::Utils (bool rightFlavorTag)
   std::cout << "NcoeffThetaK: "   << NcoeffThetaK << std::endl;
   std::cout << "NcoeffPhi: "      << NcoeffPhi << std::endl;
   std::cout << "RIGHTflavorTAG: " << RIGHTflavorTAG << std::endl;
+  std::cout << "B0ToKstMuMu: "    << B0ToKstMuMu << std::endl;
+  std::cout << "B0ToJPsiKst: "    << B0ToJPsiKst << std::endl;
+  std::cout << "B0ToPsi2SKst: "   << B0ToPsi2SKst << std::endl;
   std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
   std::cout << "@@@ Consider to double-check values for: @@@" << std::endl;
   std::cout << "- Utils::AddConstraintThetaL" << std::endl;
@@ -3697,6 +3697,69 @@ unsigned int Utils::GetConfigParamIndx (std::string varName)
 
   std::cout << "[Utils::GetConfigParamIndx]\tError wrong index name : " << varName << std::endl;
   exit (EXIT_FAILURE);
+}
+
+bool Utils::PsiRejection (B0KstMuMuSingleCandTreeContent* NTuple, std::string seleType, bool B0andPsiCut)
+// ###########################
+// # seleType == "keepJpsi"  #
+// # seleType == "keepPsiP"  #
+// # seleType == "rejectPsi" #
+// # seleType == "keepPsi"   #
+// ###########################
+{
+  if (seleType == "keepJpsi")
+    {
+      if (((NTuple->mumuMass->at(0) > (JPsiMass - GetGenericParam("NSigmaPsiBig")   * NTuple->mumuMassE->at(0)))  &&
+	   (NTuple->mumuMass->at(0) < (JPsiMass + GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))) &&
+	  ((B0andPsiCut == false) ||
+	   ((B0andPsiCut == true) &&
+	    (fabs((NTuple->B0MassArb - B0Mass) - (NTuple->mumuMass->at(0) - JPsiMass)) < GetGenericParam("B&PsiMassWindow")))))
+
+	return true;
+    }
+  else if (seleType == "keepPsiP")
+    {
+      if (((NTuple->mumuMass->at(0) > (PsiPMass - GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))  &&
+	   (NTuple->mumuMass->at(0) < (PsiPMass + GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))) &&
+	  ((B0andPsiCut == false) ||
+	   ((B0andPsiCut == true) &&
+	    (fabs((NTuple->B0MassArb - B0Mass) - (NTuple->mumuMass->at(0) - PsiPMass)) < GetGenericParam("B&PsiMassWindow")))))
+
+	return true;
+    }
+  else if (seleType == "rejectPsi")
+    {
+      if (((NTuple->mumuMass->at(0)  < (JPsiMass - GetGenericParam("NSigmaPsiBig")   * NTuple->mumuMassE->at(0)))   ||
+	   (NTuple->mumuMass->at(0)  > (PsiPMass + GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))   ||
+	   ((NTuple->mumuMass->at(0) > (JPsiMass + GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))   &&
+	    (NTuple->mumuMass->at(0) < (PsiPMass - GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0))))) &&
+	  ((B0andPsiCut == false) ||
+	   ((B0andPsiCut == true) &&
+	    ((fabs((NTuple->B0MassArb - B0Mass) - (NTuple->mumuMass->at(0) - JPsiMass)) > GetGenericParam("B&PsiMassWindow")) &&
+	     (fabs((NTuple->B0MassArb - B0Mass) - (NTuple->mumuMass->at(0) - PsiPMass)) > GetGenericParam("B&PsiMassWindow"))))))
+
+	return true;
+    }
+  else if (seleType == "keepPsi")
+    {
+      if ((((NTuple->mumuMass->at(0) > (JPsiMass - GetGenericParam("NSigmaPsiBig")   * NTuple->mumuMassE->at(0)))   &&
+	    (NTuple->mumuMass->at(0) < (JPsiMass + GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0))))  ||
+	   ((NTuple->mumuMass->at(0) > (PsiPMass - GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))   &&
+	    (NTuple->mumuMass->at(0) < (PsiPMass + GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0))))) &&
+	  ((B0andPsiCut == false) ||
+	   ((B0andPsiCut == true) &&
+	    ((fabs((NTuple->B0MassArb - B0Mass) - (NTuple->mumuMass->at(0) - JPsiMass)) < GetGenericParam("B&PsiMassWindow")) ||
+	     (fabs((NTuple->B0MassArb - B0Mass) - (NTuple->mumuMass->at(0) - PsiPMass)) < GetGenericParam("B&PsiMassWindow"))))))
+
+	return true;
+    }
+  else
+    {
+      std::cout << "[Utils::PsiRejection]\tSelection type not valid : " << seleType << std::endl;
+      exit (EXIT_FAILURE);
+    }
+  
+  return false;
 }
 
 bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigCheck, double evFraction, int* BestCandIndx, bool* B0notB0bar, int* TrigCat, unsigned int* countCands)

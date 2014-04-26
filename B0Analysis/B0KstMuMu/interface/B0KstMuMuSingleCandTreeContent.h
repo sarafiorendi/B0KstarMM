@@ -7,8 +7,6 @@
 
 class B0KstMuMuSingleCandTreeContent : public B0KstMuMuTreeContent
 {
-
-
  public:
   
   B0KstMuMuSingleCandTreeContent ();
@@ -39,9 +37,10 @@ class B0KstMuMuSingleCandTreeContent : public B0KstMuMuTreeContent
   // ####################
   double CosThetaKArb, CosThetaMuArb, PhiKstMuMuPlaneArb;
 
- private:
-  void CopyScalars (B0KstMuMuSingleCandTreeContent* NTupleIn);
 
+ private:
+
+  void CopyScalars (B0KstMuMuSingleCandTreeContent* NTupleIn);
 };
 
 #endif

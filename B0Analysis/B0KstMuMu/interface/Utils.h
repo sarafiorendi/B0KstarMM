@@ -13,18 +13,16 @@
 #include <string>
 #include <vector>
 
+#include "B0KstMuMuSingleCandTreeContent.h"
 #include "B0KstMuMuTreeContent.h"
 
 
 class Utils
 {
-
-
  public:
   
   Utils(bool rightFlavorTag = true);
   ~Utils() {};
-
 
   // #################################
   // # Data structure for efficiency #
@@ -231,6 +229,7 @@ class Utils
   unsigned int GetFitParamIndx    (std::string varName);
   unsigned int GetConfigParamIndx (std::string varName);
 
+  bool PsiRejection   (B0KstMuMuSingleCandTreeContent* NTuple, std::string seleType, bool B0andPsiCut);
   bool ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigCheck, double evFraction, int* BestCandIndx, bool* B0notB0bar, int* TrigCat, unsigned int* countCands);
   bool FlavorTagger   (B0KstMuMuTreeContent* NTuple, unsigned int i, bool* B0notB0bar);
 
@@ -285,6 +284,10 @@ class Utils
 
   bool RIGHTflavorTAG;
 
+  unsigned int B0ToKstMuMu;
+  unsigned int B0ToJPsiKst;
+  unsigned int B0ToPsi2SKst;
+
 
  private:
 
@@ -307,10 +310,6 @@ class Utils
   unsigned int nConfigParam;
   unsigned int nFitObserv;
 
-  unsigned int B0ToKstMuMu;
-  unsigned int B0ToJPsiKst;
-  unsigned int B0ToPsi2SKst;
-
   std::string DirEfficiency;
 
   std::string Histo2DEffNameOkTagSig;
@@ -328,7 +327,6 @@ class Utils
   std::string Histo3DEffNameMisTagSig;
   std::string Histo3DEffNameMisTagJPsi;
   std::string Histo3DEffNameMisTagPsi2S;
-
 };
 
 #endif
