@@ -2320,6 +2320,7 @@ int main (int argc, char** argv)
 	  else                                 Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
 	  Utility->ReadPreselectionCut(ParameterFILE);
 	  Utility->ReadSelectionCuts(ParameterFILE);
+	  Utility->ReadGenericParam(ParameterFILE);
 
 
 	  // ###################################
