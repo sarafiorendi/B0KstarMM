@@ -103,8 +103,8 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   // ##############
   // # Parameters #
   // ##############
-  double signalSigma = sqrt(Utility->GetGenericParam("FRACMASSS") * Utility->GetGenericParam("SIGMAS1") * Utility->GetGenericParam("SIGMAS1") +
-			    (1. - Utility->GetGenericParam("FRACMASSS")) * Utility->GetGenericParam("SIGMAS2") * Utility->GetGenericParam("SIGMAS2"));
+  double signalSigma = sqrt(atof(Utility->GetGenericParam("FRACMASSS").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) +
+			    (1. - atof(Utility->GetGenericParam("FRACMASSS").c_str())) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) * atof(Utility->GetGenericParam("SIGMAS2").c_str()));
   double MCtoDataRescale = 20.466442/(5951.1*49.1/33.2); // [fb-1(Data) / fb-1(MC) (corrected by the PYTHIA overestimation of the cross-section)]
 
 
@@ -248,14 +248,14 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
 
 	  if ((Utility->ChooseBestCand(NTupleS, DoTrigCheck, static_cast<double>(entry)/static_cast<double>(nEntriesS), &BestCandIndx, &B0notB0bar, &TrigCat, &countCands) == true) &&
 
-	      (((B0notB0bar == true) && (fabs(NTupleS->bMass->at(BestCandIndx) - Utility->B0Mass) < Utility->GetGenericParam("NSigmaB0S")*signalSigma)) ||
-	       ((B0notB0bar == false) && (fabs(NTupleS->bBarMass->at(BestCandIndx) - Utility->B0Mass) < Utility->GetGenericParam("NSigmaB0S")*signalSigma))) &&
+	      (((B0notB0bar == true) && (fabs(NTupleS->bMass->at(BestCandIndx) - Utility->B0Mass) < atof(Utility->GetGenericParam("NSigmaB0S").c_str())*signalSigma)) ||
+	       ((B0notB0bar == false) && (fabs(NTupleS->bBarMass->at(BestCandIndx) - Utility->B0Mass) < atof(Utility->GetGenericParam("NSigmaB0S").c_str())*signalSigma))) &&
 	      (NTupleS->genSignal == true) && (NTupleS->truthMatchSignal->at(BestCandIndx) == true) &&
 	      
-	      ((NTupleS->mumuMass->at(BestCandIndx) < (Utility->JPsiMass - Utility->GetGenericParam("NSigmaPsiBig")*NTupleS->mumuMassE->at(BestCandIndx))) ||
-	       (NTupleS->mumuMass->at(BestCandIndx) > (Utility->PsiPMass + Utility->GetGenericParam("NSigmaPsiSmall")*NTupleS->mumuMassE->at(BestCandIndx))) ||
-	       ((NTupleS->mumuMass->at(BestCandIndx) > (Utility->JPsiMass + Utility->GetGenericParam("NSigmaPsiSmall")*NTupleS->mumuMassE->at(BestCandIndx))) &&
-		(NTupleS->mumuMass->at(BestCandIndx) < (Utility->PsiPMass - Utility->GetGenericParam("NSigmaPsiSmall")*NTupleS->mumuMassE->at(BestCandIndx))))) &&
+	      ((NTupleS->mumuMass->at(BestCandIndx) < (Utility->JPsiMass - atof(Utility->GetGenericParam("NSigmaPsiBig").c_str())*NTupleS->mumuMassE->at(BestCandIndx))) ||
+	       (NTupleS->mumuMass->at(BestCandIndx) > (Utility->PsiPMass + atof(Utility->GetGenericParam("NSigmaPsiSmall").c_str())*NTupleS->mumuMassE->at(BestCandIndx))) ||
+	       ((NTupleS->mumuMass->at(BestCandIndx) > (Utility->JPsiMass + atof(Utility->GetGenericParam("NSigmaPsiSmall").c_str())*NTupleS->mumuMassE->at(BestCandIndx))) &&
+		(NTupleS->mumuMass->at(BestCandIndx) < (Utility->PsiPMass - atof(Utility->GetGenericParam("NSigmaPsiSmall").c_str())*NTupleS->mumuMassE->at(BestCandIndx))))) &&
 	      
 	      ((((q2Region == 0) || (q2Region == 2) || (q2Region == 3) || (q2Region == 5)) &&
 		(NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) > q2Bins[0]) && (NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) < q2Bins[2])) ||
@@ -313,20 +313,20 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
 	  if ((Utility->ChooseBestCand(NTupleB, DoTrigCheck, static_cast<double>(entry)/static_cast<double>(nEntriesB), &BestCandIndx, &B0notB0bar, &TrigCat, &countCands) == true) &&
 
 	      (((B0notB0bar == true) &&
-		(((NTupleB->bMass->at(BestCandIndx) > Utility->B0Mass-(Utility->GetGenericParam("NSigmaB0B")+Utility->GetGenericParam("NSigmaB0S"))*signalSigma) &&
-		  (NTupleB->bMass->at(BestCandIndx) < Utility->B0Mass-Utility->GetGenericParam("NSigmaB0B")*signalSigma)) ||
-		 ((NTupleB->bMass->at(BestCandIndx) < Utility->B0Mass+(Utility->GetGenericParam("NSigmaB0B")+Utility->GetGenericParam("NSigmaB0S"))*signalSigma) &&
-		  (NTupleB->bMass->at(BestCandIndx) > Utility->B0Mass+Utility->GetGenericParam("NSigmaB0B")*signalSigma)))) ||
+		(((NTupleB->bMass->at(BestCandIndx) > Utility->B0Mass-(atof(Utility->GetGenericParam("NSigmaB0B").c_str())+atof(Utility->GetGenericParam("NSigmaB0S").c_str()))*signalSigma) &&
+		  (NTupleB->bMass->at(BestCandIndx) < Utility->B0Mass-atof(Utility->GetGenericParam("NSigmaB0B").c_str())*signalSigma)) ||
+		 ((NTupleB->bMass->at(BestCandIndx) < Utility->B0Mass+(atof(Utility->GetGenericParam("NSigmaB0B").c_str())+atof(Utility->GetGenericParam("NSigmaB0S").c_str()))*signalSigma) &&
+		  (NTupleB->bMass->at(BestCandIndx) > Utility->B0Mass+atof(Utility->GetGenericParam("NSigmaB0B").c_str())*signalSigma)))) ||
 	       ((B0notB0bar == false) &&
-		(((NTupleB->bBarMass->at(BestCandIndx) > Utility->B0Mass-(Utility->GetGenericParam("NSigmaB0B")+Utility->GetGenericParam("NSigmaB0S"))*signalSigma) &&
-		  (NTupleB->bBarMass->at(BestCandIndx) < Utility->B0Mass-Utility->GetGenericParam("NSigmaB0B")*signalSigma)) ||
-		 ((NTupleB->bBarMass->at(BestCandIndx) < Utility->B0Mass+(Utility->GetGenericParam("NSigmaB0B")+Utility->GetGenericParam("NSigmaB0S"))*signalSigma) &&
-		  (NTupleB->bBarMass->at(BestCandIndx) > Utility->B0Mass+Utility->GetGenericParam("NSigmaB0B")*signalSigma))))) &&
+		(((NTupleB->bBarMass->at(BestCandIndx) > Utility->B0Mass-(atof(Utility->GetGenericParam("NSigmaB0B").c_str())+atof(Utility->GetGenericParam("NSigmaB0S").c_str()))*signalSigma) &&
+		  (NTupleB->bBarMass->at(BestCandIndx) < Utility->B0Mass-atof(Utility->GetGenericParam("NSigmaB0B").c_str())*signalSigma)) ||
+		 ((NTupleB->bBarMass->at(BestCandIndx) < Utility->B0Mass+(atof(Utility->GetGenericParam("NSigmaB0B").c_str())+atof(Utility->GetGenericParam("NSigmaB0S").c_str()))*signalSigma) &&
+		  (NTupleB->bBarMass->at(BestCandIndx) > Utility->B0Mass+atof(Utility->GetGenericParam("NSigmaB0B").c_str())*signalSigma))))) &&
 
-	      ((NTupleB->mumuMass->at(BestCandIndx) < (Utility->JPsiMass - Utility->GetGenericParam("NSigmaPsiBig")*NTupleB->mumuMassE->at(BestCandIndx))) ||
-	       (NTupleB->mumuMass->at(BestCandIndx) > (Utility->PsiPMass + Utility->GetGenericParam("NSigmaPsiSmall")*NTupleB->mumuMassE->at(BestCandIndx))) ||
-	       ((NTupleB->mumuMass->at(BestCandIndx) > (Utility->JPsiMass + Utility->GetGenericParam("NSigmaPsiSmall")*NTupleB->mumuMassE->at(BestCandIndx))) &&
-		(NTupleB->mumuMass->at(BestCandIndx) < (Utility->PsiPMass - Utility->GetGenericParam("NSigmaPsiSmall")*NTupleB->mumuMassE->at(BestCandIndx))))) &&
+	      ((NTupleB->mumuMass->at(BestCandIndx) < (Utility->JPsiMass - atof(Utility->GetGenericParam("NSigmaPsiBig").c_str())*NTupleB->mumuMassE->at(BestCandIndx))) ||
+	       (NTupleB->mumuMass->at(BestCandIndx) > (Utility->PsiPMass + atof(Utility->GetGenericParam("NSigmaPsiSmall").c_str())*NTupleB->mumuMassE->at(BestCandIndx))) ||
+	       ((NTupleB->mumuMass->at(BestCandIndx) > (Utility->JPsiMass + atof(Utility->GetGenericParam("NSigmaPsiSmall").c_str())*NTupleB->mumuMassE->at(BestCandIndx))) &&
+		(NTupleB->mumuMass->at(BestCandIndx) < (Utility->PsiPMass - atof(Utility->GetGenericParam("NSigmaPsiSmall").c_str())*NTupleB->mumuMassE->at(BestCandIndx))))) &&
 	      
 	      ((((q2Region == 0) || (q2Region == 2) || (q2Region == 3) || (q2Region == 5)) &&
 		(NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) > q2Bins[0]) && (NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) < q2Bins[2])) ||

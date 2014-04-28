@@ -42,7 +42,7 @@ Utils::Utils (bool rightFlavorTag)
   kstSigma     = 0.05;
 
   nFitParam    = 67;
-  nConfigParam = 5;
+  nConfigParam = 4;
   nFitObserv   = 5; // FL --- AFB --- P1 --- P2 --- BF
 
   NcoeffThetaL = 6;
@@ -401,7 +401,7 @@ void Utils::ReadAllBins (std::string fileName, std::vector<double>* q2Bins, std:
 
 void Utils::Readq2Bins (std::string fileName, std::vector<double>* q2Bins)
 {
-  std::vector<std::string>* ParVector;
+  std::vector<std::string>* ParVector = NULL;
   ReadParVsq2Bins(fileName,"q2",&ParVector);
 
 
@@ -1817,6 +1817,7 @@ unsigned int Utils::HLTpathForEvFraction (double evtFrac)
   // #####################################################################################
   // # This method is used together with the method: "ReadTriggerPathsANDCutsANDEntries" #
   // #####################################################################################
+
   double totalLumi = 0.0;
   double countLumi = 0.0;
   unsigned int it  = 0;
@@ -1846,6 +1847,7 @@ unsigned int Utils::IsInTriggerTable (B0KstMuMuTreeContent* NTupleIn, double* HL
   // #####################################################################################
   // # This method is used together with the method: "ReadTriggerPathsANDCutsANDEntries" #
   // #####################################################################################
+
   unsigned int it;
   unsigned int HLTpathIndx;
 
@@ -1876,6 +1878,7 @@ unsigned int Utils::GetNHLTCat ()
   // #####################################################################################
   // # This method is used together with the method: "ReadTriggerPathsANDCutsANDEntries" #
   // #####################################################################################
+
   return HLTpath.size();
 }
 
@@ -1884,6 +1887,7 @@ double Utils::GetHLTentries (unsigned int HLTindx)
   // #####################################################################################
   // # This method is used together with the method: "ReadTriggerPathsANDCutsANDEntries" #
   // #####################################################################################
+
   if (HLTindx-1 < VecHLTentries.size()) return VecHLTentries[HLTindx-1];
   else return -1.0;
 }
@@ -2082,7 +2086,7 @@ void Utils::ReadParVsq2Bins (std::string fileName, std::string praName, std::vec
   ReadParameters* ParameterFile = new ReadParameters(fileName.c_str());
 
   if (*vecParam == NULL) *vecParam = new std::vector<std::string>;
-  else                  (*vecParam)->clear();
+  else                   (*vecParam)->clear();
 
   ParameterFile->ReadFromFile(ParFileBlockN(praName.c_str()),*vecParam);
 
@@ -2522,7 +2526,7 @@ void Utils::MakeGraphVar (std::string fileName, TGraphAsymmErrors** graph, std::
 
   std::vector<std::vector<std::string>*> vecParam;
   std::vector<std::vector<unsigned int>*> configParam;
-  std::vector<std::string>* ParVector;
+  std::vector<std::string>* ParVector = NULL;
   std::vector<double> vxs;
   std::vector<double> vys;
   std::vector<double> vxel;
@@ -3707,49 +3711,53 @@ bool Utils::PsiRejection (B0KstMuMuSingleCandTreeContent* NTuple, std::string se
 // # seleType == "keepPsi"   #
 // ###########################
 {
+// ####################################################################
+// # This method is used together with the method: "ReadGenericParam" #
+// ####################################################################
+
   if (seleType == "keepJpsi")
     {
-      if (((NTuple->mumuMass->at(0) > (JPsiMass - GetGenericParam("NSigmaPsiBig")   * NTuple->mumuMassE->at(0)))  &&
-	   (NTuple->mumuMass->at(0) < (JPsiMass + GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))) &&
+      if (((NTuple->mumuMass->at(0) > (JPsiMass - atof(GetGenericParam("NSigmaPsiBig").c_str())   * NTuple->mumuMassE->at(0)))  &&
+	   (NTuple->mumuMass->at(0) < (JPsiMass + atof(GetGenericParam("NSigmaPsiSmall").c_str()) * NTuple->mumuMassE->at(0)))) &&
 	  ((B0andPsiCut == false) ||
 	   ((B0andPsiCut == true) &&
-	    (fabs((NTuple->B0MassArb - B0Mass) - (NTuple->mumuMass->at(0) - JPsiMass)) < GetGenericParam("B&PsiMassWindow")))))
+	    (fabs((NTuple->B0MassArb - B0Mass) - (NTuple->mumuMass->at(0) - JPsiMass)) < atof(GetGenericParam("B&PsiMassWindow").c_str())))))
 
 	return true;
     }
   else if (seleType == "keepPsiP")
     {
-      if (((NTuple->mumuMass->at(0) > (PsiPMass - GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))  &&
-	   (NTuple->mumuMass->at(0) < (PsiPMass + GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))) &&
+      if (((NTuple->mumuMass->at(0) > (PsiPMass - atof(GetGenericParam("NSigmaPsiSmall").c_str()) * NTuple->mumuMassE->at(0)))  &&
+	   (NTuple->mumuMass->at(0) < (PsiPMass + atof(GetGenericParam("NSigmaPsiSmall").c_str()) * NTuple->mumuMassE->at(0)))) &&
 	  ((B0andPsiCut == false) ||
 	   ((B0andPsiCut == true) &&
-	    (fabs((NTuple->B0MassArb - B0Mass) - (NTuple->mumuMass->at(0) - PsiPMass)) < GetGenericParam("B&PsiMassWindow")))))
+	    (fabs((NTuple->B0MassArb - B0Mass) - (NTuple->mumuMass->at(0) - PsiPMass)) < atof(GetGenericParam("B&PsiMassWindow").c_str())))))
 
 	return true;
     }
   else if (seleType == "rejectPsi")
     {
-      if (((NTuple->mumuMass->at(0)  < (JPsiMass - GetGenericParam("NSigmaPsiBig")   * NTuple->mumuMassE->at(0)))   ||
-	   (NTuple->mumuMass->at(0)  > (PsiPMass + GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))   ||
-	   ((NTuple->mumuMass->at(0) > (JPsiMass + GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))   &&
-	    (NTuple->mumuMass->at(0) < (PsiPMass - GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0))))) &&
+      if (((NTuple->mumuMass->at(0)  < (JPsiMass - atof(GetGenericParam("NSigmaPsiBig").c_str())   * NTuple->mumuMassE->at(0)))   ||
+	   (NTuple->mumuMass->at(0)  > (PsiPMass + atof(GetGenericParam("NSigmaPsiSmall").c_str()) * NTuple->mumuMassE->at(0)))   ||
+	   ((NTuple->mumuMass->at(0) > (JPsiMass + atof(GetGenericParam("NSigmaPsiSmall").c_str()) * NTuple->mumuMassE->at(0)))   &&
+	    (NTuple->mumuMass->at(0) < (PsiPMass - atof(GetGenericParam("NSigmaPsiSmall").c_str()) * NTuple->mumuMassE->at(0))))) &&
 	  ((B0andPsiCut == false) ||
 	   ((B0andPsiCut == true) &&
-	    ((fabs((NTuple->B0MassArb - B0Mass) - (NTuple->mumuMass->at(0) - JPsiMass)) > GetGenericParam("B&PsiMassWindow")) &&
-	     (fabs((NTuple->B0MassArb - B0Mass) - (NTuple->mumuMass->at(0) - PsiPMass)) > GetGenericParam("B&PsiMassWindow"))))))
+	    ((fabs((NTuple->B0MassArb - B0Mass) - (NTuple->mumuMass->at(0) - JPsiMass)) > atof(GetGenericParam("B&PsiMassWindow").c_str())) &&
+	     (fabs((NTuple->B0MassArb - B0Mass) - (NTuple->mumuMass->at(0) - PsiPMass)) > atof(GetGenericParam("B&PsiMassWindow").c_str()))))))
 
 	return true;
     }
   else if (seleType == "keepPsi")
     {
-      if ((((NTuple->mumuMass->at(0) > (JPsiMass - GetGenericParam("NSigmaPsiBig")   * NTuple->mumuMassE->at(0)))   &&
-	    (NTuple->mumuMass->at(0) < (JPsiMass + GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0))))  ||
-	   ((NTuple->mumuMass->at(0) > (PsiPMass - GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0)))   &&
-	    (NTuple->mumuMass->at(0) < (PsiPMass + GetGenericParam("NSigmaPsiSmall") * NTuple->mumuMassE->at(0))))) &&
+      if ((((NTuple->mumuMass->at(0) > (JPsiMass - atof(GetGenericParam("NSigmaPsiBig").c_str())   * NTuple->mumuMassE->at(0)))   &&
+	    (NTuple->mumuMass->at(0) < (JPsiMass + atof(GetGenericParam("NSigmaPsiSmall").c_str()) * NTuple->mumuMassE->at(0))))  ||
+	   ((NTuple->mumuMass->at(0) > (PsiPMass - atof(GetGenericParam("NSigmaPsiSmall").c_str()) * NTuple->mumuMassE->at(0)))   &&
+	    (NTuple->mumuMass->at(0) < (PsiPMass + atof(GetGenericParam("NSigmaPsiSmall").c_str()) * NTuple->mumuMassE->at(0))))) &&
 	  ((B0andPsiCut == false) ||
 	   ((B0andPsiCut == true) &&
-	    ((fabs((NTuple->B0MassArb - B0Mass) - (NTuple->mumuMass->at(0) - JPsiMass)) < GetGenericParam("B&PsiMassWindow")) ||
-	     (fabs((NTuple->B0MassArb - B0Mass) - (NTuple->mumuMass->at(0) - PsiPMass)) < GetGenericParam("B&PsiMassWindow"))))))
+	    ((fabs((NTuple->B0MassArb - B0Mass) - (NTuple->mumuMass->at(0) - JPsiMass)) < atof(GetGenericParam("B&PsiMassWindow").c_str())) ||
+	     (fabs((NTuple->B0MassArb - B0Mass) - (NTuple->mumuMass->at(0) - PsiPMass)) < atof(GetGenericParam("B&PsiMassWindow").c_str()))))))
 
 	return true;
     }
@@ -4152,17 +4160,21 @@ double Utils::GetPreCut (std::string cutName)
 
 void Utils::ReadGenericParam (std::string fileName)
 // #########################################
-// # B0MassIntervalLeft  = GenericPars[0]  #
-// # B0MassIntervalRight = GenericPars[1]  #
-// # NSigmaB0            = GenericPars[2]  #
-// # NSigmaB0S           = GenericPars[3]  #
-// # NSigmaB0B           = GenericPars[4]  #
-// # NSigmaPsiSmall      = GenericPars[5]  #
-// # NSigmaPsiBig        = GenericPars[6]  #
-// # B&PsiMassWindow     = GenericPars[7]  #
-// # SIGMAS1             = GenericPars[8]  #
-// # SIGMAS2             = GenericPars[9]  #
-// # FRACMASSS           = GenericPars[10] #
+// # SlewRateConstr      = GenericPars[0]  #
+// # NormJPSInotPSIP     = GenericPars[1]  #
+// # ApplyConstr         = GenericPars[2]  #
+// # CtrlMisTag          = GenericPars[3]  #
+// # B0MassIntervalLeft  = GenericPars[4]  #
+// # B0MassIntervalRight = GenericPars[5]  #
+// # NSigmaB0            = GenericPars[6]  #
+// # NSigmaB0S           = GenericPars[7]  #
+// # NSigmaB0B           = GenericPars[8]  #
+// # NSigmaPsiSmall      = GenericPars[9]  #
+// # NSigmaPsiBig        = GenericPars[10] #
+// # B&PsiMassWindow     = GenericPars[11] #
+// # SIGMAS1             = GenericPars[12] #
+// # SIGMAS2             = GenericPars[13] #
+// # FRACMASSS           = GenericPars[14] #
 // #########################################
 {
   std::vector<std::string> ParVector;
@@ -4177,8 +4189,8 @@ void Utils::ReadGenericParam (std::string fileName)
   ParameterFile->ReadFromFile(ParFileBlockN("genericpar"),&ParVector);
   for (unsigned int i = 0; i < ParVector.size(); i++)
     {
-      GenericPars.push_back(atof(ParVector[i].c_str()));
-      std::cout << "Generic parameter #" << i << " from config file : " << GenericPars[i] << std::endl;
+      GenericPars.push_back(ParVector[i]);
+      std::cout << "Generic parameter #" << i << " from config file : " << GenericPars[i].c_str() << std::endl;
     }
 
 
@@ -4186,37 +4198,45 @@ void Utils::ReadGenericParam (std::string fileName)
   delete ParameterFile;
 }
 
-bool Utils::SetGenericParam (std::string parName, double val)
+bool Utils::SetGenericParam (std::string parName, std::string val)
 {
-  if      (parName == "B0MassIntervalLeft")  GenericPars[0]  = val;
-  else if (parName == "B0MassIntervalRight") GenericPars[1]  = val;
-  else if (parName == "NSigmaB0")            GenericPars[2]  = val;
-  else if (parName == "NSigmaB0S")           GenericPars[3]  = val;
-  else if (parName == "NSigmaB0B")           GenericPars[4]  = val;
-  else if (parName == "NSigmaPsiSmall")      GenericPars[5]  = val;
-  else if (parName == "NSigmaPsiBig")        GenericPars[6]  = val;
-  else if (parName == "B&PsiMassWindow")     GenericPars[7]  = val;
-  else if (parName == "SIGMAS1")             GenericPars[8]  = val;
-  else if (parName == "SIGMAS2")             GenericPars[9]  = val;
-  else if (parName == "FRACMASSS")           GenericPars[10] = val;
+  if      (parName == "SlewRateConstr")      GenericPars[0]  = val;
+  else if (parName == "NormJPSInotPSIP")     GenericPars[1]  = val;
+  else if (parName == "ApplyConstr")         GenericPars[2]  = val;
+  else if (parName == "CtrlMisTag")          GenericPars[3]  = val;
+  else if (parName == "B0MassIntervalLeft")  GenericPars[4]  = val;
+  else if (parName == "B0MassIntervalRight") GenericPars[5]  = val;
+  else if (parName == "NSigmaB0")            GenericPars[6]  = val;
+  else if (parName == "NSigmaB0S")           GenericPars[7]  = val;
+  else if (parName == "NSigmaB0B")           GenericPars[8]  = val;
+  else if (parName == "NSigmaPsiSmall")      GenericPars[9]  = val;
+  else if (parName == "NSigmaPsiBig")        GenericPars[10] = val;
+  else if (parName == "B&PsiMassWindow")     GenericPars[11] = val;
+  else if (parName == "SIGMAS1")             GenericPars[12] = val;
+  else if (parName == "SIGMAS2")             GenericPars[13] = val;
+  else if (parName == "FRACMASSS")           GenericPars[14] = val;
   else return false;
 
   return true;
 }
 
-double Utils::GetGenericParam (std::string parName)
+std::string Utils::GetGenericParam (std::string parName)
 {
-  if      (parName == "B0MassIntervalLeft")  return GenericPars[0];
-  else if (parName == "B0MassIntervalRight") return GenericPars[1];
-  else if (parName == "NSigmaB0")            return GenericPars[2];
-  else if (parName == "NSigmaB0S")           return GenericPars[3];
-  else if (parName == "NSigmaB0B")           return GenericPars[4];
-  else if (parName == "NSigmaPsiSmall")      return GenericPars[5];
-  else if (parName == "NSigmaPsiBig")        return GenericPars[6];
-  else if (parName == "B&PsiMassWindow")     return GenericPars[7];
-  else if (parName == "SIGMAS1")             return GenericPars[8];
-  else if (parName == "SIGMAS2")             return GenericPars[9];
-  else if (parName == "FRACMASSS")           return GenericPars[10];
+  if      (parName == "SlewRateConstr")      return GenericPars[0];
+  else if (parName == "NormJPSInotPSIP")     return GenericPars[1];
+  else if (parName == "ApplyConstr")         return GenericPars[2];
+  else if (parName == "CtrlMisTag")          return GenericPars[3];
+  else if (parName == "B0MassIntervalLeft")  return GenericPars[4];
+  else if (parName == "B0MassIntervalRight") return GenericPars[5];
+  else if (parName == "NSigmaB0")            return GenericPars[6];
+  else if (parName == "NSigmaB0S")           return GenericPars[7];
+  else if (parName == "NSigmaB0B")           return GenericPars[8];
+  else if (parName == "NSigmaPsiSmall")      return GenericPars[9];
+  else if (parName == "NSigmaPsiBig")        return GenericPars[10];
+  else if (parName == "B&PsiMassWindow")     return GenericPars[11];
+  else if (parName == "SIGMAS1")             return GenericPars[12];
+  else if (parName == "SIGMAS2")             return GenericPars[13];
+  else if (parName == "FRACMASSS")           return GenericPars[14];
   else
     {
       std::cout << "[Utils::GetGenericParam]\tGeneric parameter not valid : " << parName << std::endl;
@@ -4226,8 +4246,10 @@ double Utils::GetGenericParam (std::string parName)
 
 double Utils::GetB0Width ()
 {
-  if (GetGenericParam("FRACMASSS") != 0.0) return sqrt(GetGenericParam("FRACMASSS") * pow(GetGenericParam("SIGMAS1"),2.) + (1.-GetGenericParam("FRACMASSS")) * pow(GetGenericParam("SIGMAS2"),2.));
-  else                                     return GetGenericParam("SIGMAS1");
+  if (atof(GetGenericParam("FRACMASSS").c_str()) != 0.0)
+    return sqrt(atof(GetGenericParam("FRACMASSS").c_str()) * pow(atof(GetGenericParam("SIGMAS1").c_str()),2.) + (1.-atof(GetGenericParam("FRACMASSS").c_str())) * pow(atof(GetGenericParam("SIGMAS2").c_str()),2.));
+  else
+    return atof(GetGenericParam("SIGMAS1").c_str());
 }
 
 double* Utils::MakeBinning (std::vector<double>* STLvec)

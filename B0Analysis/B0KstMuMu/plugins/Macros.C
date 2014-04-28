@@ -1652,7 +1652,7 @@ void DrawString (double Lumi)
   // ##################
   double startNDCx = 0.826;
   double startNDCy = 0.935;
-  TLine* line1 = new TLine(startNDCx-0.004, startNDCy, startNDCx, startNDCy);
+  TLine* line1 = new TLine(startNDCx-0.005, startNDCy, startNDCx, startNDCy);
   line1->SetBit(TLine::kLineNDC,true);
   line1->Draw();
   TLine* line2 = new TLine(startNDCx, startNDCy, startNDCx+0.005, startNDCy-0.03);

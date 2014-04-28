@@ -241,9 +241,9 @@ class Utils
   bool   SetPreCut           (std::string cutName, double val);
   double GetPreCut           (std::string cutName);
 
-  void   ReadGenericParam (std::string fileName);
-  bool   SetGenericParam  (std::string parName, double val);
-  double GetGenericParam  (std::string parName);
+  void   ReadGenericParam     (std::string fileName);
+  bool   SetGenericParam      (std::string parName, std::string val);
+  std::string GetGenericParam (std::string parName);
 
   double GetB0Width ();
 
@@ -301,7 +301,7 @@ class Utils
 
   std::vector<double> PreCuts;
   std::vector<double> SeleCuts;
-  std::vector<double> GenericPars;
+  std::vector<std::string> GenericPars;
 
   double ProbThreshold;
   double scrambleFraction;

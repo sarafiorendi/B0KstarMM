@@ -23,7 +23,7 @@ q2Indx = 0; % q^2 bin index
 % - q^2 bin 0-2: interp2
 % - q^2 bin 3-5 7-8: scatteredInterpolant natural+linear
 % - q^2 bin 6:       scatteredInterpolant natural+nearest
-useMethodInterp2 = false; % If true 'interp2' else 'scatteredInterpolant'
+useMethodInterp2 = true; % If true 'interp2' else 'scatteredInterpolant'
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ==> Interpolation methods <==                          %
 % - for 'interp2': linear, nearest, cubic, spline        %
