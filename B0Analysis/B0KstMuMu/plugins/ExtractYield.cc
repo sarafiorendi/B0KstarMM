@@ -115,6 +115,16 @@ bool NormJPSInotPSIP;
 string CTRLmisTag;
 string ParameterFILE;
 
+vector<double> q2Bins;
+vector<double> cosThetaKBins;
+vector<double> cosThetaLBins;
+vector<double> phiBins;
+
+vector<vector<string>*>             fitParam;    // Vector containing the pointers to the vectors containing the starting values for the fit
+vector<vector<unsigned int>*>       configParam; // Vector containing the pointers to the vectors containing the configuration parameters for the fit
+pair< vector<TF2*>*,vector<TF2*>* > effFuncs;    // Vector containing the analytical descriptions of the efficiency per q^2 bin for good and mis-tagged events
+                                                 // The first vector is for good-tagged events, while the second vecor is for mis-tagged events
+
 // ####################
 // # Global variables #
 // ####################
@@ -128,16 +138,7 @@ ifstream fileFitSystematicsInput;
 
 TString legNames[6];
 
-double*        q2BinsHisto;
-vector<double> q2Bins;
-vector<double> cosThetaKBins;
-vector<double> cosThetaLBins;
-vector<double> phiBins;
-
-vector<vector<string>*>             fitParam;    // Vector containing the pointers to the vectors containing the starting values for the fit
-vector<vector<unsigned int>*>       configParam; // Vector containing the pointers to the vectors containing the configuration parameters for the fit
-pair< vector<TF2*>*,vector<TF2*>* > effFuncs;    // Vector containing the analytical descriptions of the efficiency per q^2 bin for good and mis-tagged events
-                                                 // The first vector is for good-tagged events, while the second vecor is for mis-tagged events
+double* q2BinsHisto;
 
 
 // ####################################
@@ -2312,6 +2313,7 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
   fileName.replace(fileName.find(".root"),5,myString.str());
   Utility->SaveFitValues(fileName,vecParStr,q2BinIndx);
 
+  vecParStr->clear();
   delete vecParStr;
 }
 
@@ -2971,10 +2973,10 @@ void InstantiateMassFit (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, ve
   // ################################
   // # Read configuration variables #
   // ################################
-  unsigned int useSignal  = configParam->operator[](Utility->GetConfigParamIndx("SigType"))->operator[](parIndx);
-  unsigned int usePeakB   = configParam->operator[](Utility->GetConfigParamIndx("PeakBkgType"))->operator[](parIndx);
-  unsigned int useCombB   = configParam->operator[](Utility->GetConfigParamIndx("CombBkgType"))->operator[](parIndx);
-  unsigned int useMisTag  = configParam->operator[](Utility->GetConfigParamIndx("MistagType"))->operator[](parIndx);
+  unsigned int useSignal = configParam->operator[](Utility->GetConfigParamIndx("SigType"))->operator[](parIndx);
+  unsigned int usePeakB  = configParam->operator[](Utility->GetConfigParamIndx("PeakBkgType"))->operator[](parIndx);
+  unsigned int useCombB  = configParam->operator[](Utility->GetConfigParamIndx("CombBkgType"))->operator[](parIndx);
+  unsigned int useMisTag = configParam->operator[](Utility->GetConfigParamIndx("MistagType"))->operator[](parIndx);
 
 
   // ###################
@@ -3400,6 +3402,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       	  // ###################################
       	  vecParStr = SaveFitResults(NULL,i,fitParam,configParam,vecConstr);
       	  Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,i);
+	  vecParStr->clear();
       	  delete vecParStr;
 
       	  continue;
@@ -3467,6 +3470,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // ##############################################
       vecParStr = SaveFitResults(TotalPDFq2Bins[i],i,fitParam,configParam,vecConstr);
       Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,i);
+      vecParStr->clear();
       delete vecParStr;
       vecParStr = NULL;
 
@@ -4048,10 +4052,10 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // ################################
   // # Read configuration variables #
   // ################################
-  unsigned int useSignal  = configParam->operator[](Utility->GetConfigParamIndx("SigType"))->operator[](parIndx);
-  unsigned int usePeakB   = configParam->operator[](Utility->GetConfigParamIndx("PeakBkgType"))->operator[](parIndx);
-  unsigned int useCombB   = configParam->operator[](Utility->GetConfigParamIndx("CombBkgType"))->operator[](parIndx);
-  unsigned int useMisTag  = configParam->operator[](Utility->GetConfigParamIndx("MistagType"))->operator[](parIndx);
+  unsigned int useSignal = configParam->operator[](Utility->GetConfigParamIndx("SigType"))->operator[](parIndx);
+  unsigned int usePeakB  = configParam->operator[](Utility->GetConfigParamIndx("PeakBkgType"))->operator[](parIndx);
+  unsigned int useCombB  = configParam->operator[](Utility->GetConfigParamIndx("CombBkgType"))->operator[](parIndx);
+  unsigned int useMisTag = configParam->operator[](Utility->GetConfigParamIndx("MistagType"))->operator[](parIndx);
 
 
   // ###########################
@@ -5266,6 +5270,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 	  // ###################################
 	  vecParStr = SaveFitResults(NULL,i,fitParam,configParam,vecConstr);
 	  Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,i);
+	  vecParStr->clear();
 	  delete vecParStr;
 	  
 	  continue;
@@ -5346,6 +5351,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // ##############################################
       vecParStr = SaveFitResults(TotalPDFq2Bins[i],(ID == 0 ? i : 0),fitParam,configParam,vecConstr);
       Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,(ID == 0 ? i : 0));
+      vecParStr->clear();
       delete vecParStr;
 
       
@@ -6602,6 +6608,7 @@ int main(int argc, char** argv)
 		      // ##############################################
 		      vecParStr = SaveFitResults(TotalPDFRejectPsi,0,&fitParam,&configParam,&vecConstr);
 		      Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,-1,"  signal   ");
+		      vecParStr->clear();
 		      delete vecParStr;
 
 
@@ -6632,6 +6639,7 @@ int main(int argc, char** argv)
 		      // ##############################################
 		      vecParStr = SaveFitResults(TotalPDFPsi,1,&fitParam,&configParam,&vecConstr);
 		      Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,-1,"   J/psi   ");
+		      vecParStr->clear();
 		      delete vecParStr;
 
 
@@ -6651,6 +6659,7 @@ int main(int argc, char** argv)
 		      // ##############################################
 		      vecParStr = SaveFitResults(TotalPDFPsi,2,&fitParam,&configParam,&vecConstr);
 		      Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,-1,"  psi(2S)  ");
+		      vecParStr->clear();
 		      delete vecParStr;
 		    }
 		  else
