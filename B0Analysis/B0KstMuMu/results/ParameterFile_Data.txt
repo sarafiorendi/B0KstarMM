@@ -485,7 +485,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians;
 12
 # Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
-0
+1
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
 
@@ -637,7 +637,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians;
 0
 # Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
-0
+1
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
 
@@ -789,7 +789,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians;
 0
 # Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
-0
+1
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
 
@@ -947,7 +947,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians;
 0
 # Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
-0
+1
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
 
@@ -1099,7 +1099,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians;
 0
 # Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
-0
+1
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
 
@@ -1251,7 +1251,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians;
 0
 # Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
-0
+1
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
 
@@ -1403,7 +1403,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians;
 2
 # Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
-0
+1
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
 
@@ -1555,7 +1555,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians;
 0
 # Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
-0
+1
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
 
@@ -1707,7 +1707,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians;
 2
 # Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
-0
+1
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
 
@@ -1859,7 +1859,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians;
 0
 # Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
-0
+1
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
 
@@ -2011,7 +2011,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians;
 0
 # Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
-0
+1
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
 
@@ -2163,7 +2163,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians;
 0
 # Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
-0
+1
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
 
@@ -2645,7 +2645,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # trueAll&FitFrac = keep all true ev. and fit just for mis-tag fraction
 # trueAll&NoFFrac = keep all true ev. and do not fit for mis-tag fraction
 # allEvts         = keep all events
-all&NoFFrac
+allEvts
 
 # B0 mass interval left [0.28 GeV/c2]
 0.28

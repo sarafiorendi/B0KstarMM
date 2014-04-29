@@ -83,14 +83,14 @@ using namespace RooFit;
 // ##########################################
 // # Internal flags to control the workflow #
 // ##########################################
-#define SAVEPOLY      false // "true" = save bkg polynomial coefficients in new parameter file; "false" = save original values
-#define RESETOBS      false // Reset polynomial coefficients for combinatorial background and angular observables for a fresh start
-#define SETBATCH      false
-#define SAVEPLOT      false
-#define FUNCERRBAND   false // Show the p.d.f. error band
 #define MakeMuMuPlots false
 #define USEMINOS      false
 #define UseSPwave     false
+#define SETBATCH      false
+#define SAVEPOLY      false // "true" = save bkg polynomial coefficients in new parameter file; "false" = save original values
+#define SAVEPLOT      false
+#define FUNCERRBAND   false // Show the p.d.f. error band
+#define RESETOBS      false // Reset polynomial coefficients for combinatorial background and angular observables for a fresh start
 
 // ##################
 // # External files #
@@ -297,8 +297,6 @@ RooArgSet vecConstr;
 // ################################################
 struct MyProdPdf
 {
-
-
 public:
   MyProdPdf (RooAbsPdf& pdf1, RooAbsPdf& pdf2) : _pdf1(pdf1), _pdf2(pdf2)
   { 
@@ -3392,7 +3390,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
     }
  
  
-  fileFitResults << "@@@@@@ Differential branching fraction @@@@@@" << endl;
+  fileFitResults << "\n@@@@@@ Differential branching fraction @@@@@@" << endl;
   for (unsigned int i = (specBin == -1 ? 0 : specBin); i < (specBin == -1 ? q2Bins->size()-1 : specBin+1); i++)
     {
       if (!(FitType == 41) && !(FitType == 61) && (Utility->ValIsInPsi(q2Bins,(q2Bins->operator[](i+1)+q2Bins->operator[](i))/2.) == true))
@@ -5258,7 +5256,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
     }
 
 
-  fileFitResults << "@@@@@@ Measurements vs q^2 @@@@@@" << endl;
+  fileFitResults << "\n@@@@@@ Angular analysis vs q^2 @@@@@@" << endl;
   for (unsigned int i = (specBin == -1 ? 0 : specBin); i < (specBin == -1 ? q2Bins->size()-1 : specBin+1); i++)
     {
       if ((FitType != 46) && (FitType != 56) &&
@@ -6250,14 +6248,14 @@ int main(int argc, char** argv)
 	  cout << "DELTATYPE = "       << DELTATYPE << endl;
 	  cout << "DEGREEINTERPEFF = " << DEGREEINTERPEFF << endl;
 
-	  cout << "\nSAVEPOLY = "       << SAVEPOLY << endl;
-	  cout << "RESETOBS = "       << RESETOBS << endl;
-	  cout << "SETBATCH  = "      << SETBATCH << endl;
-	  cout << "SAVEPLOT = "       << SAVEPLOT << endl;
-	  cout << "FUNCERRBAND = "    << FUNCERRBAND << endl;
-	  cout << "MakeMuMuPlots = "  << MakeMuMuPlots << endl;
+	  cout << "\nMakeMuMuPlots = "  << MakeMuMuPlots << endl;
 	  cout << "USEMINOS = "       << USEMINOS << endl;
 	  cout << "UseSPwave = "      << UseSPwave << endl;
+	  cout << "SETBATCH  = "      << SETBATCH << endl;
+	  cout << "SAVEPOLY = "       << SAVEPOLY << endl;
+	  cout << "SAVEPLOT = "       << SAVEPLOT << endl;
+	  cout << "FUNCERRBAND = "    << FUNCERRBAND << endl;
+	  cout << "RESETOBS = "       << RESETOBS << endl;
 
 	  cout << "\nPARAMETERFILEIN = " << PARAMETERFILEIN << endl;
 	  cout << "PARAMETERFILEOUT = "  << PARAMETERFILEOUT << endl;
@@ -6923,7 +6921,8 @@ int main(int argc, char** argv)
 	    }
 	  else
 	    {
-	      system("say \" Let's rock and roll ! \"");
+	      // @TMP@
+	      // system("say \" Let's rock and roll ! \"");
  	      theApp->Run (); // Eventloop on air
 	    }
 	}

@@ -2637,7 +2637,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 1
 
 # Apply Gaussian constraints in the likelihood [0 = no; 1 = yes]
-0
+1
 
 # Control mis-tag work flow:
 # trueMistag      = keep only true mis-tagged ev.
@@ -2645,7 +2645,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # trueAll&FitFrac = keep all true ev. and fit just for mis-tag fraction
 # trueAll&NoFFrac = keep all true ev. and do not fit for mis-tag fraction
 # allEvts         = keep all events
-all&NoFFrac
+allEvts
 
 # B0 mass interval left [0.28 GeV/c2]
 0.28
