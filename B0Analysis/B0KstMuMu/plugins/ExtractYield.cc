@@ -69,11 +69,11 @@ using namespace RooFit;
 // # Global constants #
 // ####################
 #define NBINS           20
-#define MULTYIELD       1.0  // Multiplication factor to the number of entry in toy-MC
-#define NCOEFFPOLYBKG   5    // Maximum number of coefficients (= degree) of the polynomial describing the background in the angular variables
-#define POLYCOEFRANGE   2.0  // Polynomial coefficients range for parameter regeneration
-#define DELTATYPE       10   // Multiplication factor to distinguish between good-tagged and mis-tagged
-#define DEGREEINTERPEFF 1    // Polynomial degree for efficiency histogram interpolation
+#define MULTYIELD       1.0 // Multiplication factor to the number of entry in toy-MC
+#define NCOEFFPOLYBKG   5   // Maximum number of coefficients (= degree) of the polynomial describing the background in the angular variables
+#define POLYCOEFRANGE   2.0 // Polynomial coefficients range for parameter regeneration
+#define DELTATYPE       10  // Multiplication factor to distinguish between good-tagged and mis-tagged
+#define DEGREEINTERPEFF 1   // Polynomial degree for efficiency histogram interpolation
 
 #define nJPSIS 250000.0
 #define nJPSIB   2500.0
@@ -135,8 +135,6 @@ B0KstMuMuSingleCandTreeContent* NTuple;
 ofstream fileFitResults;
 ofstream fileFitSystematics;
 ifstream fileFitSystematicsInput;
-
-TString legNames[6];
 
 double* q2BinsHisto;
 
@@ -861,8 +859,6 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRea
 // ###################
 {
   stringstream myString;
-  stringstream misTagAngPDF;
-  stringstream finalSignalAngPDF;
   vector<RooRealVar*> vecParam;
   RooAbsPdf* AnglesPDF = NULL;
 
@@ -1229,7 +1225,10 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
   RooAbsReal* NLL;
   double signalSigma  = 0.0;
   double signalSigmaE = 0.0;
+  double totalYield   = 0.0;
+  double totalYieldE  = 0.0;
   double NLLvalue     = 0.0;
+
 
   if (fitResult != NULL)
     {
@@ -1244,17 +1243,19 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
       fileFitResults << "NLL: " << NLLvalue << endl;
 
 
+      // ##########
+      // # Signal #
+      // ##########
       if (GetVar(*TotalPDF,"fracMassS") != NULL)
 	{
-	  signalSigma  = sqrt((*TotalPDF)->getVariables()->getRealValue("fracMassS") * pow((*TotalPDF)->getVariables()->getRealValue("sigmaS1"),2.) +
-			      (1.-(*TotalPDF)->getVariables()->getRealValue("fracMassS")) * pow((*TotalPDF)->getVariables()->getRealValue("sigmaS2"),2.));
-	  signalSigmaE = 1./(2.*signalSigma) * sqrt( pow((pow((*TotalPDF)->getVariables()->getRealValue("sigmaS1"),2.)-pow((*TotalPDF)->getVariables()->getRealValue("sigmaS2"),2.)) * GetVar(*TotalPDF,"fracMassS")->getError(),2.) +
-						     pow(2.*(*TotalPDF)->getVariables()->getRealValue("fracMassS") * (*TotalPDF)->getVariables()->getRealValue("sigmaS1")*GetVar(*TotalPDF,"sigmaS1")->getError(),2.) +
-						     pow(2.*(1.-(*TotalPDF)->getVariables()->getRealValue("fracMassS")) * (*TotalPDF)->getVariables()->getRealValue("sigmaS2")*GetVar(*TotalPDF,"sigmaS2")->getError(),2.) );
+	  signalSigma  = sqrt( GetVar(*TotalPDF,"fracMassS")->getVal() * pow(GetVar(*TotalPDF,"sigmaS1")->getVal(),2.) + (1. - GetVar(*TotalPDF,"fracMassS")->getVal()) * pow(GetVar(*TotalPDF,"sigmaS2")->getVal(),2.) );
+	  signalSigmaE = 1./(2.*signalSigma) * sqrt( pow((pow(GetVar(*TotalPDF,"sigmaS1")->getVal(),2.) - pow(GetVar(*TotalPDF,"sigmaS2")->getVal(),2.)) * GetVar(*TotalPDF,"fracMassS")->getError(),2.) +
+						     pow(2. * GetVar(*TotalPDF,"fracMassS")->getVal() * GetVar(*TotalPDF,"sigmaS1")->getVal() * GetVar(*TotalPDF,"sigmaS1")->getError(),2.) +
+						     pow(2. * (1. - GetVar(*TotalPDF,"fracMassS")->getVal()) * GetVar(*TotalPDF,"sigmaS2")->getVal() * GetVar(*TotalPDF,"sigmaS2")->getError(),2.) );
 	}
       else if (GetVar(*TotalPDF,"sigmaS1") != NULL)
 	{
-	  signalSigma  = (*TotalPDF)->getVariables()->getRealValue("sigmaS1");
+	  signalSigma  = GetVar(*TotalPDF,"sigmaS1")->getVal();
 	  signalSigmaE = GetVar(*TotalPDF,"sigmaS1")->getError();
 	}
   
@@ -1283,6 +1284,58 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
 	}
       
 
+      // ###################
+      // # Signal mist-tag #
+      // ###################
+      if (GetVar(*TotalPDF,"fracMisTag") != NULL)
+	{
+	  signalSigma  = sqrt( GetVar(*TotalPDF,"fracMisTag")->getVal() * pow(GetVar(*TotalPDF,"sigmaMisTag1")->getVal(),2.) + (1. - GetVar(*TotalPDF,"fracMisTag")->getVal()) * pow(GetVar(*TotalPDF,"sigmaMisTag2")->getVal(),2.) );
+	  signalSigmaE = 1./(2.*signalSigma) * sqrt( pow((pow(GetVar(*TotalPDF,"sigmaMisTag1")->getVal(),2.) - pow(GetVar(*TotalPDF,"sigmaS2")->getVal(),2.)) * GetVar(*TotalPDF,"fracMisTag")->getError(),2.) +
+						     pow(2. * GetVar(*TotalPDF,"fracMisTag")->getVal() * GetVar(*TotalPDF,"sigmaMisTag1")->getVal() * GetVar(*TotalPDF,"sigmaMisTag1")->getError(),2.) +
+						     pow(2. * (1. - GetVar(*TotalPDF,"fracMisTag")->getVal()) * GetVar(*TotalPDF,"sigmaMisTag2")->getVal() * GetVar(*TotalPDF,"sigmaMisTag2")->getError(),2.) );
+	}
+      else if (GetVar(*TotalPDF,"sigmaMisTag1") != NULL)
+	{
+	  signalSigma  = GetVar(*TotalPDF,"sigmaMisTag1")->getVal();
+	  signalSigmaE = GetVar(*TotalPDF,"sigmaMisTag1")->getError();
+	}
+
+      if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) fileFitResults << "Background mistag mean: equal to signal mean" << endl;
+      if (GetVar(*TotalPDF,"sigmaMisTag1") != NULL)
+	{
+	  fileFitResults << "Background mistag sigma-1: " << GetVar(*TotalPDF,"sigmaMisTag1")->getVal() << " +/- " << GetVar(*TotalPDF,"sigmaMisTag1")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"sigmaMisTag1")->getErrorHi() << "/" << GetVar(*TotalPDF,"sigmaMisTag1")->getErrorLo() << ")" << endl;
+	}
+      if (GetVar(*TotalPDF,"sigmaMisTag2") != NULL)
+	{
+	  fileFitResults << "Background mistag sigma-2: " << GetVar(*TotalPDF,"sigmaMisTag2")->getVal() << " +/- " << GetVar(*TotalPDF,"sigmaMisTag2")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"sigmaMisTag2")->getErrorHi() << "/" << GetVar(*TotalPDF,"sigmaMisTag2")->getErrorLo() << ")" << endl;
+	  fileFitResults << "Fraction: " << GetVar(*TotalPDF,"fracMisTag")->getVal() << " +/- " << GetVar(*TotalPDF,"fracMisTag")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"fracMisTag")->getErrorHi() << "/" << GetVar(*TotalPDF,"fracMisTag")->getErrorLo() << ")" << endl;
+	}
+      if (GetVar(*TotalPDF,"sigmaMisTag1") != NULL) fileFitResults << "< Sigma >: " << signalSigma << " +/- " << signalSigmaE << endl;
+      if (GetVar(*TotalPDF,"nMisTagFrac") != NULL)
+	{
+	  fileFitResults << "Mistag fraction: " << GetVar(*TotalPDF,"nMisTagFrac")->getVal() << " +/- " << GetVar(*TotalPDF,"nMisTagFrac")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"nMisTagFrac")->getErrorHi() << "/" << GetVar(*TotalPDF,"nMisTagFrac")->getErrorLo() << ")" << endl;
+	}
+
+
+      // ######################
+      // # Total signal yield #
+      // ######################
+      if ((GetVar(*TotalPDF,"nSig") != NULL) && (GetVar(*TotalPDF,"nMisTagFrac") != NULL))
+	{
+	  totalYield  = GetVar(*TotalPDF,"nSig")->getVal() / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
+	  totalYieldE = totalYield * sqrt( pow(GetVar(*TotalPDF,"nSig")->getError()/GetVar(*TotalPDF,"nSig")->getVal(),2.) + pow(GetVar(*TotalPDF,"nMisTagFrac")->getError()/(1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.) );
+	  
+	  fileFitResults << "Total signal yield: " << totalYield << " +/- " << totalYieldE << endl;
+	}
+
+
+      // ############################
+      // # Combinatorial background #
+      // ############################
       if (GetVar(*TotalPDF,"tau1") != NULL)
 	{
 	  fileFitResults << "Background mass tau-1: " << GetVar(*TotalPDF,"tau1")->getVal() << " +/- " << tau1->getError();
@@ -1302,42 +1355,9 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
 	}
 
 
-      if (GetVar(*TotalPDF,"fracMisTag") != NULL)
-	{
-	  signalSigma  = sqrt((*TotalPDF)->getVariables()->getRealValue("fracMisTag") * pow((*TotalPDF)->getVariables()->getRealValue("sigmaMisTag1"),2.) +
-			      (1.-(*TotalPDF)->getVariables()->getRealValue("fracMisTag")) * pow((*TotalPDF)->getVariables()->getRealValue("sigmaMisTag2"),2.));
-	  signalSigmaE = 1./(2.*signalSigma) * sqrt( pow((pow((*TotalPDF)->getVariables()->getRealValue("sigmaMisTag1"),2.)-pow((*TotalPDF)->getVariables()->getRealValue("sigmaMisTag2"),2.)) * GetVar(*TotalPDF,"fracMisTag")->getError(),2.) +
-						     pow(2.*(*TotalPDF)->getVariables()->getRealValue("fracMisTag") * (*TotalPDF)->getVariables()->getRealValue("sigmaMisTag1")*GetVar(*TotalPDF,"sigmaMisTag1")->getError(),2.) +
-						     pow(2.*(1.-(*TotalPDF)->getVariables()->getRealValue("fracMisTag")) * (*TotalPDF)->getVariables()->getRealValue("sigmaMisTag2")*GetVar(*TotalPDF,"sigmaMisTag2")->getError(),2.) );
-	}
-      else if (GetVar(*TotalPDF,"sigmaMisTag1") != NULL)
-	{
-	  signalSigma  = (*TotalPDF)->getVariables()->getRealValue("sigmaMisTag1");
-	  signalSigmaE = GetVar(*TotalPDF,"sigmaMisTag1")->getError();
-	}
-
-      if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) fileFitResults << "Background mistag mean: equal to signal mean" << endl;
-      if (GetVar(*TotalPDF,"sigmaMisTag1") != NULL)
-	{
-	  fileFitResults << "Background mistag sigma-1: " << GetVar(*TotalPDF,"sigmaMisTag1")->getVal() << " +/- " << GetVar(*TotalPDF,"sigmaMisTag1")->getError();
-	  fileFitResults << " (" << GetVar(*TotalPDF,"sigmaMisTag1")->getErrorHi() << "/" << GetVar(*TotalPDF,"sigmaMisTag1")->getErrorLo() << ")" << endl;
-	}
-      if (GetVar(*TotalPDF,"sigmaMisTag2") != NULL)
-	{
-	  fileFitResults << "Background mistag sigma-2: " << GetVar(*TotalPDF,"sigmaMisTag2")->getVal() << " +/- " << GetVar(*TotalPDF,"sigmaMisTag2")->getError();
-	  fileFitResults << " (" << GetVar(*TotalPDF,"sigmaMisTag2")->getErrorHi() << "/" << GetVar(*TotalPDF,"sigmaMisTag2")->getErrorLo() << ")" << endl;
-	  fileFitResults << "Fraction: " << GetVar(*TotalPDF,"fracMisTag")->getVal() << " +/- " << GetVar(*TotalPDF,"fracMisTag")->getError();
-	  fileFitResults << " (" << GetVar(*TotalPDF,"fracMisTag")->getErrorHi() << "/" << GetVar(*TotalPDF,"fracMisTag")->getErrorLo() << ")" << endl;
-	}
-      if (GetVar(*TotalPDF,"sigmaMisTag1") != NULL) fileFitResults << "< Sigma >: " << signalSigma << " +/- " << signalSigmaE << endl;
-
-      if (GetVar(*TotalPDF,"nMisTagFrac") != NULL)
-	{
-	  fileFitResults << "Mistag fraction: " << GetVar(*TotalPDF,"nMisTagFrac")->getVal() << " +/- " << GetVar(*TotalPDF,"nMisTagFrac")->getError();
-	  fileFitResults << " (" << GetVar(*TotalPDF,"nMisTagFrac")->getErrorHi() << "/" << GetVar(*TotalPDF,"nMisTagFrac")->getErrorLo() << ")" << endl;
-	}
-
-
+      // ######################
+      // # Peaking background #
+      // ######################
       if (GetVar(*TotalPDF,"meanR1") != NULL)
 	{
 	  fileFitResults << "Background right-peak mean-1: " << GetVar(*TotalPDF,"meanR1")->getVal() << " +/- " << GetVar(*TotalPDF,"meanR1")->getError();
@@ -1382,6 +1402,9 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
 	}
 
 
+      // #######################
+      // # Angular observables #
+      // #######################
       if (GetVar(*TotalPDF,"FlS") != NULL)
 	{
 	  fileFitResults << "Fl: " << GetVar(*TotalPDF,"FlS")->getVal() << " +/- " << GetVar(*TotalPDF,"FlS")->getError();
@@ -2419,6 +2442,11 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
   unsigned int NBins;
   int nElements = 4;
   if (justKeepPsi == true) nElements = 3;
+  TString legNamesPsi[4];
+  legNamesPsi[0] = "Data";
+  legNamesPsi[1] = "Total fit";
+  legNamesPsi[2] = "Signal";
+  legNamesPsi[3] = "Comb. bkg";
 
 
   if (justPlotMuMuMass == true)
@@ -2538,11 +2566,10 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       myString.clear(); myString.str("");
       myString << (*TotalPDFJPsi)->getPlotLabel() << "_paramBox";
       TPaveText* paveTextJPsi = (TPaveText*)myFrameJPsi->findObject(myString.str().c_str());
-      paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","#mu_{1} = ",GetVar(*TotalPDFJPsi,"meanJPsi1")->getVal(),GetVar(*TotalPDFJPsi,"meanJPsi1")->getError()));
-      paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","#mu_{2} = ",GetVar(*TotalPDFJPsi,"meanJPsi2")->getVal(),GetVar(*TotalPDFJPsi,"meanJPsi2")->getError()));
-      paveTextJPsi->AddText(Form("%s%.4f#pm%.4f","< #sigma > = ",sigmaJPsi,sigmaJPsiE));
+      paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","#mu#kern[-0.4]{#lower[-0.3]{_{1}}} = ",GetVar(*TotalPDFJPsi,"meanJPsi1")->getVal(),GetVar(*TotalPDFJPsi,"meanJPsi1")->getError()));
+      paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","#mu#kern[-0.4]{#lower[-0.3]{_{2}}} = ",GetVar(*TotalPDFJPsi,"meanJPsi2")->getVal(),GetVar(*TotalPDFJPsi,"meanJPsi2")->getError()));
+      paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","< #sigma > = ",sigmaJPsi,sigmaJPsiE));
       paveTextJPsi->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameJPsi->chiSquare((*TotalPDFJPsi)->getPlotLabel(),dataSetJPsi->GetName())));
-      paveTextJPsi->AddText(Form("%s%.3f","p-value = ",TMath::Prob(myFrameJPsi->chiSquare((*TotalPDFJPsi)->getPlotLabel(),dataSetJPsi->GetName())*NBins,NBins)));
       CheckGoodFit(JPsiFitResult,paveTextJPsi);
       paveTextJPsi->SetBorderSize(0.0);
       paveTextJPsi->SetFillStyle(0);
@@ -2550,13 +2577,13 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       DrawString(LUMI,myFrameJPsi);
       myFrameJPsi->Draw();
 
-      TLegend* legJPsi = new TLegend(0.75, 0.65, 0.97, 0.88, "");
+      TLegend* legJPsi = new TLegend(0.7, 0.65, 0.97, 0.88, "");
       for (int i = 0; i < nElements; i++)
       	{
       	  TString objName = myFrameJPsi->nameOf(i);
       	  if (objName == "") continue;
       	  TObject* obj = myFrameJPsi->findObject(objName.Data());
-      	  legJPsi->AddEntry(obj,legNames[i],"lp");
+      	  legJPsi->AddEntry(obj,legNamesPsi[i],"lp");
       	}
       legJPsi->SetFillStyle(0);
       legJPsi->SetFillColor(0);
@@ -2659,11 +2686,10 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       myString.clear(); myString.str("");
       myString << (*TotalPDFPsiP)->getPlotLabel() << "_paramBox";
       TPaveText* paveTextPsiP = (TPaveText*)myFramePsiP->findObject(myString.str().c_str());
-      paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","#mu_{1} = ",GetVar(*TotalPDFPsiP,"meanPsiP1")->getVal(),GetVar(*TotalPDFPsiP,"meanPsiP1")->getError()));
-      paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","#mu_{2} = ",GetVar(*TotalPDFPsiP,"meanPsiP2")->getVal(),GetVar(*TotalPDFPsiP,"meanPsiP2")->getError()));
-      paveTextPsiP->AddText(Form("%s%.4f#pm%.4f","< #sigma > = ",sigmaPsiP,sigmaPsiPE));
+      paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","#mu#kern[-0.4]{#lower[-0.3]{_{1}}} = ",GetVar(*TotalPDFPsiP,"meanPsiP1")->getVal(),GetVar(*TotalPDFPsiP,"meanPsiP1")->getError()));
+      paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","#mu#kern[-0.4]{#lower[-0.3]{_{2}}} = ",GetVar(*TotalPDFPsiP,"meanPsiP2")->getVal(),GetVar(*TotalPDFPsiP,"meanPsiP2")->getError()));
+      paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","< #sigma > = ",sigmaPsiP,sigmaPsiPE));
       paveTextPsiP->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFramePsiP->chiSquare((*TotalPDFPsiP)->getPlotLabel(),dataSetPsiP->GetName())));
-      paveTextPsiP->AddText(Form("%s%.3f","p-value = ",TMath::Prob(myFramePsiP->chiSquare((*TotalPDFPsiP)->getPlotLabel(),dataSetPsiP->GetName())*NBins,NBins)));
       CheckGoodFit(PsiPFitResult,paveTextPsiP);
       paveTextPsiP->SetBorderSize(0.0);
       paveTextPsiP->SetFillStyle(0);
@@ -2671,13 +2697,13 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       DrawString(LUMI,myFramePsiP);
       myFramePsiP->Draw();
 
-      TLegend* legPsiP = new TLegend(0.75, 0.65, 0.97, 0.88, "");
+      TLegend* legPsiP = new TLegend(0.7, 0.65, 0.97, 0.88, "");
       for (int i = 0; i < nElements; i++)
 	{
 	  TString objName = myFramePsiP->nameOf(i);
 	  if (objName == "") continue;
 	  TObject* obj = myFramePsiP->findObject(objName.Data());
-	  legPsiP->AddEntry(obj,legNames[i],"lp");
+	  legPsiP->AddEntry(obj,legNamesPsi[i],"lp");
 	}
       legPsiP->SetFillStyle(0);
       legPsiP->SetFillColor(0);
@@ -2754,8 +2780,8 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
 	}
 
 
-      fileFitResults << "\nAmplitude of exclusion zone J/psi: -" << Utility->GetGenericParam("NSigmaPsiBig").c_str() << " sigmas --- +" << Utility->GetGenericParam("NSigmaPsiSmall").c_str() << " sigmas" << endl;
-      fileFitResults << "Amplitude of exclusion zone psi(2S): -" << Utility->GetGenericParam("NSigmaPsiSmall").c_str() << " sigmas --- +" << Utility->GetGenericParam("NSigmaPsiSmall").c_str() << " sigmas" << endl;
+      fileFitResults << "\nAmplitude of exclusion zone J/psi: -" << Utility->GetGenericParam("NSigmaPsiBig").c_str() << " Sigmas --- +" << Utility->GetGenericParam("NSigmaPsiSmall").c_str() << " Sigmas" << endl;
+      fileFitResults << "Amplitude of exclusion zone psi(2S): -" << Utility->GetGenericParam("NSigmaPsiSmall").c_str() << " Sigmas --- +" << Utility->GetGenericParam("NSigmaPsiSmall").c_str() << " Sigmas" << endl;
       fileFitResults << "====================================================================" << endl;
     }
 }
@@ -3131,7 +3157,7 @@ void InstantiateMassFit (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, ve
     *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgSet(*BkgMassComb),RooArgSet(*nBkgComb));
 
   else if ((useSignal == 0) && (usePeakB == 0) && (useCombB == 0) && (useMisTag != 0))
-    *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgSet(*BkgMassPeak),RooArgSet(*nBkgPeak));
+    *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgSet(*MassMisTag),RooArgSet(*nMisTag));
 
   else if ((useSignal != 0) && (usePeakB == 0) && (useCombB != 0) && (useMisTag == 0))
     *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgSet(*MassSignal,*BkgMassComb),RooArgSet(*nSig,*nBkgComb));
@@ -3144,6 +3170,12 @@ void InstantiateMassFit (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, ve
 
   else if ((useSignal != 0) && (usePeakB != 0) && (useCombB != 0) && (useMisTag != 0))
     *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgSet(*MassSignal,*BkgMassComb,*MassMisTag,*BkgMassPeak),RooArgSet(*nSig,*nBkgComb,*nMisTag,*nBkgPeak));
+
+  else
+    {
+      cout << "[ExtractYield::InstantiateMassFit]\tIncorrect configuration sequence : useSignal = " << useSignal << "\tusePeakB = " << usePeakB << "\tuseCombB = " << useCombB << "\tuseMisTag = " << useMisTag << endl;
+      exit (EXIT_FAILURE);
+    }
 }
 
 
@@ -3153,16 +3185,14 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   // # Local variables #
   // ###################
   RooFitResult* fitResult = NULL;
+  RooArgSet VarsYield;
   stringstream myString;
   double signalSigma  = 0.0;
   double signalSigmaE = 0.0;
-  int nElements = 4;
-  if (((GetVar(*TotalPDF,"nBkgPeak") != NULL) || (GetVar(*TotalPDF,"nMisTagFrac") != NULL)) && (GetVar(*TotalPDF,"nSig") == NULL)) nElements = 2;
-  else
-    {
-      if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) nElements++;
-      if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) nElements++;
-    }
+  double totalYield   = 0.0;
+  double totalYieldE  = 0.0;
+  unsigned int nElements = 0;
+  TString legNames[6];
 
 
   // ###################
@@ -3194,52 +3224,48 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   //   - "r" = Save fit output in RooFitResult object (return value is object RFR pointer)
 
 
-  if (GetVar(*TotalPDF,"nSig") != NULL)
-    {
-      if (GetVar(*TotalPDF,"fracMassS") != NULL)
-	{
-	  signalSigma  = sqrt((*TotalPDF)->getVariables()->getRealValue("fracMassS") * pow((*TotalPDF)->getVariables()->getRealValue("sigmaS1"),2.) +
-			      (1.-(*TotalPDF)->getVariables()->getRealValue("fracMassS")) * pow((*TotalPDF)->getVariables()->getRealValue("sigmaS2"),2.));
-	  signalSigmaE = 1./(2.*signalSigma) * sqrt( pow((pow((*TotalPDF)->getVariables()->getRealValue("sigmaS1"),2.)-pow((*TotalPDF)->getVariables()->getRealValue("sigmaS2"),2.)) * GetVar(*TotalPDF,"fracMassS")->getError(),2.) +
-						     pow(2.*(*TotalPDF)->getVariables()->getRealValue("fracMassS") * (*TotalPDF)->getVariables()->getRealValue("sigmaS1")*GetVar(*TotalPDF,"sigmaS1")->getError(),2.) +
-						     pow(2.*(1.-(*TotalPDF)->getVariables()->getRealValue("fracMassS")) * (*TotalPDF)->getVariables()->getRealValue("sigmaS2")*GetVar(*TotalPDF,"sigmaS2")->getError(),2.) );
-	}
-      else if (GetVar(*TotalPDF,"sigmaS1") != NULL)
-	{
-	  signalSigma  = (*TotalPDF)->getVariables()->getRealValue("sigmaS1");
-	  signalSigmaE = GetVar(*TotalPDF,"sigmaS1")->getError();
-	}
-    }
-
-
   // ################
   // # Plot results #
   // ################
   Canv->cd();
   RooPlot* myFrameX = x->frame(NBINS);
+
   dataSet->plotOn(myFrameX,Name(MakeName(dataSet,ID).c_str()));
+  legNames[nElements++] = "Data";
+
   if (FUNCERRBAND == true) (*TotalPDF)->plotOn(myFrameX,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),VisualizeError(*fitResult,1,true),VLines(),FillColor(kGreen-7));
   else                     (*TotalPDF)->plotOn(myFrameX,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack));
+  legNames[nElements++] = "Total p.d.f.";
+
   if (GetVar(*TotalPDF,"nSig") != NULL)
     {
       (*TotalPDF)->plotOn(myFrameX, Components(*MassSignal), LineStyle(7), LineColor(kBlue));
-      if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameX, Components(*BkgMassComb), LineStyle(4), LineColor(kRed));
-      if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) (*TotalPDF)->plotOn(myFrameX, Components(*MassMisTag),  LineStyle(8), LineColor(kAzure+6));
-      if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameX, Components(*BkgMassPeak), LineStyle(3), LineColor(kViolet));
+      legNames[nElements++] = "Right-tag sig";
+      VarsYield.add(*nSig);
     }
 
-  if      ((GetVar(*TotalPDF,"nBkgPeak")    != NULL) && (GetVar(*TotalPDF,"nSig") == NULL)) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nBkgPeak)));
-  else if ((GetVar(*TotalPDF,"nMisTagFrac") != NULL) && (GetVar(*TotalPDF,"nSig") == NULL)) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nMisTagFrac)));
-  else if (GetVar(*TotalPDF,"nMisTagFrac")  == NULL)
+  if (GetVar(*TotalPDF,"nMisTagFrac") != NULL)
     {
-      if (GetVar(*TotalPDF,"nBkgPeak") == NULL) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nSig,*nBkgComb)));
-      else                                      (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nSig,*nBkgComb,*nBkgPeak)),ShowConstants(true));
+      (*TotalPDF)->plotOn(myFrameX, Components(*MassMisTag), LineStyle(8), LineColor(kAzure+6));
+      legNames[nElements++] = "Mis-tag sig";
+      VarsYield.add(*nMisTagFrac);
     }
-  else
+
+  if (GetVar(*TotalPDF,"nBkgComb") != NULL)
     {
-      if (GetVar(*TotalPDF,"nBkgPeak") == NULL) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nSig,*nBkgComb,*nMisTagFrac)),ShowConstants(true));
-      else                                      (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nSig,*nBkgComb,*nMisTagFrac,*nBkgPeak)),ShowConstants(true));
+      (*TotalPDF)->plotOn(myFrameX, Components(*BkgMassComb), LineStyle(4), LineColor(kRed));
+      legNames[nElements++] = "Comb. bkg";
+      VarsYield.add(*nBkgComb);
     }
+
+  if (GetVar(*TotalPDF,"nBkgPeak") != NULL)
+    {
+      (*TotalPDF)->plotOn(myFrameX, Components(*BkgMassPeak), LineStyle(3), LineColor(kViolet));
+      legNames[nElements++] = "Peak. bkg";
+      VarsYield.add(*nBkgPeak);
+    }
+
+  (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(VarsYield),ShowConstants(true));
   // Format options:
   // - "N" add name
   // - "E" add error
@@ -3251,15 +3277,35 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   myString.clear(); myString.str("");
   myString << (*TotalPDF)->getPlotLabel() << "_paramBox";
   TPaveText* paveTextX = (TPaveText*)myFrameX->findObject(myString.str().c_str());
+  if ((GetVar(*TotalPDF,"nSig") != NULL) && (GetVar(*TotalPDF,"nMisTagFrac") != NULL))
+    {
+      totalYield  = GetVar(*TotalPDF,"nSig")->getVal() / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
+      totalYieldE = totalYield * sqrt( pow(GetVar(*TotalPDF,"nSig")->getError()/GetVar(*TotalPDF,"nSig")->getVal(),2.) + pow(GetVar(*TotalPDF,"nMisTagFrac")->getError()/(1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.) );
+
+      paveTextX->AddText(Form("%s%.2f#pm%.2f","Total sig yield = ",totalYield,totalYieldE));
+    }
   if (GetVar(*TotalPDF,"nSig") != NULL)
     {
+      if (GetVar(*TotalPDF,"fracMassS") != NULL)
+	{
+	  signalSigma  = sqrt( GetVar(*TotalPDF,"fracMassS")->getVal() * pow(GetVar(*TotalPDF,"sigmaS1")->getVal(),2.) + (1. - GetVar(*TotalPDF,"fracMassS")->getVal()) * pow(GetVar(*TotalPDF,"sigmaS2")->getVal(),2.) );
+	  signalSigmaE = 1./(2.*signalSigma) * sqrt( pow((pow(GetVar(*TotalPDF,"sigmaS1")->getVal(),2.) - pow(GetVar(*TotalPDF,"sigmaS2")->getVal(),2.)) * GetVar(*TotalPDF,"fracMassS")->getError(),2.) +
+						     pow(2. * GetVar(*TotalPDF,"fracMassS")->getVal() * GetVar(*TotalPDF,"sigmaS1")->getVal() * GetVar(*TotalPDF,"sigmaS1")->getError(),2.) +
+						     pow(2. * (1. - GetVar(*TotalPDF,"fracMassS")->getVal()) * GetVar(*TotalPDF,"sigmaS2")->getVal() * GetVar(*TotalPDF,"sigmaS2")->getError(),2.) );
+	}
+      else if (GetVar(*TotalPDF,"sigmaS1") != NULL)
+	{
+	  signalSigma  = GetVar(*TotalPDF,"sigmaS1")->getVal();
+	  signalSigmaE = GetVar(*TotalPDF,"sigmaS1")->getError();
+	}
+
       paveTextX->AddText(Form("%s%.3f#pm%.3f","#mu = ",GetVar(*TotalPDF,"meanS")->getVal(),GetVar(*TotalPDF,"meanS")->getError()));
-      paveTextX->AddText(Form("%s%.4f#pm%.4f","< #sigma > = ",signalSigma,signalSigmaE));
+      paveTextX->AddText(Form("%s%.3f#pm%.3f","< #sigma > = ",signalSigma,signalSigmaE));
     }
   paveTextX->AddText(Form("%s%.5f","FCN(m#lower[0.4]{^{B0}}#lower[-0.4]{_{PDG}}) = ",(*TotalPDF)->getVal()));
   paveTextX->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
-  TLegend* legX = new TLegend(0.75, 0.65, 0.97, 0.88, "");
+  TLegend* legX = new TLegend(0.7, 0.65, 0.97, 0.88, "");
   for (int i = 0; i < nElements; i++)
     {
       TString objName = myFrameX->nameOf(i);
@@ -3318,6 +3364,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
     }
 
 
+  VarsYield.Clear();
   return fitResult;
 }
 
@@ -3390,7 +3437,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
     }
  
  
-  fileFitResults << "\n@@@@@@ Differential branching fraction @@@@@@" << endl;
+  fileFitResults << "\n@@@@@@@@@@@@@@@@@ Differential branching fraction @@@@@@@@@@@@@@@@@@" << endl;
   for (unsigned int i = (specBin == -1 ? 0 : specBin); i < (specBin == -1 ? q2Bins->size()-1 : specBin+1); i++)
     {
       if (!(FitType == 41) && !(FitType == 61) && (Utility->ValIsInPsi(q2Bins,(q2Bins->operator[](i+1)+q2Bins->operator[](i))/2.) == true))
@@ -4307,6 +4354,12 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
 
   else if ((useSignal != 0) && (usePeakB != 0) && (useCombB != 0) && (useMisTag != 0))
     *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgSet(*Signal,*BkgMassAngleComb,*MassAngleMisTag,*BkgMassAnglePeak),RooArgSet(*nSig,*nBkgComb,*nMisTag,*nBkgPeak));
+
+  else
+    {
+      cout << "[ExtractYield::InstantiateMass2AnglesFit]\tIncorrect configuration sequence : useSignal = " << useSignal << "\tusePeakB = " << usePeakB << "\tuseCombB = " << useCombB << "\tuseMisTag = " << useMisTag << endl;
+      exit (EXIT_FAILURE);
+    }
 }
 
 
@@ -4316,16 +4369,15 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
   // # Local variables #
   // ###################
   RooFitResult* fitResult = NULL;
+  RooArgSet VarsYield;
   stringstream myString;
   double signalSigma  = 0.0;
   double signalSigmaE = 0.0;
-  int nElements = 4;
-  if (((GetVar(*TotalPDF,"nBkgPeak") != NULL) || (GetVar(*TotalPDF,"nMisTagFrac") != NULL)) && (GetVar(*TotalPDF,"nSig") == NULL)) nElements = 2;
-  else
-    {
-      if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) nElements++;
-      if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) nElements++;
-    }
+  double totalYield   = 0.0;
+  double totalYieldE  = 0.0;
+  unsigned int nElements = 0;
+  TString legNames[6];
+
   TCanvas* localCanv[4];
   localCanv[0] = new TCanvas("localCanv0","localCanv0",20,20,700,500);
   localCanv[1] = new TCanvas("localCanv1","localCanv1",20,20,700,500);
@@ -4362,19 +4414,24 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // ##########################
       Canv->cd(2);
       RooPlot* myFrameY = y->frame(NBINS);
+
       dataSet->plotOn(myFrameY,Name(MakeName(dataSet,ID).c_str()));
+      legNames[nElements++] = "Data";
+      
       if (FUNCERRBAND == true) (*TotalPDF)->plotOn(myFrameY,Name((*TotalPDF)->getPlotLabel()),VisualizeError(*fitResult,1,true),VLines(),FillColor(kGreen-7));
       else                     (*TotalPDF)->plotOn(myFrameY,Name((*TotalPDF)->getPlotLabel()));
+      legNames[nElements++] = "Total p.d.f.";
 
       (*TotalPDF)->paramOn(myFrameY,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nSig)));
-      
+
+
       myString.clear(); myString.str("");
       myString << (*TotalPDF)->getPlotLabel() << "_paramBox";
       TPaveText* paveTextY = (TPaveText*)myFrameY->findObject(myString.str().c_str());
       paveTextY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
-      TLegend* legY = new TLegend(0.75, 0.65, 0.97, 0.88, "");
-      for (int i = 0; i < 2; i++)
+      TLegend* legY = new TLegend(0.7, 0.65, 0.97, 0.88, "");
+      for (int i = 0; i < nElements; i++)
 	{
 	  TString objName = myFrameY->nameOf(i);
 	  if (objName == "") continue;
@@ -4392,19 +4449,22 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // ##########################
       Canv->cd(3);
       RooPlot* myFrameZ = z->frame(NBINS);
+
       dataSet->plotOn(myFrameZ,Name(MakeName(dataSet,ID).c_str()));
+
       if (FUNCERRBAND == true) (*TotalPDF)->plotOn(myFrameZ,Name((*TotalPDF)->getPlotLabel()),VisualizeError(*fitResult,1,true),VLines(),FillColor(kGreen-7));
       else                     (*TotalPDF)->plotOn(myFrameZ,Name((*TotalPDF)->getPlotLabel()));
 
       (*TotalPDF)->paramOn(myFrameZ,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nSig)));
       
+
       myString.clear(); myString.str("");
       myString << (*TotalPDF)->getPlotLabel() << "_paramBox";
       TPaveText* paveTextZ = (TPaveText*)myFrameZ->findObject(myString.str().c_str());
       paveTextZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
-      TLegend* legZ = new TLegend(0.75, 0.65, 0.97, 0.88, "");
-      for (int i = 0; i < 2; i++)
+      TLegend* legZ = new TLegend(0.7, 0.65, 0.97, 0.88, "");
+      for (int i = 0; i < nElements; i++)
 	{
 	  TString objName = myFrameZ->nameOf(i);
 	  if (objName == "") continue;
@@ -4558,66 +4618,82 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       if (fitResult != NULL) fitResult->Print("v");
 
 
-      if (GetVar(*TotalPDF,"nSig") != NULL)
-	{
-	  if (GetVar(*TotalPDF,"fracMassS") != NULL)
-	    {
-	      signalSigma  = sqrt((*TotalPDF)->getVariables()->getRealValue("fracMassS") * pow((*TotalPDF)->getVariables()->getRealValue("sigmaS1"),2.) +
-				  (1.-(*TotalPDF)->getVariables()->getRealValue("fracMassS")) * pow((*TotalPDF)->getVariables()->getRealValue("sigmaS2"),2.));
-	      signalSigmaE = 1./(2.*signalSigma) * sqrt( pow((pow((*TotalPDF)->getVariables()->getRealValue("sigmaS1"),2.)-pow((*TotalPDF)->getVariables()->getRealValue("sigmaS2"),2.)) * GetVar(*TotalPDF,"fracMassS")->getError(),2.) +
-							 pow(2.*(*TotalPDF)->getVariables()->getRealValue("fracMassS") * (*TotalPDF)->getVariables()->getRealValue("sigmaS1")*GetVar(*TotalPDF,"sigmaS1")->getError(),2.) +
-							 pow(2.*(1.-(*TotalPDF)->getVariables()->getRealValue("fracMassS")) * (*TotalPDF)->getVariables()->getRealValue("sigmaS2")*GetVar(*TotalPDF,"sigmaS2")->getError(),2.) );
-	    }
-	  else if (GetVar(*TotalPDF,"sigmaS1") != NULL)
-	    {
-	      signalSigma  = (*TotalPDF)->getVariables()->getRealValue("sigmaS1");
-	      signalSigmaE = GetVar(*TotalPDF,"sigmaS1")->getError();
-	    }
-	}
-      
-      
       // #####################
       // # Mass plot results #
       // #####################
       Canv->cd(1);
       RooPlot* myFrameX = x->frame(NBINS);
+
       dataSet->plotOn(myFrameX,Name(MakeName(dataSet,ID).c_str()));
+      legNames[nElements++] = "Data";
+
       if (FUNCERRBAND == true) (*TotalPDF)->plotOn(myFrameX,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),VisualizeError(*fitResult,1,true),VLines(),FillColor(kGreen-7));
       else                     (*TotalPDF)->plotOn(myFrameX,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack));
+      legNames[nElements++] = "Total p.d.f.";
+
       if (GetVar(*TotalPDF,"nSig") != NULL)
 	{
 	  (*TotalPDF)->plotOn(myFrameX, Components(*Signal), LineStyle(7), LineColor(kBlue));
-	  if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameX, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed));
-	  if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) (*TotalPDF)->plotOn(myFrameX, Components(*MassAngleMisTag),  LineStyle(8), LineColor(kAzure+6));
-	  if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameX, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet));
+	  legNames[nElements++] = "Right-tag sig";
+	  VarsYield.add(*nSig);
 	}
 
-      if      ((GetVar(*TotalPDF,"nBkgPeak")    != NULL) && (GetVar(*TotalPDF,"nSig") == NULL)) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nBkgPeak)));
-      else if ((GetVar(*TotalPDF,"nMisTagFrac") != NULL) && (GetVar(*TotalPDF,"nSig") == NULL)) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nMisTagFrac)));
-      else if (GetVar(*TotalPDF,"nMisTagFrac")  == NULL)
+      if (GetVar(*TotalPDF,"nMisTagFrac") != NULL)
 	{
-	  if (GetVar(*TotalPDF,"nBkgPeak") == NULL) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nSig,*nBkgComb)));
-	  else                                      (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nSig,*nBkgComb,*nBkgPeak)),ShowConstants(true));
+	  (*TotalPDF)->plotOn(myFrameX, Components(*MassAngleMisTag), LineStyle(8), LineColor(kAzure+6));
+	  legNames[nElements++] = "Mis-tag sig";
+	  VarsYield.add(*nMisTagFrac);
 	}
-      else
+
+      if (GetVar(*TotalPDF,"nBkgComb") != NULL)
 	{
-	  if (GetVar(*TotalPDF,"nBkgPeak") == NULL) (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nSig,*nBkgComb,*nMisTagFrac)),ShowConstants(true));
-	  else                                      (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nSig,*nBkgComb,*nMisTagFrac,*nBkgPeak)),ShowConstants(true));
+	  (*TotalPDF)->plotOn(myFrameX, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed));
+	  legNames[nElements++] = "Comb. bkg";
+	  VarsYield.add(*nBkgComb);
 	}
 
+      if (GetVar(*TotalPDF,"nBkgPeak") != NULL)
+	{
+	  (*TotalPDF)->plotOn(myFrameX, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet));
+	  legNames[nElements++] = "Peak. bkg";
+	  VarsYield.add(*nBkgPeak);
+	}
 
+      (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(VarsYield),ShowConstants(true));
+  
+      
       myString.clear(); myString.str("");
       myString << (*TotalPDF)->getPlotLabel() << "_paramBox";
       TPaveText* paveTextX = (TPaveText*)myFrameX->findObject(myString.str().c_str());
+      if ((GetVar(*TotalPDF,"nSig") != NULL) && (GetVar(*TotalPDF,"nMisTagFrac") != NULL))
+	{
+	  totalYield  = GetVar(*TotalPDF,"nSig")->getVal() / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
+	  totalYieldE = totalYield * sqrt( pow(GetVar(*TotalPDF,"nSig")->getError()/GetVar(*TotalPDF,"nSig")->getVal(),2.) + pow(GetVar(*TotalPDF,"nMisTagFrac")->getError()/(1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.) );
+
+	  paveTextX->AddText(Form("%s%.2f#pm%.2f","Total sig yield = ",totalYield,totalYieldE));
+	}
       if (GetVar(*TotalPDF,"nSig") != NULL)
 	{
+	  if (GetVar(*TotalPDF,"fracMassS") != NULL)
+	    {
+	      signalSigma  = sqrt( GetVar(*TotalPDF,"fracMassS")->getVal() * pow(GetVar(*TotalPDF,"sigmaS1")->getVal(),2.) + (1. - GetVar(*TotalPDF,"fracMassS")->getVal()) * pow(GetVar(*TotalPDF,"sigmaS2")->getVal(),2.) );
+	      signalSigmaE = 1./(2.*signalSigma) * sqrt( pow((pow(GetVar(*TotalPDF,"sigmaS1")->getVal(),2.) - pow(GetVar(*TotalPDF,"sigmaS2")->getVal(),2.)) * GetVar(*TotalPDF,"fracMassS")->getError(),2.) +
+							 pow(2. * GetVar(*TotalPDF,"fracMassS")->getVal() * GetVar(*TotalPDF,"sigmaS1")->getVal() * GetVar(*TotalPDF,"sigmaS1")->getError(),2.) +
+							 pow(2. * (1. - GetVar(*TotalPDF,"fracMassS")->getVal()) * GetVar(*TotalPDF,"sigmaS2")->getVal() * GetVar(*TotalPDF,"sigmaS2")->getError(),2.) );
+	    }
+	  else if (GetVar(*TotalPDF,"sigmaS1") != NULL)
+	    {
+	      signalSigma  = GetVar(*TotalPDF,"sigmaS1")->getVal();
+	      signalSigmaE = GetVar(*TotalPDF,"sigmaS1")->getError();
+	    }
+
 	  paveTextX->AddText(Form("%s%.3f#pm%.3f","#mu = ",GetVar(*TotalPDF,"meanS")->getVal(),GetVar(*TotalPDF,"meanS")->getError()));
-	  paveTextX->AddText(Form("%s%.4f#pm%.4f","< #sigma > = ",signalSigma,signalSigmaE));
+	  paveTextX->AddText(Form("%s%.3f#pm%.3f","< #sigma > = ",signalSigma,signalSigmaE));
 	}
       paveTextX->AddText(Form("%s%.5f","FCN(m#lower[0.4]{^{B0}}#lower[-0.4]{_{PDG}},ang=0) = ",(*TotalPDF)->getVal()));
       paveTextX->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
-      TLegend* legX = new TLegend(0.75, 0.65, 0.97, 0.88, "");
+      TLegend* legX = new TLegend(0.7, 0.65, 0.97, 0.88, "");
       for (int i = 0; i < nElements; i++)
   	{
   	  TString objName = myFrameX->nameOf(i);
@@ -4636,16 +4712,17 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // ##########################
       Canv->cd(2);
       RooPlot* myFrameY = y->frame(NBINS);
+
       dataSet->plotOn(myFrameY,Name(MakeName(dataSet,ID).c_str()));
+
       if (FUNCERRBAND == true) (*TotalPDF)->plotOn(myFrameY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),VisualizeError(*fitResult,1,true),VLines(),FillColor(kGreen-7));
       else                     (*TotalPDF)->plotOn(myFrameY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack));
-      if (GetVar(*TotalPDF,"nSig") != NULL)
-	{
-	  (*TotalPDF)->plotOn(myFrameY, Components(*Signal), LineStyle(7), LineColor(kBlue));
-	  if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameY, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed));
-	  if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) (*TotalPDF)->plotOn(myFrameY, Components(*MassAngleMisTag),  LineStyle(8), LineColor(kAzure+6));
-	  if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet));
-	}
+
+      if (GetVar(*TotalPDF,"nSig")        != NULL) (*TotalPDF)->plotOn(myFrameY, Components(*Signal),           LineStyle(7), LineColor(kBlue));
+      if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) (*TotalPDF)->plotOn(myFrameY, Components(*MassAngleMisTag),  LineStyle(8), LineColor(kAzure+6));
+      if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameY, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed));
+      if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet));
+
 
       TPaveText* paveTextY = new TPaveText(0.11,0.8,0.4,0.86,"NDC");
       paveTextY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
@@ -4663,7 +4740,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       myFrameY->Draw();
 
-      TLegend* legY = new TLegend(0.75, 0.65, 0.97, 0.88, "");
+      TLegend* legY = new TLegend(0.7, 0.65, 0.97, 0.88, "");
       for (int i = 0; i < nElements; i++)
       	{
       	  TString objName = myFrameY->nameOf(i);
@@ -4691,16 +4768,17 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // ##########################
       Canv->cd(3);
       RooPlot* myFrameZ = z->frame(NBINS);
+
       dataSet->plotOn(myFrameZ,Name(MakeName(dataSet,ID).c_str()));
+
       if (FUNCERRBAND == true) (*TotalPDF)->plotOn(myFrameZ,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),VisualizeError(*fitResult,1,true),VLines(),FillColor(kGreen-7));
       else                     (*TotalPDF)->plotOn(myFrameZ,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack));
-      if (GetVar(*TotalPDF,"nSig") != NULL)
-	{
-	  (*TotalPDF)->plotOn(myFrameZ, Components(*Signal), LineStyle(7), LineColor(kBlue));
-	  if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameZ, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed));
-	  if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) (*TotalPDF)->plotOn(myFrameZ, Components(*MassAngleMisTag),  LineStyle(8), LineColor(kAzure+6));
-	  if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet));
-	}
+
+      if (GetVar(*TotalPDF,"nSig")        != NULL) (*TotalPDF)->plotOn(myFrameZ, Components(*Signal),           LineStyle(7), LineColor(kBlue));
+      if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) (*TotalPDF)->plotOn(myFrameZ, Components(*MassAngleMisTag),  LineStyle(8), LineColor(kAzure+6));
+      if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameZ, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed));
+      if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet));
+
 
       TPaveText* paveTextZ = new TPaveText(0.11,0.8,0.4,0.86,"NDC");
       paveTextZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
@@ -4718,7 +4796,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	}
       myFrameZ->Draw();
 
-      TLegend* legZ = new TLegend(0.75, 0.65, 0.97, 0.88, "");
+      TLegend* legZ = new TLegend(0.7, 0.65, 0.97, 0.88, "");
       for (int i = 0; i < nElements; i++)
       	{
       	  TString objName = myFrameZ->nameOf(i);
@@ -4855,15 +4933,16 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  // ###########################
 	  Canv->cd(4);
 	  RooPlot* myFrameLowSideBY = y->frame(NBINS);
+
 	  dataSet->plotOn(myFrameLowSideBY,Name(MakeName(dataSet,ID).c_str()),CutRange("lowSideband"));
+
 	  (*TotalPDF)->plotOn(myFrameLowSideBY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("lowSideband"));
-	  if (GetVar(*TotalPDF,"nSig") != NULL)
-	    {
-	      (*TotalPDF)->plotOn(myFrameLowSideBY, Components(*Signal), LineStyle(7), LineColor(kBlue), ProjectionRange("lowSideband"));
-	      if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("lowSideband"));
-	      if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY, Components(*MassAngleMisTag),  LineStyle(8), LineColor(kAzure+6), ProjectionRange("lowSideband"));
-	      if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("lowSideband"));
-	    }
+
+	  if (GetVar(*TotalPDF,"nSig")        != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY, Components(*Signal),           LineStyle(7), LineColor(kBlue),    ProjectionRange("lowSideband"));
+	  if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY, Components(*MassAngleMisTag),  LineStyle(8), LineColor(kAzure+6), ProjectionRange("lowSideband"));
+	  if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("lowSideband"));
+	  if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("lowSideband"));
+
 
 	  TPaveText* paveTextLowSideBY = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
 	  paveTextLowSideBY->AddText("Low sideband");
@@ -4877,7 +4956,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  DrawString(LUMI,myFrameLowSideBY);
 	  myFrameLowSideBY->Draw();
 
-	  TLegend* legLowSideBY = new TLegend(0.75, 0.65, 0.97, 0.88, "");
+	  TLegend* legLowSideBY = new TLegend(0.7, 0.65, 0.97, 0.88, "");
 	  for (int i = 0; i < nElements; i++)
 	    {
 	      TString objName = myFrameLowSideBY->nameOf(i);
@@ -4904,15 +4983,16 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  // ###########################
 	  Canv->cd(5);
 	  RooPlot* myFrameSignalRegionY = y->frame(NBINS);
+
 	  dataSet->plotOn(myFrameSignalRegionY,Name(MakeName(dataSet,ID).c_str()),CutRange("signalRegion"));
+
 	  (*TotalPDF)->plotOn(myFrameSignalRegionY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("signalRegion"));
-	  if (GetVar(*TotalPDF,"nSig") != NULL)
-	    {
-	      (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*Signal), LineStyle(7), LineColor(kBlue), ProjectionRange("signalRegion"));
-	      if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("signalRegion"));
-	      if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*MassAngleMisTag),  LineStyle(8), LineColor(kAzure+6), ProjectionRange("signalRegion"));
-	      if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("signalRegion"));
-	    }
+
+	  if (GetVar(*TotalPDF,"nSig")        != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*Signal),           LineStyle(7), LineColor(kBlue),    ProjectionRange("signalRegion"));
+	  if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*MassAngleMisTag),  LineStyle(8), LineColor(kAzure+6), ProjectionRange("signalRegion"));
+	  if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("signalRegion"));
+	  if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("signalRegion"));
+
 
 	  TPaveText* paveTextSignalRegionY = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
 	  paveTextSignalRegionY->AddText(Form("%s%.1f%s","Signal region: #pm",atof(Utility->GetGenericParam("NSigmaB0S").c_str())," < #sigma >"));
@@ -4926,7 +5006,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  DrawString(LUMI,myFrameSignalRegionY);
 	  myFrameSignalRegionY->Draw();
 
-	  TLegend* legSignalRegionY = new TLegend(0.75, 0.65, 0.97, 0.88, "");
+	  TLegend* legSignalRegionY = new TLegend(0.7, 0.65, 0.97, 0.88, "");
 	  for (int i = 0; i < nElements; i++)
 	    {
 	      TString objName = myFrameSignalRegionY->nameOf(i);
@@ -4953,15 +5033,16 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  // ###########################
 	  Canv->cd(6);
 	  RooPlot* myFrameHighSideBY = y->frame(NBINS);
+
 	  dataSet->plotOn(myFrameHighSideBY,Name(MakeName(dataSet,ID).c_str()),CutRange("highSideband"));
+
 	  (*TotalPDF)->plotOn(myFrameHighSideBY,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("highSideband"));
-	  if (GetVar(*TotalPDF,"nSig") != NULL)
-	    {
-	      (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*Signal), LineStyle(7), LineColor(kBlue), ProjectionRange("highSideband"));
-	      if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("highSideband"));
-	      if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*MassAngleMisTag),  LineStyle(8), LineColor(kAzure+6), ProjectionRange("highSideband"));
-	      if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("highSideband"));
-	    }
+
+	  if (GetVar(*TotalPDF,"nSig")        != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*Signal),           LineStyle(7), LineColor(kBlue),    ProjectionRange("highSideband"));
+	  if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*MassAngleMisTag),  LineStyle(8), LineColor(kAzure+6), ProjectionRange("highSideband"));
+	  if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("highSideband"));
+	  if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("highSideband"));
+
 
 	  TPaveText* paveTextHighSideBY = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
 	  paveTextHighSideBY->AddText("High sideband");
@@ -4975,7 +5056,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  DrawString(LUMI,myFrameHighSideBY);
 	  myFrameHighSideBY->Draw();
 
-	  TLegend* legHighSideBY = new TLegend(0.75, 0.65, 0.97, 0.88, "");
+	  TLegend* legHighSideBY = new TLegend(0.7, 0.65, 0.97, 0.88, "");
 	  for (int i = 0; i < nElements; i++)
 	    {
 	      TString objName = myFrameHighSideBY->nameOf(i);
@@ -5007,15 +5088,16 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  // ###########################
 	  Canv->cd(7);
 	  RooPlot* myFrameLowSideBZ = z->frame(NBINS);
+
 	  dataSet->plotOn(myFrameLowSideBZ,Name(MakeName(dataSet,ID).c_str()),CutRange("lowSideband"));
+
 	  (*TotalPDF)->plotOn(myFrameLowSideBZ,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("lowSideband"));
-	  if (GetVar(*TotalPDF,"nSig") != NULL)
-	    {
-	      (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*Signal), LineStyle(7), LineColor(kBlue), ProjectionRange("lowSideband"));
-	      if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("lowSideband"));
-	      if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*MassAngleMisTag),  LineStyle(8), LineColor(kAzure+6), ProjectionRange("lowSideband"));
-	      if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("lowSideband"));
-	    }
+
+	  if (GetVar(*TotalPDF,"nSig")        != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*Signal),           LineStyle(7), LineColor(kBlue),    ProjectionRange("lowSideband"));
+	  if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*MassAngleMisTag),  LineStyle(8), LineColor(kAzure+6), ProjectionRange("lowSideband"));
+	  if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("lowSideband"));
+	  if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("lowSideband"));
+
 
 	  TPaveText* paveTextLowSideBZ = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
 	  paveTextLowSideBZ->AddText("Low sideband");
@@ -5029,7 +5111,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  DrawString(LUMI,myFrameLowSideBZ);
 	  myFrameLowSideBZ->Draw();
 
-	  TLegend* legLowSideBZ = new TLegend(0.75, 0.65, 0.97, 0.88, "");
+	  TLegend* legLowSideBZ = new TLegend(0.7, 0.65, 0.97, 0.88, "");
 	  for (int i = 0; i < nElements; i++)
 	    {
 	      TString objName = myFrameLowSideBZ->nameOf(i);
@@ -5056,15 +5138,16 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  // ###########################
 	  Canv->cd(8);
 	  RooPlot* myFrameSignalRegionZ = z->frame(NBINS);
+
 	  dataSet->plotOn(myFrameSignalRegionZ,Name(MakeName(dataSet,ID).c_str()),CutRange("signalRegion"));
+
 	  (*TotalPDF)->plotOn(myFrameSignalRegionZ,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("signalRegion"));
-	  if (GetVar(*TotalPDF,"nSig") != NULL)
-	    {
-	      (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*Signal), LineStyle(7), LineColor(kBlue), ProjectionRange("signalRegion"));
-	      if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("signalRegion"));
-	      if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*MassAngleMisTag),  LineStyle(8), LineColor(kAzure+6), ProjectionRange("signalRegion"));
-	      if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("signalRegion"));
-	    }
+
+	  if (GetVar(*TotalPDF,"nSig")        != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*Signal),           LineStyle(7), LineColor(kBlue),    ProjectionRange("signalRegion"));
+	  if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*MassAngleMisTag),  LineStyle(8), LineColor(kAzure+6), ProjectionRange("signalRegion"));
+	  if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("signalRegion"));
+	  if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("signalRegion"));
+
 
 	  TPaveText* paveTextSignalRegionZ = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
 	  paveTextSignalRegionZ->AddText(Form("%s%.1f%s","Signal region: #pm",atof(Utility->GetGenericParam("NSigmaB0S").c_str())," < #sigma >"));
@@ -5078,7 +5161,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  DrawString(LUMI,myFrameSignalRegionZ);
 	  myFrameSignalRegionZ->Draw();
 
-	  TLegend* legSignalRegionZ = new TLegend(0.75, 0.65, 0.97, 0.88, "");
+	  TLegend* legSignalRegionZ = new TLegend(0.7, 0.65, 0.97, 0.88, "");
 	  for (int i = 0; i < nElements; i++)
 	    {
 	      TString objName = myFrameSignalRegionZ->nameOf(i);
@@ -5105,15 +5188,16 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  // ###########################
 	  Canv->cd(9);
 	  RooPlot* myFrameHighSideBZ = z->frame(NBINS);
+
 	  dataSet->plotOn(myFrameHighSideBZ,Name(MakeName(dataSet,ID).c_str()),CutRange("highSideband"));
+
 	  (*TotalPDF)->plotOn(myFrameHighSideBZ,Name((*TotalPDF)->getPlotLabel()),LineColor(kBlack),ProjectionRange("highSideband"));
-	  if (GetVar(*TotalPDF,"nSig") != NULL)
-	    {
-	      (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*Signal), LineStyle(7), LineColor(kBlue), ProjectionRange("highSideband"));
-	      if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("highSideband"));
-	      if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*MassAngleMisTag),  LineStyle(8), LineColor(kAzure+6), ProjectionRange("highSideband"));
-	      if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("highSideband"));
-	    }
+
+	  if (GetVar(*TotalPDF,"nSig")        != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*Signal),           LineStyle(7), LineColor(kBlue),    ProjectionRange("highSideband"));
+	  if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*MassAngleMisTag),  LineStyle(8), LineColor(kAzure+6), ProjectionRange("highSideband"));
+	  if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("highSideband"));
+	  if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("highSideband"));
+
 
 	  TPaveText* paveTextHighSideBZ = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
 	  paveTextHighSideBZ->AddText("High sideband");
@@ -5127,7 +5211,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  DrawString(LUMI,myFrameHighSideBZ);
 	  myFrameHighSideBZ->Draw();
 
-	  TLegend* legHighSideBZ = new TLegend(0.75, 0.65, 0.97, 0.88, "");
+	  TLegend* legHighSideBZ = new TLegend(0.7, 0.65, 0.97, 0.88, "");
 	  for (int i = 0; i < nElements; i++)
 	    {
 	      TString objName = myFrameHighSideBZ->nameOf(i);
@@ -5181,6 +5265,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
     }
 
 
+  VarsYield.Clear();
   return fitResult;
 }
 
@@ -5256,7 +5341,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
     }
 
 
-  fileFitResults << "\n@@@@@@ Angular analysis vs q^2 @@@@@@" << endl;
+  fileFitResults << "\n@@@@@@@@@@@@@@@@@@@@@ Angular analysis vs q^2 @@@@@@@@@@@@@@@@@@@@@@" << endl;
   for (unsigned int i = (specBin == -1 ? 0 : specBin); i < (specBin == -1 ? q2Bins->size()-1 : specBin+1); i++)
     {
       if ((FitType != 46) && (FitType != 56) &&
@@ -6262,13 +6347,6 @@ int main(int argc, char** argv)
 	  cout << "FitSysFILEOutput = "  << FitSysFILEOutput << endl;
 	  cout << "FitSysFILEInput = "   << FitSysFILEInput << endl;
 
-	  legNames[0] = "Data";
-	  legNames[1] = "Total fit";
-	  legNames[2] = "Signal";
-	  legNames[3] = "Comb. bkg";
-	  legNames[4] = "Mistag bkg";
-	  legNames[5] = "Peak. bkg";
-
 
 	  if (SETBATCH == true)
 	    {
@@ -6332,10 +6410,10 @@ int main(int argc, char** argv)
 	  APPLYconstr     = atoi(Utility->GetGenericParam("ApplyConstr").c_str());
 	  CTRLmisTag      = Utility->GetGenericParam("CtrlMisTag");
 
-	  fileFitResults << "Slewrate for physics constraints shape: "          << SlewRateConstr << endl;
-	  fileFitResults << "Normalize with respect to J/Psi and not psi(2S): " << NormJPSInotPSIP << " (0 = false; 1 = true)" << endl;
-	  fileFitResults << "Apply constraints: "                               << APPLYconstr << " (0 = false; 1 = true)" << endl;
-	  fileFitResults << "Control mis-tag workflow: "                        << CTRLmisTag.c_str() << endl;
+	  fileFitResults << "Slewrate for physics constraints shape: " << SlewRateConstr << endl;
+	  fileFitResults << "Normalize to J/psi and not psi(2S): "     << NormJPSInotPSIP << " (0 = false; 1 = true)" << endl;
+	  fileFitResults << "Apply constraints: "                      << APPLYconstr << " (0 = false; 1 = true)" << endl;
+	  fileFitResults << "Control mis-tag workflow: "               << CTRLmisTag.c_str() << endl;
 	  
 	  // ################################################
 	  // # Read ctr. chn. yield from global-fit results #
@@ -6349,8 +6427,8 @@ int main(int argc, char** argv)
 	  myString << fitParam[Utility->GetFitParamIndx("nMisTagFrac")]->operator[]((NormJPSInotPSIP == true ? 1 : 2)).c_str();
 	  SetValueAndErrors(NULL,"",1.0,&myString,&MisTagFrac,&MisTagFracErr,&MisTagFracErr);
 
-	  PsiYieldMisTag    = PsiYieldGoodTag / (1. - MisTagFrac) * MisTagFrac;
-	  PsiYieldMisTagErr = PsiYieldMisTag  * MisTagFracErr / ((1. - MisTagFrac) * MisTagFrac);
+	  PsiYieldMisTag    = PsiYieldGoodTag * MisTagFrac / (1. - MisTagFrac);
+	  PsiYieldMisTagErr = MisTagFracErr * PsiYieldMisTag / ((1. - MisTagFrac) * MisTagFrac);
 
 	  fileFitResults << "Normalization channel yield good-tagged events: " << PsiYieldGoodTag << " +/- " << PsiYieldGoodTagErr << endl;
 	  fileFitResults << "Normalization channel yield mis-tagged events: "  << PsiYieldMisTag  << " +/- " << PsiYieldMisTagErr  << endl;

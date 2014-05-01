@@ -7,7 +7,7 @@ clear;
 %%%%%%%%%%%%%%%%%%%%
 % Global constants %
 %%%%%%%%%%%%%%%%%%%%
-fileName    = '../../efficiency/H2Deff_MisTag_q2Bin';
+fileName    = '../../efficiency/H2Deff_MisTagPsi2S_q2Bin';
 NbinsX      = 5;
 NbinsY      = 5;
 NstepsX     = 120;  % [120]
@@ -19,11 +19,10 @@ effMinValue = 2e-5; % [2e-5]
 %%%%%%%%%%%%%%%%%%%%
 % Global variables %
 %%%%%%%%%%%%%%%%%%%%
-q2Indx = 0; % q^2 bin index
-% - q^2 bin 0-2:     interp2
-% - q^2 bin 3-5 7-8: scatteredInterpolant natural+linear
-% - q^2 bin 6:       scatteredInterpolant natural+nearest
-useMethodInterp2 = true; % If true 'interp2' else 'scatteredInterpolant'
+q2Indx = 6; % q^2 bin index
+% - q^2 bin 0-2: interp2
+% - q^2 bin 3-8: scatteredInterpolant natural+linear
+useMethodInterp2 = false; % If true 'interp2' else 'scatteredInterpolant'
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ==> Interpolation methods <==                          %
 % - for 'interp2': linear, nearest, cubic, spline        %
@@ -205,11 +204,7 @@ if useMethodInterp2 == true
 else
     [newXvec_,newYvec_] = meshgrid(actualX, actualY);
 
-    if q2Indx ~= 6
-        newValues_ = scatteredInterpolant(newXvec_(:), newYvec_(:), Values(:), interpMethod, 'linear');
-    else
-        newValues_ = scatteredInterpolant(newXvec_(:), newYvec_(:), Values(:), interpMethod, 'nearest');
-    end
+    newValues_ = scatteredInterpolant(newXvec_(:), newYvec_(:), Values(:), interpMethod, 'linear');
     
     newValues = newValues_(newXvec, newYvec);
 end

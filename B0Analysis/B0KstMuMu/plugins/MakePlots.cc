@@ -1419,28 +1419,26 @@ void MakePhysicsPlots (unsigned int PlotType)
   // # Read SM values from ASCII file #
   // ##################################
   TGraphAsymmErrors* geSmoothTh = NULL;
-  // @TMP@
-  // if      ((PlotType == 0) || (PlotType == 10)) geSmoothTh = ReadFromASCII(SMFL,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Fl
-  // else if ((PlotType == 1) || (PlotType == 11)) geSmoothTh = ReadFromASCII(SMAFB,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh); // Afb
-  // else if ((PlotType == 2) || (PlotType == 12)) geSmoothTh = ReadFromASCII(SMBF,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Branching fraction
-  // geSmoothTh->SetFillColor(kRed-9);
-  // geSmoothTh->SetFillStyle(1001);
-  // geSmoothTh->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
+  if      ((PlotType == 0) || (PlotType == 10)) geSmoothTh = ReadFromASCII(SMFL,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Fl
+  else if ((PlotType == 1) || (PlotType == 11)) geSmoothTh = ReadFromASCII(SMAFB,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh); // Afb
+  else if ((PlotType == 2) || (PlotType == 12)) geSmoothTh = ReadFromASCII(SMBF,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Branching fraction
+  geSmoothTh->SetFillColor(kRed-9);
+  geSmoothTh->SetFillStyle(1001);
+  geSmoothTh->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
 
 
   // ################################################
   // # Average theory over q^2 bins from ASCII file #
   // ################################################
   TGraphAsymmErrors* geStepTh = NULL;
-  // @TMP@
-  // if      ((PlotType == 0) || (PlotType == 10)) geStepTh = ReadFromASCII(SMBINFL,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Fl
-  // else if ((PlotType == 1) || (PlotType == 11)) geStepTh = ReadFromASCII(SMBINAFB,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh); // Afb
-  // else if ((PlotType == 2) || (PlotType == 12)) geStepTh = ReadFromASCII(SMBINBF,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Branching fraction
-  // geStepTh->SetMarkerColor(kBlack);
-  // geStepTh->SetMarkerStyle(1);
-  // geStepTh->SetFillColor(kBlue);
-  // geStepTh->SetFillStyle(3001);
-  // geStepTh->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
+  if      ((PlotType == 0) || (PlotType == 10)) geStepTh = ReadFromASCII(SMBINFL,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Fl
+  else if ((PlotType == 1) || (PlotType == 11)) geStepTh = ReadFromASCII(SMBINAFB,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh); // Afb
+  else if ((PlotType == 2) || (PlotType == 12)) geStepTh = ReadFromASCII(SMBINBF,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Branching fraction
+  geStepTh->SetMarkerColor(kBlack);
+  geStepTh->SetMarkerStyle(1);
+  geStepTh->SetFillColor(kBlue);
+  geStepTh->SetFillStyle(3001);
+  geStepTh->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
 
 
   // ############################
