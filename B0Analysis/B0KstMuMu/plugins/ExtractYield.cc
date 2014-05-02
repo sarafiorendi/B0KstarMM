@@ -1960,7 +1960,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
   myString << configParam->operator[](Utility->GetConfigParamIndx("SigType"))->operator[](fitParamIndx);
   vecParStr->push_back(myString.str());
 
-  vecParStr->push_back("# Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians");
+  vecParStr->push_back("# Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians");
   myString.clear(); myString.str("");
   myString << configParam->operator[](Utility->GetConfigParamIndx("PeakBkgType"))->operator[](fitParamIndx);
   vecParStr->push_back(myString.str());
@@ -6284,7 +6284,7 @@ int main(int argc, char** argv)
 	  // ###################################
 	  // # Check that FitOption is correct #
 	  // ###################################
-	  if ((correct4Efficiency != "noEffCorr") && (correct4Efficiency != "EffCorrAnalyPDF") && (correct4Efficiency != "EffCorrGenAnalyPDF"))
+	  if ((correct4Efficiency != "noEffCorr") && (correct4Efficiency != "yesEffCorr") && (correct4Efficiency != "yesEffCorrGen"))
 	    {
 	      cout << "[ExtractYield::main]\tIncorrect option parameter " << correct4Efficiency << endl;
 	      exit (EXIT_FAILURE);
@@ -6295,14 +6295,14 @@ int main(int argc, char** argv)
 	  // # Read the q^2 bin and the rest #
 	  // #################################
 	  if (argc >= 5) specBin = atoi(argv[4]);
-	  if ((correct4Efficiency == "EffCorrAnalyPDF") || (correct4Efficiency == "EffCorrGenAnalyPDF")) useEffPDF = true;
-	  if (correct4Efficiency == "EffCorrGenAnalyPDF")
+	  if ((correct4Efficiency == "yesEffCorr") || (correct4Efficiency == "yesEffCorrGen")) useEffPDF = true;
+	  if (correct4Efficiency == "yesEffCorrGen")
 	    {
 	      tmpFileName = argv[5];
 	      fileIndx    = atoi(argv[6]);
 	    }
 	  else if ((!(((FitType >= 21) && (FitType <= 26)) || (FitType == 96))) &&
-		   ((correct4Efficiency == "noEffCorr") || (correct4Efficiency == "EffCorrAnalyPDF")))
+		   ((correct4Efficiency == "noEffCorr") || (correct4Efficiency == "yesEffCorr")))
 	    {
 	      if (argc >= 6) tmpFileName = argv[5];
 	      if (argc == 7) fileIndx    = atoi(argv[6]);
@@ -6449,9 +6449,9 @@ int main(int argc, char** argv)
 	    }
 	  configParam.clear();
 	  if (FitType == 2) Utility->ReadFitStartingValues(ParameterFILE,&fitParam,&configParam,Utility->ParFileBlockN("fitValGlob"));
-	  else              Utility->ReadFitStartingValues((((correct4Efficiency != "EffCorrGenAnalyPDF") && tmpFileName.size() != 0) ? tmpFileName : ParameterFILE),
+	  else              Utility->ReadFitStartingValues((((correct4Efficiency != "yesEffCorrGen") && tmpFileName.size() != 0) ? tmpFileName : ParameterFILE),
 							   &fitParam,&configParam,
-							   (((correct4Efficiency != "EffCorrGenAnalyPDF") && tmpFileName.size() != 0) ? 0 : Utility->ParFileBlockN("fitValBins")));
+							   (((correct4Efficiency != "yesEffCorrGen") && tmpFileName.size() != 0) ? 0 : Utility->ParFileBlockN("fitValBins")));
 
 
 	  // #############################################################
@@ -6465,7 +6465,7 @@ int main(int argc, char** argv)
 	  // # Prepare file to save fit results in case of systematic error evaluation #
 	  // ###########################################################################
 	  myString.clear(); myString.str("");
-	  if (correct4Efficiency == "EffCorrGenAnalyPDF")
+	  if (correct4Efficiency == "yesEffCorrGen")
 	    {
 	      ResetAngularParam(&fitParam,&q2Bins);
 	      myString << FitSysFILEOutput << "_" << specBin << ".txt";
@@ -6495,7 +6495,7 @@ int main(int argc, char** argv)
 	  // ##############################################
 	  effFuncs.first  = new vector<TF2*>;
 	  effFuncs.second = new vector<TF2*>;
-	  if (correct4Efficiency == "EffCorrGenAnalyPDF")
+	  if (correct4Efficiency == "yesEffCorrGen")
 	    {
 	      Utility->ReadAnalyticalEff(tmpFileName.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,effFuncs.first,"effFuncs",1);
 	      Utility->ReadAnalyticalEff(tmpFileName.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,effFuncs.second,"effFuncs",2);
@@ -6519,7 +6519,7 @@ int main(int argc, char** argv)
 	  // ###########################################################################
 	  // # Fit to BF: copy Fl and Afb values from file to the vector of parameters #
 	  // ###########################################################################
-	  if ((correct4Efficiency == "EffCorrGenAnalyPDF") && ((FitType == 1) || (FitType == 41) || (FitType == 61)))
+	  if ((correct4Efficiency == "yesEffCorrGen") && ((FitType == 1) || (FitType == 41) || (FitType == 61)))
 	    {
 	      double var0;
 	      double var1;
@@ -6995,7 +6995,7 @@ int main(int argc, char** argv)
 
 	  fileFitResults.close();
 	  fileFitSystematics.close();
-	  if ((SETBATCH == true) || (correct4Efficiency == "EffCorrGenAnalyPDF") || ((FitType >= 81) && (FitType <= 86)) || (FitType == 96))
+	  if ((SETBATCH == true) || (correct4Efficiency == "yesEffCorrGen") || ((FitType >= 81) && (FitType <= 86)) || (FitType == 96))
 	    {
 	      cout << "Bye bye !" << endl;
 	      CloseAllAndQuit(theApp,NtplFile);
@@ -7010,16 +7010,16 @@ int main(int argc, char** argv)
       else
 	{
 	  cout << "Wrong parameter: " << endl;
-	  cout << "./ExtractYield [FitType] [input/output[if toy-MC]File.root] [noEffCorr EffCorrAnalyPDF EffCorrGenAnalyPDF]" << endl;
+	  cout << "./ExtractYield [FitType] [input/output[if toy-MC]File.root] [noEffCorr yesEffCorr yesEffCorrGen]" << endl;
 	  cout << "               [q^2 bin to fit (0 - ...)]" << endl;
-	  cout << "               [[if EffCorrGenAnalyPDF]effFileName.txt AND indx]" << endl;
+	  cout << "               [[if yesEffCorrGen]effFileName.txt AND indx]" << endl;
 	  cout << "               [[if toy-MC]nToy AND ParameterFile.txt AND indx] " << endl;
 	  cout << "               [[if 96]indx]" << endl;
 	  cout << "               [ParameterFile.txt] [indx]" << endl;
 
-	  cout << "\n --> noEffCorr          = no eff. correction" << endl;
-	  cout << " --> EffCorrAnalyPDF    = analytical eff. correction used in the p.d.f." << endl;
-	  cout << " --> EffCorrGenAnalyPDF = compute systematic error related to eff. correction used in the p.d.f." << endl;
+	  cout << "\n --> noEffCorr     = no eff. correction" << endl;
+	  cout << " --> yesEffCorr    = use eff. correction" << endl;
+	  cout << " --> yesEffCorrGen = compute systematic error associated to eff. correction" << endl;
 
 	  return EXIT_FAILURE;
 	}
@@ -7027,16 +7027,16 @@ int main(int argc, char** argv)
   else
     {
       cout << "Parameter missing: " << endl;
-      cout << "./ExtractYield [FitType] [input/output[if toy-MC]File.root] [noEffCorr EffCorrAnalyPDF EffCorrGenAnalyPDF]" << endl;
+      cout << "./ExtractYield [FitType] [input/output[if toy-MC]File.root] [noEffCorr yesEffCorr yesEffCorrGen]" << endl;
       cout << "               [q^2 bin to fit (0 - ...)]" << endl;
-      cout << "               [[if EffCorrGenAnalyPDF]effFileName.txt AND indx]" << endl;
+      cout << "               [[if yesEffCorrGen]effFileName.txt AND indx]" << endl;
       cout << "               [[if toy-MC]nToy AND ParameterFile.txt AND indx] " << endl;
       cout << "               [[if 96]indx]" << endl;
       cout << "               [ParameterFile.txt] [indx]" << endl;
 
-      cout << "\n --> noEffCorr          = no eff. correction" << endl;
-      cout << " --> EffCorrAnalyPDF    = analytical eff. correction used in the p.d.f." << endl;
-      cout << " --> EffCorrGenAnalyPDF = compute systematic error related to eff. correction used in the p.d.f." << endl;
+      cout << "\n --> noEffCorr     = no eff. correction" << endl;
+      cout << " --> yesEffCorr    = use eff. correction" << endl;
+      cout << " --> yesEffCorrGen = compute systematic error associated to eff. correction" << endl;
 
       cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  Signa  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "FitType = 1: 1D branching fraction per q^2 bin" << endl;
