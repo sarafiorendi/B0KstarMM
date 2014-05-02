@@ -138,34 +138,34 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Number of q^2 bins
 10
 
-# Lower edge bin 0 (min = 4m(mu)^2 = 0.045): [GeV/c2]2
+# Lower edge bin 0 (min = 4m(mu)^2 = 0.045) [GeV/c2]2
 1.0
 
-# Lower edge bin 1: 2.0 [GeV/c2]2
+# Lower edge bin 1 [GeV/c2]2
 2.0
 
-# Lower edge bin 2: 4.3 [GeV/c2]2
+# Lower edge bin 2 [GeV/c2]2
 4.3
 
-# Lower edge bin 3: 6.0 [GeV/c2]2
+# Lower edge bin 3 [GeV/c2]2
 6.0
 
-# Lower edge bin 4: 8.68 [GeV/c2]2
+# Lower edge bin 4 [GeV/c2]2
 8.68
 
-# Lower edge bin 5: 10.09 [GeV/c2]2
+# Lower edge bin 5 [GeV/c2]2
 10.09
 
-# Lower edge bin 6: 12.86 [GeV/c2]2
+# Lower edge bin 6 [GeV/c2]2
 12.86
 
-# Lower edge bin 7: 14.18 [GeV/c2]2
+# Lower edge bin 7 [GeV/c2]2
 14.18
 
-# Lower edge bin 8: 16.0 [GeV/c2]2
+# Lower edge bin 8 [GeV/c2]2
 16.0
 
-# Upper edge bin 9 (max = (m(B0)-m(K)-m(pi))^2 = 21.589): 19.0 [GeV/c2]2
+# Upper edge bin 9 (max = (m(B0)-m(K)-m(pi))^2 = 21.589) [GeV/c2]2
 19.0
 
 

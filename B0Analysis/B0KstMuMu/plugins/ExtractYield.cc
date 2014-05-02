@@ -75,7 +75,7 @@ using namespace RooFit;
 #define DELTATYPE       10  // Multiplication factor to distinguish between good-tagged and mis-tagged
 #define DEGREEINTERPEFF 1   // Polynomial degree for efficiency histogram interpolation
 
-#define nJPSIS 250000.0
+#define nJPSIS 230000.0
 #define nJPSIB   2500.0
 #define nPSIPS  15000.0
 #define nPSIPB   1500.0
@@ -2576,7 +2576,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       DrawString(LUMI,myFrameJPsi);
       myFrameJPsi->Draw();
 
-      TLegend* legJPsi = new TLegend(0.7, 0.65, 0.97, 0.88, "");
+      TLegend* legJPsi = new TLegend(0.75, 0.65, 0.97, 0.88, "");
       for (int i = 0; i < nElements; i++)
       	{
       	  TString objName = myFrameJPsi->nameOf(i);
@@ -2696,7 +2696,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       DrawString(LUMI,myFramePsiP);
       myFramePsiP->Draw();
 
-      TLegend* legPsiP = new TLegend(0.7, 0.65, 0.97, 0.88, "");
+      TLegend* legPsiP = new TLegend(0.75, 0.65, 0.97, 0.88, "");
       for (int i = 0; i < nElements; i++)
 	{
 	  TString objName = myFramePsiP->nameOf(i);
@@ -3286,6 +3286,11 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
 
       paveTextX->AddText(Form("%s%1.f #pm%1.f","Total sig yield = ",totalYield,totalYieldE));
     }
+  else
+    {
+      totalYield  = GetVar(*TotalPDF,"nSig")->getVal();
+      totalYieldE = GetVar(*TotalPDF,"nSig")->getError();
+    }
   if (GetVar(*TotalPDF,"nSig") != NULL)
     {
       if (GetVar(*TotalPDF,"fracMassS") != NULL)
@@ -3306,7 +3311,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
     }
   paveTextX->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
-  TLegend* legX = new TLegend(0.7, 0.65, 0.97, 0.88, "");
+  TLegend* legX = new TLegend(0.75, 0.65, 0.97, 0.88, "");
   for (int i = 0; i < nElements; i++)
     {
       TString objName = myFrameX->nameOf(i);
@@ -3316,7 +3321,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
     }
   legX->SetFillStyle(0);
   legX->SetFillColor(0);
-  legX->SetTextSize(0.05);
+  legX->SetTextSize(0.04);
   legX->SetBorderSize(0);
 
 
@@ -3345,7 +3350,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   DrawString(LUMI,myFrameX);
   if ((extText != NULL) && (SETBATCH == false))
     {
-      if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%1.f #pm%1.f","Signal yield: ",GetVar(*TotalPDF,"nSig")->getVal(),GetVar(*TotalPDF,"nSig")->getError()));
+      if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%1.f #pm%1.f","Signal yield: ",totalYield,totalYieldE));
       extText->Paint();
       myFrameX->addObject(extText);
     }
@@ -3458,12 +3463,12 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // ######################
       // # Make external text #
       // ######################
-      extText[i] = new TPaveText(0.6,0.5,0.97,0.63,"NDC");
+      extText[i] = new TPaveText(0.65,0.5,0.97,0.63,"NDC");
       extText[i]->AddText(Form("%s%.2f%s%.2f%s","q#lower[0.4]{^{2}}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," GeV#lower[0.4]{^{2}}"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
       extText[i]->SetFillStyle(0);
-      extText[i]->SetTextSize(0.05);
+      extText[i]->SetTextSize(0.04);
 
 
       fileFitResults << "\nBin[" << i << "]: " << q2Bins->operator[](i) << " <= q^2 < " << q2Bins->operator[](i+1) << endl;
@@ -4434,7 +4439,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       TPaveText* paveTextY = (TPaveText*)myFrameY->findObject(myString.str().c_str());
       paveTextY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
-      TLegend* legY = new TLegend(0.7, 0.65, 0.97, 0.88, "");
+      TLegend* legY = new TLegend(0.75, 0.65, 0.97, 0.88, "");
       for (int i = 0; i < nElements; i++)
 	{
 	  TString objName = myFrameY->nameOf(i);
@@ -4444,7 +4449,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       legY->SetFillStyle(0);
       legY->SetFillColor(0);
-      legY->SetTextSize(0.05);
+      legY->SetTextSize(0.04);
       legY->SetBorderSize(0);
  
 
@@ -4467,7 +4472,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       TPaveText* paveTextZ = (TPaveText*)myFrameZ->findObject(myString.str().c_str());
       paveTextZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
-      TLegend* legZ = new TLegend(0.7, 0.65, 0.97, 0.88, "");
+      TLegend* legZ = new TLegend(0.75, 0.65, 0.97, 0.88, "");
       for (int i = 0; i < nElements; i++)
 	{
 	  TString objName = myFrameZ->nameOf(i);
@@ -4477,7 +4482,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       legZ->SetFillStyle(0);
       legZ->SetFillColor(0);
-      legZ->SetTextSize(0.05);
+      legZ->SetTextSize(0.04);
       legZ->SetBorderSize(0);
 
 
@@ -4505,7 +4510,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       paveTextY->SetTextAlign(11);
       paveTextY->SetBorderSize(0.0);
       paveTextY->SetFillStyle(0);
-      paveTextY->SetTextSize(0.04);
+      paveTextY->SetTextSize(0.03);
       paveTextY->Paint();
       myFrameY->Draw();
       legY->Draw("same");
@@ -4520,7 +4525,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       paveTextZ->SetTextAlign(11);
       paveTextZ->SetBorderSize(0.0);
       paveTextZ->SetFillStyle(0);
-      paveTextZ->SetTextSize(0.04);
+      paveTextZ->SetTextSize(0.03);
       paveTextZ->Paint();
       myFrameZ->Draw();
       legZ->Draw("same");
@@ -4696,7 +4701,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       paveTextX->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
-      TLegend* legX = new TLegend(0.7, 0.65, 0.97, 0.88, "");
+      TLegend* legX = new TLegend(0.75, 0.65, 0.97, 0.88, "");
       for (int i = 0; i < nElements; i++)
   	{
   	  TString objName = myFrameX->nameOf(i);
@@ -4706,7 +4711,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
   	}
       legX->SetFillStyle(0);
       legX->SetFillColor(0);
-      legX->SetTextSize(0.05);
+      legX->SetTextSize(0.04);
       legX->SetBorderSize(0);
 
 
@@ -4743,7 +4748,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       myFrameY->Draw();
 
-      TLegend* legY = new TLegend(0.7, 0.65, 0.97, 0.88, "");
+      TLegend* legY = new TLegend(0.75, 0.65, 0.97, 0.88, "");
       for (int i = 0; i < nElements; i++)
       	{
       	  TString objName = myFrameY->nameOf(i);
@@ -4753,7 +4758,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	}
       legY->SetFillStyle(0);
       legY->SetFillColor(0);
-      legY->SetTextSize(0.05);
+      legY->SetTextSize(0.04);
       legY->SetBorderSize(0);
       legY->Draw("same");
  
@@ -4799,7 +4804,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	}
       myFrameZ->Draw();
 
-      TLegend* legZ = new TLegend(0.7, 0.65, 0.97, 0.88, "");
+      TLegend* legZ = new TLegend(0.75, 0.65, 0.97, 0.88, "");
       for (int i = 0; i < nElements; i++)
       	{
       	  TString objName = myFrameZ->nameOf(i);
@@ -4809,7 +4814,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	}
       legZ->SetFillStyle(0);
       legZ->SetFillColor(0);
-      legZ->SetTextSize(0.05);
+      legZ->SetTextSize(0.04);
       legZ->SetBorderSize(0);
       legZ->Draw("same");
 
@@ -4871,7 +4876,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       DrawString(LUMI,myFrameX);
       if ((extText != NULL) && (SETBATCH == false))
       	{
-      	  if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%1.f #pm%1.f","Signal yield: ",GetVar(*TotalPDF,"nSig")->getVal(),GetVar(*TotalPDF,"nSig")->getError()));
+      	  if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%1.f #pm%1.f","Signal yield: ",totalYield,totalYieldE));
       	  extText->Paint();
       	  myFrameX->addObject(extText);
       	}
@@ -4959,7 +4964,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  DrawString(LUMI,myFrameLowSideBY);
 	  myFrameLowSideBY->Draw();
 
-	  TLegend* legLowSideBY = new TLegend(0.7, 0.65, 0.97, 0.88, "");
+	  TLegend* legLowSideBY = new TLegend(0.75, 0.65, 0.97, 0.88, "");
 	  for (int i = 0; i < nElements; i++)
 	    {
 	      TString objName = myFrameLowSideBY->nameOf(i);
@@ -5009,7 +5014,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  DrawString(LUMI,myFrameSignalRegionY);
 	  myFrameSignalRegionY->Draw();
 
-	  TLegend* legSignalRegionY = new TLegend(0.7, 0.65, 0.97, 0.88, "");
+	  TLegend* legSignalRegionY = new TLegend(0.75, 0.65, 0.97, 0.88, "");
 	  for (int i = 0; i < nElements; i++)
 	    {
 	      TString objName = myFrameSignalRegionY->nameOf(i);
@@ -5059,7 +5064,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  DrawString(LUMI,myFrameHighSideBY);
 	  myFrameHighSideBY->Draw();
 
-	  TLegend* legHighSideBY = new TLegend(0.7, 0.65, 0.97, 0.88, "");
+	  TLegend* legHighSideBY = new TLegend(0.75, 0.65, 0.97, 0.88, "");
 	  for (int i = 0; i < nElements; i++)
 	    {
 	      TString objName = myFrameHighSideBY->nameOf(i);
@@ -5114,7 +5119,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  DrawString(LUMI,myFrameLowSideBZ);
 	  myFrameLowSideBZ->Draw();
 
-	  TLegend* legLowSideBZ = new TLegend(0.7, 0.65, 0.97, 0.88, "");
+	  TLegend* legLowSideBZ = new TLegend(0.75, 0.65, 0.97, 0.88, "");
 	  for (int i = 0; i < nElements; i++)
 	    {
 	      TString objName = myFrameLowSideBZ->nameOf(i);
@@ -5164,7 +5169,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  DrawString(LUMI,myFrameSignalRegionZ);
 	  myFrameSignalRegionZ->Draw();
 
-	  TLegend* legSignalRegionZ = new TLegend(0.7, 0.65, 0.97, 0.88, "");
+	  TLegend* legSignalRegionZ = new TLegend(0.75, 0.65, 0.97, 0.88, "");
 	  for (int i = 0; i < nElements; i++)
 	    {
 	      TString objName = myFrameSignalRegionZ->nameOf(i);
@@ -5214,7 +5219,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  DrawString(LUMI,myFrameHighSideBZ);
 	  myFrameHighSideBZ->Draw();
 
-	  TLegend* legHighSideBZ = new TLegend(0.7, 0.65, 0.97, 0.88, "");
+	  TLegend* legHighSideBZ = new TLegend(0.75, 0.65, 0.97, 0.88, "");
 	  for (int i = 0; i < nElements; i++)
 	    {
 	      TString objName = myFrameHighSideBZ->nameOf(i);
@@ -5366,12 +5371,12 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // ######################
       // # Make external text #
       // ######################
-      extText[i] = new TPaveText(0.6,0.5,0.97,0.63,"NDC");
+      extText[i] = new TPaveText(0.65,0.5,0.97,0.63,"NDC");
       extText[i]->AddText(Form("%s%.2f%s%.2f%s","q#lower[0.4]{^{2}}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," GeV#lower[0.4]{^{2}}"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
       extText[i]->SetFillStyle(0);
-      extText[i]->SetTextSize(0.05);
+      extText[i]->SetTextSize(0.04);
 
 
       fileFitResults << "\nBin[" << i << "]: " << q2Bins->operator[](i) << " <= q^2 < " << q2Bins->operator[](i+1) << endl;
@@ -7002,8 +7007,7 @@ int main(int argc, char** argv)
 	    }
 	  else
 	    {
-	      // @TMP@
-	      // system("say \" Let's rock and roll ! \"");
+	      system("say \" Let's rock and roll ! \"");
  	      theApp->Run (); // Eventloop on air
 	    }
 	}
