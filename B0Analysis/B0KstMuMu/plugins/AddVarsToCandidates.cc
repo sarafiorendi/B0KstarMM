@@ -28,7 +28,7 @@ using std::vector;
 // ####################
 // # Global constants #
 // ####################
-#define PileUpMCFileName   "PileUp/PileupMCkstJPsi.root" // "PileupMCkstMuMu.root"  OR "PileupMCkstJPsi.root" OR "PileupMCkstPsi2S.root"
+#define PileUpMCFileName   "PileUp/PileupMCkstMuMu.root" // "PileupMCkstMuMu.root"  OR "PileupMCkstJPsi.root" OR "PileupMCkstPsi2S.root"
 #define PileUpDataFileName "PileUp/PileupData_HLTx"
 #define HadppTFileName     "HadppTDataMC.root"
 #define HadmpTFileName     "HadmpTDataMC.root"
@@ -346,9 +346,17 @@ template<class T> void AddEvWeightPileup (T* NTupleOut)
 	  value = NTupleOut->numInteractionsMC->at(i);
 	  if ((NTupleOut->bunchXingMC->at(i) == 0) && (hW[HLTpathIndx-1]->FindBin(value) != 0) && (hW[HLTpathIndx-1]->FindBin(value) != hW[HLTpathIndx-1]->GetNbinsX()+1))
 	    {
+	      // #########################
+	      // # Compose weight errors #
+	      // #########################
 	      NTupleOut->evWeightE2 = NTupleOut->evWeightE2 * pow(hW[HLTpathIndx-1]->GetBinContent(hW[HLTpathIndx-1]->FindBin(value)),2.0) +
 		pow(hW[HLTpathIndx-1]->GetBinError(hW[HLTpathIndx-1]->FindBin(value)) * NTupleOut->evWeight,2.0);
+
+	      // ########################
+	      // # Multiply the weights #
+	      // ########################
 	      NTupleOut->evWeight = NTupleOut->evWeight * hW[HLTpathIndx-1]->GetBinContent(hW[HLTpathIndx-1]->FindBin(value));
+
 	      break;
 	    }
 	}
@@ -411,8 +419,15 @@ template<class T> void AddEvWeightHadpT (T* NTupleOut, string trkSign)
       
       if ((hW->FindBin(value) != 0) && (hW->FindBin(value) != hW->GetNbinsX()+1))
 	{
+	  // #########################
+	  // # Compose weight errors #
+	  // #########################
 	  NTupleOut->evWeightE2 = NTupleOut->evWeightE2 * pow(hW->GetBinContent(hW->FindBin(value)),2.0) +
 	    pow(hW->GetBinError(hW->FindBin(value)) * NTupleOut->evWeight,2.0);
+
+	  // ########################
+	  // # Multiply the weights #
+	  // ########################
 	  NTupleOut->evWeight = NTupleOut->evWeight * hW->GetBinContent(hW->FindBin(value));
 	}
 

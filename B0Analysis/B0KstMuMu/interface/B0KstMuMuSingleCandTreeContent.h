@@ -27,9 +27,11 @@ class B0KstMuMuSingleCandTreeContent : public B0KstMuMuTreeContent
   bool   B0notB0bar;
   bool   rightFlavorTag;
 
-  // ####################
-  // # Trigger category #
-  // ####################
+  // ################################
+  // # Trigger category:            #
+  // # 0   = not in trigger list    #
+  // # > 0 = trigger category index #
+  // ################################
   int TrigCat;
 
   // ####################

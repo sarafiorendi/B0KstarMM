@@ -329,7 +329,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # mu min pT [GeV/c]
 3.5
 # Number of entries in Data
-0.0
+1.0
 
 
 ############################

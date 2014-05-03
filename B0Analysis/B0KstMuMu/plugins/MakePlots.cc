@@ -53,12 +53,12 @@ using std::vector;
 // ##################
 // # SM predictions #
 // ##################
-#define SMFL     "../../PredictionSM/FLErr.dat"
-#define SMAFB    "../../PredictionSM/AFBErr.dat"
-#define SMBF     "../../PredictionSM/dBFdq2.dat"
-#define SMBINFL  "../../PredictionSM/BinnedFL.dat"
-#define SMBINAFB "../../PredictionSM/BinnedAFB.dat"
-#define SMBINBF  "../../PredictionSM/BinneddBFdq2.dat"
+#define SMFL     "Data2012B0KstMuMuResults/PredictionSM/FLdifferential.txt"
+#define SMAFB    "Data2012B0KstMuMuResults/PredictionSM/AFBdifferential.txt"
+#define SMBF     "Data2012B0KstMuMuResults/PredictionSM/dBRdifferential.txt"
+#define SMBINFL  "Data2012B0KstMuMuResults/PredictionSM/FLBinned.txt"
+#define SMBINAFB "Data2012B0KstMuMuResults/PredictionSM/AFBBinned.txt"
+#define SMBINBF  "Data2012B0KstMuMuResults/PredictionSM/dBRBinned.txt"
 
 // ######################
 // # Data/MC comparison #
@@ -1131,10 +1131,13 @@ TGraphAsymmErrors* ReadFromASCII (string fileName, unsigned int PlotType, vector
       cout << "[MakePlots::ReadFromASCII]\tError opening file : " << fileName.c_str() << endl;
       exit (EXIT_FAILURE);
     }
+  cout << "\n[MakePlots::ReadFromASCII]\tReding SM values from file : " << fileName.c_str() << endl; 
   inputFile >> xs >> ys >> xel >> xeh >> yel >> yeh;
   while (inputFile.eof() == false)
     {
-      if ((Utility->ValIsInPsi(q2Bins,xs) == false) && (xs >= q2Bins->operator[](0)) && (xs <= q2Bins->operator[](q2Bins->size()-1)) && (Utility->ValIsBetweenJPsiAndPsiP(q2Bins,xs) == false))
+      if ((Utility->ValIsInPsi(q2Bins,xs) == false) && (xs >= q2Bins->operator[](0)) && (xs <= q2Bins->operator[](q2Bins->size()-1)))
+	// @TMP@
+	// && (Utility->ValIsBetweenJPsiAndPsiP(q2Bins,xs) == false))
 	{
 	  if ((PlotType == 0) || (PlotType == 10)) // Fl
 	    {
@@ -1148,7 +1151,7 @@ TGraphAsymmErrors* ReadFromASCII (string fileName, unsigned int PlotType, vector
 	  else if ((PlotType == 1) || (PlotType == 11)) // Afb
 	    {
 	      vxs->push_back(xs);
-	      vys->push_back(-ys);
+	      vys->push_back(ys);
 	      vxel->push_back(xel);
 	      vxeh->push_back(xeh);
 	      vyel->push_back(yeh);
@@ -1157,18 +1160,18 @@ TGraphAsymmErrors* ReadFromASCII (string fileName, unsigned int PlotType, vector
 	  else if ((PlotType == 2) || (PlotType == 12)) // Branching fraction
 	    {
 	      vxs->push_back(xs);
-	      vys->push_back(ys/1e-7);
+	      vys->push_back(ys);
 	      vxel->push_back(xel);
 	      vxeh->push_back(xeh);
-	      vyel->push_back(yel/1e-7);
-	      vyeh->push_back(yeh/1e-7);
+	      vyel->push_back(yel);
+	      vyeh->push_back(yeh);
 	    }
 	  cout << "xs: " << xs << "\tys: " << ys << "\txeh: " << xeh << "\txel: " << xel << "\tyel: " << yel << "\tyeh: " << yeh << endl;
 	}
       else
 	{
-	  vxs->push_back(xs);
-	  vys->push_back(YvalueOutsideLimits);
+	  vxs->push_back(-1.0);
+	  vys->push_back(0.0);
 	  vxel->push_back(0.0);
 	  vxeh->push_back(0.0);
 	  vyel->push_back(0.0);
@@ -1616,12 +1619,14 @@ void MakePhysicsPlots (unsigned int PlotType)
       // # Divide the theoretical branching fraction by the q2 bin width #
       // #################################################################
       for (unsigned int i = 0; i < q2Bins.size()-1; i++)
-        if ((Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false) && (Utility->ValIsBetweenJPsiAndPsiP(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false))
-	  {
-	    geStepTh->SetPoint(i,geStepTh->GetX()[i],geStepTh->GetY()[i] /  (q2Bins[i+1] - q2Bins[i]));
-	    geStepTh->SetPointEYlow(i,geStepTh->GetErrorYlow(i) / (q2Bins[i+1] - q2Bins[i]));
-	    geStepTh->SetPointEYhigh(i,geStepTh->GetErrorYhigh(i) / (q2Bins[i+1] - q2Bins[i]));
-	  }
+        if ((Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false))
+      	  // @TMP@
+      	  // && (Utility->ValIsBetweenJPsiAndPsiP(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false))
+      	  {
+      	    geStepTh->SetPoint(i,geStepTh->GetX()[i],geStepTh->GetY()[i] /  (q2Bins[i+1] - q2Bins[i]));
+      	    geStepTh->SetPointEYlow(i,geStepTh->GetErrorYlow(i) / (q2Bins[i+1] - q2Bins[i]));
+      	    geStepTh->SetPointEYhigh(i,geStepTh->GetErrorYhigh(i) / (q2Bins[i+1] - q2Bins[i]));
+      	  }
     }
 
 
@@ -1680,6 +1685,9 @@ void MakePhysicsPlots (unsigned int PlotType)
       exhd.clear();
       eyld.clear();
       eyhd.clear();
+      // #################
+      // # Bended errors #
+      // #################
       // @TMP@
       // geb->Draw("same pe1");
       ge0->Draw("same pez");
@@ -1740,7 +1748,9 @@ void MakePhysicsPlots (unsigned int PlotType)
       double tmpVar;
       for (int i = 0; i < chi2Histo->GetNbinsX(); i++)
 	{
-	  if ((Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false) && (Utility->ValIsBetweenJPsiAndPsiP(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false))
+	  if ((Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false))
+	    // @TMP@
+	    // && (Utility->ValIsBetweenJPsiAndPsiP(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false))
 	    {
 	      tmpVar = pow(geStepTh->GetY()[i] - ge0->GetY()[i],2.) /
 		(geStepTh->GetY()[i] > ge0->GetY()[i] ? pow(geStepTh->GetErrorYlow(i),2.) + pow(ge0->GetErrorYhigh(i),2.) : pow(geStepTh->GetErrorYhigh(i),2.) + pow(ge0->GetErrorYlow(i),2.));
@@ -1796,8 +1806,10 @@ void MakePhysicsPlots (unsigned int PlotType)
   TH1D* probHisto = new TH1D("probHisto","probHisto",q2Bins.size()-1,q2Bins_);
   TLegend* probLeg = new TLegend(0.8, 0.85, 0.97, 0.95, "");
   for (int i = 0; i < chi2Histo->GetNbinsX(); i++)
-    if ((((PlotType == 10) || (PlotType == 11) || (PlotType == 12)) && ((Utility->ValIsBetweenJPsiAndPsiP(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false))) ||
-	!((PlotType == 10) || (PlotType == 11) || (PlotType == 12)))
+    if ((((PlotType == 10) || (PlotType == 11) || (PlotType == 12)))
+	// @TMP@
+	// && ((Utility->ValIsBetweenJPsiAndPsiP(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false)))
+	|| !((PlotType == 10) || (PlotType == 11) || (PlotType == 12)))
       {
 	if (Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false)
 	  {
@@ -1816,7 +1828,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   probHisto->GetYaxis()->SetTitleSize(0.07);
   probHisto->SetFillColor(kGreen-7);
   probHisto->SetFillStyle(1001);
-  probHisto->GetYaxis()->SetRangeUser(1e-3,1.3);
+  probHisto->GetYaxis()->SetRangeUser(1e-3,1.2);
   probHisto->Draw();
 
   probLeg->SetFillColor(0);

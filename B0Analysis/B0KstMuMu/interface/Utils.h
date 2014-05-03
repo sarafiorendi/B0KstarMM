@@ -29,14 +29,21 @@ class Utils
   // #################################
   struct _effStruct
   {
+    // ###########################################################
+    // # Numerators and Denominators = number of events * weight #
+    // ###########################################################
     double *Num1, *Num2;
     double *Den1, *Den2;
     
-    // Poissonian errors
+    // ###################################################
+    // # Poissonian errors = number of events * weight^2 #
+    // ###################################################
     double *Err2PoisNum1, *Err2PoisNum2;
     double *Err2PoisDen1, *Err2PoisDen2;
     
-    // Weight errors
+    // #################
+    // # Weight errors #
+    // #################
     double *Err2WeigNum1, *Err2WeigNum2;
     double *Err2WeigDen1, *Err2WeigDen2;
 
@@ -155,8 +162,6 @@ class Utils
 
   bool ValIsInPsi (std::vector<double>* q2Bins, double q2Val);
   bool ValIsBetweenJPsiAndPsiP (std::vector<double>* q2Bins, double q2Val);
-  bool IsGoodq2CosThetaKCosThetaLBin (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins,
-				      double mumuMass2, double cosThetaK, double cosThetaMu, bool PrintMsg);
 
   void IntegrateEffAll                (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, effStruct myEff, double* Eff, double* EffErr);
   void IntegrateEffButPsi             (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, effStruct myEff, double* Eff, double* EffErr);
@@ -174,16 +179,15 @@ class Utils
   unsigned int HLTpathForEvFraction (double evtFrac);
   unsigned int IsInTriggerTable     (B0KstMuMuTreeContent* NTupleIn, double* HLTCutVar1, double* HLTCutVar2, int index = 0, double evtFrac = -1.0);
   unsigned int GetNHLTCat           ();
-  double GetHLTentries              (unsigned int HLTindx);
   double ReadLumi                   (std::string fileName);
 
   void ReadNLLval  (std::string fileName, std::vector<std::vector<double>*>* vecParam);
   double GetNLLval (std::vector<std::vector<double>*>* NLLvals, std::string varName, unsigned int q2Indx);
 
   void ReadTriggerPathsANDCutsANDEntries (std::string fileName);
-  void ReadFitStartingValues (std::string fileName, std::vector<std::vector<std::string>*>* vecParam, std::vector<std::vector<unsigned int>*>* configParam, const unsigned int dataBlockN);
-  void ReadFitSystematics (std::string fileName, std::vector<std::vector<double>*>* vecParam);
-  void ReadParVsq2Bins (std::string fileName, std::string praName, std::vector<std::string>** vecParam);
+  void ReadFitStartingValues             (std::string fileName, std::vector<std::vector<std::string>*>* vecParam, std::vector<std::vector<unsigned int>*>* configParam, const unsigned int dataBlockN);
+  void ReadFitSystematics                (std::string fileName, std::vector<std::vector<double>*>* vecParam);
+  void ReadParVsq2Bins                   (std::string fileName, std::string praName, std::vector<std::string>** vecParam);
 
   void SaveAnalyticalEff (std::string fileName, TF2* effFunc, double q2Val, std::vector<double>* q2Bins);
   void SaveAnalyticalEff (std::string fileName, TF3* effFunc, double q2Val, std::vector<double>* q2Bins);
