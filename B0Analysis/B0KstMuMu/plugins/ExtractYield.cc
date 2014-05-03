@@ -3312,7 +3312,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   paveTextX->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
   TLegend* legX = new TLegend(0.75, 0.65, 0.97, 0.88, "");
-  for (int i = 0; i < nElements; i++)
+  for (unsigned int i = 0; i < nElements; i++)
     {
       TString objName = myFrameX->nameOf(i);
       if (objName == "") continue;
@@ -4440,7 +4440,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       paveTextY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
       TLegend* legY = new TLegend(0.75, 0.65, 0.97, 0.88, "");
-      for (int i = 0; i < nElements; i++)
+      for (unsigned int i = 0; i < nElements; i++)
 	{
 	  TString objName = myFrameY->nameOf(i);
 	  if (objName == "") continue;
@@ -4473,7 +4473,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       paveTextZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
       TLegend* legZ = new TLegend(0.75, 0.65, 0.97, 0.88, "");
-      for (int i = 0; i < nElements; i++)
+      for (unsigned int i = 0; i < nElements; i++)
 	{
 	  TString objName = myFrameZ->nameOf(i);
 	  if (objName == "") continue;
@@ -4702,7 +4702,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       paveTextX->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
       TLegend* legX = new TLegend(0.75, 0.65, 0.97, 0.88, "");
-      for (int i = 0; i < nElements; i++)
+      for (unsigned int i = 0; i < nElements; i++)
   	{
   	  TString objName = myFrameX->nameOf(i);
   	  if (objName == "") continue;
@@ -4749,7 +4749,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       myFrameY->Draw();
 
       TLegend* legY = new TLegend(0.75, 0.65, 0.97, 0.88, "");
-      for (int i = 0; i < nElements; i++)
+      for (unsigned int i = 0; i < nElements; i++)
       	{
       	  TString objName = myFrameY->nameOf(i);
       	  if (objName == "") continue;
@@ -4805,7 +4805,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       myFrameZ->Draw();
 
       TLegend* legZ = new TLegend(0.75, 0.65, 0.97, 0.88, "");
-      for (int i = 0; i < nElements; i++)
+      for (unsigned int i = 0; i < nElements; i++)
       	{
       	  TString objName = myFrameZ->nameOf(i);
       	  if (objName == "") continue;
@@ -4965,7 +4965,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  myFrameLowSideBY->Draw();
 
 	  TLegend* legLowSideBY = new TLegend(0.75, 0.65, 0.97, 0.88, "");
-	  for (int i = 0; i < nElements; i++)
+	  for (unsigned int i = 0; i < nElements; i++)
 	    {
 	      TString objName = myFrameLowSideBY->nameOf(i);
 	      if (objName == "") continue;
@@ -5015,7 +5015,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  myFrameSignalRegionY->Draw();
 
 	  TLegend* legSignalRegionY = new TLegend(0.75, 0.65, 0.97, 0.88, "");
-	  for (int i = 0; i < nElements; i++)
+	  for (unsigned int i = 0; i < nElements; i++)
 	    {
 	      TString objName = myFrameSignalRegionY->nameOf(i);
 	      if (objName == "") continue;
@@ -5065,7 +5065,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  myFrameHighSideBY->Draw();
 
 	  TLegend* legHighSideBY = new TLegend(0.75, 0.65, 0.97, 0.88, "");
-	  for (int i = 0; i < nElements; i++)
+	  for (unsigned int i = 0; i < nElements; i++)
 	    {
 	      TString objName = myFrameHighSideBY->nameOf(i);
 	      if (objName == "") continue;
@@ -5120,7 +5120,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  myFrameLowSideBZ->Draw();
 
 	  TLegend* legLowSideBZ = new TLegend(0.75, 0.65, 0.97, 0.88, "");
-	  for (int i = 0; i < nElements; i++)
+	  for (unsigned int i = 0; i < nElements; i++)
 	    {
 	      TString objName = myFrameLowSideBZ->nameOf(i);
 	      if (objName == "") continue;
@@ -5170,7 +5170,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  myFrameSignalRegionZ->Draw();
 
 	  TLegend* legSignalRegionZ = new TLegend(0.75, 0.65, 0.97, 0.88, "");
-	  for (int i = 0; i < nElements; i++)
+	  for (unsigned int i = 0; i < nElements; i++)
 	    {
 	      TString objName = myFrameSignalRegionZ->nameOf(i);
 	      if (objName == "") continue;
@@ -5220,7 +5220,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  myFrameHighSideBZ->Draw();
 
 	  TLegend* legHighSideBZ = new TLegend(0.75, 0.65, 0.97, 0.88, "");
-	  for (int i = 0; i < nElements; i++)
+	  for (unsigned int i = 0; i < nElements; i++)
 	    {
 	      TString objName = myFrameHighSideBZ->nameOf(i);
 	      if (objName == "") continue;
