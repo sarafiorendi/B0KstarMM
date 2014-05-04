@@ -4126,17 +4126,18 @@ void Utils::ReadGenericParam (std::string fileName)
 // # NormJPSInotPSIP     = GenericPars[1]  #
 // # ApplyConstr         = GenericPars[2]  #
 // # CtrlMisTag          = GenericPars[3]  #
-// # B0MassIntervalLeft  = GenericPars[4]  #
-// # B0MassIntervalRight = GenericPars[5]  #
-// # NSigmaB0            = GenericPars[6]  #
-// # NSigmaB0S           = GenericPars[7]  #
-// # NSigmaB0B           = GenericPars[8]  #
-// # NSigmaPsiSmall      = GenericPars[9]  #
-// # NSigmaPsiBig        = GenericPars[10] #
-// # B&PsiMassWindow     = GenericPars[11] #
-// # SIGMAS1             = GenericPars[12] #
-// # SIGMAS2             = GenericPars[13] #
-// # FRACMASSS           = GenericPars[14] #
+// # SaveMisTagFrac      = GenericPars[4]  #
+// # B0MassIntervalLeft  = GenericPars[5]  #
+// # B0MassIntervalRight = GenericPars[6]  #
+// # NSigmaB0            = GenericPars[7]  #
+// # NSigmaB0S           = GenericPars[8]  #
+// # NSigmaB0B           = GenericPars[9]  #
+// # NSigmaPsiSmall      = GenericPars[10] #
+// # NSigmaPsiBig        = GenericPars[11] #
+// # B&PsiMassWindow     = GenericPars[12] #
+// # SIGMAS1             = GenericPars[13] #
+// # SIGMAS2             = GenericPars[14] #
+// # FRACMASSS           = GenericPars[15] #
 // #########################################
 {
   std::vector<std::string> ParVector;
@@ -4166,17 +4167,18 @@ bool Utils::SetGenericParam (std::string parName, std::string val)
   else if (parName == "NormJPSInotPSIP")     GenericPars[1]  = val;
   else if (parName == "ApplyConstr")         GenericPars[2]  = val;
   else if (parName == "CtrlMisTag")          GenericPars[3]  = val;
-  else if (parName == "B0MassIntervalLeft")  GenericPars[4]  = val;
-  else if (parName == "B0MassIntervalRight") GenericPars[5]  = val;
-  else if (parName == "NSigmaB0")            GenericPars[6]  = val;
-  else if (parName == "NSigmaB0S")           GenericPars[7]  = val;
-  else if (parName == "NSigmaB0B")           GenericPars[8]  = val;
-  else if (parName == "NSigmaPsiSmall")      GenericPars[9]  = val;
-  else if (parName == "NSigmaPsiBig")        GenericPars[10] = val;
-  else if (parName == "B&PsiMassWindow")     GenericPars[11] = val;
-  else if (parName == "SIGMAS1")             GenericPars[12] = val;
-  else if (parName == "SIGMAS2")             GenericPars[13] = val;
-  else if (parName == "FRACMASSS")           GenericPars[14] = val;
+  else if (parName == "SaveMisTagFrac")      GenericPars[4]  = val;
+  else if (parName == "B0MassIntervalLeft")  GenericPars[5]  = val;
+  else if (parName == "B0MassIntervalRight") GenericPars[6]  = val;
+  else if (parName == "NSigmaB0")            GenericPars[7]  = val;
+  else if (parName == "NSigmaB0S")           GenericPars[8]  = val;
+  else if (parName == "NSigmaB0B")           GenericPars[9]  = val;
+  else if (parName == "NSigmaPsiSmall")      GenericPars[10] = val;
+  else if (parName == "NSigmaPsiBig")        GenericPars[11] = val;
+  else if (parName == "B&PsiMassWindow")     GenericPars[12] = val;
+  else if (parName == "SIGMAS1")             GenericPars[13] = val;
+  else if (parName == "SIGMAS2")             GenericPars[14] = val;
+  else if (parName == "FRACMASSS")           GenericPars[15] = val;
   else return false;
 
   return true;
@@ -4188,17 +4190,18 @@ std::string Utils::GetGenericParam (std::string parName)
   else if (parName == "NormJPSInotPSIP")     return GenericPars[1];
   else if (parName == "ApplyConstr")         return GenericPars[2];
   else if (parName == "CtrlMisTag")          return GenericPars[3];
-  else if (parName == "B0MassIntervalLeft")  return GenericPars[4];
-  else if (parName == "B0MassIntervalRight") return GenericPars[5];
-  else if (parName == "NSigmaB0")            return GenericPars[6];
-  else if (parName == "NSigmaB0S")           return GenericPars[7];
-  else if (parName == "NSigmaB0B")           return GenericPars[8];
-  else if (parName == "NSigmaPsiSmall")      return GenericPars[9];
-  else if (parName == "NSigmaPsiBig")        return GenericPars[10];
-  else if (parName == "B&PsiMassWindow")     return GenericPars[11];
-  else if (parName == "SIGMAS1")             return GenericPars[12];
-  else if (parName == "SIGMAS2")             return GenericPars[13];
-  else if (parName == "FRACMASSS")           return GenericPars[14];
+  else if (parName == "SaveMisTagFrac")      return GenericPars[4];
+  else if (parName == "B0MassIntervalLeft")  return GenericPars[5];
+  else if (parName == "B0MassIntervalRight") return GenericPars[6];
+  else if (parName == "NSigmaB0")            return GenericPars[7];
+  else if (parName == "NSigmaB0S")           return GenericPars[8];
+  else if (parName == "NSigmaB0B")           return GenericPars[9];
+  else if (parName == "NSigmaPsiSmall")      return GenericPars[10];
+  else if (parName == "NSigmaPsiBig")        return GenericPars[11];
+  else if (parName == "B&PsiMassWindow")     return GenericPars[12];
+  else if (parName == "SIGMAS1")             return GenericPars[13];
+  else if (parName == "SIGMAS2")             return GenericPars[14];
+  else if (parName == "FRACMASSS")           return GenericPars[15];
   else
     {
       std::cout << "[Utils::GetGenericParam]\tGeneric parameter not valid : " << parName << std::endl;

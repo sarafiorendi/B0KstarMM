@@ -72,7 +72,6 @@ using namespace RooFit;
 #define MULTYIELD       1.0 // Multiplication factor to the number of entry in toy-MC
 #define NCOEFFPOLYBKG   5   // Maximum number of coefficients (= degree) of the polynomial describing the background in the angular variables
 #define POLYCOEFRANGE   2.0 // Polynomial coefficients range for parameter regeneration
-#define DELTATYPE       10  // Multiplication factor to distinguish between good-tagged and mis-tagged
 #define DEGREEINTERPEFF 1   // Polynomial degree for efficiency histogram interpolation
 
 #define nJPSIS 230000.0
@@ -90,7 +89,6 @@ using namespace RooFit;
 #define SAVEPOLY      false // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
 #define SAVEPLOT      false
 #define FUNCERRBAND   false // Show the p.d.f. error band
-#define RESETOBS      false // Reset polynomial coefficients for combinatorial background and angular observables for a fresh start
 
 // ##################
 // # External files #
@@ -354,7 +352,6 @@ void BuildPhysicsConstraints   (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, strin
 
 RooAbsPdf* MakeAngWithEffPDF   (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, int parIndx);
 void DeleteFit                 (RooAbsPdf* TotalPDF, string DeleteType);
-void ResetCombPolyParam        (vector<vector<string>*>* fitParam, vector<double>* q2Bins);
 void ResetAngularParam         (vector<vector<string>*>* fitParam, vector<double>* q2Bins);
 double StoreFitResultsInFile   (RooAbsPdf** TotalPDF, RooFitResult* fitResult, RooDataSet* dataSet, RooArgSet* vecConstr);
 void StorePolyResultsInFile    (RooAbsPdf** TotalPDF);
@@ -956,8 +953,8 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRea
 
       AnglesPDF = new RooGenericPdf("AngleS",myString.str().c_str(),RooArgSet(*VarsAng,*VarsPoly));
     }
-  else if ((FitType == 1*DELTATYPE) || (FitType == 41*DELTATYPE) || (FitType == 61*DELTATYPE) || (FitType == 81*DELTATYPE) || // Branching fraction
-	   (FitType == 6*DELTATYPE) || (FitType == 26*DELTATYPE) || (FitType == 36*DELTATYPE) || (FitType == 46*DELTATYPE) || (FitType == 56*DELTATYPE) || (FitType == 66*DELTATYPE) || (FitType == 76*DELTATYPE) || (FitType == 86*DELTATYPE) || (FitType == 96*DELTATYPE)) // Fl-Afb-fit
+  else if ((FitType == 1*10) || (FitType == 41*10) || (FitType == 61*10) || (FitType == 81*10) || // Branching fraction
+	   (FitType == 6*10) || (FitType == 26*10) || (FitType == 36*10) || (FitType == 46*10) || (FitType == 56*10) || (FitType == 66*10) || (FitType == 76*10) || (FitType == 86*10) || (FitType == 96*10)) // Fl-Afb-fit
     {
       // #######################################################
       // # Make 2D signal*efficiency p.d.f.: integral over phi #
@@ -1000,9 +997,9 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRea
 	  // # Make 2D efficiency p.d.f. #
 	  // #############################
 	  int SignalType;
-	  if      ((FitType >= 01*DELTATYPE) && (FitType < 40*DELTATYPE)) SignalType = 1;
-	  else if ((FitType >= 41*DELTATYPE) && (FitType < 60*DELTATYPE)) SignalType = 3;
-	  else if ((FitType >= 61*DELTATYPE) && (FitType < 80*DELTATYPE)) SignalType = 5;
+	  if      ((FitType >= 01*10) && (FitType < 40*10)) SignalType = 1;
+	  else if ((FitType >= 41*10) && (FitType < 60*10)) SignalType = 3;
+	  else if ((FitType >= 61*10) && (FitType < 80*10)) SignalType = 5;
 	  else SignalType = 1;
 	  RooDataHist* histoEff = new RooDataHist("histoEff","histoEff",RooArgSet(*z,*y),Utility->Get2DEffHistoq2Bin(&cosThetaKBins,&cosThetaLBins,parIndx,SignalType,make_pair(-1.0,1.0),make_pair(-1.0,1.0)));
 	  histoEffPDF           = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(*z,*y),*histoEff,DEGREEINTERPEFF);
@@ -1147,56 +1144,6 @@ void DeleteFit (RooAbsPdf* TotalPDF, string DeleteType)
 }
 
 
-void ResetCombPolyParam (vector<vector<string>*>* fitParam, vector<double>* q2Bins)
-{
-  stringstream myCoeff;
-
-  for (unsigned int j = 0; j < fitParam->operator[](0)->size(); j++)
-    {
-      cout << "\n@@@ Resetting the combinatorial background polynomial coefficients for q^2 bin #" << j << " @@@" << endl;
-
-      myCoeff.clear(); myCoeff.str("");
-      myCoeff << NCOEFFPOLYBKG;
-      fitParam->operator[](Utility->GetFitParamIndx("nPolyC1"))->operator[](j) = myCoeff.str();
-      cout << "Degree set to: " << fitParam->operator[](Utility->GetFitParamIndx("nPolyC1"))->operator[](j).c_str() << endl;
-      for (unsigned int i = 0; i < NCOEFFPOLYBKG; i++)
-	{
-	  myCoeff.clear(); myCoeff.str("");
-	  myCoeff << "c1Poly" << i;
-	  fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](j) = "0.0";
-
-	  cout << myCoeff.str().c_str() << "\t" << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](j).c_str() << endl;
-	}
-
-      myCoeff.clear(); myCoeff.str("");
-      myCoeff << NCOEFFPOLYBKG;
-      fitParam->operator[](Utility->GetFitParamIndx("nPolyC2"))->operator[](j) = myCoeff.str();
-      cout << "Degree set to: " << fitParam->operator[](Utility->GetFitParamIndx("nPolyC2"))->operator[](j).c_str() << endl;
-      for (unsigned int i = 0; i < NCOEFFPOLYBKG; i++)
-	{
-	  myCoeff.clear(); myCoeff.str("");
-	  myCoeff << "c2Poly" << i;
-	  fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](j) = "0.0";
-
-	  cout << myCoeff.str().c_str() << "\t" << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](j).c_str() << endl;
-	}
-
-      myCoeff.clear(); myCoeff.str("");
-      myCoeff << NCOEFFPOLYBKG;
-      fitParam->operator[](Utility->GetFitParamIndx("nPolyC3"))->operator[](j) = myCoeff.str();
-      cout << "Degree set to: " << fitParam->operator[](Utility->GetFitParamIndx("nPolyC3"))->operator[](j).c_str() << endl;
-      for (unsigned int i = 0; i < NCOEFFPOLYBKG; i++)
-	{
-	  myCoeff.clear(); myCoeff.str("");
-	  myCoeff << "c3Poly" << i;
-	  fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](j) = "0.0";
-
-	  cout << myCoeff.str().c_str() << "\t" << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](j).c_str() << endl;
-	}
-    }
-}
-
-
 void ResetAngularParam (vector<vector<string>*>* fitParam, vector<double>* q2Bins)
 {
   for (unsigned int j = 0; j < fitParam->operator[](0)->size(); j++)
@@ -1223,11 +1170,11 @@ void ResetAngularParam (vector<vector<string>*>* fitParam, vector<double>* q2Bin
 double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, RooDataSet* dataSet, RooArgSet* vecConstr)
 {
   RooAbsReal* NLL;
-  double signalSigma  = 0.0;
-  double signalSigmaE = 0.0;
-  double totalYield   = 0.0;
-  double totalYieldE  = 0.0;
-  double NLLvalue     = 0.0;
+  double signalSigmaGoodT  = 0.0;
+  double signalSigmaGoodTE = 0.0;
+  double signalSigmaMisT   = 0.0;
+  double signalSigmaMisTE  = 0.0;
+  double NLLvalue    = 0.0;
 
 
   if (fitResult != NULL)
@@ -1247,15 +1194,15 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
       // ##########
       if (GetVar(*TotalPDF,"fracMassS") != NULL)
 	{
-	  signalSigma  = sqrt( GetVar(*TotalPDF,"fracMassS")->getVal() * pow(GetVar(*TotalPDF,"sigmaS1")->getVal(),2.) + (1. - GetVar(*TotalPDF,"fracMassS")->getVal()) * pow(GetVar(*TotalPDF,"sigmaS2")->getVal(),2.) );
-	  signalSigmaE = 1./(2.*signalSigma) * sqrt( pow((pow(GetVar(*TotalPDF,"sigmaS1")->getVal(),2.) - pow(GetVar(*TotalPDF,"sigmaS2")->getVal(),2.)) * GetVar(*TotalPDF,"fracMassS")->getError(),2.) +
-						     pow(2. * GetVar(*TotalPDF,"fracMassS")->getVal() * GetVar(*TotalPDF,"sigmaS1")->getVal() * GetVar(*TotalPDF,"sigmaS1")->getError(),2.) +
-						     pow(2. * (1. - GetVar(*TotalPDF,"fracMassS")->getVal()) * GetVar(*TotalPDF,"sigmaS2")->getVal() * GetVar(*TotalPDF,"sigmaS2")->getError(),2.) );
+	  signalSigmaGoodT  = sqrt( GetVar(*TotalPDF,"fracMassS")->getVal() * pow(GetVar(*TotalPDF,"sigmaS1")->getVal(),2.) + (1. - GetVar(*TotalPDF,"fracMassS")->getVal()) * pow(GetVar(*TotalPDF,"sigmaS2")->getVal(),2.) );
+	  signalSigmaGoodTE = 1./(2.*signalSigmaGoodT) * sqrt( pow((pow(GetVar(*TotalPDF,"sigmaS1")->getVal(),2.) - pow(GetVar(*TotalPDF,"sigmaS2")->getVal(),2.)) * GetVar(*TotalPDF,"fracMassS")->getError(),2.) +
+							       pow(2. * GetVar(*TotalPDF,"fracMassS")->getVal() * GetVar(*TotalPDF,"sigmaS1")->getVal() * GetVar(*TotalPDF,"sigmaS1")->getError(),2.) +
+							       pow(2. * (1. - GetVar(*TotalPDF,"fracMassS")->getVal()) * GetVar(*TotalPDF,"sigmaS2")->getVal() * GetVar(*TotalPDF,"sigmaS2")->getError(),2.) );
 	}
       else if (GetVar(*TotalPDF,"sigmaS1") != NULL)
 	{
-	  signalSigma  = GetVar(*TotalPDF,"sigmaS1")->getVal();
-	  signalSigmaE = GetVar(*TotalPDF,"sigmaS1")->getError();
+	  signalSigmaGoodT  = GetVar(*TotalPDF,"sigmaS1")->getVal();
+	  signalSigmaGoodTE = GetVar(*TotalPDF,"sigmaS1")->getError();
 	}
   
       if (GetVar(*TotalPDF,"meanS") != NULL)
@@ -1275,7 +1222,7 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
 	  fileFitResults << "Fraction: " << GetVar(*TotalPDF,"fracMassS")->getVal() << " +/- " << GetVar(*TotalPDF,"fracMassS")->getError();
 	  fileFitResults << " (" << GetVar(*TotalPDF,"fracMassS")->getErrorHi() << "/" << GetVar(*TotalPDF,"fracMassS")->getErrorLo() << ")" << endl;
 	}
-      if (GetVar(*TotalPDF,"sigmaS1") != NULL) fileFitResults << "< Sigma >: " << signalSigma << " +/- " << signalSigmaE << endl;
+      if (GetVar(*TotalPDF,"sigmaS1") != NULL) fileFitResults << "< Sigma >: " << signalSigmaGoodT << " +/- " << signalSigmaGoodTE << endl;
       if (GetVar(*TotalPDF,"nSig") != NULL)
 	{
 	  fileFitResults << "Signal yield: " << GetVar(*TotalPDF,"nSig")->getVal() << " +/- " << GetVar(*TotalPDF,"nSig")->getError();
@@ -1288,15 +1235,15 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
       // ###################
       if (GetVar(*TotalPDF,"fracMisTag") != NULL)
 	{
-	  signalSigma  = sqrt( GetVar(*TotalPDF,"fracMisTag")->getVal() * pow(GetVar(*TotalPDF,"sigmaMisTag1")->getVal(),2.) + (1. - GetVar(*TotalPDF,"fracMisTag")->getVal()) * pow(GetVar(*TotalPDF,"sigmaMisTag2")->getVal(),2.) );
-	  signalSigmaE = 1./(2.*signalSigma) * sqrt( pow((pow(GetVar(*TotalPDF,"sigmaMisTag1")->getVal(),2.) - pow(GetVar(*TotalPDF,"sigmaMisTag2")->getVal(),2.)) * GetVar(*TotalPDF,"fracMisTag")->getError(),2.) +
-						     pow(2. * GetVar(*TotalPDF,"fracMisTag")->getVal() * GetVar(*TotalPDF,"sigmaMisTag1")->getVal() * GetVar(*TotalPDF,"sigmaMisTag1")->getError(),2.) +
-						     pow(2. * (1. - GetVar(*TotalPDF,"fracMisTag")->getVal()) * GetVar(*TotalPDF,"sigmaMisTag2")->getVal() * GetVar(*TotalPDF,"sigmaMisTag2")->getError(),2.) );
+	  signalSigmaMisT  = sqrt( GetVar(*TotalPDF,"fracMisTag")->getVal() * pow(GetVar(*TotalPDF,"sigmaMisTag1")->getVal(),2.) + (1. - GetVar(*TotalPDF,"fracMisTag")->getVal()) * pow(GetVar(*TotalPDF,"sigmaMisTag2")->getVal(),2.) );
+	  signalSigmaMisTE = 1./(2.*signalSigmaMisT) * sqrt( pow((pow(GetVar(*TotalPDF,"sigmaMisTag1")->getVal(),2.) - pow(GetVar(*TotalPDF,"sigmaMisTag2")->getVal(),2.)) * GetVar(*TotalPDF,"fracMisTag")->getError(),2.) +
+							     pow(2. * GetVar(*TotalPDF,"fracMisTag")->getVal() * GetVar(*TotalPDF,"sigmaMisTag1")->getVal() * GetVar(*TotalPDF,"sigmaMisTag1")->getError(),2.) +
+							     pow(2. * (1. - GetVar(*TotalPDF,"fracMisTag")->getVal()) * GetVar(*TotalPDF,"sigmaMisTag2")->getVal() * GetVar(*TotalPDF,"sigmaMisTag2")->getError(),2.) );
 	}
       else if (GetVar(*TotalPDF,"sigmaMisTag1") != NULL)
 	{
-	  signalSigma  = GetVar(*TotalPDF,"sigmaMisTag1")->getVal();
-	  signalSigmaE = GetVar(*TotalPDF,"sigmaMisTag1")->getError();
+	  signalSigmaMisT  = GetVar(*TotalPDF,"sigmaMisTag1")->getVal();
+	  signalSigmaMisTE = GetVar(*TotalPDF,"sigmaMisTag1")->getError();
 	}
 
       if (GetVar(*TotalPDF,"nMisTagFrac") != NULL) fileFitResults << "Background mistag mean: equal to signal mean" << endl;
@@ -1312,7 +1259,7 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
 	  fileFitResults << "Fraction: " << GetVar(*TotalPDF,"fracMisTag")->getVal() << " +/- " << GetVar(*TotalPDF,"fracMisTag")->getError();
 	  fileFitResults << " (" << GetVar(*TotalPDF,"fracMisTag")->getErrorHi() << "/" << GetVar(*TotalPDF,"fracMisTag")->getErrorLo() << ")" << endl;
 	}
-      if (GetVar(*TotalPDF,"sigmaMisTag1") != NULL) fileFitResults << "< Sigma >: " << signalSigma << " +/- " << signalSigmaE << endl;
+      if (GetVar(*TotalPDF,"sigmaMisTag1") != NULL) fileFitResults << "< Sigma >: " << signalSigmaMisT << " +/- " << signalSigmaMisTE << endl;
       if (GetVar(*TotalPDF,"nMisTagFrac") != NULL)
 	{
 	  fileFitResults << "Mistag fraction: " << GetVar(*TotalPDF,"nMisTagFrac")->getVal() << " +/- " << GetVar(*TotalPDF,"nMisTagFrac")->getError();
@@ -1320,15 +1267,24 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
 	}
 
 
-      // ######################
-      // # Total signal yield #
-      // ######################
+      // ################################
+      // # Total signal yield and width #
+      // ################################
       if ((GetVar(*TotalPDF,"nSig") != NULL) && (GetVar(*TotalPDF,"nMisTagFrac") != NULL))
 	{
-	  totalYield  = GetVar(*TotalPDF,"nSig")->getVal() / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
-	  totalYieldE = totalYield * sqrt( pow(GetVar(*TotalPDF,"nSig")->getError()/GetVar(*TotalPDF,"nSig")->getVal(),2.) + pow(GetVar(*TotalPDF,"nMisTagFrac")->getError()/(1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.) );
+	  double totalYield    = GetVar(*TotalPDF,"nSig")->getVal() / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
+	  double totalYieldE   = totalYield * sqrt( pow(GetVar(*TotalPDF,"nSig")->getError()/GetVar(*TotalPDF,"nSig")->getVal(),2.) + pow(GetVar(*TotalPDF,"nMisTagFrac")->getError()/(1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.) );
+
+	  double fraction      = (1. - 2.*GetVar(*TotalPDF,"nMisTagFrac")->getVal()) / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
+	  double fractionE     = GetVar(*TotalPDF,"nMisTagFrac")->getError() / pow((1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.);
+	  
+	  double signalSigmaT  = sqrt( fraction * pow(signalSigmaGoodT,2.) + (1. - fraction) * pow(signalSigmaMisT,2.) );
+	  double signalSigmaTE = 1./(2.*signalSigmaT) * sqrt( pow((pow(signalSigmaGoodT,2.) - pow(signalSigmaMisT,2.)) * fractionE,2.) +
+							      pow(2. * fraction * signalSigmaGoodT * signalSigmaGoodTE,2.) +
+							      pow(2. * (1. - fraction) * signalSigmaMisT * signalSigmaMisTE,2.) );
 	  
 	  fileFitResults << "Total signal yield: " << totalYield << " +/- " << totalYieldE << endl;
+	  fileFitResults << "< Total Sigma >: " << signalSigmaT << " +/- " << signalSigmaTE << endl;
 	}
 
 
@@ -1729,7 +1685,8 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
     }
   else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](fitParamIndx).c_str());
   vecParStr->push_back("# Mistag fraction");
-  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"nMisTagFrac") != NULL)  && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("nMisTagFrac") + string("_constr")).c_str()) == NULL))))
+  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"nMisTagFrac") != NULL) && 
+      ((atoi(Utility->GetGenericParam("SaveMisTagFrac").c_str()) == true) || (APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("nMisTagFrac") + string("_constr")).c_str()) == NULL))))
     {
       myString.clear(); myString.str("");
       myString << TotalPDF->getVariables()->getRealValue("nMisTagFrac") << "   " << GetVar(TotalPDF,"nMisTagFrac")->getErrorLo() << "   " << GetVar(TotalPDF,"nMisTagFrac")->getErrorHi();
@@ -2885,7 +2842,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 		    ((strcmp(CTRLmisTag.c_str(),"trueMistag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
 		    (((strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
 		    (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) &&
-		   (Utility->PsiRejection(NTuple,"keepJpsi",true) == true)))
+		   (Utility->PsiRejection(NTuple,"keepJpsi",true) == true))) // @TMP@
 
 		SingleCandNTuple_JPsi->add(Vars);
 
@@ -2897,7 +2854,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 		    ((strcmp(CTRLmisTag.c_str(),"trueMistag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
 		    (((strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
 		    (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) &&
-		   (Utility->PsiRejection(NTuple,"keepPsiP",true) == true)))
+		   (Utility->PsiRejection(NTuple,"keepPsiP",true) == true))) // @TMP@
 		
 		SingleCandNTuple_PsiP->add(Vars);
 	      
@@ -2927,7 +2884,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 		    ((strcmp(CTRLmisTag.c_str(),"trueMistag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
 		    (((strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
 		    (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) &&
-		   (Utility->PsiRejection(NTuple,"keepPsi",true) == true)) ||
+		   (Utility->PsiRejection(NTuple,"keepPsi",true) == true)) || // @TMP@
 		  
 		  (((FitType == 36) || (FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)))
 
@@ -3189,11 +3146,15 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   RooFitResult* fitResult = NULL;
   RooArgSet VarsYield;
   stringstream myString;
-  double signalSigma  = 0.0;
-  double signalSigmaE = 0.0;
-  double totalYield   = 0.0;
-  double totalYieldE  = 0.0;
-  unsigned int nElements = 0;
+  double signalSigmaGoodT  = 0.0;
+  double signalSigmaGoodTE = 0.0;
+  double signalSigmaMisT   = 0.0;
+  double signalSigmaMisTE  = 0.0;
+  double signalSigmaT      = 0.0;
+  double signalSigmaTE     = 0.0;
+  double totalYield        = 0.0;
+  double totalYieldE       = 0.0;
+  unsigned int nElements   = 0;
   TString legNames[6];
 
 
@@ -3279,11 +3240,58 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   myString.clear(); myString.str("");
   myString << (*TotalPDF)->getPlotLabel() << "_paramBox";
   TPaveText* paveTextX = (TPaveText*)myFrameX->findObject(myString.str().c_str());
+
+  if (GetVar(*TotalPDF,"nSig") != NULL)
+    {
+      if (GetVar(*TotalPDF,"fracMassS") != NULL)
+	{
+	  signalSigmaGoodT  = sqrt( GetVar(*TotalPDF,"fracMassS")->getVal() * pow(GetVar(*TotalPDF,"sigmaS1")->getVal(),2.) + (1. - GetVar(*TotalPDF,"fracMassS")->getVal()) * pow(GetVar(*TotalPDF,"sigmaS2")->getVal(),2.) );
+	  signalSigmaGoodTE = 1./(2.*signalSigmaGoodT) * sqrt( pow((pow(GetVar(*TotalPDF,"sigmaS1")->getVal(),2.) - pow(GetVar(*TotalPDF,"sigmaS2")->getVal(),2.)) * GetVar(*TotalPDF,"fracMassS")->getError(),2.) +
+							       pow(2. * GetVar(*TotalPDF,"fracMassS")->getVal() * GetVar(*TotalPDF,"sigmaS1")->getVal() * GetVar(*TotalPDF,"sigmaS1")->getError(),2.) +
+							       pow(2. * (1. - GetVar(*TotalPDF,"fracMassS")->getVal()) * GetVar(*TotalPDF,"sigmaS2")->getVal() * GetVar(*TotalPDF,"sigmaS2")->getError(),2.) );
+	}
+      else if (GetVar(*TotalPDF,"sigmaS1") != NULL)
+	{
+	  signalSigmaGoodT  = GetVar(*TotalPDF,"sigmaS1")->getVal();
+	  signalSigmaGoodTE = GetVar(*TotalPDF,"sigmaS1")->getError();
+	}
+
+      signalSigmaT  = signalSigmaGoodT;
+      signalSigmaTE = signalSigmaGoodTE;
+    }
+
+  if (GetVar(*TotalPDF,"nMisTagFrac") != NULL)
+    {
+      if (GetVar(*TotalPDF,"fracMisTag") != NULL)
+	{
+	  signalSigmaMisT  = sqrt( GetVar(*TotalPDF,"fracMisTag")->getVal() * pow(GetVar(*TotalPDF,"sigmaMisTag1")->getVal(),2.) + (1. - GetVar(*TotalPDF,"fracMisTag")->getVal()) * pow(GetVar(*TotalPDF,"sigmaMisTag2")->getVal(),2.) );
+	  signalSigmaMisTE = 1./(2.*signalSigmaMisT) * sqrt( pow((pow(GetVar(*TotalPDF,"sigmaMisTag1")->getVal(),2.) - pow(GetVar(*TotalPDF,"sigmaMisTag2")->getVal(),2.)) * GetVar(*TotalPDF,"fracMisTag")->getError(),2.) +
+							     pow(2. * GetVar(*TotalPDF,"fracMisTag")->getVal() * GetVar(*TotalPDF,"sigmaMisTag1")->getVal() * GetVar(*TotalPDF,"sigmaMisTag1")->getError(),2.) +
+							     pow(2. * (1. - GetVar(*TotalPDF,"fracMisTag")->getVal()) * GetVar(*TotalPDF,"sigmaMisTag2")->getVal() * GetVar(*TotalPDF,"sigmaMisTag2")->getError(),2.) );
+	}
+      else if (GetVar(*TotalPDF,"sigmaMisTag1") != NULL)
+	{
+	  signalSigmaMisT  = GetVar(*TotalPDF,"sigmaMisTag1")->getVal();
+	  signalSigmaMisTE = GetVar(*TotalPDF,"sigmaMisTag1")->getError();
+	}
+
+      signalSigmaT  = signalSigmaMisT;
+      signalSigmaTE = signalSigmaMisTE;
+    }
+
   if ((GetVar(*TotalPDF,"nSig") != NULL) && (GetVar(*TotalPDF,"nMisTagFrac") != NULL))
     {
       totalYield  = GetVar(*TotalPDF,"nSig")->getVal() / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
       totalYieldE = totalYield * sqrt( pow(GetVar(*TotalPDF,"nSig")->getError()/GetVar(*TotalPDF,"nSig")->getVal(),2.) + pow(GetVar(*TotalPDF,"nMisTagFrac")->getError()/(1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.) );
-
+      
+      double fraction  = (1. - 2.*GetVar(*TotalPDF,"nMisTagFrac")->getVal()) / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
+      double fractionE = GetVar(*TotalPDF,"nMisTagFrac")->getError() / pow((1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.);
+      
+      signalSigmaT  = sqrt( fraction * pow(signalSigmaGoodT,2.) + (1. - fraction) * pow(signalSigmaMisT,2.) );
+      signalSigmaTE = 1./(2.*signalSigmaT) * sqrt( pow((pow(signalSigmaGoodT,2.) - pow(signalSigmaMisT,2.)) * fractionE,2.) +
+						   pow(2. * fraction * signalSigmaGoodT * signalSigmaGoodTE,2.) +
+						   pow(2. * (1. - fraction) * signalSigmaMisT * signalSigmaMisTE,2.) );
+      
       paveTextX->AddText(Form("%s%1.f #pm%1.f","Total sig yield = ",totalYield,totalYieldE));
     }
   else
@@ -3291,26 +3299,14 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
       totalYield  = GetVar(*TotalPDF,"nSig")->getVal();
       totalYieldE = GetVar(*TotalPDF,"nSig")->getError();
     }
-  if (GetVar(*TotalPDF,"nSig") != NULL)
-    {
-      if (GetVar(*TotalPDF,"fracMassS") != NULL)
-	{
-	  signalSigma  = sqrt( GetVar(*TotalPDF,"fracMassS")->getVal() * pow(GetVar(*TotalPDF,"sigmaS1")->getVal(),2.) + (1. - GetVar(*TotalPDF,"fracMassS")->getVal()) * pow(GetVar(*TotalPDF,"sigmaS2")->getVal(),2.) );
-	  signalSigmaE = 1./(2.*signalSigma) * sqrt( pow((pow(GetVar(*TotalPDF,"sigmaS1")->getVal(),2.) - pow(GetVar(*TotalPDF,"sigmaS2")->getVal(),2.)) * GetVar(*TotalPDF,"fracMassS")->getError(),2.) +
-						     pow(2. * GetVar(*TotalPDF,"fracMassS")->getVal() * GetVar(*TotalPDF,"sigmaS1")->getVal() * GetVar(*TotalPDF,"sigmaS1")->getError(),2.) +
-						     pow(2. * (1. - GetVar(*TotalPDF,"fracMassS")->getVal()) * GetVar(*TotalPDF,"sigmaS2")->getVal() * GetVar(*TotalPDF,"sigmaS2")->getError(),2.) );
-	}
-      else if (GetVar(*TotalPDF,"sigmaS1") != NULL)
-	{
-	  signalSigma  = GetVar(*TotalPDF,"sigmaS1")->getVal();
-	  signalSigmaE = GetVar(*TotalPDF,"sigmaS1")->getError();
-	}
 
+  if ((GetVar(*TotalPDF,"nSig") != NULL) || (GetVar(*TotalPDF,"nMisTagFrac") != NULL))
+    {
       paveTextX->AddText(Form("%s%.3f #pm%.3f","#mu = ",GetVar(*TotalPDF,"meanS")->getVal(),GetVar(*TotalPDF,"meanS")->getError()));
-      paveTextX->AddText(Form("%s%.3f #pm%.3f","< #sigma > = ",signalSigma,signalSigmaE));
+      paveTextX->AddText(Form("%s%.3f #pm%.3f","Total < #sigma > = ",signalSigmaT,signalSigmaTE));
     }
   paveTextX->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
-
+  
   TLegend* legX = new TLegend(0.75, 0.65, 0.97, 0.88, "");
   for (unsigned int i = 0; i < nElements; i++)
     {
@@ -4233,7 +4229,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // # Define angle fit variables and pdf for mis-tagged signal #
   // ############################################################
   RooArgSet* VarsPolyMT = new RooArgSet("VarsPolyMT");
-  AngleMisTag = MakeAngWithEffPDF(effFunc.second,NULL,y,z,FitType*DELTATYPE,useEffPDF,VarsAng,VarsPolyMT,parIndx);
+  AngleMisTag = MakeAngWithEffPDF(effFunc.second,NULL,y,z,FitType*10,useEffPDF,VarsAng,VarsPolyMT,parIndx);
 
   MassAngleMisTag = new RooProdPdf("MassAngleMisTag","Mistag bkg Mass*Angle",RooArgSet(*MassMisTag,*AngleMisTag));
 
@@ -4380,11 +4376,15 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
   RooFitResult* fitResult = NULL;
   RooArgSet VarsYield;
   stringstream myString;
-  double signalSigma  = 0.0;
-  double signalSigmaE = 0.0;
-  double totalYield   = 0.0;
-  double totalYieldE  = 0.0;
-  unsigned int nElements = 0;
+  double signalSigmaGoodT  = 0.0;
+  double signalSigmaGoodTE = 0.0;
+  double signalSigmaMisT   = 0.0;
+  double signalSigmaMisTE  = 0.0;
+  double signalSigmaT      = 0.0;
+  double signalSigmaTE     = 0.0;
+  double totalYield        = 0.0;
+  double totalYieldE       = 0.0;
+  unsigned int nElements   = 0;
   TString legNames[6];
 
   TCanvas* localCanv[4];
@@ -4674,33 +4674,73 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       myString.clear(); myString.str("");
       myString << (*TotalPDF)->getPlotLabel() << "_paramBox";
       TPaveText* paveTextX = (TPaveText*)myFrameX->findObject(myString.str().c_str());
-      if ((GetVar(*TotalPDF,"nSig") != NULL) && (GetVar(*TotalPDF,"nMisTagFrac") != NULL))
-	{
-	  totalYield  = GetVar(*TotalPDF,"nSig")->getVal() / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
-	  totalYieldE = totalYield * sqrt( pow(GetVar(*TotalPDF,"nSig")->getError()/GetVar(*TotalPDF,"nSig")->getVal(),2.) + pow(GetVar(*TotalPDF,"nMisTagFrac")->getError()/(1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.) );
 
-	  paveTextX->AddText(Form("%s%1.f #pm%1.f","Total sig yield = ",totalYield,totalYieldE));
-	}
       if (GetVar(*TotalPDF,"nSig") != NULL)
 	{
 	  if (GetVar(*TotalPDF,"fracMassS") != NULL)
 	    {
-	      signalSigma  = sqrt( GetVar(*TotalPDF,"fracMassS")->getVal() * pow(GetVar(*TotalPDF,"sigmaS1")->getVal(),2.) + (1. - GetVar(*TotalPDF,"fracMassS")->getVal()) * pow(GetVar(*TotalPDF,"sigmaS2")->getVal(),2.) );
-	      signalSigmaE = 1./(2.*signalSigma) * sqrt( pow((pow(GetVar(*TotalPDF,"sigmaS1")->getVal(),2.) - pow(GetVar(*TotalPDF,"sigmaS2")->getVal(),2.)) * GetVar(*TotalPDF,"fracMassS")->getError(),2.) +
-							 pow(2. * GetVar(*TotalPDF,"fracMassS")->getVal() * GetVar(*TotalPDF,"sigmaS1")->getVal() * GetVar(*TotalPDF,"sigmaS1")->getError(),2.) +
-							 pow(2. * (1. - GetVar(*TotalPDF,"fracMassS")->getVal()) * GetVar(*TotalPDF,"sigmaS2")->getVal() * GetVar(*TotalPDF,"sigmaS2")->getError(),2.) );
+	      signalSigmaGoodT  = sqrt( GetVar(*TotalPDF,"fracMassS")->getVal() * pow(GetVar(*TotalPDF,"sigmaS1")->getVal(),2.) + (1. - GetVar(*TotalPDF,"fracMassS")->getVal()) * pow(GetVar(*TotalPDF,"sigmaS2")->getVal(),2.) );
+	      signalSigmaGoodTE = 1./(2.*signalSigmaGoodT) * sqrt( pow((pow(GetVar(*TotalPDF,"sigmaS1")->getVal(),2.) - pow(GetVar(*TotalPDF,"sigmaS2")->getVal(),2.)) * GetVar(*TotalPDF,"fracMassS")->getError(),2.) +
+								   pow(2. * GetVar(*TotalPDF,"fracMassS")->getVal() * GetVar(*TotalPDF,"sigmaS1")->getVal() * GetVar(*TotalPDF,"sigmaS1")->getError(),2.) +
+								   pow(2. * (1. - GetVar(*TotalPDF,"fracMassS")->getVal()) * GetVar(*TotalPDF,"sigmaS2")->getVal() * GetVar(*TotalPDF,"sigmaS2")->getError(),2.) );
 	    }
 	  else if (GetVar(*TotalPDF,"sigmaS1") != NULL)
 	    {
-	      signalSigma  = GetVar(*TotalPDF,"sigmaS1")->getVal();
-	      signalSigmaE = GetVar(*TotalPDF,"sigmaS1")->getError();
+	      signalSigmaGoodT  = GetVar(*TotalPDF,"sigmaS1")->getVal();
+	      signalSigmaGoodTE = GetVar(*TotalPDF,"sigmaS1")->getError();
 	    }
-
+	  
+	  signalSigmaT  = signalSigmaGoodT;
+	  signalSigmaTE = signalSigmaGoodTE;
+	}
+      
+      if (GetVar(*TotalPDF,"nMisTagFrac") != NULL)
+	{
+	  if (GetVar(*TotalPDF,"fracMisTag") != NULL)
+	    {
+	      signalSigmaMisT  = sqrt( GetVar(*TotalPDF,"fracMisTag")->getVal() * pow(GetVar(*TotalPDF,"sigmaMisTag1")->getVal(),2.) + (1. - GetVar(*TotalPDF,"fracMisTag")->getVal()) * pow(GetVar(*TotalPDF,"sigmaMisTag2")->getVal(),2.) );
+	      signalSigmaMisTE = 1./(2.*signalSigmaMisT) * sqrt( pow((pow(GetVar(*TotalPDF,"sigmaMisTag1")->getVal(),2.) - pow(GetVar(*TotalPDF,"sigmaMisTag2")->getVal(),2.)) * GetVar(*TotalPDF,"fracMisTag")->getError(),2.) +
+								 pow(2. * GetVar(*TotalPDF,"fracMisTag")->getVal() * GetVar(*TotalPDF,"sigmaMisTag1")->getVal() * GetVar(*TotalPDF,"sigmaMisTag1")->getError(),2.) +
+								 pow(2. * (1. - GetVar(*TotalPDF,"fracMisTag")->getVal()) * GetVar(*TotalPDF,"sigmaMisTag2")->getVal() * GetVar(*TotalPDF,"sigmaMisTag2")->getError(),2.) );
+	    }
+	  else if (GetVar(*TotalPDF,"sigmaMisTag1") != NULL)
+	    {
+	      signalSigmaMisT  = GetVar(*TotalPDF,"sigmaMisTag1")->getVal();
+	      signalSigmaMisTE = GetVar(*TotalPDF,"sigmaMisTag1")->getError();
+	    }
+	  
+	  signalSigmaT  = signalSigmaMisT;
+	  signalSigmaTE = signalSigmaMisTE;
+	}
+      
+      if ((GetVar(*TotalPDF,"nSig") != NULL) && (GetVar(*TotalPDF,"nMisTagFrac") != NULL))
+	{
+	  totalYield  = GetVar(*TotalPDF,"nSig")->getVal() / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
+	  totalYieldE = totalYield * sqrt( pow(GetVar(*TotalPDF,"nSig")->getError()/GetVar(*TotalPDF,"nSig")->getVal(),2.) + pow(GetVar(*TotalPDF,"nMisTagFrac")->getError()/(1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.) );
+	  
+	  double fraction  = (1. - 2.*GetVar(*TotalPDF,"nMisTagFrac")->getVal()) / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
+	  double fractionE = GetVar(*TotalPDF,"nMisTagFrac")->getError() / pow((1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.);
+	  
+	  signalSigmaT  = sqrt( fraction * pow(signalSigmaGoodT,2.) + (1. - fraction) * pow(signalSigmaMisT,2.) );
+	  signalSigmaTE = 1./(2.*signalSigmaT) * sqrt( pow((pow(signalSigmaGoodT,2.) - pow(signalSigmaMisT,2.)) * fractionE,2.) +
+						       pow(2. * fraction * signalSigmaGoodT * signalSigmaGoodTE,2.) +
+						       pow(2. * (1. - fraction) * signalSigmaMisT * signalSigmaMisTE,2.) );
+	  
+	  paveTextX->AddText(Form("%s%1.f #pm%1.f","Total sig yield = ",totalYield,totalYieldE));
+	}
+      else
+	{
+	  totalYield  = GetVar(*TotalPDF,"nSig")->getVal();
+	  totalYieldE = GetVar(*TotalPDF,"nSig")->getError();
+	}
+      
+      if ((GetVar(*TotalPDF,"nSig") != NULL) || (GetVar(*TotalPDF,"nMisTagFrac") != NULL))
+	{
 	  paveTextX->AddText(Form("%s%.3f #pm%.3f","#mu = ",GetVar(*TotalPDF,"meanS")->getVal(),GetVar(*TotalPDF,"meanS")->getError()));
-	  paveTextX->AddText(Form("%s%.3f #pm%.3f","< #sigma > = ",signalSigma,signalSigmaE));
+	  paveTextX->AddText(Form("%s%.3f #pm%.3f","Total < #sigma > = ",signalSigmaT,signalSigmaTE));
 	}
       paveTextX->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
-
+      
       TLegend* legX = new TLegend(0.75, 0.65, 0.97, 0.88, "");
       for (unsigned int i = 0; i < nElements; i++)
   	{
@@ -4907,8 +4947,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  // ################
 	  // # Low sideband #
 	  // ################
-	  x->setRange("lowSideband",(*TotalPDF)->getVariables()->getRealValue("meanS") - atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),
-		      (*TotalPDF)->getVariables()->getRealValue("meanS") - atof(Utility->GetGenericParam("NSigmaB0S").c_str())*signalSigma);
+	  x->setRange("lowSideband",Utility->B0Mass - atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),
+		      (*TotalPDF)->getVariables()->getRealValue("meanS") - atof(Utility->GetGenericParam("NSigmaB0S").c_str())*signalSigmaT);
 	  y->setRange("lowSideband",y->getMin(),y->getMax());
 	  z->setRange("lowSideband",z->getMin(),z->getMax());
 
@@ -4916,8 +4956,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  // #################
 	  // # Signal region #
 	  // #################
-	  x->setRange("signalRegion",(*TotalPDF)->getVariables()->getRealValue("meanS") - atof(Utility->GetGenericParam("NSigmaB0S").c_str())*signalSigma,
-		      (*TotalPDF)->getVariables()->getRealValue("meanS") + atof(Utility->GetGenericParam("NSigmaB0S").c_str())*signalSigma);
+	  x->setRange("signalRegion",(*TotalPDF)->getVariables()->getRealValue("meanS") - atof(Utility->GetGenericParam("NSigmaB0S").c_str())*signalSigmaT,
+		      (*TotalPDF)->getVariables()->getRealValue("meanS") + atof(Utility->GetGenericParam("NSigmaB0S").c_str())*signalSigmaT);
 	  y->setRange("signalRegion",y->getMin(),y->getMax());
 	  z->setRange("signalRegion",z->getMin(),z->getMax());
 
@@ -4925,8 +4965,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  // #################
 	  // # High sideband #
 	  // #################
-	  x->setRange("highSideband",(*TotalPDF)->getVariables()->getRealValue("meanS") + atof(Utility->GetGenericParam("NSigmaB0S").c_str())*signalSigma,
-		      (*TotalPDF)->getVariables()->getRealValue("meanS") + atof(Utility->GetGenericParam("B0MassIntervalRight").c_str()));
+	  x->setRange("highSideband",(*TotalPDF)->getVariables()->getRealValue("meanS") + atof(Utility->GetGenericParam("NSigmaB0S").c_str())*signalSigmaT,
+		      Utility->B0Mass + atof(Utility->GetGenericParam("B0MassIntervalRight").c_str()));
 	  y->setRange("highSideband",y->getMin(),y->getMax());
 	  z->setRange("highSideband",z->getMin(),z->getMax());
 
@@ -6338,7 +6378,6 @@ int main(int argc, char** argv)
 	  cout << "MULTYIELD = "       << MULTYIELD << endl;
 	  cout << "NCOEFFPOLYBKG = "   << NCOEFFPOLYBKG << endl;
 	  cout << "POLYCOEFRANGE = "   << POLYCOEFRANGE << endl;
-	  cout << "DELTATYPE = "       << DELTATYPE << endl;
 	  cout << "DEGREEINTERPEFF = " << DEGREEINTERPEFF << endl;
 
 	  cout << "\nMakeMuMuPlots = "  << MakeMuMuPlots << endl;
@@ -6348,7 +6387,6 @@ int main(int argc, char** argv)
 	  cout << "SAVEPOLY = "       << SAVEPOLY << endl;
 	  cout << "SAVEPLOT = "       << SAVEPLOT << endl;
 	  cout << "FUNCERRBAND = "    << FUNCERRBAND << endl;
-	  cout << "RESETOBS = "       << RESETOBS << endl;
 
 	  cout << "\nPARAMETERFILEIN = " << PARAMETERFILEIN << endl;
 	  cout << "PARAMETERFILEOUT = "  << PARAMETERFILEOUT << endl;
@@ -6485,16 +6523,6 @@ int main(int argc, char** argv)
 	    }
 
 
-	  // ###########################################################################
-	  // # Reset polynomial coefficients and angular observables for a fresh start #
-	  // ###########################################################################
-	  if (RESETOBS == true)
-	    {
-	      ResetCombPolyParam(&fitParam,&q2Bins);
-	      ResetAngularParam(&fitParam,&q2Bins);
-	    }
-
-
 	  // ##############################################
 	  // # Read coefficents for analytical efficiency #
 	  // ##############################################
@@ -6516,9 +6544,8 @@ int main(int argc, char** argv)
 	  // # Read other parameters : this also allow to understand if the parameter file is well written #
  	  // ###############################################################################################
 	  LUMI = Utility->ReadLumi(ParameterFILE);
-	  bool IsThisData = Utility->IsThisData(ParameterFILE);
-	  if (IsThisData == true) cout << "\n@@@ I recognize that this is a DATA file @@@" << endl;
-	  else                    cout << "\n@@@ I recognize that this is a Monte Carlo file @@@" << endl;
+	  if (Utility->IsThisData(ParameterFILE) == true) cout << "\n@@@ I recognize that this is a DATA file @@@" << endl;
+	  else                                            cout << "\n@@@ I recognize that this is a Monte Carlo file @@@" << endl;
 
 
 	  // ###########################################################################

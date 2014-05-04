@@ -2159,19 +2159,19 @@ std::string B0KstMuMu::getMuCat (reco::Muon const& muon)
       muCat << " TrackerMuon";
       if (muon::isGoodMuon(muon, muon::TrackerMuonArbitrated) == true) muCat << " TrackerMuonArbitrated";
 
-      if (muon::isGoodMuon(muon, muon::TMLastStationTight) == true) muCat << " TMLastStationTight";
-      if (muon::isGoodMuon(muon, muon::TMLastStationLoose) == true) muCat << " TMLastStationLoose";
+      if (muon::isGoodMuon(muon, muon::TMLastStationTight)     == true) muCat << " TMLastStationTight";
+      if (muon::isGoodMuon(muon, muon::TMLastStationLoose)     == true) muCat << " TMLastStationLoose";
       if (muon::isGoodMuon(muon, muon::TM2DCompatibilityTight) == true) muCat << " TM2DCompatibilityTight";
       if (muon::isGoodMuon(muon, muon::TM2DCompatibilityLoose) == true) muCat << " TM2DCompatibilityLoose";
-      if (muon::isGoodMuon(muon, muon::TMOneStationTight) == true) muCat << " TMOneStationTight";
-      if (muon::isGoodMuon(muon, muon::TMOneStationLoose) == true) muCat << " TMOneStationLoose";
-      if (muon::isGoodMuon(muon, muon::TMLastStationAngTight) == true) muCat << " TMLastStationAngTight";
-      if (muon::isGoodMuon(muon, muon::TMLastStationAngLoose) == true) muCat << " TMLastStationAngLoose";
-      if (muon::isGoodMuon(muon, muon::TMOneStationAngTight) == true) muCat << " TMOneStationAngTight";
-      if (muon::isGoodMuon(muon, muon::TMOneStationAngLoose) == true) muCat << " TMOneStationAngLoose";
+      if (muon::isGoodMuon(muon, muon::TMOneStationTight)      == true) muCat << " TMOneStationTight";
+      if (muon::isGoodMuon(muon, muon::TMOneStationLoose)      == true) muCat << " TMOneStationLoose";
+      if (muon::isGoodMuon(muon, muon::TMLastStationAngTight)  == true) muCat << " TMLastStationAngTight";
+      if (muon::isGoodMuon(muon, muon::TMLastStationAngLoose)  == true) muCat << " TMLastStationAngLoose";
+      if (muon::isGoodMuon(muon, muon::TMOneStationAngTight)   == true) muCat << " TMOneStationAngTight";
+      if (muon::isGoodMuon(muon, muon::TMOneStationAngLoose)   == true) muCat << " TMOneStationAngLoose";
     }
   if (muon.isStandAloneMuon() == true) muCat << " StandAloneMuon";
-  if (muon.isCaloMuon() == true) muCat << " CaloMuon";
+  if (muon.isCaloMuon()       == true) muCat << " CaloMuon";
   if ((muon.isGlobalMuon() == false) && (muon.isTrackerMuon() == false) && (muon.isStandAloneMuon() == false) && (muon.isCaloMuon() == false)) muCat << " NotInTable";
 
   return muCat.str();
