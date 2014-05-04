@@ -2886,9 +2886,9 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 		    (((strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
 		    (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) &&
 		   (Utility->PsiRejection(NTuple,"keepJpsi",true) == true)))
-		
+
 		SingleCandNTuple_JPsi->add(Vars);
-	      
+
 	      if (((FitType == 36) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true) && (Utility->PsiRejection(NTuple,"keepPsiP",false) == true)) ||
 		  
 		  (((FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
@@ -5387,7 +5387,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
   
       myString.clear(); myString.str("");
       myString << "(mumuMass*mumuMass) > " << q2Bins->operator[](i) << " && (mumuMass*mumuMass) <= " << q2Bins->operator[](i+1);
-      cout << "Cut string: " << myString.str() << endl;
+      cout << "\nCut string: " << myString.str() << endl;
       dataSet_q2Bins[i] = (RooDataSet*)dataSet->reduce(myString.str().c_str());
       cout << "Number of events: " << dataSet_q2Bins[i]->sumEntries() << endl;
 

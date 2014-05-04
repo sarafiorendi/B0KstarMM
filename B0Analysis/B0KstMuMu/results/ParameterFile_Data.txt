@@ -1308,7 +1308,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Mistag fraction
 0.180643   -0.0148312   0.0148312
 # Peaking bkg yield
-47.3   -4.3   4.3
+69.5   -6.4   6.4
 # Signal yield
 100
 ###################################################################
@@ -1612,7 +1612,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Mistag fraction
 0.190648   -0.0201305   0.0201305
 # Peaking bkg yield
-3.1   -1   1
+4.6   -1.5   1.5
 # Signal yield
 100
 ###################################################################
