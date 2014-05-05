@@ -383,7 +383,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
       // ###############################################################
       for (unsigned int l = 0; l < phiBins->size()-1; l++)
 	{
-	  Utility->IntegrateEffCosThetaKCosThetaL(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,i,l,myEff,&Eff,&EffErr);
+	  Utility->IntegrateEffCosThetaKCosThetaL(q2Bins,cosThetaKBins,cosThetaLBins,i,l,myEff,&Eff,&EffErr);
 	  vecHphi[i]->SetBinContent(l+1,Eff);
 	  vecHphi[i]->SetBinError(l+1,EffErr);
 	}
@@ -1136,7 +1136,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
 	  // ######################################
 	  // # Fill histogram : efficiency vs phi #
 	  // ######################################
-	  if (isAnalyEff == false) Utility->IntegrateEffButPhi(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,l,*myEff,&Eff,&EffErr);
+	  if (isAnalyEff == false) Utility->IntegrateEffButPhi(q2Bins,cosThetaKBins,cosThetaLBins,l,*myEff,&Eff,&EffErr);
 	  else
 	    {
 	      Eff = 0.0;
@@ -1373,7 +1373,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
       for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
 	{
-	  Utility->InitEffFuncThetaL(effFunc1D,q2BinIndx);
+	  Utility->InitEffFuncThetaL(effFunc1D);
 
 	  myString.clear(); myString.str("");
 	  myString << "histFit_" << j;
@@ -1381,7 +1381,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
 	  for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
 	    {
-	      Utility->IntegrateEffPhi(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2Bins->operator[](q2BinIndx),cosThetaKBins->operator[](j),cosThetaLBins->operator[](k),myEff,&Eff,&EffErr,false);
+	      Utility->IntegrateEffPhi(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2Bins->operator[](q2BinIndx),cosThetaKBins->operator[](j),cosThetaLBins->operator[](k),myEff,&Eff,&EffErr);
 	      
 	      histFit.back()->SetBinContent(k+1,Eff);
 	      histFit.back()->SetBinError(k+1,EffErr);
@@ -1445,7 +1445,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
       for (unsigned int k = 0; k < Utility->NcoeffThetaL; k++)
 	{
-	  Utility->InitEffFuncThetaK(effFunc1D,q2BinIndx);
+	  Utility->InitEffFuncThetaK(effFunc1D);
 
 	  myString.clear(); myString.str("");
 	  myString << "histFit_" << k;
@@ -1529,7 +1529,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
       // # Read analytical efficiency #
       // ##############################
       effFunc1D = new TF1("effFunc1D",Utility->TellMeEffFuncPhi().c_str(),-Utility->PI,Utility->PI);
-      Utility->InitEffFuncPhi(effFunc1D,q2BinIndx);
+      Utility->InitEffFuncPhi(effFunc1D);
 
 
       myString.clear(); myString.str("");
@@ -1538,7 +1538,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
       for (unsigned int l = 0; l < phiBins->size()-1; l++)
 	{
-	  Utility->IntegrateEffCosThetaKCosThetaL(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,l,myEff,&Eff,&EffErr);
+	  Utility->IntegrateEffCosThetaKCosThetaL(q2Bins,cosThetaKBins,cosThetaLBins,q2BinIndx,l,myEff,&Eff,&EffErr);
 
 	  histFit.back()->SetBinContent(l+1,Eff);
 	  histFit.back()->SetBinError(l+1,EffErr);
@@ -1662,9 +1662,9 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // # Check if analytical efficiency goes negative #
   // ################################################
   if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncs2D[q2BinIndx]) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
-  Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFuncs2D[q2BinIndx],(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
+  Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFuncs2D[q2BinIndx],(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.);
   fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
-  Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrix,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
+  Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrix,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.);
 
 
   // ########################################
@@ -1694,6 +1694,7 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
 void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			int SignalType, Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut, bool savePlot)
+// @TMP@
 {
   // ##########################
   // # Set histo layout style #
@@ -1761,7 +1762,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // # phi #
   // #######
   effFunc1D = new TF1("effFunc1D",Utility->TellMeEffFuncPhi().c_str(),Utility->PI,Utility->PI);
-  Utility->InitEffFuncPhi(effFunc1D,q2BinIndx);
+  Utility->InitEffFuncPhi(effFunc1D);
 
   cout << "\n@@@ Reading coefficients for analytical efficiency for phi from file " << INPUT_PHI << " @@@" << endl;
   fileInput.open(INPUT_PHI,ofstream::in);
@@ -1791,7 +1792,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   effFunc3D = new TF3("effFunc3D",Utility->TellMeEffFuncThetaKThetaLPhi().c_str(),
 		      cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),
 		      cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),
-		      phiBins->operator[](0)      ,phiBins->operator[](phiBins->size()-1)            );
+		      phiBins->operator[](0)      ,phiBins->operator[](phiBins->size()-1)           );
   effFunc3D->SetMarkerStyle(20);
   effFunc3D->SetMarkerColor(kBlack);
 
@@ -1811,7 +1812,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // ##################################################################
   // # Add constraint along X or Y or Z to bound the function at zero #
   // ##################################################################
-  Utility->AddConstraintThetaKThetaLPhi(&hisFunc3D,q2BinIndx,SignalType,q2BinIndx);
+  Utility->AddConstraintThetaKThetaLPhi(SignalType);
   hisFunc3D->SetMarkerStyle(20);
   hisFunc3D->SetMarkerColor(kBlack);
   hisFunc3D->GetXaxis()->SetTitleOffset(1.35);
@@ -1960,9 +1961,9 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // # Check if analytical efficiency goes negative #
   // ################################################
   if (Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,effFunc3D) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
-  Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFunc3D,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
+  Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFunc3D,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.);
   fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
-  Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrix,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.,q2Bins);
+  Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrix,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.);
   
 
   // ########################################
@@ -2105,6 +2106,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
 
 
 void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool savePlot)
+// @TMP@
 {
   // ##########################
   // # Set histo layout style #

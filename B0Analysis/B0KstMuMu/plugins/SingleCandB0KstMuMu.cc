@@ -447,7 +447,7 @@ void SelectBestCand (int SignalType)
 	  else                                                                  NTupleOut->rightFlavorTag = false;
 	  NTupleOut->B0pT  = sqrt(NTupleIn->bPx->at(BestCandIndx)*NTupleIn->bPx->at(BestCandIndx) + NTupleIn->bPy->at(BestCandIndx)*NTupleIn->bPy->at(BestCandIndx));
 	  NTupleOut->B0Eta = Utility->computeEta (NTupleIn->bPx->at(BestCandIndx),NTupleIn->bPy->at(BestCandIndx),NTupleIn->bPz->at(BestCandIndx));
-	  NTupleOut->B0Phi = Utility->computePhi (NTupleIn->bPx->at(BestCandIndx),NTupleIn->bPy->at(BestCandIndx),NTupleIn->bPz->at(BestCandIndx));
+	  NTupleOut->B0Phi = Utility->computePhi (NTupleIn->bPx->at(BestCandIndx),NTupleIn->bPy->at(BestCandIndx));
 
 	  theTreeOut->Fill();
 	  NTupleOut->ClearNTuple();

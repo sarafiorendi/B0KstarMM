@@ -13,7 +13,7 @@ class ReadParameters
   ReadParameters (const char* InputFileName, std::string howOpen = "in");
   ~ReadParameters () {fileHandler.close();};
   void ReadFromFile (unsigned int blockNumber, std::vector<std::string>* ParVector);
-  void WriteToFile  (unsigned int blockNumber, std::vector<std::string>* ParVector);
+  void WriteToFile  (std::vector<std::string>* ParVector);
 
 
  private:

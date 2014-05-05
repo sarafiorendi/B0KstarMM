@@ -350,9 +350,9 @@ void BuildMassConstraints      (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, strin
 void BuildAngularConstraints   (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
 void BuildPhysicsConstraints   (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
 
-RooAbsPdf* MakeAngWithEffPDF   (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, int parIndx);
+RooAbsPdf* MakeAngWithEffPDF   (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, int parIndx);
 void DeleteFit                 (RooAbsPdf* TotalPDF, string DeleteType);
-void ResetAngularParam         (vector<vector<string>*>* fitParam, vector<double>* q2Bins);
+void ResetAngularParam         (vector<vector<string>*>* fitParam);
 double StoreFitResultsInFile   (RooAbsPdf** TotalPDF, RooFitResult* fitResult, RooDataSet* dataSet, RooArgSet* vecConstr);
 void StorePolyResultsInFile    (RooAbsPdf** TotalPDF);
 vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr);
@@ -369,21 +369,20 @@ void MakeDataSets              (B0KstMuMuSingleCandTreeContent* NTuple, unsigned
 // ===> 1D MODEL <===
 // ==================
 void InstantiateMassFit     (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, vector<vector<unsigned int>*>* configParam, int parIndx);
-RooFitResult* MakeMassFit   (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned int FitType, vector<vector<unsigned int>*>* configParam, int parIndx, RooArgSet* vecConstr, double* NLLvalue, TPaveText* extText, int ID = 0);
+RooFitResult* MakeMassFit   (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar* x, TCanvas* Canv, vector<vector<unsigned int>*>* configParam, int parIndx, RooArgSet* vecConstr, double* NLLvalue, TPaveText* extText, int ID = 0);
 void IterativeMassFitq2Bins (RooDataSet* dataSet,
 			     bool useEffPDF,
 			     double PsiYieldGoodTag, double PsiYieldGoodTagErr,
 			     double PsiYieldMisTag, double PsiYieldMisTagErr,
-			     RooRealVar* x, RooRealVar* y, RooRealVar* z,
+			     RooRealVar* x,
 			     int specBin,
 			     unsigned int FitType,
 			     vector<TH1D*>* VecHistoMeas,
 			     vector<double>* q2Bins,
 			     vector<vector<unsigned int>*>* configParam, vector<vector<string>*>* fitParam,
-			     pair< vector<TF2*>*,vector<TF2*>* > effFuncs,
 			     RooArgSet* vecConstr,
 			     unsigned int ID = 0);
-void MakeMassToy            (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned int FitType, unsigned int nToy, vector<vector<unsigned int>*>* configParam, int specBin, vector<vector<string>*>* fitParam, RooArgSet* vecConstr, string fileName);
+void MakeMassToy            (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned int nToy, vector<vector<unsigned int>*>* configParam, int specBin, vector<vector<string>*>* fitParam, RooArgSet* vecConstr, string fileName);
 
 // ==================
 // ===> 3D MODEL <===
@@ -608,9 +607,6 @@ void DrawString (double Lumi, RooPlot* myFrame)
       myFrame->addObject(LumiTex2);
     }
 
-  // ##################
-  // # Custom method: #
-  // ##################
   double startNDCx = 0.826;
   double startNDCy = 0.935;
   TLine* line1 = new TLine(startNDCx-0.005, startNDCy, startNDCx, startNDCy);
@@ -645,22 +641,6 @@ void DrawString (double Lumi, RooPlot* myFrame)
       line4->Paint();
       myFrame->addObject(line4);
     }
-  // ###################
-  // # Nominal method: #
-  // ###################
-  // @TMP@
-  // myString.clear(); myString.str("");
-  // myString << "#sqrt{  }";
-  // TLatex* LumiTex3 = new TLatex(0.82,0.9,myString.str().c_str());
-  // LumiTex3->SetTextSize(0.053);
-  // LumiTex3->SetTextColor(kBlack);
-  // LumiTex3->SetNDC(true);
-  // if (myFrame == NULL) LumiTex3->DrawLatex(0.82,0.9,myString.str().c_str());
-  // else
-  //   {
-  //     LumiTex3->Paint();
-  //     myFrame->addObject(LumiTex3);
-  //   }
 
   myString.clear(); myString.str("");
   myString << "s = 8 TeV";
@@ -848,9 +828,8 @@ void BuildPhysicsConstraints (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string 
 }
 
 
-RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* x, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, int parIndx)
+RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, int parIndx)
 // ###################
-// # x: angle phi    #
 // # y: cos(theta_l) #
 // # z: cos(theta_K) #
 // ###################
@@ -1144,7 +1123,7 @@ void DeleteFit (RooAbsPdf* TotalPDF, string DeleteType)
 }
 
 
-void ResetAngularParam (vector<vector<string>*>* fitParam, vector<double>* q2Bins)
+void ResetAngularParam (vector<vector<string>*>* fitParam)
 {
   for (unsigned int j = 0; j < fitParam->operator[](0)->size(); j++)
     {
@@ -3138,7 +3117,7 @@ void InstantiateMassFit (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, ve
 }
 
 
-RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned int FitType, RooArgSet* vecConstr, double* NLLvalue, TPaveText* extText, int ID)
+RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar* x, TCanvas* Canv, RooArgSet* vecConstr, double* NLLvalue, TPaveText* extText, int ID)
 {
   // ###################
   // # Local variables #
@@ -3375,13 +3354,12 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 			     bool useEffPDF,
 			     double PsiYieldGoodTag, double PsiYieldGoodTagErr,
 			     double PsiYieldMisTag, double PsiYieldMisTagErr,
-			     RooRealVar* x, RooRealVar* y, RooRealVar* z,
+			     RooRealVar* x,
 			     int specBin,
 			     unsigned int FitType,
 			     vector<TH1D*>* VecHistoMeas,
 			     vector<double>* q2Bins,
 			     vector<vector<unsigned int>*>* configParam, vector<vector<string>*>* fitParam,
-			     pair< vector<TF2*>*,vector<TF2*>* > effFuncs,
 			     RooArgSet* vecConstr,
 			     unsigned int ID)
 {
@@ -3509,7 +3487,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // ###################
       // # Perform the fit #
       // ###################
-      fitResult = MakeMassFit(dataSet_q2Bins[i],&TotalPDFq2Bins[i],x,cq2Bins[i],FitType,vecConstr,&NLLvalue,extText[i],ID);
+      fitResult = MakeMassFit(dataSet_q2Bins[i],&TotalPDFq2Bins[i],x,cq2Bins[i],vecConstr,&NLLvalue,extText[i],ID);
 
 
       // ##############################################
@@ -3592,7 +3570,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 }
 
 
-void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned int FitType, unsigned int nToy, int specBin, vector<vector<string>*>* fitParam, RooArgSet* vecConstr, string fileName)
+void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned int nToy, int specBin, vector<vector<string>*>* fitParam, RooArgSet* vecConstr, string fileName)
 {
   unsigned int nEntryToy;
   stringstream myString;
@@ -4009,7 +3987,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
 
       toySample = (RooDataSet*)MyToy->genData(i);
       CopyFitResults(TotalPDF,specBin,fitParam);
-      fitResult = MakeMassFit(toySample,&TotalPDF,x,cB0Toy,FitType,vecConstr,&NLLvalue,NULL,i+1);
+      fitResult = MakeMassFit(toySample,&TotalPDF,x,cB0Toy,vecConstr,&NLLvalue,NULL,i+1);
 
 
       // ######################################################
@@ -4150,7 +4128,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // # Define angle fit variables and pdf for correctly tagged signal #
   // ##################################################################
   RooArgSet* VarsPolyGT = new RooArgSet("VarsPolyGT");
-  AngleS = MakeAngWithEffPDF(effFunc.first,NULL,y,z,FitType,useEffPDF,VarsAng,VarsPolyGT,parIndx);
+  AngleS = MakeAngWithEffPDF(effFunc.first,y,z,FitType,useEffPDF,VarsAng,VarsPolyGT,parIndx);
 
   Signal = new RooProdPdf("Signal","Signal Mass*Angle",RooArgSet(*MassSignal,*AngleS));
 
@@ -4229,7 +4207,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // # Define angle fit variables and pdf for mis-tagged signal #
   // ############################################################
   RooArgSet* VarsPolyMT = new RooArgSet("VarsPolyMT");
-  AngleMisTag = MakeAngWithEffPDF(effFunc.second,NULL,y,z,FitType*10,useEffPDF,VarsAng,VarsPolyMT,parIndx);
+  AngleMisTag = MakeAngWithEffPDF(effFunc.second,y,z,FitType*10,useEffPDF,VarsAng,VarsPolyMT,parIndx);
 
   MassAngleMisTag = new RooProdPdf("MassAngleMisTag","Mistag bkg Mass*Angle",RooArgSet(*MassMisTag,*AngleMisTag));
 
@@ -6509,7 +6487,7 @@ int main(int argc, char** argv)
 	  myString.clear(); myString.str("");
 	  if (correct4Efficiency == "yesEffCorrGen")
 	    {
-	      ResetAngularParam(&fitParam,&q2Bins);
+	      ResetAngularParam(&fitParam);
 	      myString << FitSysFILEOutput << "_" << specBin << ".txt";
 	    }
 	  else if (specBin != -1) myString << "FitSystematics_" << specBin << ".txt";
@@ -6711,7 +6689,7 @@ int main(int argc, char** argv)
 		      if ((strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) BuildMassConstraints(&vecConstr,TotalPDFRejectPsi,"mistag");
 		      PrintVariables(TotalPDFRejectPsi->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
-		      MakeMassFit(SingleCandNTuple_RejectPsi,&TotalPDFRejectPsi,B0MassArb,cB0MassArbRejectPsi,FitType,&vecConstr,&NLLvalue,NULL,fileIndx);
+		      MakeMassFit(SingleCandNTuple_RejectPsi,&TotalPDFRejectPsi,B0MassArb,cB0MassArbRejectPsi,&vecConstr,&NLLvalue,NULL,fileIndx);
 
 		      // ##############################################
 		      // # Save fit results back into prarameter file #
@@ -6742,7 +6720,7 @@ int main(int argc, char** argv)
 		      if ((strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
 		      PrintVariables(TotalPDFPsi->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
-		      MakeMassFit(SingleCandNTuple_JPsi,&TotalPDFPsi,B0MassArb,cB0MassArbJPsi,FitType,&vecConstr,&NLLvalue,NULL,fileIndx);
+		      MakeMassFit(SingleCandNTuple_JPsi,&TotalPDFPsi,B0MassArb,cB0MassArbJPsi,&vecConstr,&NLLvalue,NULL,fileIndx);
 
 		      // ##############################################
 		      // # Save fit results back into prarameter file #
@@ -6762,7 +6740,7 @@ int main(int argc, char** argv)
 		      if ((strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
 		      PrintVariables(TotalPDFPsi->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
-		      MakeMassFit(SingleCandNTuple_PsiP,&TotalPDFPsi,B0MassArb,cB0MassArbPsiP,FitType,&vecConstr,&NLLvalue,NULL,fileIndx);
+		      MakeMassFit(SingleCandNTuple_PsiP,&TotalPDFPsi,B0MassArb,cB0MassArbPsiP,&vecConstr,&NLLvalue,NULL,fileIndx);
 
 		      // ##############################################
 		      // # Save fit results back into prarameter file #
@@ -6795,14 +6773,11 @@ int main(int argc, char** argv)
 							       PsiYieldGoodTag,PsiYieldGoodTagErr,
 							       PsiYieldMisTag,PsiYieldMisTagErr,
 							       B0MassArb,
-							       CosThetaMuArb,
-							       CosThetaKArb,
 							       specBin,
 							       FitType,
 							       &VecHistoMeas,
 							       &q2Bins,
 							       &configParam,&fitParam,
-							       effFuncs,
 							       &vecConstr,
 							       fileIndx);
 		      else if (FitType == 41) IterativeMassFitq2Bins(SingleCandNTuple_JPsi,
@@ -6810,14 +6785,11 @@ int main(int argc, char** argv)
 								     PsiYieldGoodTag,PsiYieldGoodTagErr,
 								     PsiYieldMisTag,PsiYieldMisTagErr,
 								     B0MassArb,
-								     CosThetaMuArb,
-								     CosThetaKArb,
 								     specBin,
 								     FitType,
 								     &VecHistoMeas,
 								     &q2Bins,
 								     &configParam,&fitParam,
-								     effFuncs,
 								     &vecConstr,
 								     fileIndx);
 		      else IterativeMassFitq2Bins(SingleCandNTuple_PsiP,
@@ -6825,14 +6797,11 @@ int main(int argc, char** argv)
 						  PsiYieldGoodTag,PsiYieldGoodTagErr,
 						  PsiYieldMisTag,PsiYieldMisTagErr,
 						  B0MassArb,
-						  CosThetaMuArb,
-						  CosThetaKArb,
 						  specBin,
 						  FitType,
 						  &VecHistoMeas,
 						  &q2Bins,
 						  &configParam,&fitParam,
-						  effFuncs,
 						  &vecConstr,
 						  fileIndx);
 
@@ -6964,7 +6933,7 @@ int main(int argc, char** argv)
 		  TCanvas* cToyMC = new TCanvas("cToyMC","cToyMC",10, 10, 1200, 800);
 
 		  InstantiateMassFit(&TotalPDFRejectPsi,B0MassArb,"TotalPDFRejectPsi",&configParam,specBin);
-		  MakeMassToy(TotalPDFRejectPsi,B0MassArb,cToyMC,FitType,nToy,specBin,&fitParam,&vecConstr,fileName);
+		  MakeMassToy(TotalPDFRejectPsi,B0MassArb,cToyMC,nToy,specBin,&fitParam,&vecConstr,fileName);
 		}
 	      else if (FitType == 26) // Fl-Afb-fit
 		{

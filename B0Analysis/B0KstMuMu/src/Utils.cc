@@ -168,9 +168,7 @@ double Utils::computeEta (double Px,
   return 0.5*log((P + Pz) / (P - Pz));
 }
 
-double Utils::computePhi (double Px,
-			  double Py,
-			  double Pz)
+double Utils::computePhi (double Px, double Py)
 {
   double phi = atan(Py / Px);
   if (Px < 0 && Py < 0) phi = phi - PI;
@@ -185,9 +183,9 @@ double Utils::computeEtaPhiDistance (double Px1,
 				     double Py2,
 				     double Pz2)
 {
-  double phi1 = computePhi (Px1,Py1,Pz1);
+  double phi1 = computePhi (Px1,Py1);
   double eta1 = computeEta (Px1,Py1,Pz1);
-  double phi2 = computePhi (Px2,Py2,Pz2);
+  double phi2 = computePhi (Px2,Py2);
   double eta2 = computeEta (Px2,Py2,Pz2);
   return sqrt((eta1-eta2) * (eta1-eta2) + (phi1-phi2) * (phi1-phi2));
 }
@@ -568,7 +566,7 @@ void Utils::ReadEfficiency (std::string fileName, std::vector<double>* q2Bins, s
   in.close();
 }
 
-void Utils::GetEffq2Bin (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int cosThetaKIndx, unsigned int cosThetaMuIndx, unsigned int phiIndx, effStruct myEff, double* Eff, double* EffErr)
+void Utils::GetEffq2Bin (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, unsigned int q2Indx, unsigned int cosThetaKIndx, unsigned int cosThetaMuIndx, unsigned int phiIndx, effStruct myEff, double* Eff, double* EffErr)
 {
   effValue myEffVal;
   effValue myEffValOrg;
@@ -645,7 +643,7 @@ TH2D* Utils::Get2DEffHistoq2Bin (std::string histoName, std::vector<double>* q2B
   for (unsigned int j = 0; j < cosThetaKBins->size()-1; j++)
     for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
       {
-	IntegrateEffPhi(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2Bins->operator[](q2Indx),cosThetaKBins->operator[](j),cosThetaLBins->operator[](k),myEff,&Eff,&EffErr,false);
+	IntegrateEffPhi(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2Bins->operator[](q2Indx),cosThetaKBins->operator[](j),cosThetaLBins->operator[](k),myEff,&Eff,&EffErr);
 	
 	if ((Eff != 0.0 ) && (EffErr != 0.0))
 	  {
@@ -682,7 +680,7 @@ TH3D* Utils::Get3DEffHistoq2Bin (std::string histoName, std::vector<double>* q2B
     for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
       for (unsigned int l = 0; l < phiBins->size()-1; l++)
 	{
-	  GetEffq2Bin(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2Indx,j,k,l,myEff,&Eff,&EffErr);
+	  GetEffq2Bin(q2Bins,cosThetaKBins,cosThetaLBins,q2Indx,j,k,l,myEff,&Eff,&EffErr);
 
 	  if ((Eff != 0.0 ) && (EffErr != 0.0))
 	    {
@@ -1493,7 +1491,7 @@ void Utils::IntegrateEffButCosThetaL (std::vector<double>* q2Bins, std::vector<d
     }
 }
 
-void Utils::IntegrateEffButPhi (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int phiIndx, effStruct myEff, double* Eff, double* EffErr)
+void Utils::IntegrateEffButPhi (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, unsigned int phiIndx, effStruct myEff, double* Eff, double* EffErr)
 {
   effValue myEffVal;
   effValue myEffValOrg;
@@ -1674,7 +1672,7 @@ void Utils::IntegrateEffPhiCosThetaK (std::vector<double>* q2Bins, std::vector<d
     }
 }
 
-void Utils::IntegrateEffCosThetaKCosThetaL (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, unsigned int phiIndx, effStruct myEff, double* Eff, double* EffErr)
+void Utils::IntegrateEffCosThetaKCosThetaL (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, unsigned int q2Indx, unsigned int phiIndx, effStruct myEff, double* Eff, double* EffErr)
 {
   effValue myEffVal;
   effValue myEffValOrg;
@@ -1734,7 +1732,7 @@ void Utils::IntegrateEffCosThetaKCosThetaL (std::vector<double>* q2Bins, std::ve
     }
 }
 
-bool Utils::IntegrateEffPhi (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, double mumuMass2, double cosThetaK, double cosThetaMu, effStruct myEff, double* Eff, double* EffErr, bool PrintMsg)
+bool Utils::IntegrateEffPhi (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, double mumuMass2, double cosThetaK, double cosThetaMu, effStruct myEff, double* Eff, double* EffErr)
 {
   int mumuq2Indx;
   int cosThetaKBinIndx;
@@ -2158,7 +2156,7 @@ void Utils::ReadParVsq2Bins (std::string fileName, std::string praName, std::vec
   delete ParameterFile;
 }
 
-void Utils::SaveAnalyticalEff (std::string fileName, TF2* effFunc, double q2Val, std::vector<double>* q2Bins)
+void Utils::SaveAnalyticalEff (std::string fileName, TF2* effFunc, double q2Val)
 {
   ofstream fileOutput;
   fileOutput.open(fileName.c_str(),ofstream::app);
@@ -2178,7 +2176,7 @@ void Utils::SaveAnalyticalEff (std::string fileName, TF2* effFunc, double q2Val,
   fileOutput.close();
 }
 
-void Utils::SaveAnalyticalEff (std::string fileName, TF3* effFunc, double q2Val, std::vector<double>* q2Bins)
+void Utils::SaveAnalyticalEff (std::string fileName, TF3* effFunc, double q2Val)
 {
   ofstream fileOutput;
   fileOutput.open(fileName.c_str(),ofstream::app);
@@ -2202,7 +2200,7 @@ void Utils::SaveAnalyticalEff (std::string fileName, TF3* effFunc, double q2Val,
   fileOutput.close();
 }
 
-void Utils::SaveAnalyticalEffFullCovariance (std::string fileName, TMatrixTSym<double>* covMatrix, double q2Val, std::vector<double>* q2Bins)
+void Utils::SaveAnalyticalEffFullCovariance (std::string fileName, TMatrixTSym<double>* covMatrix, double q2Val)
 {
   ofstream fileOutput;
   fileOutput.open(fileName.c_str(),ofstream::app);
@@ -2654,7 +2652,7 @@ void Utils::MakeGraphVar (std::string fileName, TGraphAsymmErrors** graph, std::
   vyeh.clear();
 }
 
-void Utils::InitEffFuncThetaL (TF1* fitFun, unsigned int q2Indx)
+void Utils::InitEffFuncThetaL (TF1* fitFun)
 {
   fitFun->ReleaseParameter(0);
   fitFun->ReleaseParameter(1);
@@ -2671,7 +2669,7 @@ void Utils::InitEffFuncThetaL (TF1* fitFun, unsigned int q2Indx)
   fitFun->SetParameter(5,0.0);
 }
 
-void Utils::InitEffFuncThetaK (TF1* fitFun, unsigned int q2Indx)
+void Utils::InitEffFuncThetaK (TF1* fitFun)
 {
   fitFun->ReleaseParameter(0);
   fitFun->ReleaseParameter(1);
@@ -2684,7 +2682,7 @@ void Utils::InitEffFuncThetaK (TF1* fitFun, unsigned int q2Indx)
   fitFun->SetParameter(3,0.0);
 }
 
-void Utils::InitEffFuncPhi (TF1* fitFun, unsigned int q2Indx)
+void Utils::InitEffFuncPhi (TF1* fitFun)
 {
   fitFun->ReleaseParameter(0);
   fitFun->ReleaseParameter(1);
@@ -3472,17 +3470,15 @@ void Utils::AddConstraint3D (TH3D** histo, double abscissaErr, double Tval, doub
   delete reBinsZ;
 }
 
-void Utils::AddConstraintThetaKThetaLPhi (TH3D** histo, unsigned int q2Indx, int SignalType, unsigned int ID)
+void Utils::AddConstraintThetaKThetaLPhi (int SignalType)
 // @TMP@                                                                                                                                                                                                                                                                                                        
 {
   // double abscissaErr = 1e-2;
   // std::vector<std::string> toBeAdded;
   // std::vector< std::pair<double,double> > constraints;
 
-  if (RIGHTflavorTAG == true)
-    {
-    }
-  
+  std::cout << "[Utils::AddConstraintThetaKThetaLPhi]\tNot implemented yet : " << SignalType << std::endl;
+
   // AddConstraint3D(...);
 }
 
@@ -3521,7 +3517,7 @@ void Utils::SaveFitValues (std::string fileName, std::vector<std::string>* vecPa
   vecParStr->insert(vecParStr->end(),"");
 
   ReadParameters* ParameterFile = new ReadParameters(fileName.c_str(),"app");
-  ParameterFile->WriteToFile(0,vecParStr);
+  ParameterFile->WriteToFile(vecParStr);
   delete ParameterFile;
 }
 

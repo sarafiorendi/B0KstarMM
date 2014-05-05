@@ -48,12 +48,12 @@ B0KstMuMuSingleCandTreeContent* NTupleOut;
 // #######################
 // # Function Definition #
 // #######################
-void AddGenVariables                     (string option, int SignalType);
+void AddGenVariables                     (int SignalType);
 template<class T> void AddEvWeightPileup (T* NTupleOut);
 template<class T> void AddEvWeightHadpT  (T* NTupleOut, string trkSign);
 
 
-void AddGenVariables (string option, int SignalType)
+void AddGenVariables (int SignalType)
 {
   bool B0notB0bar = true;
 
@@ -268,7 +268,7 @@ void AddGenVariables (string option, int SignalType)
 	  NTupleOut->rightFlavorTag = true;
 	  NTupleOut->B0pT           = sqrt(NTupleIn->genB0Px*NTupleIn->genB0Px + NTupleIn->genB0Py*NTupleIn->genB0Py);
 	  NTupleOut->B0Eta          = Utility->computeEta (NTupleIn->genB0Px,NTupleIn->genB0Py,NTupleIn->genB0Pz);
-	  NTupleOut->B0Phi          = Utility->computePhi (NTupleIn->genB0Px,NTupleIn->genB0Py,NTupleIn->genB0Pz);
+	  NTupleOut->B0Phi          = Utility->computePhi (NTupleIn->genB0Px,NTupleIn->genB0Py);
 
 	  NTupleOut->mumuMass->push_back(Utility->computeInvMass(NTupleIn->genMumPx,NTupleIn->genMumPy,NTupleIn->genMumPz,Utility->muonMass,
 								 NTupleIn->genMupPx,NTupleIn->genMupPy,NTupleIn->genMupPz,Utility->muonMass));
@@ -487,7 +487,7 @@ int main (int argc, char** argv)
 	}
       else if (option == "addSingleCandGENvars")
 	{
-	  AddGenVariables(option,atoi(localVar.c_str()));
+	  AddGenVariables(atoi(localVar.c_str()));
 	  cout << "\n@@@ Added new variables to gen-events @@@" << endl;
 	}
 

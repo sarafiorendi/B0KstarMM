@@ -1647,9 +1647,6 @@ void DrawString (double Lumi)
   LumiTex2->SetNDC(true);
   LumiTex2->DrawLatex(0.43,0.91,myString.str().c_str());
 
-  // ##################
-  // # Custom method: #
-  // ##################
   double startNDCx = 0.826;
   double startNDCy = 0.935;
   TLine* line1 = new TLine(startNDCx-0.005, startNDCy, startNDCx, startNDCy);
@@ -1664,18 +1661,6 @@ void DrawString (double Lumi)
   TLine* line4 = new TLine(startNDCx+0.010, startNDCy+0.01, startNDCx+0.032, startNDCy+0.01);
   line4->SetBit(TLine::kLineNDC,true);
   line4->Draw();
-  // ###################
-  // # Nominal method: #
-  // ###################
-  // @TMP@
-  // myString.clear();
-  // myString.str("");
-  // myString << "#sqrt{  }";
-  // TLatex* LumiTex3 = new TLatex(0.82,0.9,myString.str().c_str());
-  // LumiTex3->SetTextSize(0.053);
-  // LumiTex3->SetTextColor(kBlack);
-  // LumiTex3->SetNDC(true);
-  // LumiTex3->DrawLatex(0.82,0.9,myString.str().c_str());
 
   myString.clear();
   myString.str("");

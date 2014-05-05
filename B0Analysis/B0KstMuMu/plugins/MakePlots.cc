@@ -1685,9 +1685,9 @@ void MakePhysicsPlots (unsigned int PlotType)
       exhd.clear();
       eyld.clear();
       eyhd.clear();
-      // #################
-      // # Bended errors #
-      // #################
+      // #####################
+      // # Bended error bars #
+      // #####################
       // @TMP@
       // geb->Draw("same pe1");
       ge0->Draw("same pez");
