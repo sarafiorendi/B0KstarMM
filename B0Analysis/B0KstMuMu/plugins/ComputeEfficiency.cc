@@ -2277,7 +2277,6 @@ int main (int argc, char** argv)
       // ##########################
       gROOT->SetStyle("Plain");
       gROOT->ForceStyle();
-      gStyle->SetPalette(1);
       gStyle->SetOptFit(1112);
       gStyle->SetOptStat(0);
       gStyle->SetOptTitle(0);
