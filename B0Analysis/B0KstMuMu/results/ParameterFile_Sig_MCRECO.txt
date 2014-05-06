@@ -348,9 +348,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.854892   -0.0017774   0.0017774
 ###################################################################
-# Bkg tau-1 [GeV/c2]
+# Bkg var-1 (tau1 or mean) [GeV/c2]
 0.2
-# Bkg tau-2 [GeV/c2]
+# Bkg var-2 (tau2 or mean) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -484,7 +484,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 2
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians
 0
-# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
+# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials; 3 = erfc
 0
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -500,9 +500,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.825372   -0.008404   0.008404
 ###################################################################
-# Bkg tau-1 [GeV/c2]
+# Bkg var-1 (tau1 or mean) [GeV/c2]
 0.2
-# Bkg tau-2 [GeV/c2]
+# Bkg var-2 (tau2 or mean) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -636,7 +636,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 2
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians
 0
-# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
+# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials; 3 = erfc
 0
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -652,9 +652,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.763666   -0.0111399   0.0111399
 ###################################################################
-# Bkg tau-1 [GeV/c2]
+# Bkg var-1 (tau1 or mean) [GeV/c2]
 0.2
-# Bkg tau-2 [GeV/c2]
+# Bkg var-2 (tau2 or mean) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -788,7 +788,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 2
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians
 0
-# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
+# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials; 3 = erfc
 0
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -810,9 +810,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.831544   -0.00692938   0.00692938
 ###################################################################
-# Bkg tau-1 [GeV/c2]
+# Bkg var-1 (tau1 or mean) [GeV/c2]
 0.2
-# Bkg tau-2 [GeV/c2]
+# Bkg var-2 (tau2 or mean) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -946,7 +946,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 2
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians
 0
-# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
+# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials; 3 = erfc
 0
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -962,9 +962,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.84436   -0.0042882   0.0042882
 ###################################################################
-# Bkg tau-1 [GeV/c2]
+# Bkg var-1 (tau1 or mean) [GeV/c2]
 0.2
-# Bkg tau-2 [GeV/c2]
+# Bkg var-2 (tau2 or mean) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -1098,7 +1098,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 2
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians
 0
-# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
+# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials; 3 = erfc
 0
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -1114,9 +1114,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.85799   -0.00439161   0.00439161
 ###################################################################
-# Bkg tau-1 [GeV/c2]
+# Bkg var-1 (tau1 or mean) [GeV/c2]
 0.2
-# Bkg tau-2 [GeV/c2]
+# Bkg var-2 (tau2 or mean) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -1250,7 +1250,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 2
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians
 0
-# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
+# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials; 3 = erfc
 0
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -1266,9 +1266,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.857936   -0.00383376   0.00383376
 ###################################################################
-# Bkg tau-1 [GeV/c2]
+# Bkg var-1 (tau1 or mean) [GeV/c2]
 0.2
-# Bkg tau-2 [GeV/c2]
+# Bkg var-2 (tau2 or mean) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -1402,7 +1402,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 2
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = one 1 gaussian; 12 = two 2 gaussians
 0
-# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
+# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials; 3 = erfc
 0
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -1418,9 +1418,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.0
 ###################################################################
-# Bkg tau-1 [GeV/c2]
+# Bkg var-1 (tau1 or mean) [GeV/c2]
 0.0
-# Bkg tau-2 [GeV/c2]
+# Bkg var-2 (tau2 or mean) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -1554,7 +1554,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians
 0
-# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
+# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials; 3 = erfc
 0
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 0
@@ -1570,9 +1570,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.843152   -0.00515943   0.00515943
 ###################################################################
-# Bkg tau-1 [GeV/c2]
+# Bkg var-1 (tau1 or mean) [GeV/c2]
 0.2
-# Bkg tau-2 [GeV/c2]
+# Bkg var-2 (tau2 or mean) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -1706,7 +1706,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 2
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians
 0
-# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
+# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials; 3 = erfc
 0
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -1722,9 +1722,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.0
 ###################################################################
-# Bkg tau-1 [GeV/c2]
+# Bkg var-1 (tau1 or mean) [GeV/c2]
 0.0
-# Bkg tau-2 [GeV/c2]
+# Bkg var-2 (tau2 or mean) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -1858,7 +1858,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians
 0
-# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
+# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials; 3 = erfc
 0
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 0
@@ -1874,9 +1874,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.876891   -0.00438213   0.00438213
 ###################################################################
-# Bkg tau-1 [GeV/c2]
+# Bkg var-1 (tau1 or mean) [GeV/c2]
 0.2
-# Bkg tau-2 [GeV/c2]
+# Bkg var-2 (tau2 or mean) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -2010,7 +2010,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 2
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians
 0
-# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
+# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials; 3 = erfc
 0
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -2026,9 +2026,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.824933   -0.0068817   0.0068817
 ###################################################################
-# Bkg tau-1 [GeV/c2]
+# Bkg var-1 (tau1 or mean) [GeV/c2]
 0.2
-# Bkg tau-2 [GeV/c2]
+# Bkg var-2 (tau2 or mean) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -2162,7 +2162,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 2
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians
 0
-# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials
+# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials; 3 = erfc
 0
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2

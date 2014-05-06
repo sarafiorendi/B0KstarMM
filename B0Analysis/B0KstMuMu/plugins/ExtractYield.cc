@@ -190,8 +190,8 @@ RooAbsPdf* Signal;
 // ####################################
 // # Combinatorial background B0 mass #
 // ####################################
-RooRealVar* tau1;
-RooRealVar* tau2;
+RooRealVar* var1;
+RooRealVar* var2;
 RooAbsPdf*  BkgMassExp1;
 RooAbsPdf*  BkgMassExp2;
 
@@ -1012,8 +1012,8 @@ void DeleteFit (RooAbsPdf* TotalPDF, string DeleteType)
 	  if (GetVar(TotalPDF,"sigmaS2")        != NULL) delete GetVar(TotalPDF,"sigmaS2");
 	  if (GetVar(TotalPDF,"fracMassS")      != NULL) delete GetVar(TotalPDF,"fracMassS");
 
-	  if (GetVar(TotalPDF,"tau1")           != NULL) delete GetVar(TotalPDF,"tau1");
-	  if (GetVar(TotalPDF,"tau2")           != NULL) delete GetVar(TotalPDF,"tau2");
+	  if (GetVar(TotalPDF,"var1")           != NULL) delete GetVar(TotalPDF,"var1");
+	  if (GetVar(TotalPDF,"var2")           != NULL) delete GetVar(TotalPDF,"var2");
 	  if (GetVar(TotalPDF,"fracMassBExp")   != NULL) delete GetVar(TotalPDF,"fracMassBExp");
 
 	  if (GetVar(TotalPDF,"sigmaMisTag1")   != NULL) delete GetVar(TotalPDF,"sigmaMisTag1");
@@ -1270,15 +1270,18 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
       // ############################
       // # Combinatorial background #
       // ############################
-      if (GetVar(*TotalPDF,"tau1") != NULL)
+      if (GetVar(*TotalPDF,"var1") != NULL)
 	{
-	  fileFitResults << "Background mass tau-1: " << GetVar(*TotalPDF,"tau1")->getVal() << " +/- " << tau1->getError();
-	  fileFitResults << " (" << GetVar(*TotalPDF,"tau1")->getErrorHi() << "/" << GetVar(*TotalPDF,"tau1")->getErrorLo() << ")" << endl;
+	  fileFitResults << "Background mass var-1: " << GetVar(*TotalPDF,"var1")->getVal() << " +/- " << var1->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"var1")->getErrorHi() << "/" << GetVar(*TotalPDF,"var1")->getErrorLo() << ")" << endl;
 	}
-      if (GetVar(*TotalPDF,"tau2") != NULL)
+      if (GetVar(*TotalPDF,"var2") != NULL)
 	{
-	  fileFitResults << "Background mass tau-2: " << GetVar(*TotalPDF,"tau2")->getVal() << " +/- " << GetVar(*TotalPDF,"tau2")->getError();
-	  fileFitResults << " (" << GetVar(*TotalPDF,"tau2")->getErrorHi() << "/" << GetVar(*TotalPDF,"tau2")->getErrorLo() << ")" << endl;
+	  fileFitResults << "Background mass var-2: " << GetVar(*TotalPDF,"var2")->getVal() << " +/- " << GetVar(*TotalPDF,"var2")->getError();
+	  fileFitResults << " (" << GetVar(*TotalPDF,"var2")->getErrorHi() << "/" << GetVar(*TotalPDF,"var2")->getErrorLo() << ")" << endl;
+	}
+      if (GetVar(*TotalPDF,"fracMassBExp") != NULL)
+	{
 	  fileFitResults << "Fraction: " << GetVar(*TotalPDF,"fracMassBExp")->getVal() << " +/- " << GetVar(*TotalPDF,"fracMassBExp")->getError();
 	  fileFitResults << " (" << GetVar(*TotalPDF,"fracMassBExp")->getErrorHi() << "/" << GetVar(*TotalPDF,"fracMassBExp")->getErrorLo() << ")" << endl;
 	}
@@ -1506,22 +1509,22 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
   vecParStr->push_back("###################################################################");
 
 
-  vecParStr->push_back("# Bkg tau-1 [GeV/c2]");
-  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"tau1") != NULL))
+  vecParStr->push_back("# Bkg var-1 (tau1 or mean) [GeV/c2]");
+  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"var1") != NULL))
     {
       myString.clear(); myString.str("");
-      myString << TotalPDF->getVariables()->getRealValue("tau1") << "   " << GetVar(TotalPDF,"tau1")->getErrorLo() << "   " << GetVar(TotalPDF,"tau1")->getErrorHi();
+      myString << TotalPDF->getVariables()->getRealValue("var1") << "   " << GetVar(TotalPDF,"var1")->getErrorLo() << "   " << GetVar(TotalPDF,"var1")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("tau1"))->operator[](fitParamIndx).c_str());
-  vecParStr->push_back("# Bkg tau-2 [GeV/c2]");
-  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"tau2") != NULL))
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](fitParamIndx).c_str());
+  vecParStr->push_back("# Bkg var-2 (tau2 or width) [GeV/c2]");
+  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"var2") != NULL))
     {
       myString.clear(); myString.str("");
-      myString << TotalPDF->getVariables()->getRealValue("tau2") << "   " << GetVar(TotalPDF,"tau2")->getErrorLo() << "   " << GetVar(TotalPDF,"tau2")->getErrorHi();
+      myString << TotalPDF->getVariables()->getRealValue("var2") << "   " << GetVar(TotalPDF,"var2")->getErrorLo() << "   " << GetVar(TotalPDF,"var2")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("tau2"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](fitParamIndx).c_str());
   vecParStr->push_back("# Fraction");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"fracMassBExp") != NULL)) { myString.clear(); myString.str(""); myString << TotalPDF->getVariables()->getRealValue("fracMassBExp"); vecParStr->push_back(myString.str()); }
   else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("fracMassBExp"))->operator[](fitParamIndx).c_str());
@@ -1901,7 +1904,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
   myString << configParam->operator[](Utility->GetConfigParamIndx("PeakBkgType"))->operator[](fitParamIndx);
   vecParStr->push_back(myString.str());
 
-  vecParStr->push_back("# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials");
+  vecParStr->push_back("# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials; 3 = erfc");
   myString.clear(); myString.str("");
   myString << configParam->operator[](Utility->GetConfigParamIndx("CombBkgType"))->operator[](fitParamIndx);
   vecParStr->push_back(myString.str());
@@ -1952,8 +1955,8 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vec
       SetValueAndErrors(TotalPDF,"fracMassS",1.0,&myString,&value,&errLo,&errHi);
     }
 
-  if (GetVar(TotalPDF,"tau1")         != NULL) TotalPDF->getVariables()->setRealValue("tau1",         atof(fitParam->operator[](Utility->GetFitParamIndx("tau1"))->operator[](fitParamIndx).c_str()));
-  if (GetVar(TotalPDF,"tau2")         != NULL) TotalPDF->getVariables()->setRealValue("tau2",         atof(fitParam->operator[](Utility->GetFitParamIndx("tau2"))->operator[](fitParamIndx).c_str()));
+  if (GetVar(TotalPDF,"var1")         != NULL) TotalPDF->getVariables()->setRealValue("var1",         atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](fitParamIndx).c_str()));
+  if (GetVar(TotalPDF,"var2")         != NULL) TotalPDF->getVariables()->setRealValue("var2",         atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](fitParamIndx).c_str()));
   if (GetVar(TotalPDF,"fracMassBExp") != NULL) TotalPDF->getVariables()->setRealValue("fracMassBExp", atof(fitParam->operator[](Utility->GetFitParamIndx("fracMassBExp"))->operator[](fitParamIndx).c_str()));
 
   if (GetVar(TotalPDF,"sigmaMisTag1") != NULL)
@@ -2970,25 +2973,31 @@ void InstantiateMassFit (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, ve
   // ##################################################################
   // # Define mass fit variables and pdf for combinatorial background #
   // ##################################################################
-  tau1 = new RooRealVar("tau1","First background time constant",0.0,"GeV");
+  var1 = new RooRealVar("var1","First background variables",0.0,"GeV");
   myString.clear(); myString.str("");
-  myString << "exp(-(" << x->getPlotLabel() << "-meanS)/tau1)";
-  BkgMassExp1 = new RooGenericPdf("BkgMassExp1",myString.str().c_str(),RooArgSet(*x,*meanS,*tau1));
+  myString << "exp(-(" << x->getPlotLabel() << " - meanS) / var1)";
+  BkgMassExp1 = new RooGenericPdf("BkgMassExp1",myString.str().c_str(),RooArgSet(*x,*meanS,*var1));
 
-  tau2 = new RooRealVar("tau2","Second background time constant",0.0,"GeV");
+  var2 = new RooRealVar("var2","Second background variable",0.0,"GeV");
   myString.clear(); myString.str("");
-  myString << "exp(-(" << x->getPlotLabel() << "-meanS)/tau2)";
-  BkgMassExp2 = new RooGenericPdf("BkgMassExp2",myString.str().c_str(),RooArgSet(*x,*meanS,*tau2));
+  myString << "exp(-(" << x->getPlotLabel() << " - meanS) / var2)";
+  BkgMassExp2 = new RooGenericPdf("BkgMassExp2",myString.str().c_str(),RooArgSet(*x,*meanS,*var2));
 
-  tau1->setConstant(false);
-  tau2->setConstant(false);
+  var1->setConstant(false);
+  var2->setConstant(false);
 
   fracMassBExp = new RooRealVar("fracMassBExp","Fraction of background Exponential",0.0,0.0,1.0);
   fracMassBExp->setConstant(false);
 
   if      (useCombB == 1) BkgMassComb = new RooGenericPdf(*((RooGenericPdf*)BkgMassExp1),"BkgMassComb");
   else if (useCombB == 2) BkgMassComb = new RooAddPdf("BkgMassComb","Background mass comb. bkg pdf",RooArgSet(*BkgMassExp1,*BkgMassExp2),RooArgSet(*fracMassBExp));
-  else                    BkgMassComb = NULL;
+  else if (useCombB == 3)
+    {
+      myString.clear(); myString.str("");
+      myString << "TMath::Erfc((" << x->getPlotLabel() << " - var1) / (sqrt(2.) * var2))";
+      BkgMassComb = new RooGenericPdf("BkgMass",myString.str().c_str(),RooArgSet(*x,*var1,*var2));
+    }
+  else BkgMassComb = NULL;
 
 
   // #######################################################
@@ -3666,11 +3675,11 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
       myFrame->Draw();
     }
 
-  if ((GetVar(TotalPDF,"tau1") != NULL) && (GetVar(TotalPDF,"tau1")->getError() != 0.0) && (IsInConstraints(vecConstr,"tau1") == false))
+  if ((GetVar(TotalPDF,"var1") != NULL) && (GetVar(TotalPDF,"var1")->getError() != 0.0) && (IsInConstraints(vecConstr,"var1") == false))
     {
-      tmpVar = GetVar(TotalPDF,"tau1");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("tau1"))->operator[](specBin).c_str()) - 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("tau1"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("tau1"))->operator[](specBin).c_str()) + 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("tau1"))->operator[](specBin).c_str())));
+      tmpVar = GetVar(TotalPDF,"var1");
+      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str()) - 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str())),
+  			      atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str()) + 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str())));
       MyToy->plotParamOn(myFrame);
       Canv->cd(it++);
       myFrame->Draw();
@@ -3679,11 +3688,11 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
       myFrame->Draw();
     }
 
-  if ((GetVar(TotalPDF,"tau2") != NULL) && (GetVar(TotalPDF,"tau2")->getError() != 0.0) && (IsInConstraints(vecConstr,"tau2") == false))
+  if ((GetVar(TotalPDF,"var2") != NULL) && (GetVar(TotalPDF,"var2")->getError() != 0.0) && (IsInConstraints(vecConstr,"var2") == false))
     {
-      tmpVar = GetVar(TotalPDF,"tau2");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("tau2"))->operator[](specBin).c_str()) - 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("tau2"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("tau2"))->operator[](specBin).c_str()) + 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("tau2"))->operator[](specBin).c_str())));
+      tmpVar = GetVar(TotalPDF,"var2");
+      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str()) - 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str())),
+  			      atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str()) + 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str())));
       MyToy->plotParamOn(myFrame);
       Canv->cd(it++);
       myFrame->Draw();
@@ -4160,24 +4169,30 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // ##################################################################
   // # Define mass fit variables and pdf for combinatorial background #
   // ##################################################################
-  tau1 = new RooRealVar("tau1","First background time constant",0.0,"GeV");
+  var1 = new RooRealVar("var1","First background variables",0.0,"GeV");
   myString.clear(); myString.str("");
-  myString << "exp(-(" << x->getPlotLabel() << "-meanS)/tau1)";
-  BkgMassExp1 = new RooGenericPdf("BkgMassExp1",myString.str().c_str(),RooArgSet(*x,*meanS,*tau1));
+  myString << "exp(-(" << x->getPlotLabel() << " - meanS) / var1)";
+  BkgMassExp1 = new RooGenericPdf("BkgMassExp1",myString.str().c_str(),RooArgSet(*x,*meanS,*var1));
 
-  tau2 = new RooRealVar("tau2","Second background time constant",0.0,"GeV");
+  var2 = new RooRealVar("var2","Second background variable",0.0,"GeV");
   myString.clear(); myString.str("");
-  myString << "exp(-(" << x->getPlotLabel() << "-meanS)/tau2)";
-  BkgMassExp2 = new RooGenericPdf("BkgMassExp2",myString.str().c_str(),RooArgSet(*x,*meanS,*tau2));
+  myString << "exp(-(" << x->getPlotLabel() << " - meanS) / var2)";
+  BkgMassExp2 = new RooGenericPdf("BkgMassExp2",myString.str().c_str(),RooArgSet(*x,*meanS,*var2));
 
-  tau1->setConstant(false);
-  tau2->setConstant(false);
+  var1->setConstant(false);
+  var2->setConstant(false);
   
   fracMassBExp = new RooRealVar("fracMassBExp","Fraction of background Exponential",0.0,0.0,1.0);
   fracMassBExp->setConstant(false);
 
   if      (useCombB == 1) BkgMassComb = new RooGenericPdf(*((RooGenericPdf*)BkgMassExp1),"BkgMassComb");
   else if (useCombB == 2) BkgMassComb = new RooAddPdf("BkgMassComb","Background mass comb. bkg pdf",RooArgSet(*BkgMassExp1,*BkgMassExp2),RooArgSet(*fracMassBExp));
+  else if (useCombB == 3)
+    {
+      myString.clear(); myString.str("");
+      myString << "TMath::Erfc((" << x->getPlotLabel() << " - var1) / (sqrt(2.) * var2))";
+      BkgMassComb = new RooGenericPdf("BkgMass",myString.str().c_str(),RooArgSet(*x,*var1,*var2));
+    }
   else                    BkgMassComb = NULL;
 
   BkgMassAngleComb = new RooProdPdf("BkgMassAngleComb","Combinatorial bkg Mass*Angle",RooArgSet(*BkgMassComb,*BkgAnglesC));
@@ -5675,11 +5690,11 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       myFrame->Draw();
     }
 
-  if ((GetVar(TotalPDF,"tau1") != NULL) && (GetVar(TotalPDF,"tau1")->getError() != 0.0) && (IsInConstraints(vecConstr,"tau1") == false))
+  if ((GetVar(TotalPDF,"var1") != NULL) && (GetVar(TotalPDF,"var1")->getError() != 0.0) && (IsInConstraints(vecConstr,"var1") == false))
     {
-      tmpVar = GetVar(TotalPDF,"tau1");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("tau1"))->operator[](specBin).c_str()) - 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("tau1"))->operator[](specBin).c_str())),
- 			      atof(fitParam->operator[](Utility->GetFitParamIndx("tau1"))->operator[](specBin).c_str()) + 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("tau1"))->operator[](specBin).c_str())));
+      tmpVar = GetVar(TotalPDF,"var1");
+      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str()) - 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str())),
+ 			      atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str()) + 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str())));
       MyToy->plotParamOn(myFrame);
       Canv->cd(it++);
       myFrame->Draw();
@@ -5688,11 +5703,11 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       myFrame->Draw();
     }
 
-  if ((GetVar(TotalPDF,"tau2") != NULL) && (GetVar(TotalPDF,"tau2")->getError() != 0.0) && (IsInConstraints(vecConstr,"tau2") == false))
+  if ((GetVar(TotalPDF,"var2") != NULL) && (GetVar(TotalPDF,"var2")->getError() != 0.0) && (IsInConstraints(vecConstr,"var2") == false))
     {
-      tmpVar = GetVar(TotalPDF,"tau2");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("tau2"))->operator[](specBin).c_str()) - 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("tau2"))->operator[](specBin).c_str())),
- 			      atof(fitParam->operator[](Utility->GetFitParamIndx("tau2"))->operator[](specBin).c_str()) + 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("tau2"))->operator[](specBin).c_str())));
+      tmpVar = GetVar(TotalPDF,"var2");
+      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str()) - 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str())),
+ 			      atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str()) + 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str())));
       MyToy->plotParamOn(myFrame);
       Canv->cd(it++);
       myFrame->Draw();

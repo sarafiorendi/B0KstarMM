@@ -3570,8 +3570,8 @@ unsigned int Utils::GetFitParamIndx (std::string varName)
   else if (varName == "sigmaS2")        return 2;
   else if (varName == "fracMassS")      return 3;
 
-  else if (varName == "tau1")           return 4;
-  else if (varName == "tau2")           return 5;
+  else if (varName == "var1")           return 4;
+  else if (varName == "var2")           return 5;
   else if (varName == "fracMassBExp")   return 6;
 
   else if (varName == "sigmaMisTag1")   return 7;
