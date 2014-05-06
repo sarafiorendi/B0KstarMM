@@ -2504,9 +2504,9 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       myString.clear(); myString.str("");
       myString << (*TotalPDFJPsi)->getPlotLabel() << "_paramBox";
       TPaveText* paveTextJPsi = (TPaveText*)myFrameJPsi->findObject(myString.str().c_str());
-      paveTextJPsi->AddText(Form("%s%.3f #pm%.3f","#mu#kern[-0.4]{#lower[-0.3]{_{1}}} = ",GetVar(*TotalPDFJPsi,"meanJPsi1")->getVal(),GetVar(*TotalPDFJPsi,"meanJPsi1")->getError()));
-      paveTextJPsi->AddText(Form("%s%.3f #pm%.3f","#mu#kern[-0.4]{#lower[-0.3]{_{2}}} = ",GetVar(*TotalPDFJPsi,"meanJPsi2")->getVal(),GetVar(*TotalPDFJPsi,"meanJPsi2")->getError()));
-      paveTextJPsi->AddText(Form("%s%.3f #pm%.3f","< #sigma > = ",sigmaJPsi,sigmaJPsiE));
+      paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","#mu#kern[-0.4]{#lower[-0.3]{_{1}}} = ",GetVar(*TotalPDFJPsi,"meanJPsi1")->getVal(),GetVar(*TotalPDFJPsi,"meanJPsi1")->getError()));
+      paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","#mu#kern[-0.4]{#lower[-0.3]{_{2}}} = ",GetVar(*TotalPDFJPsi,"meanJPsi2")->getVal(),GetVar(*TotalPDFJPsi,"meanJPsi2")->getError()));
+      paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","< #sigma > = ",sigmaJPsi,sigmaJPsiE));
       paveTextJPsi->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameJPsi->chiSquare((*TotalPDFJPsi)->getPlotLabel(),dataSetJPsi->GetName())));
       CheckGoodFit(JPsiFitResult,paveTextJPsi);
       paveTextJPsi->SetBorderSize(0.0);
@@ -2624,9 +2624,9 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       myString.clear(); myString.str("");
       myString << (*TotalPDFPsiP)->getPlotLabel() << "_paramBox";
       TPaveText* paveTextPsiP = (TPaveText*)myFramePsiP->findObject(myString.str().c_str());
-      paveTextPsiP->AddText(Form("%s%.3f #pm%.3f","#mu#kern[-0.4]{#lower[-0.3]{_{1}}} = ",GetVar(*TotalPDFPsiP,"meanPsiP1")->getVal(),GetVar(*TotalPDFPsiP,"meanPsiP1")->getError()));
-      paveTextPsiP->AddText(Form("%s%.3f #pm%.3f","#mu#kern[-0.4]{#lower[-0.3]{_{2}}} = ",GetVar(*TotalPDFPsiP,"meanPsiP2")->getVal(),GetVar(*TotalPDFPsiP,"meanPsiP2")->getError()));
-      paveTextPsiP->AddText(Form("%s%.3f #pm%.3f","< #sigma > = ",sigmaPsiP,sigmaPsiPE));
+      paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","#mu#kern[-0.4]{#lower[-0.3]{_{1}}} = ",GetVar(*TotalPDFPsiP,"meanPsiP1")->getVal(),GetVar(*TotalPDFPsiP,"meanPsiP1")->getError()));
+      paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","#mu#kern[-0.4]{#lower[-0.3]{_{2}}} = ",GetVar(*TotalPDFPsiP,"meanPsiP2")->getVal(),GetVar(*TotalPDFPsiP,"meanPsiP2")->getError()));
+      paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","< #sigma > = ",sigmaPsiP,sigmaPsiPE));
       paveTextPsiP->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFramePsiP->chiSquare((*TotalPDFPsiP)->getPlotLabel(),dataSetPsiP->GetName())));
       CheckGoodFit(PsiPFitResult,paveTextPsiP);
       paveTextPsiP->SetBorderSize(0.0);
@@ -3280,9 +3280,9 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
 						   pow(2. * fraction * signalSigmaGoodT * signalSigmaGoodTE,2.) +
 						   pow(2. * (1. - fraction) * signalSigmaMisT * signalSigmaMisTE,2.) );
       
-      paveTextX->AddText(Form("%s%1.f #pm%1.f","Total sig yield = ",totalYield,totalYieldE));
+      paveTextX->AddText(Form("%s%1.f#pm%1.f","Total sig yield = ",totalYield,totalYieldE));
     }
-  else
+  else if (GetVar(*TotalPDF,"nSig") != NULL)
     {
       totalYield  = GetVar(*TotalPDF,"nSig")->getVal();
       totalYieldE = GetVar(*TotalPDF,"nSig")->getError();
@@ -3290,8 +3290,8 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
 
   if ((GetVar(*TotalPDF,"nSig") != NULL) || (GetVar(*TotalPDF,"nMisTagFrac") != NULL))
     {
-      paveTextX->AddText(Form("%s%.3f #pm%.3f","#mu = ",GetVar(*TotalPDF,"meanS")->getVal(),GetVar(*TotalPDF,"meanS")->getError()));
-      paveTextX->AddText(Form("%s%.3f #pm%.3f","Total < #sigma > = ",signalSigmaT,signalSigmaTE));
+      paveTextX->AddText(Form("%s%.3f#pm%.3f","#mu = ",GetVar(*TotalPDF,"meanS")->getVal(),GetVar(*TotalPDF,"meanS")->getError()));
+      paveTextX->AddText(Form("%s%.3f#pm%.3f","Total < #sigma > = ",signalSigmaT,signalSigmaTE));
     }
   paveTextX->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
   
@@ -3334,7 +3334,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   DrawString(LUMI,myFrameX);
   if ((extText != NULL) && (SETBATCH == false))
     {
-      if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%1.f #pm%1.f","Signal yield: ",totalYield,totalYieldE));
+      if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%1.f#pm%1.f","Signal yield: ",totalYield,totalYieldE));
       extText->Paint();
       myFrameX->addObject(extText);
     }
@@ -4719,9 +4719,9 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 						       pow(2. * fraction * signalSigmaGoodT * signalSigmaGoodTE,2.) +
 						       pow(2. * (1. - fraction) * signalSigmaMisT * signalSigmaMisTE,2.) );
 	  
-	  paveTextX->AddText(Form("%s%1.f #pm%1.f","Total sig yield = ",totalYield,totalYieldE));
+	  paveTextX->AddText(Form("%s%1.f#pm%1.f","Total sig yield = ",totalYield,totalYieldE));
 	}
-      else
+      else if (GetVar(*TotalPDF,"nSig") != NULL)
 	{
 	  totalYield  = GetVar(*TotalPDF,"nSig")->getVal();
 	  totalYieldE = GetVar(*TotalPDF,"nSig")->getError();
@@ -4729,8 +4729,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       
       if ((GetVar(*TotalPDF,"nSig") != NULL) || (GetVar(*TotalPDF,"nMisTagFrac") != NULL))
 	{
-	  paveTextX->AddText(Form("%s%.3f #pm%.3f","#mu = ",GetVar(*TotalPDF,"meanS")->getVal(),GetVar(*TotalPDF,"meanS")->getError()));
-	  paveTextX->AddText(Form("%s%.3f #pm%.3f","Total < #sigma > = ",signalSigmaT,signalSigmaTE));
+	  paveTextX->AddText(Form("%s%.3f#pm%.3f","#mu = ",GetVar(*TotalPDF,"meanS")->getVal(),GetVar(*TotalPDF,"meanS")->getError()));
+	  paveTextX->AddText(Form("%s%.3f#pm%.3f","Total < #sigma > = ",signalSigmaT,signalSigmaTE));
 	}
       paveTextX->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
       
@@ -4909,7 +4909,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       DrawString(LUMI,myFrameX);
       if ((extText != NULL) && (SETBATCH == false))
       	{
-      	  if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%1.f #pm%1.f","Signal yield: ",totalYield,totalYieldE));
+      	  if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%1.f#pm%1.f","Signal yield: ",totalYield,totalYieldE));
       	  extText->Paint();
       	  myFrameX->addObject(extText);
       	}
