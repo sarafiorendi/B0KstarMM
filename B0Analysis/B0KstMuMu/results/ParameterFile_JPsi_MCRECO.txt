@@ -350,7 +350,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
 0.0
-# Bkg var-2 (tau2 or mean) [GeV/c2]
+# Bkg var-2 (tau2 or width) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -502,7 +502,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
 0.0
-# Bkg var-2 (tau2 or mean) [GeV/c2]
+# Bkg var-2 (tau2 or width) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -654,7 +654,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
 0.0
-# Bkg var-2 (tau2 or mean) [GeV/c2]
+# Bkg var-2 (tau2 or width) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -812,7 +812,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
 0.0
-# Bkg var-2 (tau2 or mean) [GeV/c2]
+# Bkg var-2 (tau2 or width) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -964,7 +964,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
 0.0
-# Bkg var-2 (tau2 or mean) [GeV/c2]
+# Bkg var-2 (tau2 or width) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -1116,7 +1116,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
 0.0
-# Bkg var-2 (tau2 or mean) [GeV/c2]
+# Bkg var-2 (tau2 or width) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -1268,7 +1268,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
 0.0
-# Bkg var-2 (tau2 or mean) [GeV/c2]
+# Bkg var-2 (tau2 or width) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -1420,7 +1420,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
 0.0
-# Bkg var-2 (tau2 or mean) [GeV/c2]
+# Bkg var-2 (tau2 or width) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -1572,7 +1572,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
 0.0
-# Bkg var-2 (tau2 or mean) [GeV/c2]
+# Bkg var-2 (tau2 or width) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -1724,7 +1724,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
 0.0
-# Bkg var-2 (tau2 or mean) [GeV/c2]
+# Bkg var-2 (tau2 or width) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -1876,7 +1876,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
 0.0
-# Bkg var-2 (tau2 or mean) [GeV/c2]
+# Bkg var-2 (tau2 or width) [GeV/c2]
 0.0
 # Fraction
 0.0
@@ -2028,7 +2028,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
 0.0
-# Bkg var-2 (tau2 or mean) [GeV/c2]
+# Bkg var-2 (tau2 or width) [GeV/c2]
 0.0
 # Fraction
 0.0
