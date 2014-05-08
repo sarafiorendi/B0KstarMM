@@ -2718,8 +2718,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
 	}
 
 
-      fileFitResults << "\nAmplitude of exclusion zone J/psi: -" << Utility->GetGenericParam("NSigmaPsiBig").c_str() << " Sigmas --- +" << Utility->GetGenericParam("NSigmaPsiSmall").c_str() << " Sigmas" << endl;
-      fileFitResults << "Amplitude of exclusion zone psi(2S): -" << Utility->GetGenericParam("NSigmaPsiSmall").c_str() << " Sigmas --- +" << Utility->GetGenericParam("NSigmaPsiSmall").c_str() << " Sigmas" << endl;
+      fileFitResults << "\nAmplitude of exclusion zone J/psi and psi(2S): +/- " << Utility->GetGenericParam("NSigmaPsi").c_str() << " Sigmas" << endl;
       fileFitResults << "====================================================================" << endl;
     }
 }
@@ -2824,7 +2823,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 		    ((strcmp(CTRLmisTag.c_str(),"trueMistag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
 		    (((strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
 		    (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) &&
-		   (Utility->PsiRejection(NTuple,"keepJpsi",true) == true))) // @TMP@
+		   (Utility->PsiRejection(NTuple,"keepJpsi",false) == true)))
 
 		SingleCandNTuple_JPsi->add(Vars);
 
@@ -2836,7 +2835,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 		    ((strcmp(CTRLmisTag.c_str(),"trueMistag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
 		    (((strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
 		    (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) &&
-		   (Utility->PsiRejection(NTuple,"keepPsiP",true) == true))) // @TMP@
+		   (Utility->PsiRejection(NTuple,"keepPsiP",false) == true)))
 		
 		SingleCandNTuple_PsiP->add(Vars);
 	      
@@ -2866,7 +2865,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 		    ((strcmp(CTRLmisTag.c_str(),"trueMistag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
 		    (((strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
 		    (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) &&
-		   (Utility->PsiRejection(NTuple,"keepPsi",true) == true)) || // @TMP@
+		   (Utility->PsiRejection(NTuple,"keepPsi",false) == true)) ||
 		  
 		  (((FitType == 36) || (FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)))
 

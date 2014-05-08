@@ -224,8 +224,8 @@ void MakeComparisonDataMC (unsigned int plotType)
   double minY = 0.0;
   double maxY = 0.0;
 
-  double signalSigma = sqrt(atof(Utility->GetGenericParam("FRACMASSS").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) +
-			    (1. - atof(Utility->GetGenericParam("FRACMASSS").c_str())) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) * atof(Utility->GetGenericParam("SIGMAS2").c_str()));
+  double signalSigma = sqrt( atof(Utility->GetGenericParam("FRACMASSS").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) +
+			     (1. - atof(Utility->GetGenericParam("FRACMASSS").c_str())) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) );
   cout << "\n@@@ Signal sigma: " << signalSigma << " @@@" << endl;
 
 
@@ -605,8 +605,8 @@ void MakeComparisonDataMC (unsigned int plotType)
   myString.clear();
   myString.str("");
   myString << "((abs(B0MassArb - " << Utility->B0Mass << ") < " << atof(Utility->GetGenericParam("NSigmaB0S").c_str())*signalSigma << ") && ";
-  myString << "((mumuMass > " << Utility->JPsiMass << "-" << atof(Utility->GetGenericParam("NSigmaPsiBig").c_str()) << "*mumuMassE && mumuMass < " << Utility->JPsiMass << "+" << atof(Utility->GetGenericParam("NSigmaPsiSmall").c_str()) << "*mumuMassE) || ";
-  myString << "(abs(mumuMass - " << Utility->PsiPMass << ") < " << atof(Utility->GetGenericParam("NSigmaPsiSmall").c_str()) << "*mumuMassE)))";
+  myString << "((abs(mumuMass - " << Utility->JPsiMass << ") < " << atof(Utility->GetGenericParam("NSigmaPsi").c_str()) << " * mumuMassE) ||";
+  myString << " (abs(mumuMass - " << Utility->PsiPMass << ") < " << atof(Utility->GetGenericParam("NSigmaPsi").c_str()) << " * mumuMassE)))";
   sigMassQuery = myString.str();
 
   myString.clear();
@@ -615,9 +615,8 @@ void MakeComparisonDataMC (unsigned int plotType)
 	   << Utility->B0Mass + (atof(Utility->GetGenericParam("NSigmaB0B").c_str()) + atof(Utility->GetGenericParam("NSigmaB0S").c_str()))*signalSigma << ") || ";
   myString << "(B0MassArb < " << Utility->B0Mass - atof(Utility->GetGenericParam("NSigmaB0B").c_str())*signalSigma << " && B0MassArb > "
 	   << Utility->B0Mass - (atof(Utility->GetGenericParam("NSigmaB0B").c_str()) + atof(Utility->GetGenericParam("NSigmaB0S").c_str()))*signalSigma << ")) && ";
-  myString << "((mumuMass > " << Utility->JPsiMass << "-" << atof(Utility->GetGenericParam("NSigmaPsiBig").c_str()) << "*mumuMassE && mumuMass < "
-	   << Utility->JPsiMass << "+" << atof(Utility->GetGenericParam("NSigmaPsiSmall").c_str()) << "*mumuMassE) || ";
-  myString << "(abs(mumuMass - " << Utility->PsiPMass << ") < " << atof(Utility->GetGenericParam("NSigmaPsiSmall").c_str()) << "*mumuMassE)))";
+  myString << "((abs(mumuMass - " << Utility->JPsiMass << ") < " << atof(Utility->GetGenericParam("NSigmaPsi").c_str()) << " * mumuMassE) ||";
+  myString << " (abs(mumuMass - " << Utility->PsiPMass << ") < " << atof(Utility->GetGenericParam("NSigmaPsi").c_str()) << " * mumuMassE)))";
   bkgMassQuery = myString.str();
   if (plotType == 0)
     query = "B0pT"; // B0 pT
@@ -2075,8 +2074,8 @@ void PlotMuMu (string fileName, bool bkgSub)
   string sigMassQuery = "";
   string bkgMassQuery = "";
 
-  double signalSigma = sqrt(atof(Utility->GetGenericParam("FRACMASSS").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) +
-			    (1. - atof(Utility->GetGenericParam("FRACMASSS").c_str())) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) * atof(Utility->GetGenericParam("SIGMAS2").c_str()));
+  double signalSigma = sqrt( atof(Utility->GetGenericParam("FRACMASSS").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) +
+			     (1. - atof(Utility->GetGenericParam("FRACMASSS").c_str())) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) );
   cout << "\n@@@ Signal sigma: " << signalSigma << " @@@" << endl;
 
 
@@ -2151,8 +2150,8 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
   string bkgMassQuery = "";
   string tmpstring    = "";
 
-  double signalSigma = sqrt(atof(Utility->GetGenericParam("FRACMASSS").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) +
-			    (1. - atof(Utility->GetGenericParam("FRACMASSS").c_str())) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) * atof(Utility->GetGenericParam("SIGMAS2").c_str()));
+  double signalSigma = sqrt( atof(Utility->GetGenericParam("FRACMASSS").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) +
+			     (1. - atof(Utility->GetGenericParam("FRACMASSS").c_str())) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) );
   cout << "\n@@@ Signal sigma: " << signalSigma << " @@@" << endl;
 
 
@@ -2381,8 +2380,8 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
   double massPsiK;
   double massKpi;
 
-  double signalSigma = sqrt(atof(Utility->GetGenericParam("FRACMASSS").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) +
-			    (1. - atof(Utility->GetGenericParam("FRACMASSS").c_str())) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) * atof(Utility->GetGenericParam("SIGMAS2").c_str()));
+  double signalSigma = sqrt( atof(Utility->GetGenericParam("FRACMASSS").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) +
+			     (1. - atof(Utility->GetGenericParam("FRACMASSS").c_str())) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) );
   cout << "\n@@@ Signal sigma: " << signalSigma << " @@@" << endl;
 
 

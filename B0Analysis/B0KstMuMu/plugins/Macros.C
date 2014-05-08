@@ -55,12 +55,7 @@ using namespace RooFit;
 
 #define B0MassIntervalLeft  0.28 // [GeV/c2]
 #define B0MassIntervalRight 0.28 // [GeV/c2]
-#define NSigmaPsiSmall 3.0
-#define NSigmaPsiBig   5.0
-
-#define B0Mass       5.27953  // [GeV/c2]
-#define JPsiMass     3.096916 // [GeV/c2]
-#define PsiPrimeMass 3.686109 // [GeV/c2]
+#define B0Mass 5.27953           // [GeV/c2]
 
 // ###########################
 // # From B0 --> J/psi K* MC #
@@ -89,7 +84,6 @@ void ComputePileUp          (string fileName);
 void PlotVtxWithPileUpW     (string fileNameMC, string fileNameData, unsigned int TrigCat, bool withWeights);
 void PlotCutScans           (string fileName, string type);
 void PlotEffPlots           (string fileName, unsigned int plotN, unsigned int binN);
-void PlotB0vsMuMu           (string fileName, bool rejectPsi);
 void PlotBkgMC              (string fileName, bool iFit, double scaleMCdata);
 void ReduceTree             (string fileNameIn, string fileNameOut, bool isSingleNotMultyCand);
 void SampleMCforPileup      (string fileNameIn, string fileNameOut);
@@ -969,67 +963,6 @@ void PlotEffPlots (string fileName, unsigned int plotN, unsigned int binN)
   c1->cd();
   h0->Draw("e1");
   c1->Update();
-}
-
-
-// ##################################################
-// # Sub-program to plot B0 vs mu-mu invariant mass #
-// ##################################################
-void PlotB0vsMuMu (string fileName, bool rejectPsi)
-{
-  // ##########################
-  // # Set histo layout style #
-  // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetPalette(1);
-  gStyle->SetOptFit(1112);
-  gStyle->SetOptStat(0);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
-
-
-  int nEntries;
-  double minX = 5.0;
-  double maxX = 5.56;
-  double minY = 0.8;
-  double maxY = 5.0;
-
-  TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
-
-  TFile* file0 = TFile::Open(fileName.c_str(),"READ");
-  TTree* theTree = (TTree*)file0->Get("B0KstMuMu/B0KstMuMuNTuple");
-
-  nEntries = theTree->GetEntries();
-  cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
-
-  vector<double>* vec1 = new vector<double>;
-  vector<double>* vec2 = new vector<double>;
-
-  TH2D* histo = new TH2D("histo","histo",100,minX,maxX,100,minY,maxY);
-  histo->SetXTitle("M(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{+}}}}#kern[-0.3]{#pi}#kern[-0.3]{#lower[0.6]{^{#font[122]{\55}}}}#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
-  histo->SetYTitle("M(#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
-  histo->SetZTitle("Entries / ((0.056 GeV)x(0.042 GeV))");
-
-  for (int entry = 0; entry < nEntries; entry++)
-    {
-      theTree->SetBranchAddress("mumuMass", &vec1);
-      theTree->SetBranchAddress("mumuMassE", &vec2);
-      theTree->GetEntry(entry);
-      TLeaf* theLeaf = theTree->GetLeaf("B0MassArb");
-      
-      if ((rejectPsi == true) && ((((*vec1)[0] > JPsiMass - NSigmaPsiBig * (*vec2)[0]) && ((*vec1)[0] < JPsiMass + NSigmaPsiSmall * (*vec2)[0])) ||
-				  (((*vec1)[0] > PsiPrimeMass - NSigmaPsiSmall * (*vec2)[0]) && ((*vec1)[0] < PsiPrimeMass + NSigmaPsiSmall * (*vec2)[0])))) continue;
-
-      histo->Fill(theLeaf->GetValue(),(*vec1)[0]);
-    }
-  
-
-  c0->cd();
-  histo->Draw("gcolz");
-  c0->Update();
 }
 
 
