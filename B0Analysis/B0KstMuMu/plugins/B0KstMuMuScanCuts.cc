@@ -446,11 +446,11 @@ int main (int argc, char** argv)
 
 
       cout << "\n@@@ Settings @@@" << endl;
-      cout << "Parameter file: "         << ParameterFILE << endl;
-      cout << "Do trig check: "          << DoTrigCheck << endl;
-      cout << "Special high q2 bin #3: " << SpecialHighq2Bin << endl;
-      cout << "nEvPrint: "               << nEvPrint << endl;
-      cout << "SETBATCH: "               << SETBATCH << endl;
+      cout << "Parameter file: "      << ParameterFILE << endl;
+      cout << "Do trig check: "       << DoTrigCheck << endl;
+      cout << "Special high q2 bin: " << SpecialHighq2Bin << endl;
+      cout << "nEvPrint: "            << nEvPrint << endl;
+      cout << "SETBATCH: "            << SETBATCH << endl;
 
 
       Utility = new Utils();
