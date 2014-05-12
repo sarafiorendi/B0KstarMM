@@ -30,7 +30,6 @@ using std::string;
 // # Global constants #
 // ####################
 #define DoTrigCheck   1
-#define SaveHistos    false
 #define DoMCTruth     false // Compute the single candidate variables from MC-GEN values
 #define TagFromTruth  false // Assign the CP-eigenstate from MC-GEN
 #define ParameterFILE "../python/ParameterFile.txt"
@@ -551,7 +550,6 @@ int main (int argc, char** argv)
 
 	  cout << "\n@@@ Settings @@@" << endl;
 	  cout << "Do Trigger Check: "   << DoTrigCheck << endl;
-	  cout << "SaveHistos: "         << SaveHistos << endl;
 	  cout << "DoMCTruth: "          << DoMCTruth << endl;
 	  cout << "TagFromTruth: "       << TagFromTruth << endl;
 	  cout << "ParameterFILE: "      << ParameterFILE << endl;

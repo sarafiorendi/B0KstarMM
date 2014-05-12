@@ -980,7 +980,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	  else if ((FitType >= 41*10) && (FitType < 60*10)) SignalType = 3;
 	  else if ((FitType >= 61*10) && (FitType < 80*10)) SignalType = 5;
 	  else SignalType = 1;
-	  RooDataHist* histoEff = new RooDataHist("histoEff","histoEff",RooArgSet(*z,*y),Utility->Get2DEffHistoq2Bin(&cosThetaKBins,&cosThetaLBins,parIndx,SignalType,make_pair(-1.0,1.0),make_pair(-1.0,1.0)));
+	  RooDataHist* histoEff = new RooDataHist("histoEff","histoEff",RooArgSet(*z,*y),Utility->Get2DEffHistoq2Bin(&cosThetaKBins,&cosThetaLBins,parIndx,SignalType,false,make_pair(-1.0,1.0),make_pair(-1.0,1.0)));
 	  histoEffPDF           = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(*z,*y),*histoEff,DEGREEINTERPEFF);
 	  MyProdPdf* myprodpdf  = new MyProdPdf(*_AnglesPDF,*histoEffPDF);
 	  ROOT::Math::Functor* prodFunctor = new ROOT::Math::Functor(*myprodpdf,myprodpdf->ndim());

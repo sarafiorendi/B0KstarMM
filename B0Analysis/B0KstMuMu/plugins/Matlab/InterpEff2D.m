@@ -62,7 +62,9 @@ while i <= NbinsX
 
     origEff(j,i)                     = row{1,5};
     Eff(j+deltaBins/2,i+deltaBins/2) = row{1,5};
-    
+
+    fprintf('Val=%e at X=%.3f; Y=%.3f\n',origEff(j,i),Xvec(i),Yvec(j));
+
     j = j + 1;    
     if (j > NbinsY)
         j = 1;

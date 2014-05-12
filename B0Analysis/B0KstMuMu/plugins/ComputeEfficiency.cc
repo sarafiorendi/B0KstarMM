@@ -38,6 +38,7 @@ using std::endl;
 using std::string;
 using std::stringstream;
 using std::vector;
+using std::make_pair;
 
 
 // ###########################################
@@ -63,10 +64,10 @@ using std::vector;
 //     - Set "INPUT_PHI"           to the output.txt file of point (d)
 
 // (g) If you want to look at the final result run the command "Test2DEff"
-//     - Set "INPUT_THETAL_THETAK" to the output.txt file of point (e)
+//     - Copy the output.txt file of point (e) into the parameter file
 
 // (h) If you want to look at the final result run the command "Test3DEff"
-//     - Set "INPUT_THETAL_THETAK_PHI" to the output.txt file of point (f)
+//     - Copy the output.txt file of point (f) into the parameter file
 
 
 // ####################
@@ -75,8 +76,6 @@ using std::vector;
 #define INPUT_THETAL           "ThetaL_B0ToKstMuMu.txt"
 #define INPUT_PHI              "Phi_B0ToKstMuMu.txt"
 #define INPUT_THETAL_THETAK    "ThetaK_B0ToKstMuMu.txt"
-#define TEST_THETAL_THETAK     "ThetaKThetaL_B0ToKstMuMu.txt"
-#define TEST_THETAL_THETAK_PHI "ThetaKThetaLPhi_B0ToKstMuMu.txt"
 
 #define RIGHTtag       true
 #define SAVEPLOT       false
@@ -125,7 +124,7 @@ void Fit2DEfficiencies     (vector<double>* q2Bins, vector<double>* cosThetaKBin
 			    int SignalType, Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
 void Fit3DEfficiencies     (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			    int SignalType, Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
-void Test2DEfficiency      (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool savePlot);
+void Test2DEfficiency      (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, int SignalType, string analyORbin, bool savePlot);
 void Test3DEfficiency      (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool savePlot);
 
 
@@ -1999,7 +1998,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 }
 
 
-void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, bool savePlot)
+void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, unsigned int q2BinIndx, int SignalType, string analyORbin, bool savePlot)
 {
   // ###################
   // # Local variables #
@@ -2007,9 +2006,11 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   stringstream myString;
   string tmpString;
   vector<TF2*> effFuncs2D;
-  TF2* effFunc2D;
   vector<TF12*> effFuncSlice;
-  vector<TH1D*> histoSlice;
+  vector<TH1D*> histoSliceOrg;
+  vector<TH1D*> histoSliceNew;
+  TF2* effFunc2D;
+  TH2D* hisFunc2Dnew;
   // ###################
 
 
@@ -2021,22 +2022,51 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   // # Read binned efficiency #
   // ##########################
   myString.clear(); myString.str("");
-  myString << "Histo_q2Bin_" << q2BinIndx;
-  TH2D* hisFunc2D = Utility->Get2DEffHistoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
+  myString << "H2Deff_q2Bin_Org_" << q2BinIndx;
+  TH2D* hisFunc2Dorg = Utility->Get2DEffHistoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
 
   cEff->cd(1);
-  hisFunc2D->Draw("lego2 fb");
+  hisFunc2Dorg->GetXaxis()->SetTitleSize(0.06);
+  hisFunc2Dorg->GetYaxis()->SetTitleSize(0.06);
+  hisFunc2Dorg->GetXaxis()->SetTitleOffset(1.25);
+  hisFunc2Dorg->GetYaxis()->SetTitleOffset(1.25);
+  hisFunc2Dorg->Draw("lego2 fb");
 
 
-  // ##############################
-  // # Read analytical efficiency #
-  // ##############################
-  Utility->ReadAnalyticalEff(TEST_THETAL_THETAK,q2Bins,cosThetaKBins,cosThetaLBins,&effFuncs2D,"effFuncs2D",0);
-  effFunc2D = effFuncs2D[q2BinIndx];
-  cEff->cd(2);
-  effFunc2D->GetZaxis()->SetTitleOffset(1.25);
-  effFunc2D->Draw("surf2 fb");
-  Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFunc2D);
+  // #######################################################
+  // # Read analytical OR binned (interpolated) efficiency #
+  // #######################################################
+  if (strcmp(analyORbin.c_str(),"ANALY") == 0)
+    {
+      Utility->ReadAnalyticalEff(ParameterFILE,q2Bins,cosThetaKBins,cosThetaLBins,&effFuncs2D,"effFuncs2D",Utility->ParFileBlockN("analyEffokTag"));
+      effFunc2D = effFuncs2D[q2BinIndx];
+      cEff->cd(2);
+      effFunc2D->GetXaxis()->SetTitleSize(0.06);
+      effFunc2D->GetYaxis()->SetTitleSize(0.06);
+      effFunc2D->GetXaxis()->SetTitleOffset(1.25);
+      effFunc2D->GetYaxis()->SetTitleOffset(1.25);
+      effFunc2D->GetZaxis()->SetTitleOffset(1.25);
+      effFunc2D->Draw("surf2 fb");
+      Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFunc2D);
+    }
+  else if (strcmp(analyORbin.c_str(),"BIN") == 0)
+    {
+      myString.clear(); myString.str("");
+      myString << "H2Deff_q2Bin_new_" << q2BinIndx;
+      hisFunc2Dnew = Utility->Get2DEffHistoq2Bin(cosThetaKBins,cosThetaLBins,q2BinIndx,SignalType,true,make_pair(-1.0,1.0),make_pair(-1.0,1.0));
+      cEff->cd(2);
+      hisFunc2Dnew->GetXaxis()->SetTitleSize(0.06);
+      hisFunc2Dnew->GetYaxis()->SetTitleSize(0.06);
+      hisFunc2Dnew->GetXaxis()->SetTitleOffset(1.25);
+      hisFunc2Dnew->GetYaxis()->SetTitleOffset(1.25);
+      hisFunc2Dnew->GetZaxis()->SetTitleOffset(1.25);
+      hisFunc2Dnew->Draw("surf2 fb");
+    }
+  else
+    {
+      cout << "[ComputeEfficiency::Test2DEfficiency]\tWrong parameter option : "  << analyORbin.c_str() << endl;
+      exit (EXIT_FAILURE);
+    }
 
 
   // ##############################
@@ -2046,22 +2076,39 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
     {
       cEff->cd(binIndx+3);
 
-      myString.clear(); myString.str("");
-      myString << "effFuncSlice_binK_" << binIndx;
-      effFuncSlice.push_back(new TF12(myString.str().c_str(),effFunc2D,(cosThetaKBins->operator[](binIndx)+cosThetaKBins->operator[](binIndx+1))/2.,"y"));
-      effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
-      effFuncSlice.back()->GetYaxis()->SetTitle("Efficiency");
-      effFuncSlice.back()->GetYaxis()->SetRangeUser(0.0,ordinateRange);
-      effFuncSlice.back()->Draw();
+      if (strcmp(analyORbin.c_str(),"ANALY") == 0)
+	{
+	  myString.clear(); myString.str("");
+	  myString << "effFuncSlice_binK_" << binIndx;
+	  effFuncSlice.push_back(new TF12(myString.str().c_str(),effFunc2D,(cosThetaKBins->operator[](binIndx)+cosThetaKBins->operator[](binIndx+1))/2.,"y"));
+	  effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
+	  effFuncSlice.back()->GetYaxis()->SetTitle("Efficiency");
+	  effFuncSlice.back()->GetXaxis()->SetTitleSize(0.06);
+	  effFuncSlice.back()->Draw();
+	}
+      else
+	{
+	  int binx, biny, binz;
+	  myString.clear(); myString.str("");
+	  myString << "histoSliceNew_binK_" << binIndx;
+	  hisFunc2Dnew->GetBinXYZ(hisFunc2Dnew->FindBin((cosThetaKBins->operator[](binIndx)+cosThetaKBins->operator[](binIndx+1))/2.,0.),binx,biny,binz);
+	  histoSliceNew.push_back(hisFunc2Dnew->ProjectionY(myString.str().c_str(),binx,binx));
+	  histoSliceNew.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
+ 	  histoSliceNew.back()->SetYTitle("Efficiency");
+	  histoSliceNew.back()->GetXaxis()->SetTitleSize(0.06);
+	  histoSliceNew.back()->GetXaxis()->SetTitleOffset(0.7);
+	  histoSliceNew.back()->SetLineWidth(2);
+	  histoSliceNew.back()->SetLineColor(kRed);
+	  histoSliceNew.back()->Draw("hist");
+	}
 
       myString.clear(); myString.str("");
-      myString << "histoSlice_binK_" << binIndx;
-      histoSlice.push_back(hisFunc2D->ProjectionY(myString.str().c_str(),binIndx+1,binIndx+1));
-      histoSlice.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
-      histoSlice.back()->SetMarkerStyle(20);
-      histoSlice.back()->SetYTitle("Efficiency");
-      histoSlice.back()->GetYaxis()->SetRangeUser(0.0,ordinateRange);
-      histoSlice.back()->Draw("same pe1");
+      myString << "histoSliceOrg_binK_" << binIndx;
+      histoSliceOrg.push_back(hisFunc2Dorg->ProjectionY(myString.str().c_str(),binIndx+1,binIndx+1));
+      histoSliceOrg.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
+      histoSliceOrg.back()->SetYTitle("Efficiency");
+      histoSliceOrg.back()->SetMarkerStyle(20);
+      histoSliceOrg.back()->Draw("same pe1");
     }
 
 
@@ -2072,31 +2119,48 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
     {
       cEff->cd(binIndx+3+cosThetaKBins->size()-1);
 
-      myString.clear(); myString.str("");
-      myString << "effFuncSlice_binL_" << binIndx;
-      effFuncSlice.push_back(new TF12(myString.str().c_str(),effFunc2D,(cosThetaLBins->operator[](binIndx)+cosThetaLBins->operator[](binIndx+1))/2.,"x"));
-      effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
-      effFuncSlice.back()->GetYaxis()->SetTitle("Efficiency");
-      effFuncSlice.back()->GetYaxis()->SetRangeUser(0.0,ordinateRange);
-      effFuncSlice.back()->Draw();
+      if (strcmp(analyORbin.c_str(),"ANALY") == 0)
+	{
+	  myString.clear(); myString.str("");
+	  myString << "effFuncSlice_binL_" << binIndx;
+	  effFuncSlice.push_back(new TF12(myString.str().c_str(),effFunc2D,(cosThetaLBins->operator[](binIndx)+cosThetaLBins->operator[](binIndx+1))/2.,"x"));
+	  effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
+	  effFuncSlice.back()->GetYaxis()->SetTitle("Efficiency");
+	  effFuncSlice.back()->GetXaxis()->SetTitleSize(0.06);
+	  effFuncSlice.back()->Draw();
+	}
+      else
+	{
+	  int binx, biny, binz;
+	  myString.clear(); myString.str("");
+	  myString << "histoSliceNew_binL_" << binIndx;
+	  hisFunc2Dnew->GetBinXYZ(hisFunc2Dnew->FindBin(0.,(cosThetaLBins->operator[](binIndx)+cosThetaLBins->operator[](binIndx+1))/2.),binx,biny,binz);
+	  histoSliceNew.push_back(hisFunc2Dnew->ProjectionX(myString.str().c_str(),biny,biny));
+	  histoSliceNew.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
+	  histoSliceNew.back()->SetYTitle("Efficiency");
+	  histoSliceNew.back()->GetXaxis()->SetTitleSize(0.06);
+	  histoSliceNew.back()->GetXaxis()->SetTitleOffset(0.7);
+	  histoSliceNew.back()->SetLineWidth(2);
+	  histoSliceNew.back()->SetLineColor(kRed);
+	  histoSliceNew.back()->Draw("hist");
+	}
 
       myString.clear(); myString.str("");
-      myString << "histoSlice_binL_" << binIndx;
-      histoSlice.push_back(hisFunc2D->ProjectionX(myString.str().c_str(),binIndx+1,binIndx+1));
-      histoSlice.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
-      histoSlice.back()->SetMarkerStyle(20);
-      histoSlice.back()->SetYTitle("Efficiency");
-      histoSlice.back()->GetYaxis()->SetRangeUser(0.0,ordinateRange);
-      histoSlice.back()->Draw("same pe1");
+      myString << "histoSliceOrg_binL_" << binIndx;
+      histoSliceOrg.push_back(hisFunc2Dorg->ProjectionX(myString.str().c_str(),binIndx+1,binIndx+1));
+      histoSliceOrg.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
+      histoSliceOrg.back()->SetMarkerStyle(20);
+      histoSliceOrg.back()->SetYTitle("Efficiency");
+      histoSliceOrg.back()->Draw("same pe1");
     }
 
 
   cEff->cd(1);
-  hisFunc2D->Draw("lego2 fb");
+  hisFunc2Dorg->Draw("lego2 fb");
   cEff->Update();
   if (savePlot == true)
     {
-      tmpString = TEST_THETAL_THETAK;
+      tmpString = ParameterFILE;
       tmpString.erase(tmpString.find(".txt"),4);
       myString.clear(); myString.str("");
       myString << tmpString << "_" << q2BinIndx << ".pdf";
@@ -2154,10 +2218,10 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   // ##############################
   // # Read analytical efficiency #
   // ##############################
-  Utility->ReadAnalyticalEff(TEST_THETAL_THETAK_PHI,q2Bins,cosThetaKBins,cosThetaLBins,phiBins,&effFuncs3D,"effFuncs3D",0);
+  Utility->ReadAnalyticalEff(ParameterFILE,q2Bins,cosThetaKBins,cosThetaLBins,phiBins,&effFuncs3D,"effFuncs3D",Utility->ParFileBlockN("analyEffokTag"));
   EffFunc3D = effFuncs3D[q2BinIndx];
   Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,EffFunc3D);
-  
+
   effHis3D = Utility->Get3DEffHistoq2Bin("effHis3D",q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
   effHis3D->SetMarkerStyle(22);
   effHis3D->SetMarkerColor(kRed);
@@ -2239,7 +2303,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   cEff->Update();
   if (savePlot == true)
     {
-      tmpString = TEST_THETAL_THETAK_PHI;
+      tmpString = ParameterFILE;
       tmpString.erase(tmpString.find(".txt"),4);
       myString.clear(); myString.str("");
       myString << tmpString << "_" << q2BinIndx << ".pdf";
@@ -2261,8 +2325,6 @@ int main (int argc, char** argv)
       cout << "INPUT_THETAL: "           << INPUT_THETAL << endl;
       cout << "INPUT_PHI: "              << INPUT_PHI << endl;
       cout << "INPUT_THETAL_THETAK: "    << INPUT_THETAL_THETAK << endl;
-      cout << "TEST_THETAL_THETAK: "     << TEST_THETAL_THETAK << endl;
-      cout << "TEST_THETAL_THETAK_PHI: " << TEST_THETAL_THETAK_PHI << endl;
 
       cout << "\nRIGHTtag: "     << RIGHTtag << endl;
       cout << "SAVEPLOT: "       << SAVEPLOT << endl;
@@ -2417,10 +2479,12 @@ int main (int argc, char** argv)
 	  theApp.Run (); // Eventloop on air
 	  return EXIT_SUCCESS;
 	}
-      else if (((option == "Test2DEff") || (option == "Test3DEff")) && (argc == 4))
+      else if (((option == "Test2DEff") || (option == "Test3DEff")) && (argc == 6))
 	{
-	  string fileNameInput   = argv[2];
-	  unsigned int q2BinIndx = atoi(argv[3]);
+	  string SignalType      = argv[2];
+	  string fileNameInput   = argv[3];
+	  string analyORbin      = argv[4];
+	  unsigned int q2BinIndx = atoi(argv[5]);
 
 	  TApplication theApp ("Applications", &argc, argv);
 
@@ -2430,7 +2494,7 @@ int main (int argc, char** argv)
 	  else                                 Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
 	  Utility->ReadEfficiency(fileNameInput.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,&myEff);
 	  
-	  if      (option == "Test2DEff") Test2DEfficiency(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,SAVEPLOT);
+	  if      (option == "Test2DEff") Test2DEfficiency(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,atoi(SignalType.c_str()),analyORbin,SAVEPLOT);
 	  else if (option == "Test3DEff") Test3DEfficiency(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,SAVEPLOT);
 
 
@@ -2462,8 +2526,8 @@ int main (int argc, char** argv)
 	  cout << "Fit2DEff       --> SignalType AND file with binned efficiency AND [q2 bin indx.]" << endl;
 	  cout << "Fit3DEff       --> SignalType AND file with binned efficiency AND [q2 bin indx.]" << endl;
 
-	  cout << "Test2DEff      --> file with binned efficiency AND [q2 bin indx.]" << endl;
-	  cout << "Test3DEff      --> file with binned efficiency AND [q2 bin indx.]" << endl;
+	  cout << "Test2DEff      --> SignalType AND file with binned efficiency AND [ANALY or BIN] AND [q2 bin indx.]" << endl;
+	  cout << "Test3DEff      --> SignalType AND file with binned efficiency AND [ANALY or BIN] AND [q2 bin indx.]" << endl;
 
 	  return EXIT_FAILURE;
 	}
@@ -2492,8 +2556,8 @@ int main (int argc, char** argv)
       cout << "Fit2DEff       --> SignalType AND file with binned efficiency AND [q2 bin indx.]" << endl;
       cout << "Fit3DEff       --> SignalType AND file with binned efficiency AND [q2 bin indx.]" << endl;
 
-      cout << "Test2DEff      --> file with binned efficiency AND [q2 bin indx.]" << endl;
-      cout << "Test3DEff      --> file with binned efficiency AND [q2 bin indx.]" << endl;
+      cout << "Test2DEff      --> SignalType AND file with binned efficiency AND [ANALY or BIN] AND [q2 bin indx.]" << endl;
+      cout << "Test3DEff      --> SignalType AND file with binned efficiency AND [ANALY or BIN] AND [q2 bin indx.]" << endl;
 
       return EXIT_FAILURE;
     }

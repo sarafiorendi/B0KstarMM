@@ -148,8 +148,10 @@ class Utils
   void GetEffq2Bin         (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, unsigned int q2Indx, unsigned int cosThetaKIndx, unsigned int cosThetaMuIndx, unsigned int phiIndx, effStruct myEff, double* Eff, double* EffErr);
   TH2D* Get2DEffHistoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff);
   TH3D* Get3DEffHistoq2Bin (std::string histoName, std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, effStruct myEff);
-  TH2D* Get2DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, unsigned int q2Indx, int SignalType, std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange);
-  TH3D* Get3DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, int SignalType,  std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange, std::pair <double,double> phiRange);
+  TH2D* Get2DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, unsigned int q2Indx, int SignalType, bool giveMeOriginal,
+			    std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange);
+  TH3D* Get3DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, int SignalType, bool giveMeOriginal,
+			    std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange, std::pair <double,double> phiRange);
   void Put2DEffHitoq2Bin   (std::string fileName, TH2D* histo);
   void Put3DEffHitoq2Bin   (std::string fileName, TH3D* histo);
   void DeleteEfficiency    (effStruct myEff);
@@ -159,7 +161,6 @@ class Utils
   int GetPsiPBin (std::vector<double>* q2Bins);
 
   bool ValIsInPsi (std::vector<double>* q2Bins, double q2Val);
-  bool ValIsBetweenJPsiAndPsiP (std::vector<double>* q2Bins, double q2Val);
 
   void IntegrateEffAll                (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, effStruct myEff, double* Eff, double* EffErr);
   void IntegrateEffButPsi             (std::vector<double>* q2Bins, std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, effStruct myEff, double* Eff, double* EffErr);
@@ -232,7 +233,7 @@ class Utils
   unsigned int GetConfigParamIndx (std::string varName);
 
   bool PsiRejection   (B0KstMuMuSingleCandTreeContent* NTuple, std::string seleType, bool B0andPsiCut);
-  bool PsiRejection   (B0KstMuMuTreeContent* NTuple, std::string seleType, bool B0andPsiCut, bool B0notB0bar, unsigned int indx);
+  bool PsiRejection   (B0KstMuMuTreeContent* NTuple, std::string seleType, bool B0andPsiCut, bool B0notB0bar, int indx);
   bool ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigCheck, double evFraction, int* BestCandIndx, bool* B0notB0bar, int* TrigCat, unsigned int* countCands);
   bool FlavorTagger   (B0KstMuMuTreeContent* NTuple, unsigned int i, bool* B0notB0bar);
 

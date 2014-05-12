@@ -247,14 +247,21 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
     }
 
 
-  TCanvas* c0 = new TCanvas("c0","c0",1200,600);
-  c0->Divide(4,0);
+  TPad* tmpPad;      
+  TCanvas* c0 = new TCanvas("c0","c0",1200,800);
+  c0->Divide(4,2);
   c0->cd(1);
+
+  TH1D* projX;
+  TH1D* projY;
+  TH1D* projZ;
 
   TH2D* Histo2D;
   TH2D* Histo2D_clone = NULL;
+
   TH3D* Histo3D;
   TH3D* Histo3D_clone = NULL;
+
   if (effDimension == "2D")
     {
       Histo2D = new TH2D("Histo2D", "Histo2D", Xbins.size()-1, Xbins_, Ybins.size()-1, Ybins_);
@@ -265,9 +272,9 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
       Histo2D->SetZTitle("Efficiency");
       Histo2D_clone = (TH2D*)Histo2D->Clone();
 
-      // ##########################
-      // # Read binned efficiency #
-      // ##########################
+      // ###################################
+      // # Read binned efficiency and plot #
+      // ###################################
       unsigned int j = 1;
       while (j <= Xbins.size()-1)
 	{
@@ -298,7 +305,30 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
 	  if (k != 1 ) j++;
 	}
 
-      Histo2D->Draw("surf1");
+      Histo2D->Draw("surf1 fb");
+
+      tmpPad = static_cast<TPad*>(c0->cd(6));
+      tmpPad->SetGrid();
+      projX = static_cast<TH1D*>(Histo2D->ProjectionX());
+      projX->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
+      projX->GetXaxis()->SetTitleOffset(1.0);
+      projX->SetYTitle("Projected efficiency");
+      projX->SetLineWidth(3);
+      projX->SetLineColor(kRed);
+      projX->Scale(1./static_cast<double>(Histo2D->GetNbinsY()));
+      projX->Draw("hist");
+
+      c0->cd(7);
+      tmpPad = static_cast<TPad*>(c0->cd(7));
+      tmpPad->SetGrid();
+      projY = static_cast<TH1D*>(Histo2D->ProjectionY());
+      projY->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
+      projY->GetXaxis()->SetTitleOffset(1.0);
+      projY->SetYTitle("Projected efficiency");
+      projY->SetLineWidth(3);
+      projY->SetLineColor(kRed);
+      projY->Scale(1./static_cast<double>(Histo2D->GetNbinsX()));
+      projY->Draw("hist");
     }
   else
     {
@@ -311,9 +341,9 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
       Histo3D->GetZaxis()->SetTitleOffset(1.8);
       Histo3D_clone = (TH3D*)Histo3D->Clone();
 
-      // ##########################
-      // # Read binned efficiency #
-      // ##########################
+      // ###################################
+      // # Read binned efficiency and plot #
+      // ###################################
       unsigned int j = 1;
       while (j <= Xbins.size()-1)
 	{
@@ -351,6 +381,39 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
 	}
 
       Histo3D->Draw();
+
+      tmpPad = static_cast<TPad*>(c0->cd(6));
+      tmpPad->SetGrid();
+      projX = static_cast<TH1D*>(Histo3D->Project3D("yz"));
+      projX->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
+      projX->GetXaxis()->SetTitleOffset(1.0);
+      projX->SetYTitle("Projected efficiency");
+      projX->SetLineWidth(3);
+      projX->SetLineColor(kRed);
+      projX->Scale(1./static_cast<double>(Histo3D->GetNbinsY() * Histo3D->GetNbinsZ()));
+      projX->Draw("hist");
+
+      tmpPad = static_cast<TPad*>(c0->cd(7));
+      tmpPad->SetGrid();
+      projY = static_cast<TH1D*>(Histo3D->Project3D("xz"));
+      projY->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
+      projY->GetXaxis()->SetTitleOffset(1.0);
+      projY->SetYTitle("Projected efficiency");
+      projY->SetLineWidth(3);
+      projY->SetLineColor(kRed);
+      projY->Scale(1./static_cast<double>(Histo3D->GetNbinsX() * Histo3D->GetNbinsZ()));
+      projY->Draw("hist");
+
+      tmpPad = static_cast<TPad*>(c0->cd(8));
+      tmpPad->SetGrid();
+      projZ = static_cast<TH1D*>(Histo3D->Project3D("xy"));
+      projZ->SetXTitle("#phi");
+      projZ->GetXaxis()->SetTitleOffset(1.0);
+      projZ->SetYTitle("Projected efficiency");
+      projZ->SetLineWidth(3);
+      projZ->SetLineColor(kRed);
+      projZ->Scale(1./static_cast<double>(Histo3D->GetNbinsX() * Histo3D->GetNbinsY()));
+      projZ->Draw("hist");
     }
 
 
@@ -381,17 +444,20 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
     }
 
 
-  c0->cd(2);
+  tmpPad = static_cast<TPad*>(c0->cd(2));
+  tmpPad->SetGrid();
   histoEffPDF->plotOn(xframe);
   xframe->Draw();
 
-  c0->cd(3);
+  tmpPad = static_cast<TPad*>(c0->cd(3));
+  tmpPad->SetGrid();
   histoEffPDF->plotOn(yframe);
   yframe->Draw();
 
   if (effDimension == "3D")
     {
-      c0->cd(4);
+      tmpPad = static_cast<TPad*>(c0->cd(4));
+      tmpPad->SetGrid();
       histoEffPDF->plotOn(zframe);
       zframe->Draw();
     }

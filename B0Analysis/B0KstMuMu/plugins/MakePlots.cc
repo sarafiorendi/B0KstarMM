@@ -1135,8 +1135,6 @@ TGraphAsymmErrors* ReadFromASCII (string fileName, unsigned int PlotType, vector
   while (inputFile.eof() == false)
     {
       if ((Utility->ValIsInPsi(q2Bins,xs) == false) && (xs >= q2Bins->operator[](0)) && (xs <= q2Bins->operator[](q2Bins->size()-1)))
-	// @TMP@
-	// && (Utility->ValIsBetweenJPsiAndPsiP(q2Bins,xs) == false))
 	{
 	  if ((PlotType == 0) || (PlotType == 10)) // Fl
 	    {
@@ -1619,8 +1617,6 @@ void MakePhysicsPlots (unsigned int PlotType)
       // #################################################################
       for (unsigned int i = 0; i < q2Bins.size()-1; i++)
         if ((Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false))
-      	  // @TMP@
-      	  // && (Utility->ValIsBetweenJPsiAndPsiP(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false))
       	  {
       	    geStepTh->SetPoint(i,geStepTh->GetX()[i],geStepTh->GetY()[i] /  (q2Bins[i+1] - q2Bins[i]));
       	    geStepTh->SetPointEYlow(i,geStepTh->GetErrorYlow(i) / (q2Bins[i+1] - q2Bins[i]));
@@ -1748,8 +1744,6 @@ void MakePhysicsPlots (unsigned int PlotType)
       for (int i = 0; i < chi2Histo->GetNbinsX(); i++)
 	{
 	  if ((Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false))
-	    // @TMP@
-	    // && (Utility->ValIsBetweenJPsiAndPsiP(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false))
 	    {
 	      tmpVar = pow(geStepTh->GetY()[i] - ge0->GetY()[i],2.) /
 		(geStepTh->GetY()[i] > ge0->GetY()[i] ? pow(geStepTh->GetErrorYlow(i),2.) + pow(ge0->GetErrorYhigh(i),2.) : pow(geStepTh->GetErrorYhigh(i),2.) + pow(ge0->GetErrorYlow(i),2.));
@@ -1805,17 +1799,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   TH1D* probHisto = new TH1D("probHisto","probHisto",q2Bins.size()-1,q2Bins_);
   TLegend* probLeg = new TLegend(0.8, 0.85, 0.97, 0.95, "");
   for (int i = 0; i < chi2Histo->GetNbinsX(); i++)
-    if ((((PlotType == 10) || (PlotType == 11) || (PlotType == 12)))
-	// @TMP@
-	// && ((Utility->ValIsBetweenJPsiAndPsiP(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false)))
-	|| !((PlotType == 10) || (PlotType == 11) || (PlotType == 12)))
-      {
-	if (Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false)
-	  {
-	    probHisto->SetBinContent(i+1,TMath::Prob(chi2Histo->GetBinContent(i+1),1));
-	  }
-      }
-    else probHisto->SetBinContent(i+1,0.0);
+    if (Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false) probHisto->SetBinContent(i+1,TMath::Prob(chi2Histo->GetBinContent(i+1),1));
   probLeg->AddEntry(probHisto,"p-value");
 
   probHisto->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});p-value");

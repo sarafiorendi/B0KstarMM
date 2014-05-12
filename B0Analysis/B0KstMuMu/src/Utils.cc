@@ -693,7 +693,8 @@ TH3D* Utils::Get3DEffHistoq2Bin (std::string histoName, std::vector<double>* q2B
   return Histo;
 }
 
-TH2D* Utils::Get2DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, unsigned int q2Indx, int SignalType, std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange)
+TH2D* Utils::Get2DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, unsigned int q2Indx, int SignalType, bool giveMeOriginal,
+				 std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange)
 {
   std::ifstream inputFile;
   std::stringstream myString;
@@ -800,11 +801,20 @@ TH2D* Utils::Get2DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector
   Xbins.clear();
   Ybins.clear();
   inputFile.close();
-  delete Histo;
-  return Histo_clone;
+  if (giveMeOriginal == true)
+    {
+      delete Histo_clone;
+      return Histo;
+    }
+  else
+    {
+      delete Histo;
+      return Histo_clone;
+    }
 }
 
-TH3D* Utils::Get3DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, int SignalType,  std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange, std::pair <double,double> phiRange)
+TH3D* Utils::Get3DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, int SignalType, bool giveMeOriginal,
+				 std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange, std::pair <double,double> phiRange)
 {
   std::ifstream inputFile;
   std::stringstream myString;
@@ -940,8 +950,16 @@ TH3D* Utils::Get3DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector
   Ybins.clear();
   Zbins.clear();
   inputFile.close();
-  delete Histo;
-  return Histo_clone;
+  if (giveMeOriginal == true)
+    {
+      delete Histo_clone;
+      return Histo;
+    }
+  else
+    {
+      delete Histo;
+      return Histo_clone;
+    }
 }
 
 void Utils::Put2DEffHitoq2Bin (std::string fileName, TH2D* histo)
@@ -1044,15 +1062,6 @@ bool Utils::ValIsInPsi (std::vector<double>* q2Bins, double q2Val)
        (q2Bins->operator[](PsiPbin+1) > q2Val)))
     return true;
   
-  return false;
-}
-
-bool Utils::ValIsBetweenJPsiAndPsiP (std::vector<double>* q2Bins, double q2Val)
-{
-  unsigned int JPsibin = GetJPsiBin(q2Bins);
-  unsigned int PsiPbin = GetPsiPBin(q2Bins);
-
-  if ((q2Val >= q2Bins->operator[](JPsibin+1)) && (q2Val <= q2Bins->operator[](PsiPbin))) return true;
   return false;
 }
 
@@ -3642,7 +3651,7 @@ bool Utils::PsiRejection (B0KstMuMuSingleCandTreeContent* NTuple, std::string se
   return false;
 }
 
-bool Utils::PsiRejection (B0KstMuMuTreeContent* NTuple, std::string seleType, bool B0andPsiCut, bool B0notB0bar, unsigned int indx)
+bool Utils::PsiRejection (B0KstMuMuTreeContent* NTuple, std::string seleType, bool B0andPsiCut, bool B0notB0bar, int indx)
 // ###########################
 // # seleType == "keepJpsi"  #
 // # seleType == "keepPsiP"  #
@@ -3654,86 +3663,94 @@ bool Utils::PsiRejection (B0KstMuMuTreeContent* NTuple, std::string seleType, bo
 // # This method is used together with the method: "ReadGenericParam" #
 // ####################################################################
 
-  if (seleType == "keepJpsi")
+  if (indx < 0)
     {
-      if ((fabs(NTuple->mumuMass->at(indx) - JPsiMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * NTuple->mumuMassE->at(indx)) &&
-	  ((B0andPsiCut == false) ||
-	   ((B0andPsiCut == true) &&
-	    
-	    (((B0notB0bar == true) &&
-	      ((NTuple->bMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str()))  &&
-	      ((NTuple->bMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str()))) ||
-	     
-	     ((B0notB0bar == false) &&
-	      ((NTuple->bBarMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str())) &&
-	      ((NTuple->bBarMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str())))))))
-
-	return true;
-    }
-  else if (seleType == "keepPsiP")
-    {
-      if ((fabs(NTuple->mumuMass->at(indx) - PsiPMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * NTuple->mumuMassE->at(indx)) &&
-	  ((B0andPsiCut == false) ||
-	   ((B0andPsiCut == true) &&
-
-	    (((B0notB0bar == true) &&
-	      ((NTuple->bMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str()))  &&
-	      ((NTuple->bMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str()))) ||
-	     
-	     ((B0notB0bar == false) &&
-	      ((NTuple->bBarMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str())) &&
-	      ((NTuple->bBarMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str())))))))
-
-	return true;
-    }
-  else if (seleType == "rejectPsi")
-    {
-      if ((fabs(NTuple->mumuMass->at(indx) - JPsiMass) > atof(GetGenericParam("NSigmaPsi").c_str()) * NTuple->mumuMassE->at(indx)) &&
-	  (fabs(NTuple->mumuMass->at(indx) - PsiPMass) > atof(GetGenericParam("NSigmaPsi").c_str()) * NTuple->mumuMassE->at(indx)) &&
-	  ((B0andPsiCut == false) ||
-	   ((B0andPsiCut == true) &&
-	    
-	    (((B0notB0bar == true) &&
-	      (!((((NTuple->bMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str()))  &&
-		  ((NTuple->bMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str()))) ||
-		 (((NTuple->bMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str()))  &&
-		  ((NTuple->bMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str())))))) ||
-	     
-	     ((B0notB0bar == false) &&
-	      (!((((NTuple->bBarMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str()))  &&
-		  ((NTuple->bBarMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str()))) ||
-		 (((NTuple->bBarMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str()))  &&
-		  ((NTuple->bBarMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str()))))))))))
-	
-	return true;
-    }
-  else if (seleType == "keepPsi")
-    {
-      if (((fabs(NTuple->mumuMass->at(indx) - JPsiMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * NTuple->mumuMassE->at(indx))  ||
-	   (fabs(NTuple->mumuMass->at(indx) - PsiPMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * NTuple->mumuMassE->at(indx))) &&
-	  ((B0andPsiCut == false) ||
-	   ((B0andPsiCut == true) &&
-
-	    (((B0notB0bar == true) &&
-	      ((((NTuple->bMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str()))  &&
-		((NTuple->bMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str()))) ||
-	       (((NTuple->bMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str()))  &&
-		((NTuple->bMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str()))))) ||
-
-	     ((B0notB0bar == true) &&
-	      ((((NTuple->bBarMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str()))  &&
-		((NTuple->bBarMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str()))) ||
-	       (((NTuple->bBarMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str()))  &&
-		((NTuple->bBarMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str())))))))))
-	
-	return true;
+      std::cout << "[Utils::PsiRejection]\tNtuple index not valid : " << indx << std::endl;
+      exit (EXIT_FAILURE);
     }
   else
     {
-      std::cout << "[Utils::PsiRejection]\tSelection type not valid : " << seleType << std::endl;
-      exit (EXIT_FAILURE);
+      if (seleType == "keepJpsi")
+	{
+	  if ((fabs(NTuple->mumuMass->at(indx) - JPsiMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * NTuple->mumuMassE->at(indx)) &&
+	      ((B0andPsiCut == false) ||
+	       ((B0andPsiCut == true) &&
+	    
+		(((B0notB0bar == true) &&
+		  ((NTuple->bMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str()))  &&
+		  ((NTuple->bMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str()))) ||
+	     
+		 ((B0notB0bar == false) &&
+		  ((NTuple->bBarMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str())) &&
+		  ((NTuple->bBarMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str())))))))
+
+	    return true;
+	}
+      else if (seleType == "keepPsiP")
+	{
+	  if ((fabs(NTuple->mumuMass->at(indx) - PsiPMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * NTuple->mumuMassE->at(indx)) &&
+	      ((B0andPsiCut == false) ||
+	       ((B0andPsiCut == true) &&
+
+		(((B0notB0bar == true) &&
+		  ((NTuple->bMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str()))  &&
+		  ((NTuple->bMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str()))) ||
+	     
+		 ((B0notB0bar == false) &&
+		  ((NTuple->bBarMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str())) &&
+		  ((NTuple->bBarMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str())))))))
+
+	    return true;
+	}
+      else if (seleType == "rejectPsi")
+	{
+	  if ((fabs(NTuple->mumuMass->at(indx) - JPsiMass) > atof(GetGenericParam("NSigmaPsi").c_str()) * NTuple->mumuMassE->at(indx)) &&
+	      (fabs(NTuple->mumuMass->at(indx) - PsiPMass) > atof(GetGenericParam("NSigmaPsi").c_str()) * NTuple->mumuMassE->at(indx)) &&
+	      ((B0andPsiCut == false) ||
+	       ((B0andPsiCut == true) &&
+	    
+		(((B0notB0bar == true) &&
+		  (!((((NTuple->bMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str()))  &&
+		      ((NTuple->bMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str()))) ||
+		     (((NTuple->bMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str()))  &&
+		      ((NTuple->bMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str())))))) ||
+	     
+		 ((B0notB0bar == false) &&
+		  (!((((NTuple->bBarMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str()))  &&
+		      ((NTuple->bBarMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str()))) ||
+		     (((NTuple->bBarMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str()))  &&
+		      ((NTuple->bBarMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str()))))))))))
+	
+	    return true;
+	}
+      else if (seleType == "keepPsi")
+	{
+	  if (((fabs(NTuple->mumuMass->at(indx) - JPsiMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * NTuple->mumuMassE->at(indx))  ||
+	       (fabs(NTuple->mumuMass->at(indx) - PsiPMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * NTuple->mumuMassE->at(indx))) &&
+	      ((B0andPsiCut == false) ||
+	       ((B0andPsiCut == true) &&
+
+		(((B0notB0bar == true) &&
+		  ((((NTuple->bMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str()))  &&
+		    ((NTuple->bMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str()))) ||
+		   (((NTuple->bMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str()))  &&
+		    ((NTuple->bMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str()))))) ||
+
+		 ((B0notB0bar == true) &&
+		  ((((NTuple->bBarMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str()))  &&
+		    ((NTuple->bBarMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str()))) ||
+		   (((NTuple->bBarMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str()))  &&
+		    ((NTuple->bBarMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str())))))))))
+	
+	    return true;
+	}
+      else
+	{
+	  std::cout << "[Utils::PsiRejection]\tSelection type not valid : " << seleType << std::endl;
+	  exit (EXIT_FAILURE);
+	}
     }
-  
+
   return false;
 }
 
