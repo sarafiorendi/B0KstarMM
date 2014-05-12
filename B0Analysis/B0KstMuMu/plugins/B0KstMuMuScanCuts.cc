@@ -38,7 +38,7 @@ using std::vector;
 // ####################
 #define ParameterFILE "../python/ParameterFile.txt"
 #define DoTrigCheck 1
-#define SpecialHighq2Bin2 7.3 // [GeV/c2]2
+#define SpecialHighq2Bin 7.3 // [GeV/c2]2
 #define nEvPrint 200000
 #define SETBATCH true // Set batch mode
 
@@ -83,12 +83,12 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
 // # scanType = 4 = "mass(K*)"         #
 // # scanType = 5 = "hadDCA/sigma"     #
 // #####################################
-// # q2Region = 0 = q2 bin 0,1         #
-// # q2Region = 1 = q2 bin 7           #
-// # q2Region = 2 = q2 bin 0,1,7       #
-// # q2Region = 3 = q2 bin 0,1,special 2 (high edge q2 bin 2 = SpecialHighq2Bin2),7 #
-// # q2Region = 4 = q2 bin 2,4,6       #
-// # q2Region = 5 = q2 bin all but 3,5 #
+// # q2Region = 0 = q2 bin 0,1,2       #
+// # q2Region = 1 = q2 bin 8           #
+// # q2Region = 2 = q2 bin 0,1,2,8     #
+// # q2Region = 3 = q2 bin 0,1,2,special 3 (high edge q2 bin 3 = SpecialHighq2Bin),8 #
+// # q2Region = 4 = q2 bin 3,5,7       #
+// # q2Region = 5 = q2 bin all but 4,6 #
 // #####################################
 {
   stringstream myString;
@@ -103,8 +103,8 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   // ##############
   // # Parameters #
   // ##############
-  double signalSigma = sqrt(atof(Utility->GetGenericParam("FRACMASSS").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) +
-			    (1. - atof(Utility->GetGenericParam("FRACMASSS").c_str())) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) * atof(Utility->GetGenericParam("SIGMAS2").c_str()));
+  double signalSigma = sqrt( atof(Utility->GetGenericParam("FRACMASSS").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) +
+			     (1. - atof(Utility->GetGenericParam("FRACMASSS").c_str())) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) );
   double MCtoDataRescale = 20.466442/(5951.1*49.1/33.2); // [fb-1(Data) / fb-1(MC) (corrected by the PYTHIA overestimation of the cross-section)]
 
 
@@ -207,12 +207,12 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   cout << "\n--> Scanning variable: " << fileName << endl;
   cout << "--> LowEdge: " << LowEdge << "\tHighEdge: " << HighEdge << "\tSteps: " << nBins << endl;
   cout << "--> Scanning ";
-  if      (q2Region == 0) cout << "bins 0,1" << endl;
-  else if (q2Region == 1) cout << "bin 7" << endl;
-  else if (q2Region == 2) cout << "bins 0,1,7" << endl;
-  else if (q2Region == 3) cout << "bins 0,1,special 2 (high edge q2 bin 2 = " << SpecialHighq2Bin2 << "),7" << endl;
-  else if (q2Region == 4) cout << "bins 2,4,6" << endl;
-  else if (q2Region == 5) cout << "all bins but 3,5" << endl;
+  if      (q2Region == 0) cout << "bins 0,1,2" << endl;
+  else if (q2Region == 1) cout << "bin 8" << endl;
+  else if (q2Region == 2) cout << "bins 0,1,2,8" << endl;
+  else if (q2Region == 3) cout << "bins 0,1,2,special 3 (high edge q2 bin 3 = " << SpecialHighq2Bin << "),8" << endl;
+  else if (q2Region == 4) cout << "bins 3,5,7" << endl;
+  else if (q2Region == 5) cout << "all bins but 4,6" << endl;
 
 
   // #################
@@ -252,20 +252,31 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
 	       ((B0notB0bar == false) && (fabs(NTupleS->bBarMass->at(BestCandIndx) - Utility->B0Mass) < atof(Utility->GetGenericParam("NSigmaB0S").c_str())*signalSigma))) &&
 	      (NTupleS->genSignal == true) && (NTupleS->truthMatchSignal->at(BestCandIndx) == true) &&
 	      
-	      (fabs(NTupleS->mumuMass->at(BestCandIndx) - Utility->JPsiMass) > atof(Utility->GetGenericParam("NSigmaPsi").c_str()) * NTupleS->mumuMassE->at(BestCandIndx)) &&
-	      (fabs(NTupleS->mumuMass->at(BestCandIndx) - Utility->PsiPMass) > atof(Utility->GetGenericParam("NSigmaPsi").c_str()) * NTupleS->mumuMassE->at(BestCandIndx)) &&
-	      
-	      ((((q2Region == 0) || (q2Region == 2) || (q2Region == 3) || (q2Region == 5)) &&
-		(NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) > q2Bins[0]) && (NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) < q2Bins[2])) ||
-	       (((q2Region == 1) || (q2Region == 2) || (q2Region == 3) || (q2Region == 5)) &&
-		(NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) > q2Bins[7]) && (NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) < q2Bins[8])) ||
+	      (Utility->PsiRejection(NTupleS,"rejectPsi",true,B0notB0bar,BestCandIndx) == true) &&
+
+	      (((q2Region == 0) &&
+		(NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) > q2Bins[0]) && (NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) < q2Bins[3])) ||
+	       
+	       ((q2Region == 1) &&
+		(NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) > q2Bins[8]) && (NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) < q2Bins[9])) ||
+	       
+	       ((q2Region == 2) &&
+		(((NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) > q2Bins[0]) && (NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) < q2Bins[3]))   ||
+		 ((NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) > q2Bins[8]) && (NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) < q2Bins[9])))) ||
+	       
 	       ((q2Region == 3) &&
-		(NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) > q2Bins[2]) && (NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) < SpecialHighq2Bin2)) ||
-	       (((q2Region == 4) || (q2Region == 5)) &&
-		(((NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) > q2Bins[2]) && (NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) < q2Bins[3])) ||
-		 ((NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) > q2Bins[4]) && (NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) < q2Bins[5])) ||
-		 ((NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) > q2Bins[6]) && (NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) < q2Bins[7]))))))
-		  
+		(((NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) > q2Bins[0]) && (NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) < SpecialHighq2Bin)) ||
+		 ((NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) > q2Bins[8]) && (NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) < q2Bins[9]))))      ||
+
+	       ((q2Region == 4) &&
+		(((NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) > q2Bins[3]) && (NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) < q2Bins[4]))   ||
+		 ((NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) > q2Bins[5]) && (NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) < q2Bins[6]))   ||
+		 ((NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) > q2Bins[7]) && (NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) < q2Bins[8])))) ||
+	       
+	       ((q2Region == 5) &&
+		(!(((NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) > q2Bins[4]) && (NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) < q2Bins[5])) ||
+		   ((NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) > q2Bins[6]) && (NTupleS->mumuMass->at(BestCandIndx)*NTupleS->mumuMass->at(BestCandIndx) < q2Bins[7])))))))
+	    
 	    countS[i]++;
 	}
 
@@ -311,29 +322,40 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
 	  if ((Utility->ChooseBestCand(NTupleB, DoTrigCheck, static_cast<double>(entry)/static_cast<double>(nEntriesB), &BestCandIndx, &B0notB0bar, &TrigCat, &countCands) == true) &&
 
 	      (((B0notB0bar == true) &&
-		(((NTupleB->bMass->at(BestCandIndx) > Utility->B0Mass-(atof(Utility->GetGenericParam("NSigmaB0B").c_str())+atof(Utility->GetGenericParam("NSigmaB0S").c_str()))*signalSigma) &&
-		  (NTupleB->bMass->at(BestCandIndx) < Utility->B0Mass-atof(Utility->GetGenericParam("NSigmaB0B").c_str())*signalSigma)) ||
-		 ((NTupleB->bMass->at(BestCandIndx) < Utility->B0Mass+(atof(Utility->GetGenericParam("NSigmaB0B").c_str())+atof(Utility->GetGenericParam("NSigmaB0S").c_str()))*signalSigma) &&
-		  (NTupleB->bMass->at(BestCandIndx) > Utility->B0Mass+atof(Utility->GetGenericParam("NSigmaB0B").c_str())*signalSigma)))) ||
+		(((NTupleB->bMass->at(BestCandIndx) > Utility->B0Mass - (atof(Utility->GetGenericParam("NSigmaB0B").c_str()) + atof(Utility->GetGenericParam("NSigmaB0S").c_str())) * signalSigma) &&
+		  (NTupleB->bMass->at(BestCandIndx) < Utility->B0Mass - atof(Utility->GetGenericParam("NSigmaB0B").c_str()) * signalSigma)) ||
+		 ((NTupleB->bMass->at(BestCandIndx) < Utility->B0Mass + (atof(Utility->GetGenericParam("NSigmaB0B").c_str()) + atof(Utility->GetGenericParam("NSigmaB0S").c_str())) * signalSigma) &&
+		  (NTupleB->bMass->at(BestCandIndx) > Utility->B0Mass + atof(Utility->GetGenericParam("NSigmaB0B").c_str()) * signalSigma)))) ||
 	       ((B0notB0bar == false) &&
-		(((NTupleB->bBarMass->at(BestCandIndx) > Utility->B0Mass-(atof(Utility->GetGenericParam("NSigmaB0B").c_str())+atof(Utility->GetGenericParam("NSigmaB0S").c_str()))*signalSigma) &&
-		  (NTupleB->bBarMass->at(BestCandIndx) < Utility->B0Mass-atof(Utility->GetGenericParam("NSigmaB0B").c_str())*signalSigma)) ||
-		 ((NTupleB->bBarMass->at(BestCandIndx) < Utility->B0Mass+(atof(Utility->GetGenericParam("NSigmaB0B").c_str())+atof(Utility->GetGenericParam("NSigmaB0S").c_str()))*signalSigma) &&
-		  (NTupleB->bBarMass->at(BestCandIndx) > Utility->B0Mass+atof(Utility->GetGenericParam("NSigmaB0B").c_str())*signalSigma))))) &&
-
-	      (fabs(NTupleB->mumuMass->at(BestCandIndx) - Utility->JPsiMass) > atof(Utility->GetGenericParam("NSigmaPsi").c_str()) * NTupleB->mumuMassE->at(BestCandIndx)) &&
-	      (fabs(NTupleB->mumuMass->at(BestCandIndx) - Utility->PsiPMass) > atof(Utility->GetGenericParam("NSigmaPsi").c_str()) * NTupleB->mumuMassE->at(BestCandIndx)) &&
+		(((NTupleB->bBarMass->at(BestCandIndx) > Utility->B0Mass - (atof(Utility->GetGenericParam("NSigmaB0B").c_str()) + atof(Utility->GetGenericParam("NSigmaB0S").c_str())) * signalSigma) &&
+		  (NTupleB->bBarMass->at(BestCandIndx) < Utility->B0Mass - atof(Utility->GetGenericParam("NSigmaB0B").c_str()) * signalSigma)) ||
+		 ((NTupleB->bBarMass->at(BestCandIndx) < Utility->B0Mass + (atof(Utility->GetGenericParam("NSigmaB0B").c_str()) + atof(Utility->GetGenericParam("NSigmaB0S").c_str())) * signalSigma) &&
+		  (NTupleB->bBarMass->at(BestCandIndx) > Utility->B0Mass + atof(Utility->GetGenericParam("NSigmaB0B").c_str()) * signalSigma))))) &&
 	      
-	      ((((q2Region == 0) || (q2Region == 2) || (q2Region == 3) || (q2Region == 5)) &&
-		(NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) > q2Bins[0]) && (NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) < q2Bins[2])) ||
-	       (((q2Region == 1) || (q2Region == 2) || (q2Region == 3) || (q2Region == 5)) &&
-		(NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) > q2Bins[7]) && (NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) < q2Bins[8])) ||
+	      (Utility->PsiRejection(NTupleB,"rejectPsi",true,B0notB0bar,BestCandIndx) == true) &&
+
+	      (((q2Region == 0) &&
+		(NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) > q2Bins[0]) && (NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) < q2Bins[3])) ||
+	       
+	       ((q2Region == 1) &&
+		(NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) > q2Bins[8]) && (NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) < q2Bins[9])) ||
+	       
+	       ((q2Region == 2) &&
+		(((NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) > q2Bins[0]) && (NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) < q2Bins[3]))   ||
+		 ((NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) > q2Bins[8]) && (NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) < q2Bins[9])))) ||
+	       
 	       ((q2Region == 3) &&
-		(NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) > q2Bins[2]) && (NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) < SpecialHighq2Bin2)) ||
-	       (((q2Region == 4) || (q2Region == 5)) &&
-		(((NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) > q2Bins[2]) && (NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) < q2Bins[3])) ||
-		 ((NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) > q2Bins[4]) && (NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) < q2Bins[5])) ||
-		 ((NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) > q2Bins[6]) && (NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) < q2Bins[7]))))))
+		(((NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) > q2Bins[0]) && (NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) < SpecialHighq2Bin)) ||
+		 ((NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) > q2Bins[8]) && (NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) < q2Bins[9]))))      ||
+
+	       ((q2Region == 4) &&
+		(((NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) > q2Bins[3]) && (NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) < q2Bins[4]))   ||
+		 ((NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) > q2Bins[5]) && (NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) < q2Bins[6]))   ||
+		 ((NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) > q2Bins[7]) && (NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) < q2Bins[8])))) ||
+	       
+	       ((q2Region == 5) &&
+		(!(((NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) > q2Bins[4]) && (NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) < q2Bins[5])) ||
+		   ((NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) > q2Bins[6]) && (NTupleB->mumuMass->at(BestCandIndx)*NTupleB->mumuMass->at(BestCandIndx) < q2Bins[7])))))))
 	    
 	    countB[i]++;
 	}
@@ -351,28 +373,28 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   // ############################
   for (unsigned int i = 0; i < nBins; i++)
     {
-      countS[i] = countS[i] * MCtoDataRescale;
-      histoR1->SetBinContent(i+1,countS[i]);
+      histoR1->SetBinContent(i+1,MCtoDataRescale*countS[i]);
       histoR2->SetBinContent(i+1,countB[i]);
-      histoR3->SetBinContent(i+1,countB[i] > 0 ? countS[i] / sqrt(countB[i]) : 0);
-      histoR4->SetBinContent(i+1,(countS[i]+countB[i]) > 0 ? countS[i] / sqrt(countS[i]+countB[i]) : 0);
-      cout << "Signal: " << countS[i] << "\tBackground: " << countB[i] << "\tS/sqrt(B): " << countS[i] / sqrt(countB[i]);
-      cout << "\ts/sqrt(S+B): " << countS[i] / sqrt(countS[i]+countB[i]) << endl;
+      histoR3->SetBinContent(i+1,countB[i] > 0 ? MCtoDataRescale*countS[i] / sqrt(countB[i]) : 0);
+      histoR4->SetBinContent(i+1,(countS[i]+countB[i]) > 0 ? MCtoDataRescale*countS[i] / sqrt(MCtoDataRescale*MCtoDataRescale*countS[i] + countB[i]) : 0);
+      
+      cout << "Signal: " << countS[i] << "\tSignal (rescaled): " << histoR1->GetBinContent(i+1) << "\tBackground: " << histoR2->GetBinContent(i+1);
+      cout << "\tS / sqrt(B): " << histoR3->GetBinContent(i+1) << "\tS / sqrt(S + B): " << histoR4->GetBinContent(i+1) << endl;
     }
 
 
   cout << "\n--> Scanning variable: " << fileName << endl;
 
-  cout << "\nMaximuml value for S/B: " << histoR3->GetMaximum() << " at X = " << histoR3->GetXaxis()->GetBinLowEdge(histoR3->GetMaximumBin()) << endl;
-  cout << "Signal at maximum for S/B: " << countS[histoR3->GetMaximumBin()-1] << endl;
-  if (scanType != 4) cout << "Percentage of signal at maximum for S/B: " << histoR1->GetBinContent(histoR3->GetMaximumBin()) / histoR1->GetBinContent(1) * 100.0 << endl;
-  else cout << "Percentage of signal at maximum for S/B: " << histoR1->GetBinContent(histoR3->GetMaximumBin()) / histoR1->GetBinContent(histoR1->GetNbinsX()) * 100.0 << endl;
+  cout << "\nMaximuml value for S / sqrt(B): " << histoR3->GetMaximum() << " at X = " << histoR3->GetXaxis()->GetBinLowEdge(histoR3->GetMaximumBin()) << endl;
+  cout << "Signal at maximum for S / sqrt(B): " << countS[histoR3->GetMaximumBin()-1] << endl;
+  if (scanType != 4) cout << "Percentage of signal at maximum for S / sqrt(B): " << histoR1->GetBinContent(histoR3->GetMaximumBin()) / histoR1->GetBinContent(1) * 100.0 << endl;
+  else               cout << "Percentage of signal at maximum for S / sqrt(B): " << histoR1->GetBinContent(histoR3->GetMaximumBin()) / histoR1->GetBinContent(histoR1->GetNbinsX()) * 100.0 << endl;
 
-  cout << "\nMaximuml value for S/sqrt(S+B): " << histoR4->GetMaximum() << " at X = " << histoR4->GetXaxis()->GetBinLowEdge(histoR4->GetMaximumBin()) << endl;
-  cout << "Signal at maximum for S/sqrt(S+B): " << countS[histoR4->GetMaximumBin()-1] << endl;
-  if (scanType != 4) cout << "Percentage of signal at maximum for S/sqrt(S+B): " << histoR1->GetBinContent(histoR4->GetMaximumBin()) / histoR1->GetBinContent(1) * 100.0 << endl;
-  else cout << "Percentage of signal at maximum for S/sqrt(S+B): " << histoR1->GetBinContent(histoR4->GetMaximumBin()) / histoR1->GetBinContent(histoR1->GetNbinsX()) * 100.0 << endl;
-
+  cout << "\nMaximuml value for S / sqrt(S + B): " << histoR4->GetMaximum() << " at X = " << histoR4->GetXaxis()->GetBinLowEdge(histoR4->GetMaximumBin()) << endl;
+  cout << "Signal at maximum for S / sqrt(S + B): " << countS[histoR4->GetMaximumBin()-1] << endl;
+  if (scanType != 4) cout << "Percentage of signal at maximum for S / sqrt(S + B): " << histoR1->GetBinContent(histoR4->GetMaximumBin()) / histoR1->GetBinContent(1) * 100.0 << endl;
+  else               cout << "Percentage of signal at maximum for S / sqrt(S + B): " << histoR1->GetBinContent(histoR4->GetMaximumBin()) / histoR1->GetBinContent(histoR1->GetNbinsX()) * 100.0 << endl;
+  
 
   c0->Divide(2,2);
   c0->cd(1);
@@ -426,7 +448,7 @@ int main (int argc, char** argv)
       cout << "\n@@@ Settings @@@" << endl;
       cout << "Parameter file: "         << ParameterFILE << endl;
       cout << "Do trig check: "          << DoTrigCheck << endl;
-      cout << "Special high q2 bin #2: " << SpecialHighq2Bin2 << endl;
+      cout << "Special high q2 bin #3: " << SpecialHighq2Bin << endl;
       cout << "nEvPrint: "               << nEvPrint << endl;
       cout << "SETBATCH: "               << SETBATCH << endl;
 
@@ -456,12 +478,12 @@ int main (int argc, char** argv)
       cout << "4 = mass(K*)" << endl;
       cout << "5 = hadDCA/sigma" << endl;
       cout << "@@@@@@ Possible q2Region values @@@@@@" << endl;
-      cout << "0 = q2 bin 0,1" << endl;
-      cout << "1 = q2 bin 7" << endl;
-      cout << "2 = q2 bin 0,1,7" << endl;
-      cout << "3 = q2 bin 0,1,special 2 (high edge q2 bin 2 = " << SpecialHighq2Bin2 << "),7" << endl;
-      cout << "4 = q2 bin 2,4,6" << endl;
-      cout << "5 = q2 bin all but 3,5" << endl;
+      cout << "0 = q2 bin 0,1,2" << endl;
+      cout << "1 = q2 bin 8" << endl;
+      cout << "2 = q2 bin 0,1,2,8" << endl;
+      cout << "3 = q2 bin 0,1,2,special 3 (high edge q2 bin 3 = " << SpecialHighq2Bin << "),8" << endl;
+      cout << "4 = q2 bin 3,5,7" << endl;
+      cout << "5 = q2 bin all but 4,6" << endl;
 
       return EXIT_FAILURE;
     }

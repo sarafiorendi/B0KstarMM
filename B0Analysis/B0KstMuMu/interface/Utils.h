@@ -232,6 +232,7 @@ class Utils
   unsigned int GetConfigParamIndx (std::string varName);
 
   bool PsiRejection   (B0KstMuMuSingleCandTreeContent* NTuple, std::string seleType, bool B0andPsiCut);
+  bool PsiRejection   (B0KstMuMuTreeContent* NTuple, std::string seleType, bool B0andPsiCut, bool B0notB0bar, unsigned int indx);
   bool ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigCheck, double evFraction, int* BestCandIndx, bool* B0notB0bar, int* TrigCat, unsigned int* countCands);
   bool FlavorTagger   (B0KstMuMuTreeContent* NTuple, unsigned int i, bool* B0notB0bar);
 

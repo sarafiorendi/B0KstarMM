@@ -2831,10 +2831,12 @@ void Utils::AddConstraintThetaL (TH1D** histo, unsigned int q2Indx, unsigned int
       if ((q2Indx == 4) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,107e-5,1e-5,ID);
     }
 
-  if ((q2Indx == 5) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"low",abscissaErr,1.0,28e-4,1e-5,ID);
-  if ((q2Indx == 5) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"high",abscissaErr,1.0,28e-4,1e-5,ID);
-  if ((q2Indx == 5) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"low",abscissaErr,1.0,15e-4,1e-5,ID);
-  if ((q2Indx == 5) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,87e-5,1e-5,ID);
+  if ((q2Indx == 5) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"low",abscissaErr,1.0,39e-4,1e-5,ID);
+  if ((q2Indx == 5) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"high",abscissaErr,1.0,39e-4,1e-5,ID);
+  if ((q2Indx == 5) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"low",abscissaErr,1.0,28e-4,1e-5,ID);
+  if ((q2Indx == 5) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"high",abscissaErr,1.0,36e-4,1e-5,ID);
+  if ((q2Indx == 5) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"low",abscissaErr,1.0,2e-3,1e-5,ID);
+  if ((q2Indx == 5) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"high",abscissaErr,1.0,27e-4,1e-5,ID);
 
   if (SignalType == B0ToPsi2SKst)
     {
@@ -2847,9 +2849,9 @@ void Utils::AddConstraintThetaL (TH1D** histo, unsigned int q2Indx, unsigned int
       if ((q2Indx == 6) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,8e-4,1e-5,ID);
     }
 
-  if ((q2Indx == 7) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"low",abscissaErr,1.0,195e-5,1e-5,ID);
-  if ((q2Indx == 7) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,11e-4,1e-5,ID);
-  if ((q2Indx == 7) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,115e-5,1e-5,ID);
+  if ((q2Indx == 7) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"high",abscissaErr,1.0,5e-3,1e-5,ID);
+  if ((q2Indx == 7) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"low",abscissaErr,1.0,28e-4,1e-5,ID);
+  if ((q2Indx == 7) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,16e-4,1e-5,ID);
 
   if ((q2Indx == 8) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"high",abscissaErr,1.0,42e-4,1e-5,ID);
   if ((q2Indx == 8) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"low",abscissaErr,1.0,47e-4,1e-5,ID);
@@ -3124,7 +3126,7 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
   if (q2Indx == 0)
     {
       toBeAdded[0]   = "both";
-      constraints[0] = std::make_pair(3e-4,1e-5);
+      constraints[0] = std::make_pair(2e-4,1e-5);
 
       toBeAdded[1]   = "both";
       constraints[1] = std::make_pair(3e-4,1e-5);
@@ -3202,25 +3204,27 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
   else if (q2Indx == 5)
     {
       toBeAdded[0]   = "low";
-      constraints[0] = std::make_pair(28e-4,1e-5);
+      constraints[0] = std::make_pair(39e-4,1e-5);
 
       toBeAdded[1]   = "high";
-      constraints[1] = std::make_pair(28e-4,1e-5);
+      constraints[1] = std::make_pair(39e-4,1e-5);
+
+      toBeAdded[2]   = "low";
+      constraints[2] = std::make_pair(28e-4,1e-5);
 
       toBeAdded[3]   = "low";
-      constraints[3] = std::make_pair(15e-4,1e-5);
-
-      toBeAdded[4]   = "low";
-      constraints[4] = std::make_pair(6e-4,1e-5);
+      constraints[3] = std::make_pair(2e-3,1e-5);
 
       AddConstraint2D(histo,abscissaErr,1.0,ID,"Y",0.0,0.0,&constraints,&toBeAdded);
 
       toBeAdded[0]   = "no";
       toBeAdded[1]   = "no";
-      toBeAdded[3]   = "no";
 
-      toBeAdded[4]   = "high";
-      constraints[4] = std::make_pair(87e-5,1e-5);
+      toBeAdded[2]   = "high";
+      constraints[2] = std::make_pair(36e-4,1e-5);
+
+      toBeAdded[3]   = "high";
+      constraints[3] = std::make_pair(27e-4,1e-5);
     }
 
   else if ((SignalType == B0ToPsi2SKst) && (q2Indx == 6))
@@ -3243,23 +3247,21 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
       toBeAdded[3]   = "no";
 
       toBeAdded[4]   = "high";
-      constraints[4] = std::make_pair(11e-4,1e-5);
+      constraints[4] = std::make_pair(8e-4,1e-5);
     }
 
   else if (q2Indx == 7)
     {
+      toBeAdded[0]   = "high";
+      constraints[0] = std::make_pair(5e-3,1e-5);
+
       toBeAdded[3]   = "low";
-      constraints[3] = std::make_pair(195e-5,1e-5);
-
-      toBeAdded[4]   = "low";
-      constraints[4] = std::make_pair(11e-4,1e-5);
-
-      AddConstraint2D(histo,abscissaErr,1.0,ID,"Y",0.0,0.0,&constraints,&toBeAdded);
-
-      toBeAdded[3]   = "no";
+      constraints[3] = std::make_pair(28e-4,1e-5);
 
       toBeAdded[4]   = "high";
-      constraints[4] = std::make_pair(115e-5,1e-5);
+      constraints[4] = std::make_pair(16e-4,1e-5);
+
+      AddConstraint2D(histo,abscissaErr,1.0,ID,"Y",0.0,0.0,&constraints,&toBeAdded);
     }
   else if (q2Indx == 8)
     {
@@ -3715,6 +3717,101 @@ bool Utils::PsiRejection (B0KstMuMuSingleCandTreeContent* NTuple, std::string se
 	      ((NTuple->B0MassArb - B0Mass) < (NTuple->mumuMass->at(0) - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str()))) ||
 	     (((NTuple->B0MassArb - B0Mass) > (NTuple->mumuMass->at(0) - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str())) &&
 	      ((NTuple->B0MassArb - B0Mass) < (NTuple->mumuMass->at(0) - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str())))))))
+	
+	return true;
+    }
+  else
+    {
+      std::cout << "[Utils::PsiRejection]\tSelection type not valid : " << seleType << std::endl;
+      exit (EXIT_FAILURE);
+    }
+  
+  return false;
+}
+
+bool Utils::PsiRejection (B0KstMuMuTreeContent* NTuple, std::string seleType, bool B0andPsiCut, bool B0notB0bar, unsigned int indx)
+// ###########################
+// # seleType == "keepJpsi"  #
+// # seleType == "keepPsiP"  #
+// # seleType == "rejectPsi" #
+// # seleType == "keepPsi"   #
+// ###########################
+{
+// ####################################################################
+// # This method is used together with the method: "ReadGenericParam" #
+// ####################################################################
+
+  if (seleType == "keepJpsi")
+    {
+      if ((fabs(NTuple->mumuMass->at(indx) - JPsiMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * NTuple->mumuMassE->at(indx)) &&
+	  ((B0andPsiCut == false) ||
+	   ((B0andPsiCut == true) &&
+	    
+	    (((B0notB0bar == true) &&
+	      ((NTuple->bMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str()))  &&
+	      ((NTuple->bMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str()))) ||
+	     
+	     ((B0notB0bar == false) &&
+	      ((NTuple->bBarMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str())) &&
+	      ((NTuple->bBarMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str())))))))
+
+	return true;
+    }
+  else if (seleType == "keepPsiP")
+    {
+      if ((fabs(NTuple->mumuMass->at(indx) - PsiPMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * NTuple->mumuMassE->at(indx)) &&
+	  ((B0andPsiCut == false) ||
+	   ((B0andPsiCut == true) &&
+
+	    (((B0notB0bar == true) &&
+	      ((NTuple->bMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str()))  &&
+	      ((NTuple->bMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str()))) ||
+	     
+	     ((B0notB0bar == false) &&
+	      ((NTuple->bBarMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str())) &&
+	      ((NTuple->bBarMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str())))))))
+
+	return true;
+    }
+  else if (seleType == "rejectPsi")
+    {
+      if ((fabs(NTuple->mumuMass->at(indx) - JPsiMass) > atof(GetGenericParam("NSigmaPsi").c_str()) * NTuple->mumuMassE->at(indx)) &&
+	  (fabs(NTuple->mumuMass->at(indx) - PsiPMass) > atof(GetGenericParam("NSigmaPsi").c_str()) * NTuple->mumuMassE->at(indx)) &&
+	  ((B0andPsiCut == false) ||
+	   ((B0andPsiCut == true) &&
+	    
+	    (((B0notB0bar == true) &&
+	      (!((((NTuple->bMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str()))  &&
+		  ((NTuple->bMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str()))) ||
+		 (((NTuple->bMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str()))  &&
+		  ((NTuple->bMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str())))))) ||
+	     
+	     ((B0notB0bar == false) &&
+	      (!((((NTuple->bBarMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str()))  &&
+		  ((NTuple->bBarMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str()))) ||
+		 (((NTuple->bBarMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str()))  &&
+		  ((NTuple->bBarMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str()))))))))))
+	
+	return true;
+    }
+  else if (seleType == "keepPsi")
+    {
+      if (((fabs(NTuple->mumuMass->at(indx) - JPsiMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * NTuple->mumuMassE->at(indx))  ||
+	   (fabs(NTuple->mumuMass->at(indx) - PsiPMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * NTuple->mumuMassE->at(indx))) &&
+	  ((B0andPsiCut == false) ||
+	   ((B0andPsiCut == true) &&
+
+	    (((B0notB0bar == true) &&
+	      ((((NTuple->bMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str()))  &&
+		((NTuple->bMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str()))) ||
+	       (((NTuple->bMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str()))  &&
+		((NTuple->bMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str()))))) ||
+
+	     ((B0notB0bar == true) &&
+	      ((((NTuple->bBarMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str()))  &&
+		((NTuple->bBarMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str()))) ||
+	       (((NTuple->bBarMass->at(indx) - B0Mass) > (NTuple->mumuMass->at(indx) - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str()))  &&
+		((NTuple->bBarMass->at(indx) - B0Mass) < (NTuple->mumuMass->at(indx) - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str())))))))))
 	
 	return true;
     }
