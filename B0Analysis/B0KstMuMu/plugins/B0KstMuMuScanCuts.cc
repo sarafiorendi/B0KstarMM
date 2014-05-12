@@ -279,6 +279,8 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
 	}
     }
 
+  NtplFileInS->Close();
+
 
   // #####################
   // # Background ntuple #
@@ -350,6 +352,8 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
 	  cout << "- Analyzed " << entry << " events (" << static_cast<double>(entry) / static_cast<double>(nEntriesB) * 100.0 << "%) --> " << timeEnd / 60.0 << " minutes to end\r" << flush;
 	}
     }
+
+  NtplFileInB->Close();
 
 
   // ############################

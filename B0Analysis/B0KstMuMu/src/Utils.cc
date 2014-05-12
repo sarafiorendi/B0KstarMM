@@ -3126,19 +3126,19 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
   if (q2Indx == 0)
     {
       toBeAdded[0]   = "both";
-      constraints[0] = std::make_pair(2e-4,1e-5);
+      constraints[0] = std::make_pair(3e-4,1e-5);
 
       toBeAdded[1]   = "both";
       constraints[1] = std::make_pair(3e-4,1e-5);
 
       toBeAdded[2]   = "both";
-      constraints[2] = std::make_pair(4e-4,1e-5);
+      constraints[2] = std::make_pair(5e-4,1e-5);
 
       toBeAdded[3]   = "both";
       constraints[3] = std::make_pair(2e-4,1e-5);
 
       toBeAdded[4]   = "both";
-      constraints[4] = std::make_pair(1e-4,1e-5);
+      constraints[4] = std::make_pair(2e-4,1e-5);
     }
   else if (q2Indx == 1)
     {
@@ -3192,108 +3192,20 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
       constraints[4] = std::make_pair(5e-4,1e-5);
     }
 
-  else if ((SignalType == B0ToJPsiKst) && (q2Indx == 4))
-    {
-      // ###################
-      // # B0 --> J/psi K* #
-      // ###################
-      toBeAdded[4]   = "high";
-      constraints[4] = std::make_pair(107e-5,1e-5);
-    }
-  
-  else if (q2Indx == 5)
-    {
-      toBeAdded[0]   = "low";
-      constraints[0] = std::make_pair(39e-4,1e-5);
-
-      toBeAdded[1]   = "high";
-      constraints[1] = std::make_pair(39e-4,1e-5);
-
-      toBeAdded[2]   = "low";
-      constraints[2] = std::make_pair(28e-4,1e-5);
-
-      toBeAdded[3]   = "low";
-      constraints[3] = std::make_pair(2e-3,1e-5);
-
-      AddConstraint2D(histo,abscissaErr,1.0,ID,"Y",0.0,0.0,&constraints,&toBeAdded);
-
-      toBeAdded[0]   = "no";
-      toBeAdded[1]   = "no";
-
-      toBeAdded[2]   = "high";
-      constraints[2] = std::make_pair(36e-4,1e-5);
-
-      toBeAdded[3]   = "high";
-      constraints[3] = std::make_pair(27e-4,1e-5);
-    }
-
   else if ((SignalType == B0ToPsi2SKst) && (q2Indx == 6))
     {
       // #####################
       // # B0 --> psi(2S) K* #
       // #####################
-      toBeAdded[0]   = "high";
-      constraints[0] = std::make_pair(56e-4,1e-5);
-
-      toBeAdded[3]   = "high";
-      constraints[3] = std::make_pair(36e-4,1e-5);
-
-      toBeAdded[4]   = "low";
-      constraints[4] = std::make_pair(15e-4,1e-5);
-
-      AddConstraint2D(histo,abscissaErr,1.0,ID,"Y",0.0,0.0,&constraints,&toBeAdded);
-
-      toBeAdded[0]   = "no";
-      toBeAdded[3]   = "no";
-
       toBeAdded[4]   = "high";
-      constraints[4] = std::make_pair(8e-4,1e-5);
-    }
-
-  else if (q2Indx == 7)
-    {
-      toBeAdded[0]   = "high";
-      constraints[0] = std::make_pair(5e-3,1e-5);
-
-      toBeAdded[3]   = "low";
-      constraints[3] = std::make_pair(28e-4,1e-5);
-
-      toBeAdded[4]   = "high";
-      constraints[4] = std::make_pair(16e-4,1e-5);
-
-      AddConstraint2D(histo,abscissaErr,1.0,ID,"Y",0.0,0.0,&constraints,&toBeAdded);
-    }
-  else if (q2Indx == 8)
-    {
-      toBeAdded[0]   = "high";
-      constraints[0] = std::make_pair(42e-4,1e-5);
-
-      toBeAdded[1]   = "low";
-      constraints[1] = std::make_pair(47e-4,1e-5);
-
-      toBeAdded[3]   = "low";
-      constraints[3] = std::make_pair(33e-4,1e-5);
-
-      toBeAdded[4]   = "low";
-      constraints[4] = std::make_pair(2e-3,1e-5);
-
-      AddConstraint2D(histo,abscissaErr,1.0,ID,"Y",0.0,0.0,&constraints,&toBeAdded);
-
-      toBeAdded[0]   = "no";
-      toBeAdded[1]   = "no";
-
-      toBeAdded[3]   = "high";
-      constraints[3] = std::make_pair(32e-4,1e-5);
-
-      toBeAdded[4]   = "high";
-      constraints[4] = std::make_pair(264e-5,1e-5);
+      constraints[4] = std::make_pair(9e-4,1e-5);
     }
 
 
   AddConstraint2D(histo,abscissaErr,1.0,ID,"Y",0.0,0.0,&constraints,&toBeAdded);
   
   
-  if      (q2Indx == 0) AddConstraint2D(histo,abscissaErr,4.0,ID,"justErrors",0.0,0.0);
+  if      (q2Indx == 0) AddConstraint2D(histo,abscissaErr,6.0,ID,"justErrors",0.0,0.0);
   else if (q2Indx == 1) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
   else if (q2Indx == 2) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
   else if (q2Indx == 3) AddConstraint2D(histo,abscissaErr,4.0,ID,"justErrors",0.0,0.0);
@@ -3311,6 +3223,7 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
   else if ((SignalType == B0ToPsi2SKst) && (q2Indx == 6)) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
 
   else if (q2Indx == 7) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
+  else if (q2Indx == 8) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
 }
 
 void Utils::AddConstraint3D (TH3D** histo, double abscissaErr, double Tval, double Terr, double TerrRescale, unsigned int ID, std::vector<int> toBeAdded[])
