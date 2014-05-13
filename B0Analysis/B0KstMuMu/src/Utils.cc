@@ -1981,11 +1981,13 @@ double Utils::ReadLumi (std::string fileName)
 }
 
 void Utils::ReadNLLval (std::string fileName, std::vector<std::vector<double>*>* vecParam)
-// vecParam[0] --> Fl
-// vecParam[1] --> Afb
-// vecParam[2] --> P1
-// vecParam[3] --> P2
-// vecParam[4] --> Branching-Fraction
+// ######################################
+// # vecParam[0] --> Fl                 #
+// # vecParam[1] --> Afb                #
+// # vecParam[2] --> P1                 #
+// # vecParam[3] --> P2                 #
+// # vecParam[4] --> Branching-Fraction #
+// ######################################
 {
   double val;
   std::vector<std::string> ParVector;
@@ -2105,16 +2107,18 @@ void Utils::ReadFitStartingValues (std::string fileName, std::vector<std::vector
 }
 
 void Utils::ReadFitSystematics (std::string fileName, std::vector<std::vector<double>*>* vecParam)
-// vecParam[0] --> Fl +err
-// vecParam[1] --> Fl -err
-// vecParam[2] --> Afb +err
-// vecParam[3] --> Afb -err
-// vecParam[4] --> P1 +err
-// vecParam[5] --> P1 -err
-// vecParam[6] --> P2 +err
-// vecParam[7] --> P2 -err
-// vecParam[8] --> Branching-Fraction +err
-// vecParam[9] --> Branching-Fraction -err
+// ###########################################
+// # vecParam[0] --> Fl +err                 #
+// # vecParam[1] --> Fl -err                 #
+// # vecParam[2] --> Afb +err                #
+// # vecParam[3] --> Afb -err                #
+// # vecParam[4] --> P1 +err                 #
+// # vecParam[5] --> P1 -err                 #
+// # vecParam[6] --> P2 +err                 #
+// # vecParam[7] --> P2 -err                 #
+// # vecParam[8] --> Branching-Fraction +err #
+// # vecParam[9] --> Branching-Fraction -err #
+// ###########################################
 {
   double val;
   std::vector<std::string> ParVector;
@@ -3599,20 +3603,24 @@ bool Utils::PsiRejection (double myB0Mass, double myMuMuMass, double myMuMuMassE
   if (seleType == "keepJpsi")
     {
       if ((fabs(myMuMuMass - JPsiMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * myMuMuMassE) &&
+
 	  ((B0andPsiCut == false) ||
+
 	   ((B0andPsiCut == true) &&
-	    ((myB0Mass - B0Mass) > (myMuMuMass - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str())) &&
-	    ((myB0Mass - B0Mass) < (myMuMuMass - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str())))))
+	    (((myMuMuMass < JPsiMass) && (fabs((myB0Mass - B0Mass) - (myMuMuMass - JPsiMass)) < atof(GetGenericParam("B&psiMassJpsiLo").c_str()))) ||
+	     ((myMuMuMass > JPsiMass) && (fabs((myB0Mass - B0Mass) - (myMuMuMass - JPsiMass)) < atof(GetGenericParam("B&psiMassJpsiHi").c_str())))))))
 
 	return true;
     }
   else if (seleType == "keepPsiP")
     {
       if ((fabs(myMuMuMass - PsiPMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * myMuMuMassE) &&
+
 	  ((B0andPsiCut == false) ||
+
 	   ((B0andPsiCut == true) &&
-	    ((myB0Mass - B0Mass) > (myMuMuMass - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str())) &&
-	    ((myB0Mass - B0Mass) < (myMuMuMass - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str())))))
+	    (((myMuMuMass < PsiPMass) && (fabs((myB0Mass - B0Mass) - (myMuMuMass - PsiPMass)) < atof(GetGenericParam("B&psiMassPsiPLo").c_str()))) ||
+	     ((myMuMuMass > PsiPMass) && (fabs((myB0Mass - B0Mass) - (myMuMuMass - PsiPMass)) < atof(GetGenericParam("B&psiMassPsiPHi").c_str())))))))
 
 	return true;
     }
@@ -3620,12 +3628,21 @@ bool Utils::PsiRejection (double myB0Mass, double myMuMuMass, double myMuMuMassE
     {
       if ((fabs(myMuMuMass - JPsiMass) > atof(GetGenericParam("NSigmaPsi").c_str()) * myMuMuMassE) &&
 	  (fabs(myMuMuMass - PsiPMass) > atof(GetGenericParam("NSigmaPsi").c_str()) * myMuMuMassE) &&
+
 	  ((B0andPsiCut == false) ||
+
 	   ((B0andPsiCut == true) &&
-	    (!((((myB0Mass - B0Mass) > (myMuMuMass - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str())) &&
-		((myB0Mass - B0Mass) < (myMuMuMass - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str()))) ||
-	       (((myB0Mass - B0Mass) > (myMuMuMass - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str())) &&
-		((myB0Mass - B0Mass) < (myMuMuMass - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str()))))))))
+
+	    (((myMuMuMass < JPsiMass) &&
+	      (!((fabs((myB0Mass - B0Mass) - (myMuMuMass - JPsiMass)) < atof(GetGenericParam("B&psiMassJpsiLo").c_str()))    ||
+		 (fabs((myB0Mass - B0Mass) - (myMuMuMass - PsiPMass)) < atof(GetGenericParam("B&psiMassPsiPLo").c_str()))))) ||
+	     
+	     ((myMuMuMass > PsiPMass) &&
+	      (!((fabs((myB0Mass - B0Mass) - (myMuMuMass - JPsiMass)) < atof(GetGenericParam("B&psiMassJpsiHi").c_str()))    ||
+		 (fabs((myB0Mass - B0Mass) - (myMuMuMass - PsiPMass)) < atof(GetGenericParam("B&psiMassPsiPHi").c_str()))))) ||
+	     
+	     (!((fabs((myB0Mass - B0Mass) - (myMuMuMass - JPsiMass)) < atof(GetGenericParam("B&psiMassJpsiHi").c_str()))     ||
+		(fabs((myB0Mass - B0Mass) - (myMuMuMass - PsiPMass)) < atof(GetGenericParam("B&psiMassPsiPLo").c_str()))))))))
 
 	return true;
     }
@@ -3633,12 +3650,21 @@ bool Utils::PsiRejection (double myB0Mass, double myMuMuMass, double myMuMuMassE
     {
       if (((fabs(myMuMuMass - JPsiMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * myMuMuMassE)  ||
 	   (fabs(myMuMuMass - PsiPMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * myMuMuMassE)) &&
+
 	  ((B0andPsiCut == false) ||
+
 	   ((B0andPsiCut == true) &&
-	    ((((myB0Mass - B0Mass) > (myMuMuMass - JPsiMass) - atof(GetGenericParam("B&psiMassJpsiLo").c_str())) &&
-	      ((myB0Mass - B0Mass) < (myMuMuMass - JPsiMass) + atof(GetGenericParam("B&psiMassJpsiHi").c_str()))) ||
-	     (((myB0Mass - B0Mass) > (myMuMuMass - PsiPMass) - atof(GetGenericParam("B&psiMassPsiPLo").c_str())) &&
-	      ((myB0Mass - B0Mass) < (myMuMuMass - PsiPMass) + atof(GetGenericParam("B&psiMassPsiPHi").c_str())))))))
+
+	    (((myMuMuMass < JPsiMass) &&
+	      ((fabs((myB0Mass - B0Mass) - (myMuMuMass - JPsiMass)) < atof(GetGenericParam("B&psiMassJpsiLo").c_str()))   ||
+	       (fabs((myB0Mass - B0Mass) - (myMuMuMass - PsiPMass)) < atof(GetGenericParam("B&psiMassPsiPLo").c_str())))) ||
+	     
+	     ((myMuMuMass > PsiPMass) &&
+	      ((fabs((myB0Mass - B0Mass) - (myMuMuMass - JPsiMass)) < atof(GetGenericParam("B&psiMassJpsiHi").c_str()))   ||
+	       (fabs((myB0Mass - B0Mass) - (myMuMuMass - PsiPMass)) < atof(GetGenericParam("B&psiMassPsiPHi").c_str())))) ||
+	     
+	     ((fabs((myB0Mass - B0Mass) - (myMuMuMass - JPsiMass)) < atof(GetGenericParam("B&psiMassJpsiHi").c_str()))    ||
+	      (fabs((myB0Mass - B0Mass) - (myMuMuMass - PsiPMass)) < atof(GetGenericParam("B&psiMassPsiPLo").c_str())))))))
 	
 	return true;
     }

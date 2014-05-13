@@ -134,16 +134,6 @@ void DrawString (double Lumi)
   TLine* line4 = new TLine(startNDCx+0.010, startNDCy+0.01, startNDCx+0.032, startNDCy+0.01);
   line4->SetBit(TLine::kLineNDC,true);
   line4->Draw();
-  // ###################
-  // # Nominal method: #
-  // ###################
-  // myString.str("");
-  // myString << "#sqrt{  }";
-  // TLatex* LumiTex3 = new TLatex(0.82,0.9,myString.str().c_str());
-  // LumiTex3->SetTextSize(0.053);
-  // LumiTex3->SetTextColor(kBlack);
-  // LumiTex3->SetNDC(true);
-  // LumiTex3->DrawLatex(0.82,0.9,myString.str().c_str());
 
   myString.clear();
   myString.str("");
@@ -1209,6 +1199,7 @@ void CheckPhysicsRegion ()
       ge->SetPointEXlow(i,geTMP->GetErrorYlow(i));
     }
 
+
   canv0->cd();
   histo->Draw();
   ge->Draw("pe1");
@@ -1224,7 +1215,6 @@ void CheckPhysicsRegion ()
   line2->Draw("same");
 
   DrawString(LUMI);
-
   canv0->Update();
 }
 
@@ -1278,7 +1268,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   else                   canv0 = new TCanvas("canv0","canv0",10,10,700,500);
   TPad *pad1, *pad2, *pad3;
   TPaveText* paveText = NULL;
-  TGraphAsymmErrors* ge0   = NULL;
+  TGraphAsymmErrors* ge0  = NULL;
   TGraphAsymmErrors* ge1  = NULL;
   TGraphAsymmErrors* ge00 = NULL;
   TGraphAsymmErrors* ge11 = NULL;
@@ -2100,6 +2090,7 @@ void PlotMuMu (string fileName, bool bkgSub)
 
 
   TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
+  c0->cd();
 
   TH1D* hDsig = new TH1D("hDsig","hDsig",nBins,minX,maxX);
   hDsig->SetXTitle("M(#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
@@ -2116,7 +2107,6 @@ void PlotMuMu (string fileName, bool bkgSub)
 
   if (bkgSub == true) hDsig->Add(hDbkg, -1.0);
  
-  c0->cd();
   hDsig->Draw("e1p");
   c0->Update();
 }
@@ -2586,6 +2576,7 @@ void PlotMuHadMass (string fileName)
 	   }
        }
     }
+
 
   c0->cd();
   histoK->Draw();

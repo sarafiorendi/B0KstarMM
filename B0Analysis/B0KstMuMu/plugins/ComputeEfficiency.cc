@@ -2026,6 +2026,9 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   TH2D* hisFunc2Dorg = Utility->Get2DEffHistoq2Bin(myString.str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,q2BinIndx,myEff);
 
   cEff->cd(1);
+  hisFunc2Dorg->GetXaxis()->SetLabelSize(0.05);
+  hisFunc2Dorg->GetYaxis()->SetLabelSize(0.05);
+  hisFunc2Dorg->GetZaxis()->SetLabelSize(0.05);
   hisFunc2Dorg->GetXaxis()->SetTitleSize(0.06);
   hisFunc2Dorg->GetYaxis()->SetTitleSize(0.06);
   hisFunc2Dorg->GetXaxis()->SetTitleOffset(1.25);
@@ -2041,6 +2044,9 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
       Utility->ReadAnalyticalEff(ParameterFILE,q2Bins,cosThetaKBins,cosThetaLBins,&effFuncs2D,"effFuncs2D",Utility->ParFileBlockN("analyEffokTag"));
       effFunc2D = effFuncs2D[q2BinIndx];
       cEff->cd(2);
+      effFunc2D->GetXaxis()->SetLabelSize(0.05);
+      effFunc2D->GetYaxis()->SetLabelSize(0.05);
+      effFunc2D->GetZaxis()->SetLabelSize(0.05);
       effFunc2D->GetXaxis()->SetTitleSize(0.06);
       effFunc2D->GetYaxis()->SetTitleSize(0.06);
       effFunc2D->GetXaxis()->SetTitleOffset(1.25);
@@ -2055,6 +2061,9 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
       myString << "H2Deff_q2Bin_new_" << q2BinIndx;
       hisFunc2Dnew = Utility->Get2DEffHistoq2Bin(cosThetaKBins,cosThetaLBins,q2BinIndx,SignalType,true,make_pair(-1.0,1.0),make_pair(-1.0,1.0));
       cEff->cd(2);
+      hisFunc2Dnew->GetXaxis()->SetLabelSize(0.05);
+      hisFunc2Dnew->GetYaxis()->SetLabelSize(0.05);
+      hisFunc2Dnew->GetZaxis()->SetLabelSize(0.05);
       hisFunc2Dnew->GetXaxis()->SetTitleSize(0.06);
       hisFunc2Dnew->GetYaxis()->SetTitleSize(0.06);
       hisFunc2Dnew->GetXaxis()->SetTitleOffset(1.25);
@@ -2083,7 +2092,11 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
 	  effFuncSlice.push_back(new TF12(myString.str().c_str(),effFunc2D,(cosThetaKBins->operator[](binIndx)+cosThetaKBins->operator[](binIndx+1))/2.,"y"));
 	  effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
 	  effFuncSlice.back()->GetYaxis()->SetTitle("Efficiency");
+	  effFuncSlice.back()->GetXaxis()->SetLabelSize(0.05);
+	  effFuncSlice.back()->GetYaxis()->SetLabelSize(0.05);
 	  effFuncSlice.back()->GetXaxis()->SetTitleSize(0.06);
+	  effFuncSlice.back()->SetLineWidth(2);
+	  effFuncSlice.back()->SetLineColor(kRed);
 	  effFuncSlice.back()->Draw();
 	}
       else
@@ -2095,6 +2108,8 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
 	  histoSliceNew.push_back(hisFunc2Dnew->ProjectionY(myString.str().c_str(),binx,binx));
 	  histoSliceNew.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
  	  histoSliceNew.back()->SetYTitle("Efficiency");
+	  histoSliceNew.back()->GetXaxis()->SetLabelSize(0.05);
+	  histoSliceNew.back()->GetYaxis()->SetLabelSize(0.05);
 	  histoSliceNew.back()->GetXaxis()->SetTitleSize(0.06);
 	  histoSliceNew.back()->GetXaxis()->SetTitleOffset(0.7);
 	  histoSliceNew.back()->SetLineWidth(2);
@@ -2126,7 +2141,11 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
 	  effFuncSlice.push_back(new TF12(myString.str().c_str(),effFunc2D,(cosThetaLBins->operator[](binIndx)+cosThetaLBins->operator[](binIndx+1))/2.,"x"));
 	  effFuncSlice.back()->GetXaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
 	  effFuncSlice.back()->GetYaxis()->SetTitle("Efficiency");
+	  effFuncSlice.back()->GetXaxis()->SetLabelSize(0.05);
+	  effFuncSlice.back()->GetYaxis()->SetLabelSize(0.05);
 	  effFuncSlice.back()->GetXaxis()->SetTitleSize(0.06);
+	  effFuncSlice.back()->SetLineWidth(2);
+	  effFuncSlice.back()->SetLineColor(kRed);
 	  effFuncSlice.back()->Draw();
 	}
       else
@@ -2138,6 +2157,8 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
 	  histoSliceNew.push_back(hisFunc2Dnew->ProjectionX(myString.str().c_str(),biny,biny));
 	  histoSliceNew.back()->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
 	  histoSliceNew.back()->SetYTitle("Efficiency");
+	  histoSliceNew.back()->GetXaxis()->SetLabelSize(0.05);
+	  histoSliceNew.back()->GetYaxis()->SetLabelSize(0.05);
 	  histoSliceNew.back()->GetXaxis()->SetTitleSize(0.06);
 	  histoSliceNew.back()->GetXaxis()->SetTitleOffset(0.7);
 	  histoSliceNew.back()->SetLineWidth(2);
