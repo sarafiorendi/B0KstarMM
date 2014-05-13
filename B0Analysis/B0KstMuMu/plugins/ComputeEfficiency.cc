@@ -73,12 +73,13 @@ using std::make_pair;
 // ####################
 // # Global constants #
 // ####################
-#define INPUT_THETAL           "ThetaL_B0ToKstMuMu.txt"
-#define INPUT_PHI              "Phi_B0ToKstMuMu.txt"
-#define INPUT_THETAL_THETAK    "ThetaK_B0ToKstMuMu.txt"
+#define INPUT_THETAL        "ThetaL_B0ToKstMuMu.txt"
+#define INPUT_PHI           "Phi_B0ToKstMuMu.txt"
+#define INPUT_THETAL_THETAK "ThetaK_B0ToKstMuMu.txt"
 
 #define RIGHTtag       true
 #define SAVEPLOT       false
+#define CHECKnegEFF    true  // Exit if efficiency is negative
 #define CHECKEFFatREAD false // Check if 2D or 3D efficiency go negative
 #define NFILES         200
 #define INPUTGenEff    "../efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
@@ -100,7 +101,6 @@ B0KstMuMuSingleCandTreeContent* NTupleRecoCandidates;
 B0KstMuMuSingleCandTreeContent* NTupleSingleCand;
 
 vector<TF2*> effFuncs;
-vector<TMatrixTSym<double>*> covMatrices;
 
 vector<double> q2Bins;
 vector<double> cosThetaKBins;
@@ -119,7 +119,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
 void Read3DEfficiencies    (bool isSingleEff, vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			    string fileNameInput, bool isAnalyEff, Utils::effStruct* myEff, bool CheckEffatRead, bool savePlot, int specBin, int SignalType = 1);
 void Fit1DEfficiencies     (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			    int SignalType, Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut);
+			    Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut);
 void Fit2DEfficiencies     (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
 			    int SignalType, Utils::effStruct myEff, unsigned int q2BinIndx, string fileNameOut);
 void Fit3DEfficiencies     (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
@@ -1330,7 +1330,7 @@ void Read3DEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double
 
 
 void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins,
-			int SignalType, Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut)
+			Utils::effStruct myEff, string who, unsigned int q2BinIndx, string fileNameOut)
 {
   // ###################
   // # Local variables #
@@ -1390,7 +1390,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  // ######################################################################
 	  // # Add constraint where it is necessary to bound the function at zero #
 	  // ######################################################################
-	  Utility->AddConstraintThetaL(&histFit.back(),q2BinIndx,j,SignalType,q2BinIndx);
+	  Utility->AddConstraintThetaL(&histFit.back(),q2BinIndx,j,q2BinIndx);
 
 
 	  // #########################################################################
@@ -1420,7 +1420,11 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  cout << "@@@ Value at " << cosThetaLBins->operator[](0) << " : " << effFunc1D->Eval(cosThetaLBins->operator[](0)) << " @@@" << endl;
 	  cout << "@@@ Value at " << cosThetaLBins->operator[](cosThetaLBins->size()-1) << " : " << effFunc1D->Eval(cosThetaLBins->operator[](cosThetaLBins->size()-1)) << " @@@\n" << endl;
 
-	  if (Utility->EffMinValue1D(cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),effFunc1D) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
+	  if (Utility->EffMinValue1D(cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),effFunc1D) < 0.0)
+	    {
+	      cout << "NEGATIVE EFFICIENCY !" << endl;
+	      if (CHECKnegEFF == true) exit (EXIT_FAILURE);
+	    }
 	}
 
 
@@ -1568,8 +1572,12 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
       cout << "@@@ Value at " << phiBins->operator[](0) << " : " << effFunc1D->Eval(phiBins->operator[](0)) << " @@@" << endl;
       cout << "@@@ Value at " << phiBins->operator[](phiBins->size()-1) << " : " << effFunc1D->Eval(phiBins->operator[](phiBins->size()-1)) << " @@@\n" << endl;
 
-      if (Utility->EffMinValue1D(phiBins->operator[](0),phiBins->operator[](phiBins->size()-1),effFunc1D) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
-
+      if (Utility->EffMinValue1D(phiBins->operator[](0),phiBins->operator[](phiBins->size()-1),effFunc1D) < 0.0)
+	{
+	  cout << "NEGATIVE EFFICIENCY !" << endl;
+	  if (CHECKnegEFF == true) exit (EXIT_FAILURE);
+	}
+      
 
       fileOutput.close();
     }
@@ -1660,7 +1668,11 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // ################################################
   // # Check if analytical efficiency goes negative #
   // ################################################
-  if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncs2D[q2BinIndx]) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
+  if (Utility->EffMinValue2D(cosThetaKBins,cosThetaLBins,effFuncs2D[q2BinIndx]) < 0.0)
+    {
+      cout << "NEGATIVE EFFICIENCY !" << endl;
+      if (CHECKnegEFF == true) exit (EXIT_FAILURE);
+    }
   Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFuncs2D[q2BinIndx],(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.);
   fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
   Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrix,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.);
@@ -1959,7 +1971,11 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // ################################################
   // # Check if analytical efficiency goes negative #
   // ################################################
-  if (Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,effFunc3D) < 0.0) { cout << "NEGATIVE EFFICIENCY !" << endl; exit (EXIT_FAILURE); }
+  if (Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,effFunc3D) < 0.0)
+    {
+      cout << "NEGATIVE EFFICIENCY !" << endl;
+      if (CHECKnegEFF == true) exit (EXIT_FAILURE);
+    }
   Utility->SaveAnalyticalEff(fileNameOut.c_str(),effFunc3D,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.);
   fileNameOut.replace(fileNameOut.find(".txt"),4,"FullCovariance.txt");
   Utility->SaveAnalyticalEffFullCovariance(fileNameOut.c_str(),&covMatrix,(q2Bins->operator[](q2BinIndx) + q2Bins->operator[](q2BinIndx+1)) / 2.);
@@ -2349,6 +2365,7 @@ int main (int argc, char** argv)
 
       cout << "\nRIGHTtag: "     << RIGHTtag << endl;
       cout << "SAVEPLOT: "       << SAVEPLOT << endl;
+      cout << "CHECKnegEFF: "    << CHECKnegEFF << endl;
       cout << "CHECKEFFatREAD: " << CHECKEFFatREAD << endl;
       cout << "NFILES: "         << NFILES << endl;
       cout << "INPUTGenEff: "    << INPUTGenEff << endl;
@@ -2479,9 +2496,8 @@ int main (int argc, char** argv)
 	  string SignalType      = argv[2];
 	  string fileNameInput   = argv[3];
 	  unsigned int q2BinIndx = atoi(argv[4]);
-	  string whichVar2Fit = "";
+	  string whichVar2Fit    = "";
 	  if (option == "Fit1DEff") whichVar2Fit = argv[5];
-	  cout << "Which Var to Fit: " << whichVar2Fit << endl;
 
 	  TApplication theApp ("Applications", &argc, argv);
 
@@ -2491,7 +2507,7 @@ int main (int argc, char** argv)
 	  else                                 Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
 	  Utility->ReadEfficiency(fileNameInput.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,&myEff);
 
-	  if      (option == "Fit1DEff") Fit1DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,atoi(SignalType.c_str()),myEff,whichVar2Fit,q2BinIndx,"Theta.txt");
+	  if      (option == "Fit1DEff") Fit1DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,whichVar2Fit,q2BinIndx,"Theta.txt");
 	  else if (option == "Fit2DEff") Fit2DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,atoi(SignalType.c_str()),myEff,q2BinIndx,"ThetaKThetaL.txt",SAVEPLOT);
 	  else if (option == "Fit3DEff") Fit3DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,atoi(SignalType.c_str()),myEff,q2BinIndx,"ThetaKThetaLPhi.txt",SAVEPLOT);
 

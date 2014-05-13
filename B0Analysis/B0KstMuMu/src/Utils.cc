@@ -2807,7 +2807,7 @@ void Utils::AddConstraint1D (TH1D** histo, std::string constrType, double abscis
   delete reBins;
 }
 
-void Utils::AddConstraintThetaL (TH1D** histo, unsigned int q2Indx, unsigned int cosThetaKBinIndx, int SignalType, unsigned int ID)
+void Utils::AddConstraintThetaL (TH1D** histo, unsigned int q2Indx, unsigned int cosThetaKBinIndx, unsigned int ID)
 {
   double abscissaErr = 1e-2;
 
@@ -2835,43 +2835,6 @@ void Utils::AddConstraintThetaL (TH1D** histo, unsigned int q2Indx, unsigned int
   if ((q2Indx == 3) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"low",abscissaErr,1.0,1e-4,1e-5,ID);
   if ((q2Indx == 3) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"high",abscissaErr,1.0,1e-4,1e-5,ID);
   if ((q2Indx == 3) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,5e-4,1e-5,ID);
-
-  if (SignalType == B0ToJPsiKst)
-    {
-      // ###################
-      // # B0 --> J/psi K* #
-      // ###################
-      if ((q2Indx == 4) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,107e-5,1e-5,ID);
-    }
-
-  if ((q2Indx == 5) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"low",abscissaErr,1.0,39e-4,1e-5,ID);
-  if ((q2Indx == 5) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"high",abscissaErr,1.0,39e-4,1e-5,ID);
-  if ((q2Indx == 5) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"low",abscissaErr,1.0,28e-4,1e-5,ID);
-  if ((q2Indx == 5) && (cosThetaKBinIndx == 2)) AddConstraint1D(histo,"high",abscissaErr,1.0,36e-4,1e-5,ID);
-  if ((q2Indx == 5) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"low",abscissaErr,1.0,2e-3,1e-5,ID);
-  if ((q2Indx == 5) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"high",abscissaErr,1.0,27e-4,1e-5,ID);
-
-  if (SignalType == B0ToPsi2SKst)
-    {
-      // #####################
-      // # B0 --> psi(2S) K* #
-      // #####################
-      if ((q2Indx == 6) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"high",abscissaErr,1.0,56e-4,1e-5,ID);
-      if ((q2Indx == 6) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"high",abscissaErr,1.0,36e-4,1e-5,ID);
-      if ((q2Indx == 6) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,15e-4,1e-5,ID);
-      if ((q2Indx == 6) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,8e-4,1e-5,ID);
-    }
-
-  if ((q2Indx == 7) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"high",abscissaErr,1.0,5e-3,1e-5,ID);
-  if ((q2Indx == 7) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"low",abscissaErr,1.0,28e-4,1e-5,ID);
-  if ((q2Indx == 7) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,16e-4,1e-5,ID);
-
-  if ((q2Indx == 8) && (cosThetaKBinIndx == 0)) AddConstraint1D(histo,"high",abscissaErr,1.0,42e-4,1e-5,ID);
-  if ((q2Indx == 8) && (cosThetaKBinIndx == 1)) AddConstraint1D(histo,"low",abscissaErr,1.0,47e-4,1e-5,ID);
-  if ((q2Indx == 8) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"low",abscissaErr,1.0,33e-4,1e-5,ID);
-  if ((q2Indx == 8) && (cosThetaKBinIndx == 3)) AddConstraint1D(histo,"high",abscissaErr,1.0,32e-4,1e-5,ID);
-  if ((q2Indx == 8) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"low",abscissaErr,1.0,2e-3,1e-5,ID);
-  if ((q2Indx == 8) && (cosThetaKBinIndx == 4)) AddConstraint1D(histo,"high",abscissaErr,1.0,264e-5,1e-5,ID);
 }
 
 void Utils::AddConstraint2D (TH2D** histo, double abscissaErr, double ZerrRescale, unsigned int ID, std::string toBeConstr, double scaleConstr, double constrXerr, std::vector< std::pair <double,double> >* constraints, std::vector<std::string>* toBeAdded)
@@ -3228,7 +3191,7 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
   // ###################
   else if ((SignalType == B0ToJPsiKst) && (q2Indx == 4)) AddConstraint2D(histo,abscissaErr,6.0,ID,"justErrors",0.0,0.0);
 
-  else if (q2Indx == 5) AddConstraint2D(histo,abscissaErr,3.0,ID,"justErrors",0.0,0.0);
+  else if (q2Indx == 5) AddConstraint2D(histo,abscissaErr,4.0,ID,"justErrors",0.0,0.0);
 
   // #####################
   // # B0 --> psi(2S) K* #
