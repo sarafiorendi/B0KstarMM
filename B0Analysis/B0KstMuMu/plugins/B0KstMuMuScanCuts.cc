@@ -36,11 +36,11 @@ using std::vector;
 // ####################
 // # Global constants #
 // ####################
-#define ParameterFILE "../python/ParameterFile.txt"
 #define DoTrigCheck 1
 #define SpecialHighq2Bin 7.3 // [GeV/c2]2
 #define nEvPrint 200000
 #define SETBATCH true // Set batch mode
+#define ParameterFILE "../python/ParameterFile.txt"
 
 
 // ####################
@@ -254,7 +254,8 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
 		   ((B0notB0bar == false) && (fabs(NTupleS->bBarMass->at(BestCandIndx) - Utility->B0Mass) < atof(Utility->GetGenericParam("NSigmaB0S").c_str()) * signalSigma))) &&
 		  (NTupleS->genSignal == true) && (NTupleS->truthMatchSignal->at(BestCandIndx) == true) &&
 
-		  (Utility->PsiRejection(NTupleS,"rejectPsi",true,B0notB0bar,BestCandIndx) == true) &&
+		  
+		  (Utility->PsiRejection((B0notB0bar == true ? NTupleS->bMass->at(BestCandIndx) : NTupleS->bBarMass->at(BestCandIndx)),NTupleS->mumuMass->at(BestCandIndx),NTupleS->mumuMassE->at(BestCandIndx),"rejectPsi",true) == true) &&
 		  
 		  (((q2Region == 0) && (mumuMass2 > q2Bins[0]) && (mumuMass2 < q2Bins[3])) ||
 		   
@@ -328,7 +329,7 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
 		     ((NTupleB->bBarMass->at(BestCandIndx) < Utility->B0Mass + (atof(Utility->GetGenericParam("NSigmaB0B").c_str()) + atof(Utility->GetGenericParam("NSigmaB0S").c_str())) * signalSigma) &&
 		      (NTupleB->bBarMass->at(BestCandIndx) > Utility->B0Mass + atof(Utility->GetGenericParam("NSigmaB0B").c_str()) * signalSigma))))) &&
 	      
-		  (Utility->PsiRejection(NTupleB,"rejectPsi",true,B0notB0bar,BestCandIndx) == true) &&
+		  (Utility->PsiRejection((B0notB0bar == true ? NTupleB->bMass->at(BestCandIndx) : NTupleB->bBarMass->at(BestCandIndx)),NTupleB->mumuMass->at(BestCandIndx),NTupleB->mumuMassE->at(BestCandIndx),"rejectPsi",true) == true) &&
 
 		  (((q2Region == 0) && (mumuMass2 > q2Bins[0]) && (mumuMass2 < q2Bins[3])) ||
 		   
@@ -434,11 +435,11 @@ int main (int argc, char** argv)
 
 
       cout << "\n@@@ Settings @@@" << endl;
-      cout << "Parameter file: "      << ParameterFILE << endl;
       cout << "Do trig check: "       << DoTrigCheck << endl;
       cout << "Special high q2 bin: " << SpecialHighq2Bin << endl;
       cout << "nEvPrint: "            << nEvPrint << endl;
       cout << "SETBATCH: "            << SETBATCH << endl;
+      cout << "Parameter file: "      << ParameterFILE << endl;
 
 
       Utility = new Utils();
