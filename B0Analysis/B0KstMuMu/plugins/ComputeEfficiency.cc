@@ -2009,8 +2009,8 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   vector<TF12*> effFuncSlice;
   vector<TH1D*> histoSliceOrg;
   vector<TH1D*> histoSliceNew;
-  TF2* effFunc2D;
-  TH2D* hisFunc2Dnew;
+  TF2* effFunc2D     = NULL;
+  TH2D* hisFunc2Dnew = NULL;
   // ###################
 
 
