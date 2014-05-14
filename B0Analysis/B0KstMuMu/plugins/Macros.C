@@ -60,9 +60,9 @@ using namespace RooFit;
 // ###########################
 // # From B0 --> J/psi K* MC #
 // ###########################
-#define SIGMAS1JPSI 0.0296965 // [GeV/c2]
-#define SIGMAS2JPSI 0.0633626 // [GeV/c2]
-#define FRACJPSI    0.800648
+#define SIGMAS1JPSI 0.029696  // [GeV/c2]
+#define SIGMAS2JPSI 0.0633612 // [GeV/c2]
+#define FRACJPSI    0.800616
 
 // #############################
 // # From B0 --> psi(2S) K* MC #
