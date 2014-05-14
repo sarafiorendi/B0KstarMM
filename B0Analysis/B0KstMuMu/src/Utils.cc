@@ -73,19 +73,19 @@ Utils::Utils (bool rightFlavorTag)
 
   Histo2DEffNameOkTagSig   = "H2Deff_OkTag_q2Bin_interp";
   Histo2DEffNameOkTagJPsi  = "H2Deff_OkTagJPsi_q2Bin_interp";
-  Histo2DEffNameOkTagPsi2S = "H2Deff_OkTagPsi2S_q2Bin_interp";
+  Histo2DEffNameOkTagPsi2S = "H2Deff_OkTagPsiP_q2Bin_interp";
 
   Histo3DEffNameOkTagSig   = "H3Deff_OkTag_q2Bin_interp";
   Histo3DEffNameOkTagJPsi  = "H3Deff_OkTagJPsi_q2Bin_interp";
-  Histo3DEffNameOkTagPsi2S = "H3Deff_OkTagPsi2S_q2Bin_interp";
+  Histo3DEffNameOkTagPsi2S = "H3Deff_OkTagPsiP_q2Bin_interp";
 
   Histo2DEffNameMisTagSig   = "H2Deff_MisTag_q2Bin_interp";
   Histo2DEffNameMisTagJPsi  = "H2Deff_MisTagJPsi_q2Bin_interp";
-  Histo2DEffNameMisTagPsi2S = "H2Deff_MisTagPsi2S_q2Bin_interp";
+  Histo2DEffNameMisTagPsi2S = "H2Deff_MisTagPsiP_q2Bin_interp";
 
   Histo3DEffNameMisTagSig   = "H3Deff_MisTag_q2Bin_interp";
   Histo3DEffNameMisTagJPsi  = "H3Deff_MisTagJPsi_q2Bin_interp";
-  Histo3DEffNameMisTagPsi2S = "H3Deff_MisTagPsi2S_q2Bin_interp";
+  Histo3DEffNameMisTagPsi2S = "H3Deff_MisTagPsiP_q2Bin_interp";
 
   // ###############################################
   // # ===> Define codes to identify MC type <===  #

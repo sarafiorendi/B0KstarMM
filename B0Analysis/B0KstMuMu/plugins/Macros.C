@@ -49,7 +49,7 @@ using namespace RooFit;
 // ####################
 // # Global constants #
 // ####################
-#define DIREXPTCOMP "./PredictionSM/"
+#define DIREXPTCOMP "Data2012B0KstMuMuResults/PredictionSM/"
 
 #define ordinateRange 1e-2
 
@@ -315,7 +315,7 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
       projX->SetYTitle("Projected efficiency");
       projX->SetLineWidth(3);
       projX->SetLineColor(kRed);
-      projX->Scale(1./static_cast<double>(Histo2D->GetNbinsY()));
+      projX->Scale(1. / static_cast<double>(Histo2D->GetNbinsY()));
       projX->Draw("hist");
 
       c0->cd(7);
@@ -327,7 +327,7 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
       projY->SetYTitle("Projected efficiency");
       projY->SetLineWidth(3);
       projY->SetLineColor(kRed);
-      projY->Scale(1./static_cast<double>(Histo2D->GetNbinsX()));
+      projY->Scale(1. / static_cast<double>(Histo2D->GetNbinsX()));
       projY->Draw("hist");
     }
   else
@@ -390,7 +390,7 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
       projX->SetYTitle("Projected efficiency");
       projX->SetLineWidth(3);
       projX->SetLineColor(kRed);
-      projX->Scale(1./static_cast<double>(Histo3D->GetNbinsY() * Histo3D->GetNbinsZ()));
+      projX->Scale(1. / static_cast<double>(Histo3D->GetNbinsY() * Histo3D->GetNbinsZ()));
       projX->Draw("hist");
 
       tmpPad = static_cast<TPad*>(c0->cd(7));
@@ -401,7 +401,7 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
       projY->SetYTitle("Projected efficiency");
       projY->SetLineWidth(3);
       projY->SetLineColor(kRed);
-      projY->Scale(1./static_cast<double>(Histo3D->GetNbinsX() * Histo3D->GetNbinsZ()));
+      projY->Scale(1. / static_cast<double>(Histo3D->GetNbinsX() * Histo3D->GetNbinsZ()));
       projY->Draw("hist");
 
       tmpPad = static_cast<TPad*>(c0->cd(8));
@@ -412,7 +412,7 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
       projZ->SetYTitle("Projected efficiency");
       projZ->SetLineWidth(3);
       projZ->SetLineColor(kRed);
-      projZ->Scale(1./static_cast<double>(Histo3D->GetNbinsX() * Histo3D->GetNbinsY()));
+      projZ->Scale(1. / static_cast<double>(Histo3D->GetNbinsX() * Histo3D->GetNbinsY()));
       projZ->Draw("hist");
     }
 
