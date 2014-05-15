@@ -48,7 +48,7 @@ using std::vector;
 
 #define FitSysFILE "../efficiency/EffSystematicsData/FitSystematics_q2Bin.txt"
 #define YvalueOutsideLimits 10.0 // Value given to bins with zero error in order not to show them
-#define FORPAPER false // "true" = make special layout for publication in "MakePhysicsPlots" member function
+#define FORPAPER false           // "true" = make special layout for publication in "MakePhysicsPlots" member function
 
 // ##################
 // # SM predictions #

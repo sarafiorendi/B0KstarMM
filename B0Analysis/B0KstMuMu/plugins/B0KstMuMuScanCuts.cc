@@ -365,10 +365,10 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
       histoR1->SetBinContent(i+1,MCtoDataRescale*countS[i]);
       histoR2->SetBinContent(i+1,countB[i]);
       histoR3->SetBinContent(i+1,countB[i] > 0 ? MCtoDataRescale*countS[i] / sqrt(countB[i]) : 0);
-      histoR4->SetBinContent(i+1,(countS[i]+countB[i]) > 0 ? MCtoDataRescale*countS[i] / sqrt(MCtoDataRescale*MCtoDataRescale*countS[i] + countB[i]) : 0);
+      histoR4->SetBinContent(i+1,(countS[i]+countB[i]) > 0 ? MCtoDataRescale*countS[i] / sqrt(MCtoDataRescale*countS[i] + countB[i]) : 0);
       
       cout << "Signal: " << countS[i] << "\tSignal (rescaled = k): " << histoR1->GetBinContent(i+1) << "\tBackground: " << histoR2->GetBinContent(i+1);
-      cout << "\tk*S / sqrt(B): " << histoR3->GetBinContent(i+1) << "\tk*S / sqrt(k^2*S + B): " << histoR4->GetBinContent(i+1) << endl;
+      cout << "\tk*S / sqrt(B): " << histoR3->GetBinContent(i+1) << "\tk*S / sqrt(k*S + B): " << histoR4->GetBinContent(i+1) << endl;
     }
 
 
@@ -379,10 +379,10 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   if (scanType != 4) cout << "Percentage of signal at maximum for k*S / sqrt(B): " << histoR1->GetBinContent(histoR3->GetMaximumBin()) / histoR1->GetBinContent(1) * 100.0 << endl;
   else               cout << "Percentage of signal at maximum for k*S / sqrt(B): " << histoR1->GetBinContent(histoR3->GetMaximumBin()) / histoR1->GetBinContent(histoR1->GetNbinsX()) * 100.0 << endl;
 
-  cout << "\nMaximuml value for k*S / sqrt(k^2*S + B): " << histoR4->GetMaximum() << " at X = " << histoR4->GetXaxis()->GetBinLowEdge(histoR4->GetMaximumBin()) << endl;
-  cout << "Signal at maximum for k*S / sqrt(k^2*S + B): " << countS[histoR4->GetMaximumBin()-1] << endl;
-  if (scanType != 4) cout << "Percentage of signal at maximum for k*S / sqrt(k^2*S + B): " << histoR1->GetBinContent(histoR4->GetMaximumBin()) / histoR1->GetBinContent(1) * 100.0 << endl;
-  else               cout << "Percentage of signal at maximum for k*S / sqrt(k^2*S + B): " << histoR1->GetBinContent(histoR4->GetMaximumBin()) / histoR1->GetBinContent(histoR1->GetNbinsX()) * 100.0 << endl;
+  cout << "\nMaximuml value for k*S / sqrt(k*S + B): " << histoR4->GetMaximum() << " at X = " << histoR4->GetXaxis()->GetBinLowEdge(histoR4->GetMaximumBin()) << endl;
+  cout << "Signal at maximum for k*S / sqrt(k*S + B): " << countS[histoR4->GetMaximumBin()-1] << endl;
+  if (scanType != 4) cout << "Percentage of signal at maximum for k*S / sqrt(k*S + B): " << histoR1->GetBinContent(histoR4->GetMaximumBin()) / histoR1->GetBinContent(1) * 100.0 << endl;
+  else               cout << "Percentage of signal at maximum for k*S / sqrt(k*S + B): " << histoR1->GetBinContent(histoR4->GetMaximumBin()) / histoR1->GetBinContent(histoR1->GetNbinsX()) * 100.0 << endl;
   
 
   c0->Divide(2,2);

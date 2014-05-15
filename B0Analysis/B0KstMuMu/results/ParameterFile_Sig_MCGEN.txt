@@ -2708,5 +2708,5 @@ allEvts
 # Data type
 1
 
-# 0 = Monte Carlo; 1 = Data
+# [0 = Monte Carlo; 1 = Data]
 0

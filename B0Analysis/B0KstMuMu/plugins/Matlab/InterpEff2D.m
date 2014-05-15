@@ -7,7 +7,7 @@ clear;
 %%%%%%%%%%%%%%%%%%%%
 % Global constants %
 %%%%%%%%%%%%%%%%%%%%
-fileName    = '../../efficiency/H2Deff_MisTag_q2Bin';
+fileName    = '../../efficiency/H2Deff_MisTagPsiP_q2Bin';
 NbinsX      = 5;
 NbinsY      = 5;
 NstepsX     = 120;  % [120]

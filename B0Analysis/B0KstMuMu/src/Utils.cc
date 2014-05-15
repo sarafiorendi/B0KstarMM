@@ -3158,13 +3158,13 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
       toBeAdded[1]   = "both";
       constraints[1] = std::make_pair(1e-4,1e-5);
 
-      toBeAdded[2]   = "both";
+      toBeAdded[2]   = "low";
       constraints[2] = std::make_pair(1e-4,1e-5);
 
       toBeAdded[3]   = "high";
       constraints[3] = std::make_pair(1e-4,1e-5);
 
-      toBeAdded[4]   = "both";
+      toBeAdded[4]   = "low";
       constraints[4] = std::make_pair(5e-4,1e-5);
     }
 
@@ -3184,7 +3184,7 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
   if      (q2Indx == 0) AddConstraint2D(histo,abscissaErr,6.0,ID,"justErrors",0.0,0.0);
   else if (q2Indx == 1) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
   else if (q2Indx == 2) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
-  else if (q2Indx == 3) AddConstraint2D(histo,abscissaErr,4.0,ID,"justErrors",0.0,0.0);
+  else if (q2Indx == 3) AddConstraint2D(histo,abscissaErr,3.0,ID,"justErrors",0.0,0.0);
 
   // ###################
   // # B0 --> J/psi K* #
