@@ -76,7 +76,8 @@ using std::make_pair;
 #define INPUT_THETAL        "ThetaL_B0ToKstMuMu.txt"
 #define INPUT_PHI           "Phi_B0ToKstMuMu.txt"
 #define INPUT_THETAL_THETAK "ThetaK_B0ToKstMuMu.txt"
-#define RIGHTtag       true
+
+#define RIGHTtag       false
 #define SAVEPLOT       false
 #define CHECKnegEFF    true  // Exit if efficiency is negative
 #define CHECKEFFatREAD false // Check if 2D or 3D efficiency go negative

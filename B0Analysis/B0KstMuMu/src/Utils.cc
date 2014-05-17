@@ -69,7 +69,9 @@ Utils::Utils (bool rightFlavorTag)
   RIGHTflavorTAG = rightFlavorTag;
 
   // Define names of the files containing the histogram of the efficiency
-  DirEfficiency  = "../efficiency/";
+  // @TMP@
+  // DirEfficiency  = "../efficiency/";
+  DirEfficiency  = "./";
 
   Histo2DEffNameOkTagSig   = "H2Deff_OkTag_q2Bin_interp";
   Histo2DEffNameOkTagJPsi  = "H2Deff_OkTagJPsi_q2Bin_interp";

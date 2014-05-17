@@ -146,7 +146,7 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
   gROOT->ForceStyle();
   gStyle->SetPalette(1);
   gStyle->SetOptFit(1112);
-  gStyle->SetOptStat(1110);
+  gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
   gStyle->SetPadRightMargin(0.02);
   gStyle->SetTitleOffset(1.25,"y"); 
@@ -309,25 +309,25 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
 
       tmpPad = static_cast<TPad*>(c0->cd(6));
       tmpPad->SetGrid();
-      projX = static_cast<TH1D*>(Histo2D->ProjectionX());
+      projX = static_cast<TH1D*>(Histo2D_clone->ProjectionX());
       projX->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
       projX->GetXaxis()->SetTitleOffset(1.0);
       projX->SetYTitle("Projected efficiency");
       projX->SetLineWidth(3);
       projX->SetLineColor(kRed);
-      projX->Scale(1. / static_cast<double>(Histo2D->GetNbinsY()));
+      projX->SetMinimum(0);
       projX->Draw("hist");
 
       c0->cd(7);
       tmpPad = static_cast<TPad*>(c0->cd(7));
       tmpPad->SetGrid();
-      projY = static_cast<TH1D*>(Histo2D->ProjectionY());
+      projY = static_cast<TH1D*>(Histo2D_clone->ProjectionY());
       projY->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
       projY->GetXaxis()->SetTitleOffset(1.0);
       projY->SetYTitle("Projected efficiency");
       projY->SetLineWidth(3);
       projY->SetLineColor(kRed);
-      projY->Scale(1. / static_cast<double>(Histo2D->GetNbinsX()));
+      projY->SetMinimum(0);
       projY->Draw("hist");
     }
   else
@@ -384,35 +384,35 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
 
       tmpPad = static_cast<TPad*>(c0->cd(6));
       tmpPad->SetGrid();
-      projX = static_cast<TH1D*>(Histo3D->Project3D("yz"));
+      projX = static_cast<TH1D*>(Histo3D_clone->Project3D("yz"));
       projX->SetXTitle("cos(#theta#lower[-0.4]{_{#font[122]{K}}})");
       projX->GetXaxis()->SetTitleOffset(1.0);
       projX->SetYTitle("Projected efficiency");
       projX->SetLineWidth(3);
       projX->SetLineColor(kRed);
-      projX->Scale(1. / static_cast<double>(Histo3D->GetNbinsY() * Histo3D->GetNbinsZ()));
+      projX->SetMinimum(0);
       projX->Draw("hist");
 
       tmpPad = static_cast<TPad*>(c0->cd(7));
       tmpPad->SetGrid();
-      projY = static_cast<TH1D*>(Histo3D->Project3D("xz"));
+      projY = static_cast<TH1D*>(Histo3D_clone->Project3D("xz"));
       projY->SetXTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
       projY->GetXaxis()->SetTitleOffset(1.0);
       projY->SetYTitle("Projected efficiency");
       projY->SetLineWidth(3);
       projY->SetLineColor(kRed);
-      projY->Scale(1. / static_cast<double>(Histo3D->GetNbinsX() * Histo3D->GetNbinsZ()));
+      projY->SetMinimum(0);
       projY->Draw("hist");
 
       tmpPad = static_cast<TPad*>(c0->cd(8));
       tmpPad->SetGrid();
-      projZ = static_cast<TH1D*>(Histo3D->Project3D("xy"));
+      projZ = static_cast<TH1D*>(Histo3D_clone->Project3D("xy"));
       projZ->SetXTitle("#phi");
       projZ->GetXaxis()->SetTitleOffset(1.0);
       projZ->SetYTitle("Projected efficiency");
       projZ->SetLineWidth(3);
       projZ->SetLineColor(kRed);
-      projZ->Scale(1. / static_cast<double>(Histo3D->GetNbinsX() * Histo3D->GetNbinsY()));
+      projZ->SetMinimum(0);
       projZ->Draw("hist");
     }
 
@@ -446,11 +446,13 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
 
   tmpPad = static_cast<TPad*>(c0->cd(2));
   tmpPad->SetGrid();
+  histoEff->plotOn(xframe,RooFit::DataError(RooAbsData::None));
   histoEffPDF->plotOn(xframe);
   xframe->Draw();
 
   tmpPad = static_cast<TPad*>(c0->cd(3));
   tmpPad->SetGrid();
+  histoEff->plotOn(yframe,RooFit::DataError(RooAbsData::None));
   histoEffPDF->plotOn(yframe);
   yframe->Draw();
 
@@ -458,6 +460,7 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
     {
       tmpPad = static_cast<TPad*>(c0->cd(4));
       tmpPad->SetGrid();
+      histoEff->plotOn(zframe,RooFit::DataError(RooAbsData::None));
       histoEffPDF->plotOn(zframe);
       zframe->Draw();
     }
