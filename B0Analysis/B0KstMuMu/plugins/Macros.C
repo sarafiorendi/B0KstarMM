@@ -83,7 +83,6 @@ void CompareCosMassGENRECO  (string fileNameRECO, string fileNameGEN);
 void ComputePileUp          (string fileName);
 void PlotVtxWithPileUpW     (string fileNameMC, string fileNameData, unsigned int TrigCat, bool withWeights);
 void PlotCutScans           (string fileName, string type);
-void PlotEffPlots           (string fileName, unsigned int plotN, unsigned int binN);
 void PlotBkgMC              (string fileName, bool iFit, double scaleMCdata);
 void ReduceTree             (string fileNameIn, string fileNameOut, bool isSingleNotMultyCand);
 void SampleMCforPileup      (string fileNameIn, string fileNameOut);
@@ -1003,51 +1002,6 @@ void PlotCutScans (string fileName, string type)
   h0->Draw();
   c1->cd(2);
   h1->Draw();
-  c1->Update();
-}
-
-
-// ################################################
-// # Sub-program to plot the efficiency sub-plots #
-// ################################################
-void PlotEffPlots (string fileName, unsigned int plotN, unsigned int binN)
-// ##################################
-// # plotN can go from 1 to 4       #
-// # binN can go from 0 to #q2 bins #
-// ##################################
-{
-  stringstream myString;
-
-  TFile* _file = TFile::Open(fileName.c_str(),"READ");
-
-  TCanvas* c0 = (TCanvas*)_file->Get("cEff");
-
-  myString.clear();
-  myString.str("");
-  myString << "cEff_" << plotN;
-  TPad* p0 = (TPad*)c0->GetPrimitive(myString.str().c_str());
-
-  myString.clear();
-  myString.str("");
-  if      (plotN == 2) myString << "vecHcosThetaK_" << binN;
-  else if (plotN == 3) myString << "vecHcosThetaL_" << binN;
-  else if (plotN == 4) myString << "vecHphi_" << binN;
-  else exit (EXIT_FAILURE);
-  TH1D* h0 = (TH1D*)p0->GetPrimitive(myString.str().c_str());
-  h0->GetYaxis()->SetRangeUser(0.0,ordinateRange);
-
-
-  // ##########################
-  // # Set histo layout style #
-  // ##########################
-  gStyle->SetOptStat(0);
-  gStyle->SetOptTitle(0);
-  TGaxis::SetMaxDigits(3);
-
-
-  TCanvas* c1 = new TCanvas("c1","c1",10,10,700,500);
-  c1->cd();
-  h0->Draw("e1");
   c1->Update();
 }
 

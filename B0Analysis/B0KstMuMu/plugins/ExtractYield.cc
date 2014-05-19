@@ -356,8 +356,8 @@ void DeleteFit                 (RooAbsPdf* TotalPDF, string DeleteType);
 void ResetAngularParam         (vector<vector<string>*>* fitParam);
 double StoreFitResultsInFile   (RooAbsPdf** TotalPDF, RooFitResult* fitResult, RooDataSet* dataSet, RooArgSet* vecConstr);
 void StorePolyResultsInFile    (RooAbsPdf** TotalPDF);
-vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr);
-unsigned int CopyFitResults    (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vector<vector<string>*>* fitParam);
+vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr);
+unsigned int CopyFitResults    (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vector<vector<string>*>* fitParam);
 
 void GenerateParameterFile     (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr, string fileName, unsigned int fileIndx, vector<double>* q2Bins, unsigned int q2BinIndx);
 void GenerateDataset           (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2Bins, int specBin, vector<vector<string>*>* fitParam, string fileName);
@@ -1458,7 +1458,7 @@ void StorePolyResultsInFile (RooAbsPdf** TotalPDF)
 }
 
 
-vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr)
+vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr)
 {
   stringstream myString;
   stringstream myCoeff;
@@ -1480,7 +1480,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("meanS") << "   " << GetVar(TotalPDF,"meanS")->getErrorLo() << "   " << GetVar(TotalPDF,"meanS")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# Signal sigma-1 [GeV/c2]");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"sigmaS1") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("sigmaS1") + string("_constr")).c_str()) == NULL))))
     {
@@ -1488,7 +1488,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("sigmaS1") << "   " << GetVar(TotalPDF,"sigmaS1")->getErrorLo() << "   " << GetVar(TotalPDF,"sigmaS1")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# Signal sigma-2 [GeV/c2]");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"sigmaS2") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("sigmaS2") + string("_constr")).c_str()) == NULL))))
     {
@@ -1496,7 +1496,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("sigmaS2") << "   " << GetVar(TotalPDF,"sigmaS2")->getErrorLo() << "   " << GetVar(TotalPDF,"sigmaS2")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# Fraction");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"fracMassS") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("fracMassS") + string("_constr")).c_str()) == NULL))))
     {
@@ -1504,7 +1504,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("fracMassS") << "   " << GetVar(TotalPDF,"fracMassS")->getErrorLo() << "   " << GetVar(TotalPDF,"fracMassS")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("fracMassS"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("fracMassS"))->operator[](q2BinIndx).c_str());
 
 
   vecParStr->push_back("###################################################################");
@@ -1517,7 +1517,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("var1") << "   " << GetVar(TotalPDF,"var1")->getErrorLo() << "   " << GetVar(TotalPDF,"var1")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# Bkg var-2 (tau2 or width) [GeV/c2]");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"var2") != NULL))
     {
@@ -1525,10 +1525,10 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("var2") << "   " << GetVar(TotalPDF,"var2")->getErrorLo() << "   " << GetVar(TotalPDF,"var2")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# Fraction");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"fracMassBExp") != NULL)) { myString.clear(); myString.str(""); myString << TotalPDF->getVariables()->getRealValue("fracMassBExp"); vecParStr->push_back(myString.str()); }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("fracMassBExp"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("fracMassBExp"))->operator[](q2BinIndx).c_str());
 
 
   vecParStr->push_back("###################################################################");
@@ -1541,7 +1541,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("sigmaMisTag1") << "   " << GetVar(TotalPDF,"sigmaMisTag1")->getErrorLo() << "   " << GetVar(TotalPDF,"sigmaMisTag1")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# Sigma-2 mistag [GeV/c2]");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"sigmaMisTag2") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("sigmaMisTag2") + string("_constr")).c_str()) == NULL))))
     {
@@ -1549,7 +1549,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("sigmaMisTag2") << "   " << GetVar(TotalPDF,"sigmaMisTag2")->getErrorLo() << "   " << GetVar(TotalPDF,"sigmaMisTag2")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# Fraction");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"fracMisTag") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("fracMisTag") + string("_constr")).c_str()) == NULL))))
     {
@@ -1557,7 +1557,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("fracMisTag") << "   " << GetVar(TotalPDF,"fracMisTag")->getErrorLo() << "   " << GetVar(TotalPDF,"fracMisTag")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("fracMisTag"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("fracMisTag"))->operator[](q2BinIndx).c_str());
 
 
   vecParStr->push_back("###################################################################");
@@ -1570,7 +1570,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("meanR1") << "   " << GetVar(TotalPDF,"meanR1")->getErrorLo() << "   " << GetVar(TotalPDF,"meanR1")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("meanR1"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("meanR1"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# Bkg sigma right-peak-1 [GeV/c2]");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"sigmaR1") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("sigmaR1") + string("_constr")).c_str()) == NULL))))
     {
@@ -1578,7 +1578,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("sigmaR1") << "   " << GetVar(TotalPDF,"sigmaR1")->getErrorLo() << "   " << GetVar(TotalPDF,"sigmaR1")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# Bkg mean right-peak-2 [GeV/c2]");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"meanR2") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("meanR2") + string("_constr")).c_str()) == NULL))))
     {
@@ -1586,7 +1586,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("meanR2") << "   " << GetVar(TotalPDF,"meanR2")->getErrorLo() << "   " << GetVar(TotalPDF,"meanR2")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("meanR2"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("meanR2"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# Bkg sigma right-peak-2 [GeV/c2]");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"sigmaR2") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("sigmaR2") + string("_constr")).c_str()) == NULL))))
     {
@@ -1594,7 +1594,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("sigmaR2") << "   " << GetVar(TotalPDF,"sigmaR2")->getErrorLo() << "   " << GetVar(TotalPDF,"sigmaR2")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# Fraction");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"fracMassBRPeak") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("fracMassBRPeak") + string("_constr")).c_str()) == NULL))))
     {
@@ -1602,7 +1602,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("fracMassBRPeak") << "   " << GetVar(TotalPDF,"fracMassBRPeak")->getErrorLo() << "   " << GetVar(TotalPDF,"fracMassBRPeak")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("fracMassBRPeak"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("fracMassBRPeak"))->operator[](q2BinIndx).c_str());
 
 
   vecParStr->push_back("# Bkg mean left-peak-1 [GeV/c2]");
@@ -1612,7 +1612,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("meanL1") << "   " << GetVar(TotalPDF,"meanL1")->getErrorLo() << "   " << GetVar(TotalPDF,"meanL1")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("meanL1"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("meanL1"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# Bkg sigma left-peak-1 [GeV/c2]");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"sigmaL1") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("sigmaL1") + string("_constr")).c_str()) == NULL))))
     {
@@ -1620,7 +1620,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("sigmaL1") << "   " << GetVar(TotalPDF,"sigmaL1")->getErrorLo() << "   " << GetVar(TotalPDF,"sigmaL1")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# Bkg mean left-peak-2 [GeV/c2]");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"meanL2") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("meanL2") + string("_constr")).c_str()) == NULL))))
     {
@@ -1628,7 +1628,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("meanL2") << "   " << GetVar(TotalPDF,"meanL2")->getErrorLo() << "   " << GetVar(TotalPDF,"meanL2")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("meanL2"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("meanL2"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# Bkg sigma left-peak-2 [GeV/c2]");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"sigmaL2") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("sigmaL2") + string("_constr")).c_str()) == NULL))))
     {
@@ -1636,7 +1636,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("sigmaL2") << "   " << GetVar(TotalPDF,"sigmaL2")->getErrorLo() << "   " << GetVar(TotalPDF,"sigmaL2")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# Fraction");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"fracMassBLPeak") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("fracMassBLPeak") + string("_constr")).c_str()) == NULL))))
     {
@@ -1644,7 +1644,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("fracMassBLPeak") << "   " << GetVar(TotalPDF,"fracMassBLPeak")->getErrorLo() << "   " << GetVar(TotalPDF,"fracMassBLPeak")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("fracMassBLPeak"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("fracMassBLPeak"))->operator[](q2BinIndx).c_str());
 
   vecParStr->push_back("# Fraction of right-peak");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"fracMassBPeak") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("fracMassBPeak") + string("_constr")).c_str()) == NULL))))
@@ -1653,7 +1653,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("fracMassBPeak") << "   " << GetVar(TotalPDF,"fracMassBPeak")->getErrorLo() << "   " << GetVar(TotalPDF,"fracMassBPeak")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("fracMassBPeak"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("fracMassBPeak"))->operator[](q2BinIndx).c_str());
 
 
   vecParStr->push_back("###################################################################");
@@ -1666,7 +1666,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("nBkgComb") << "   " << GetVar(TotalPDF,"nBkgComb")->getErrorLo() << "   " << GetVar(TotalPDF,"nBkgComb")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# Mistag fraction");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"nMisTagFrac") != NULL) && 
       ((atoi(Utility->GetGenericParam("SaveMisTagFrac").c_str()) == true) || (APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("nMisTagFrac") + string("_constr")).c_str()) == NULL))))
@@ -1675,7 +1675,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("nMisTagFrac") << "   " << GetVar(TotalPDF,"nMisTagFrac")->getErrorLo() << "   " << GetVar(TotalPDF,"nMisTagFrac")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("nMisTagFrac"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("nMisTagFrac"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# Peaking bkg yield");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"nBkgPeak") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("nBkgPeak") + string("_constr")).c_str()) == NULL))))
     {
@@ -1683,7 +1683,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("nBkgPeak") << "   " << GetVar(TotalPDF,"nBkgPeak")->getErrorLo() << "   " << GetVar(TotalPDF,"nBkgPeak")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# Signal yield");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"nSig") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("nSig") + string("_constr")).c_str()) == NULL))))
     {
@@ -1691,17 +1691,17 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("nSig") << "   " << GetVar(TotalPDF,"nSig")->getErrorLo() << "   " << GetVar(TotalPDF,"nSig")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](q2BinIndx).c_str());
 
 
   vecParStr->push_back("###################################################################");
 
-  NCoeffPolyBKGpeak1 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP1"))->operator[](fitParamIndx).c_str());
-  NCoeffPolyBKGcomb1 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC1"))->operator[](fitParamIndx).c_str());
-  NCoeffPolyBKGpeak2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP2"))->operator[](fitParamIndx).c_str());
-  NCoeffPolyBKGcomb2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC2"))->operator[](fitParamIndx).c_str());
-  NCoeffPolyBKGpeak3 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP3"))->operator[](fitParamIndx).c_str());
-  NCoeffPolyBKGcomb3 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC3"))->operator[](fitParamIndx).c_str());
+  NCoeffPolyBKGpeak1 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP1"))->operator[](q2BinIndx).c_str());
+  NCoeffPolyBKGcomb1 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC1"))->operator[](q2BinIndx).c_str());
+  NCoeffPolyBKGpeak2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP2"))->operator[](q2BinIndx).c_str());
+  NCoeffPolyBKGcomb2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC2"))->operator[](q2BinIndx).c_str());
+  NCoeffPolyBKGpeak3 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP3"))->operator[](q2BinIndx).c_str());
+  NCoeffPolyBKGcomb3 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC3"))->operator[](q2BinIndx).c_str());
 
   vecParStr->push_back("### Number of coefficients of the peak.bkg angle1 poly ###");
   myString.clear(); myString.str("");
@@ -1723,7 +1723,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
 	  myString << TotalPDF->getVariables()->getRealValue(myCoeff.str().c_str()) << "   " << GetVar(TotalPDF,myCoeff.str().c_str())->getErrorLo() << "   " << GetVar(TotalPDF,myCoeff.str().c_str())->getErrorHi();
 	  vecParStr->push_back(myString.str());
 	}
-      else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](fitParamIndx).c_str());
+      else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str());
     }
 
   vecParStr->push_back("### Number of coefficients of the comb.bkg angle1 poly ###");
@@ -1768,7 +1768,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
 	  myString << TotalPDF->getVariables()->getRealValue(myCoeff.str().c_str()) << "   " << GetVar(TotalPDF,myCoeff.str().c_str())->getErrorLo() << "   " << GetVar(TotalPDF,myCoeff.str().c_str())->getErrorHi();
 	  vecParStr->push_back(myString.str());
 	}
-      else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](fitParamIndx).c_str());
+      else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str());
     }
 
   vecParStr->push_back("### Number of coefficients of the comb.bkg angle2 poly ###");
@@ -1813,7 +1813,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
 	  myString << TotalPDF->getVariables()->getRealValue(myCoeff.str().c_str()) << "   " << GetVar(TotalPDF,myCoeff.str().c_str())->getErrorLo() << "   " << GetVar(TotalPDF,myCoeff.str().c_str())->getErrorHi();
 	  vecParStr->push_back(myString.str());
 	}
-      else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](fitParamIndx).c_str());
+      else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str());
     }
 
   vecParStr->push_back("### Number of coefficients of the comb.bkg angle3 poly ###");
@@ -1849,7 +1849,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("FlS") << "   " << GetVar(TotalPDF,"FlS")->getErrorLo() << "   " << GetVar(TotalPDF,"FlS")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# AFB +/- err");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"AfbS") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("AfbS") + string("_constr")).c_str()) == NULL))))
     {
@@ -1857,7 +1857,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("AfbS") << "   " << GetVar(TotalPDF,"AfbS")->getErrorLo() << "   " << GetVar(TotalPDF,"AfbS")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# P1 +/- err");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"P1S") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("P1S") + string("_constr")).c_str()) == NULL))))
     {
@@ -1865,7 +1865,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("P1S") << "   " << GetVar(TotalPDF,"P1S")->getErrorLo() << "   " << GetVar(TotalPDF,"P1S")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# P2 +/- err");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"P2S") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("P2S") + string("_constr")).c_str()) == NULL))))
     {
@@ -1873,7 +1873,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("P2S") << "   " << GetVar(TotalPDF,"P2S")->getErrorLo() << "   " << GetVar(TotalPDF,"P2S")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# FS +/- err");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"FsS") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("FsS") + string("_constr")).c_str()) == NULL))))
     {
@@ -1881,7 +1881,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("FsS") << "   " << GetVar(TotalPDF,"FsS")->getErrorLo() << "   " << GetVar(TotalPDF,"FsS")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# AS +/- err");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"AsS") != NULL) && ((APPLYconstr == false) || ((APPLYconstr == true) && (vecConstr->find(string(string("AsS") + string("_constr")).c_str()) == NULL))))
     {
@@ -1889,7 +1889,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
       myString << TotalPDF->getVariables()->getRealValue("AsS") << "   " << GetVar(TotalPDF,"AsS")->getErrorLo() << "   " << GetVar(TotalPDF,"AsS")->getErrorHi();
       vecParStr->push_back(myString.str());
     }
-  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](fitParamIndx).c_str());
+  else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](q2BinIndx).c_str());
 
 
   vecParStr->push_back("###################################################################");
@@ -1897,29 +1897,29 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, 
 
   vecParStr->push_back("# Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians");
   myString.clear(); myString.str("");
-  myString << configParam->operator[](Utility->GetConfigParamIndx("SigType"))->operator[](fitParamIndx);
+  myString << configParam->operator[](Utility->GetConfigParamIndx("SigType"))->operator[](q2BinIndx);
   vecParStr->push_back(myString.str());
 
   vecParStr->push_back("# Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians");
   myString.clear(); myString.str("");
-  myString << configParam->operator[](Utility->GetConfigParamIndx("PeakBkgType"))->operator[](fitParamIndx);
+  myString << configParam->operator[](Utility->GetConfigParamIndx("PeakBkgType"))->operator[](q2BinIndx);
   vecParStr->push_back(myString.str());
 
   vecParStr->push_back("# Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials; 3 = erfc");
   myString.clear(); myString.str("");
-  myString << configParam->operator[](Utility->GetConfigParamIndx("CombBkgType"))->operator[](fitParamIndx);
+  myString << configParam->operator[](Utility->GetConfigParamIndx("CombBkgType"))->operator[](q2BinIndx);
   vecParStr->push_back(myString.str());
 
   vecParStr->push_back("# Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians");
   myString.clear(); myString.str("");
-  myString << configParam->operator[](Utility->GetConfigParamIndx("MistagType"))->operator[](fitParamIndx);
+  myString << configParam->operator[](Utility->GetConfigParamIndx("MistagType"))->operator[](q2BinIndx);
   vecParStr->push_back(myString.str());
 
   return vecParStr;
 }
 
 
-unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vector<vector<string>*>* fitParam)
+unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vector<vector<string>*>* fitParam)
 // ##############################################################
 // # Only for polynomial coeficients:                           #
 // # If errLo and errHi are 0.0 --> set coefficient as constant #
@@ -1936,147 +1936,147 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vec
   unsigned int NCoeffPolyBKGcomb3;
 
 
-  if (GetVar(TotalPDF,"meanS") != NULL) TotalPDF->getVariables()->setRealValue("meanS",atof(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](fitParamIndx).c_str()));
+  if (GetVar(TotalPDF,"meanS") != NULL) TotalPDF->getVariables()->setRealValue("meanS",atof(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](q2BinIndx).c_str()));
   if (GetVar(TotalPDF,"sigmaS1") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"sigmaS1",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"sigmaS2") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"sigmaS2",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"fracMassS") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("fracMassS"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("fracMassS"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"fracMassS",1.0,&myString,&value,&errLo,&errHi);
     }
 
-  if (GetVar(TotalPDF,"var1")         != NULL) TotalPDF->getVariables()->setRealValue("var1",         atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](fitParamIndx).c_str()));
-  if (GetVar(TotalPDF,"var2")         != NULL) TotalPDF->getVariables()->setRealValue("var2",         atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](fitParamIndx).c_str()));
-  if (GetVar(TotalPDF,"fracMassBExp") != NULL) TotalPDF->getVariables()->setRealValue("fracMassBExp", atof(fitParam->operator[](Utility->GetFitParamIndx("fracMassBExp"))->operator[](fitParamIndx).c_str()));
+  if (GetVar(TotalPDF,"var1")         != NULL) TotalPDF->getVariables()->setRealValue("var1",         atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](q2BinIndx).c_str()));
+  if (GetVar(TotalPDF,"var2")         != NULL) TotalPDF->getVariables()->setRealValue("var2",         atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](q2BinIndx).c_str()));
+  if (GetVar(TotalPDF,"fracMassBExp") != NULL) TotalPDF->getVariables()->setRealValue("fracMassBExp", atof(fitParam->operator[](Utility->GetFitParamIndx("fracMassBExp"))->operator[](q2BinIndx).c_str()));
 
   if (GetVar(TotalPDF,"sigmaMisTag1") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"sigmaMisTag1",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"sigmaMisTag2") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"sigmaMisTag2",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"fracMisTag") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("fracMisTag"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("fracMisTag"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"fracMisTag",1.0,&myString,&value,&errLo,&errHi);
     }
 
   if (GetVar(TotalPDF,"meanR1") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("meanR1"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("meanR1"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"meanR1",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"sigmaR1") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"sigmaR1",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"meanR2") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("meanR2"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("meanR2"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"meanR2",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"sigmaR2") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"sigmaR2",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"fracMassBRPeak") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("fracMassBRPeak"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("fracMassBRPeak"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"fracMassBRPeak",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"meanL1") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("meanL1"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("meanL1"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"meanL1",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"sigmaL1") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"sigmaL1",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"meanL2") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("meanL2"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("meanL2"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"meanL2",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"sigmaL2") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"sigmaL2",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"fracMassBLPeak") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("fracMassBLPeak"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("fracMassBLPeak"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"fracMassBLPeak",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"fracMassBPeak") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("fracMassBPeak"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("fracMassBPeak"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"fracMassBPeak",1.0,&myString,&value,&errLo,&errHi);
     }
 
   if (GetVar(TotalPDF,"nBkgComb") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"nBkgComb",MULTYIELD,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"nMisTagFrac") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("nMisTagFrac"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("nMisTagFrac"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"nMisTagFrac",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"nBkgPeak") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"nBkgPeak",MULTYIELD,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"nSig") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"nSig",MULTYIELD,&myString,&value,&errLo,&errHi);
     }
 
-  NCoeffPolyBKGpeak1 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP1"))->operator[](fitParamIndx).c_str());
-  NCoeffPolyBKGcomb1 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC1"))->operator[](fitParamIndx).c_str());
-  NCoeffPolyBKGpeak2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP2"))->operator[](fitParamIndx).c_str());
-  NCoeffPolyBKGcomb2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC2"))->operator[](fitParamIndx).c_str());
-  NCoeffPolyBKGpeak3 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP3"))->operator[](fitParamIndx).c_str());
-  NCoeffPolyBKGcomb3 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC3"))->operator[](fitParamIndx).c_str());
+  NCoeffPolyBKGpeak1 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP1"))->operator[](q2BinIndx).c_str());
+  NCoeffPolyBKGcomb1 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC1"))->operator[](q2BinIndx).c_str());
+  NCoeffPolyBKGpeak2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP2"))->operator[](q2BinIndx).c_str());
+  NCoeffPolyBKGcomb2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC2"))->operator[](q2BinIndx).c_str());
+  NCoeffPolyBKGpeak3 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP3"))->operator[](q2BinIndx).c_str());
+  NCoeffPolyBKGcomb3 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC3"))->operator[](q2BinIndx).c_str());
   if ((NCoeffPolyBKGpeak1 > NCOEFFPOLYBKG) || (NCoeffPolyBKGcomb1 > NCOEFFPOLYBKG) ||
       (NCoeffPolyBKGpeak2 > NCOEFFPOLYBKG) || (NCoeffPolyBKGcomb2 > NCOEFFPOLYBKG) ||
       (NCoeffPolyBKGpeak3 > NCOEFFPOLYBKG) || (NCoeffPolyBKGcomb3 > NCOEFFPOLYBKG))
@@ -2091,7 +2091,7 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vec
       myCoeff.clear(); myCoeff.str("");
       myCoeff << "p1Poly" << i;
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
       if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(true);
     }
@@ -2100,7 +2100,7 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vec
       myCoeff.clear(); myCoeff.str("");
       myCoeff << "c1Poly" << i;
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
       if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(true);
     }
@@ -2109,7 +2109,7 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vec
       myCoeff.clear(); myCoeff.str("");
       myCoeff << "p2Poly" << i;
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
       if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(true);
     }
@@ -2118,7 +2118,7 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vec
       myCoeff.clear(); myCoeff.str("");
       myCoeff << "c2Poly" << i;
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
       if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(true);
     }
@@ -2127,7 +2127,7 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vec
       myCoeff.clear(); myCoeff.str("");
       myCoeff << "p3Poly" << i;
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
       if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(true);
     }
@@ -2136,7 +2136,7 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vec
       myCoeff.clear(); myCoeff.str("");
       myCoeff << "c3Poly" << i;
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
       if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(true);
     }
@@ -2144,37 +2144,37 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int fitParamIndx, vec
   if (GetVar(TotalPDF,"FlS") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"FlS",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"AfbS") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"AfbS",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"P1S") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"P1S",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"P2S") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](fitParamIndx).c_str();
+      myString << fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"P2S",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"FsS") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](fitParamIndx);
+      myString << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](q2BinIndx);
       SetValueAndErrors(TotalPDF,"FsS",1.0,&myString,&value,&errLo,&errHi);
     }
   if (GetVar(TotalPDF,"AsS") != NULL)
     {
       myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](fitParamIndx);
+      myString << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](q2BinIndx);
       SetValueAndErrors(TotalPDF,"AsS",1.0,&myString,&value,&errLo,&errHi);
     }
 
@@ -2201,7 +2201,7 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
 
   CopyFitResults(TotalPDF,q2BinIndx,fitParam);
 
-  RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins->size()-1) + q2BinIndx + 1);
+  RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins->size()-1) + q2BinIndx);
   cout << "\n@@@ Random seed for parameter file generation set to: " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
   
@@ -4075,7 +4075,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
 				string fitName, unsigned int FitType,
 				vector<vector<unsigned int>*>* configParam,
 				vector<vector<string>*>* fitParam,
-				unsigned int parIndx,
+				unsigned int q2BinIndx,
 				pair<TF2*,TF2*> effFunc)
 // #########################
 // # x: mass               #
@@ -4086,19 +4086,19 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // ################################
   // # Read configuration variables #
   // ################################
-  unsigned int useSignal = configParam->operator[](Utility->GetConfigParamIndx("SigType"))->operator[](parIndx);
-  unsigned int usePeakB  = configParam->operator[](Utility->GetConfigParamIndx("PeakBkgType"))->operator[](parIndx);
-  unsigned int useCombB  = configParam->operator[](Utility->GetConfigParamIndx("CombBkgType"))->operator[](parIndx);
-  unsigned int useMisTag = configParam->operator[](Utility->GetConfigParamIndx("MistagType"))->operator[](parIndx);
+  unsigned int useSignal = configParam->operator[](Utility->GetConfigParamIndx("SigType"))->operator[](q2BinIndx);
+  unsigned int usePeakB  = configParam->operator[](Utility->GetConfigParamIndx("PeakBkgType"))->operator[](q2BinIndx);
+  unsigned int useCombB  = configParam->operator[](Utility->GetConfigParamIndx("CombBkgType"))->operator[](q2BinIndx);
+  unsigned int useMisTag = configParam->operator[](Utility->GetConfigParamIndx("MistagType"))->operator[](q2BinIndx);
 
 
   // ###########################
   // # Read polynomial degrees #
   // ###########################
-  unsigned int NCoeffPolyBKGpeak1 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP1"))->operator[](parIndx).c_str());
-  unsigned int NCoeffPolyBKGcomb1 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC1"))->operator[](parIndx).c_str());
-  unsigned int NCoeffPolyBKGpeak2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP2"))->operator[](parIndx).c_str());
-  unsigned int NCoeffPolyBKGcomb2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC2"))->operator[](parIndx).c_str());
+  unsigned int NCoeffPolyBKGpeak1 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP1"))->operator[](q2BinIndx).c_str());
+  unsigned int NCoeffPolyBKGcomb1 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC1"))->operator[](q2BinIndx).c_str());
+  unsigned int NCoeffPolyBKGpeak2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyP2"))->operator[](q2BinIndx).c_str());
+  unsigned int NCoeffPolyBKGcomb2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC2"))->operator[](q2BinIndx).c_str());
 
 
   // ###################
@@ -4137,7 +4137,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // # Define angle fit variables and pdf for correctly tagged signal #
   // ##################################################################
   RooArgSet* VarsPolyGT = new RooArgSet("VarsPolyGT");
-  AngleS = MakeAngWithEffPDF(effFunc.first,y,z,FitType,useEffPDF,VarsAng,VarsPolyGT,parIndx);
+  AngleS = MakeAngWithEffPDF(effFunc.first,y,z,FitType,useEffPDF,VarsAng,VarsPolyGT,q2BinIndx);
 
   Signal = new RooProdPdf("Signal","Signal Mass*Angle",RooArgSet(*MassSignal,*AngleS));
 
@@ -4222,7 +4222,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // # Define angle fit variables and pdf for mis-tagged signal #
   // ############################################################
   RooArgSet* VarsPolyMT = new RooArgSet("VarsPolyMT");
-  AngleMisTag = MakeAngWithEffPDF(effFunc.second,y,z,FitType*10,useEffPDF,VarsAng,VarsPolyMT,parIndx);
+  AngleMisTag = MakeAngWithEffPDF(effFunc.second,y,z,FitType*10,useEffPDF,VarsAng,VarsPolyMT,q2BinIndx);
 
   MassAngleMisTag = new RooProdPdf("MassAngleMisTag","Mistag bkg Mass*Angle",RooArgSet(*MassMisTag,*AngleMisTag));
 
@@ -6571,7 +6571,7 @@ int main(int argc, char** argv)
 	      var1 = 0.0;
 	      var2 = 0.0;
 	      var3 = 0.0;
-	      for (unsigned int i = 0; i <= fileIndx; i++)
+	      for (unsigned int i = 1; i <= fileIndx; i++)
 	    	if (fileFitSystematicsInput.eof() == true)
 	    	  {
 	    	    cout << "\n@@@ Reached EoF: " << myString.str().c_str() << " from efficiency systematics file " << myString.str().c_str() << " - index #" << fileIndx << " @@@" << endl;
@@ -6624,7 +6624,7 @@ int main(int argc, char** argv)
 	      var1 = 0.0;
 	      var2 = 0.0;
 	      var3 = 0.0;
-	      for (unsigned int i = 0; i <= fileIndx; i++)
+	      for (unsigned int i = 1; i <= fileIndx; i++)
 	    	if (fileFitSystematicsInput.eof() == true)
 	    	  {
 	    	    cout << "\n@@@ Reached EoF: " << myString.str().c_str() << " from efficiency systematics file " << myString.str().c_str() << " - index #" << fileIndx << " @@@" << endl;
@@ -6935,7 +6935,7 @@ int main(int argc, char** argv)
 	      // # Set seed for random number generator   #
 	      // # in case the toy-MC studies are splited #
 	      // ##########################################
-	      RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins.size()-1) + specBin + 1);
+	      RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins.size()-1) + specBin);
 	      cout << "\n@@@ Random seed for toy-MC set to: " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
 

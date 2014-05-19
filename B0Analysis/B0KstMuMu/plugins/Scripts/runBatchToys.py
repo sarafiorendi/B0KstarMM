@@ -6,7 +6,7 @@ from os import system, chdir
 import sys
 
 if len(sys.argv) < 4:
-    print "Synopsis: python runBatchToy.py type[BF,FLAFB] nBins[0-7,-1] nJobs[> 0]"
+    print "Synopsis: python runBatchToy.py type[BF,FLAFB] nBins[0-8,-1] nJobs[> 0]"
     sys.exit()
 
 par = sys.argv[1]
@@ -16,19 +16,19 @@ elif par == 'FLAFB':
     fitType = 26
 else:
     print "Wrong parameter: ", par
-    print "Synopsis: python runBatchToy.py type[BF,FLAFB] nBins[0-7,-1] nJobs[> 0]"
+    print "Synopsis: python runBatchToy.py type[BF,FLAFB] nBins[0-8,-1] nJobs[> 0]"
 
 nBins = int(sys.argv[2])
 if nBins != -1:
     binList = [nBins,]
-elif fitType == 21:
-    binList = [0,1,2,4,6,7]
 else:
-    binList = [0,1,2,3,4,5,6,7]
+    binList = [0,1,2,3,5,7,8]
 
-nJobs = int(sys.argv[3])
-nToys = 1000 / nJobs
+nJobs    = int(sys.argv[3])
+totToys  = 1000
+nToysJob = totToys / nJobs
 
+print "Total number of toys: ", totToys
 system("unset DISPLAY")
 
 for i in binList:
@@ -53,7 +53,7 @@ for i in binList:
         chdir(dir)
 
         toRun = "Qsub -l lnxfarm -e -o toyMC_" + par + "_" + str(nJobs) + "_" + str(i) + ".log -N T" + str(nJobs) + par + str(i) + " ./ExtractYield " + str(fitType)
-        toRun = toRun + " toyMC_" + par + "_" + str(nJobs) + "_" + str(i) + ".root yesEffCorr " + str(i) + " " + str(nToys) + " ../../../python/ParameterFile.txt " + str(nJobs)
+        toRun = toRun + " toyMC_" + par + "_" + str(nJobs) + "_" + str(i) + ".root yesEffCorr " + str(i) + " " + str(nToysJob) + " ../../python/ParameterFile.txt " + str(nJobs)
         print toRun
         system(toRun)
 

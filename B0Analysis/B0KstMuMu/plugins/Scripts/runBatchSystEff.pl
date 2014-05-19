@@ -29,13 +29,13 @@ if (@ARGV == 2)
     $cmd .= "unset DISPLAY\n" ;
     $cmd .= "rm FitSystematics_q2Bin_" . $q2BinIndx . ".txt" . "\n" ;
     
-    $listStart = 0 ;
-    $listEnd = @list - 1 ;
-    $listIndx = 0 ;
+    $listStart = 1 ;
+    $listEnd = @list ;
+    $listIndx = 1 ;
     foreach $file (@list[$listStart..$listEnd])
     {
 	chomp $file ;
-	$str = ".././ExtractYield " . @ARGV[0] . " " . $dataFile . " EffCorrGenAnalyPDF " . $q2BinIndx . " " . $dirEffRndGen . $file . " " . $listIndx . " " . $parFile . "\n" ;
+	$str = ".././ExtractYield " . @ARGV[0] . " " . $dataFile . " yesEffCorrGen " . $q2BinIndx . " " . $dirEffRndGen . $file . " " . $listIndx . " " . $parFile . "\n" ;
 	$cmd .= "echo " . $str ;
 	$cmd .= $str ;
 	$listIndx++ ;
