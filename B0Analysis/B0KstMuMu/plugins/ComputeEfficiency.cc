@@ -77,9 +77,9 @@ using std::make_pair;
 #define INPUT_PHI           "Phi_B0ToKstMuMu.txt"
 #define INPUT_THETAL_THETAK "ThetaK_B0ToKstMuMu.txt"
 
-#define RIGHTtag       false
+#define RIGHTtag       true
 #define SAVEPLOT       false
-#define CHECKnegEFF    true  // Exit if efficiency is negative
+#define CHECKnegEFF    true  // Exit if efficiency is negative in FitxDEfficiencies
 #define CHECKEFFatREAD false // Check if 2D or 3D efficiency go negative
 #define NFILES         200
 #define INPUTGenEff    "../efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
