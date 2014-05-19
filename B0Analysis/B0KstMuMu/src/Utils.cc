@@ -781,16 +781,8 @@ TH2D* Utils::Get2DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector
 	      Histo->SetBinContent(j,k,cont);
 	      Histo->SetBinError(j,k,err);
 
-	      if (RIGHTflavorTAG == true)
-		{
-		  cont = Histo->GetBinContent(j,k) * Histo->GetXaxis()->GetBinWidth(j) * Histo->GetYaxis()->GetBinWidth(k);
-		  Histo_clone->SetBinContent(j,k,cont);
-		}
-	      else
-		{
-		  cont = Histo->GetBinContent(j,k) * Histo->GetXaxis()->GetBinWidth(Histo->GetNbinsX()-j+1) * Histo->GetYaxis()->GetBinWidth(Histo->GetNbinsY()-k+1);
-		  Histo_clone->SetBinContent(Histo->GetNbinsX()-j+1,Histo->GetNbinsY()-k+1,cont);
-		}
+	      if (RIGHTflavorTAG == true) Histo_clone->SetBinContent(j,k,cont);
+	      else                        Histo_clone->SetBinContent(Histo->GetNbinsX()-j+1,Histo->GetNbinsY()-k+1,cont);
 	      k++;
 	    }
 	}
@@ -927,16 +919,8 @@ TH3D* Utils::Get3DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector
 		  Histo->SetBinContent(j,k,l,cont);
 		  Histo->SetBinError(j,k,l,err);
 
-		  if (RIGHTflavorTAG == true)
-		    {
-		      cont = Histo->GetBinContent(j,k,l) * Histo->GetXaxis()->GetBinWidth(j) * Histo->GetYaxis()->GetBinWidth(k) * Histo->GetZaxis()->GetBinWidth(l);
-		      Histo_clone->SetBinContent(j,k,l,cont);
-		    }
-		  else
-		    {
-		      cont = Histo->GetBinContent(j,k,l) * Histo->GetXaxis()->GetBinWidth(Histo->GetNbinsX()-j+1) * Histo->GetYaxis()->GetBinWidth(Histo->GetNbinsY()-k+1) * Histo->GetZaxis()->GetBinWidth(Histo->GetNbinsZ()-l+1);
-		      Histo_clone->SetBinContent(Histo->GetNbinsX()-j+1,Histo->GetNbinsY()-k+1,Histo->GetNbinsZ()-l+1,cont);
-		    }
+		  if (RIGHTflavorTAG == true) Histo_clone->SetBinContent(j,k,l,cont);
+		  else                        Histo_clone->SetBinContent(Histo->GetNbinsX()-j+1,Histo->GetNbinsY()-k+1,Histo->GetNbinsZ()-l+1,cont);
 		  l++;
 		}
 	    }

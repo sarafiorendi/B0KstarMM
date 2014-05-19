@@ -247,6 +247,10 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
     }
 
 
+  // ####################
+  // # Plotting section #
+  // ####################
+
   TPad* tmpPad;      
   TCanvas* c0 = new TCanvas("c0","c0",1200,800);
   c0->Divide(4,2);
@@ -261,6 +265,17 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
 
   TH3D* Histo3D;
   TH3D* Histo3D_clone = NULL;
+
+  RooRealVar thetaK("thetaK","cos(#theta#lower[-0.4]{_{#font[122]{K}}})",Xbins[0],Xbins[Xbins.size()-1],"");
+  RooRealVar thetaL("thetaL","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",Ybins[0],Ybins[Ybins.size()-1],"");
+  RooRealVar phi;
+
+  RooPlot* xframe = thetaK.frame(Name("thetaK"));
+  RooPlot* yframe = thetaL.frame(Name("thetaL"));
+  RooPlot* zframe = NULL;
+
+  RooDataHist* histoEff;
+  RooHistPdf* histoEffPDF;
 
   if (effDimension == "2D")
     {
@@ -291,7 +306,7 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
 
 		  if (RIGHTflavorTAG == true)
 		    {
-		      cont = Histo2D->GetBinContent(j,k) * Histo2D->GetXaxis()->GetBinWidth(j) * Histo2D->GetYaxis()->GetBinWidth(k);
+ 		      cont = Histo2D->GetBinContent(j,k) * Histo2D->GetXaxis()->GetBinWidth(j) * Histo2D->GetYaxis()->GetBinWidth(k);
 		      Histo2D_clone->SetBinContent(j,k,cont);
 		    }
 		  else
@@ -307,6 +322,9 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
 
       Histo2D->Draw("surf1 fb");
 
+      // #####################
+      // # Project histogram #
+      // #####################
       tmpPad = static_cast<TPad*>(c0->cd(6));
       tmpPad->SetGrid();
       projX = static_cast<TH1D*>(Histo2D_clone->ProjectionX());
@@ -329,6 +347,24 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
       projY->SetLineColor(kRed);
       projY->SetMinimum(0);
       projY->Draw("hist");
+
+      // ########################
+      // # Project data and pdf #
+      // ########################
+      histoEff    = new RooDataHist("histoEff","histoEff",RooArgSet(thetaK,thetaL),Import(*Histo2D,true));
+      histoEffPDF = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(thetaK,thetaL),*histoEff,smothDegree);
+
+      tmpPad = static_cast<TPad*>(c0->cd(2));
+      tmpPad->SetGrid();
+      histoEff->plotOn(xframe,DataError(RooAbsData::None));
+      histoEffPDF->plotOn(xframe,Project(thetaL));
+      xframe->Draw();
+
+      tmpPad = static_cast<TPad*>(c0->cd(3));
+      tmpPad->SetGrid();
+      histoEff->plotOn(yframe,DataError(RooAbsData::None));
+      histoEffPDF->plotOn(yframe,Project(thetaK));
+      yframe->Draw();
     }
   else
     {
@@ -382,6 +418,9 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
 
       Histo3D->Draw();
 
+      // #####################
+      // # Project histogram #
+      // #####################
       tmpPad = static_cast<TPad*>(c0->cd(6));
       tmpPad->SetGrid();
       projX = static_cast<TH1D*>(Histo3D_clone->Project3D("yz"));
@@ -414,54 +453,32 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
       projZ->SetLineColor(kRed);
       projZ->SetMinimum(0);
       projZ->Draw("hist");
-    }
 
-
-  RooRealVar thetaK("thetaK","cos(#theta#lower[-0.4]{_{#font[122]{K}}})",Xbins[0],Xbins[Xbins.size()-1],"");
-  RooRealVar thetaL("thetaL","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",Ybins[0],Ybins[Ybins.size()-1],"");
-  RooPlot* xframe = thetaK.frame(Name("thetaK"));
-  RooPlot* yframe = thetaL.frame(Name("thetaL"));
-
-  RooRealVar phi;
-  RooPlot* zframe = NULL;
-  if (effDimension == "3D")
-    {
+      // ########################
+      // # Project data and pdf #
+      // ########################
       phi = RooRealVar("phi","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",Zbins[0],Zbins[Zbins.size()-1],"rad");
       zframe = phi.frame(Name("phi"));
-    }
 
-  RooDataHist* histoEff;
-  RooHistPdf* histoEffPDF;
-  if (effDimension == "2D")
-    {
-      histoEff    = new RooDataHist("histoEff","histoEff",RooArgSet(thetaK,thetaL),Histo2D_clone);
-      histoEffPDF = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(thetaK,thetaL),*histoEff,smothDegree);
-    }
-  else
-    {
-      histoEff    = new RooDataHist("histoEff","histoEff",RooArgSet(thetaK,thetaL,phi),Histo3D_clone);
+      histoEff    = new RooDataHist("histoEff","histoEff",RooArgSet(thetaK,thetaL,phi),Import(*Histo3D,true));
       histoEffPDF = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(thetaK,thetaL,phi),*histoEff,smothDegree);
-    }
 
+      tmpPad = static_cast<TPad*>(c0->cd(2));
+      tmpPad->SetGrid();
+      histoEff->plotOn(xframe,DataError(RooAbsData::None));
+      histoEffPDF->plotOn(xframe,Project(RooArgSet(thetaL,phi)));
+      xframe->Draw();
+      
+      tmpPad = static_cast<TPad*>(c0->cd(3));
+      tmpPad->SetGrid();
+      histoEff->plotOn(yframe,DataError(RooAbsData::None));
+      histoEffPDF->plotOn(yframe,Project(RooArgSet(thetaK,phi)));
+      yframe->Draw();
 
-  tmpPad = static_cast<TPad*>(c0->cd(2));
-  tmpPad->SetGrid();
-  histoEff->plotOn(xframe,RooFit::DataError(RooAbsData::None));
-  histoEffPDF->plotOn(xframe);
-  xframe->Draw();
-
-  tmpPad = static_cast<TPad*>(c0->cd(3));
-  tmpPad->SetGrid();
-  histoEff->plotOn(yframe,RooFit::DataError(RooAbsData::None));
-  histoEffPDF->plotOn(yframe);
-  yframe->Draw();
-
-  if (effDimension == "3D")
-    {
       tmpPad = static_cast<TPad*>(c0->cd(4));
       tmpPad->SetGrid();
-      histoEff->plotOn(zframe,RooFit::DataError(RooAbsData::None));
-      histoEffPDF->plotOn(zframe);
+      histoEff->plotOn(zframe,DataError(RooAbsData::None));
+      histoEffPDF->plotOn(zframe,Project(RooArgSet(thetaK,thetaL)));
       zframe->Draw();
     }
 
