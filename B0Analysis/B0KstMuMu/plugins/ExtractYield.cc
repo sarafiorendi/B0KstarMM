@@ -17,32 +17,25 @@
 #include <TGaxis.h>
 #include <TLegend.h>
 #include <TPaveText.h>
-#include <TLorentzVector.h>
-#include <TMinuit.h>
 #include <TLatex.h>
 #include <Math/Functor.h>
 
 #include <RooRealVar.h>
 #include <RooGaussian.h>
-#include <RooPoisson.h>
 #include <RooAddPdf.h>
 #include <RooDataSet.h>
 #include <RooGenericPdf.h>
 #include <RooPlot.h>
 #include <RooArgSet.h>
 #include <RooFitResult.h>
-#include <RooProdPdf.h>
 #include <RooPolynomial.h>
-#include <RooBernstein.h>
 #include <RooMCStudy.h>
 #include <RooMinuit.h>
 #include <RooWorkspace.h>
-#include <Roo1DTable.h>
 #include <RooConstVar.h>
 #include <RooRandom.h>
 #include <RooDataHist.h>
 #include <RooHistPdf.h>
-#include <RooEffProd.h>
 #include <RooFunctorBinding.h>
 #include <RooStats/RooStatsUtils.h>
 
@@ -981,6 +974,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	  else if ((FitType >= 41*10) && (FitType < 60*10)) SignalType = 3;
 	  else if ((FitType >= 61*10) && (FitType < 80*10)) SignalType = 5;
 	  else SignalType = 1;
+
 	  RooDataHist* histoEff = new RooDataHist("histoEff","histoEff",RooArgSet(*z,*y),Import(*Utility->Get2DEffHistoq2Bin(&cosThetaKBins,&cosThetaLBins,parIndx,SignalType,false,make_pair(-1.0,1.0),make_pair(-1.0,1.0)),true));
 	  histoEffPDF           = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(*z,*y),*histoEff,DEGREEINTERPEFF);
 	  MyProdPdf* myprodpdf  = new MyProdPdf(*_AnglesPDF,*histoEffPDF);
