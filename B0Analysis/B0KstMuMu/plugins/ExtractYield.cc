@@ -3462,13 +3462,13 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 
       myString.clear(); myString.str("");
       myString << "TotalPDFq2Bin_" << i;
-      InstantiateMassFit(&TotalPDFq2Bins[i],x,myString.str(),configParam,i);
+      InstantiateMassFit(&TotalPDFq2Bins[i],x,myString.str(),configParam,(ID == 0 ? i : 0));
 
 
       // #####################
       // # Initialize p.d.f. #
       // #####################
-      CopyFitResults(TotalPDFq2Bins[i],i,fitParam);
+      CopyFitResults(TotalPDFq2Bins[i],(ID == 0 ? i : 0),fitParam);
 
 
       // #####################
@@ -3496,8 +3496,8 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // ##############################################
       // # Save fit results back into prarameter file #
       // ##############################################
-      vecParStr = SaveFitResults(TotalPDFq2Bins[i],i,fitParam,configParam,vecConstr);
-      Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,i);
+      vecParStr = SaveFitResults(TotalPDFq2Bins[i],(ID == 0 ? i : 0),fitParam,configParam,vecConstr);
+      Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,(ID == 0 ? i : 0));
       vecParStr->clear();
       delete vecParStr;
       vecParStr = NULL;
@@ -6336,8 +6336,12 @@ int main(int argc, char** argv)
 	  else if ((!(((FitType >= 21) && (FitType <= 26)) || (FitType == 96))) &&
 		   ((correct4Efficiency == "noEffCorr") || (correct4Efficiency == "yesEffCorr")))
 	    {
-	      if (argc >= 6) tmpFileName = argv[5];
-	      if (argc == 7) fileIndx    = atoi(argv[6]);
+	      if (argc >= 6)
+		{
+		  tmpFileName = argv[5];
+		  if (argc == 7) fileIndx = atoi(argv[6]);
+		  else           fileIndx = 1;
+		}
 	    }
 	  else if ((FitType >= 21) && (FitType <= 26))
 	    {
