@@ -2196,40 +2196,47 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
   RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins->size()-1) + q2BinIndx);
   cout << "\n@@@ Random seed for parameter file generation set to: " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
-  
+
+  if (GetVar(TotalPDF,"nMisTagFrac") != NULL)
+    {
+      TotalPDF->getVariables()->setRealValue("nMisTagFrac",RooRandom::gaussian() * GetVar(TotalPDF,"nMisTagFrac")->getError() + GetVar(TotalPDF,"nMisTagFrac")->getVal());
+      cout << "Mis-tag fraction generation: gaussian mean = " << GetVar(TotalPDF,"nMisTagFrac")->getVal() << "\tsigma = " << GetVar(TotalPDF,"nMisTagFrac")->getError() << endl;
+    }
+
+
   if (GetVar(TotalPDF,"FlS") != NULL)
     {
-      TotalPDF->getVariables()->setRealValue("FlS",RooRandom::uniform()   * (GetVar(TotalPDF,"FlS")->getMax()   - GetVar(TotalPDF,"FlS")->getMin())   + GetVar(TotalPDF,"FlS")->getMin());
+      TotalPDF->getVariables()->setRealValue("FlS",RooRandom::uniform() * (GetVar(TotalPDF,"FlS")->getMax() - GetVar(TotalPDF,"FlS")->getMin()) + GetVar(TotalPDF,"FlS")->getMin());
       cout << "Fl generation: lower bound = " << GetVar(TotalPDF,"FlS")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"FlS")->getMax() << endl;
     }
 
   if (GetVar(TotalPDF,"AfbS") != NULL)
     {
-      TotalPDF->getVariables()->setRealValue("AfbS",RooRandom::uniform()  * (GetVar(TotalPDF,"AfbS")->getMax()  - GetVar(TotalPDF,"AfbS")->getMin())  + GetVar(TotalPDF,"AfbS")->getMin());
+      TotalPDF->getVariables()->setRealValue("AfbS",RooRandom::uniform() * (GetVar(TotalPDF,"AfbS")->getMax() - GetVar(TotalPDF,"AfbS")->getMin()) + GetVar(TotalPDF,"AfbS")->getMin());
       cout << "Afb generation: lower bound = " << GetVar(TotalPDF,"AfbS")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"AfbS")->getMax() << endl;
     }
 
   if (GetVar(TotalPDF,"P1S") != NULL)
     {
-      TotalPDF->getVariables()->setRealValue("P1S",RooRandom::uniform()  * (GetVar(TotalPDF,"P1S")->getMax()  - GetVar(TotalPDF,"P1S")->getMin())  + GetVar(TotalPDF,"P1S")->getMin());
+      TotalPDF->getVariables()->setRealValue("P1S",RooRandom::uniform() * (GetVar(TotalPDF,"P1S")->getMax() - GetVar(TotalPDF,"P1S")->getMin()) + GetVar(TotalPDF,"P1S")->getMin());
       cout << "P1 generation: lower bound = " << GetVar(TotalPDF,"P1S")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"P1S")->getMax() << endl;
     }
 
   if (GetVar(TotalPDF,"P2S") != NULL)
     {
-      TotalPDF->getVariables()->setRealValue("P2S",RooRandom::uniform()  * (GetVar(TotalPDF,"P2S")->getMax()  - GetVar(TotalPDF,"P2S")->getMin())  + GetVar(TotalPDF,"P2S")->getMin());
+      TotalPDF->getVariables()->setRealValue("P2S",RooRandom::uniform() * (GetVar(TotalPDF,"P2S")->getMax() - GetVar(TotalPDF,"P2S")->getMin()) + GetVar(TotalPDF,"P2S")->getMin());
       cout << "P2 generation: lower bound = " << GetVar(TotalPDF,"P2S")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"P2S")->getMax() << endl;
     }
 
   if (GetVar(TotalPDF,"FsS") != NULL)
     {
-      TotalPDF->getVariables()->setRealValue("FsS",RooRandom::uniform()   * (GetVar(TotalPDF,"FsS")->getMax()   - GetVar(TotalPDF,"FsS")->getMin())   + GetVar(TotalPDF,"FsS")->getMin());
+      TotalPDF->getVariables()->setRealValue("FsS",RooRandom::uniform() * (GetVar(TotalPDF,"FsS")->getMax() - GetVar(TotalPDF,"FsS")->getMin()) + GetVar(TotalPDF,"FsS")->getMin());
       cout << "Fs generation: lower bound = " << GetVar(TotalPDF,"FsS")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"FsS")->getMax() << endl;
     }
 
   if (GetVar(TotalPDF,"AsS") != NULL)
     {
-      TotalPDF->getVariables()->setRealValue("AsS",RooRandom::uniform()   * (GetVar(TotalPDF,"AsS")->getMax()   - GetVar(TotalPDF,"AsS")->getMin())   + GetVar(TotalPDF,"AsS")->getMin());
+      TotalPDF->getVariables()->setRealValue("AsS",RooRandom::uniform() * (GetVar(TotalPDF,"AsS")->getMax() - GetVar(TotalPDF,"AsS")->getMin()) + GetVar(TotalPDF,"AsS")->getMin());
       cout << "As generation: lower bound = " << GetVar(TotalPDF,"AsS")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"AsS")->getMax() << endl;
     }
 
