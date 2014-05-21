@@ -96,15 +96,15 @@ using namespace RooFit;
 // ############################################
 // # Global variables from configuration file #
 // ############################################
-double SlewRateConstr;
 double PsiYieldGoodTag, PsiYieldGoodTagErr;
 double PsiYieldMisTag,  PsiYieldMisTagErr;
 double LUMI;
-
-bool APPLYconstr;
 bool NormJPSInotPSIP;
+bool APPLYconstr;
 
-string CTRLmisTag;
+unsigned int CTRLmisTagWRKflow;
+
+string CTRLfitWRKflow;
 string ParameterFILE;
 
 vector<double> q2Bins;
@@ -714,9 +714,9 @@ void AddPhysicsConstraint (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string var
 
   myCoeff.clear(); myCoeff.str("");
   myCoeff << "(1-TMath::Erf((-" << GetVar(TotalPDF,name)->getPlotLabel() << "-" << myConstr.str() << ") / ";
-  myCoeff << "(" << SlewRateConstr << " * 2*" << myConstr.str() << "))) * ";
+  myCoeff << "(" << Utility->GetGenericParam("SlewRateConstr").c_str() << " * 2*" << myConstr.str() << "))) * ";
   myCoeff << "(1-TMath::Erf(( " << GetVar(TotalPDF,name)->getPlotLabel() << "-" << myConstr.str() << ") / ";
-  myCoeff << "(" << SlewRateConstr << " * 2*" << myConstr.str() << ")))";
+  myCoeff << "(" << Utility->GetGenericParam("SlewRateConstr").c_str() << " * 2*" << myConstr.str() << ")))";
   cout << "\n@@@ Physical constraint on Afb/As boundaries: " << myCoeff.str().c_str() << " @@@" << endl;
   
   if (varName == "AfbBound")
@@ -757,7 +757,7 @@ void BuildMassConstraints (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string var
 
   if ((GetVar(TotalPDF,"fracMassBPeak")  != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, TotalPDF, "fracMassBPeak");
   
-  if (strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") != 0)
+  if ((CTRLmisTagWRKflow == 1) && (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") != 0))
     if ((GetVar(TotalPDF,"nMisTagFrac") != NULL) && ((varName == "All") || (varName == "mistag"))) AddGaussConstraint(vecConstr, TotalPDF, "nMisTagFrac");
   if ((GetVar(TotalPDF,"nBkgPeak") != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, TotalPDF, "nBkgPeak");
 }
@@ -2812,10 +2812,10 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 		  
 		  (((FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
 		  
-		  ((((strcmp(CTRLmisTag.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
-		    ((strcmp(CTRLmisTag.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
-		    (((strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
-		    (strcmp(CTRLmisTag.c_str(),"allEvts")           == 0)) &&
+		  ((((strcmp(CTRLfitWRKflow.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+		    ((strcmp(CTRLfitWRKflow.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
+		    (((strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
+		    (strcmp(CTRLfitWRKflow.c_str(),"allEvts")           == 0)) &&
 		   (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepJpsi",false) == true)))
 
 		SingleCandNTuple_JPsi->add(Vars);
@@ -2824,10 +2824,10 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 		  
 		  (((FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
 		  
-		  ((((strcmp(CTRLmisTag.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
-		    ((strcmp(CTRLmisTag.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
-		    (((strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
-		    (strcmp(CTRLmisTag.c_str(),"allEvts")           == 0)) &&
+		  ((((strcmp(CTRLfitWRKflow.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+		    ((strcmp(CTRLfitWRKflow.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
+		    (((strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
+		    (strcmp(CTRLfitWRKflow.c_str(),"allEvts")           == 0)) &&
 		   (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepPsiP",false) == true)))
 		
 		SingleCandNTuple_PsiP->add(Vars);
@@ -2838,10 +2838,10 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 	      // #############################################################################
 	      if (((!(FitType == 36) && !(FitType == 56) && !(FitType == 76)) &&
 		   
-		   (((strcmp(CTRLmisTag.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
-		    ((strcmp(CTRLmisTag.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
-		    (((strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
-		    (strcmp(CTRLmisTag.c_str(),"allEvts")           == 0)) &&
+		   (((strcmp(CTRLfitWRKflow.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+		    ((strcmp(CTRLfitWRKflow.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
+		    (((strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
+		    (strcmp(CTRLfitWRKflow.c_str(),"allEvts")           == 0)) &&
 		   (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"rejectPsi",true) == true)) ||
 		  
 		  (((FitType == 36) || (FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)))
@@ -2854,10 +2854,10 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 	      // ###########################################################################
 	      if (((!(FitType == 36) && !(FitType == 56) && !(FitType == 76)) &&
 		   
-		   (((strcmp(CTRLmisTag.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
-		    ((strcmp(CTRLmisTag.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
-		    (((strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
-		    (strcmp(CTRLmisTag.c_str(),"allEvts")           == 0)) &&
+		   (((strcmp(CTRLfitWRKflow.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+		    ((strcmp(CTRLfitWRKflow.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
+		    (((strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
+		    (strcmp(CTRLfitWRKflow.c_str(),"allEvts")           == 0)) &&
 		   (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepPsi",false) == true)) ||
 		  
 		  (((FitType == 36) || (FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)))
@@ -3080,7 +3080,8 @@ void InstantiateMassFit (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, ve
 
   nSig->setConstant(false);
   nBkgComb->setConstant(false);
-  nMisTagFrac->setConstant(false);
+  if (CTRLmisTagWRKflow == 0) nMisTagFrac->setConstant(true);
+  else                        nMisTagFrac->setConstant(false);
   nBkgPeak->setConstant(false);
 
   if      ((useSignal != 0) && (usePeakB == 0) && (useCombB == 0) && (useMisTag == 0))
@@ -3475,7 +3476,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       ClearVars(vecConstr);
       BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"sign");
       BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
-      if ((strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
+      if ((strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"allEvts") == 0)) BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
 
 
       // ###################################
@@ -3592,7 +3593,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   ClearVars(vecConstr);
   BuildMassConstraints(vecConstr,TotalPDF,"sign");
   BuildMassConstraints(vecConstr,TotalPDF,"peak");
-  if ((strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) BuildMassConstraints(vecConstr,TotalPDF,"mistag");
+  if ((strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"allEvts") == 0)) BuildMassConstraints(vecConstr,TotalPDF,"mistag");
 
 
   // ###################################
@@ -4314,7 +4315,8 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
 
   nSig->setConstant(false);
   nBkgComb->setConstant(false);
-  nMisTagFrac->setConstant(true); // @TMP@
+  if (CTRLmisTagWRKflow == 0) nMisTagFrac->setConstant(true);
+  else                        nMisTagFrac->setConstant(false);
   nBkgPeak->setConstant(false);
 
   if ((FitType == 36) || (FitType == 56) || (FitType == 76)) *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgSet(*AngleS),RooArgSet(*nSig));
@@ -5436,7 +5438,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       	{
       	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"sign");
       	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
-      	  if ((strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
+      	  if ((strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"allEvts") == 0)) BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
       	  if ((GetVar(TotalPDFq2Bins[i],"nSig") != NULL) || (GetVar(TotalPDFq2Bins[i],"nMisTagFrac") != NULL)) BuildAngularConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
       	}
       if (((FitType != 46) && (FitType != 56) &&
@@ -5598,7 +5600,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   ClearVars(vecConstr);
   BuildMassConstraints(vecConstr,TotalPDF,"sign");
   BuildMassConstraints(vecConstr,TotalPDF,"peak");
-  if ((strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) BuildMassConstraints(vecConstr,TotalPDF,"mistag");
+  if ((strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"allEvts") == 0)) BuildMassConstraints(vecConstr,TotalPDF,"mistag");
   BuildAngularConstraints(vecConstr,TotalPDF,"peak");
   if ((specBin != Utility->GetJPsiBin(q2Bins)) && (specBin != Utility->GetPsiPBin(q2Bins)))
     {
@@ -6440,16 +6442,19 @@ int main(int argc, char** argv)
 	  Utility->ReadSelectionCuts(ParameterFILE);
 	  Utility->ReadFitStartingValues(ParameterFILE,&fitParam,&configParam,Utility->ParFileBlockN("fitValGlob"));
 
-	  SlewRateConstr  = atof(Utility->GetGenericParam("SlewRateConstr").c_str());
-	  NormJPSInotPSIP = atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str());
-	  APPLYconstr     = atoi(Utility->GetGenericParam("ApplyConstr").c_str());
-	  CTRLmisTag      = Utility->GetGenericParam("CtrlMisTag");
+	  NormJPSInotPSIP   = atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str());
+	  APPLYconstr       = atoi(Utility->GetGenericParam("ApplyConstr").c_str());
+	  CTRLfitWRKflow    = Utility->GetGenericParam("CtrlFitWrkFlow");
+	  CTRLmisTagWRKflow = atoi(Utility->GetGenericParam("CtrlMisTagWrkFlow").c_str());
 
-	  fileFitResults << "Slewrate for physics constraints shape: " << SlewRateConstr << endl;
+	  fileFitResults << "Slewrate for physics constraints shape: " << Utility->GetGenericParam("SlewRateConstr").c_str() << endl;
 	  fileFitResults << "Normalize to J/psi and not psi(2S): "     << NormJPSInotPSIP << " (0 = false; 1 = true)" << endl;
 	  fileFitResults << "Apply constraints: "                      << APPLYconstr << " (0 = false; 1 = true)" << endl;
-	  fileFitResults << "Control mis-tag workflow: "               << CTRLmisTag.c_str() << endl;
+	  fileFitResults << "Control fit workflow: "                   << CTRLfitWRKflow.c_str() << endl;
+	  fileFitResults << "Control mis-tag fraction workflow: "      << CTRLmisTagWRKflow << endl;
+	  fileFitResults << "Save mis-tag fraction: "                  << Utility->GetGenericParam("SaveMisTagFrac").c_str() << " (0 = false; 1 = true)" << endl;
 	  
+
 	  // ################################################
 	  // # Read ctr. chn. yield from global-fit results #
 	  // ################################################
@@ -6698,7 +6703,7 @@ int main(int argc, char** argv)
 		      CopyFitResults(TotalPDFRejectPsi,0,&fitParam);
 		      ClearVars(&vecConstr);
 		      BuildMassConstraints(&vecConstr,TotalPDFRejectPsi,"sign");
-		      if ((strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) BuildMassConstraints(&vecConstr,TotalPDFRejectPsi,"mistag");
+		      if ((strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"allEvts") == 0)) BuildMassConstraints(&vecConstr,TotalPDFRejectPsi,"mistag");
 		      PrintVariables(TotalPDFRejectPsi->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
 		      MakeMassFit(SingleCandNTuple_RejectPsi,&TotalPDFRejectPsi,B0MassArb,cB0MassArbRejectPsi,&vecConstr,&NLLvalue,NULL,fileIndx);
@@ -6729,7 +6734,7 @@ int main(int argc, char** argv)
 		      CopyFitResults(TotalPDFPsi,1,&fitParam);
 		      ClearVars(&vecConstr);
 		      BuildMassConstraints(&vecConstr,TotalPDFPsi,"sign");
-		      if ((strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
+		      if ((strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"allEvts") == 0)) BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
 		      PrintVariables(TotalPDFPsi->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
 		      MakeMassFit(SingleCandNTuple_JPsi,&TotalPDFPsi,B0MassArb,cB0MassArbJPsi,&vecConstr,&NLLvalue,NULL,fileIndx);
@@ -6749,7 +6754,7 @@ int main(int argc, char** argv)
 		      CopyFitResults(TotalPDFPsi,2,&fitParam);
 		      ClearVars(&vecConstr);
 		      BuildMassConstraints(&vecConstr,TotalPDFPsi,"sign");
-		      if ((strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
+		      if ((strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"allEvts") == 0)) BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
 		      PrintVariables(TotalPDFPsi->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
 		      MakeMassFit(SingleCandNTuple_PsiP,&TotalPDFPsi,B0MassArb,cB0MassArbPsiP,&vecConstr,&NLLvalue,NULL,fileIndx);
