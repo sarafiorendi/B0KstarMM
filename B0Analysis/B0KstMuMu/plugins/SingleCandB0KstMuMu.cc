@@ -441,7 +441,7 @@ void SelectBestCand (int SignalType)
 	  NTupleOut->TrigCat = TrigCat;
 
 	  NTupleOut->B0notB0bar = B0notB0bar;
-	  if (((NTupleIn->genSignal == SignalType) && (B0notB0bar == true)) ||
+	  if (((NTupleIn->genSignal == SignalType)   && (B0notB0bar == true)) ||
 	      ((NTupleIn->genSignal == SignalType+1) && (B0notB0bar == false))) NTupleOut->rightFlavorTag = true;
 	  else                                                                  NTupleOut->rightFlavorTag = false;
 	  NTupleOut->B0pT  = sqrt(NTupleIn->bPx->at(BestCandIndx)*NTupleIn->bPx->at(BestCandIndx) + NTupleIn->bPy->at(BestCandIndx)*NTupleIn->bPy->at(BestCandIndx));

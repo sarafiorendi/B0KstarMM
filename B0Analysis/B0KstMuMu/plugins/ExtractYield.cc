@@ -292,13 +292,10 @@ public:
   { 
     const RooArgSet* allvar1 = pdf1.getVariables();
     const RooArgSet* allvar2 = pdf2.getVariables();
-    _vars.add(*allvar1);
-    _vars.add(*allvar2, true);
 
-    // #############################
-    // # Remove constant variables #
-    // #############################
-    RooStats::RemoveConstantParameters(_vars);
+    _vars.add(*allvar1);
+    _vars.add(*allvar2,false);
+
     delete allvar1;
     delete allvar2;
   }
@@ -2815,10 +2812,10 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 		  
 		  (((FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
 		  
-		  ((((strcmp(CTRLmisTag.c_str(),"trueGoodtag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
-		    ((strcmp(CTRLmisTag.c_str(),"trueMistag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
+		  ((((strcmp(CTRLmisTag.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+		    ((strcmp(CTRLmisTag.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
 		    (((strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
-		    (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) &&
+		    (strcmp(CTRLmisTag.c_str(),"allEvts")           == 0)) &&
 		   (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepJpsi",false) == true)))
 
 		SingleCandNTuple_JPsi->add(Vars);
@@ -2827,10 +2824,10 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 		  
 		  (((FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
 		  
-		  ((((strcmp(CTRLmisTag.c_str(),"trueGoodtag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
-		    ((strcmp(CTRLmisTag.c_str(),"trueMistag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
+		  ((((strcmp(CTRLmisTag.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+		    ((strcmp(CTRLmisTag.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
 		    (((strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
-		    (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) &&
+		    (strcmp(CTRLmisTag.c_str(),"allEvts")           == 0)) &&
 		   (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepPsiP",false) == true)))
 		
 		SingleCandNTuple_PsiP->add(Vars);
@@ -2841,10 +2838,10 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 	      // #############################################################################
 	      if (((!(FitType == 36) && !(FitType == 56) && !(FitType == 76)) &&
 		   
-		   (((strcmp(CTRLmisTag.c_str(),"trueGoodtag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
-		    ((strcmp(CTRLmisTag.c_str(),"trueMistag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
+		   (((strcmp(CTRLmisTag.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+		    ((strcmp(CTRLmisTag.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
 		    (((strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
-		    (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) &&
+		    (strcmp(CTRLmisTag.c_str(),"allEvts")           == 0)) &&
 		   (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"rejectPsi",true) == true)) ||
 		  
 		  (((FitType == 36) || (FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)))
@@ -2857,10 +2854,10 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 	      // ###########################################################################
 	      if (((!(FitType == 36) && !(FitType == 56) && !(FitType == 76)) &&
 		   
-		   (((strcmp(CTRLmisTag.c_str(),"trueGoodtag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
-		    ((strcmp(CTRLmisTag.c_str(),"trueMistag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
+		   (((strcmp(CTRLmisTag.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+		    ((strcmp(CTRLmisTag.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
 		    (((strcmp(CTRLmisTag.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLmisTag.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
-		    (strcmp(CTRLmisTag.c_str(),"allEvts") == 0)) &&
+		    (strcmp(CTRLmisTag.c_str(),"allEvts")           == 0)) &&
 		   (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepPsi",false) == true)) ||
 		  
 		  (((FitType == 36) || (FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)))
@@ -4317,7 +4314,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
 
   nSig->setConstant(false);
   nBkgComb->setConstant(false);
-  nMisTagFrac->setConstant(false);
+  nMisTagFrac->setConstant(true); // @TMP@
   nBkgPeak->setConstant(false);
 
   if ((FitType == 36) || (FitType == 56) || (FitType == 76)) *TotalPDF = new RooAddPdf(fitName.c_str(),"Total extended pdf",RooArgSet(*AngleS),RooArgSet(*nSig));

@@ -83,7 +83,7 @@ TCutG* DrawExclusion       (double Xlow, double Xhigh, double Ylow, double Yhigh
 TGraphAsymmErrors* ReadFromASCII (string fileName, unsigned int PlotType, vector<double>* q2Bins, vector<double>* vxs, vector<double>* vys, vector<double>* vxel, vector<double>* vxeh, vector<double>* vyel, vector<double>* vyeh);
 void CheckPhysicsRegion    ();
 void MakePhysicsPlots      (unsigned int PlotType);
-void EvalMultyRun          (unsigned int sysType, unsigned int q2BinIndx, string fileName, double NLLinterval, double NLLlessThan);
+void EvalMultyRun          (unsigned int sysType, string fileName, double NLLinterval, double NLLlessThan);
 void PlotMuMu              (string fileName, bool bkgSub);
 void PlotKst               (string fileName, bool bkgSub, bool fitParamAreFixed);
 void PlotKK                (string fileName, bool bkgSub, string RECOorGEN);
@@ -1852,22 +1852,15 @@ void MakePhysicsPlots (unsigned int PlotType)
 }
 
 
-void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName, double NLLinterval, double NLLlessThan)
-// #########################
-// # sysType:              #
-// #########################
-// # 0 = Fl                #
-// # 1 = Afb               #
-// # 2 = BF                #
-// # 3 = All               #
-// #########################
-// # 10 = Fl multy minima  #
-// # 11 = Afb multy minima #
-// # 12 = BF multy minima  #
-// #########################
+void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, double NLLlessThan)
+// ########################
+// # sysType:             #
+// # 0 = Fl  multy minima #
+// # 1 = Afb multy minima #
+// # 2 = BF  multy minima #
+// ########################
 {
-  unsigned int nBinsHisto = 50;
-  stringstream myString;
+  unsigned int nBinsHisto = 100;
   ifstream inputFile;
 
 
@@ -1911,17 +1904,11 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
   // #########################
   // # Read values from file #
   // #########################
-  fileName.erase(fileName.find(".txt"),4);
-  myString.str("");
-  if      (sysType == 0) myString << fileName << "_FL_"  << q2BinIndx << ".txt";
-  else if (sysType == 1) myString << fileName << "_AFB_" << q2BinIndx << ".txt";
-  else if (sysType == 2) myString << fileName << "_BF_"  << q2BinIndx << ".txt";
-  else                   myString << fileName << ".txt";
-  cout << "Opening efficiency-systematics file: " << myString.str().c_str() << endl;
-  inputFile.open(myString.str().c_str(), ifstream::in);
+  cout << "\n@@@ Opening systematics file: " << fileName.c_str() << " @@@" << endl;
+  inputFile.open(fileName.c_str(), ifstream::in);
   if (inputFile.good() == false)
     {
-      cout << "[MakePlots::EvalMultyRun]\tError opening file : " << myString.str().c_str() << endl;
+      cout << "[MakePlots::EvalMultyRun]\tError opening file : " << fileName.c_str() << endl;
       exit (EXIT_FAILURE);
     }
 
@@ -1941,17 +1928,17 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
 
       if (var4 < NLLlessThan)
 	{
-	  if ((sysType == 10) && (var1 != -2.0))
+	  if ((sysType == 0) && (var1 != -2.0))
 	    {
 	      hSc->GetXaxis()->SetTitle("F_{L}");
 	      hSc->Fill(var1,var4);
 	    }
-	  else if ((sysType == 11) && (var2 != -2.0))
+	  else if ((sysType == 1) && (var2 != -2.0))
 	    {
 	      hSc->GetXaxis()->SetTitle("A_{FB}");
 	      hSc->Fill(var2,var4);
 	    }
-	  else if ((sysType == 12) && (var3 != -2.0))
+	  else if ((sysType == 2) && (var3 != -2.0))
 	    {
 	      hSc->GetXaxis()->SetTitle("dBF/dq#lower[0.4]{^{2}} (GeV^{#font[122]{\55}2})");
 	      hSc->Fill(var3,var4);
@@ -1967,43 +1954,40 @@ void EvalMultyRun (unsigned int sysType, unsigned int q2BinIndx, string fileName
   // #####################################
   // # Rebin NLL scatter plot and refill #
   // #####################################
-  if      (sysType == 10) hSc->SetBins(nBinsHisto,0.0,1.0,20,hSc->GetMean(2) - NLLinterval,hSc->GetMean(2) + NLLinterval);
-  else if (sysType == 11) hSc->SetBins(nBinsHisto*2,-1.0,1.0,20,hSc->GetMean(2) - NLLinterval,hSc->GetMean(2) + NLLinterval);
-  else if (sysType == 12) hSc->SetBins(nBinsHisto,1.0,-1.0,20,hSc->GetMean(2) - NLLinterval,hSc->GetMean(2) + NLLinterval);
-  if ((sysType >= 10) && (sysType <= 12))
-    {
-      cout << "\n@@@ Rebin NLL scatter plot and refill @@@" << endl;
-      hSc->Reset();
+  if      (sysType == 0) hSc->SetBins(nBinsHisto,0.0,1.0,nBinsHisto,   hSc->GetMean(2) - NLLinterval,hSc->GetMean(2) + NLLinterval);
+  else if (sysType == 1) hSc->SetBins(nBinsHisto*2,-1.0,1.0,nBinsHisto,hSc->GetMean(2) - NLLinterval,hSc->GetMean(2) + NLLinterval);
+  else if (sysType == 2) hSc->SetBins(nBinsHisto,1.0,-1.0,nBinsHisto,  hSc->GetMean(2) - NLLinterval,hSc->GetMean(2) + NLLinterval);
 
-      inputFile.clear();
-      inputFile.seekg(0,inputFile.beg);
-      inputFile >> var0 >> var1 >> var2 >> var3 >> var4;
-      while (inputFile.eof() == false)
+  cout << "\n@@@ Rebin NLL scatter plot and refill @@@" << endl;
+  hSc->Reset();
+
+  inputFile.clear();
+  inputFile.seekg(0,inputFile.beg);
+  inputFile >> var0 >> var1 >> var2 >> var3 >> var4;
+  while (inputFile.eof() == false)
+    {	  
+      if (var4 < NLLlessThan)
 	{
-	  
-	  if (var4 < NLLlessThan)
+	  if ((sysType == 0) && (var1 != -2.0))
 	    {
-	      if ((sysType == 10) && (var1 != -2.0))
-		{
-		  hSc->GetXaxis()->SetTitle("F_{L}");
-		  hSc->Fill(var1,var4);
-		}
-	      else if ((sysType == 11) && (var2 != -2.0))
-		{
-		  hSc->GetXaxis()->SetTitle("A_{FB}");
-		  hSc->Fill(var2,var4);
-		}
-	      else if ((sysType == 12) && (var3 != -2.0))
-		{
-		  hSc->GetXaxis()->SetTitle("dBF/dq#lower[0.4]{^{2}} (GeV^{#font[122]{\55}2})");
-		  hSc->Fill(var3,var4);
-		}
-	  
-	      cout << "var0: " << var0 << "\tvar1: " << var1 << "\tvar2: " << var2 << "\tvar3: " << var3 << "\tvar4: " << var4 << endl;
+	      hSc->GetXaxis()->SetTitle("F_{L}");
+	      hSc->Fill(var1,var4);
 	    }
-      
-	  inputFile >> var0 >> var1 >> var2 >> var3 >> var4;
+	  else if ((sysType == 1) && (var2 != -2.0))
+	    {
+	      hSc->GetXaxis()->SetTitle("A_{FB}");
+	      hSc->Fill(var2,var4);
+	    }
+	  else if ((sysType == 2) && (var3 != -2.0))
+	    {
+	      hSc->GetXaxis()->SetTitle("dBF/dq#lower[0.4]{^{2}} (GeV^{#font[122]{\55}2})");
+	      hSc->Fill(var3,var4);
+	    }
+	  
+	  cout << "var0: " << var0 << "\tvar1: " << var1 << "\tvar2: " << var2 << "\tvar3: " << var3 << "\tvar4: " << var4 << endl;
 	}
+      
+      inputFile >> var0 >> var1 >> var2 >> var3 >> var4;
     }
 
 
@@ -2702,7 +2686,7 @@ void MakePvaluePlot (string fileName, string plotType, int specBin)
   pval->SetMaximum(1.05);
 
 
-  cout << "\n\n@@@ p-value computaion of NLL distribution from paramter file: " << ParameterFILE << " @@@" << endl;
+  cout << "\n@@@ p-value computaion of NLL distribution from paramter file: " << ParameterFILE << " @@@" << endl;
 
   for (int i = (specBin == -1 ? 0 : specBin); i < (specBin == -1 ? static_cast<int>(q2Bins.size()-1) : specBin+1); i++)
     {
@@ -2744,32 +2728,29 @@ int main (int argc, char** argv)
   if (argc >= 2)
     {
       string option = argv[1];
-      unsigned int intVal = 1;
-      unsigned int q2BinIndx = 0;
+      unsigned int intVal = 0;
       double realVal1 = 0;
       double realVal2 = 0;
       string fileName;
       string tmpStr;
 
 
-      if ((option == "EvalMultyRun") && (argc >= 4))
+      if ((option == "EvalMultyRun") && (argc >= 3))
 	{
 	  intVal = atoi(argv[2]);
-	  q2BinIndx = atoi(argv[3]);
-	  if (argc >= 5) fileName = argv[4];
+	  if (argc >= 4) fileName = argv[3];
 	  else           fileName = FitSysFILE;
-	  if (argc >= 6) realVal1 = atof(argv[5]);
+	  if (argc >= 5) realVal1 = atof(argv[4]);
 	  else           realVal1 = 0.0;
-	  if (argc == 7) realVal2 = atof(argv[6]);
+	  if (argc == 6) realVal2 = atof(argv[5]);
 	  else           realVal2 = 0.0;
 	}
       else if (((option == "Phy") || (option == "DataMC")) && (argc == 3)) intVal = atoi(argv[2]);
       else if (((option == "Pval") || (option == "makeupNLL")) && (argc == 5))
 	{
-	  fileName  = argv[2];
-	  tmpStr    = argv[3];
-	  q2BinIndx = atoi(argv[4]);
-
+	  fileName = argv[2];
+	  tmpStr   = argv[3];
+	  intVal   = atoi(argv[4]);
 	}
       else if (((option == "MuMuMass") || (option == "KstMass")) && (argc == 4))
 	{
@@ -2786,10 +2767,10 @@ int main (int argc, char** argv)
       else if (option != "PhyRegion")
 	{
 	  cout << "./MakePlots [Phy EvalMultyRun DataMC PhyRegion Pval makeupNLL MuMuMass KKMass KstMass MuHadMass]" << endl;
-	  cout << "            [Phy:0-2||10-12]" << endl;
-	  cout << "            [EvalMultyRun: 0-3||10-12 [q^2 bin index 0-7] [fileName] [NLL interval] [NLL less than]" << endl;
+	  cout << "            [Phy: 0-2||10-12]" << endl;
+	  cout << "            [EvalMultyRun: 0-2 [fileName] [NLL interval] [NLL less than]]" << endl;
 	  cout << "            [DataMC: 0-27]" << endl;
-	  cout << "            [Pval OR makeupNLL: fileName plotType q^2_bin_index 0-7]" << endl;
+	  cout << "            [Pval OR makeupNLL: fileName plotType q^2_bin_index]" << endl;
 	  cout << "            [MuMuMass OR KstMass: dataFileName bkgSub]" << endl;
 	  cout << "            [KKMass: dataFileName bkgSub RECOorGEN]" << endl;
 	  cout << "            [MuHadMass: dataFileName]" << endl;
@@ -2820,7 +2801,6 @@ int main (int argc, char** argv)
 
       cout << "\noption: "  << option << endl;
       cout << "intVal: "    << intVal << endl;
-      cout << "q2BinIndx: " << q2BinIndx << endl;
       cout << "realVal1: "  << realVal1 << endl;
       cout << "realVal2: "  << realVal2 << endl;
       cout << "fileName: "  << fileName << endl;
@@ -2847,11 +2827,11 @@ int main (int argc, char** argv)
       Utility->ReadGenericParam(ParameterFILE);
 
       if      (option == "Phy")          MakePhysicsPlots(intVal);
-      else if (option == "EvalMultyRun") EvalMultyRun(intVal,q2BinIndx,fileName,realVal1,realVal2);
+      else if (option == "EvalMultyRun") EvalMultyRun(intVal,fileName,realVal1,realVal2);
       else if (option == "DataMC")       MakeComparisonDataMC(intVal);
       else if (option == "PhyRegion")    CheckPhysicsRegion();
-      else if (option == "Pval")         MakePvaluePlot(fileName,tmpStr,q2BinIndx);
-      else if (option == "makeupNLL")    MakeupNLLandPULLplots(fileName,tmpStr,q2BinIndx);
+      else if (option == "Pval")         MakePvaluePlot(fileName,tmpStr,intVal);
+      else if (option == "makeupNLL")    MakeupNLLandPULLplots(fileName,tmpStr,intVal);
       else if (option == "MuMuMass")     PlotMuMu(fileName,intVal);
       else if (option == "KKMass")       PlotKK(fileName,intVal,tmpStr);
       else if (option == "KstMass")      PlotKst(fileName,intVal,true);
@@ -2859,10 +2839,10 @@ int main (int argc, char** argv)
       else
 	{
 	  cout << "./MakePlots [Phy EvalMultyRun DataMC PhyRegion Pval makeupNLL MuMuMass KKMass KstMass MuHadMass]" << endl;
-	  cout << "            [Phy:0-2||10-12]" << endl;
-	  cout << "            [EvalMultyRun: 0-3||10-12 [q^2_bin_index 0-7] [fileName] [NLL interval] [NLL less than]" << endl;
+	  cout << "            [Phy: 0-2||10-12]" << endl;
+	  cout << "            [EvalMultyRun: 0-2 [fileName] [NLL interval] [NLL less than]]" << endl;
 	  cout << "            [DataMC: 0-27]" << endl;
-	  cout << "            [Pval OR makeupNLL: fileName plotType q^2_bin_index 0-7]" << endl;
+	  cout << "            [Pval OR makeupNLL: fileName plotType q^2_bin_index]" << endl;
 	  cout << "            [MuMuMass OR KstMass: dataFileName bkgSub]" << endl;
 	  cout << "            [KKMass: dataFileName bkgSub RECOorGEN]" << endl;
 	  cout << "            [MuHadMass: dataFileName]" << endl;
@@ -2888,13 +2868,9 @@ int main (int argc, char** argv)
 
 	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
 	  cout << "For [EvalMultyRun]:" << endl;
-	  cout << "0 = Fl" << endl;
-	  cout << "1 = Afb" << endl;
-	  cout << "2 = BF" << endl;
-	  cout << "3 = N.A." << endl;
-	  cout << "10 = Fl multy minima" << endl;
-	  cout << "11 = Afb multy minima" << endl;
-	  cout << "12 = BF multy minima" << endl;
+	  cout << "0 = Fl multy minima" << endl;
+	  cout << "1 = Afb multy minima" << endl;
+	  cout << "2 = BF multy minima" << endl;
 
 	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
 	  cout << "For [Pval OR makeupNLL]:" << endl;
@@ -2948,10 +2924,10 @@ int main (int argc, char** argv)
   else
     {
       cout << "./MakePlots [Phy EvalMultyRun DataMC PhyRegion Pval makeupNLL MuMuMass KKMass KstMass MuHadMass]" << endl;
-      cout << "            [Phy:0-2||10-12]" << endl;
-      cout << "            [EvalMultyRun: 0-3||10-12 [q^2_bin_index 0-7] [fileName] [NLL interval] [NLL less than]" << endl;
+      cout << "            [Phy: 0-2||10-12]" << endl;
+      cout << "            [EvalMultyRun: 0-2 [fileName] [NLL interval] [NLL less than]]" << endl;
       cout << "            [DataMC: 0-27]" << endl;
-      cout << "            [Pval OR makeupNLL: fileName plotType q^2_bin_index 0-7]" << endl;
+      cout << "            [Pval OR makeupNLL: fileName plotType q^2_bin_index]" << endl;
       cout << "            [MuMuMass OR KstMass: dataFileName bkgSub]" << endl;
       cout << "            [KKMass: dataFileName bkgSub RECOorGEN]" << endl;
       cout << "            [MuHadMass: dataFileName]" << endl;
@@ -2977,14 +2953,10 @@ int main (int argc, char** argv)
 
       cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "For [EvalMultyRun]:" << endl;
-      cout << "0 = Fl" << endl;
-      cout << "1 = Afb" << endl;
-      cout << "2 = BF" << endl;
-      cout << "3 = N.A." << endl;
-      cout << "10 = Fl multy minima" << endl;
-      cout << "11 = Afb multy minima" << endl;
-      cout << "12 = BF multy minima" << endl;
-
+      cout << "0 = Fl multy minima" << endl;
+      cout << "1 = Afb multy minima" << endl;
+      cout << "2 = BF multy minima" << endl;
+      
       cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "For [Pval OR makeupNLL]:" << endl;
       cout << "Fl" << endl;
