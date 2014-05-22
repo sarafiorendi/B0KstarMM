@@ -3543,7 +3543,6 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 	  double nEvGoodTagErr = GetVar(TotalPDFq2Bins[i],"nSig")->getError();
 
 	  double nEvMisTag    = 0.0;
-	  double nEvMisTagErr = 0.0;
 	  if (GetVar(TotalPDFq2Bins[i],"nMisTagFrac") != NULL)
 	    {
 	      nEvMisTag    = GetVar(TotalPDFq2Bins[i],"nSig")->getVal()   / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()) * GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal();
@@ -5533,7 +5532,6 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 	      double nEvGoodTagErr = GetVar(TotalPDFq2Bins[i],"nSig")->getError();
 
 	      double nEvMisTag    = 0.0;
-	      double nEvMisTagErr = 0.0;
 	      if (GetVar(TotalPDFq2Bins[i],"nMisTagFrac") != NULL)
 		{
 		  nEvMisTag    = GetVar(TotalPDFq2Bins[i],"nSig")->getVal()   / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()) * GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal();
