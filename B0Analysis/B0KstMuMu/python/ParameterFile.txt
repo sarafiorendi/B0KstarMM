@@ -2285,7 +2285,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction
+# Branching-Fraction [x 10-7]
 0.0   0.0
 
 # q^2 bin 1; +error --- -error
@@ -2297,7 +2297,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction
+# Branching-Fraction [x 10-7]
 0.0   0.0
 
 # q^2 bin 2; +error --- -error
@@ -2309,7 +2309,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction
+# Branching-Fraction [x 10-7]
 0.0   0.0
 
 # q^2 bin 3; +error --- -error
@@ -2321,7 +2321,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction
+# Branching-Fraction [x 10-7]
 0.0   0.0
 
 # q^2 bin 4; +error --- -error
@@ -2333,7 +2333,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction
+# Branching-Fraction [x 10-7]
 0.0   0.0
 
 # q^2 bin 5; +error --- -error
@@ -2345,7 +2345,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction
+# Branching-Fraction [x 10-7]
 0.0   0.0
 
 # q^2 bin 6; +error --- -error
@@ -2357,7 +2357,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction
+# Branching-Fraction [x 10-7]
 0.0   0.0
 
 # q^2 bin 7; +error --- -error
@@ -2369,7 +2369,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction
+# Branching-Fraction [x 10-7]
 0.0   0.0
 
 # q^2 bin 8; +error --- -error
@@ -2381,7 +2381,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction
+# Branching-Fraction [x 10-7]
 0.0   0.0
 
 
@@ -2642,15 +2642,15 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Control fit workflow:
 # trueMistag      = keep only true mis-tagged ev.
 # trueGoodtag     = keep only true good-tagged ev.
-# trueAll&FitFrac = keep all true ev. and fit just for mis-tag fraction
-# trueAll&NoFFrac = keep all true ev. and do not fit for mis-tag fraction
+# trueAll&FitFrac = keep all true ev. and fit just for mistag fraction
+# trueAll&NoFFrac = keep all true ev. and do not fit for mistag fraction
 # allEvts         = keep all events
 trueAll&NoFFrac
 
-# Control mis-tag fraction workflow [0 = fixed; 1 = free with constraint; 2 = free]
+# Control mistag fraction workflow [0 = fixed; 1 = free with constraint; 2 = free]
 0
 
-# Save mis-tag fraction [0 = false; 1 = true]
+# Save mistag fraction [0 = false; 1 = true]
 0
 
 # B0 mass interval left [0.28 GeV/c2]

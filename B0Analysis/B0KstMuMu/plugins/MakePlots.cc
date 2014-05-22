@@ -1860,7 +1860,7 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
 // # 2 = BF  multy minima #
 // ########################
 {
-  unsigned int nBinsHisto = 100;
+  unsigned int nBinsHisto = 200;
   ifstream inputFile;
 
 
