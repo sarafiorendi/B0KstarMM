@@ -78,7 +78,6 @@ using namespace RooFit;
 // ##########################################
 #define MakeMuMuPlots false
 #define USEMINOS      false
-#define UseSPwave     false
 #define SETBATCH      false
 #define SAVEPOLY      false // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
 #define SAVEPLOT      false
@@ -858,7 +857,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
       VarsAng->add(*z);
 
       myString.clear(); myString.str("");
-      if (UseSPwave == false)
+      if (atoi(Utility->GetGenericParam("UseSPwave").c_str()) == false)
     	{
     	  // #####################
     	  // # P-wave decay rate #
@@ -933,7 +932,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
       // #######################################################
 
       myString.clear(); myString.str("");
-      if (UseSPwave == false)
+      if (atoi(Utility->GetGenericParam("UseSPwave").c_str()) == false)
 	{
 	  // #####################
 	  // # P-wave decay rate #
@@ -6369,7 +6368,6 @@ int main(int argc, char** argv)
 
 	  cout << "\nMakeMuMuPlots = "  << MakeMuMuPlots << endl;
 	  cout << "USEMINOS = "       << USEMINOS << endl;
-	  cout << "UseSPwave = "      << UseSPwave << endl;
 	  cout << "SETBATCH  = "      << SETBATCH << endl;
 	  cout << "SAVEPOLY = "       << SAVEPOLY << endl;
 	  cout << "SAVEPLOT = "       << SAVEPLOT << endl;

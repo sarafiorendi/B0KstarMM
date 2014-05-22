@@ -2628,7 +2628,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # 21st block of parameters #
 ############################
 # Number of generic parameters
-19
+20
 
 # Fraction of Afb/As allowed interval for the p.d.f. constraint to transit from 0 to max value [1e-2]
 1e-2
@@ -2651,6 +2651,9 @@ trueAll&NoFFrac
 0
 
 # Save mistag fraction [0 = false; 1 = true]
+0
+
+# Use SP-wave [0 = false; 1 = true]
 0
 
 # B0 mass interval left [0.28 GeV/c2]

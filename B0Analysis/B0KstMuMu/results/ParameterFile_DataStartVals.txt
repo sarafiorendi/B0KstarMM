@@ -869,7 +869,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle1 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle1 poly ###
-5
+3
 # Bkg angle1 poly coeff. c0
 0.0
 # Bkg angle1 poly coeff. c1
@@ -893,7 +893,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle2 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle2 poly ###
-5
+3
 # Bkg angle2 poly coeff. c0
 0.0
 # Bkg angle2 poly coeff. c1
@@ -938,9 +938,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # P2 +/- err
 0.0   0.0   0.0
 # FS +/- err
-0.0   0.0   0.0
+0.0340789   -0.00395816   0.00395816
 # AS +/- err
-0.0   0.0   0.0
+-0.102638   -0.00337821   0.00337821
 ###################################################################
 # Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -1021,7 +1021,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle1 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle1 poly ###
-5
+3
 # Bkg angle1 poly coeff. c0
 0.0
 # Bkg angle1 poly coeff. c1
@@ -1045,7 +1045,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle2 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle2 poly ###
-5
+3
 # Bkg angle2 poly coeff. c0
 0.0
 # Bkg angle2 poly coeff. c1
@@ -1090,9 +1090,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # P2 +/- err
 0.0   0.0   0.0
 # FS +/- err
-0.0   0.0   0.0
+0.0340789   -0.00395816   0.00395816
 # AS +/- err
-0.0   0.0   0.0
+-0.102638   -0.00337821   0.00337821
 ###################################################################
 # Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -1173,7 +1173,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle1 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle1 poly ###
-5
+4
 # Bkg angle1 poly coeff. c0
 0.0
 # Bkg angle1 poly coeff. c1
@@ -1197,7 +1197,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle2 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle2 poly ###
-5
+3
 # Bkg angle2 poly coeff. c0
 0.0
 # Bkg angle2 poly coeff. c1
@@ -1242,9 +1242,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # P2 +/- err
 0.0   0.0   0.0
 # FS +/- err
-0.0   0.0   0.0
+0.0340789   -0.00395816   0.00395816
 # AS +/- err
-0.0   0.0   0.0
+-0.102638   -0.00337821   0.00337821
 ###################################################################
 # Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -1325,7 +1325,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle1 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle1 poly ###
-5
+4
 # Bkg angle1 poly coeff. c0
 0.0
 # Bkg angle1 poly coeff. c1
@@ -1349,7 +1349,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle2 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle2 poly ###
-5
+3
 # Bkg angle2 poly coeff. c0
 0.0
 # Bkg angle2 poly coeff. c1
@@ -1394,9 +1394,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # P2 +/- err
 0.0   0.0   0.0
 # FS +/- err
-0.0   0.0   0.0
+0.0340789   -0.00395816   0.00395816
 # AS +/- err
-0.0   0.0   0.0
+-0.102638   -0.00337821   0.00337821
 ###################################################################
 # Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -1477,7 +1477,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle1 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle1 poly ###
-5
+4
 # Bkg angle1 poly coeff. c0
 0.0
 # Bkg angle1 poly coeff. c1
@@ -1501,7 +1501,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle2 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle2 poly ###
-5
+3
 # Bkg angle2 poly coeff. c0
 0.0
 # Bkg angle2 poly coeff. c1
@@ -1629,7 +1629,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle1 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle1 poly ###
-5
+4
 # Bkg angle1 poly coeff. c0
 0.0
 # Bkg angle1 poly coeff. c1
@@ -1653,7 +1653,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle2 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle2 poly ###
-5
+3
 # Bkg angle2 poly coeff. c0
 0.0
 # Bkg angle2 poly coeff. c1
@@ -1698,9 +1698,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # P2 +/- err
 0.0   0.0   0.0
 # FS +/- err
-0.0   0.0   0.0
+0.0340789   -0.00395816   0.00395816
 # AS +/- err
-0.0   0.0   0.0
+-0.102638   -0.00337821   0.00337821
 ###################################################################
 # Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -1781,7 +1781,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle1 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle1 poly ###
-5
+4
 # Bkg angle1 poly coeff. c0
 0.0
 # Bkg angle1 poly coeff. c1
@@ -1805,7 +1805,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle2 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle2 poly ###
-5
+3
 # Bkg angle2 poly coeff. c0
 0.0
 # Bkg angle2 poly coeff. c1
@@ -1933,7 +1933,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle1 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle1 poly ###
-5
+3
 # Bkg angle1 poly coeff. c0
 0.0
 # Bkg angle1 poly coeff. c1
@@ -1957,7 +1957,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle2 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle2 poly ###
-5
+3
 # Bkg angle2 poly coeff. c0
 0.0
 # Bkg angle2 poly coeff. c1
@@ -2002,9 +2002,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # P2 +/- err
 0.0   0.0   0.0
 # FS +/- err
-0.0   0.0   0.0
+0.0340789   -0.00395816   0.00395816
 # AS +/- err
-0.0   0.0   0.0
+-0.102638   -0.00337821   0.00337821
 ###################################################################
 # Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -2085,7 +2085,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle1 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle1 poly ###
-5
+4
 # Bkg angle1 poly coeff. c0
 0.0
 # Bkg angle1 poly coeff. c1
@@ -2109,7 +2109,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle2 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle2 poly ###
-5
+3
 # Bkg angle2 poly coeff. c0
 0.0
 # Bkg angle2 poly coeff. c1
@@ -2154,9 +2154,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # P2 +/- err
 0.0   0.0   0.0
 # FS +/- err
-0.0   0.0   0.0
+0.0340789   -0.00395816   0.00395816
 # AS +/- err
-0.0   0.0   0.0
+-0.102638   -0.00337821   0.00337821
 ###################################################################
 # Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -2628,7 +2628,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # 21st block of parameters #
 ############################
 # Number of generic parameters
-19
+20
 
 # Fraction of Afb/As allowed interval for the p.d.f. constraint to transit from 0 to max value [1e-2]
 1e-2
@@ -2652,6 +2652,9 @@ allEvts
 
 # Save mistag fraction [0 = false; 1 = true]
 0
+
+# Use SP-wave [0 = false; 1 = true]
+1
 
 # B0 mass interval left [0.28 GeV/c2]
 0.28
