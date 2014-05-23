@@ -2196,7 +2196,7 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
   cout << "\n@@@ Random seed for parameter file generation set to: " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
 
-  if (GetVar(TotalPDF,"nMisTagFrac") != NULL)
+  if ((CTRLmisTagWRKflow == 1) && (GetVar(TotalPDF,"nMisTagFrac") != NULL))
     {
       cout << "Mis-tag fraction generation: gaussian mean = " << GetVar(TotalPDF,"nMisTagFrac")->getVal() << "\tsigma = " << GetVar(TotalPDF,"nMisTagFrac")->getError() << endl;
       TotalPDF->getVariables()->setRealValue("nMisTagFrac",RooRandom::gaussian() * GetVar(TotalPDF,"nMisTagFrac")->getError() + GetVar(TotalPDF,"nMisTagFrac")->getVal());
