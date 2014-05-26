@@ -340,7 +340,7 @@ void BuildMassConstraints      (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, strin
 void BuildAngularConstraints   (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
 void BuildPhysicsConstraints   (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
 
-RooAbsPdf* MakeAngWithEffPDF   (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, unsigned int q2BinIndx);
+RooAbsPdf* MakeAngWithEffPDF   (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, vector<double>* q2Bins, int q2BinIndx);
 void DeleteFit                 (RooAbsPdf* TotalPDF, string DeleteType);
 void ResetAngularParam         (vector<vector<string>*>* fitParam);
 double StoreFitResultsInFile   (RooAbsPdf** TotalPDF, RooFitResult* fitResult, RooDataSet* dataSet, RooArgSet* vecConstr);
@@ -383,6 +383,7 @@ void InstantiateMass2AnglesFit    (RooAbsPdf** TotalPDF,
 				   string fitName, unsigned int FitType,
 				   vector<vector<unsigned int>*>* configParam,
 				   vector<vector<string>*>* fitParam,
+				   vector<double>* q2Bins,
 				   unsigned int actualq2BinIndx,
 				   unsigned int q2BinIndx,
 				   pair<TF2*,TF2*> effFunc);
@@ -819,7 +820,7 @@ void BuildPhysicsConstraints (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string 
 }
 
 
-RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, unsigned int q2BinIndx)
+RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, vector<double>* q2Bins, int q2BinIndx)
 // ###################
 // # y: cos(theta_l) #
 // # z: cos(theta_K) #
@@ -967,9 +968,9 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	  // # Make 2D efficiency p.d.f. #
 	  // #############################
 	  int SignalType;
-	  if      ((FitType >= 01*10) && (FitType < 40*10)) SignalType = 1;
-	  else if ((FitType >= 41*10) && (FitType < 60*10)) SignalType = 3;
-	  else if ((FitType >= 61*10) && (FitType < 80*10)) SignalType = 5;
+	  if      (((FitType >= 01*10) && (FitType < 40*10)) || ((FitType == 96) && (q2BinIndx != Utility->GetJPsiBin(q2Bins)) && (q2BinIndx != Utility->GetPsiPBin(q2Bins)))) SignalType = 1;
+	  else if (((FitType >= 41*10) && (FitType < 60*10)) || ((FitType == 96) && (q2BinIndx == Utility->GetJPsiBin(q2Bins))))                                               SignalType = 3;
+	  else if (((FitType >= 61*10) && (FitType < 80*10)) || ((FitType == 96) && (q2BinIndx == Utility->GetPsiPBin(q2Bins))))                                               SignalType = 5;
 	  else SignalType = 1;
 
 	  RooDataHist* histoEff = new RooDataHist("histoEff","histoEff",RooArgSet(*z,*y),Import(*Utility->Get2DEffHistoq2Bin(&cosThetaKBins,&cosThetaLBins,q2BinIndx,SignalType,false,make_pair(-1.0,1.0),make_pair(-1.0,1.0)),true));
@@ -4068,6 +4069,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
 				string fitName, unsigned int FitType,
 				vector<vector<unsigned int>*>* configParam,
 				vector<vector<string>*>* fitParam,
+				vector<double>* q2Bins,
 				unsigned int actualq2BinIndx,
 				unsigned int q2BinIndx,
 				pair<TF2*,TF2*> effFunc)
@@ -4131,7 +4133,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // # Define angle fit variables and pdf for correctly tagged signal #
   // ##################################################################
   RooArgSet* VarsPolyGT = new RooArgSet("VarsPolyGT");
-  AngleS = MakeAngWithEffPDF(effFunc.first,y,z,FitType,useEffPDF,VarsAng,VarsPolyGT,actualq2BinIndx);
+  AngleS = MakeAngWithEffPDF(effFunc.first,y,z,FitType,useEffPDF,VarsAng,VarsPolyGT,q2Bins,actualq2BinIndx);
 
   Signal = new RooProdPdf("Signal","Signal Mass*Angle",RooArgSet(*MassSignal,*AngleS));
 
@@ -4216,7 +4218,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // # Define angle fit variables and pdf for mis-tagged signal #
   // ############################################################
   RooArgSet* VarsPolyMT = new RooArgSet("VarsPolyMT");
-  AngleMisTag = MakeAngWithEffPDF(effFunc.second,y,z,FitType*10,useEffPDF,VarsAng,VarsPolyMT,actualq2BinIndx);
+  AngleMisTag = MakeAngWithEffPDF(effFunc.second,y,z,FitType*10,useEffPDF,VarsAng,VarsPolyMT,q2Bins,actualq2BinIndx);
 
   MassAngleMisTag = new RooProdPdf("MassAngleMisTag","Mistag bkg Mass*Angle",RooArgSet(*MassMisTag,*AngleMisTag));
 
@@ -5421,7 +5423,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 
       myString.clear(); myString.str("");
       myString << "TotalPDFq2Bin_" << i;
-      InstantiateMass2AnglesFit(&TotalPDFq2Bins[i],useEffPDF,x,y,z,myString.str(),FitType,configParam,fitParam,i,(ID == 0 ? i : 0),make_pair(effFuncs.first->operator[](i),effFuncs.second->operator[](i)));
+      InstantiateMass2AnglesFit(&TotalPDFq2Bins[i],useEffPDF,x,y,z,myString.str(),FitType,configParam,fitParam,q2Bins,i,(ID == 0 ? i : 0),make_pair(effFuncs.first->operator[](i),effFuncs.second->operator[](i)));
 
 
       // #####################
@@ -6953,7 +6955,7 @@ int main(int argc, char** argv)
 		  cout << "\n@@@ Now make TOY-MC for fit to B0 total invariant mass and cos(theta_K) and cos(theta_l) @@@" << endl;
 		  TCanvas* cToyMC = new TCanvas("cToyMC","cToyMC",10, 10, 1200, 800);
 
-		  InstantiateMass2AnglesFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,CosThetaMuArb,CosThetaKArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,specBin,specBin,make_pair(effFuncs.first->operator[](specBin),effFuncs.second->operator[](specBin)));
+		  InstantiateMass2AnglesFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,CosThetaMuArb,CosThetaKArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,&q2Bins,specBin,specBin,make_pair(effFuncs.first->operator[](specBin),effFuncs.second->operator[](specBin)));
 		  MakeMass2AnglesToy(TotalPDFRejectPsi,B0MassArb,CosThetaMuArb,CosThetaKArb,cToyMC,FitType,nToy,specBin,&fitParam,&vecConstr,fileName,&q2Bins);
 		}
 	    }
@@ -6979,7 +6981,7 @@ int main(int argc, char** argv)
 		  // ######################################################
 		  // # Generate dataset for B0 inv. mass and angles model #
 		  // ######################################################
-		  InstantiateMass2AnglesFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,CosThetaMuArb,CosThetaKArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,specBin,specBin,make_pair(effFuncs.first->operator[](specBin),effFuncs.second->operator[](specBin)));
+		  InstantiateMass2AnglesFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,CosThetaMuArb,CosThetaKArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,&q2Bins,specBin,specBin,make_pair(effFuncs.first->operator[](specBin),effFuncs.second->operator[](specBin)));
 		  GenerateDataset(TotalPDFRejectPsi,RooArgSet(*B0MassArb,*CosThetaMuArb,*CosThetaKArb),&q2Bins,specBin,&fitParam,fileName);
 		}
 	    }
@@ -6997,7 +6999,7 @@ int main(int argc, char** argv)
                   // #################################################################
                   // # Generate new parameter file for B0 inv. mass and angles model #
                   // #################################################################
-                  InstantiateMass2AnglesFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,CosThetaMuArb,CosThetaKArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,specBin,specBin,make_pair(effFuncs.first->operator[](specBin),effFuncs.second->operator[](specBin)));
+                  InstantiateMass2AnglesFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,CosThetaMuArb,CosThetaKArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,&q2Bins,specBin,specBin,make_pair(effFuncs.first->operator[](specBin),effFuncs.second->operator[](specBin)));
                 }
 	      GenerateParameterFile(TotalPDFRejectPsi,&fitParam,&configParam,&vecConstr,fileName,fileIndx,&q2Bins,specBin);
 	    }
