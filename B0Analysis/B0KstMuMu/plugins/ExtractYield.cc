@@ -968,9 +968,9 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	  // # Make 2D efficiency p.d.f. #
 	  // #############################
 	  int SignalType;
-	  if      (((FitType >= 01*10) && (FitType < 40*10)) || ((FitType == 96) && (q2BinIndx != Utility->GetJPsiBin(q2Bins)) && (q2BinIndx != Utility->GetPsiPBin(q2Bins)))) SignalType = 1;
-	  else if (((FitType >= 41*10) && (FitType < 60*10)) || ((FitType == 96) && (q2BinIndx == Utility->GetJPsiBin(q2Bins))))                                               SignalType = 3;
-	  else if (((FitType >= 61*10) && (FitType < 80*10)) || ((FitType == 96) && (q2BinIndx == Utility->GetPsiPBin(q2Bins))))                                               SignalType = 5;
+	  if      (((FitType >= 01*10) && (FitType < 40*10)) || ((FitType == 96*10) && (q2BinIndx != Utility->GetJPsiBin(q2Bins)) && (q2BinIndx != Utility->GetPsiPBin(q2Bins)))) SignalType = 1;
+	  else if (((FitType >= 41*10) && (FitType < 60*10)) || ((FitType == 96*10) && (q2BinIndx == Utility->GetJPsiBin(q2Bins))))                                               SignalType = 3;
+	  else if (((FitType >= 61*10) && (FitType < 80*10)) || ((FitType == 96*10) && (q2BinIndx == Utility->GetPsiPBin(q2Bins))))                                               SignalType = 5;
 	  else SignalType = 1;
 
 	  RooDataHist* histoEff = new RooDataHist("histoEff","histoEff",RooArgSet(*z,*y),Import(*Utility->Get2DEffHistoq2Bin(&cosThetaKBins,&cosThetaLBins,q2BinIndx,SignalType,false,make_pair(-1.0,1.0),make_pair(-1.0,1.0)),true));
