@@ -16,15 +16,21 @@
 %%%%%%%%%%%%%%%%%%%%
 % Global variables %
 %%%%%%%%%%%%%%%%%%%%
-nFiles   = 200; % Number of files to generate
+nFiles   = 100; % Number of files to generate
 nBins    =   9; % Number of q^2 bins
 startBin =   1; % Start bin [1...nBins]
 
 NcoeffThetaL = 6;
 NcoeffThetaK = 4;
-NcoeffPhi    = 4; % If 0 then 2D function, else 3D function
+NcoeffPhi    = 0; % If [0] then 2D function, else [4] 3D function
 
 showPlot = true;
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set sandom number seed %
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+rng(0);
 
 
 for i = 1:nFiles
@@ -34,27 +40,28 @@ for i = 1:nFiles
     fidINval    = fopen('../../efficiency/ThetaKThetaLPhi_B0ToKstMuMu_B0ToJPsiKst_B0ToPsi2SKst.txt','r');
     fidINcov    = fopen('../../efficiency/ThetaKThetaLPhiFullCovariance_B0ToKstMuMu_B0ToJPsiKst_B0ToPsi2SKst.txt','r');
 
-    fileNameOut = sprintf('../../efficiency/EffRndGenAnalyFiles_B0ToKstMuMu_B0ToJPsiKst_B0ToPsi2SKst/Efficiency_RndGen_%d.txt',i-1);
+    fileNameOut = sprintf('../../efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen_%d.txt',i);
     fidOUT      = fopen(fileNameOut,'a+');
     fprintf(fidOUT,'%d\n',nBins*NcoeffThetaL+NcoeffPhi);
-    fprintf('Generating file %d \n',i);
+    fprintf('\nGenerating file n.%d\n',i);
 
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Skip bins if you want to %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     for j = 1:startBin-1
-        fprintf('Skipping bin n.%d \n',j);
+        fprintf('Skipping bin n.%d\n',j);
         [q2Bin,meanV,errV,CovM,meanVOrig] = ReadCovMatrix(fidINval,...
             fidINcov,NcoeffThetaL,NcoeffThetaK,NcoeffPhi);
     end
-    
+
     
     for j = startBin:nBins
+        fprintf('Making efficiency for bin n.%d\n',j);
+
         [q2Bin,meanV,errV,CovM,meanVOrig] = ReadCovMatrix(fidINval,...
             fidINcov,NcoeffThetaL,NcoeffThetaK,NcoeffPhi);
         
-                
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Check if the efficiency is negative %
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,8 +83,8 @@ for i = 1:nFiles
             else
                 newV = [];
             end
-        
-        
+            
+            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % Add zeros to the new mutivariate vector %
             % in order to fit correct size            %
@@ -109,13 +116,28 @@ for i = 1:nFiles
                 fprintf('--> The new efficiency is OK\n');
             end
         end
-       
+
+        
+        SaveMVNvecIntoFile(fidOUT,q2Bin,strechNewV,errV,...
+            NcoeffThetaL,NcoeffThetaK,NcoeffPhi);
+    end
+  
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Save dummy data for mis-tagged events %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    fprintf(fidOUT,'\n\n');
+    fprintf(fidOUT,'%d\n',nBins*NcoeffThetaL+NcoeffPhi);        
+
+    strechNewV = zeros(size(strechNewV));
+    errV       = zeros(size(errV));
+    
+    for j = startBin:nBins        
         SaveMVNvecIntoFile(fidOUT,q2Bin,strechNewV,errV,...
             NcoeffThetaL,NcoeffThetaK,NcoeffPhi);
     end
     
     
-fprintf(fidOUT,'\n');
 fclose(fidINval);
 fclose(fidINcov);
 fclose(fidOUT);

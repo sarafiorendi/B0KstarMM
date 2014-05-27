@@ -40,6 +40,7 @@ end
 % Plot options %
 %%%%%%%%%%%%%%%%
 if showPlot == true
+    %figure;
     surf(x, y, T, 'EdgeColor', 'none');
     shading interp;
     colormap jet;
@@ -49,5 +50,6 @@ if showPlot == true
     title('Efficiency');
     xlabel('cos(\theta_K)');
     ylabel('cos(\theta_l)');
+    drawnow;
 end
 end

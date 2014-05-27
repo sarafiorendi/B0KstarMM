@@ -4,6 +4,11 @@
 // ################################################################################
 // # Search for @TMP@ to look for temporary code options                          #
 // ################################################################################
+// # TO DO:                                                                       #
+// # - when computing systematic error from MC-statistics for efficiency I do not #
+// #   propagate from control channels                                            #
+// # - implement 4D fits                                                          #
+// ################################################################################
 
 #include <TROOT.h>
 #include <TApplication.h>
@@ -81,6 +86,7 @@ using namespace RooFit;
 #define SETBATCH      false
 #define SAVEPOLY      false // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
 #define SAVEPLOT      false
+#define RESETANGPAR   false // Reset angular parameters before starting the fit
 #define FUNCERRBAND   false // Show the p.d.f. error band
 
 // ##################
@@ -88,8 +94,6 @@ using namespace RooFit;
 // ##################
 #define PARAMETERFILEIN  "../python/ParameterFile.txt"
 #define PARAMETERFILEOUT "ParameterFile.txt"
-#define FitSysFILEOutput "FitSystematics_q2Bin"
-#define FitSysFILEInput  "../efficiency/EffSystematics/FitSystematics_q2Bin" // The protocol for this file is: ID --- FL --- AFB --- dBF/dq^2 --- NLL
 
 
 // ############################################
@@ -121,7 +125,6 @@ B0KstMuMuSingleCandTreeContent* NTuple;
 
 ofstream fileFitResults;
 ofstream fileFitSystematics;
-ifstream fileFitSystematicsInput;
 
 double* q2BinsHisto;
 
@@ -534,7 +537,6 @@ void CloseAllAndQuit (TApplication* theApp, TFile* NtplFile)
 {
   fileFitResults.close();
   fileFitSystematics.close();
-  fileFitSystematicsInput.close();
   
   if (TotalPDFPsi                != NULL) DeleteFit(TotalPDFPsi,"All");
   if (TotalPDFRejectPsi          != NULL) DeleteFit(TotalPDFRejectPsi,"All");
@@ -5372,7 +5374,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       SetValueAndErrors(NULL,"",1.0,&myString,&effPsiMisTag,&effPsiMisTagErr,&effPsiMisTagErr);
       cout << "\n@@@ Integral of S*E over angular variables for normalization channel mis-tagged events: " << effPsiMisTag << " +/- " << effPsiMisTagErr << " @@@" << endl;
     }
-
+  
 
   fileFitResults << "\n@@@@@@@@@@@@@@@@@@@@@ Angular analysis vs q^2 @@@@@@@@@@@@@@@@@@@@@@" << endl;
   for (unsigned int i = (specBin == -1 ? 0 : specBin); i < (specBin == -1 ? q2Bins->size()-1 : specBin+1); i++)
@@ -6266,14 +6268,14 @@ int main(int argc, char** argv)
       TFile* NtplFile           = NULL;
 
       
-      if (((((FitType >= 1)  && (FitType <= 6))  ||
-	    (FitType == 36)                      ||
-	    ((FitType >= 41) && (FitType <= 46)) ||
-	    ((FitType >= 61) && (FitType <= 66)) ||
+      if (((((FitType >= 1)  && (FitType <= 6))   ||
+	    (FitType == 36)                       ||
+	    ((FitType >= 41) && (FitType <= 46))  ||
+	    ((FitType >= 61) && (FitType <= 66))  ||
 	    ((FitType >= 81) && (FitType <= 86))) && (argc >= 4)) ||
 	  ((FitType == 96)   &&                      (argc == 6)) ||
 	  ((FitType >= 21)   && (FitType <= 26)   && (argc == 8)) ||
-	  (((FitType == 56) || (FitType == 76))   && (argc == 4)))
+	  (((FitType == 56)  || (FitType == 76))  && (argc == 4)))
 	{
 	  ParameterFILE = PARAMETERFILEIN;
 
@@ -6363,17 +6365,16 @@ int main(int argc, char** argv)
 	  cout << "POLYCOEFRANGE = "   << POLYCOEFRANGE << endl;
 	  cout << "DEGREEINTERPEFF = " << DEGREEINTERPEFF << endl;
 
-	  cout << "\nMakeMuMuPlots = "  << MakeMuMuPlots << endl;
-	  cout << "USEMINOS = "       << USEMINOS << endl;
-	  cout << "SETBATCH  = "      << SETBATCH << endl;
-	  cout << "SAVEPOLY = "       << SAVEPOLY << endl;
-	  cout << "SAVEPLOT = "       << SAVEPLOT << endl;
-	  cout << "FUNCERRBAND = "    << FUNCERRBAND << endl;
+	  cout << "\nMakeMuMuPlots = " << MakeMuMuPlots << endl;
+	  cout << "USEMINOS = "        << USEMINOS << endl;
+	  cout << "SETBATCH  = "       << SETBATCH << endl;
+	  cout << "SAVEPOLY = "        << SAVEPOLY << endl;
+	  cout << "SAVEPLOT = "        << SAVEPLOT << endl;
+	  cout << "RESETANGPAR = "     << RESETANGPAR << endl;
+	  cout << "FUNCERRBAND = "     << FUNCERRBAND << endl;
 
 	  cout << "\nPARAMETERFILEIN = " << PARAMETERFILEIN << endl;
 	  cout << "PARAMETERFILEOUT = "  << PARAMETERFILEOUT << endl;
-	  cout << "FitSysFILEOutput = "  << FitSysFILEOutput << endl;
-	  cout << "FitSysFILEInput = "   << FitSysFILEInput << endl;
 
 
 	  if (SETBATCH == true)
@@ -6485,17 +6486,18 @@ int main(int argc, char** argv)
 	  for (unsigned int i = 0; i < q2Bins.size(); i++) q2BinsHisto[i] = q2Bins[i];
 
 
+	  // ############################
+	  // # Reset angular parameters #
+	  // ############################
+	  if (RESETANGPAR == true) ResetAngularParam(&fitParam);
+	  
+
 	  // ###########################################################################
 	  // # Prepare file to save fit results in case of systematic error evaluation #
 	  // ###########################################################################
 	  myString.clear(); myString.str("");
-	  if (correct4Efficiency == "yesEffCorrGen")
-	    {
-	      ResetAngularParam(&fitParam);
-	      myString << FitSysFILEOutput << "_" << specBin << ".txt";
-	    }
-	  else if (specBin != -1) myString << "FitSystematics_" << specBin << ".txt";
-	  else                    myString << "FitSystematics.txt";
+	  if (specBin != -1) myString << "FitSystematics_" << specBin << ".txt";
+	  else               myString << "FitSystematics.txt";
 	  fileFitSystematics.open(myString.str().c_str(),ios_base::app);
 	  if (fileFitSystematics.good() == false)
 	    {
@@ -6511,7 +6513,7 @@ int main(int argc, char** argv)
 	  effFuncs.second = new vector<TF2*>;
 	  if (correct4Efficiency == "yesEffCorrGen")
 	    {
-	      Utility->ReadAnalyticalEff(tmpFileName.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,effFuncs.first,"effFuncs",1);
+	      Utility->ReadAnalyticalEff(tmpFileName.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,effFuncs.first, "effFuncs",1);
 	      Utility->ReadAnalyticalEff(tmpFileName.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,effFuncs.second,"effFuncs",2);
 	    }
 	  else
@@ -6527,124 +6529,6 @@ int main(int argc, char** argv)
 	  LUMI = Utility->ReadLumi(ParameterFILE);
 	  if (Utility->IsThisData(ParameterFILE) == true) cout << "\n@@@ I recognize that this is a DATA file @@@" << endl;
 	  else                                            cout << "\n@@@ I recognize that this is a Monte Carlo file @@@" << endl;
-
-
-	  // ###########################################################################
-	  // # Fit to BF: copy Fl and Afb values from file to the vector of parameters #
-	  // ###########################################################################
-	  if ((correct4Efficiency == "yesEffCorrGen") && ((FitType == 1) || (FitType == 41) || (FitType == 61)))
-	    {
-	      double var0;
-	      double var1;
-	      double var2;
-	      double var3;
-
-
-	      // ############################
-	      // # Copy data from q^2 bin n #
-	      // ############################
-	      myString.clear(); myString.str("");
-	      myString << FitSysFILEInput << "_FLAFB_" << specBin << ".txt";
-	      fileFitSystematicsInput.open(myString.str().c_str(),ios_base::in);
-	      if (fileFitSystematicsInput.good() == false)
-	    	{
-	    	  cout << "[ExtractYield::main]\tError opening file : " << myString.str().c_str() << endl;
-	    	  CloseAllAndQuit(theApp,NtplFile);
-	    	}
-
-
-	      // #################################
-	      // # Assign value to fit parameter #
-	      // #################################
-	      var0 = 0.0;
-	      var1 = 0.0;
-	      var2 = 0.0;
-	      var3 = 0.0;
-	      for (unsigned int i = 1; i <= fileIndx; i++)
-	    	if (fileFitSystematicsInput.eof() == true)
-	    	  {
-	    	    cout << "\n@@@ Reached EoF: " << myString.str().c_str() << " from efficiency systematics file " << myString.str().c_str() << " - index #" << fileIndx << " @@@" << endl;
-		    myString.clear(); myString.str("");
-		    myString << fileIndx << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
-		    fileFitSystematics << myString.str() << endl;
-	    	    CloseAllAndQuit(theApp,NtplFile);
-	    	  }
-	    	else fileFitSystematicsInput >> var0 >> var1 >> var2 >> var3;
-	      if ((var1 < 0.0) || (var2 < -1.0))
-	    	{
-	    	  cout << "\n@@@ Found non converged fit parameter: " << var1 << " or " << var2 << " from efficiency systematics file " << myString.str().c_str() << " - index #" << fileIndx << " @@@" << endl;
-		  myString.clear(); myString.str("");
-		  myString << fileIndx << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
-		  fileFitSystematics << myString.str() << endl;
-	    	  CloseAllAndQuit(theApp,NtplFile);
-	    	}
-	      else
-	    	{
-	    	  cout << "\n@@@ I successfully read FL and AFB starting values: " << var1 << " and " << var2 << " from efficiency systematics file " << myString.str().c_str() << " - index #" << fileIndx << " @@@" << endl;
-
-	    	  myString.clear(); myString.str("");
-	    	  myString << var1;
-	    	  fitParam[Utility->GetFitParamIndx("FlS")]->operator[](specBin) = myString.str();
-
-	    	  myString.clear(); myString.str("");
-	    	  myString << var2;
-	    	  fitParam[Utility->GetFitParamIndx("AfbS")]->operator[](specBin) = myString.str();
-	    	}
-	      fileFitSystematicsInput.close();
-
-
-	      // ########################################
-	      // # Copy data from normalization q^2 bin #
-	      // ########################################
-	      myString.clear(); myString.str("");
-	      myString << FitSysFILEInput << "_FLAFB_" << (atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->GetJPsiBin(&q2Bins) : Utility->GetPsiPBin(&q2Bins)) << ".txt";
-	      fileFitSystematicsInput.open(myString.str().c_str(),ios_base::in);
-	      if (fileFitSystematicsInput.good() == false)
-	    	{
-	    	  cout << "[ExtractYield::main]\tError opening file : " << myString.str().c_str() << endl;
-	    	  CloseAllAndQuit(theApp,NtplFile);
-	    	}
-
-
-	      // #################################
-	      // # Assign value to fit parameter #
-	      // #################################
-	      var0 = 0.0;
-	      var1 = 0.0;
-	      var2 = 0.0;
-	      var3 = 0.0;
-	      for (unsigned int i = 1; i <= fileIndx; i++)
-	    	if (fileFitSystematicsInput.eof() == true)
-	    	  {
-	    	    cout << "\n@@@ Reached EoF: " << myString.str().c_str() << " from efficiency systematics file " << myString.str().c_str() << " - index #" << fileIndx << " @@@" << endl;
-		    myString.clear(); myString.str("");
-		    myString << fileIndx << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
-		    fileFitSystematics << myString.str() << endl;
-	    	    CloseAllAndQuit(theApp,NtplFile);
-	    	  }
-	    	else fileFitSystematicsInput >> var0 >> var1 >> var2 >> var3;
-	      if ((var1 < 0.0) || (var2 < -1.0))
-	    	{
-	    	  cout << "\n@@@ Found non converged fit parameter: " << var1 << " or " << var2 << " from efficiency systematics file " << myString.str().c_str() << " - index #" << fileIndx << " @@@" << endl;
-		  myString.clear(); myString.str("");
-		  myString << fileIndx << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
-		  fileFitSystematics << myString.str() << endl;
-	    	  CloseAllAndQuit(theApp,NtplFile);
-	    	}
-	      else
-	    	{
-	    	  cout << "\n@@@ I successfully read FL and AFB starting values: " << var1 << " and " << var2 << " from efficiency systematics file " << myString.str().c_str() << " - index #" << fileIndx << " @@@" << endl;
-
-	    	  myString.clear(); myString.str("");
-	    	  myString << var1;
-	    	  fitParam[Utility->GetFitParamIndx("FlS")]->operator[](atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->GetJPsiBin(&q2Bins) : Utility->GetPsiPBin(&q2Bins)) = myString.str();
-
-	    	  myString.clear(); myString.str("");
-	    	  myString << var2;
-	    	  fitParam[Utility->GetFitParamIndx("AfbS")]->operator[](atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->GetJPsiBin(&q2Bins) : Utility->GetPsiPBin(&q2Bins)) = myString.str();
-	    	}
-	      fileFitSystematicsInput.close();
-	    }
 
 
 	  // ###################
@@ -6999,7 +6883,7 @@ int main(int argc, char** argv)
 
 	  fileFitResults.close();
 	  fileFitSystematics.close();
-	  if ((SETBATCH == true) || (correct4Efficiency == "yesEffCorrGen") || ((FitType >= 81) && (FitType <= 86)) || (FitType == 96))
+	  if (SETBATCH == true)
 	    {
 	      cout << "Bye bye !" << endl;
 	      CloseAllAndQuit(theApp,NtplFile);
