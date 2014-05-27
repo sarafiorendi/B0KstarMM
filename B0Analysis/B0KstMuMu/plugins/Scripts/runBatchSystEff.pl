@@ -4,7 +4,7 @@
 # Program to fit with different pre-generated efficiency functions #
 ####################################################################
 
-if (@ARGV == 2)
+if (@ARGV == 3)
 {
     system("source InitAnalysis.sh") ;
 
@@ -33,9 +33,19 @@ if (@ARGV == 2)
     foreach $file (@list[$listStart..$listEnd])
     {
 	chomp $file ;
-	$str = ".././ExtractYield " . @ARGV[0] . " " . $dataFile . " yesEffCorrGen " . $q2BinIndx . " " . $dirEffRndGen . $file . " " . $listIndx . "\n" ;
-	$cmd .= "echo " . $str ;
-	$cmd .= $str ;
+	$execProg = ".././ExtractYield " . @ARGV[0] . " " . $dataFile . " yesEffCorrGen " . $q2BinIndx . " " . $dirEffRndGen . $file . " " . $listIndx . "\n" ;
+
+	if (@ARGV[2] eq "false")
+	{
+	    $toRun = $execProg ;
+	}
+	else
+	{
+	    $toRun = "Qsub -l lnxfarm -e -o EffSys_" . $q2BinIndx . "_" . $listIndx . ".log -N ESYS" . $q2BinIndx . $listIndx . " " . $execProg ;
+	}
+
+	$cmd .= "echo " . $toRun ;
+	$cmd .= $toRun ;
 	$listIndx++ ;
     }
 
@@ -47,5 +57,5 @@ if (@ARGV == 2)
 else
 {
     print "Parameter missing:\n" ;
-    print "./runBatchSystEff.pl [FitType] [q^2 bin to fit (0 - ...)]\n" ;
+    print "./runBatchSystEff.pl [FitType] [q^2 bin to fit (0 - ...)] [runJobs[true / false]]\n" ;
 }

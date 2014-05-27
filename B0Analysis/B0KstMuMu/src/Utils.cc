@@ -3170,20 +3170,10 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
   else if (q2Indx == 2) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
   else if (q2Indx == 3) AddConstraint2D(histo,abscissaErr,3.0,ID,"justErrors",0.0,0.0);
 
-  // ###################
-  // # B0 --> J/psi K* #
-  // ###################
-  else if ((SignalType == B0ToJPsiKst) && (q2Indx == 4)) AddConstraint2D(histo,abscissaErr,1.0,ID,"justErrors",0.0,0.0);
-
-  else if (q2Indx == 5) AddConstraint2D(histo,abscissaErr,1.0,ID,"justErrors",0.0,0.0);
-
   // #####################
   // # B0 --> psi(2S) K* #
   // #####################
   else if ((SignalType == B0ToPsi2SKst) && (q2Indx == 6)) AddConstraint2D(histo,abscissaErr,2.0,ID,"justErrors",0.0,0.0);
-
-  else if (q2Indx == 7) AddConstraint2D(histo,abscissaErr,1.0,ID,"justErrors",0.0,0.0);
-  else if (q2Indx == 8) AddConstraint2D(histo,abscissaErr,1.0,ID,"justErrors",0.0,0.0);
 }
 
 void Utils::AddConstraint3D (TH3D** histo, double abscissaErr, double Tval, double Terr, double TerrRescale, unsigned int ID, std::vector<int> toBeAdded[])
