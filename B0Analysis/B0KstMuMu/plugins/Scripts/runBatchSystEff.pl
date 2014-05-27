@@ -27,9 +27,9 @@ if (@ARGV == 3)
     $cmd .= "unset DISPLAY\n" ;
     $cmd .= "rm FitSystematics_q2Bin_" . $q2BinIndx . ".txt" . "\n" ;
     
-    $listStart = 1 ;
-    $listEnd = @list ;
-    $listIndx = 1 ;
+    $listStart = 0 ;
+    $listEnd   = @list - 1 ;
+    $listIndx  = 1 ;
     foreach $file (@list[$listStart..$listEnd])
     {
 	chomp $file ;
