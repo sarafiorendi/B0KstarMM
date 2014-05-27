@@ -114,23 +114,23 @@ Utils::Utils (bool rightFlavorTag)
   std::cout << "scrambleFraction: "  << scrambleFraction << std::endl;
   std::cout << "DirEfficiency: "     << DirEfficiency << std::endl;
 
-  std::cout << "Histo2DEffNameOkTagSig: "    << Histo2DEffNameOkTagSig << std::endl;
+  std::cout << "\nHisto2DEffNameOkTagSig: "    << Histo2DEffNameOkTagSig << std::endl;
   std::cout << "Histo2DEffNameOkTagJPsi: "   << Histo2DEffNameOkTagJPsi << std::endl;
   std::cout << "Histo2DEffNameOkTagPsi2S: "  << Histo2DEffNameOkTagPsi2S << std::endl;
 
-  std::cout << "Histo3DEffNameOkTagSig: "    << Histo3DEffNameOkTagSig << std::endl;
+  std::cout << "\nHisto3DEffNameOkTagSig: "    << Histo3DEffNameOkTagSig << std::endl;
   std::cout << "Histo3DEffNameOkTagJPsi: "   << Histo3DEffNameOkTagJPsi << std::endl;
   std::cout << "Histo3DEffNameOkTagPsi2S: "  << Histo3DEffNameOkTagPsi2S << std::endl;
 
-  std::cout << "Histo2DEffNameMisTagSig: "   << Histo2DEffNameMisTagSig << std::endl;
+  std::cout << "\nHisto2DEffNameMisTagSig: "   << Histo2DEffNameMisTagSig << std::endl;
   std::cout << "Histo2DEffNameMisTagJPsi: "  << Histo2DEffNameMisTagJPsi << std::endl;
   std::cout << "Histo2DEffNameMisTagPsi2S: " << Histo2DEffNameMisTagPsi2S << std::endl;
 
-  std::cout << "Histo3DEffNameMisTagSig: "   << Histo3DEffNameMisTagSig << std::endl;
+  std::cout << "\nHisto3DEffNameMisTagSig: "   << Histo3DEffNameMisTagSig << std::endl;
   std::cout << "Histo3DEffNameMisTagJPsi: "  << Histo3DEffNameMisTagJPsi << std::endl;
   std::cout << "Histo3DEffNameMisTagPsi2S: " << Histo3DEffNameMisTagPsi2S << std::endl;
 
-  std::cout << "@@@@@@ Utils class settings : public  @@@@@@" << std::endl;
+  std::cout << "\n@@@@@@ Utils class settings : public  @@@@@@" << std::endl;
   std::cout << "NcoeffThetaL: "   << NcoeffThetaL << std::endl;
   std::cout << "NcoeffThetaK: "   << NcoeffThetaK << std::endl;
   std::cout << "NcoeffPhi: "      << NcoeffPhi << std::endl;
