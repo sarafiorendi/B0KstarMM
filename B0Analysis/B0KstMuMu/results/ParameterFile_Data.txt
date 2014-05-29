@@ -2683,8 +2683,8 @@ allEvts
 # B&psi mass window psi(2S) low [0.06 GeV/c2]
 0.06
 
-# B&psi mass window psi(2S) high [0.0 GeV/c2]
-0.0
+# B&psi mass window psi(2S) high [0.03 GeV/c2]
+0.03
 
 # B0 peak sigma-1 from signal MC, whole q2 spectrum [GeV/c2]
 0.0311318
