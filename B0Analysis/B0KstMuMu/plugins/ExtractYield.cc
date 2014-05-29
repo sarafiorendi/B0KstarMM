@@ -67,11 +67,11 @@ using namespace RooFit;
 // ####################
 // # Global constants #
 // ####################
-#define NBINS           20
-#define MULTYIELD       1.0 // Multiplication factor to the number of entry in toy-MC
-#define NCOEFFPOLYBKG   5   // Maximum number of coefficients (= degree) of the polynomial describing the background in the angular variables
-#define POLYCOEFRANGE   2.0 // Polynomial coefficients range for parameter regeneration
-#define DEGREEINTERPEFF 1   // Polynomial degree for efficiency histogram interpolation
+#define NBINS         20
+#define MULTYIELD     1.0 // Multiplication factor to the number of entry in toy-MC
+#define NCOEFFPOLYBKG 5   // Maximum number of coefficients (= degree) of the polynomial describing the background in the angular variables
+#define POLYCOEFRANGE 2.0 // Polynomial coefficients range for parameter regeneration
+#define DEGREEINTERP  0   // Polynomial degree for efficiency histogram interpolation
 
 #define nJPSIS 230000.0
 #define nJPSIB   2500.0
@@ -972,7 +972,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	  else SignalType = 1;
 
 	  RooDataHist* histoEff = new RooDataHist("histoEff","histoEff",RooArgSet(*z,*y),Import(*Utility->Get2DEffHistoq2Bin(&cosThetaKBins,&cosThetaLBins,q2BinIndx,SignalType,false,make_pair(-1.0,1.0),make_pair(-1.0,1.0)),true));
-	  histoEffPDF           = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(*z,*y),*histoEff,DEGREEINTERPEFF);
+	  histoEffPDF           = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(*z,*y),*histoEff,DEGREEINTERP);
 	  MyProdPdf* myprodpdf  = new MyProdPdf(*_AnglesPDF,*histoEffPDF);
 	  ROOT::Math::Functor* prodFunctor = new ROOT::Math::Functor(*myprodpdf,myprodpdf->ndim());
 	  AnglesPDF             = new RooFunctorPdfBinding("AngleMisTag","MisTag * Efficiency",*prodFunctor,myprodpdf->vars());
@@ -6359,11 +6359,11 @@ int main(int argc, char** argv)
 	  cout << "- ParameterFILE = "         << ParameterFILE.c_str() << endl;
 
 	  cout << "\n@@@ Internal settings @@@" << endl;
-	  cout << "NBINS = "           << NBINS << endl;
-	  cout << "MULTYIELD = "       << MULTYIELD << endl;
-	  cout << "NCOEFFPOLYBKG = "   << NCOEFFPOLYBKG << endl;
-	  cout << "POLYCOEFRANGE = "   << POLYCOEFRANGE << endl;
-	  cout << "DEGREEINTERPEFF = " << DEGREEINTERPEFF << endl;
+	  cout << "NBINS = "         << NBINS << endl;
+	  cout << "MULTYIELD = "     << MULTYIELD << endl;
+	  cout << "NCOEFFPOLYBKG = " << NCOEFFPOLYBKG << endl;
+	  cout << "POLYCOEFRANGE = " << POLYCOEFRANGE << endl;
+	  cout << "DEGREEINTERP = "  << DEGREEINTERP << endl;
 
 	  cout << "\nMakeMuMuPlots = " << MakeMuMuPlots << endl;
 	  cout << "USEMINOS = "        << USEMINOS << endl;
