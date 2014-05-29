@@ -71,7 +71,7 @@ using namespace RooFit;
 #define MULTYIELD     1.0 // Multiplication factor to the number of entry in toy-MC
 #define NCOEFFPOLYBKG 5   // Maximum number of coefficients (= degree) of the polynomial describing the background in the angular variables
 #define POLYCOEFRANGE 2.0 // Polynomial coefficients range for parameter regeneration
-#define DEGREEINTERP  0   // Polynomial degree for efficiency histogram interpolation
+#define DEGREEINTERP  1   // Polynomial degree for efficiency histogram interpolation
 
 #define nJPSIS 230000.0
 #define nJPSIB   2500.0
