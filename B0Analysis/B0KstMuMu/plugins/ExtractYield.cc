@@ -3500,7 +3500,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // # Save fit results back into prarameter file #
       // ##############################################
       vecParStr = SaveFitResults(TotalPDFq2Bins[i],(ID == 0 ? i : 0),fitParam,configParam,vecConstr);
-      Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,(ID == 0 ? i : 0));
+      Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,i);
       vecParStr->clear();
       delete vecParStr;
       vecParStr = NULL;
@@ -5468,7 +5468,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // # Save fit results back into prarameter file #
       // ##############################################
       vecParStr = SaveFitResults(TotalPDFq2Bins[i],(ID == 0 ? i : 0),fitParam,configParam,vecConstr);
-      Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,(ID == 0 ? i : 0));
+      Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,i);
       vecParStr->clear();
       delete vecParStr;
 
