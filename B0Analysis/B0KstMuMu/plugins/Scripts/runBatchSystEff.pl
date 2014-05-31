@@ -4,25 +4,20 @@
 # Program to fit with different pre-generated efficiency functions #
 ####################################################################
 
-if (@ARGV == 3)
+if (@ARGV == 4)
 {
-    system("source InitAnalysis.sh") ;
-
-    ############################
-    # Configuration parameters #
-    ############################
+    ###########################
+    # Configuration parameter #
+    ###########################
     $dirEffRndGen = "../../efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/" ;
-    $dataFile     = $ENV{'DATADIR'} . "/Data" . $ENV{'DATAYEAR'} . "/SingleCand/singleCand_B0ToKstMuMu_Data" . $ENV{'DATAYEAR'} . "ABCD_NTuples.root" ;
-    ############################
-
-    print "Directory with data: $ENV{'DATADIR'} \n" ;
+    ###########################
     print "Directory with randomly generated efficiencies: $dirEffRndGen \n" ;
-    print "Data (or MC) file: $dataFile \n" ;
+
 
     $listcmd = "ls " . $dirEffRndGen ;
     @list = `$listcmd` ;
-    
-    $q2BinIndx = @ARGV[1] ;
+
+    $q2BinIndx = @ARGV[2] ;
     
     $cmd .= "unset DISPLAY\n" ;
     $cmd .= "rm FitSystematics_q2Bin_" . $q2BinIndx . ".txt" . "\n" ;
@@ -33,9 +28,9 @@ if (@ARGV == 3)
     foreach $file (@list[$listStart..$listEnd])
     {
 	chomp $file ;
-	$execProg = ".././ExtractYield " . @ARGV[0] . " " . $dataFile . " yesEffCorrGen " . $q2BinIndx . " " . $dirEffRndGen . $file . " " . $listIndx . "\n" ;
+	$execProg = ".././ExtractYield " . @ARGV[0] . " " . @ARGV[1] . " yesEffCorrGen " . $q2BinIndx . " " . $dirEffRndGen . $file . " " . $listIndx . "\n" ;
 
-	if (@ARGV[2] eq "false")
+	if (@ARGV[3] eq "false")
 	{
 	    $toRun = $execProg ;
 	}
@@ -49,6 +44,7 @@ if (@ARGV == 3)
 	$listIndx++ ;
     }
 
+
     open(OUT, ">runMultiExtractYield_q2Bin_" . $q2BinIndx . ".sh") ;
     print OUT "$cmd" ;
     print OUT "\n" ;
@@ -57,5 +53,5 @@ if (@ARGV == 3)
 else
 {
     print "Parameter missing:\n" ;
-    print "./runBatchSystEff.pl [FitType] [q^2 bin to fit (0 - ...)] [runJobs[true / false]]\n" ;
+    print "./runBatchSystEff.pl [FitType] [File.root] [q^2 bin to fit (0 - ...)] [runJobs[true / false]]\n" ;
 }

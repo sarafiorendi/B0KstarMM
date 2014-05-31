@@ -2091,7 +2091,6 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   // # Local variables #
   // ###################
   stringstream myString;
-  string tmpString;
   vector<TF2*> effFuncs2D;
   vector<TF12*> effFuncSlice;
   vector<TH1D*> histoSliceOrg;
@@ -2266,12 +2265,15 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   cEff->cd(1);
   hisFunc2Dorg->Draw("lego2 fb");
   cEff->Update();
+
+
+  // #############
+  // # Save plot #
+  // #############
   if (savePlot == true)
     {
-      tmpString = ParameterFILE;
-      tmpString.erase(tmpString.find(".txt"),4);
       myString.clear(); myString.str("");
-      myString << tmpString << "_" << q2BinIndx << ".pdf";
+      myString << "Test2DEff" << "_" << q2BinIndx << ".pdf";
       cEff->Print(myString.str().c_str());
     }
 }
@@ -2291,7 +2293,6 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   // # Local variables #
   // ###################
   stringstream myString;
-  string tmpString;
   double coeff;
   TH1* tmpHist1D;
   TH2* tmpHist2D;
@@ -2409,12 +2410,15 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
 
 
   cEff->Update();
+
+
+  // #############
+  // # Save plot #
+  // #############
   if (savePlot == true)
     {
-      tmpString = ParameterFILE;
-      tmpString.erase(tmpString.find(".txt"),4);
       myString.clear(); myString.str("");
-      myString << tmpString << "_" << q2BinIndx << ".pdf";
+      myString << "Test2DEff" << "_" << q2BinIndx << ".pdf";
       cEff->Print(myString.str().c_str());
     }
 
