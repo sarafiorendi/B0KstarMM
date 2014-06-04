@@ -1406,7 +1406,9 @@ void GenerateEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins
   string myString;
   stringstream fileNameOutput;
 
-  double toGenN, toGenD, weight;
+  double toGenN = 0.0;
+  double toGenD = 0.0;
+  double weight = 0.0;
 
   Utils::effStruct orgEff;
   Utils::effStruct newEff;
