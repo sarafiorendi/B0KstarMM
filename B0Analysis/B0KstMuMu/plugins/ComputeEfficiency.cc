@@ -82,7 +82,8 @@ using std::make_pair;
 #define CHECKnegEFF   true
 #define EFFis2Dnot3D  true
 #define NFILES        100
-#define GENEFF        "../efficiency/EffRndGenBinFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt" // "../efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt" OR "../efficiency/EffRndGenBinFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
+#define GENEFF        "../efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
+// "../efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt" OR "../efficiency/EffRndGenBinFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
 #define SETBATCH      true // Set batch mode when making binned efficiency
 #define ParameterFILE "../python/ParameterFile.txt"
 #define ordinateRange 1e-2

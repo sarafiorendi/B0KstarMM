@@ -1,13 +1,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Program to read and interpolate 2D efficiency functions %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-clear;
+function InterpEff2D(fileName,q2Indx,showPlot)
 
 
 %%%%%%%%%%%%%%%%%%%%
 % Global constants %
 %%%%%%%%%%%%%%%%%%%%
-fileName    = '../../efficiency/H2Deff_MisTag_q2Bin';
 NbinsX      = 5;
 NbinsY      = 5;
 NstepsX     = 120;  % [120]
@@ -15,16 +14,16 @@ NstepsY     = 120;  % [120]
 effMinValue = 2e-5; % [2e-5]
 effAtBound  = 1e-5; % [1e-5]
 
-
-%%%%%%%%%%%%%%%%%%%%
-% Global variables %
-%%%%%%%%%%%%%%%%%%%%
-q2Indx = 0; % q^2 bin index
 % - q^2 bin 0-2: spline + linear + contraints
 % - q^2 bin 3-8: linear + linear + no contraints
-interpMethod  = 'spline';
+if q2Indx >= 0 && q2Indx <= 2
+    interpMethod  = 'spline';
+    addContraints = true;
+else
+    interpMethod  = 'linear';
+    addContraints = false;
+end
 extrapMethod  = 'linear'; % [linear]
-addContraints = true;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ==> Interpolation/Extrapolation methods <== %
 % linear, nearest, cubic, spline              %
@@ -53,7 +52,7 @@ fileIDin = fopen(strcat(fileName,sprintf('_%d.txt',q2Indx)),'r');
 formatData = '%f   %f   %f   %f   %f   %f';
 i = 1;
 j = 1;
-fprintf('@@@ Reading 2D binned efficiency from txt file %s @@@\n',fileName);
+fprintf('\n@@@ Reading 2D binned efficiency from txt file %s @@@\n',fileName);
 while i <= NbinsX
     row = textscan(fileIDin,formatData,1);
 
@@ -76,12 +75,14 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Plot original efficiency %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-figure;
-surf(Xvec, Yvec, origEff);
-colorbar;
-title('Original Efficiency');
-xlabel('cos(\theta_K)');
-ylabel('cos(\theta_l)');
+if showPlot == true
+    figure;
+    surf(Xvec, Yvec, origEff);
+    colorbar;
+    title('Original Efficiency');
+    xlabel('cos(\theta_K)');
+    ylabel('cos(\theta_l)');
+end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -128,12 +129,14 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Plot efficiency after negative values correction %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-figure;
-surf(actualX, actualY, Eff);
-colorbar;
-title('Efficiency');
-xlabel('cos(\theta_K)');
-ylabel('cos(\theta_l)');
+if showPlot == true
+    figure;
+    surf(actualX, actualY, Eff);
+    colorbar;
+    title('Efficiency');
+    xlabel('cos(\theta_K)');
+    ylabel('cos(\theta_l)');
+end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%
@@ -159,12 +162,14 @@ newEff  = newEff';
 %%%%%%%%%%%%%%%%%%%%%%%
 % Plot new efficiency %
 %%%%%%%%%%%%%%%%%%%%%%%
-figure;
-surf(newXvec, newYvec, newEff);
-colorbar;
-title('Original Interpolated Efficiency');
-xlabel('cos(\theta_K)');
-ylabel('cos(\theta_l)');
+if showPlot == true
+    figure;
+    surf(newXvec, newYvec, newEff);
+    colorbar;
+    title('Original Interpolated Efficiency');
+    xlabel('cos(\theta_K)');
+    ylabel('cos(\theta_l)');
+end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -189,12 +194,14 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Plot new efficiency after negative values correction %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-figure;
-surf(newXvec, newYvec, newEff);
-colorbar;
-title('Final Interpolated Efficiency');
-xlabel('cos(\theta_K)');
-ylabel('cos(\theta_l)');
+if showPlot == true
+    figure;
+    surf(newXvec, newYvec, newEff);
+    colorbar;
+    title('Final Interpolated Efficiency');
+    xlabel('cos(\theta_K)');
+    ylabel('cos(\theta_l)');
+end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -225,3 +232,4 @@ end
 fprintf('@@@ I''ve generated interpolated efficiency @@@\n');
 fclose(fileIDout);
 fclose(fileIDin);
+end

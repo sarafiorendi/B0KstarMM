@@ -144,4 +144,4 @@ fclose(fidOUT);
 end
 
 
-fprintf('@@@ I''ve gnerated %d efficiencies @@@\n',nFiles);
+fprintf('@@@ I''ve generated %d efficiencies @@@\n',nFiles);
