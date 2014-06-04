@@ -21,4 +21,4 @@ for i = 1:nFiles
     end
 end
 
-fprintf('@@@ I''ve interpolated %d efficiencies @@@\n',nFiles);
+fprintf('\n@@@ I''ve interpolated %d efficiencies @@@\n',nFiles);
