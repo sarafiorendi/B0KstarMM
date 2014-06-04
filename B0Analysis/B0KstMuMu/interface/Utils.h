@@ -255,7 +255,9 @@ class Utils
   void ResetEffValue (effValue* myEffVal, double value);
 
   std::string GetHisto2DEffName (int SignalType);
+  void        SetHisto2DEffName (int SignalType, std::string newName);
   std::string GetHisto3DEffName (int SignalType);
+  void        SetHisto3DEffName (int SignalType, std::string newName);
 
 
   double muonMass;

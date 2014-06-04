@@ -38,6 +38,10 @@ ReadParameters::ReadParameters(const char* InputFileName, std::string howOpen)
 }
 
 void ReadParameters::ReadFromFile (unsigned int blockNumber, std::vector<std::string>* ParVector)
+// #######################################################################################################################################
+// # blockNumber  = 0 --> the file contains just one block of data without the number of lines as header                                 #
+// # blockNumber != 0 --> the file contains at lest one one block of data, before each block there must be the number of lines as header #
+// #######################################################################################################################################
 {
   std::string ReadRows;
 

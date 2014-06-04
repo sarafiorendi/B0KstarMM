@@ -4173,6 +4173,32 @@ std::string Utils::GetHisto2DEffName (int SignalType)
   return name;
 }
 
+void Utils::SetHisto2DEffName (int SignalType, std::string newName)
+{
+  if (RIGHTflavorTAG == true)
+    {
+      if      (SignalType == B0ToKstMuMu)  Histo2DEffNameOkTagSig   = newName;
+      else if (SignalType == B0ToJPsiKst)  Histo2DEffNameOkTagJPsi  = newName;
+      else if (SignalType == B0ToPsi2SKst) Histo2DEffNameOkTagPsi2S = newName;
+      else
+	{
+	  std::cout << "[Utils::SetHisto2DEffName]\tSignalType not valid : " << SignalType << std::endl;
+	  exit (EXIT_FAILURE);
+	}
+    }
+  else
+    {
+      if      (SignalType == B0ToKstMuMu)  Histo2DEffNameMisTagSig   = newName;
+      else if (SignalType == B0ToJPsiKst)  Histo2DEffNameMisTagJPsi  = newName;
+      else if (SignalType == B0ToPsi2SKst) Histo2DEffNameMisTagPsi2S = newName;
+      else
+	{
+	  std::cout << "[Utils::GetHisto2DEffName]\tSignalType not valid : " << SignalType << std::endl;
+	  exit (EXIT_FAILURE);
+	}
+    }
+}
+
 std::string Utils::GetHisto3DEffName (int SignalType)
 {
   std::string name;
@@ -4202,4 +4228,30 @@ std::string Utils::GetHisto3DEffName (int SignalType)
 
   std::cout << "[Utils::GetHisto3DEffName]\tChosen name : " << name.c_str() << std::endl;
   return name;
+}
+
+void Utils::SetHisto3DEffName (int SignalType, std::string newName)
+{
+  if (RIGHTflavorTAG == true)
+    {
+      if      (SignalType == B0ToKstMuMu)  Histo3DEffNameOkTagSig   = newName;
+      else if (SignalType == B0ToJPsiKst)  Histo3DEffNameOkTagJPsi  = newName;
+      else if (SignalType == B0ToPsi2SKst) Histo3DEffNameOkTagPsi2S = newName;
+      else
+	{
+	  std::cout << "[Utils::SetHisto3DEffName]\tSignalType not valid : " << SignalType << std::endl;
+	  exit (EXIT_FAILURE);
+	}
+    }
+  else
+    {
+      if      (SignalType == B0ToKstMuMu)  Histo3DEffNameMisTagSig   = newName;
+      else if (SignalType == B0ToJPsiKst)  Histo3DEffNameMisTagJPsi  = newName;
+      else if (SignalType == B0ToPsi2SKst) Histo3DEffNameMisTagPsi2S = newName;
+      else
+	{
+	  std::cout << "[Utils::GetHisto3DEffName]\tSignalType not valid : " << SignalType << std::endl;
+	  exit (EXIT_FAILURE);
+	}
+    }
 }
