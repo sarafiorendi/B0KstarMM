@@ -6452,7 +6452,7 @@ int main(int argc, char** argv)
 	  Utility->ReadSelectionCuts(ParameterFILE);
 	  Utility->ReadFitStartingValues(ParameterFILE,&fitParam,&configParam,Utility->ParFileBlockN("fitValGlob"));
 
-	  CTRLfitWRKflow    = Utility->GetGenericParam("CtrlFitWrkFlow");
+	  CTRLfitWRKflow = Utility->GetGenericParam("CtrlFitWrkFlow");
 
 	  fileFitResults << "Slewrate for physics constraints shape: " << Utility->GetGenericParam("SlewRateConstr").c_str() << endl;
 	  fileFitResults << "Normalize to J/psi and not psi(2S): "     << Utility->GetGenericParam("NormJPSInotPSIP").c_str() << " (0 = false; 1 = true)" << endl;
@@ -6539,10 +6539,13 @@ int main(int argc, char** argv)
 	    {
 	      if (correct4Efficiency == "yesEffCorrGenBin")
 		{
+		  // ####################
+		  // # Remove file tail #
+		  // ####################
 		  tmpFileName.erase(tmpFileName.find(".txt"),6);
 
 		  Utility->SetDirEfficiency("");
-		  Utility->SetHisto2DEffName(GetSignalType(FitType,&q2Bins,specBin),tmpFileName.c_str());
+		  if ((FitType == 6) || (FitType == 46) || (FitType == 66)) Utility->SetHisto2DEffName(GetSignalType(FitType,&q2Bins,specBin),tmpFileName.c_str());
 		}
 
 	      Utility->ReadAnalyticalEff(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,effFuncs.first,"effFuncs",Utility->ParFileBlockN("analyEffokTag"));
