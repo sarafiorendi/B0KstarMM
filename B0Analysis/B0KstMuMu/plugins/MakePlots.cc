@@ -1860,37 +1860,43 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
 // # 2 = BF  multy minima #
 // ########################
 {
+  unsigned int nPlots = 6;
   unsigned int nBinsHisto = 200;
+  stringstream myString;
   ifstream inputFile;
+  vector<TCanvas*> vecCanv;
+  vector<TH1D*> vecHist;
+  vector<double> vecVar;
 
 
-  TCanvas* c1 = new TCanvas("c1","c1",10,10,700,500);
-  c1->cd();
-  TH1D* h1 = new TH1D("h1","h1",nBinsHisto/2.,0.0,1.0);
-  h1->GetXaxis()->SetTitle("F_{L}");
-  h1->GetYaxis()->SetTitle("Entries");
-  h1->SetFillColor(kAzure+6);
+  for (unsigned int i = 0; i < nPlots; i++)
+    {
+      myString.clear(); myString.str("");
+      myString << "c" << i;
+      vecCanv.push_back(new TCanvas(myString.str().c_str(),myString.str().c_str(),10,10,700,500));
+      vecCanv.back()->cd();
 
-  TCanvas* c2 = new TCanvas("c2","c2",10,10,700,500);
-  c2->cd();
-  TH1D* h2 = new TH1D("h2","h2",nBinsHisto,-1.0,1.0);
-  h2->GetXaxis()->SetTitle("A_{FB}");
-  h2->GetYaxis()->SetTitle("Entries");
-  h2->SetFillColor(kAzure+6);
-  
-  TCanvas* c3 = new TCanvas("c3","c3",10,10,700,500);
-  c3->cd();
-  TH1D* h3 = new TH1D("h3","h3",nBinsHisto,1.0,-1.0);
-  h3->GetXaxis()->SetTitle("Signal yield OR dBF/dq#lower[0.4]{^{2}} (GeV^{#font[122]{\55}2})");
-  h3->GetYaxis()->SetTitle("Entries");
-  h3->SetFillColor(kAzure+6);
+      myString.clear(); myString.str("");
+      myString << "h" << i;
+      vecHist.push_back(new TH1D(myString.str().c_str(),myString.str().c_str(),nBinsHisto,1.0,-1.0));
+      vecHist.back()->GetYaxis()->SetTitle("Entries");
+      vecHist.back()->SetFillColor(kAzure+6);
 
-  TCanvas* c4 = new TCanvas("c4","c4",10,10,700,500);
-  c4->cd();
-  TH1D* h4 = new TH1D("h4","h4",nBinsHisto,1.0,-1.0);
-  h4->GetXaxis()->SetTitle("NLL");
-  h4->GetYaxis()->SetTitle("Entries");
-  h4->SetFillColor(kAzure+6);
+      vecVar.push_back(0.0);
+    }
+  vecVar.push_back(0.0); // ID run number
+
+  vecHist[0]->GetXaxis()->SetTitle("F_{L}");
+  vecHist[0]->SetBins(nBinsHisto,0.0,1.0);
+
+  vecHist[1]->GetXaxis()->SetTitle("A_{FB}");
+  vecHist[1]->SetBins(nBinsHisto*2,-1.0,1.0);
+
+  vecHist[2]->GetXaxis()->SetTitle("Signal yield OR dBF/dq#lower[0.4]{^{2}} (GeV^{#font[122]{\55}2})");
+  vecHist[3]->GetXaxis()->SetTitle("Right-tag I[S*E]");
+  vecHist[4]->GetXaxis()->SetTitle("Mis-tag I[S*E]");
+  vecHist[5]->GetXaxis()->SetTitle("NLL");
+
 
   TCanvas* cSc = new TCanvas("cSc","cSc",10,10,700,500);
   cSc->cd();
@@ -1913,41 +1919,19 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
     }
 
 
-  double var0 = 0.0;
-  double var1 = 0.0;
-  double var2 = 0.0;
-  double var3 = 0.0;
-  double var4 = 0.0;
-  inputFile >> var0 >> var1 >> var2 >> var3 >> var4;
+  inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6];
   while (inputFile.eof() == false)
     {
-      if (var1 != -2.0) h1->Fill(var1);
-      if (var2 != -2.0) h2->Fill(var2);
-      if (var3 != -2.0) h3->Fill(var3);
-      if (var4 != -2.0) h4->Fill(var4);
-
-      if (var4 < NLLlessThan)
+      for (unsigned int i = 0; i < nPlots; i++)
 	{
-	  if ((sysType == 0) && (var1 != -2.0))
-	    {
-	      hSc->GetXaxis()->SetTitle("F_{L}");
-	      hSc->Fill(var1,var4);
-	    }
-	  else if ((sysType == 1) && (var2 != -2.0))
-	    {
-	      hSc->GetXaxis()->SetTitle("A_{FB}");
-	      hSc->Fill(var2,var4);
-	    }
-	  else if ((sysType == 2) && (var3 != -2.0))
-	    {
-	      hSc->GetXaxis()->SetTitle("dBF/dq#lower[0.4]{^{2}} (GeV^{#font[122]{\55}2})");
-	      hSc->Fill(var3,var4);
-	    }
-	  
-	  cout << "var0: " << var0 << "\tvar1: " << var1 << "\tvar2: " << var2 << "\tvar3: " << var3 << "\tvar4: " << var4 << endl;
+	  if (vecVar[i+1] != -2.0) vecHist[i]->Fill(vecVar[i+1]);
+	  cout << "var" << i << ": " << vecVar[i] << "\t";
 	}
+      cout << "var" << nPlots << ": " << vecVar[nPlots];
       
-      inputFile >> var0 >> var1 >> var2 >> var3 >> var4;
+      if (vecVar[nPlots] < NLLlessThan) hSc->Fill(vecVar[sysType+1],vecVar[nPlots]);
+      
+      inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6];
     }
 
 
@@ -1956,62 +1940,38 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
   // #####################################
   if      (sysType == 0) hSc->SetBins(nBinsHisto,0.0,1.0,nBinsHisto,   hSc->GetMean(2) - NLLinterval,hSc->GetMean(2) + NLLinterval);
   else if (sysType == 1) hSc->SetBins(nBinsHisto*2,-1.0,1.0,nBinsHisto,hSc->GetMean(2) - NLLinterval,hSc->GetMean(2) + NLLinterval);
-  else if (sysType == 2) hSc->SetBins(nBinsHisto,1.0,-1.0,nBinsHisto,  hSc->GetMean(2) - NLLinterval,hSc->GetMean(2) + NLLinterval);
+  else                   hSc->SetBins(nBinsHisto,1.0,-1.0,nBinsHisto,  hSc->GetMean(2) - NLLinterval,hSc->GetMean(2) + NLLinterval);
 
   cout << "\n@@@ Rebin NLL scatter plot and refill @@@" << endl;
   hSc->Reset();
 
   inputFile.clear();
   inputFile.seekg(0,inputFile.beg);
-  inputFile >> var0 >> var1 >> var2 >> var3 >> var4;
+  inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6];
   while (inputFile.eof() == false)
-    {	  
-      if (var4 < NLLlessThan)
-	{
-	  if ((sysType == 0) && (var1 != -2.0))
-	    {
-	      hSc->GetXaxis()->SetTitle("F_{L}");
-	      hSc->Fill(var1,var4);
-	    }
-	  else if ((sysType == 1) && (var2 != -2.0))
-	    {
-	      hSc->GetXaxis()->SetTitle("A_{FB}");
-	      hSc->Fill(var2,var4);
-	    }
-	  else if ((sysType == 2) && (var3 != -2.0))
-	    {
-	      hSc->GetXaxis()->SetTitle("dBF/dq#lower[0.4]{^{2}} (GeV^{#font[122]{\55}2})");
-	      hSc->Fill(var3,var4);
-	    }
-	  
-	  cout << "var0: " << var0 << "\tvar1: " << var1 << "\tvar2: " << var2 << "\tvar3: " << var3 << "\tvar4: " << var4 << endl;
-	}
+    {
+      for (unsigned int i = 0; i < nPlots; i++)
+	cout << "var" << i << ": " << vecVar[i] << "\t";
+      cout << "var" << nPlots << ": " << vecVar[nPlots];
+
+      if (vecVar[nPlots] < NLLlessThan) hSc->Fill(vecVar[sysType+1],vecVar[nPlots]);
       
-      inputFile >> var0 >> var1 >> var2 >> var3 >> var4;
+      inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6];
     }
 
 
+  // ################
+  // # Plot and Fit #
+  // ################
   cout << "\n@@@ I'm now fitting and plotting @@@" << endl;
 
-  c1->cd();
-  h1->Draw();
-  h1->Fit("gaus");
-  c1->Update();
-
-  c2->cd();
-  h2->Draw();
-  h2->Fit("gaus");
-  c2->Update();
-
-  c3->cd();
-  h3->Draw();
-  h3->Fit("gaus");
-  c3->Update();
-
-  c4->cd();
-  h4->Draw();
-  h4->Fit("gaus");
-  c4->Update();
+  for (unsigned int i = 0; i < nPlots; i++)
+    {
+      vecCanv[i]->cd();
+      vecHist[i]->Draw();
+      vecHist[i]->Fit("gaus");
+      vecCanv[i]->Update();
+    }
 
   cSc->cd();
   hSc->Draw("gcolz");

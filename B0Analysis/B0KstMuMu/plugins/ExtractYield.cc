@@ -3561,8 +3561,8 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 	  fileFitResults << "====================================================================" << endl;
 
 	  myString.clear(); myString.str("");
-	  if (CheckGoodFit(fitResult) == true) myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << VecHistoMeas->operator[](0)->GetBinContent(i+1) << "   " << NLLvalue;
-	  else                                 myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
+	  if (CheckGoodFit(fitResult) == true) myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << VecHistoMeas->operator[](0)->GetBinContent(i+1) << "   " << -2.0 << "   " << -2.0 << "   " << NLLvalue;
+	  else                                 myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
 	  
 	  fileFitSystematics << myString.str() << endl;
 	}
@@ -5561,9 +5561,10 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 	      myString << (((useEffPDF == true) && (GetVar(TotalPDFq2Bins[i],"FlS")  != NULL)) ? GetVar(TotalPDFq2Bins[i],"FlS")->getVal()  : -2.0) << "   ";
 	      myString << (((useEffPDF == true) && (GetVar(TotalPDFq2Bins[i],"AfbS") != NULL)) ? GetVar(TotalPDFq2Bins[i],"AfbS")->getVal() : -2.0) << "   ";
 	      myString << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   ";
+	      myString << effMuMuGoodTag << "   " << effMuMuMisTag << "   ";
 	      myString << NLLvalue;
 	    }
-	  else myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
+	  else myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
 	  
 	  fileFitSystematics << myString.str() << endl;
 	}
