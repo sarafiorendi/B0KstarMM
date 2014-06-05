@@ -258,6 +258,7 @@ class Utils
   void        SetHisto2DEffName (int SignalType, std::string newName);
   std::string GetHisto3DEffName (int SignalType);
   void        SetHisto3DEffName (int SignalType, std::string newName);
+  void        SetDirEfficiency (std::string newName);
 
 
   double muonMass;

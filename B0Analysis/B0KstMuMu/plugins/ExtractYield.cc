@@ -353,6 +353,7 @@ void GenerateDataset           (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<do
 void FitDimuonInvMass          (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x, TCanvas* Canv, bool justPlotMuMuMass, bool justKeepPsi, string plotName);
 
 void MakeDataSets              (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType);
+unsigned int GetSignalType     (unsigned int FitType, vector<double>* q2Bins, int q2BinIndx);
 
 // ==================
 // ===> 1D MODEL <===
@@ -965,13 +966,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	  // #############################
 	  // # Make 2D efficiency p.d.f. #
 	  // #############################
-	  int SignalType;
-	  if      (((FitType >= 01*10) && (FitType < 40*10)) || ((FitType == 96*10) && (q2BinIndx != Utility->GetJPsiBin(q2Bins)) && (q2BinIndx != Utility->GetPsiPBin(q2Bins)))) SignalType = 1;
-	  else if (((FitType >= 41*10) && (FitType < 60*10)) || ((FitType == 96*10) && (q2BinIndx == Utility->GetJPsiBin(q2Bins))))                                               SignalType = 3;
-	  else if (((FitType >= 61*10) && (FitType < 80*10)) || ((FitType == 96*10) && (q2BinIndx == Utility->GetPsiPBin(q2Bins))))                                               SignalType = 5;
-	  else SignalType = 1;
-
-	  RooDataHist* histoEff = new RooDataHist("histoEff","histoEff",RooArgSet(*z,*y),Import(*Utility->Get2DEffHistoq2Bin(&cosThetaKBins,&cosThetaLBins,q2BinIndx,SignalType,false,make_pair(-1.0,1.0),make_pair(-1.0,1.0)),true));
+	  RooDataHist* histoEff = new RooDataHist("histoEff","histoEff",RooArgSet(*z,*y),Import(*Utility->Get2DEffHistoq2Bin(&cosThetaKBins,&cosThetaLBins,q2BinIndx,GetSignalType(FitType,q2Bins,q2BinIndx),false,make_pair(-1.0,1.0),make_pair(-1.0,1.0)),true));
 	  histoEffPDF           = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(*z,*y),*histoEff,DEGREEINTERP);
 	  MyProdPdf* myprodpdf  = new MyProdPdf(*_AnglesPDF,*histoEffPDF);
 	  ROOT::Math::Functor* prodFunctor = new ROOT::Math::Functor(*myprodpdf,myprodpdf->ndim());
@@ -2917,6 +2912,29 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
   CosThetaKArb->setVal(0.0);
   CosThetaMuArb->setVal(0.0);
   PhiKstMuMuPlaneArb->setVal(0.0);
+}
+
+
+unsigned int GetSignalType (unsigned int FitType, vector<double>* q2Bins, int q2BinIndx)
+{
+  unsigned int SignalType;
+
+  if (q2BinIndx < 0)
+    {
+      cout << "[ExtractYield::GetSignalType]\tIncorrect bin index for signal type determination : " << q2BinIndx << endl;
+      exit (EXIT_FAILURE);
+    }
+
+  if      (((FitType >= 01) && (FitType < 40)) || ((FitType >= 01*10) && (FitType < 40*10)) || (((FitType == 96) || (FitType == 96*10)) && (q2BinIndx != Utility->GetJPsiBin(q2Bins)) && (q2BinIndx != Utility->GetPsiPBin(q2Bins)))) SignalType = 1;
+  else if (((FitType >= 41) && (FitType < 60)) || ((FitType >= 41*10) && (FitType < 60*10)) || (((FitType == 96) || (FitType == 96*10)) && (q2BinIndx == Utility->GetJPsiBin(q2Bins))))                                               SignalType = 3;
+  else if (((FitType >= 61) && (FitType < 80)) || ((FitType >= 61*10) && (FitType < 80*10)) || (((FitType == 96) || (FitType == 96*10)) && (q2BinIndx == Utility->GetPsiPBin(q2Bins))))                                               SignalType = 5;
+  else
+    {
+      cout << "[ExtractYield::GetSignalType]\tFit type not valid : " << FitType << endl;
+      exit (EXIT_FAILURE);
+    }
+
+  return SignalType;
 }
 
 
@@ -6311,7 +6329,7 @@ int main(int argc, char** argv)
 	  // ###################################
 	  // # Check that FitOption is correct #
 	  // ###################################
-	  if ((correct4Efficiency != "noEffCorr") && (correct4Efficiency != "yesEffCorr") && (correct4Efficiency != "yesEffCorrGen"))
+	  if ((correct4Efficiency != "noEffCorr") && (correct4Efficiency != "yesEffCorr") && (correct4Efficiency != "yesEffCorrGenAnaly") && (correct4Efficiency != "yesEffCorrGenBin"))
 	    {
 	      cout << "[ExtractYield::main]\tIncorrect option parameter " << correct4Efficiency << endl;
 	      exit (EXIT_FAILURE);
@@ -6322,8 +6340,8 @@ int main(int argc, char** argv)
 	  // # Read the q^2 bin and the rest #
 	  // #################################
 	  if (argc >= 5) specBin = atoi(argv[4]);
-	  if ((correct4Efficiency == "yesEffCorr") || (correct4Efficiency == "yesEffCorrGen")) useEffPDF = true;
-	  if (correct4Efficiency == "yesEffCorrGen")
+	  if ((correct4Efficiency == "yesEffCorr") || (correct4Efficiency.find("yesEffCorrGen") != string::npos)) useEffPDF = true;
+	  if (correct4Efficiency.find("yesEffCorrGen") != string::npos)
 	    {
 	      tmpFileName = argv[5];
 	      fileIndx    = atoi(argv[6]);
@@ -6475,9 +6493,9 @@ int main(int argc, char** argv)
 	    }
 	  configParam.clear();
 	  if (FitType == 2) Utility->ReadFitStartingValues(ParameterFILE,&fitParam,&configParam,Utility->ParFileBlockN("fitValGlob"));
-	  else              Utility->ReadFitStartingValues((((correct4Efficiency != "yesEffCorrGen") && tmpFileName.size() != 0) ? tmpFileName : ParameterFILE),
+	  else              Utility->ReadFitStartingValues((((correct4Efficiency.find("yesEffCorrGen") == string::npos) && tmpFileName.size() != 0) ? tmpFileName : ParameterFILE),
 							   &fitParam,&configParam,
-							   (((correct4Efficiency != "yesEffCorrGen") && tmpFileName.size() != 0) ? 0 : Utility->ParFileBlockN("fitValBins")));
+							   (((correct4Efficiency.find("yesEffCorrGen") == string::npos) && tmpFileName.size() != 0) ? 0 : Utility->ParFileBlockN("fitValBins")));
 
 
 	  // #############################################################
@@ -6512,13 +6530,21 @@ int main(int argc, char** argv)
 	  // ##############################################
 	  effFuncs.first  = new vector<TF2*>;
 	  effFuncs.second = new vector<TF2*>;
-	  if (correct4Efficiency == "yesEffCorrGen")
+	  if (correct4Efficiency == "yesEffCorrGenAnaly")
 	    {
 	      Utility->ReadAnalyticalEff(tmpFileName.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,effFuncs.first, "effFuncs",1);
 	      Utility->ReadAnalyticalEff(tmpFileName.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,effFuncs.second,"effFuncs",2);
 	    }
 	  else
 	    {
+	      if (correct4Efficiency == "yesEffCorrGenBin")
+		{
+		  tmpFileName.erase(tmpFileName.find(".txt"),4);
+		  
+		  Utility->SetDirEfficiency("");
+		  Utility->SetHisto2DEffName(GetSignalType(FitType,&q2Bins,specBin),tmpFileName.c_str());
+		}
+
 	      Utility->ReadAnalyticalEff(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,effFuncs.first,"effFuncs",Utility->ParFileBlockN("analyEffokTag"));
 	      Utility->ReadAnalyticalEff(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,effFuncs.second,"effFuncs",Utility->ParFileBlockN("analyEffmisTag"));
 	    }
@@ -6898,7 +6924,7 @@ int main(int argc, char** argv)
       else
 	{
 	  cout << "Wrong parameter: " << endl;
-	  cout << "./ExtractYield [FitType] [input/output[if toy-MC]File.root] [noEffCorr yesEffCorr yesEffCorrGen]" << endl;
+	  cout << "./ExtractYield [FitType] [input/output[if toy-MC]File.root] [noEffCorr yesEffCorr yesEffCorrGenAnaly yesEffCorrGenBin]" << endl;
 	  cout << "               [q^2 bin to fit (0 - ...)]" << endl;
 	  cout << "               [[if yesEffCorrGen]effFileName.txt AND indx]" << endl;
 	  cout << "               [[if toy-MC]nToy AND ParameterFile.txt AND indx] " << endl;
@@ -6915,7 +6941,7 @@ int main(int argc, char** argv)
   else
     {
       cout << "Parameter missing: " << endl;
-      cout << "./ExtractYield [FitType] [input/output[if toy-MC]File.root] [noEffCorr yesEffCorr yesEffCorrGen]" << endl;
+      cout << "./ExtractYield [FitType] [input/output[if toy-MC]File.root] [noEffCorr yesEffCorr yesEffCorrGenAnaly yesEffCorrGenBin]" << endl;
       cout << "               [q^2 bin to fit (0 - ...)]" << endl;
       cout << "               [[if yesEffCorrGen]effFileName.txt AND indx]" << endl;
       cout << "               [[if toy-MC]nToy AND ParameterFile.txt AND indx] " << endl;

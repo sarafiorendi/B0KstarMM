@@ -4255,3 +4255,8 @@ void Utils::SetHisto3DEffName (int SignalType, std::string newName)
 	}
     }
 }
+
+void Utils::SetDirEfficiency (std::string newName)
+{
+  DirEfficiency = newName;
+}
