@@ -39,7 +39,7 @@ if (@ARGV == 6)
     }
 
 
-    open(OUT, ">runMultiExtractYield_q2Bin_" . $q2BinIndx . ".sh") ;
+    open(OUT, ">runMultiExtractYield_" . @ARGV[3] . "_q2Bin_" . $q2BinIndx . ".sh") ;
     print OUT "$cmd" ;
     print OUT "\n" ;
     close(OUT) ;
