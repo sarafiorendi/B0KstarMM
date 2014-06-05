@@ -30,7 +30,7 @@ if (@ARGV == 6)
 	}
 	else
 	{
-	    $toRun = "Qsub -l lnxfarm -e -o EffSys_" . $q2BinIndx . "_" . $listIndx . ".log -N ESYS" . $q2BinIndx . $listIndx . " " . $execProg ;
+	    $toRun = "Qsub -l lnxfarm -e -o EffSys" . @ARGV[3] . "_" . $q2BinIndx . "_" . $listIndx . ".log -N ESYS" . $q2BinIndx . $listIndx . " " . $execProg ;
 	}
 
 	$cmd .= "echo " . $toRun ;
