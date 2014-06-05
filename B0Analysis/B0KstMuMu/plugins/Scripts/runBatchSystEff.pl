@@ -4,7 +4,7 @@
 # Program to fit with different pre-generated efficiency functions #
 ####################################################################
 
-if (@ARGV == 4)
+if (@ARGV == 5)
 {
     ###########################
     # Configuration parameter #
@@ -17,7 +17,7 @@ if (@ARGV == 4)
     $listcmd = "ls " . $dirEffRndGen ;
     @list = `$listcmd` ;
 
-    $q2BinIndx = @ARGV[2] ;
+    $q2BinIndx = @ARGV[3] ;
     
     $cmd .= "unset DISPLAY\n" ;
     $cmd .= "rm FitSystematics_q2Bin_" . $q2BinIndx . ".txt" . "\n" ;
@@ -28,9 +28,9 @@ if (@ARGV == 4)
     foreach $file (@list[$listStart..$listEnd])
     {
 	chomp $file ;
-	$execProg = ".././ExtractYield " . @ARGV[0] . " " . @ARGV[1] . " yesEffCorrGen " . $q2BinIndx . " " . $dirEffRndGen . $file . " " . $listIndx . "\n" ;
+	$execProg = ".././ExtractYield " . @ARGV[0] . " " . @ARGV[1] . " @ARGV[2] " . $q2BinIndx . " " . $dirEffRndGen . $file . " " . $listIndx . "\n" ;
 
-	if (@ARGV[3] eq "false")
+	if (@ARGV[4] eq "false")
 	{
 	    $toRun = $execProg ;
 	}
@@ -53,5 +53,5 @@ if (@ARGV == 4)
 else
 {
     print "Parameter missing:\n" ;
-    print "./runBatchSystEff.pl [FitType] [File.root] [q^2 bin to fit (0 - ...)] [runJobs[true / false]]\n" ;
+    print "./runBatchSystEff.pl [FitType] [File.root] [FitEff] [q^2 bin to fit (0 - ...)] [runJobs[true / false]]\n" ;
 }
