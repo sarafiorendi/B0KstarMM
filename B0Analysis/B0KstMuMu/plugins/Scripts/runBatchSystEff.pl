@@ -19,6 +19,8 @@ if (@ARGV == 6)
     $listStart = 0 ;
     $listEnd   = @list - 1 ;
     $listIndx  = 1 ;
+
+
     foreach $file (@list[$listStart..$listEnd])
     {
 	chomp $file ;

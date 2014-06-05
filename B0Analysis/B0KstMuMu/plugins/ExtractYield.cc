@@ -6539,8 +6539,8 @@ int main(int argc, char** argv)
 	    {
 	      if (correct4Efficiency == "yesEffCorrGenBin")
 		{
-		  tmpFileName.erase(tmpFileName.find(".txt"),4);
-		  
+		  tmpFileName.erase(tmpFileName.find(".txt"),6);
+
 		  Utility->SetDirEfficiency("");
 		  Utility->SetHisto2DEffName(GetSignalType(FitType,&q2Bins,specBin),tmpFileName.c_str());
 		}
