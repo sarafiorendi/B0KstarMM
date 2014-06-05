@@ -30,7 +30,7 @@ showPlot = true;
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set sandom number seed %
 %%%%%%%%%%%%%%%%%%%%%%%%%%
-rng(0);
+rng(1);
 
 
 for i = 1:nFiles
