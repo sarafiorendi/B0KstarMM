@@ -2925,9 +2925,12 @@ unsigned int GetSignalType (unsigned int FitType, vector<double>* q2Bins, int q2
       exit (EXIT_FAILURE);
     }
 
-  if      (((FitType >= 01) && (FitType < 40)) || ((FitType >= 01*10) && (FitType < 40*10)) || (((FitType == 96) || (FitType == 96*10)) && (q2BinIndx != Utility->GetJPsiBin(q2Bins)) && (q2BinIndx != Utility->GetPsiPBin(q2Bins)))) SignalType = 1;
-  else if (((FitType >= 41) && (FitType < 60)) || ((FitType >= 41*10) && (FitType < 60*10)) || (((FitType == 96) || (FitType == 96*10)) && (q2BinIndx == Utility->GetJPsiBin(q2Bins))))                                               SignalType = 3;
-  else if (((FitType >= 61) && (FitType < 80)) || ((FitType >= 61*10) && (FitType < 80*10)) || (((FitType == 96) || (FitType == 96*10)) && (q2BinIndx == Utility->GetPsiPBin(q2Bins))))                                               SignalType = 5;
+  if      (((FitType >= 01) && (FitType < 40))       || ((FitType == 96)    && (q2BinIndx != Utility->GetJPsiBin(q2Bins)) && (q2BinIndx != Utility->GetPsiPBin(q2Bins)))) SignalType = 1;
+  else if (((FitType >= 41) && (FitType < 60))       || ((FitType == 96)    && (q2BinIndx == Utility->GetJPsiBin(q2Bins))))                                               SignalType = 3;
+  else if (((FitType >= 61) && (FitType < 80))       || ((FitType == 96)    && (q2BinIndx == Utility->GetPsiPBin(q2Bins))))                                               SignalType = 5;
+  else if (((FitType >= 01*10) && (FitType < 40*10)) || ((FitType == 96*10) && (q2BinIndx != Utility->GetJPsiBin(q2Bins)) && (q2BinIndx != Utility->GetPsiPBin(q2Bins)))) SignalType = 1;
+  else if (((FitType >= 41*10) && (FitType < 60*10)) || ((FitType == 96*10) && (q2BinIndx == Utility->GetJPsiBin(q2Bins))))                                               SignalType = 3;
+  else if (((FitType >= 61*10) && (FitType < 80*10)) || ((FitType == 96*10) && (q2BinIndx == Utility->GetPsiPBin(q2Bins))))                                               SignalType = 5;
   else
     {
       cout << "[ExtractYield::GetSignalType]\tFit type not valid : " << FitType << endl;
