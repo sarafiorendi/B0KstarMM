@@ -1860,8 +1860,8 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
 // # 2 = BF  multy minima #
 // ########################
 {
-  unsigned int nPlots = 6;
-  unsigned int nBinsHisto = 200;
+  unsigned int nPlots     = 6;
+  unsigned int nBinsHisto = 400;
   stringstream myString;
   ifstream inputFile;
   vector<TCanvas*> vecCanv;
@@ -1927,7 +1927,7 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
 	  if (vecVar[i+1] != -2.0) vecHist[i]->Fill(vecVar[i+1]);
 	  cout << "var" << i << ": " << vecVar[i] << "\t";
 	}
-      cout << "var" << nPlots << ": " << vecVar[nPlots];
+      cout << "var" << nPlots << ": " << vecVar[nPlots] << endl;
       
       if (vecVar[nPlots] < NLLlessThan) hSc->Fill(vecVar[sysType+1],vecVar[nPlots]);
       
@@ -1952,7 +1952,7 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
     {
       for (unsigned int i = 0; i < nPlots; i++)
 	cout << "var" << i << ": " << vecVar[i] << "\t";
-      cout << "var" << nPlots << ": " << vecVar[nPlots];
+      cout << "var" << nPlots << ": " << vecVar[nPlots] << endl;
 
       if (vecVar[nPlots] < NLLlessThan) hSc->Fill(vecVar[sysType+1],vecVar[nPlots]);
       
