@@ -348,7 +348,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vec
 unsigned int CopyFitResults    (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vector<vector<string>*>* fitParam);
 
 void GenerateParameterFile     (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr, string fileName, unsigned int fileIndx, vector<double>* q2Bins, unsigned int q2BinIndx);
-void GenerateDataset           (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2Bins, int specBin, vector<vector<string>*>* fitParam, string fileName);
+void GenerateDataset           (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2Bins, int q2BinIndx, vector<vector<string>*>* fitParam, string fileName);
 
 void FitDimuonInvMass          (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x, TCanvas* Canv, bool justPlotMuMuMass, bool justKeepPsi, string plotName);
 
@@ -2183,7 +2183,7 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
   CopyFitResults(TotalPDF,q2BinIndx,fitParam);
 
   RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins->size()-1) + q2BinIndx);
-  cout << "\n@@@ Random seed for parameter file generation set to: " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
+  cout << "\n@@@ Random seed for parameter file generation set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
 
   if ((atoi(Utility->GetGenericParam("CtrlMisTagWrkFlow").c_str()) == 0) && (GetVar(TotalPDF,"nMisTagFrac") != NULL))
@@ -2290,7 +2290,7 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
 }
 
 
-void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2Bins, int specBin, vector<vector<string>*>* fitParam, string fileName)
+void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2Bins, int q2BinIndx, vector<vector<string>*>* fitParam, string fileName)
 {
   TFile* NtplFileOut;
   TTree* theTreeOut;
@@ -2299,7 +2299,7 @@ void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2B
   RooDataSet* toySample;
   RooRealVar* var;
   unsigned int nEntryToy;
-
+  
 
   // ######################
   // # Create output tree #
@@ -2315,12 +2315,14 @@ void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2B
 
 
   cout << "\n@@@ Generating data-like ntuple @@@" << endl;
+  RooRandom::randomGenerator()->SetSeed(q2BinIndx);
+  cout << "@@@ Random seed for parameter file generation set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
 
   // #####################
   // # Toy-MC generation #
   // #####################
-  nEntryToy = CopyFitResults(TotalPDF,specBin,fitParam);
+  nEntryToy = CopyFitResults(TotalPDF,q2BinIndx,fitParam);
   PrintVariables(TotalPDF->getVariables(),"vars");
   MyToy = new RooMCStudy(*TotalPDF,setVar);
   MyToy->generate(1,nEntryToy,true);
@@ -2332,19 +2334,19 @@ void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2B
   toySample = (RooDataSet*)MyToy->genData(0);
   for (unsigned int entry = 0; entry < nEntryToy; entry++)
     {
-      if (specBin == Utility->GetJPsiBin(q2Bins))
+      if (q2BinIndx == Utility->GetJPsiBin(q2Bins))
 	{
 	  NTupleOut->mumuMass->push_back(Utility->JPsiMass);
 	  NTupleOut->mumuMassE->push_back(1e-3);
 	}
-      else if (specBin == Utility->GetPsiPBin(q2Bins))
+      else if (q2BinIndx == Utility->GetPsiPBin(q2Bins))
 	{
 	  NTupleOut->mumuMass->push_back(Utility->PsiPMass);
 	  NTupleOut->mumuMassE->push_back(1e-3);
 	}
       else
 	{
-	  NTupleOut->mumuMass->push_back(sqrt((q2Bins->operator[](specBin+1)+q2Bins->operator[](specBin)) / 2.));
+	  NTupleOut->mumuMass->push_back(sqrt((q2Bins->operator[](q2BinIndx+1) + q2Bins->operator[](q2BinIndx)) / 2.));
 	  NTupleOut->mumuMassE->push_back(0.0);
 	}
 
@@ -2364,9 +2366,9 @@ void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2B
       var = (RooRealVar*)(toySample->get(entry)->find("PhiKstMuMuPlaneArb"));
       if (var != NULL) NTupleOut->PhiKstMuMuPlaneArb = var->getVal();
       
-      NTupleOut->truthMatchSignal->push_back(true);
-      NTupleOut->rightFlavorTag = true;
-      NTupleOut->TrigCat = 1;
+      NTupleOut->truthMatchSignal->push_back(false);
+      NTupleOut->rightFlavorTag = (RooRandom::uniform() < 0.5 ? false : true);
+      NTupleOut->TrigCat        = 1;
 
       theTreeOut->Fill();
       NTupleOut->ClearNTuple();
@@ -6863,7 +6865,7 @@ int main(int argc, char** argv)
 	      // # in case the toy-MC studies are splited #
 	      // ##########################################
 	      RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins.size()-1) + specBin);
-	      cout << "\n@@@ Random seed for toy-MC set to: " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
+	      cout << "\n@@@ Random seed for toy-MC set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
 
 	      if (FitType == 21)
