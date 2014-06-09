@@ -871,11 +871,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle1 poly ###
 3
 # Bkg angle1 poly coeff. c0
-0.0
+-0.0416652   -0.423086   0.423086
 # Bkg angle1 poly coeff. c1
-0.0
+-0.968387   -0.188864   0.188864
 # Bkg angle1 poly coeff. c2
-0.0
+0.107884   -0.694188   0.694188
 # Bkg angle1 poly coeff. c3
 0.0
 # Bkg angle1 poly coeff. c4
@@ -895,11 +895,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle2 poly ###
 3
 # Bkg angle2 poly coeff. c0
-0.0
+0.594217   -0.784469   0.784469
 # Bkg angle2 poly coeff. c1
-0.0
+1.35975   -0.824018   0.824018
 # Bkg angle2 poly coeff. c2
-0.0
+-2.22985   -1.30628   1.30628
 # Bkg angle2 poly coeff. c3
 0.0
 # Bkg angle2 poly coeff. c4
@@ -1023,11 +1023,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle1 poly ###
 3
 # Bkg angle1 poly coeff. c0
-0.0
+0.512043   -0.208439   0.208439
 # Bkg angle1 poly coeff. c1
-0.0
+-1.27699   -0.0831728   0.0831728
 # Bkg angle1 poly coeff. c2
-0.0
+-1.0218   -0.364019   0.364019
 # Bkg angle1 poly coeff. c3
 0.0
 # Bkg angle1 poly coeff. c4
@@ -1047,11 +1047,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle2 poly ###
 3
 # Bkg angle2 poly coeff. c0
-0.0
+-0.823023   -0.384371   0.384371
 # Bkg angle2 poly coeff. c1
-0.0
+1.0203   -0.43724   0.43724
 # Bkg angle2 poly coeff. c2
-0.0
+0.054055   -0.624348   0.624348
 # Bkg angle2 poly coeff. c3
 0.0
 # Bkg angle2 poly coeff. c4
@@ -1175,13 +1175,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle1 poly ###
 4
 # Bkg angle1 poly coeff. c0
-0.0
+-0.872936   -0.397227   0.397227
 # Bkg angle1 poly coeff. c1
-0.0
+2.70821   -0.94181   0.94181
 # Bkg angle1 poly coeff. c2
-0.0
+1.5141   -0.516974   0.516974
 # Bkg angle1 poly coeff. c3
-0.0
+-4.31672   -1.08312   1.08312
 # Bkg angle1 poly coeff. c4
 0.0
 ### Number of coefficients of the peak.bkg angle2 poly ###
@@ -1199,11 +1199,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle2 poly ###
 3
 # Bkg angle2 poly coeff. c0
-0.0
+-1.16476   -0.399466   0.399466
 # Bkg angle2 poly coeff. c1
-0.0
+0.534648   -0.38874   0.38874
 # Bkg angle2 poly coeff. c2
-0.0
+1.1354   -0.644133   0.644133
 # Bkg angle2 poly coeff. c3
 0.0
 # Bkg angle2 poly coeff. c4
@@ -1327,13 +1327,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle1 poly ###
 4
 # Bkg angle1 poly coeff. c0
-0.0
+-0.324045   -0.277829   0.277829
 # Bkg angle1 poly coeff. c1
-0.0
+0.603783   -0.751833   0.751833
 # Bkg angle1 poly coeff. c2
-0.0
+0.243452   -0.379175   0.379175
 # Bkg angle1 poly coeff. c3
-0.0
+-1.29848   -0.827929   0.827929
 # Bkg angle1 poly coeff. c4
 0.0
 ### Number of coefficients of the peak.bkg angle2 poly ###
@@ -1351,11 +1351,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle2 poly ###
 3
 # Bkg angle2 poly coeff. c0
-0.0
+-0.403066   -0.338098   0.338098
 # Bkg angle2 poly coeff. c1
-0.0
+0.555376   -0.344139   0.344139
 # Bkg angle2 poly coeff. c2
-0.0
+-0.16285   -0.555411   0.555411
 # Bkg angle2 poly coeff. c3
 0.0
 # Bkg angle2 poly coeff. c4
@@ -1631,13 +1631,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle1 poly ###
 4
 # Bkg angle1 poly coeff. c0
-0.0
+-0.352428   -0.249953   0.249953
 # Bkg angle1 poly coeff. c1
-0.0
+1.29587   -0.746083   0.746083
 # Bkg angle1 poly coeff. c2
-0.0
+0.415527   -0.365359   0.365359
 # Bkg angle1 poly coeff. c3
-0.0
+-1.5146   -0.808129   0.808129
 # Bkg angle1 poly coeff. c4
 0.0
 ### Number of coefficients of the peak.bkg angle2 poly ###
@@ -1655,11 +1655,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle2 poly ###
 3
 # Bkg angle2 poly coeff. c0
-0.0
+-0.720132   -0.202649   0.202649
 # Bkg angle2 poly coeff. c1
-0.0
+-0.102156   -0.16229   0.16229
 # Bkg angle2 poly coeff. c2
-0.0
+0.232114   -0.318699   0.318699
 # Bkg angle2 poly coeff. c3
 0.0
 # Bkg angle2 poly coeff. c4
@@ -1935,11 +1935,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle1 poly ###
 3
 # Bkg angle1 poly coeff. c0
-0.0
+-0.687221   -0.400324   0.400324
 # Bkg angle1 poly coeff. c1
-0.0
+0.147627   -0.346318   0.346318
 # Bkg angle1 poly coeff. c2
-0.0
+1.23461   -0.654386   0.654386
 # Bkg angle1 poly coeff. c3
 0.0
 # Bkg angle1 poly coeff. c4
@@ -1959,11 +1959,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle2 poly ###
 3
 # Bkg angle2 poly coeff. c0
-0.0
+-0.267844   -0.293223   0.293223
 # Bkg angle2 poly coeff. c1
-0.0
+-0.789973   -0.153984   0.153984
 # Bkg angle2 poly coeff. c2
-0.0
+0.197716   -0.448871   0.448871
 # Bkg angle2 poly coeff. c3
 0.0
 # Bkg angle2 poly coeff. c4
@@ -2087,13 +2087,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle1 poly ###
 4
 # Bkg angle1 poly coeff. c0
-0.0
+0.54569   -0.522267   0.522267
 # Bkg angle1 poly coeff. c1
-0.0
+-1.08968   -1.18956   1.18956
 # Bkg angle1 poly coeff. c2
-0.0
+-1.15028   -0.866948   0.866948
 # Bkg angle1 poly coeff. c3
-0.0
+1.50549   -1.35597   1.35597
 # Bkg angle1 poly coeff. c4
 0.0
 ### Number of coefficients of the peak.bkg angle2 poly ###
@@ -2111,11 +2111,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle2 poly ###
 3
 # Bkg angle2 poly coeff. c0
-0.0
+-0.068704   -0.492669   0.492669
 # Bkg angle2 poly coeff. c1
-0.0
+-0.628452   -0.278415   0.278415
 # Bkg angle2 poly coeff. c2
-0.0
+0.564261   -0.7892   0.7892
 # Bkg angle2 poly coeff. c3
 0.0
 # Bkg angle2 poly coeff. c4

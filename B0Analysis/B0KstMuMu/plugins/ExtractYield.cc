@@ -2163,13 +2163,10 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vector
     }
 
   value = 0.0;
-  if (GetVar(TotalPDF,"nSig") != NULL)
-    {
-      value = value + TotalPDF->getVariables()->getRealValue("nSig");
-      if (GetVar(TotalPDF,"nBkgComb")    != NULL) value = value + TotalPDF->getVariables()->getRealValue("nBkgComb");
-      if (GetVar(TotalPDF,"nMisTagFrac") != NULL) value = value + TotalPDF->getVariables()->getRealValue("nSig") * TotalPDF->getVariables()->getRealValue("nMisTagFrac") / (1.0 - TotalPDF->getVariables()->getRealValue("nMisTagFrac"));
-      if (GetVar(TotalPDF,"nBkgPeak")    != NULL) value = value + TotalPDF->getVariables()->getRealValue("nBkgPeak");
-    }
+  if (GetVar(TotalPDF,"nSig")        != NULL) value = value + TotalPDF->getVariables()->getRealValue("nSig");
+  if (GetVar(TotalPDF,"nBkgComb")    != NULL) value = value + TotalPDF->getVariables()->getRealValue("nBkgComb");
+  if (GetVar(TotalPDF,"nMisTagFrac") != NULL) value = value + TotalPDF->getVariables()->getRealValue("nSig") * TotalPDF->getVariables()->getRealValue("nMisTagFrac") / (1.0 - TotalPDF->getVariables()->getRealValue("nMisTagFrac"));
+  if (GetVar(TotalPDF,"nBkgPeak")    != NULL) value = value + TotalPDF->getVariables()->getRealValue("nBkgPeak");
   return value;
 }
 
@@ -2949,12 +2946,12 @@ unsigned int GetSignalType (unsigned int FitType, vector<double>* q2Bins, int q2
       exit (EXIT_FAILURE);
     }
 
-  if      (((FitType >= 01) && (FitType < 40))       || ((FitType == 96)    && (q2BinIndx != Utility->GetJPsiBin(q2Bins)) && (q2BinIndx != Utility->GetPsiPBin(q2Bins)))) SignalType = 1;
-  else if (((FitType >= 41) && (FitType < 60))       || ((FitType == 96)    && (q2BinIndx == Utility->GetJPsiBin(q2Bins))))                                               SignalType = 3;
-  else if (((FitType >= 61) && (FitType < 80))       || ((FitType == 96)    && (q2BinIndx == Utility->GetPsiPBin(q2Bins))))                                               SignalType = 5;
-  else if (((FitType >= 01*10) && (FitType < 40*10)) || ((FitType == 96*10) && (q2BinIndx != Utility->GetJPsiBin(q2Bins)) && (q2BinIndx != Utility->GetPsiPBin(q2Bins)))) SignalType = 1;
-  else if (((FitType >= 41*10) && (FitType < 60*10)) || ((FitType == 96*10) && (q2BinIndx == Utility->GetJPsiBin(q2Bins))))                                               SignalType = 3;
-  else if (((FitType >= 61*10) && (FitType < 80*10)) || ((FitType == 96*10) && (q2BinIndx == Utility->GetPsiPBin(q2Bins))))                                               SignalType = 5;
+  if      (((FitType >= 01)    && (FitType < 40))    || (((FitType == 96)    || ((FitType >= 81)    && (FitType <= 86)))    && (q2BinIndx != Utility->GetJPsiBin(q2Bins)) && (q2BinIndx != Utility->GetPsiPBin(q2Bins)))) SignalType = 1;
+  else if (((FitType >= 41)    && (FitType < 60))    || (((FitType == 96)    || ((FitType >= 81)    && (FitType <= 86)))    && (q2BinIndx == Utility->GetJPsiBin(q2Bins))))                                               SignalType = 3;
+  else if (((FitType >= 61)    && (FitType < 80))    || (((FitType == 96)    || ((FitType >= 81)    && (FitType <= 86)))    && (q2BinIndx == Utility->GetPsiPBin(q2Bins))))                                               SignalType = 5;
+  else if (((FitType >= 01*10) && (FitType < 40*10)) || (((FitType == 96*10) || ((FitType >= 81*10) && (FitType <= 86*10))) && (q2BinIndx != Utility->GetJPsiBin(q2Bins)) && (q2BinIndx != Utility->GetPsiPBin(q2Bins)))) SignalType = 1;
+  else if (((FitType >= 41*10) && (FitType < 60*10)) || (((FitType == 96*10) || ((FitType >= 81*10) && (FitType <= 86*10))) && (q2BinIndx == Utility->GetJPsiBin(q2Bins))))                                               SignalType = 3;
+  else if (((FitType >= 61*10) && (FitType < 80*10)) || (((FitType == 96*10) || ((FitType >= 81*10) && (FitType <= 86*10))) && (q2BinIndx == Utility->GetPsiPBin(q2Bins))))                                               SignalType = 5;
   else
     {
       cout << "[ExtractYield::GetSignalType]\tFit type not valid : " << FitType << endl;
