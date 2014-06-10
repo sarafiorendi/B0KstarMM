@@ -585,7 +585,7 @@ void TruthMatching (string fileName, bool truthMatch)
   hb->GetFunction("f0")->SetLineColor(kBlue);
   hb->GetFunction("f0")->Draw("same");
 
-  cout << "Integral of the full fit function: " << f0->Integral(minX,maxX)/((maxX - minX) / ((double)nBins)) << "\tEntries: " << hb->GetEntries() << endl;
+  cout << "Integral of the full fit function: " << f0->Integral(minX,maxX)/((maxX - minX) / static_cast<double>(nBins)) << "\tEntries: " << hb->GetEntries() << endl;
 
 
   if (truthMatch == true)
@@ -610,7 +610,7 @@ void TruthMatching (string fileName, bool truthMatch)
     }
 
 
-  cout << "Integral of the signal: " << f1->Integral(minX,maxX)/((maxX - minX) / ((double)nBins)) << endl;
+  cout << "Integral of the signal: " << f1->Integral(minX,maxX)/((maxX - minX) / static_cast<double>(nBins)) << endl;
 }
 
 
@@ -1150,14 +1150,14 @@ void PlotBkgMC (string fileName, bool iFit, double scaleMCdata)
   c0->cd();
   if (iFit == true) h0->Fit("f0");
   h0->Draw("e1p");
-  double intErrJpsi = f0->IntegralError(B0Mass - B0MassIntervalLeft,B0Mass + B0MassIntervalRight)/((B0MassIntervalLeft+B0MassIntervalRight) / ((double)nBins));
+  double intErrJpsi = f0->IntegralError(B0Mass - B0MassIntervalLeft,B0Mass + B0MassIntervalRight) / ((B0MassIntervalLeft+B0MassIntervalRight) / static_cast<double>(nBins));
   f0S->SetParameter(0,f0->GetParameter(0));
   f0S->SetParameter(1,f0->GetParameter(1));
   f0S->SetParameter(2,f0->GetParameter(2));
   f0S->SetParameter(3,f0->GetParameter(3));
   f0S->SetParameter(4,f0->GetParameter(4));
-  double intJpsi0  = f0->Integral(B0Mass - B0MassIntervalLeft,B0Mass + B0MassIntervalRight)/((B0MassIntervalLeft+B0MassIntervalRight) / ((double)nBins));
-  double intJpsi0S = f0S->Integral(B0Mass - B0MassIntervalLeft,B0Mass + B0MassIntervalRight)/((B0MassIntervalLeft+B0MassIntervalRight) / ((double)nBins));
+  double intJpsi0  = f0->Integral(B0Mass - B0MassIntervalLeft,B0Mass + B0MassIntervalRight) / ((B0MassIntervalLeft+B0MassIntervalRight) / static_cast<double>(nBins));
+  double intJpsi0S = f0S->Integral(B0Mass - B0MassIntervalLeft,B0Mass + B0MassIntervalRight) / ((B0MassIntervalLeft+B0MassIntervalRight) / static_cast<double>(nBins));
   if (iFit == true)
     {
       f0S->Draw("same");
@@ -1174,15 +1174,15 @@ void PlotBkgMC (string fileName, bool iFit, double scaleMCdata)
   c1->cd();
   if (iFit == true) h1->Fit("f1");
   h1->Draw("e1p");
-  double intErrPsiP = f1->IntegralError(B0Mass - B0MassIntervalLeft,B0Mass + B0MassIntervalRight)/((B0MassIntervalLeft+B0MassIntervalRight) / ((double)nBins));
+  double intErrPsiP = f1->IntegralError(B0Mass - B0MassIntervalLeft,B0Mass + B0MassIntervalRight) / ((B0MassIntervalLeft+B0MassIntervalRight) / static_cast<double>(nBins));
   f1S->SetParameter(0,f1->GetParameter(0));
   f1S->SetParameter(1,f1->GetParameter(1));
   f1S->SetParameter(2,f1->GetParameter(2));
   f1S->SetParameter(3,f1->GetParameter(3));
   f1S->SetParameter(4,f1->GetParameter(4));
   f1S->SetParameter(5,f1->GetParameter(5));
-  double intPsiP1  = f1->Integral(B0Mass - B0MassIntervalLeft,B0Mass + B0MassIntervalRight)/((B0MassIntervalLeft+B0MassIntervalRight) / ((double)nBins));
-  double intPsiP1S = f1S->Integral(B0Mass - B0MassIntervalLeft,B0Mass + B0MassIntervalRight)/((B0MassIntervalLeft+B0MassIntervalRight) / ((double)nBins));
+  double intPsiP1  = f1->Integral(B0Mass - B0MassIntervalLeft,B0Mass + B0MassIntervalRight) / ((B0MassIntervalLeft+B0MassIntervalRight) / static_cast<double>(nBins));
+  double intPsiP1S = f1S->Integral(B0Mass - B0MassIntervalLeft,B0Mass + B0MassIntervalRight) / ((B0MassIntervalLeft+B0MassIntervalRight) / static_cast<double>(nBins));
   if (iFit == true)
     {
       f1S->Draw("same");
@@ -1521,10 +1521,10 @@ void SampleNTuple (string fileNameIn, string fileNameOut, double fraction)
   // # Divide the input tree in the HLT sub-categories #
   // ###################################################
   cout << "Dividing the input tree in the ==> FOUR <== HLT sub-categories" << endl;
-  theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 1"));
-  theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 2"));
-  theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 3"));
-  theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 4"));
+  theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 1 && truthMatchSignal == 1"));
+  theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 2 && truthMatchSignal == 1"));
+  theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 3 && truthMatchSignal == 1"));
+  theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 4 && truthMatchSignal == 1"));
 
 
   // #####################################################
@@ -1532,8 +1532,8 @@ void SampleNTuple (string fileNameIn, string fileNameOut, double fraction)
   // #####################################################
   for (unsigned int i = 0; i < theTreeInCat.size(); i++)
     {
-      cout << "Selecting from HLT category #" << i+1 << " a sub-set of events" << endl;
-      theTreeOutCat.push_back(theTreeInCat[i]->CloneTree(int(rint((double)theTreeInCat[i]->GetEntries()*fraction))));
+      theTreeOutCat.push_back(theTreeInCat[i]->CloneTree(static_cast<int>(rint(static_cast<double>(theTreeInCat[i]->GetEntries()) * fraction))));
+      cout << "Selecting from HLT category #" << i+1 << " a sub-set of events : " << theTreeOutCat.back()->GetEntries() << endl;
     }
 
 

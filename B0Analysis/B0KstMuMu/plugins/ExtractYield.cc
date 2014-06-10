@@ -477,7 +477,7 @@ void SetValueAndErrors (RooAbsPdf* pdf, string varName, double multi, stringstre
       else
       	{
       	  GetVar(pdf,varName)->setAsymError(-1.0*fabs(*errLo),fabs(*errHi));
-      	  GetVar(pdf,varName)->setError((fabs(*errLo) + fabs(*errHi)) / 2.0);
+	  GetVar(pdf,varName)->setError((fabs(*errLo) + fabs(*errHi)) / 2.);
       	}
     }
 }
@@ -674,7 +674,7 @@ void AddGaussConstraint (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varNa
 
   RooRealVar* varConstr = GetVar(TotalPDF,myString.str().c_str());
   double mean  = TotalPDF->getVariables()->getRealValue(myString.str().c_str());
-  double sigma = (fabs(varConstr->getErrorLo()) + fabs(varConstr->getErrorHi())) / 2.0;
+  double sigma = (fabs(varConstr->getErrorLo()) + fabs(varConstr->getErrorHi())) / 2.;
   
   myString << "_constr";
   RooGaussian* newConstr = new RooGaussian(myString.str().c_str(), myString.str().c_str(), *varConstr, RooConst(mean), RooConst(sigma));
@@ -2254,7 +2254,7 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
       myString << "c1Poly" << i;
       if (GetVar(TotalPDF,myString.str().c_str()) != NULL)
 	{
-	  TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE/2.0);
+	  TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE / 2.);
 	  GetVar(TotalPDF,myString.str().c_str())->setAsymError(-1.0,1.0);
 	  GetVar(TotalPDF,myString.str().c_str())->setError(1.0);
 	}
@@ -2263,7 +2263,7 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
     {
       myString.clear(); myString.str("");
       myString << "c2Poly" << i;
-      if (GetVar(TotalPDF,myString.str().c_str()) != NULL) TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE/2.0);
+      if (GetVar(TotalPDF,myString.str().c_str()) != NULL) TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE / 2.);
     }
   for (unsigned int i = 0; i < NCoeffPolyBKGcomb3; i++)
     {
@@ -2271,7 +2271,7 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
       myString << "c3Poly" << i;
       if (GetVar(TotalPDF,myString.str().c_str()) != NULL)
 	{
-	  TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE/2.0);
+	  TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE / 2.);
 	  GetVar(TotalPDF,myString.str().c_str())->setAsymError(-1.0,1.0);
 	  GetVar(TotalPDF,myString.str().c_str())->setError(1.0);
 	}
@@ -2346,7 +2346,7 @@ void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2B
 	}
       else
 	{
-	  NTupleOut->mumuMass->push_back(sqrt((q2Bins->operator[](q2BinIndx+1) + q2Bins->operator[](q2BinIndx)) / 2.));
+	  NTupleOut->mumuMass->push_back(sqrt(q2Bins->operator[](q2BinIndx) + RooRandom::uniform() * (q2Bins->operator[](q2BinIndx+1) - q2Bins->operator[](q2BinIndx))));
 	  NTupleOut->mumuMassE->push_back(0.0);
 	}
 
@@ -2830,27 +2830,27 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 	      // ###########################################################################
 	      // # J/psi and psi(2S) keeping based on the event-by-event dimuon mass error #
 	      // ###########################################################################
-	      if (((FitType == 36) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true) && (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepJpsi",false) == true)) ||
-		  
-		  (((FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
-		  
-		  ((((strcmp(CTRLfitWRKflow.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
-		    ((strcmp(CTRLfitWRKflow.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
-		    (((strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
-		    (strcmp(CTRLfitWRKflow.c_str(),"allEvts")           == 0)) &&
-		   (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepJpsi",false) == true)))
+              if (((FitType == 36) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true) && (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepJpsi",false) == true)) ||
 
-		SingleCandNTuple_JPsi->add(Vars);
+                  (((FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
 
-	      if (((FitType == 36) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true) && (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepPsiP",false) == true)) ||
-		  
-		  (((FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
-		  
-		  ((((strcmp(CTRLfitWRKflow.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
-		    ((strcmp(CTRLfitWRKflow.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
-		    (((strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
-		    (strcmp(CTRLfitWRKflow.c_str(),"allEvts")           == 0)) &&
-		   (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepPsiP",false) == true)))
+                  ((((strcmp(CTRLfitWRKflow.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+                    ((strcmp(CTRLfitWRKflow.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
+                    (((strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
+                    (strcmp(CTRLfitWRKflow.c_str(),"allEvts")           == 0)) &&
+                   (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepJpsi",false) == true)))
+
+                SingleCandNTuple_JPsi->add(Vars);
+
+              if (((FitType == 36) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true) && (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepPsiP",false) == true)) ||
+
+                  (((FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+
+                  ((((strcmp(CTRLfitWRKflow.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+                    ((strcmp(CTRLfitWRKflow.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
+                    (((strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
+                    (strcmp(CTRLfitWRKflow.c_str(),"allEvts")           == 0)) &&
+                   (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepPsiP",false) == true)))
 		
 		SingleCandNTuple_PsiP->add(Vars);
 	      

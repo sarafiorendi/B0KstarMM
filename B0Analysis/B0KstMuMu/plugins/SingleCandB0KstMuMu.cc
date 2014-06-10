@@ -85,8 +85,7 @@ void SelectBestCand (int SignalType)
 	  // #############################################
 	  // # Adding new variables for angular analysis #
 	  // #############################################
-	  if (((TagFromTruth == false) && (B0notB0bar == true)) ||
-	      ((TagFromTruth == true) && (NTupleIn->genSignal == SignalType)))
+	  if (((TagFromTruth == false) && (B0notB0bar == true)) || ((TagFromTruth == true) && (NTupleIn->genSignal == SignalType)))
 	    {
 	      double cosThetaMup, cosThetaMupErr;
 	      double cosThetaK, cosThetaKErr;
@@ -261,8 +260,7 @@ void SelectBestCand (int SignalType)
 	      NTupleOut->CosThetaKArb       = cosThetaK;
 	      NTupleOut->PhiKstMuMuPlaneArb = phiKstMuMuPlane;
 	    }
-	  else if (((TagFromTruth == false) && (B0notB0bar == false)) ||
-		   ((TagFromTruth == true) && (NTupleIn->genSignal == SignalType+1)))
+	  else if (((TagFromTruth == false) && (B0notB0bar == false)) || ((TagFromTruth == true) && (NTupleIn->genSignal == SignalType+1)))
 	    {
 	      double cosThetaMum, cosThetaMumErr;
 	      double cosThetaK, cosThetaKErr;
