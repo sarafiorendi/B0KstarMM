@@ -2197,16 +2197,16 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
 
   if (GetVar(TotalPDF,"var1") != NULL)
     {
-      cout << "Background var1 generation: lower bound = -" << POLYCOEFRANGE << "\thigher bound = " << POLYCOEFRANGE << endl;
-      TotalPDF->getVariables()->setRealValue("var1",RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE);
+      cout << "Background var1 generation: lower bound = 0\thigher bound = 1" << endl;
+      TotalPDF->getVariables()->setRealValue("var1",RooRandom::uniform());
       GetVar(TotalPDF,"var1")->setAsymError(-1.0,1.0);
       GetVar(TotalPDF,"var1")->setError(1.0);
     }
 
   if (GetVar(TotalPDF,"var2") != NULL)
     {
-      cout << "Background var2 generation: lower bound = -" << POLYCOEFRANGE << "\thigher bound = " << POLYCOEFRANGE << endl;
-      TotalPDF->getVariables()->setRealValue("var2",RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE);
+      cout << "Background var2 generation: lower bound = 0\thigher bound = 1" << endl;
+      TotalPDF->getVariables()->setRealValue("var2",RooRandom::uniform());
       GetVar(TotalPDF,"var2")->setAsymError(-1.0,1.0);
       GetVar(TotalPDF,"var2")->setError(1.0);
     }
@@ -2218,6 +2218,7 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
       GetVar(TotalPDF,"fracMassBExp")->setAsymError(-1.0,1.0);
       GetVar(TotalPDF,"fracMassBExp")->setError(1.0);
     }
+
 
   if (GetVar(TotalPDF,"FlS") != NULL)
     {
