@@ -2195,6 +2195,30 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
     }
 
 
+  if (GetVar(TotalPDF,"var1") != NULL)
+    {
+      cout << "Background var1 generation: lower bound = -" << POLYCOEFRANGE << "\thigher bound = " << POLYCOEFRANGE << endl;
+      TotalPDF->getVariables()->setRealValue("var1",RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE);
+      GetVar(TotalPDF,"var1")->setAsymError(-1.0,1.0);
+      GetVar(TotalPDF,"var1")->setError(1.0);
+    }
+
+  if (GetVar(TotalPDF,"var2") != NULL)
+    {
+      cout << "Background var2 generation: lower bound = -" << POLYCOEFRANGE << "\thigher bound = " << POLYCOEFRANGE << endl;
+      TotalPDF->getVariables()->setRealValue("var2",RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE);
+      GetVar(TotalPDF,"var2")->setAsymError(-1.0,1.0);
+      GetVar(TotalPDF,"var2")->setError(1.0);
+    }
+
+  if (GetVar(TotalPDF,"fracMassBExp") != NULL)
+    {
+      cout << "Background fraction generation" << endl;
+      TotalPDF->getVariables()->setRealValue("fracMassBExp",RooRandom::uniform());
+      GetVar(TotalPDF,"fracMassBExp")->setAsymError(-1.0,1.0);
+      GetVar(TotalPDF,"fracMassBExp")->setError(1.0);
+    }
+
   if (GetVar(TotalPDF,"FlS") != NULL)
     {
       cout << "Fl generation: lower bound = " << GetVar(TotalPDF,"FlS")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"FlS")->getMax() << endl;
@@ -2263,7 +2287,12 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
     {
       myString.clear(); myString.str("");
       myString << "c2Poly" << i;
-      if (GetVar(TotalPDF,myString.str().c_str()) != NULL) TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE / 2.);
+      if (GetVar(TotalPDF,myString.str().c_str()) != NULL)
+	{
+	  TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE / 2.);
+	  GetVar(TotalPDF,myString.str().c_str())->setAsymError(-1.0,1.0);
+	  GetVar(TotalPDF,myString.str().c_str())->setError(1.0);
+	}
     }
   for (unsigned int i = 0; i < NCoeffPolyBKGcomb3; i++)
     {
@@ -6568,7 +6597,7 @@ int main(int argc, char** argv)
 		  // ####################
 		  // # Remove file tail #
 		  // ####################
-		  tmpFileName.erase(tmpFileName.find(".txt"),6);
+		  tmpFileName.erase(tmpFileName.find(".txt"),6 + static_cast<int>(log10(q2Bins.size())));
 
 		  Utility->SetDirEfficiency("");
 		  if ((FitType == 6) || (FitType == 46) || (FitType == 66)) Utility->SetHisto2DEffName(GetSignalType(FitType,&q2Bins,specBin),tmpFileName.c_str());
