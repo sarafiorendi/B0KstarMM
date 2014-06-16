@@ -1512,7 +1512,12 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vec
     }
   else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# Fraction");
-  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"fracMassBExp") != NULL)) { myString.clear(); myString.str(""); myString << TotalPDF->getVariables()->getRealValue("fracMassBExp"); vecParStr->push_back(myString.str()); }
+  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"fracMassBExp") != NULL))
+    {
+      myString.clear(); myString.str("");
+      myString << TotalPDF->getVariables()->getRealValue("fracMassBExp") << "   " << GetVar(TotalPDF,"fracMassBExp")->getErrorLo() << "   " << GetVar(TotalPDF,"fracMassBExp")->getErrorHi();
+      vecParStr->push_back(myString.str());
+    }
   else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("fracMassBExp"))->operator[](q2BinIndx).c_str());
 
 
@@ -3064,7 +3069,7 @@ void InstantiateMassFit (RooAbsPdf** TotalPDF, RooRealVar* x, string fitName, ve
   else if (useCombB == 3)
     {
       myString.clear(); myString.str("");
-      myString << "TMath::Erfc((" << x->getPlotLabel() << " - var1) / (sqrt(2.) * var2))";
+      myString << "TMath::Erfc((" << x->getPlotLabel() << " - var1) / sqrt(2*var2*var2))";
       BkgMassComb = new RooGenericPdf("BkgMass",myString.str().c_str(),RooArgSet(*x,*var1,*var2));
     }
   else BkgMassComb = NULL;
@@ -4257,7 +4262,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   else if (useCombB == 3)
     {
       myString.clear(); myString.str("");
-      myString << "TMath::Erfc((" << x->getPlotLabel() << " - var1) / (sqrt(2.) * var2))";
+      myString << "TMath::Erfc((" << x->getPlotLabel() << " - var1) / sqrt(2*var2*var2))";
       BkgMassComb = new RooGenericPdf("BkgMass",myString.str().c_str(),RooArgSet(*x,*var1,*var2));
     }
   else                    BkgMassComb = NULL;
