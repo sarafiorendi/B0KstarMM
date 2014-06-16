@@ -84,7 +84,7 @@ using namespace RooFit;
 #define MakeMuMuPlots false
 #define USEMINOS      false
 #define SETBATCH      false
-#define SAVEPOLY      false // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
+#define SAVEPOLY      false  // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
 #define SAVEPLOT      false
 #define RESETANGPAR   false // Reset angular parameters before starting the fit
 #define FUNCERRBAND   false // Show the p.d.f. error band
@@ -4656,8 +4656,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	  // ################################
       	  // # Fix comb. angular background #
       	  // ################################
-	  cout << "@@@ Building constraints on comb. angular background after sideband fit @@@" << endl;
-	  // @TMP@
+	  cout << "@@@ Fixing comb. angular background after sideband fit @@@" << endl;
 	  for (unsigned int i = 0 ; i < NCOEFFPOLYBKG; i++)
             {
               myString.clear(); myString.str("");
@@ -4668,7 +4667,6 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
               myString << "c2Poly" << i;
               if (GetVar(*TotalPDF,myString.str().c_str()) != NULL) GetVar(*TotalPDF,myString.str().c_str())->setConstant(true);
             }
-      	  // BuildAngularConstraints(vecConstr,*TotalPDF,"comb");
       	}
 
       
