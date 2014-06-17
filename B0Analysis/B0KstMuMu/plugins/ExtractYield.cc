@@ -84,7 +84,7 @@ using namespace RooFit;
 #define MakeMuMuPlots false
 #define USEMINOS      false
 #define SETBATCH      false
-#define SAVEPOLY      false  // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
+#define SAVEPOLY      false // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
 #define SAVEPLOT      false
 #define RESETANGPAR   false // Reset angular parameters before starting the fit
 #define FUNCERRBAND   false // Show the p.d.f. error band
@@ -2945,8 +2945,8 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
       // ########################################
       if (MakeMuMuPlots == true)
 	{
-	  TCanvas* cmumuMass_beforeRej = new TCanvas("cmumuMass_beforeRej","cmumuMass_beforeRej",10, 10, 700, 900);
-	  FitDimuonInvMass(SingleCandNTuple,&TotalPDFJPsi,&TotalPDFPsiP,mumuMass,cmumuMass_beforeRej,false,false,"TotalPDFPsi_beforeRej");
+	  TCanvas* cmumuMass_BeforeRej = new TCanvas("cmumuMass_BeforeRej","cmumuMass_BeforeRej",10, 10, 700, 900);
+	  FitDimuonInvMass(SingleCandNTuple,&TotalPDFJPsi,&TotalPDFPsiP,mumuMass,cmumuMass_BeforeRej,false,false,"TotalPDFPsi_BeforeRej");
 
 	  TCanvas* cmumuMass_JPsi = new TCanvas("cmumuMass_JPsi","cmumuMass_JPsi",10, 10, 700, 900);
 	  FitDimuonInvMass(SingleCandNTuple_JPsi,&TotalPDFJPsi_JPsi,&TotalPDFPsiP_JPsi,mumuMass,cmumuMass_JPsi,false,true,"TotalPDFPsi_JPsi");
