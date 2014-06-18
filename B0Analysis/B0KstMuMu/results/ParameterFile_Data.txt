@@ -2406,7 +2406,6 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # q^2 bin 1
 # FL
 -2103.09
-0.0
 # AFB
 -2103.09
 # P1
