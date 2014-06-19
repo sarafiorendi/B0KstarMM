@@ -2187,7 +2187,7 @@ void GenerateParameterFile (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
 
   CopyFitResults(TotalPDF,q2BinIndx,fitParam);
 
-  RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins->size()-1) + q2BinIndx);
+  RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins->size()-1) + q2BinIndx + 1);
   cout << "\n@@@ Random seed for parameter file generation set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
 
@@ -2350,7 +2350,7 @@ void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2B
 
 
   cout << "\n@@@ Generating data-like ntuple @@@" << endl;
-  RooRandom::randomGenerator()->SetSeed(q2BinIndx);
+  RooRandom::randomGenerator()->SetSeed(q2BinIndx + 1);
   cout << "@@@ Random seed for parameter file generation set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
 
@@ -6897,7 +6897,7 @@ int main(int argc, char** argv)
 	      // # Set seed for random number generator   #
 	      // # in case the toy-MC studies are splited #
 	      // ##########################################
-	      RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins.size()-1) + specBin);
+	      RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins.size()-1) + specBin + 1);
 	      cout << "\n@@@ Random seed for toy-MC set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
 
