@@ -4618,7 +4618,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	  // ################
       	  fileFitResults << "====================================================================" << endl;
       	  fileFitResults << "@@@@@@ B0 mass sideband fit @@@@@@" << endl;
-      	  fileFitResults << "Amplitude of signal region (+/- n*< Sigma >): " << Utility->GetGenericParam("NSigmaB0S").c_str() << " * " << Utility->GetB0Width() << endl;
+	  fileFitResults << "Amplitude of signal region (+/- n*< Sigma >): " << Utility->GetGenericParam("NSigmaB0").c_str() << " * " << Utility->GetB0Width() << endl;
 
 
       	  // ##############
@@ -4632,8 +4632,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	  // # Sidebands #
       	  // #############
       	  myString.clear(); myString.str("");
-      	  myString << "B0MassArb < " << (*TotalPDF)->getVariables()->getRealValue("meanS") - atof(Utility->GetGenericParam("NSigmaB0S").c_str())*Utility->GetB0Width();
-      	  myString << " || B0MassArb > " << (*TotalPDF)->getVariables()->getRealValue("meanS") + atof(Utility->GetGenericParam("NSigmaB0S").c_str())*Utility->GetB0Width();
+	  myString << "B0MassArb < " << (*TotalPDF)->getVariables()->getRealValue("meanS") - atof(Utility->GetGenericParam("NSigmaB0").c_str())*Utility->GetB0Width();
+	  myString << " || B0MassArb > " << (*TotalPDF)->getVariables()->getRealValue("meanS") + atof(Utility->GetGenericParam("NSigmaB0").c_str())*Utility->GetB0Width();
       	  cout << "Cut for B0 sidebands: " << myString.str().c_str() << endl;
       	  sideBands = (RooDataSet*)dataSet->reduce(myString.str().c_str());
 
@@ -5005,14 +5005,14 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  // # Save results #
 	  // ################
 	  fileFitResults << "@@@@@@ B0 mass sideband fit overlaps @@@@@@" << endl;
-	  fileFitResults << "Amplitude of signal region: +/- " << Utility->GetGenericParam("NSigmaB0S").c_str() << " * < Sigma >" << endl;
+	  fileFitResults << "Amplitude of signal region: +/- " << Utility->GetGenericParam("NSigmaB0").c_str() << " * < Sigma >" << endl;
 
 
 	  // ################
 	  // # Low sideband #
 	  // ################
 	  x->setRange("lowSideband",Utility->B0Mass - atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),
-		      (*TotalPDF)->getVariables()->getRealValue("meanS") - atof(Utility->GetGenericParam("NSigmaB0S").c_str())*signalSigmaT);
+		      (*TotalPDF)->getVariables()->getRealValue("meanS") - atof(Utility->GetGenericParam("NSigmaB0").c_str())*signalSigmaT);
 	  y->setRange("lowSideband",y->getMin(),y->getMax());
 	  z->setRange("lowSideband",z->getMin(),z->getMax());
 
@@ -5020,8 +5020,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  // #################
 	  // # Signal region #
 	  // #################
-	  x->setRange("signalRegion",(*TotalPDF)->getVariables()->getRealValue("meanS") - atof(Utility->GetGenericParam("NSigmaB0S").c_str())*signalSigmaT,
-		      (*TotalPDF)->getVariables()->getRealValue("meanS") + atof(Utility->GetGenericParam("NSigmaB0S").c_str())*signalSigmaT);
+	  x->setRange("signalRegion",(*TotalPDF)->getVariables()->getRealValue("meanS") - atof(Utility->GetGenericParam("NSigmaB0").c_str())*signalSigmaT,
+		      (*TotalPDF)->getVariables()->getRealValue("meanS") + atof(Utility->GetGenericParam("NSigmaB0").c_str())*signalSigmaT);
 	  y->setRange("signalRegion",y->getMin(),y->getMax());
 	  z->setRange("signalRegion",z->getMin(),z->getMax());
 
@@ -5029,7 +5029,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  // #################
 	  // # High sideband #
 	  // #################
-	  x->setRange("highSideband",(*TotalPDF)->getVariables()->getRealValue("meanS") + atof(Utility->GetGenericParam("NSigmaB0S").c_str())*signalSigmaT,
+	  x->setRange("highSideband",(*TotalPDF)->getVariables()->getRealValue("meanS") + atof(Utility->GetGenericParam("NSigmaB0").c_str())*signalSigmaT,
 		      Utility->B0Mass + atof(Utility->GetGenericParam("B0MassIntervalRight").c_str()));
 	  y->setRange("highSideband",y->getMin(),y->getMax());
 	  z->setRange("highSideband",z->getMin(),z->getMax());
@@ -5107,7 +5107,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
 
 	  TPaveText* paveTextSignalRegionY = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
-	  paveTextSignalRegionY->AddText(Form("%s%.1f%s","Signal region: #pm",atof(Utility->GetGenericParam("NSigmaB0S").c_str())," < #sigma >"));
+	  paveTextSignalRegionY->AddText(Form("%s%.1f%s","Signal region: #pm",atof(Utility->GetGenericParam("NSigmaB0").c_str())," < #sigma >"));
 	  paveTextSignalRegionY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameSignalRegionY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextSignalRegionY->SetTextAlign(11);
 	  paveTextSignalRegionY->SetBorderSize(0.0);
@@ -5262,7 +5262,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
 
 	  TPaveText* paveTextSignalRegionZ = new TPaveText(0.11,0.75,0.4,0.88,"NDC");
-	  paveTextSignalRegionZ->AddText(Form("%s%.1f%s","Signal region: #pm",atof(Utility->GetGenericParam("NSigmaB0S").c_str())," < #sigma >"));
+	  paveTextSignalRegionZ->AddText(Form("%s%.1f%s","Signal region: #pm",atof(Utility->GetGenericParam("NSigmaB0").c_str())," < #sigma >"));
 	  paveTextSignalRegionZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameSignalRegionZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 	  paveTextSignalRegionZ->SetTextAlign(11);
 	  paveTextSignalRegionZ->SetBorderSize(0.0);

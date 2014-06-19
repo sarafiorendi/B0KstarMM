@@ -1431,10 +1431,10 @@ void DivideNTuple (string fileNameIn, string fileNameOut, unsigned int n)
   TFile* fileTmp = TFile::Open("fileTmp.root","RECREATE");
   fileTmp->mkdir("B0KstMuMu");
   fileTmp->cd("B0KstMuMu");
-  theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 1"));
-  theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 2"));
-  theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 3"));
-  theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 4"));
+  theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 1 && truthMatchSignal == 1"));
+  theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 2 && truthMatchSignal == 1"));
+  theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 3 && truthMatchSignal == 1"));
+  theTreeInCat.push_back(theTreeIn->CopyTree("TrigCat == 4 && truthMatchSignal == 1"));
 
 
   fileNameOut.replace(fileNameOut.find(".root"),5,"");
