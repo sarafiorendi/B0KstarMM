@@ -107,37 +107,37 @@ Utils::Utils (bool rightFlavorTag)
   // # Print out internal variables #
   // ################################
   std::cout << "\n@@@@@@ Utils class settings : private @@@@@@" << std::endl;
-  std::cout << "nFitParam: "         << nFitParam << std::endl;
-  std::cout << "nConfigParam: "      << nConfigParam << std::endl;
-  std::cout << "nFitObserv: "        << nFitObserv << std::endl;
-  std::cout << "ProbThreshold: "     << ProbThreshold << std::endl;
-  std::cout << "scrambleFraction: "  << scrambleFraction << std::endl;
-  std::cout << "DirEfficiency: "     << DirEfficiency << std::endl;
+  std::cout << "nFitObserv: "                << nFitObserv << std::endl;
+  std::cout << "ProbThreshold: "             << ProbThreshold << std::endl;
+  std::cout << "scrambleFraction: "          << scrambleFraction << std::endl;
+  std::cout << "DirEfficiency: "             << DirEfficiency << std::endl;
 
-  std::cout << "\nHisto2DEffNameOkTagSig: "    << Histo2DEffNameOkTagSig << std::endl;
+  std::cout << "\nHisto2DEffNameOkTagSig: "  << Histo2DEffNameOkTagSig << std::endl;
   std::cout << "Histo2DEffNameOkTagJPsi: "   << Histo2DEffNameOkTagJPsi << std::endl;
   std::cout << "Histo2DEffNameOkTagPsi2S: "  << Histo2DEffNameOkTagPsi2S << std::endl;
 
-  std::cout << "\nHisto3DEffNameOkTagSig: "    << Histo3DEffNameOkTagSig << std::endl;
+  std::cout << "\nHisto3DEffNameOkTagSig: "  << Histo3DEffNameOkTagSig << std::endl;
   std::cout << "Histo3DEffNameOkTagJPsi: "   << Histo3DEffNameOkTagJPsi << std::endl;
   std::cout << "Histo3DEffNameOkTagPsi2S: "  << Histo3DEffNameOkTagPsi2S << std::endl;
 
-  std::cout << "\nHisto2DEffNameMisTagSig: "   << Histo2DEffNameMisTagSig << std::endl;
+  std::cout << "\nHisto2DEffNameMisTagSig: " << Histo2DEffNameMisTagSig << std::endl;
   std::cout << "Histo2DEffNameMisTagJPsi: "  << Histo2DEffNameMisTagJPsi << std::endl;
   std::cout << "Histo2DEffNameMisTagPsi2S: " << Histo2DEffNameMisTagPsi2S << std::endl;
 
-  std::cout << "\nHisto3DEffNameMisTagSig: "   << Histo3DEffNameMisTagSig << std::endl;
+  std::cout << "\nHisto3DEffNameMisTagSig: " << Histo3DEffNameMisTagSig << std::endl;
   std::cout << "Histo3DEffNameMisTagJPsi: "  << Histo3DEffNameMisTagJPsi << std::endl;
   std::cout << "Histo3DEffNameMisTagPsi2S: " << Histo3DEffNameMisTagPsi2S << std::endl;
 
   std::cout << "\n@@@@@@ Utils class settings : public  @@@@@@" << std::endl;
-  std::cout << "NcoeffThetaL: "   << NcoeffThetaL << std::endl;
-  std::cout << "NcoeffThetaK: "   << NcoeffThetaK << std::endl;
-  std::cout << "NcoeffPhi: "      << NcoeffPhi << std::endl;
-  std::cout << "RIGHTflavorTAG: " << RIGHTflavorTAG << std::endl;
-  std::cout << "B0ToKstMuMu: "    << B0ToKstMuMu << std::endl;
-  std::cout << "B0ToJPsiKst: "    << B0ToJPsiKst << std::endl;
-  std::cout << "B0ToPsi2SKst: "   << B0ToPsi2SKst << std::endl;
+  std::cout << "NcoeffThetaL: "              << NcoeffThetaL << std::endl;
+  std::cout << "NcoeffThetaK: "              << NcoeffThetaK << std::endl;
+  std::cout << "NcoeffPhi: "                 << NcoeffPhi << std::endl;
+  std::cout << "RIGHTflavorTAG: "            << RIGHTflavorTAG << std::endl;
+  std::cout << "B0ToKstMuMu: "               << B0ToKstMuMu << std::endl;
+  std::cout << "B0ToJPsiKst: "               << B0ToJPsiKst << std::endl;
+  std::cout << "B0ToPsi2SKst: "              << B0ToPsi2SKst << std::endl;
+  std::cout << "nFitParam: "                 << nFitParam << std::endl;
+  std::cout << "nConfigParam: "              << nConfigParam << std::endl;
   std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
   std::cout << "@@@ Consider to double-check values for: @@@" << std::endl;
   std::cout << "- Utils::AddConstraintThetaL" << std::endl;
@@ -3366,15 +3366,17 @@ bool Utils::IsThisData (std::string fileName)
 }
 
 void Utils::SaveFitValues (std::string fileName, std::vector<std::string>* vecParStr, int indx, std::string str)
-// ##############################
-// # If indx == -1 then use str #
-// ##############################
+// #################################################
+// # If indx == -1 then use str within default str #
+// # If indx == -2 then use only str               #
+// #################################################
 {
   std::stringstream myString;
   
   myString.clear(); myString.str("");
-  if (indx != -1) myString << "#@@@@@@@@@@@@@@@@@@@@@@@@@@@ q^2 bin " << indx << " @@@@@@@@@@@@@@@@@@@@@@@@@@@#";
-  else myString            << "#@@@@@@@@@@@@@@@@@@@@@@@@@@@" << str.c_str()   <<  "@@@@@@@@@@@@@@@@@@@@@@@@@@@#";
+  if      (indx == -1) myString << "#@@@@@@@@@@@@@@@@@@@@@@@@@@@" << str.c_str()   <<  "@@@@@@@@@@@@@@@@@@@@@@@@@@@#";
+  else if (indx == -2) myString << str.c_str();
+  else                 myString << "#@@@@@@@@@@@@@@@@@@@@@@@@@@@ q^2 bin " << indx << " @@@@@@@@@@@@@@@@@@@@@@@@@@@#";
   vecParStr->insert(vecParStr->begin(),myString.str());
 
   vecParStr->insert(vecParStr->end(),"");

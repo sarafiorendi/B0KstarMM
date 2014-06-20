@@ -294,6 +294,9 @@ class Utils
   int B0ToJPsiKst;
   int B0ToPsi2SKst;
 
+  unsigned int nFitParam;
+  unsigned int nConfigParam;
+
 
  private:
 
@@ -312,8 +315,6 @@ class Utils
   double ProbThreshold;
   double scrambleFraction;
 
-  unsigned int nFitParam;
-  unsigned int nConfigParam;
   unsigned int nFitObserv;
 
   std::string DirEfficiency;

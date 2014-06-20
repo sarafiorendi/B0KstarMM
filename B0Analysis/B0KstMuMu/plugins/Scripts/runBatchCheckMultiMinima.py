@@ -27,12 +27,12 @@ elif not(int(sys.argv[1]) == 96):
 
 system("unset DISPLAY")
 
-for i in xrange(1,nFiles+1):
+for i in xrange(0,nFiles):
     if int(sys.argv[1]) == 96:
         execProg = ".././ExtractYield " + FitType + " " + FileName + " " + FitEff + " " + q2Bin + " " + str(i)
     else:
         ParameterFILE = tmpName.replace(".txt","_" + q2Bin + "_" + str(i) + ".txt")
-        execProg = ".././ExtractYield " + FitType + " " + FileName + " " + FitEff + " " + q2Bin + " " + ParameterFILE + " " + str(i)
+        execProg = ".././ExtractYield " + FitType + " " + FileName + " " + FitEff + " " + q2Bin + " " + str(i) + " " + ParameterFILE
 
     if runJobs == "true":
         system("sleep 2")

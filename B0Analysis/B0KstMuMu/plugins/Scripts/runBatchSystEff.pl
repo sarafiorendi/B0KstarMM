@@ -18,13 +18,13 @@ if (@ARGV == 6)
     
     $listStart = 0 ;
     $listEnd   = @list - 1 ;
-    $listIndx  = 1 ;
+    $listIndx  = 0 ;
 
 
     foreach $file (@list[$listStart..$listEnd])
     {
 	chomp $file ;
-	$execProg = ".././ExtractYield " . @ARGV[1] . " " . @ARGV[2] . " " . @ARGV[3] . " " . $q2BinIndx . " " . $dirEffRndGen . $file . " " . $listIndx . "\n" ;
+	$execProg = ".././ExtractYield " . @ARGV[1] . " " . @ARGV[2] . " " . @ARGV[3] . " " . $q2BinIndx . " " . $listIndx . " " . $dirEffRndGen . $file . "\n" ;
 
 	if (@ARGV[5] eq "false")
 	{

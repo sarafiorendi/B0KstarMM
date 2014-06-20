@@ -53,10 +53,10 @@ for i in binList:
         chdir(dir)
 
         toRun = "Qsub -l lnxfarm -e -o toyMC_" + par + "_" + str(nJobs) + "_" + str(i) + ".log -N T" + str(nJobs) + par + str(i) + " ./ExtractYield " + str(fitType)
-        toRun = toRun + " toyMC_" + par + "_" + str(nJobs) + "_" + str(i) + ".root yesEffCorr " + str(i) + " " + str(nToysJob) + " ../../python/ParameterFile.txt " + str(nJobs)
+        toRun = toRun + " toyMC_" + par + "_" + str(nJobs) + "_" + str(i) + ".root yesEffCorr " + str(i) + " " + str(nToysJob) + " " + str(nJobs) + " ../../python/ParameterFile.txt"
         print toRun
         system(toRun)
 
         chdir("..")
-        
+
         nJobs = nJobs - 1

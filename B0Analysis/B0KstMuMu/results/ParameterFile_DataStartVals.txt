@@ -335,7 +335,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ############################
 # 12th block of parameters #
 ############################
-# Number of fit parameters [67 double; 5 unsigned int] x 3 (global sign, global J/psi, global psi(2S))
+# Number of fit parameters [67 double; 4 unsigned int] x 3 (global sign, global J/psi, global psi(2S))
 213
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@  signal   @@@@@@@@@@@@@@@@@@@@@@@@@@@#
@@ -797,7 +797,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ############################
 # 13th block of parameters #
 ############################
-# Number of fit parameters [67 double; 5 unsigned int] x 9 q^2 bins
+# Number of fit parameters [67 double; 4 unsigned int] x 9 q^2 bins
 639
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@ q^2 bin 0 @@@@@@@@@@@@@@@@@@@@@@@@@@@#
