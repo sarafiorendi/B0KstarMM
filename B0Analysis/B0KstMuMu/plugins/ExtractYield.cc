@@ -3601,7 +3601,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // ########################################
       // # Save outcome of the fit in histogram #
       // ########################################
-      if ((GetVar(TotalPDFq2Bins[i],"nSig") != NULL) && (GetVar(TotalPDFq2Bins[i],"nMisTagFrac") != NULL))
+      if (GetVar(TotalPDFq2Bins[i],"nSig") != NULL)
 	{
 	  double nEvGoodTag    = GetVar(TotalPDFq2Bins[i],"nSig")->getVal();
 	  double nEvGoodTagErr = GetVar(TotalPDFq2Bins[i],"nSig")->getError();
@@ -5576,7 +5576,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // ########################################
       // # Save outcome of the fit in histogram #
       // ########################################
-      if ((GetVar(TotalPDFq2Bins[i],"nSig") != NULL) && (GetVar(TotalPDFq2Bins[i],"nMisTagFrac") != NULL))
+      if (GetVar(TotalPDFq2Bins[i],"nSig") != NULL)
 	{
 	  VecHistoMeas->operator[](0)->SetBinContent(i+1,GetVar(TotalPDFq2Bins[i],"FlS")->getVal());
 	  VecHistoMeas->operator[](0)->SetBinError(i+1,GetVar(TotalPDFq2Bins[i],"FlS")->getError());
