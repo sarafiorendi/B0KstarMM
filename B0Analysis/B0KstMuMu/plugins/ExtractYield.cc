@@ -3627,9 +3627,9 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 	  double nEvGoodTag    = GetVar(TotalPDFq2Bins[i],"nSig")->getVal();
 	  double nEvGoodTagErr = GetVar(TotalPDFq2Bins[i],"nSig")->getError();
 
-	  double nEvMisTag    = 0.0;
+	  double nEvMisTag = 0.0;
 	  if (GetVar(TotalPDFq2Bins[i],"nMisTagFrac") != NULL)
-	    nEvMisTag    = GetVar(TotalPDFq2Bins[i],"nSig")->getVal()   / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()) * GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal();
+	    nEvMisTag = GetVar(TotalPDFq2Bins[i],"nSig")->getVal() / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()) * GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal();
 	  
 	  double num       = (nEvGoodTag / effMuMuGoodTag) + (nEvMisTag / effMuMuMisTag);
 	  double den       = (PsiYieldGoodTag / effPsiGoodTag) + (PsiYieldMisTag / effPsiMisTag);
@@ -3649,10 +3649,13 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 	  fileFitResults << "====================================================================" << endl;
 	}
 
+
+      // #############################################
+      // # Save observables in systematic error file #
+      // #############################################
       myString.clear(); myString.str("");
       if (CheckGoodFit(fitResult) == true) myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << VecHistoMeas->operator[](0)->GetBinContent(i+1) << "   " << -2.0 << "   " << -2.0 << "   " << NLLvalue;
       else                                 myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
-      
       fileFitSystematics << myString.str() << endl;
     }
 }
@@ -5421,6 +5424,8 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
   double effMuMuMisTag     = 1.0;
   double effMuMuMisTagErr  = 0.0;
 
+  double value1, value2, value3;
+
   TCanvas*    cq2Bins[q2Bins->size()-1];
   RooDataSet* dataSet_q2Bins[q2Bins->size()-1];
   RooAbsPdf*  TotalPDFq2Bins[q2Bins->size()-1];
@@ -5526,10 +5531,9 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       if ((GetVar(TotalPDFq2Bins[i],"nMisTagFrac") != NULL) && (atoi(Utility->GetGenericParam("CtrlMisTagWrkFlow").c_str()) == 3))
 	{
 	  cout << "\n@@@ Assigning dynamic MC mis-tag fraction to p.d.f. @@@" << endl;
-	  double value, errLo, errHi;
 	  myString.clear(); myString.str("");
 	  myString << static_cast<double>(countMisTag) / static_cast<double>(countMisTag + countGoodTag);
-	  SetValueAndErrors(TotalPDFq2Bins[i],"nMisTagFrac",1.0,&myString,&value,&errLo,&errHi);
+	  SetValueAndErrors(TotalPDFq2Bins[i],"nMisTagFrac",1.0,&myString,&value1,&value2,&value3);
 	  GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->setConstant(true);
 	}
       
@@ -5572,47 +5576,51 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // ##############################################
       // # Save fit results back into prarameter file #
       // ##############################################
+      if (GetVar(TotalPDFq2Bins[i],"FlS")  != NULL) value1 = GetVar(TotalPDFq2Bins[i],"FlS")->getVal();
+      if (GetVar(TotalPDFq2Bins[i],"AfbS") != NULL) value2 = GetVar(TotalPDFq2Bins[i],"AfbS")->getVal();
+
       vecParStr = SaveFitResults(TotalPDFq2Bins[i],i,fitParam,configParam,vecConstr);
       Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,i);
       vecParStr->clear();
       delete vecParStr;
+      vecParStr = NULL;
 
-      
+
       // #############################
       // # Compute I[S*E] for signal #
       // #############################
       if (useEffPDF == true)
-	{
-	  // ######################
-	  // # Good-tagged events #
-	  // ######################
-	  EffPDFgoodTag = AngleS;
-	  PrintVariables(EffPDFgoodTag->getVariables(),"vars");
+      	{
+      	  // ######################
+      	  // # Good-tagged events #
+      	  // ######################
+	  EffPDFgoodTag = (RooAbsPdf*)AngleS->clone("EffPDFgoodTag");
+      	  PrintVariables(EffPDFgoodTag->getVariables(),"vars");
 
-	  EffPDFintegral    = EffPDFgoodTag->createIntegral(RooArgSet(*y,*z));
-	  effMuMuGoodTag    = EffPDFintegral->getVal();
-	  effMuMuGoodTagErr = EffPDFintegral->getPropagatedError(*fitResult);
+      	  EffPDFintegral    = EffPDFgoodTag->createIntegral(RooArgSet(*y,*z));
+      	  effMuMuGoodTag    = EffPDFintegral->getVal();
+      	  effMuMuGoodTagErr = EffPDFintegral->getPropagatedError(*fitResult);
 
-	  cout << "\n===> Integral of S*E over angular variables for signal good-tagged events <===" << endl;
-	  cout << effMuMuGoodTag << "   -" << effMuMuGoodTagErr << "   " << effMuMuGoodTagErr << endl;
+      	  cout << "\n===> Integral of S*E over angular variables for signal good-tagged events <===" << endl;
+      	  cout << effMuMuGoodTag << "   -" << effMuMuGoodTagErr << "   " << effMuMuGoodTagErr << endl;
 
 
-	  // #####################
-	  // # Mis-tagged events #
-	  // #####################
-	  if (GetVar(TotalPDFq2Bins[i],"nMisTagFrac") != NULL)
-	    {
-	      EffPDFmisTag = AngleMisTag;
-	      PrintVariables(EffPDFmisTag->getVariables(),"vars");
-	      
-	      EffPDFintegral   = EffPDFmisTag->createIntegral(RooArgSet(*y,*z));
-	      effMuMuMisTag    = EffPDFintegral->getVal();
-	      effMuMuMisTagErr = EffPDFintegral->getPropagatedError(*fitResult);
-	      
-	      cout << "\n===> Integral of S*E over angular variables for signal mis-tagged events <===" << endl;
-	      cout << effMuMuMisTag << "   -" << effMuMuMisTagErr << "   " << effMuMuMisTagErr << endl;
-	    }
-	}
+      	  // #####################
+      	  // # Mis-tagged events #
+      	  // #####################
+      	  if (GetVar(TotalPDFq2Bins[i],"nMisTagFrac") != NULL)
+      	    {
+	      EffPDFmisTag = (RooAbsPdf*)AngleMisTag->clone("EffPDFmisTag");
+      	      PrintVariables(EffPDFmisTag->getVariables(),"vars");
+
+      	      EffPDFintegral   = EffPDFmisTag->createIntegral(RooArgSet(*y,*z));
+      	      effMuMuMisTag    = EffPDFintegral->getVal();
+      	      effMuMuMisTagErr = EffPDFintegral->getPropagatedError(*fitResult);
+
+      	      cout << "\n===> Integral of S*E over angular variables for signal mis-tagged events <===" << endl;
+      	      cout << effMuMuMisTag << "   -" << effMuMuMisTagErr << "   " << effMuMuMisTagErr << endl;
+      	    }
+      	}
 
 
       // ########################################
@@ -5620,10 +5628,10 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // ########################################
       if (GetVar(TotalPDFq2Bins[i],"nSig") != NULL)
 	{
-	  VecHistoMeas->operator[](0)->SetBinContent(i+1,GetVar(TotalPDFq2Bins[i],"FlS")->getVal());
+	  VecHistoMeas->operator[](0)->SetBinContent(i+1,value1);
 	  VecHistoMeas->operator[](0)->SetBinError(i+1,GetVar(TotalPDFq2Bins[i],"FlS")->getError());
-	  
-	  VecHistoMeas->operator[](1)->SetBinContent(i+1,GetVar(TotalPDFq2Bins[i],"AfbS")->getVal());
+
+	  VecHistoMeas->operator[](1)->SetBinContent(i+1,value2);
 	  VecHistoMeas->operator[](1)->SetBinError(i+1,GetVar(TotalPDFq2Bins[i],"AfbS")->getError());
 
 	  if ((FitType != 36) && (FitType != 56) && (FitType != 76))
@@ -5631,9 +5639,9 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 	      double nEvGoodTag    = GetVar(TotalPDFq2Bins[i],"nSig")->getVal();
 	      double nEvGoodTagErr = GetVar(TotalPDFq2Bins[i],"nSig")->getError();
 
-	      double nEvMisTag    = 0.0;
+	      double nEvMisTag = 0.0;
 	      if (GetVar(TotalPDFq2Bins[i],"nMisTagFrac") != NULL)
-		nEvMisTag    = GetVar(TotalPDFq2Bins[i],"nSig")->getVal()   / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()) * GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal();
+		nEvMisTag = GetVar(TotalPDFq2Bins[i],"nSig")->getVal() / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()) * GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal();
 
 	      double num       = (nEvGoodTag / effMuMuGoodTag) + (nEvMisTag / effMuMuMisTag);
 	      double den       = (PsiYieldGoodTag / effPsiGoodTag) + (PsiYieldMisTag / effPsiMisTag);
@@ -5660,18 +5668,13 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 	    }
 	}
 
+
+      // #############################################
+      // # Save observables in systematic error file #
+      // #############################################
       myString.clear(); myString.str("");
-      if (CheckGoodFit(fitResult) == true)
-	{
-	  myString << ID << "   ";
-	  myString << (((useEffPDF == true) && (GetVar(TotalPDFq2Bins[i],"FlS")  != NULL)) ? GetVar(TotalPDFq2Bins[i],"FlS")->getVal()  : -2.0) << "   ";
-	  myString << (((useEffPDF == true) && (GetVar(TotalPDFq2Bins[i],"AfbS") != NULL)) ? GetVar(TotalPDFq2Bins[i],"AfbS")->getVal() : -2.0) << "   ";
-	  myString << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   ";
-	  myString << effMuMuGoodTag << "   " << effMuMuMisTag << "   ";
-	  myString << NLLvalue;
-	}
-      else myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
-      
+      if (CheckGoodFit(fitResult) == true) myString << ID << "   " << value1 << "   " << value2 << "   " << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   " << effMuMuGoodTag << "   " << effMuMuMisTag << "   " << NLLvalue;
+      else                                 myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
       fileFitSystematics << myString.str() << endl;
     }
 }
