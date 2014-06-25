@@ -3535,8 +3535,9 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       for (int j = 0; j < static_cast<int>(dataSet_q2Bins[i]->sumEntries()); j++)
 	{
 	  
-	  if (dataSet_q2Bins[i]->get(j)->getRealValue("rightFlavorTag") == 0.0) countMisTag++;
-	  else                                                                  countGoodTag++;
+	  if ((dataSet_q2Bins[i]->get(j)->getRealValue("truthMatchSignal") == true) &&
+	      (dataSet_q2Bins[i]->get(j)->getRealValue("rightFlavorTag") == 0.0)) countMisTag++;
+	  else                                                                    countGoodTag++;
 	  
 	}
       cout << "Mis-tag fraction: " << static_cast<double>(countMisTag) / static_cast<double>(countMisTag + countGoodTag) << " = (" << countMisTag << "/(" << countMisTag << "+" << countGoodTag << "))" << endl;
@@ -5505,9 +5506,9 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       unsigned int countGoodTag = 0;
       for (int j = 0; j < static_cast<int>(dataSet_q2Bins[i]->sumEntries()); j++)
 	{
-	  
-	  if (dataSet_q2Bins[i]->get(j)->getRealValue("rightFlavorTag") == 0.0) countMisTag++;
-	  else                                                                  countGoodTag++;
+	  if ((dataSet_q2Bins[i]->get(j)->getRealValue("truthMatchSignal") == true) &&
+	      (dataSet_q2Bins[i]->get(j)->getRealValue("rightFlavorTag") == 0.0)) countMisTag++;
+	  else                                                                    countGoodTag++;
 	  
 	}
       cout << "Mis-tag fraction: " << static_cast<double>(countMisTag) / static_cast<double>(countMisTag + countGoodTag) << " = (" << countMisTag << "/(" << countMisTag << "+" << countGoodTag << "))" << endl;
