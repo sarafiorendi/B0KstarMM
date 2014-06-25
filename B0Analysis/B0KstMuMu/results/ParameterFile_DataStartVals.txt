@@ -2647,7 +2647,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # allEvts         = keep all events
 allEvts
 
-# Control mistag fraction workflow [0 = fixed; 1 = free with constraint; 2 = free]
+# Control mistag fraction workflow [0 = fixed; 1 = free with constraint; 2 = free; 3 = dynamic]
 0
 
 # Save mistag fraction [0 = false; 1 = true]
