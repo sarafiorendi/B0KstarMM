@@ -3530,6 +3530,17 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       dataSet_q2Bins[i] = (RooDataSet*)dataSet->reduce(myString.str().c_str());
       cout << "Number of events: " << dataSet_q2Bins[i]->sumEntries() << endl;
 
+      unsigned int countMisTag  = 0;
+      unsigned int countGoodTag = 0;
+      for (int j = 0; j < static_cast<int>(dataSet_q2Bins[i]->sumEntries()); j++)
+	{
+	  
+	  if (dataSet_q2Bins[i]->get(j)->getRealValue("rightFlavorTag") == 0.0) countMisTag++;
+	  else                                                                  countGoodTag++;
+	  
+	}
+      cout << "Mis-tag fraction: " << static_cast<double>(countMisTag) / static_cast<double>(countMisTag + countGoodTag) << " = (" << countMisTag << "/(" << countMisTag << "+" << countGoodTag << "))" << endl;
+
       myString.clear(); myString.str("");
       myString << "TotalPDFq2Bin_" << i;
       InstantiateMassFit(&TotalPDFq2Bins[i],x,myString.str(),configParam,i);
@@ -3539,7 +3550,16 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // # Initialize p.d.f. #
       // #####################
       CopyFitResults(TotalPDFq2Bins[i],i,fitParam);
-
+      if ((GetVar(TotalPDFq2Bins[i],"nMisTagFrac") != NULL) && (atoi(Utility->GetGenericParam("CtrlMisTagWrkFlow").c_str()) == 3))
+	{
+	  cout << "\n@@@ Assigning MC mis-tag fraction to p.d.f. @@@" << endl;
+	  double value, errLo, errHi;
+	  myString.clear(); myString.str("");
+	  myString << static_cast<double>(countMisTag) / static_cast<double>(countMisTag + countGoodTag);
+	  SetValueAndErrors(TotalPDFq2Bins[i],"nMisTagFrac",1.0,&myString,&value,&errLo,&errHi);
+	  GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->setConstant(true);
+	}
+      
 
       // #####################
       // # Apply constraints #
@@ -5481,6 +5501,17 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       dataSet_q2Bins[i] = (RooDataSet*)dataSet->reduce(myString.str().c_str());
       cout << "Number of events: " << dataSet_q2Bins[i]->sumEntries() << endl;
 
+      unsigned int countMisTag  = 0;
+      unsigned int countGoodTag = 0;
+      for (int j = 0; j < static_cast<int>(dataSet_q2Bins[i]->sumEntries()); j++)
+	{
+	  
+	  if (dataSet_q2Bins[i]->get(j)->getRealValue("rightFlavorTag") == 0.0) countMisTag++;
+	  else                                                                  countGoodTag++;
+	  
+	}
+      cout << "Mis-tag fraction: " << static_cast<double>(countMisTag) / static_cast<double>(countMisTag + countGoodTag) << " = (" << countMisTag << "/(" << countMisTag << "+" << countGoodTag << "))" << endl;
+
       myString.clear(); myString.str("");
       myString << "TotalPDFq2Bin_" << i;
       InstantiateMass2AnglesFit(&TotalPDFq2Bins[i],useEffPDF,x,y,z,myString.str(),FitType,configParam,fitParam,q2Bins,i,i,make_pair(effFuncs.first->operator[](i),effFuncs.second->operator[](i)));
@@ -5490,7 +5521,16 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // # Initialize p.d.f. #
       // #####################
       CopyFitResults(TotalPDFq2Bins[i],i,fitParam);
-
+      if ((GetVar(TotalPDFq2Bins[i],"nMisTagFrac") != NULL) && (atoi(Utility->GetGenericParam("CtrlMisTagWrkFlow").c_str()) == 3))
+	{
+	  cout << "\n@@@ Assigning MC mis-tag fraction to p.d.f. @@@" << endl;
+	  double value, errLo, errHi;
+	  myString.clear(); myString.str("");
+	  myString << static_cast<double>(countMisTag) / static_cast<double>(countMisTag + countGoodTag);
+	  SetValueAndErrors(TotalPDFq2Bins[i],"nMisTagFrac",1.0,&myString,&value,&errLo,&errHi);
+	  GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->setConstant(true);
+	}
+      
 
       // #####################
       // # Apply constraints #
