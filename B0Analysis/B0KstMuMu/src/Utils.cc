@@ -1040,10 +1040,8 @@ bool Utils::ValIsInPsi (std::vector<double>* q2Bins, double q2Val)
   unsigned int JPsibin = GetJPsiBin(q2Bins);
   unsigned int PsiPbin = GetPsiPBin(q2Bins);
 
-  if (((q2Bins->operator[](JPsibin) < q2Val) &&
-       (q2Bins->operator[](JPsibin+1) > q2Val)) ||
-      ((q2Bins->operator[](PsiPbin) < q2Val) &&
-       (q2Bins->operator[](PsiPbin+1) > q2Val)))
+  if (((q2Bins->operator[](JPsibin) < q2Val) && (q2Bins->operator[](JPsibin+1) > q2Val)) ||
+      ((q2Bins->operator[](PsiPbin) < q2Val) && (q2Bins->operator[](PsiPbin+1) > q2Val)))
     return true;
   
   return false;
@@ -2565,7 +2563,7 @@ double Utils::EffMinValue3D (std::vector<double>* cosThetaKBins, std::vector<dou
   return minVal;
 }
 
-void Utils::MakeGraphVar (std::string fileName, TGraphAsymmErrors** graph, std::string varName, bool allBins, double offset)
+void Utils::MakeGraphVar (std::string fileName, TGraphAsymmErrors** graph, std::string varName, double offset)
 // ###################
 // # varName = "Fl"  #
 // # varName = "Afb" #
@@ -2606,7 +2604,7 @@ void Utils::MakeGraphVar (std::string fileName, TGraphAsymmErrors** graph, std::
       else if (varName == "P2")  rawString << vecParam[GetFitParamIndx("P2S")]->operator[](i);
       else { std::cout << "[Utils::MakeGraphVar]\tVariable name unknown: " << varName << std::endl; exit (EXIT_FAILURE); }
 
-      if ((allBins == true) || (ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false))
+      if (ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false)
 	{
 	  vxs.push_back((q2Bins[i+1] + q2Bins[i]) / 2. + offset);
 	  vxeh.push_back(q2Bins[i+1] - vxs.back() - offset);

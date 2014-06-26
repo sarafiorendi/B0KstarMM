@@ -2438,6 +2438,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       dataSetJPsi->plotOn(myFrameJPsi,Name(dataSetJPsi->GetName()));
       myFrameJPsi->Draw();
 
+      Canv->Modified();
       Canv->Update();
       myString.clear(); myString.str("");
       myString << plotName << ".pdf";
@@ -2691,6 +2692,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // ##############
       // # Save plots #
       // ##############
+      Canv->Modified();
       Canv->Update();
       myString.clear(); myString.str("");
       myString << plotName << ".pdf";
@@ -3409,6 +3411,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   // ##############
   // # Save plots #
   // ##############
+  Canv->Modified();
   Canv->Update();
   if (SAVEPLOT == true)
     {
@@ -4043,6 +4046,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   myFrame = MyToy->plotNLL(-2000.0,0.0);
   Canv->cd(it++);
   myFrame->Draw();
+  Canv->Modified();
   Canv->Update();
 
 
@@ -4106,6 +4110,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   histoNLL1->Draw();
   cNLL1->cd(3);
   histoPull1->Draw();
+  cNLL1->Modified();
   cNLL1->Update();
 
 
@@ -5363,6 +5368,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
   // ##############
   // # Save plots #
   // ##############
+  Canv->Modified();
   Canv->Update();
   if (SAVEPLOT == true)
     {
@@ -5380,9 +5386,13 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
     }
   else
     {
+      localCanv[0]->Modified();
       localCanv[0]->Update();
+      localCanv[1]->Modified();
       localCanv[1]->Update();
+      localCanv[2]->Modified();
       localCanv[2]->Update();
+      localCanv[3]->Modified();
       localCanv[3]->Update();
     }
 
@@ -6193,6 +6203,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   myFrame = MyToy->plotNLL(-2000.0,0.0);
   Canv->cd(it++);
   myFrame->Draw();
+  Canv->Modified();
   Canv->Update();
 
 
@@ -6281,6 +6292,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   histoNLL1->Draw();
   cNLL1->cd(3);
   histoPull1->Draw();
+  cNLL1->Modified();
   cNLL1->Update();
 
   TCanvas* cNLL2 = new TCanvas("cNLL2","cNLL2",10,10,900,500);
@@ -6291,6 +6303,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   histoNLL2->Draw();
   cNLL2->cd(3);
   histoPull2->Draw();
+  cNLL2->Modified();
   cNLL2->Update();
 
   
@@ -6817,6 +6830,7 @@ int main(int argc, char** argv)
 		      VecHistoMeas[0]->Draw("pe1");
 		      DrawString(LUMI);
 
+		      cHistoMeas->Modified();
 		      cHistoMeas->Update();
 		    }
 		}
@@ -6911,6 +6925,7 @@ int main(int argc, char** argv)
 		  VecHistoMeas[2]->Draw("pe1");
 		  DrawString(LUMI);
 
+		  cHistoMeas->Modified();
 		  cHistoMeas->Update();
 		}
 	    }

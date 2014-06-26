@@ -519,6 +519,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   legPhi->SetBorderSize(0);
   legPhi->Draw();
 
+  cEff->Modified();
   cEff->Update();
 
 
@@ -693,8 +694,11 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
     }
 
 
+  cNumCosThetaL->Modified();
   cNumCosThetaL->Update();
+  cNumCosThetaK->Modified();
   cNumCosThetaK->Update();
+  cNumPhi->Modified();
   cNumPhi->Update();
 
 
@@ -919,6 +923,7 @@ void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBin
   legNumPhi->SetBorderSize(0);
   legNumPhi->Draw();
 
+  cNum->Modified();
   cNum->Update();
 
 
@@ -1279,9 +1284,13 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
       effFuncs3D.clear();
     }
  
+  cEff0->Modified();
   cEff0->Update();
+  cEff1->Modified();
   cEff1->Update();
+  cEff2->Modified();
   cEff2->Update();
+  cEff3->Modified();
   cEff3->Update();
 
   if (savePlot == true)
@@ -1379,8 +1388,11 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
   	}
 
 
+      cStatK->Modified();
       cStatK->Update();
+      cStatL->Modified();
       cStatL->Update();
+      cStatPhi->Modified();
       cStatPhi->Update();
     }
 
@@ -1784,6 +1796,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
     }
 
 
+  cEff->Modified();
   cEff->Update();
   histFit.clear();
 }
@@ -1860,6 +1873,7 @@ void Fit2DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   cTestGlobalFit->cd();
   effFuncs2D[q2BinIndx]->Draw("surf1 fb");
   hisFunc2D->Draw("lego2 fb");
+  cTestGlobalFit->Modified();
   cTestGlobalFit->Update();
 
   cout << "@@@ chi2/DoF = " << effFuncs2D[q2BinIndx]->GetChisquare() / effFuncs2D[q2BinIndx]->GetNDF() << " (" << effFuncs2D[q2BinIndx]->GetChisquare() << "/" << effFuncs2D[q2BinIndx]->GetNDF() << ")";
@@ -2132,7 +2146,9 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   tmpHist2D->GetZaxis()->SetRangeUser(Zmin,Zmax);
   tmpHist2D->Draw("surf1 fb");
 
+  cTestGlobalFit2D->Modified();
   cTestGlobalFit2D->Update();
+  cShow2DAnaEff->Modified();
   cShow2DAnaEff->Update();
 
   // #######################
@@ -2163,6 +2179,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   leg->SetBorderSize(0);
   leg->Draw();
 
+  cTestGlobalFit1D->Modified();
   cTestGlobalFit1D->Update();
 
   cout << "@@@ chi2/DoF = " << fitResults->Chi2() / fitResults->Ndf() << " (" << fitResults->Chi2() << "/" << fitResults->Ndf() << ")";
@@ -2394,6 +2411,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
 
   cEff->cd(1);
   hisFunc2Dorg->Draw("lego2 fb");
+  cEff->Modified();
   cEff->Update();
 
 
@@ -2539,6 +2557,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   effHis3D->Project3D("z")->Draw("same pe1");
 
 
+  cEff->Modified();
   cEff->Update();
 
 

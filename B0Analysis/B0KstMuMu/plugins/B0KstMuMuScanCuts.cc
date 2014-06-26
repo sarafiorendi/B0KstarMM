@@ -394,6 +394,7 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   histoR3->Draw();
   c0->cd(4);
   histoR4->Draw();
+  c0->Modified();
   c0->Update();
 
   myString.str("");

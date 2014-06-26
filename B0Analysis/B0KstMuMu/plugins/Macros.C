@@ -481,6 +481,7 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
       zframe->Draw();
     }
 
+  c0->Modified();
   c0->Update();
 }
 
@@ -681,6 +682,7 @@ void dBFfromGEN (string fileName)
   TCanvas* c1 = new TCanvas("c1","c1",10,10,700,500);
   c1->cd();
   h0->Draw();
+  c1->Modified();
   c1->Update();
 }
 
@@ -774,12 +776,14 @@ void CompareCosMassGENRECO (string fileNameRECO, string fileNameGEN)
   c0->cd();
   h0->Draw();
   h0->Fit("f0");
+  c0->Modified();
   c0->Update();
   cout << "Sigma cos(theta_K): " << sqrt((f0->GetParameter(3)*f0->GetParameter(1)*f0->GetParameter(1) + f0->GetParameter(4)*f0->GetParameter(2)*f0->GetParameter(2))/(f0->GetParameter(3)+f0->GetParameter(4))) << endl;
 
   c1->cd();
   h1->Draw();
   h1->Fit("f0");
+  c1->Modified();
   c1->Update();
   cout << "Sigma cos(theta_l): " << sqrt((f0->GetParameter(3)*f0->GetParameter(1)*f0->GetParameter(1) + f0->GetParameter(4)*f0->GetParameter(2)*f0->GetParameter(2))/(f0->GetParameter(3)+f0->GetParameter(4))) << endl;
 
@@ -792,6 +796,7 @@ void CompareCosMassGENRECO (string fileNameRECO, string fileNameGEN)
   c2->cd();
   h2->Draw();
   h2->Fit("f0");
+  c2->Modified();
   c2->Update();
   cout << "Sigma mumuMass^2: " << sqrt((f0->GetParameter(3)*f0->GetParameter(1)*f0->GetParameter(1) + f0->GetParameter(4)*f0->GetParameter(2)*f0->GetParameter(2))/(f0->GetParameter(3)+f0->GetParameter(4))) << endl;
 }
@@ -833,6 +838,7 @@ void ComputePileUp (string fileName)
 
   c0->cd();
   pileup->Draw();
+  c0->Modified();
   c0->Update();
 
   TFile fout("PileupMC.root", "RECREATE");
@@ -950,6 +956,7 @@ void PlotVtxWithPileUpW (string fileNameMC, string fileNameData, unsigned int Tr
   leg->SetBorderSize(0);
   leg->Draw();
 
+  c0->Modified();
   c0->Update();
 }
 
@@ -1002,6 +1009,7 @@ void PlotCutScans (string fileName, string type)
   h0->Draw();
   c1->cd(2);
   h1->Draw();
+  c1->Modified();
   c1->Update();
 }
 
@@ -1169,6 +1177,7 @@ void PlotBkgMC (string fileName, bool iFit, double scaleMCdata)
       leg0->SetBorderSize(0);
       leg0->Draw();
     }
+  c0->Modified();
   c0->Update();
 
   c1->cd();
@@ -1194,10 +1203,12 @@ void PlotBkgMC (string fileName, bool iFit, double scaleMCdata)
       leg1->SetBorderSize(0);
       leg1->Draw();
     }
+  c1->Modified();
   c1->Update();
 
   c2->cd();
   h2->Draw("e1p");
+  c2->Modified();
   c2->Update();
 
   cout << "\nJ/psi total integral: "   << intJpsi0  << "+/-" << intErrJpsi << endl;
@@ -1888,5 +1899,6 @@ void showData (int dataType, double offset, bool noHbar)
   DrawExclusion(12.86,14.18,-1.2,1.2,"RejectPsiP1",3001,kGray);
 
 
+  cData->Modified();
   cData->Update();
  }

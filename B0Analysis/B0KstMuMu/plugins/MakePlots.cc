@@ -44,7 +44,9 @@ using std::vector;
 // ####################
 #define ParameterFILE        "../python/ParameterFile.txt"
 #define ParameterFILE_MCGEN  "../results/ParameterFile_Sig_MCGEN.txt"
-#define ParameterFILE_MCRECO "../results/ParameterFile_Sig_MCRECO.txt"
+// @TMP@
+#define ParameterFILE_MCRECO "../python/ParameterFile.txt"
+// #define ParameterFILE_MCRECO "../results/ParameterFile_Sig_MCRECO.txt"
 
 #define FitSysFILE "../efficiency/EffSystematicsData/FitSystematics_q2Bin.txt"
 #define YvalueOutsideLimits 10.0 // Value given to bins with zero error in order not to show them
@@ -999,6 +1001,7 @@ void MakeComparisonDataMC (unsigned int plotType)
   leg->SetBorderSize(0);
   leg->Draw();
 
+  c0->Modified();
   c0->Update();
 
   TPaveStats* stM = (TPaveStats*)hM1D->FindObject("stats");
@@ -1059,6 +1062,7 @@ void MakeComparisonDataMC (unsigned int plotType)
   hratio->SetStats(false);
   hratio->Divide(hM1D);
   hratio->Draw("pe1");
+  c1->Modified();
   c1->Update();
 
 
@@ -1187,10 +1191,12 @@ void CheckPhysicsRegion ()
   TLine* line2;
 
   double LUMI = Utility->ReadLumi(ParameterFILE);
-  Utility->MakeGraphVar(ParameterFILE,&ge,"Fl",true);
+  Utility->MakeGraphVar(ParameterFILE,&ge,"Fl");
   ge->SetMarkerColor(kBlack);
   ge->SetMarkerStyle(20);
-  Utility->MakeGraphVar(ParameterFILE,&geTMP,"Afb",true);
+  Utility->MakeGraphVar(ParameterFILE,&geTMP,"Afb");
+
+  cout << "\n@@@ I've found " << geTMP->GetN() << " data points @@@" << endl;
 
   for (int i = 0; i < geTMP->GetN(); i++)
     {
@@ -1215,6 +1221,7 @@ void CheckPhysicsRegion ()
   line2->Draw("same");
 
   DrawString(LUMI);
+  canv0->Modified();
   canv0->Update();
 }
 
@@ -1272,7 +1279,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   TGraphAsymmErrors* ge1  = NULL;
   TGraphAsymmErrors* ge00 = NULL;
   TGraphAsymmErrors* ge11 = NULL;
-  TGraphBentErrors* geb   = NULL;
+  TGraphBentErrors*  geb  = NULL;
   TLine* line;
 
 
@@ -1286,7 +1293,7 @@ void MakePhysicsPlots (unsigned int PlotType)
  
   if (PlotType == 0) // Fl
     {
-      Utility->MakeGraphVar(ParameterFILE_MCGEN,&ge0,"Fl",false);
+      Utility->MakeGraphVar(ParameterFILE_MCGEN,&ge0,"Fl");
       ge0->SetMarkerColor(kBlack);
       ge0->SetMarkerStyle(22);
       ge0->SetMarkerSize(1.2);
@@ -1298,7 +1305,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->GetYaxis()->SetRangeUser(-0.02,1.0);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{L}");
 
-      Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"Fl",false);
+      Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"Fl");
       ge1->SetMarkerColor(kBlue);
       ge1->SetMarkerStyle(20);
       ge1->SetMarkerSize(1.2);
@@ -1312,7 +1319,7 @@ void MakePhysicsPlots (unsigned int PlotType)
      }
   else if (PlotType == 1) // Afb
     {
-      Utility->MakeGraphVar(ParameterFILE_MCGEN,&ge0,"Afb",false);
+      Utility->MakeGraphVar(ParameterFILE_MCGEN,&ge0,"Afb");
       ge0->SetMarkerColor(kBlack);
       ge0->SetMarkerStyle(22);
       ge0->SetMarkerSize(1.2);
@@ -1324,7 +1331,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->GetYaxis()->SetRangeUser(-1.04,1.0);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{FB}");
  
-      Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"Afb",false);
+      Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"Afb");
       ge1->SetMarkerColor(kBlue);
       ge1->SetMarkerStyle(20);
       ge1->SetMarkerSize(1.2);
@@ -1338,7 +1345,7 @@ void MakePhysicsPlots (unsigned int PlotType)
     }
   else if (PlotType == 2) // Branching fraction
     {
-      Utility->MakeGraphVar(ParameterFILE_MCGEN,&ge0,"BF",false);
+      Utility->MakeGraphVar(ParameterFILE_MCGEN,&ge0,"BF");
       ge0->SetMarkerColor(kBlack);
       ge0->SetMarkerStyle(22);
       ge0->SetMarkerSize(1.2);
@@ -1350,7 +1357,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->GetYaxis()->SetRangeUser(0.0,1.2);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
  
-      Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"BF",false);
+      Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"BF");
       ge1->SetMarkerColor(kBlue);
       ge1->SetMarkerStyle(20);
       ge1->SetMarkerSize(1.2);
@@ -1364,7 +1371,7 @@ void MakePhysicsPlots (unsigned int PlotType)
     }
   else if (PlotType == 10) // Fl
     {
-      Utility->MakeGraphVar(ParameterFILE,&ge0,"Fl",false);
+      Utility->MakeGraphVar(ParameterFILE,&ge0,"Fl");
       ge0->SetMarkerColor(kBlack);
       ge0->SetMarkerStyle(20);
       ge0->SetMarkerSize(1.2);
@@ -1376,7 +1383,7 @@ void MakePhysicsPlots (unsigned int PlotType)
     }
   else if (PlotType == 11) // Afb
     {
-      Utility->MakeGraphVar(ParameterFILE,&ge0,"Afb",false);
+      Utility->MakeGraphVar(ParameterFILE,&ge0,"Afb");
       ge0->SetMarkerColor(kBlack);
       ge0->SetMarkerStyle(20);
       ge0->SetMarkerSize(1.2);
@@ -1388,7 +1395,7 @@ void MakePhysicsPlots (unsigned int PlotType)
     }
   else if (PlotType == 12) // Branching fraction
     {
-      Utility->MakeGraphVar(ParameterFILE,&ge0,"BF",false);
+      Utility->MakeGraphVar(ParameterFILE,&ge0,"BF");
       ge0->SetMarkerColor(kBlack);
       ge0->SetMarkerStyle(20);
       ge0->SetMarkerSize(1.2);
@@ -1848,6 +1855,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   
 
   canv0->cd();
+  canv0->Modified();
   canv0->Update();
 }
 
@@ -1861,12 +1869,13 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
 // ########################
 {
   unsigned int nPlots     = 6;
-  unsigned int nBinsHisto = 400;
+  unsigned int nBinsHisto = 80;
   stringstream myString;
   ifstream inputFile;
   vector<TCanvas*> vecCanv;
   vector<TH1D*> vecHist;
   vector<double> vecVar;
+  TPaveStats* stD;
 
 
   for (unsigned int i = 0; i < nPlots; i++)
@@ -1970,11 +1979,22 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
       vecCanv[i]->cd();
       vecHist[i]->Draw();
       vecHist[i]->Fit("gaus");
+      vecCanv[i]->Modified();
+      vecCanv[i]->Update();
+
+      stD = (TPaveStats*)vecHist[i]->FindObject("stats");
+      stD->SetX1NDC(0.75);
+      stD->SetX2NDC(0.98);
+      stD->SetY1NDC(0.70);
+      stD->SetY2NDC(0.90);
+
+      vecCanv[i]->Modified();
       vecCanv[i]->Update();
     }
 
   cSc->cd();
   hSc->Draw("gcolz");
+  cSc->Modified();
   cSc->Update();
 
 
@@ -2052,6 +2072,7 @@ void PlotMuMu (string fileName, bool bkgSub)
   if (bkgSub == true) hDsig->Add(hDbkg, -1.0);
  
   hDsig->Draw("e1p");
+  c0->Modified();
   c0->Update();
 }
 
@@ -2262,6 +2283,7 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
   leg0->SetBorderSize(0);
   leg0->Draw();
 
+  c0->Modified();
   c0->Update();
 
 
@@ -2276,6 +2298,7 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
   leg1->SetBorderSize(0);
   leg1->Draw();
 
+  c1->Modified();
   c1->Update();
 }
 
@@ -2436,6 +2459,7 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
 
   c0->cd();
   hKKSig->Draw();
+  c0->Modified();
   c0->Update();
 
 
@@ -2443,6 +2467,7 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
 
   c1->cd();
   hKstSig->Draw("e1p");
+  c1->Modified();
   c1->Update();
 
 
@@ -2450,6 +2475,7 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
 
   c2->cd();
   hDalitzSig->Draw("cont4z");
+  c2->Modified();
   c2->Update();
 }
 
@@ -2524,10 +2550,12 @@ void PlotMuHadMass (string fileName)
 
   c0->cd();
   histoK->Draw();
+  c0->Modified();
   c0->Update();
 
   c1->cd();
   histoPi->Draw();
+  c1->Modified();
   c1->Update();
 }
 
@@ -2606,6 +2634,7 @@ void MakeupNLLandPULLplots (string fileName, string plotType, int specBin)
   histoDIFF->Fit("gaus","0");
   histoDIFF->GetFunction("gaus")->Draw("same");
 
+  c0->Modified();
   c0->Update();
 }
 
@@ -2679,6 +2708,7 @@ void MakePvaluePlot (string fileName, string plotType, int specBin)
   c0->cd();
   pval->Draw("e1p");
   DrawExclusion(pval->GetBinLowEdge(1),pval->GetBinLowEdge(pval->GetNbinsX())+pval->GetBinWidth(pval->GetNbinsX()),0.0,0.05,"p-val",3001,kRed-9);
+  c0->Modified();
   c0->Update();
 }
 
