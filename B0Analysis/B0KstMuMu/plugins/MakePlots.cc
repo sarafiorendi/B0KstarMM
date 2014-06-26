@@ -1987,7 +1987,7 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
   // ################
   // # Plot and Fit #
   // ################
-  cout << "\n@@@ I'm now fitting and plotting @@@" << endl;
+  cout << "\n@@@ I'm now fitting and plotting @@@\n" << endl;
 
   for (unsigned int i = 0; i < nPlots; i++)
     {
@@ -2005,6 +2005,9 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
 
       vecCanv[i]->Modified();
       vecCanv[i]->Update();
+
+      cout << "@@@ Histogram #" << i << " mean = " << vecHist[i]->GetMean() << "   -" << vecHist[i]->GetRMS()/sqrt(vecHist[i]->GetEntries()) << "   " << vecHist[i]->GetRMS()/sqrt(vecHist[i]->GetEntries());
+      cout << "\t(RMS = " << vecHist[i]->GetRMS() << "; Entries = " << vecHist[i]->GetEntries() << ") @@@\n" << endl;
     }
 
   cScNLL->cd();
