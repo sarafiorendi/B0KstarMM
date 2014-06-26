@@ -1909,10 +1909,10 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vec
 
 
 unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vector<vector<string>*>* fitParam)
-// ##############################################################
-// # Only for polynomial coeficients:                           #
-// # If errLo and errHi are 0.0 --> set coefficient as constant #
-// ##############################################################
+// ####################################################################
+// # Only for polynomial coeficients:                                 #
+// # If errLo and errHi are 0.0 --> set poly. coefficient as constant #
+// ####################################################################
 {
   stringstream myString;
   stringstream myCoeff;
@@ -5739,6 +5739,22 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   // # Initialize p.d.f. #
   // #####################
   nEntryToy = CopyFitResults(TotalPDF,specBin,fitParam);
+
+
+  // ################################
+  // # Fix comb. angular background #
+  // ################################
+  cout << "@@@ Fixing comb. angular background after sideband fit @@@" << endl;
+  for (unsigned int i = 0 ; i < NCOEFFPOLYBKG; i++)
+    {
+      myString.clear(); myString.str("");
+      myString << "c1Poly" << i;
+      if (GetVar(TotalPDF,myString.str().c_str()) != NULL) GetVar(TotalPDF,myString.str().c_str())->setConstant(true);
+
+      myString.clear(); myString.str("");
+      myString << "c2Poly" << i;
+      if (GetVar(TotalPDF,myString.str().c_str()) != NULL) GetVar(TotalPDF,myString.str().c_str())->setConstant(true);
+    }
 
 
   // #####################
