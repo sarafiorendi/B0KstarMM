@@ -44,9 +44,7 @@ using std::vector;
 // ####################
 #define ParameterFILE        "../python/ParameterFile.txt"
 #define ParameterFILE_MCGEN  "../results/ParameterFile_Sig_MCGEN.txt"
-// @TMP@
-#define ParameterFILE_MCRECO "../python/ParameterFile.txt"
-// #define ParameterFILE_MCRECO "../results/ParameterFile_Sig_MCRECO.txt"
+#define ParameterFILE_MCRECO "../results/ParameterFile_Sig_MCRECO.txt"
 
 #define FitSysFILE "../efficiency/EffSystematicsData/FitSystematics_q2Bin.txt"
 #define YvalueOutsideLimits 10.0 // Value given to bins with zero error in order not to show them
