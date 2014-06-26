@@ -1905,13 +1905,26 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
   vecHist[5]->GetXaxis()->SetTitle("NLL");
 
 
-  TCanvas* cSc = new TCanvas("cSc","cSc",10,10,700,500);
-  cSc->cd();
-  TH2D* hSc = new TH2D("hSc","hSc",nBinsHisto,1.0,-1.0,nBinsHisto,1.0,-1.0);
-  hSc->GetXaxis()->SetTitle("Parameter Value");
-  hSc->GetYaxis()->SetTitle("NLL");
-  hSc->GetZaxis()->SetTitle("Entries");
-  hSc->SetFillColor(kAzure+6);
+  // ##################################
+  // # Scatter plot : variable vs NLL #
+  // ##################################
+  TCanvas* cScNLL = new TCanvas("cScNLL","cScNLL",10,10,700,500);
+  cScNLL->cd();
+  TH2D* hScNLL = new TH2D("hScNLL","hScNLL",nBinsHisto,1.0,-1.0,nBinsHisto,1.0,-1.0);
+  hScNLL->GetXaxis()->SetTitle("Parameter Value");
+  hScNLL->GetYaxis()->SetTitle("NLL");
+  hScNLL->GetZaxis()->SetTitle("Entries");
+
+
+  // #########################################
+  // # Scatter plot : variable1 vs variable2 #
+  // #########################################
+  TCanvas* cScPars = new TCanvas("cScPars","cScPars",10,10,700,500);
+  cScPars->cd();
+  TH2D* hScPars = new TH2D("hScPars","hScPars",nBinsHisto*2,-1.0,1.0,nBinsHisto,0.0,1.0);
+  hScPars->GetXaxis()->SetTitle("A_{FB}");
+  hScPars->GetYaxis()->SetTitle("F_{L}");
+  hScPars->GetZaxis()->SetTitle("Entries");
 
 
   // #########################
@@ -1936,21 +1949,25 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
 	}
       cout << "var" << nPlots << ": " << vecVar[nPlots] << endl;
       
-      if (vecVar[nPlots] < NLLlessThan) hSc->Fill(vecVar[sysType+1],vecVar[nPlots]);
-      
-      inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6];
+      if (vecVar[nPlots] < NLLlessThan)
+	{
+	  hScNLL->Fill(vecVar[sysType+1],vecVar[nPlots]);
+	  if ((vecVar[1] != -2.0) && (vecVar[2] != -2.0)) hScPars->Fill(vecVar[2],vecVar[1]);
+	}
+
+     inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6];
     }
 
 
   // #####################################
   // # Rebin NLL scatter plot and refill #
   // #####################################
-  if      (sysType == 0) hSc->SetBins(nBinsHisto,0.0,1.0,nBinsHisto,   hSc->GetMean(2) - NLLinterval,hSc->GetMean(2) + NLLinterval);
-  else if (sysType == 1) hSc->SetBins(nBinsHisto*2,-1.0,1.0,nBinsHisto,hSc->GetMean(2) - NLLinterval,hSc->GetMean(2) + NLLinterval);
-  else                   hSc->SetBins(nBinsHisto,1.0,-1.0,nBinsHisto,  hSc->GetMean(2) - NLLinterval,hSc->GetMean(2) + NLLinterval);
+  if      (sysType == 0) hScNLL->SetBins(nBinsHisto,0.0,1.0,nBinsHisto,   hScNLL->GetMean(2) - NLLinterval,hScNLL->GetMean(2) + NLLinterval);
+  else if (sysType == 1) hScNLL->SetBins(nBinsHisto*2,-1.0,1.0,nBinsHisto,hScNLL->GetMean(2) - NLLinterval,hScNLL->GetMean(2) + NLLinterval);
+  else                   hScNLL->SetBins(nBinsHisto,1.0,-1.0,nBinsHisto,  hScNLL->GetMean(2) - NLLinterval,hScNLL->GetMean(2) + NLLinterval);
 
   cout << "\n@@@ Rebin NLL scatter plot and refill @@@" << endl;
-  hSc->Reset();
+  hScNLL->Reset();
 
   inputFile.clear();
   inputFile.seekg(0,inputFile.beg);
@@ -1961,7 +1978,7 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
 	cout << "var" << i << ": " << vecVar[i] << "\t";
       cout << "var" << nPlots << ": " << vecVar[nPlots] << endl;
 
-      if (vecVar[nPlots] < NLLlessThan) hSc->Fill(vecVar[sysType+1],vecVar[nPlots]);
+      if (vecVar[nPlots] < NLLlessThan) hScNLL->Fill(vecVar[sysType+1],vecVar[nPlots]);
       
       inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6];
     }
@@ -1990,10 +2007,15 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
       vecCanv[i]->Update();
     }
 
-  cSc->cd();
-  hSc->Draw("gcolz");
-  cSc->Modified();
-  cSc->Update();
+  cScNLL->cd();
+  hScNLL->Draw("gcolz");
+  cScNLL->Modified();
+  cScNLL->Update();
+
+  cScPars->cd();
+  hScPars->Draw("gcolz");
+  cScPars->Modified();
+  cScPars->Update();
 
 
   inputFile.close();

@@ -3988,6 +3988,33 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
       myFrame->Draw();
     }
   
+  if ((GetVar(TotalPDF,"nBkgComb") != NULL) && (GetVar(TotalPDF,"nBkgComb")->getError() != 0.0) && (IsInConstraints(vecConstr,"nBkgComb") == false))
+    {
+      tmpVar = GetVar(TotalPDF,"nBkgComb");
+      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str()) -
+  			      0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str())),
+  			      atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str()) +
+  			      0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str())));
+      MyToy->plotParamOn(myFrame);
+      Canv->cd(it++);
+      myFrame->Draw();
+      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+      Canv->cd(it++);
+      myFrame->Draw();
+    }
+
+  if ((GetVar(TotalPDF,"nMisTagFrac") != NULL) && (GetVar(TotalPDF,"nMisTagFrac")->getError() != 0.0) && (IsInConstraints(vecConstr,"nMisTagFrac") == false))
+    {
+      tmpVar = GetVar(TotalPDF,"nMisTagFrac");
+      myFrame = tmpVar->frame(-0.1,1.1);
+      MyToy->plotParamOn(myFrame);
+      Canv->cd(it++);
+      myFrame->Draw();
+      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+      Canv->cd(it++);
+      myFrame->Draw();
+    }
+
   if ((GetVar(TotalPDF,"nBkgPeak") != NULL) && (GetVar(TotalPDF,"nBkgPeak")->getError() != 0.0) && (IsInConstraints(vecConstr,"nBkgPeak") == false))
     {
       tmpVar = GetVar(TotalPDF,"nBkgPeak");
@@ -4008,33 +4035,6 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
       tmpVar = GetVar(TotalPDF,"nSig");
       myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str()) - 0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str())),
   			      atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str()) + 0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
-
-  if ((GetVar(TotalPDF,"nBkgComb") != NULL) && (GetVar(TotalPDF,"nBkgComb")->getError() != 0.0) && (IsInConstraints(vecConstr,"nBkgComb") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"nBkgComb");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str()) -
-  			      0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str()) +
-  			      0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
-
-  if ((GetVar(TotalPDF,"nMisTagFrac") != NULL) && (GetVar(TotalPDF,"nMisTagFrac")->getError() != 0.0) && (IsInConstraints(vecConstr,"nMisTagFrac") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"nMisTagFrac");
-      myFrame = tmpVar->frame(-0.1,1.1);
       MyToy->plotParamOn(myFrame);
       Canv->cd(it++);
       myFrame->Draw();
@@ -4470,11 +4470,14 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
   unsigned int nElements   = 0;
   TString legNames[6];
 
-  TCanvas* localCanv[4];
-  localCanv[0] = new TCanvas("localCanv0","localCanv0",20,20,700,500);
-  localCanv[1] = new TCanvas("localCanv1","localCanv1",20,20,700,500);
-  localCanv[2] = new TCanvas("localCanv2","localCanv2",20,20,700,500);
-  localCanv[3] = new TCanvas("localCanv3","localCanv3",20,20,700,500);
+  const unsigned int nCanv = 6;
+  TCanvas* localCanv[nCanv];
+  for (unsigned int i = 0; i < nCanv; i++)
+    {
+      myString.clear(); myString.str("");
+      myString << "localCanv" << i;
+      localCanv[i] = new TCanvas(myString.str().c_str(),myString.str().c_str(),20,20,700,500);
+    }
 
 
   // ###########################
@@ -4949,20 +4952,56 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
 
       // ################################
-      // # LogLikelihood parameter scan #
+      // # LogLikelihood profiling scan #
       // ################################
       // @TMP@
       // if ((FitType != 26) && (GetVar(*TotalPDF,"FlS") != NULL) && (GetVar(*TotalPDF,"AfbS") != NULL))
       // 	{
-      // 	  localCanv[3]->cd();
+      // 	  // #############################
+      // 	  // # Turn off all the printout #
+      // 	  // #############################
+      // 	  RooMsgService::instance().setGlobalKillBelow(RooFit::FATAL);
+
+
       // 	  RooAbsReal* NLL;
       // 	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
       // 	  else                                                               NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
+
+
+      // 	  localCanv[3]->cd();
       // 	  RooMinuit RooMin(*NLL);
       // 	  RooPlot* myFrameNLL = RooMin.contour(*GetVar(*TotalPDF,"AfbS"),*GetVar(*TotalPDF,"FlS"),1.0,2.0,3.0);
       // 	  DrawString(LUMI,myFrameY);
       // 	  myFrameNLL->Draw();
+
+
+      // 	  localCanv[4]->cd();
+      //     RooPlot* myFrameNLLVar1 = GetVar(*TotalPDF,"FlS")->frame();
+      // 	  NLL->plotOn(myFrameNLLVar1,ShiftToZero());
+      // 	  RooAbsReal* var1Profile = NLL->createProfile(*(GetVar(*TotalPDF,"FlS")));
+      // 	  var1Profile->plotOn(myFrameNLLVar1,LineColor(kRed));
+      // 	  myFrameNLLVar1->SetMinimum(0);
+      // 	  myFrameNLLVar1->SetMaximum(5);
+      //     myFrameNLLVar1->Draw();
+
+
+      // 	  localCanv[5]->cd();
+      //     RooPlot* myFrameNLLVar2 = GetVar(*TotalPDF,"AfbS")->frame();
+      // 	  NLL->plotOn(myFrameNLLVar2,ShiftToZero());
+      // 	  RooAbsReal* var2Profile = NLL->createProfile(*(GetVar(*TotalPDF,"AfbS")));
+      // 	  var2Profile->plotOn(myFrameNLLVar2,LineColor(kRed));
+      // 	  myFrameNLLVar2->SetMinimum(0);
+      // 	  myFrameNLLVar2->SetMaximum(5);
+      //     myFrameNLLVar2->Draw();
+
+
       // 	  delete NLL;
+
+
+      // 	  // ############################
+      // 	  // # Turn on all the printout #
+      // 	  // ############################
+      // 	  RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
       // 	}
 
 
@@ -5375,26 +5414,22 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       myString.clear(); myString.str("");
       myString << (*TotalPDF)->getPlotLabel() << ".pdf";
       Canv->Print(myString.str().c_str());
+
+      for (unsigned int i = 0; i < nCanv; i++)
+	{
+	  myString.clear(); myString.str("");
+	  myString << (*TotalPDF)->getPlotLabel() << "_localCanv_" << ID << ".pdf";
+	  localCanv[i]->Print(myString.str().c_str());
+	}
     }
 
-  if (SETBATCH == true)
-    {
-      delete localCanv[0];
-      delete localCanv[1];
-      delete localCanv[2];
-      delete localCanv[3];
-    }
+  if (SETBATCH == true) for (unsigned int i = 0; i < nCanv; i++) delete localCanv[i];
   else
-    {
-      localCanv[0]->Modified();
-      localCanv[0]->Update();
-      localCanv[1]->Modified();
-      localCanv[1]->Update();
-      localCanv[2]->Modified();
-      localCanv[2]->Update();
-      localCanv[3]->Modified();
-      localCanv[3]->Update();
-    }
+    for (unsigned int i = 0; i < nCanv; i++)
+      {
+	localCanv[i]->Modified();
+	localCanv[i]->Update();
+      }
 
 
   VarsYield.Clear();
@@ -6025,6 +6060,33 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       myFrame->Draw();
     }
   
+  if ((GetVar(TotalPDF,"nBkgComb") != NULL) && (GetVar(TotalPDF,"nBkgComb")->getError() != 0.0) && (IsInConstraints(vecConstr,"nBkgComb") == false))
+    {
+      tmpVar = GetVar(TotalPDF,"nBkgComb");
+      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str()) -
+ 			      0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str())),
+ 			      atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str()) +
+ 			      0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str())));
+      MyToy->plotParamOn(myFrame);
+      Canv->cd(it++);
+      myFrame->Draw();
+      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+      Canv->cd(it++);
+      myFrame->Draw();
+    }
+
+  if ((GetVar(TotalPDF,"nMisTagFrac") != NULL) && (GetVar(TotalPDF,"nMisTagFrac")->getError() != 0.0) && (IsInConstraints(vecConstr,"nMisTagFrac") == false))
+    {
+      tmpVar = GetVar(TotalPDF,"nMisTagFrac");
+      myFrame = tmpVar->frame(-0.1,1.1);
+      MyToy->plotParamOn(myFrame);
+      Canv->cd(it++);
+      myFrame->Draw();
+      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+      Canv->cd(it++);
+      myFrame->Draw();
+    }
+
   if ((GetVar(TotalPDF,"nBkgPeak") != NULL) && (GetVar(TotalPDF,"nBkgPeak")->getError() != 0.0) && (IsInConstraints(vecConstr,"nBkgPeak") == false))
     {
       tmpVar = GetVar(TotalPDF,"nBkgPeak");
@@ -6053,33 +6115,6 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       myFrame->Draw();
     }
 
-  if ((GetVar(TotalPDF,"nBkgComb") != NULL) && (GetVar(TotalPDF,"nBkgComb")->getError() != 0.0) && (IsInConstraints(vecConstr,"nBkgComb") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"nBkgComb");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str()) -
- 			      0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str())),
- 			      atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str()) +
- 			      0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
-
-  if ((GetVar(TotalPDF,"nMisTagFrac") != NULL) && (GetVar(TotalPDF,"nMisTagFrac")->getError() != 0.0) && (IsInConstraints(vecConstr,"nMisTagFrac") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"nMisTagFrac");
-      myFrame = tmpVar->frame(-0.1,1.1);
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
-  
   for (unsigned int i = 0; i < NCOEFFPOLYBKG; i++)
     {
       myString.clear(); myString.str("");
