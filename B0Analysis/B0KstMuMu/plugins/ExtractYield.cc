@@ -5482,7 +5482,8 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
   double effMuMuMisTag     = 1.0;
   double effMuMuMisTagErr  = 0.0;
 
-  double value1, value2;
+  double value1 = 0.0;
+  double value2 = 0.0;
 
   TCanvas*    cq2Bins[q2Bins->size()-1];
   RooDataSet* dataSet_q2Bins[q2Bins->size()-1];
