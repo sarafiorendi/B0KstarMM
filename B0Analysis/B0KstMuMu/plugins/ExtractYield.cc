@@ -4511,12 +4511,6 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
     }
 
 
-  // ###########################
-  // # Divide the input canvas #
-  // ###########################
-  Canv->Divide(3,3);
-
-
   if ((FitType == 36) || (FitType == 56) || (FitType == 76))
     {
       // ###################
@@ -5577,7 +5571,8 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       myString.clear(); myString.str("");
       myString << "c_" << i;
       cq2Bins[i] = new TCanvas(myString.str().c_str(), myString.str().c_str(), 20, 20, 1800, 1800);
-  
+      cq2Bins[i]->Divide(3,3);
+
       myString.clear(); myString.str("");
       myString << "(mumuMass*mumuMass) > " << q2Bins->operator[](i) << " && (mumuMass*mumuMass) <= " << q2Bins->operator[](i+1);
       cout << "\nCut string: " << myString.str() << endl;
@@ -6316,6 +6311,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   histoNLL2->SetYTitle("Entries [#]");
 
   TCanvas* cB0Toy = new TCanvas("cB0Toy","cB0Toy", 20, 20, 1800, 1800);
+  cB0Toy->Divide(3,3);
 
   cout << "\n@@@ Now fit total TOY invariant mass and angles @@@" << endl;
   RooDataSet* toySample;
