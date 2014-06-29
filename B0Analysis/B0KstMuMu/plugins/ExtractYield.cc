@@ -85,7 +85,7 @@ using namespace RooFit;
 #define USEMINOS      false
 #define SETBATCH      false
 #define SAVEPOLY      false // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
-#define SAVEPLOT      true
+#define SAVEPLOT      false
 #define RESETANGPAR   false // Reset angular parameters before starting the fit
 #define FUNCERRBAND   false // Show the p.d.f. error band
 
