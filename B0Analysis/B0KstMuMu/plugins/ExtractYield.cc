@@ -85,7 +85,7 @@ using namespace RooFit;
 #define USEMINOS      false
 #define SETBATCH      false
 #define SAVEPOLY      false // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
-#define SAVEPLOT      false
+#define SAVEPLOT      true
 #define RESETANGPAR   false // Reset angular parameters before starting the fit
 #define FUNCERRBAND   false // Show the p.d.f. error band
 
@@ -2149,61 +2149,79 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vector
     {
       myCoeff.clear(); myCoeff.str("");
       myCoeff << "p1Poly" << i;
-      myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str();
-      SetValueAndErrors(TotalPDF,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
-      if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(true);
-      else                                  GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(false);
+      if (GetVar(TotalPDF,myCoeff.str().c_str()) != NULL)
+	{
+	  myString.clear(); myString.str("");
+	  myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str();
+	  SetValueAndErrors(TotalPDF,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
+	  if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(true);
+	  else                                  GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(false);
+	}
     }
   for (unsigned int i = 0; i < NCoeffPolyBKGcomb1; i++)
     {
       myCoeff.clear(); myCoeff.str("");
       myCoeff << "c1Poly" << i;
-      myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str();
-      SetValueAndErrors(TotalPDF,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
-      if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(true);
-      else                                  GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(false);
+      if (GetVar(TotalPDF,myCoeff.str().c_str()) != NULL)
+	{
+	  myString.clear(); myString.str("");
+	  myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str();
+	  SetValueAndErrors(TotalPDF,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
+	  if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(true);
+	  else                                  GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(false);
+	}
     }
   for (unsigned int i = 0; i < NCoeffPolyBKGpeak2; i++)
     {
       myCoeff.clear(); myCoeff.str("");
       myCoeff << "p2Poly" << i;
-      myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str();
-      SetValueAndErrors(TotalPDF,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
-      if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(true);
-      else                                  GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(false);
+      if (GetVar(TotalPDF,myCoeff.str().c_str()) != NULL)
+	{
+	  myString.clear(); myString.str("");
+	  myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str();
+	  SetValueAndErrors(TotalPDF,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
+	  if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(true);
+	  else                                  GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(false);
+	}
     }
   for (unsigned int i = 0; i < NCoeffPolyBKGcomb2; i++)
     {
       myCoeff.clear(); myCoeff.str("");
       myCoeff << "c2Poly" << i;
-      myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str();
-      SetValueAndErrors(TotalPDF,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
-      if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(true);
-      else                                  GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(false);
+      if (GetVar(TotalPDF,myCoeff.str().c_str()) != NULL)
+	{
+	  myString.clear(); myString.str("");
+	  myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str();
+	  SetValueAndErrors(TotalPDF,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
+	  if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(true);
+	  else                                  GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(false);
+	}
     }
   for (unsigned int i = 0; i < NCoeffPolyBKGpeak3; i++)
     {
       myCoeff.clear(); myCoeff.str("");
       myCoeff << "p3Poly" << i;
-      myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str();
-      SetValueAndErrors(TotalPDF,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
-      if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(true);
-      else                                  GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(false);
+      if (GetVar(TotalPDF,myCoeff.str().c_str()) != NULL)
+	{
+	  myString.clear(); myString.str("");
+	  myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str();
+	  SetValueAndErrors(TotalPDF,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
+	  if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(true);
+	  else                                  GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(false);
+	}
     }
   for (unsigned int i = 0; i < NCoeffPolyBKGcomb3; i++)
     {
       myCoeff.clear(); myCoeff.str("");
       myCoeff << "c3Poly" << i;
-      myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str();
-      SetValueAndErrors(TotalPDF,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
-      if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(true);
-      else                                  GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(false);
+      if (GetVar(TotalPDF,myCoeff.str().c_str()) != NULL)
+	{
+	  myString.clear(); myString.str("");
+	  myString << fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx).c_str();
+	  SetValueAndErrors(TotalPDF,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
+	  if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(true);
+	  else                                  GetVar(TotalPDF,myCoeff.str().c_str())->setConstant(false);
+	}
     }
 
 
@@ -3474,7 +3492,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   if (SAVEPLOT == true)
     {
       myString.clear(); myString.str("");
-      myString << (*TotalPDF)->getPlotLabel() << ".pdf";
+      myString << (*TotalPDF)->getPlotLabel() << "_" << ID << ".pdf";
       Canv->Print(myString.str().c_str());
     }
 
@@ -3749,7 +3767,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   // #############################
   RooMCStudy* MyToy = new RooMCStudy(*TotalPDF,*x,Extended(true),FitOptions(Extended(true),ExternalConstraints(*vecConstr),Minos(USEMINOS))); // Possible options : "Binned()" = faster; Silence()
   MyToy->generateAndFit(nToy,nEntryToy,true);
-  Canv->Divide(5,4);
+  Canv->Divide(6,5);
 
 
   if ((GetVar(TotalPDF,"meanS") != NULL) && (GetVar(TotalPDF,"meanS")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanS") == false))
@@ -4131,7 +4149,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
 
       toySample = (RooDataSet*)MyToy->genData(i);
       CopyFitResults(TotalPDF,specBin,fitParam);
-      fitResult = MakeMassFit(toySample,&TotalPDF,x,cB0Toy,vecConstr,&NLLvalue,NULL,i+1);
+      fitResult = MakeMassFit(toySample,&TotalPDF,x,cB0Toy,vecConstr,&NLLvalue,NULL,i);
 
 
       // ######################################################
@@ -5425,13 +5443,13 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
   if (SAVEPLOT == true)
     {
       myString.clear(); myString.str("");
-      myString << (*TotalPDF)->getPlotLabel() << ".pdf";
+      myString << (*TotalPDF)->getPlotLabel() << "_" << ID << ".pdf";
       Canv->Print(myString.str().c_str());
 
       for (unsigned int i = 0; i < nCanv; i++)
 	{
 	  myString.clear(); myString.str("");
-	  myString << (*TotalPDF)->getPlotLabel() << "_localCanv_" << ID << ".pdf";
+	  myString << (*TotalPDF)->getPlotLabel() << "_localCanv" << i << "_" << ID << ".pdf";
 	  localCanv[i]->Print(myString.str().c_str());
 	}
     }
@@ -5794,7 +5812,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   // #############################
   RooMCStudy* MyToy = new RooMCStudy(*TotalPDF,RooArgSet(*x,*y,*z),Extended(true),ExternalConstraints(*constrToys),FitOptions(Extended(true),ExternalConstraints(*vecConstr),Minos(USEMINOS)));
   MyToy->generateAndFit(nToy,nEntryToy,true);
-  Canv->Divide(5,4);
+  Canv->Divide(6,5);
 
 
   if ((GetVar(TotalPDF,"meanS") != NULL) && (GetVar(TotalPDF,"meanS")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanS") == false))
@@ -6311,7 +6329,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 
       toySample = (RooDataSet*)MyToy->genData(i);
       CopyFitResults(TotalPDF,specBin,fitParam);
-      fitResult = MakeMass2AnglesFit(toySample,&TotalPDF,x,y,z,cB0Toy,FitType,vecConstr,&NLLvalue,NULL,i+1);
+      fitResult = MakeMass2AnglesFit(toySample,&TotalPDF,x,y,z,cB0Toy,FitType,vecConstr,&NLLvalue,NULL,i);
 
 
       // ######################################################
