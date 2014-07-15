@@ -6761,7 +6761,7 @@ int main(int argc, char** argv)
 		  // ####################
 		  // # Remove file tail #
 		  // ####################
-		  tmpFileName.erase(tmpFileName.find(".txt"),6 + static_cast<int>(log10(q2Bins.size())));
+		  tmpFileName.erase(tmpFileName.find(".txt") - (1 + static_cast<int>(log10(q2Bins.size()))),6 + static_cast<int>(log10(q2Bins.size())));
 
 		  Utility->SetDirEfficiency("");
 		  if ((FitType == 6) || (FitType == 46) || (FitType == 66)) Utility->SetHisto2DEffName(GetSignalType(FitType,&q2Bins,specBin),tmpFileName.c_str());
