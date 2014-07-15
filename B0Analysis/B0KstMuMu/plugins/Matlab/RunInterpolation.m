@@ -15,7 +15,7 @@ showPlot  = false;
 
 for i = 1:nFiles
     for j = 1:length(binVector)
-        fileName = sprintf('%s%d%s',fileName1,i,fileName2);
+        fileName = sprintf('%s%d%s',fileName1,i-1,fileName2);
 
         InterpEff2D(fileName,binVector(j),showPlot);
     end

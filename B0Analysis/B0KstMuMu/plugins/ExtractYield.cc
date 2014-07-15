@@ -4981,53 +4981,53 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // ################################
       // @TMP@
       // if ((FitType != 26) && (GetVar(*TotalPDF,"FlS") != NULL) && (GetVar(*TotalPDF,"AfbS") != NULL))
-      // 	{
-      // 	  // #############################
-      // 	  // # Turn off all the printout #
-      // 	  // #############################
-      // 	  RooMsgService::instance().setGlobalKillBelow(RooFit::FATAL);
+      	// {
+      	//   // #############################
+      	//   // # Turn off all the printout #
+      	//   // #############################
+      	//   RooMsgService::instance().setGlobalKillBelow(RooFit::FATAL);
 
 
-      // 	  RooAbsReal* NLL;
-      // 	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
-      // 	  else                                                               NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
+      	//   RooAbsReal* NLL;
+      	//   if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
+      	//   else                                                               NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
 
 
-      // 	  localCanv[3]->cd();
-      // 	  RooMinuit RooMin(*NLL);
-      // 	  RooPlot* myFrameNLL = RooMin.contour(*GetVar(*TotalPDF,"AfbS"),*GetVar(*TotalPDF,"FlS"),1.0,2.0,3.0);
-      // 	  DrawString(LUMI,myFrameY);
-      // 	  myFrameNLL->Draw();
+      	//   localCanv[3]->cd();
+      	//   RooMinuit RooMin(*NLL);
+      	//   RooPlot* myFrameNLL = RooMin.contour(*GetVar(*TotalPDF,"AfbS"),*GetVar(*TotalPDF,"FlS"),1.0,2.0,3.0);
+      	//   DrawString(LUMI,myFrameY);
+      	//   myFrameNLL->Draw();
 
 
-      // 	  localCanv[4]->cd();
-      //     RooPlot* myFrameNLLVar1 = GetVar(*TotalPDF,"FlS")->frame();
-      // 	  NLL->plotOn(myFrameNLLVar1,ShiftToZero());
-      // 	  RooAbsReal* var1Profile = NLL->createProfile(*(GetVar(*TotalPDF,"FlS")));
-      // 	  var1Profile->plotOn(myFrameNLLVar1,LineColor(kRed));
-      // 	  myFrameNLLVar1->SetMinimum(0);
-      // 	  myFrameNLLVar1->SetMaximum(5);
-      //     myFrameNLLVar1->Draw();
+      	//   localCanv[4]->cd();
+        //   RooPlot* myFrameNLLVar1 = GetVar(*TotalPDF,"FlS")->frame();
+      	//   NLL->plotOn(myFrameNLLVar1,ShiftToZero());
+      	//   RooAbsReal* var1Profile = NLL->createProfile(*(GetVar(*TotalPDF,"FlS")));
+      	//   var1Profile->plotOn(myFrameNLLVar1,LineColor(kRed));
+      	//   myFrameNLLVar1->SetMinimum(0);
+      	//   myFrameNLLVar1->SetMaximum(5);
+        //   myFrameNLLVar1->Draw();
 
 
-      // 	  localCanv[5]->cd();
-      //     RooPlot* myFrameNLLVar2 = GetVar(*TotalPDF,"AfbS")->frame();
-      // 	  NLL->plotOn(myFrameNLLVar2,ShiftToZero());
-      // 	  RooAbsReal* var2Profile = NLL->createProfile(*(GetVar(*TotalPDF,"AfbS")));
-      // 	  var2Profile->plotOn(myFrameNLLVar2,LineColor(kRed));
-      // 	  myFrameNLLVar2->SetMinimum(0);
-      // 	  myFrameNLLVar2->SetMaximum(5);
-      //     myFrameNLLVar2->Draw();
+      	//   localCanv[5]->cd();
+        //   RooPlot* myFrameNLLVar2 = GetVar(*TotalPDF,"AfbS")->frame();
+      	//   NLL->plotOn(myFrameNLLVar2,ShiftToZero());
+      	//   RooAbsReal* var2Profile = NLL->createProfile(*(GetVar(*TotalPDF,"AfbS")));
+      	//   var2Profile->plotOn(myFrameNLLVar2,LineColor(kRed));
+      	//   myFrameNLLVar2->SetMinimum(0);
+      	//   myFrameNLLVar2->SetMaximum(5);
+        //   myFrameNLLVar2->Draw();
 
 
-      // 	  delete NLL;
+      	//   delete NLL;
 
 
-      // 	  // ############################
-      // 	  // # Turn on all the printout #
-      // 	  // ############################
-      // 	  RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
-      // 	}
+      	//   // ############################
+      	//   // # Turn on all the printout #
+      	//   // ############################
+      	//   RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
+      	// }
 
 
       // ####################
@@ -6290,6 +6290,11 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   histoPull1->SetXTitle("(fit #font[122]{\55} pdf) / #sigma");
   histoPull1->SetYTitle("Entries [#]");
 
+  TH1D* histoChiSq1 = new TH1D("histoChiSq1","histoChiSq1",30,0.0,50.0);
+  histoChiSq1->SetFillColor(kAzure+6);
+  histoChiSq1->SetXTitle("(fit #font[122]{\55} pdf)^2 / #sigma^2");
+  histoChiSq1->SetYTitle("Entries [#]");
+
   TH1D* histoNLL1 = new TH1D("histoNLL1","histoNLL1",30,1.0,-1.0);
   histoNLL1->SetFillColor(kGreen-7);
   histoNLL1->SetXTitle("NLL");
@@ -6304,6 +6309,11 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   histoPull2->SetFillColor(kAzure+6);
   histoPull2->SetXTitle("(fit #font[122]{\55} pdf) / #sigma");
   histoPull2->SetYTitle("Entries [#]");
+
+  TH1D* histoChiSq2 = new TH1D("histoChiSq2","histoChiSq2",30,0.0,50.0);
+  histoChiSq2->SetFillColor(kAzure+6);
+  histoChiSq2->SetXTitle("(fit #font[122]{\55} pdf)^2 / #sigma^2");
+  histoChiSq2->SetYTitle("Entries [#]");
 
   TH1D* histoNLL2 = new TH1D("histoNLL2","histoNLL2",30,1.0,-1.0);
   histoNLL2->SetFillColor(kGreen-7);
@@ -6337,8 +6347,15 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 	  myString.clear(); myString.str("");
 	  myString << fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin);
 	  if (TotalPDF->getVariables()->getRealValue(varName.c_str()) > atof(myString.str().c_str()))
-	    histoPull1->Fill((TotalPDF->getVariables()->getRealValue(varName.c_str()) - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorLo()));
-	  else histoPull1->Fill((TotalPDF->getVariables()->getRealValue(varName.c_str()) - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorHi()));
+	    {
+	      histoPull1->Fill((TotalPDF->getVariables()->getRealValue(varName.c_str()) - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorLo()));
+	      histoChiSq1->Fill(pow((TotalPDF->getVariables()->getRealValue(varName.c_str()) - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorLo()),2.));
+	    }
+	  else
+	    {
+	      histoPull1->Fill((TotalPDF->getVariables()->getRealValue(varName.c_str()) - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorHi()));
+	      histoChiSq1->Fill(pow((TotalPDF->getVariables()->getRealValue(varName.c_str()) - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorHi()),2.));
+	    }
 	  histoDiff1->Fill(TotalPDF->getVariables()->getRealValue(varName.c_str()) - atof(myString.str().c_str()));
 	  histoNLL1->Fill(NLLvalue);
 	  
@@ -6346,8 +6363,15 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 	  myString.clear(); myString.str("");
 	  myString << fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin);
 	  if (TotalPDF->getVariables()->getRealValue(varName.c_str()) > atof(myString.str().c_str()))
-	    histoPull2->Fill((TotalPDF->getVariables()->getRealValue(varName.c_str()) - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorLo()));
-	  else histoPull2->Fill((TotalPDF->getVariables()->getRealValue(varName.c_str()) - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorHi()));
+	    {
+	      histoPull2->Fill((TotalPDF->getVariables()->getRealValue(varName.c_str()) - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorLo()));
+	      histoChiSq2->Fill(pow((TotalPDF->getVariables()->getRealValue(varName.c_str()) - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorLo()),2.));
+	    }
+	  else
+	    {
+	      histoPull2->Fill((TotalPDF->getVariables()->getRealValue(varName.c_str()) - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorHi()));
+	      histoChiSq2->Fill(pow((TotalPDF->getVariables()->getRealValue(varName.c_str()) - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorHi()),2.));
+	    }
 	  histoDiff2->Fill(TotalPDF->getVariables()->getRealValue(varName.c_str()) - atof(myString.str().c_str()));
 	  histoNLL2->Fill(NLLvalue);
 	}
@@ -6355,25 +6379,29 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
     }
 
 
-  TCanvas* cNLL1 = new TCanvas("cNLL1","cNLL1",10,10,900,500);
-  cNLL1->Divide(3,1);
+  TCanvas* cNLL1 = new TCanvas("cNLL1","cNLL1",10,10,900,600);
+  cNLL1->Divide(2,2);
   cNLL1->cd(1);
   histoDiff1->Draw();
   cNLL1->cd(2);
   histoNLL1->Draw();
   cNLL1->cd(3);
   histoPull1->Draw();
+  cNLL1->cd(4);
+  histoChiSq1->Draw();
   cNLL1->Modified();
   cNLL1->Update();
 
-  TCanvas* cNLL2 = new TCanvas("cNLL2","cNLL2",10,10,900,500);
-  cNLL2->Divide(3,1);
+  TCanvas* cNLL2 = new TCanvas("cNLL2","cNLL2",10,10,900,600);
+  cNLL2->Divide(2,2);
   cNLL2->cd(1);
   histoDiff2->Draw();
   cNLL2->cd(2);
   histoNLL2->Draw();
   cNLL2->cd(3);
   histoPull2->Draw();
+  cNLL2->cd(4);
+  histoChiSq2->Draw();
   cNLL2->Modified();
   cNLL2->Update();
 
@@ -6386,6 +6414,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       TFile* fNLL;
 
       Canv->Print(fileName.c_str());
+
 
       myString.clear(); myString.str("");
       myString << "FL_" << specBin << "_DIFF.root";
@@ -6404,12 +6433,21 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       delete fNLL;
 
       myString.clear(); myString.str("");
+      myString << "_FL_" << specBin << "_Chi2.root";
+      fNLL = new TFile(fileName.replace(fileName.find("_FL_"),15,myString.str()).c_str(),"RECREATE");
+      fNLL->cd();
+      histoChiSq1->Write();
+      fNLL->Close();
+      delete fNLL;
+
+      myString.clear(); myString.str("");
       myString << "_FL_" << specBin << "_NLL.root";
       fNLL = new TFile(fileName.replace(fileName.find("_FL_"),15,myString.str()).c_str(),"RECREATE");
       fNLL->cd();
       histoNLL1->Write();
       fNLL->Close();
       delete fNLL;
+
 
       myString.clear(); myString.str("");
       myString << "_AFB_" << specBin << "_DIFF.root";
@@ -6424,6 +6462,14 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       fNLL = new TFile(fileName.replace(fileName.find("_AFB_"),16,myString.str()).c_str(),"RECREATE");
       fNLL->cd();
       histoPull2->Write();
+      fNLL->Close();
+      delete fNLL;
+
+      myString.clear(); myString.str("");
+      myString << "_AFB_" << specBin << "_Chi2.root";
+      fNLL = new TFile(fileName.replace(fileName.find("_AFB_"),16,myString.str()).c_str(),"RECREATE");
+      fNLL->cd();
+      histoChiSq2->Write();
       fNLL->Close();
       delete fNLL;
 

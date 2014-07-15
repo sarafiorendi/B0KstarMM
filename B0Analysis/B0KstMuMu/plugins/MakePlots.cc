@@ -2600,16 +2600,17 @@ void MakeupNLLandPULLplots (string fileName, string plotType, int specBin)
   TList* myList;
   TH1D* histoNLL;
   TH1D* histoPULL;
+  TH1D* histoChi2;
   TH1D* histoDIFF;
 
   vector<vector<double>*> vecNLL;
   Utility->ReadNLLval(ParameterFILE,&vecNLL);
   val = Utility->GetNLLval(&vecNLL,plotType,specBin);
 
-  TCanvas* c0 = new TCanvas("c0","c0",10,10,1500,500);
-  c0->Divide(3,1);
+  TCanvas* c0 = new TCanvas("c0","c0",10,10,1500,900);
+  c0->Divide(2,2);
 
-  
+
   myString << fileName.c_str();
   cout << "\n\nReading NLL distribution from file: " << myString.str().c_str() << endl;
   fileID.push_back(new TFile(fileName.c_str(),"READ"));
@@ -2633,8 +2634,20 @@ void MakeupNLLandPULLplots (string fileName, string plotType, int specBin)
 
   myString.clear();
   myString.str("");
-  myString << "_DIFF.root";
+  myString << "_Chi2.root";
   fileName.replace(fileName.find("_PULL.root"),10,myString.str());
+  cout << "\nReading Chi2 distribution from file: " << fileName.c_str() << endl;
+  fileID.push_back(new TFile(fileName.c_str(),"READ"));
+
+  myList = fileID.back()->GetListOfKeys();
+  histoChi2 = (TH1D*)((dynamic_cast<TKey*>(myList->At(0)))->ReadObj());
+  histoChi2->SetFillColor(kAzure+6);
+
+
+  myString.clear();
+  myString.str("");
+  myString << "_DIFF.root";
+  fileName.replace(fileName.find("_Chi2.root"),10,myString.str());
   cout << "\nReading DIFF distribution from file: " << fileName.c_str() << endl;
   fileID.push_back(new TFile(fileName.c_str(),"READ"));
 
@@ -2653,6 +2666,11 @@ void MakeupNLLandPULLplots (string fileName, string plotType, int specBin)
   histoPULL->GetFunction("gaus")->Draw("same");
 
   c0->cd(3);
+  histoChi2->Draw();
+  histoChi2->Fit("gaus","0");
+  histoChi2->GetFunction("gaus")->Draw("same");
+
+  c0->cd(4);
   histoDIFF->Draw();
   histoDIFF->Fit("gaus","0");
   histoDIFF->GetFunction("gaus")->Draw("same");

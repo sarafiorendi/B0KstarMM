@@ -40,7 +40,7 @@ for i = 1:nFiles
     fidINval    = fopen('../../efficiency/ThetaKThetaLPhi_B0ToKstMuMu_B0ToJPsiKst_B0ToPsi2SKst.txt','r');
     fidINcov    = fopen('../../efficiency/ThetaKThetaLPhiFullCovariance_B0ToKstMuMu_B0ToJPsiKst_B0ToPsi2SKst.txt','r');
 
-    fileNameOut = sprintf('../../efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen_%d.txt',i);
+    fileNameOut = sprintf('../../efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen_%d.txt',i-1);
     fidOUT      = fopen(fileNameOut,'a+');
     fprintf(fidOUT,'%d\n',nBins*NcoeffThetaL+NcoeffPhi);
     fprintf('\nGenerating file n.%d\n',i);
