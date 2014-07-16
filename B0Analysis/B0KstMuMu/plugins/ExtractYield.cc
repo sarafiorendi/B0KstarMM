@@ -84,7 +84,7 @@ using namespace RooFit;
 #define MakeMuMuPlots false
 #define USEMINOS      false
 #define SETBATCH      false
-#define SAVEPOLY      false // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
+#define SAVEPOLY      false  // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
 #define SAVEPLOT      false
 #define RESETANGPAR   false // Reset angular parameters before starting the fit
 #define FUNCERRBAND   false // Show the p.d.f. error band
@@ -347,7 +347,7 @@ void StorePolyResultsInFile    (RooAbsPdf** TotalPDF);
 vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr);
 unsigned int CopyFitResults    (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vector<vector<string>*>* fitParam, unsigned int countMisTag = 0, unsigned int countGoodTag = 0);
 
-void GenerateFitParameters     (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, unsigned int q2BinIndx);
+void GenerateFitParameters     (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, unsigned int q2BinIndx, string option);
 void GenerateDataset           (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2Bins, int q2BinIndx, vector<vector<string>*>* fitParam, string fileName);
 
 void FitDimuonInvMass          (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x, TCanvas* Canv, bool justPlotMuMuMass, bool justKeepPsi, string plotName);
@@ -2284,7 +2284,7 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vector
 }
 
 
-void GenerateFitParameters (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, unsigned int q2BinIndx)
+void GenerateFitParameters (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, unsigned int q2BinIndx, string option)
 {
   unsigned int NCoeffPolyBKGcomb1;
   unsigned int NCoeffPolyBKGcomb2;
@@ -2298,124 +2298,138 @@ void GenerateFitParameters (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
   cout << "\n@@@ Random seed for parameter file generation set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
 
-  if ((atoi(Utility->GetGenericParam("CtrlMisTagWrkFlow").c_str()) == 0) && (GetVar(TotalPDF,"nMisTagFrac") != NULL))
+  if ((option == "All") || (option == "misTag"))
     {
-      cout << "Mis-tag fraction generation: gaussian mean = " << GetVar(TotalPDF,"nMisTagFrac")->getVal() << "\tsigma = " << GetVar(TotalPDF,"nMisTagFrac")->getError() << endl;
-      TotalPDF->getVariables()->setRealValue("nMisTagFrac",RooRandom::gaussian() * GetVar(TotalPDF,"nMisTagFrac")->getError() + GetVar(TotalPDF,"nMisTagFrac")->getVal());
-      GetVar(TotalPDF,"nMisTagFrac")->setAsymError(-1.0,1.0);
-      GetVar(TotalPDF,"nMisTagFrac")->setError(1.0);
+      if ((atoi(Utility->GetGenericParam("CtrlMisTagWrkFlow").c_str()) == 0) && (GetVar(TotalPDF,"nMisTagFrac") != NULL))
+	{
+	  cout << "Mis-tag fraction generation: gaussian mean = " << GetVar(TotalPDF,"nMisTagFrac")->getVal() << "\tsigma = " << GetVar(TotalPDF,"nMisTagFrac")->getError() << endl;
+	  TotalPDF->getVariables()->setRealValue("nMisTagFrac",RooRandom::gaussian() * GetVar(TotalPDF,"nMisTagFrac")->getError() + GetVar(TotalPDF,"nMisTagFrac")->getVal());
+	  GetVar(TotalPDF,"nMisTagFrac")->setAsymError(-1.0,1.0);
+	  GetVar(TotalPDF,"nMisTagFrac")->setError(1.0);
+	}
     }
 
 
-  if (GetVar(TotalPDF,"var1") != NULL)
+  if (option == "All")
     {
-      cout << "Background var1 generation: lower bound = 0\thigher bound = 1" << endl;
-      TotalPDF->getVariables()->setRealValue("var1",RooRandom::uniform());
-      GetVar(TotalPDF,"var1")->setAsymError(-1.0,1.0);
-      GetVar(TotalPDF,"var1")->setError(1.0);
+      if (GetVar(TotalPDF,"var1") != NULL)
+	{
+	  cout << "Background var1 generation: lower bound = 0\thigher bound = 1" << endl;
+	  TotalPDF->getVariables()->setRealValue("var1",RooRandom::uniform());
+	  GetVar(TotalPDF,"var1")->setAsymError(-1.0,1.0);
+	  GetVar(TotalPDF,"var1")->setError(1.0);
+	}
+
+      if (GetVar(TotalPDF,"var2") != NULL)
+	{
+	  cout << "Background var2 generation: lower bound = 0\thigher bound = 1" << endl;
+	  TotalPDF->getVariables()->setRealValue("var2",RooRandom::uniform());
+	  GetVar(TotalPDF,"var2")->setAsymError(-1.0,1.0);
+	  GetVar(TotalPDF,"var2")->setError(1.0);
+	}
+
+      if (GetVar(TotalPDF,"fracMassBExp") != NULL)
+	{
+	  cout << "Background fraction generation" << endl;
+	  TotalPDF->getVariables()->setRealValue("fracMassBExp",RooRandom::uniform());
+	  GetVar(TotalPDF,"fracMassBExp")->setAsymError(-1.0,1.0);
+	  GetVar(TotalPDF,"fracMassBExp")->setError(1.0);
+	}
     }
 
-  if (GetVar(TotalPDF,"var2") != NULL)
+
+  if ((option == "All") || (option == "FlAfb"))
     {
-      cout << "Background var2 generation: lower bound = 0\thigher bound = 1" << endl;
-      TotalPDF->getVariables()->setRealValue("var2",RooRandom::uniform());
-      GetVar(TotalPDF,"var2")->setAsymError(-1.0,1.0);
-      GetVar(TotalPDF,"var2")->setError(1.0);
+      if (GetVar(TotalPDF,"FlS") != NULL)
+	{
+	  cout << "Fl generation: lower bound = " << GetVar(TotalPDF,"FlS")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"FlS")->getMax() << endl;
+	  TotalPDF->getVariables()->setRealValue("FlS",RooRandom::uniform() * (GetVar(TotalPDF,"FlS")->getMax() - GetVar(TotalPDF,"FlS")->getMin()) + GetVar(TotalPDF,"FlS")->getMin());
+	  GetVar(TotalPDF,"FlS")->setAsymError(-1.0,1.0);
+	  GetVar(TotalPDF,"FlS")->setError(1.0);
+	}
+      
+      if (GetVar(TotalPDF,"AfbS") != NULL)
+	{
+	  cout << "Afb generation: lower bound = " << GetVar(TotalPDF,"AfbS")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"AfbS")->getMax() << endl;
+	  TotalPDF->getVariables()->setRealValue("AfbS",RooRandom::uniform() * (GetVar(TotalPDF,"AfbS")->getMax() - GetVar(TotalPDF,"AfbS")->getMin()) + GetVar(TotalPDF,"AfbS")->getMin());
+	  GetVar(TotalPDF,"AfbS")->setAsymError(-1.0,1.0);
+	  GetVar(TotalPDF,"AfbS")->setError(1.0);
+	}
     }
 
-  if (GetVar(TotalPDF,"fracMassBExp") != NULL)
+  if (option == "All")
     {
-      cout << "Background fraction generation" << endl;
-      TotalPDF->getVariables()->setRealValue("fracMassBExp",RooRandom::uniform());
-      GetVar(TotalPDF,"fracMassBExp")->setAsymError(-1.0,1.0);
-      GetVar(TotalPDF,"fracMassBExp")->setError(1.0);
+      if (GetVar(TotalPDF,"P1S") != NULL)
+	{
+	  cout << "P1 generation: lower bound = " << GetVar(TotalPDF,"P1S")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"P1S")->getMax() << endl;
+	  TotalPDF->getVariables()->setRealValue("P1S",RooRandom::uniform() * (GetVar(TotalPDF,"P1S")->getMax() - GetVar(TotalPDF,"P1S")->getMin()) + GetVar(TotalPDF,"P1S")->getMin());
+	  GetVar(TotalPDF,"P1S")->setAsymError(-1.0,1.0);
+	  GetVar(TotalPDF,"P1S")->setError(1.0);
+	}
+
+      if (GetVar(TotalPDF,"P2S") != NULL)
+	{
+	  cout << "P2 generation: lower bound = " << GetVar(TotalPDF,"P2S")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"P2S")->getMax() << endl;
+	  TotalPDF->getVariables()->setRealValue("P2S",RooRandom::uniform() * (GetVar(TotalPDF,"P2S")->getMax() - GetVar(TotalPDF,"P2S")->getMin()) + GetVar(TotalPDF,"P2S")->getMin());
+	  GetVar(TotalPDF,"P2S")->setAsymError(-1.0,1.0);
+	  GetVar(TotalPDF,"P2S")->setError(1.0);
+	}
+
+      if (GetVar(TotalPDF,"FsS") != NULL)
+	{
+	  cout << "Fs generation: lower bound = " << GetVar(TotalPDF,"FsS")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"FsS")->getMax() << endl;
+	  TotalPDF->getVariables()->setRealValue("FsS",RooRandom::uniform() * (GetVar(TotalPDF,"FsS")->getMax() - GetVar(TotalPDF,"FsS")->getMin()) + GetVar(TotalPDF,"FsS")->getMin());
+	  GetVar(TotalPDF,"FsS")->setAsymError(-1.0,1.0);
+	  GetVar(TotalPDF,"FsS")->setError(1.0);
+	}
+
+      if (GetVar(TotalPDF,"AsS") != NULL)
+	{
+	  cout << "As generation: lower bound = " << GetVar(TotalPDF,"AsS")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"AsS")->getMax() << endl;
+	  TotalPDF->getVariables()->setRealValue("AsS",RooRandom::uniform() * (GetVar(TotalPDF,"AsS")->getMax() - GetVar(TotalPDF,"AsS")->getMin()) + GetVar(TotalPDF,"AsS")->getMin());
+	  GetVar(TotalPDF,"AsS")->setAsymError(-1.0,1.0);
+	  GetVar(TotalPDF,"AsS")->setError(1.0);
+	}
     }
-
-
-  if (GetVar(TotalPDF,"FlS") != NULL)
-    {
-      cout << "Fl generation: lower bound = " << GetVar(TotalPDF,"FlS")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"FlS")->getMax() << endl;
-      TotalPDF->getVariables()->setRealValue("FlS",RooRandom::uniform() * (GetVar(TotalPDF,"FlS")->getMax() - GetVar(TotalPDF,"FlS")->getMin()) + GetVar(TotalPDF,"FlS")->getMin());
-      GetVar(TotalPDF,"FlS")->setAsymError(-1.0,1.0);
-      GetVar(TotalPDF,"FlS")->setError(1.0);
-    }
-
-  if (GetVar(TotalPDF,"AfbS") != NULL)
-    {
-      cout << "Afb generation: lower bound = " << GetVar(TotalPDF,"AfbS")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"AfbS")->getMax() << endl;
-      TotalPDF->getVariables()->setRealValue("AfbS",RooRandom::uniform() * (GetVar(TotalPDF,"AfbS")->getMax() - GetVar(TotalPDF,"AfbS")->getMin()) + GetVar(TotalPDF,"AfbS")->getMin());
-      GetVar(TotalPDF,"AfbS")->setAsymError(-1.0,1.0);
-      GetVar(TotalPDF,"AfbS")->setError(1.0);
-    }
-
-  if (GetVar(TotalPDF,"P1S") != NULL)
-    {
-      cout << "P1 generation: lower bound = " << GetVar(TotalPDF,"P1S")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"P1S")->getMax() << endl;
-      TotalPDF->getVariables()->setRealValue("P1S",RooRandom::uniform() * (GetVar(TotalPDF,"P1S")->getMax() - GetVar(TotalPDF,"P1S")->getMin()) + GetVar(TotalPDF,"P1S")->getMin());
-      GetVar(TotalPDF,"P1S")->setAsymError(-1.0,1.0);
-      GetVar(TotalPDF,"P1S")->setError(1.0);
-    }
-
-  if (GetVar(TotalPDF,"P2S") != NULL)
-    {
-      cout << "P2 generation: lower bound = " << GetVar(TotalPDF,"P2S")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"P2S")->getMax() << endl;
-      TotalPDF->getVariables()->setRealValue("P2S",RooRandom::uniform() * (GetVar(TotalPDF,"P2S")->getMax() - GetVar(TotalPDF,"P2S")->getMin()) + GetVar(TotalPDF,"P2S")->getMin());
-      GetVar(TotalPDF,"P2S")->setAsymError(-1.0,1.0);
-      GetVar(TotalPDF,"P2S")->setError(1.0);
-    }
-
-  if (GetVar(TotalPDF,"FsS") != NULL)
-    {
-      cout << "Fs generation: lower bound = " << GetVar(TotalPDF,"FsS")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"FsS")->getMax() << endl;
-      TotalPDF->getVariables()->setRealValue("FsS",RooRandom::uniform() * (GetVar(TotalPDF,"FsS")->getMax() - GetVar(TotalPDF,"FsS")->getMin()) + GetVar(TotalPDF,"FsS")->getMin());
-      GetVar(TotalPDF,"FsS")->setAsymError(-1.0,1.0);
-      GetVar(TotalPDF,"FsS")->setError(1.0);
-    }
-
-  if (GetVar(TotalPDF,"AsS") != NULL)
-    {
-      cout << "As generation: lower bound = " << GetVar(TotalPDF,"AsS")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"AsS")->getMax() << endl;
-      TotalPDF->getVariables()->setRealValue("AsS",RooRandom::uniform() * (GetVar(TotalPDF,"AsS")->getMax() - GetVar(TotalPDF,"AsS")->getMin()) + GetVar(TotalPDF,"AsS")->getMin());
-      GetVar(TotalPDF,"AsS")->setAsymError(-1.0,1.0);
-      GetVar(TotalPDF,"AsS")->setError(1.0);
-    }
-
 
   NCoeffPolyBKGcomb1 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC1"))->operator[](q2BinIndx).c_str());
   NCoeffPolyBKGcomb2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC2"))->operator[](q2BinIndx).c_str());
   NCoeffPolyBKGcomb3 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC3"))->operator[](q2BinIndx).c_str());
 
-  for (unsigned int i = 0; i < NCoeffPolyBKGcomb1; i++)
+  if (option == "All")
     {
-      myString.clear(); myString.str("");
-      myString << "c1Poly" << i;
-      if (GetVar(TotalPDF,myString.str().c_str()) != NULL)
+      for (unsigned int i = 0; i < NCoeffPolyBKGcomb1; i++)
 	{
-	  TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE / 2.);
-	  GetVar(TotalPDF,myString.str().c_str())->setAsymError(-1.0,1.0);
-	  GetVar(TotalPDF,myString.str().c_str())->setError(1.0);
+	  myString.clear(); myString.str("");
+	  myString << "c1Poly" << i;
+	  if (GetVar(TotalPDF,myString.str().c_str()) != NULL)
+	    {
+	      TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE / 2.);
+	      GetVar(TotalPDF,myString.str().c_str())->setAsymError(-1.0,1.0);
+	      GetVar(TotalPDF,myString.str().c_str())->setError(1.0);
+	    }
 	}
-    }
-  for (unsigned int i = 0; i < NCoeffPolyBKGcomb2; i++)
-    {
-      myString.clear(); myString.str("");
-      myString << "c2Poly" << i;
-      if (GetVar(TotalPDF,myString.str().c_str()) != NULL)
+      for (unsigned int i = 0; i < NCoeffPolyBKGcomb2; i++)
 	{
-	  TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE / 2.);
-	  GetVar(TotalPDF,myString.str().c_str())->setAsymError(-1.0,1.0);
-	  GetVar(TotalPDF,myString.str().c_str())->setError(1.0);
+	  myString.clear(); myString.str("");
+	  myString << "c2Poly" << i;
+	  if (GetVar(TotalPDF,myString.str().c_str()) != NULL)
+	    {
+	      TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE / 2.);
+	      GetVar(TotalPDF,myString.str().c_str())->setAsymError(-1.0,1.0);
+	      GetVar(TotalPDF,myString.str().c_str())->setError(1.0);
+	    }
 	}
-    }
-  for (unsigned int i = 0; i < NCoeffPolyBKGcomb3; i++)
-    {
-      myString.clear(); myString.str("");
-      myString << "c3Poly" << i;
-      if (GetVar(TotalPDF,myString.str().c_str()) != NULL)
+      for (unsigned int i = 0; i < NCoeffPolyBKGcomb3; i++)
 	{
-	  TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE / 2.);
-	  GetVar(TotalPDF,myString.str().c_str())->setAsymError(-1.0,1.0);
-	  GetVar(TotalPDF,myString.str().c_str())->setError(1.0);
+	  myString.clear(); myString.str("");
+	  myString << "c3Poly" << i;
+	  if (GetVar(TotalPDF,myString.str().c_str()) != NULL)
+	    {
+	      TotalPDF->getVariables()->setRealValue(myString.str().c_str(),RooRandom::uniform() * POLYCOEFRANGE - POLYCOEFRANGE / 2.);
+	      GetVar(TotalPDF,myString.str().c_str())->setAsymError(-1.0,1.0);
+	      GetVar(TotalPDF,myString.str().c_str())->setError(1.0);
+	    }
 	}
     }
 }
@@ -7150,7 +7164,7 @@ int main(int argc, char** argv)
 		  if ((specBin != -1) && (i != static_cast<unsigned int>(specBin))) vecParStr = SaveFitResults(NULL,i,&fitParam,&configParam,NULL);
 		  else
 		    {
-		      GenerateFitParameters(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,i);
+		      GenerateFitParameters(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,i,"All");
 		      vecParStr = SaveFitResults(TotalPDFRejectPsi,i,&fitParam,&configParam,&vecConstr);
 		    }
 

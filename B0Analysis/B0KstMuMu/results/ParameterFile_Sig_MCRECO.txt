@@ -2278,43 +2278,43 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 # q^2 bin 0; +error --- -error
 # FL
-0.0097   0.0097
+0.0096   0.0096
 # AFB
-0.0127   0.0127
+0.0126   0.0126
 # P1
 0.0   0.0
 # P2
 0.0   0.0
 # Branching-Fraction [x 10-7]
-0.0064   0.0064
+0.0042   0.0042
 
 # q^2 bin 1; +error --- -error
 # FL
-0.0030   0.0030
+0.0029   0.0029
 # AFB
-0.0062   0.0062
+0.0066   0.0066
 # P1
 0.0   0.0
 # P2
 0.0   0.0
 # Branching-Fraction [x 10-7]
-0.0041   0.0041
+0.0020   0.0020
 
 # q^2 bin 2; +error --- -error
 # FL
-0.0038   0.0038
+0.0036   0.0036
 # AFB
-0.0055   0.0055
+0.0054   0.0054
 # P1
 0.0   0.0
 # P2
 0.0   0.0
 # Branching-Fraction [x 10-7]
-0.0043   0.0043
+0.0021   0.0021
 
 # q^2 bin 3; +error --- -error
 # FL
-0.0055   0.0055
+0.0054   0.0054
 # AFB
 0.0059   0.0059
 # P1
@@ -2322,7 +2322,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # P2
 0.0   0.0
 # Branching-Fraction [x 10-7]
-0.0052   0.0052
+0.0023   0.0023
 
 # q^2 bin 4; +error --- -error
 # FL
@@ -2340,13 +2340,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # FL
 0.0031   0.0031
 # AFB
-0.0042   0.0042
+0.0040   0.0040
 # P1
 0.0   0.0
 # P2
 0.0   0.0
 # Branching-Fraction [x 10-7]
-0.0060   0.0060
+0.0024   0.0024
 
 # q^2 bin 6; +error --- -error
 # FL
@@ -2362,19 +2362,19 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 # q^2 bin 7; +error --- -error
 # FL
-0.0040   0.0040
+0.0041   0.0041
 # AFB
-0.0058   0.0058
+0.0050   0.0050
 # P1
 0.0   0.0
 # P2
 0.0   0.0
 # Branching-Fraction [x 10-7]
-0.0051   0.0051
+0.0023   0.0023
 
 # q^2 bin 8; +error --- -error
 # FL
-0.0040   0.0040
+0.0039   0.0039
 # AFB
 0.0052   0.0052
 # P1
@@ -2382,7 +2382,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # P2
 0.0   0.0
 # Branching-Fraction [x 10-7]
-0.0034   0.0034
+0.0015   0.0015
 
 
 ############################
