@@ -71,7 +71,7 @@ using namespace RooFit;
 #define MULTYIELD     1.0 // Multiplication factor to the number of entry in toy-MC
 #define NCOEFFPOLYBKG 5   // Maximum number of coefficients (= degree) of the polynomial describing the background in the angular variables
 #define DEGREEINTERP  1   // Polynomial degree for efficiency histogram interpolation
-#define MAXTRIALS     10   // Maximum number of trials in case of fit failure [0 = default single trial]
+#define MAXTRIALS     0   // Maximum number of trials in case of fit failure [0 = default single trial]
 
 #define nJPSIS 230000.0
 #define nJPSIB   2500.0
@@ -6382,6 +6382,18 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       toySample = (RooDataSet*)MyToy->genData(i);
       CopyFitResults(TotalPDF,specBin,fitParam);
       fitResult = MakeMass2AnglesFit(toySample,&TotalPDF,x,y,z,cB0Toy,FitType,vecConstr,&NLLvalue,NULL,i);
+      unsigned int nTrials = 0;
+      while ((MAXTRIALS > 0) && (nTrials < MAXTRIALS) && (CheckGoodFit(fitResult) == false))
+	{
+	  delete fitResult;
+	  GenerateFitParameters(TotalPDF,fitParam,i,q2Bins,specBin,"FlAfb");
+
+	  cout << "\n@@@ Failed trial #" << nTrials+1 << " @@@" << endl;
+	  cout << "New trial with parameters: Fl = " << GetVar(TotalPDF,"FlS")->getVal() << "; Afb = " << GetVar(TotalPDF,"AfbS")->getVal() << "\n" << endl;
+
+	  fitResult = MakeMass2AnglesFit(toySample,&TotalPDF,x,y,z,cB0Toy,FitType,vecConstr,&NLLvalue,NULL,i);
+	  nTrials++;
+	}
 
 
       // ######################################################
