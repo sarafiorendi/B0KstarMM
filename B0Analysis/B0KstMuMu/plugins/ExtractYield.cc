@@ -71,6 +71,7 @@ using namespace RooFit;
 #define MULTYIELD     1.0 // Multiplication factor to the number of entry in toy-MC
 #define NCOEFFPOLYBKG 5   // Maximum number of coefficients (= degree) of the polynomial describing the background in the angular variables
 #define DEGREEINTERP  1   // Polynomial degree for efficiency histogram interpolation
+#define MAXTRIALS     0   // Maximum number of trials in case of fit failures [0 = default single trial]
 
 #define nJPSIS 230000.0
 #define nJPSIB   2500.0
@@ -2293,6 +2294,12 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vector
 
 
 void GenerateFitParameters (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, unsigned int q2BinIndx, string option)
+// #########################
+// # option = "All"        #
+// # option = "misTagFrac" #
+// # option = "FlAfb"      #
+// # option = "bkgAng"     #
+// #########################
 {
   unsigned int NCoeffPolyBKGcomb1;
   unsigned int NCoeffPolyBKGcomb2;
@@ -5660,6 +5667,13 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // # Perform the fit #
       // ###################
       fitResult = MakeMass2AnglesFit(dataSet_q2Bins[i],&TotalPDFq2Bins[i],x,y,z,cq2Bins[i],FitType,vecConstr,&NLLvalue,extText[i],ID);
+      unsigned int nTrials = 0;
+      while ((MAXTRIALS > 0) && (nTrials < MAXTRIALS) && (CheckGoodFit(fitResult) == false))
+	{
+	  GenerateFitParameters(TotalPDFq2Bins[i],fitParam,ID,q2Bins,i,"FlAfb");
+	  fitResult = MakeMass2AnglesFit(dataSet_q2Bins[i],&TotalPDFq2Bins[i],x,y,z,cq2Bins[i],FitType,vecConstr,&NLLvalue,extText[i],ID);
+	  nTrials++;
+	}
 
 
       // ##############################################
@@ -6626,6 +6640,7 @@ int main(int argc, char** argv)
 	  cout << "MULTYIELD = "     << MULTYIELD << endl;
 	  cout << "NCOEFFPOLYBKG = " << NCOEFFPOLYBKG << endl;
 	  cout << "DEGREEINTERP = "  << DEGREEINTERP << endl;
+	  cout << "MAXTRIALS = "     << MAXTRIALS << endl;
 
 	  cout << "\nMakeMuMuPlots = " << MakeMuMuPlots << endl;
 	  cout << "USEMINOS = "        << USEMINOS << endl;
@@ -7174,7 +7189,7 @@ int main(int argc, char** argv)
 		  if ((specBin != -1) && (i != static_cast<unsigned int>(specBin))) vecParStr = SaveFitResults(NULL,i,&fitParam,&configParam,NULL);
 		  else
 		    {
-		      GenerateFitParameters(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,i,"All"); // @TMP@ : "All" "misTag" "FlAfb" "bkgAng"
+		      GenerateFitParameters(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,i,"All"); // @TMP@ : "All" "misTagFrac" "FlAfb" "bkgAng"
 		      vecParStr = SaveFitResults(TotalPDFRejectPsi,i,&fitParam,&configParam,&vecConstr);
 		    }
 
