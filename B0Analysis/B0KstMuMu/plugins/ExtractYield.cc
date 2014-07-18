@@ -71,7 +71,7 @@ using namespace RooFit;
 #define MULTYIELD     1.0 // Multiplication factor to the number of entry in toy-MC
 #define NCOEFFPOLYBKG 5   // Maximum number of coefficients (= degree) of the polynomial describing the background in the angular variables
 #define DEGREEINTERP  1   // Polynomial degree for efficiency histogram interpolation
-#define MAXTRIALS     0   // Maximum number of trials in case of fit failures [0 = default single trial]
+#define MAXTRIALS     10   // Maximum number of trials in case of fit failure [0 = default single trial]
 
 #define nJPSIS 230000.0
 #define nJPSIB   2500.0
@@ -2372,6 +2372,7 @@ void GenerateFitParameters (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
 	}
     }
 
+
   if (option == "All")
     {
       if (GetVar(TotalPDF,"P1S") != NULL)
@@ -2406,6 +2407,7 @@ void GenerateFitParameters (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
 	  GetVar(TotalPDF,"AsS")->setError(1.0);
 	}
     }
+
 
   NCoeffPolyBKGcomb1 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC1"))->operator[](q2BinIndx).c_str());
   NCoeffPolyBKGcomb2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC2"))->operator[](q2BinIndx).c_str());
@@ -5670,7 +5672,12 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       unsigned int nTrials = 0;
       while ((MAXTRIALS > 0) && (nTrials < MAXTRIALS) && (CheckGoodFit(fitResult) == false))
 	{
+	  delete fitResult;
 	  GenerateFitParameters(TotalPDFq2Bins[i],fitParam,ID,q2Bins,i,"FlAfb");
+
+	  cout << "\n@@@ Failed trial #" << nTrials+1 << " @@@" << endl;
+	  cout << "New trial with parameters: Fl = " << GetVar(TotalPDFq2Bins[i],"FlS")->getVal() << "; Afb = " << GetVar(TotalPDFq2Bins[i],"AfbS")->getVal() << "\n" << endl;
+
 	  fitResult = MakeMass2AnglesFit(dataSet_q2Bins[i],&TotalPDFq2Bins[i],x,y,z,cq2Bins[i],FitType,vecConstr,&NLLvalue,extText[i],ID);
 	  nTrials++;
 	}
