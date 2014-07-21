@@ -1954,7 +1954,7 @@ double Utils::ReadLumi (std::string fileName)
   // ##############################
   ParameterFile->ReadFromFile(ParFileBlockN("lumi"),&ParVector);
   for (unsigned int i = 0; i < ParVector.size(); i++) val = val + atof(ParVector[i].c_str());
-  std::cout << "\n@@@ Recorded luminosity: " << val << " fb-1 @@@" << std::endl;
+  std::cout << "\n[Utils::ReadLumi]\t@@@ Recorded luminosity: " << val << " fb-1 @@@" << std::endl;
 
 
   ParVector.clear();
@@ -2495,7 +2495,7 @@ double Utils::EffMinValue2D (std::vector<double>* cosThetaKBins, std::vector<dou
   valj = cosThetaKBins->operator[](cosThetaKBins->size()-1) - (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(jMem);
   valk = cosThetaLBins->operator[](cosThetaLBins->size()-1) - (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(kMem);
 
-  std::cout << "\n@@@ Efficiency minimal value (if less than zero): " << minVal << " at: (theta_K,theta_l = " << valj << "," << valk << ")" << std::endl;
+  std::cout << "\n[Utils::EffMinValue2D]\t@@@ Efficiency minimal value (if less than zero): " << minVal << " at: (theta_K,theta_l = " << valj << "," << valk << ")" << std::endl;
 
   std::cout << "Corresponding to bin [#bin convention 0...N-1 (-1 = upper bin)] (theta_K,theta_l): ";
   std::cout << SearchBin(valj,cosThetaKBins) << ",";
@@ -2546,7 +2546,7 @@ double Utils::EffMinValue3D (std::vector<double>* cosThetaKBins, std::vector<dou
   valk = cosThetaLBins->operator[](cosThetaLBins->size()-1) - (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(kMem);
   vall = phiBins->operator[](phiBins->size()-1)             - (phiBins->operator[](phiBins->size()-1)             - phiBins->operator[](0))       / static_cast<double>(nsteps) * static_cast<double>(lMem);
 
-  std::cout << "\n@@@ Efficiency minimal value (if less than zero): " << minVal << " at: (theta_K,theta_l,phi = " << valj << "," << valk << "," << vall << ")" << std::endl;
+  std::cout << "\n[Utils::EffMinValue3D]\t@@@ Efficiency minimal value (if less than zero): " << minVal << " at: (theta_K,theta_l,phi = " << valj << "," << valk << "," << vall << ")" << std::endl;
 
   std::cout << "Corresponding to bin [#bin convention 0...N-1 (-1 = upper bin)] (theta_K,theta_l,phi): ";
   std::cout << SearchBin(valj,cosThetaKBins) << ",";
