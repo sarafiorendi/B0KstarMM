@@ -847,11 +847,8 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
       // # Make 2D signal*efficiency p.d.f.: integral over phi #
       // # For correctly tagged events                         #
       // #######################################################
-      // @TMP@
-      FlS  = new RooRealVar("FlS","F_{L}",0.5);
-      AfbS = new RooRealVar("AfbS","A_{FB}",0.0);
-      // FlS  = new RooRealVar("FlS","F_{L}",0.0,0.0,1.0);
-      // AfbS = new RooRealVar("AfbS","A_{FB}",0.0,-1.0,1.0);
+      FlS  = new RooRealVar("FlS","F_{L}",0.0,0.0,1.0);
+      AfbS = new RooRealVar("AfbS","A_{FB}",0.0,-1.0,1.0);
       VarsAng->add(*FlS);
       VarsAng->add(*AfbS);
       VarsAng->add(*y);
@@ -863,13 +860,9 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
     	  // #####################
     	  // # P-wave decay rate #
     	  // #####################
-	  // @TMP@
-    	  myString << "(3/4 * (3/2 * (1/2+TMath::ATan(FlS)/TMath::Pi()) * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-    	  myString << "(3/8 * (1-(1/2+TMath::ATan(FlS)/TMath::Pi())) * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + 3/4*(1-(1/2+TMath::ATan(FlS)/TMath::Pi()))*2/TMath::Pi()*TMath::ATan(AfbS)*" << y->getPlotLabel() << ") * ";
+    	  myString << "(3/4 * (3/2 * FlS * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+    	  myString << "(3/8 * (1-FlS) * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + AfbS*" << y->getPlotLabel() << ") * ";
     	  myString << "(1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ")))";
-    	  // myString << "(3/4 * (3/2 * FlS * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-    	  // myString << "(3/8 * (1-FlS) * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + AfbS*" << y->getPlotLabel() << ") * ";
-    	  // myString << "(1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ")))";
     	}
       else
     	{
@@ -940,13 +933,9 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	  // #####################
 	  // # P-wave decay rate #
 	  // #####################
-	  // @TMP@
-    	  myString << "(3/4 * (3/2 * (1/2+TMath::ATan(FlS)/TMath::Pi()) * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-    	  myString << "(3/8 * (1-(1/2+TMath::ATan(FlS)/TMath::Pi())) * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - 3/4*(1-(1/2+TMath::ATan(FlS)/TMath::Pi()))*2/TMath::Pi()*TMath::ATan(AfbS)*" << y->getPlotLabel() << ") * ";
+    	  myString << "(3/4 * (3/2 * FlS * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+    	  myString << "(3/8 * (1-FlS) * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - AfbS*" << y->getPlotLabel() << ") * ";
     	  myString << "(1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ")))";
-    	  // myString << "(3/4 * (3/2 * FlS * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-    	  // myString << "(3/8 * (1-FlS) * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - AfbS*" << y->getPlotLabel() << ") * ";
-    	  // myString << "(1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ")))";
 	}
       else
 	{
@@ -5669,9 +5658,8 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       	  BuildPhysicsConstraints(vecConstr,TotalPDFq2Bins[i],"FsS");
       	  BuildPhysicsConstraints(vecConstr,TotalPDFq2Bins[i],"AsS");
       	}
-      // @TMP@
-      // BuildPhysicsConstraints(vecConstr,TotalPDFq2Bins[i],"AfbBound"); // # Special constraint for AFB boundaries #
-      // BuildPhysicsConstraints(vecConstr,TotalPDFq2Bins[i],"AsBound");  // # Special constraint for AS  boundaries #
+      BuildPhysicsConstraints(vecConstr,TotalPDFq2Bins[i],"AfbBound"); // # Special constraint for AFB boundaries #
+      BuildPhysicsConstraints(vecConstr,TotalPDFq2Bins[i],"AsBound");  // # Special constraint for AS  boundaries #
 
 
       // ###################################
@@ -5801,9 +5789,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // # Save observables in systematic error file #
       // #############################################
       myString.clear(); myString.str("");
-      // @TMP@
-      if (CheckGoodFit(fitResult) == true) myString << ID << "   " << 1./2.+TMath::ATan(value1)/TMath::Pi() << "   " << 3./4.*(1.-(1./2.+TMath::ATan(value1)/TMath::Pi()))*2./TMath::Pi()*TMath::ATan(value2) << "   " << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   " << effMuMuGoodTag << "   " << effMuMuMisTag << "   " << NLLvalue;
-      // if (CheckGoodFit(fitResult) == true) myString << ID << "   " << value1 << "   " << value2 << "   " << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   " << effMuMuGoodTag << "   " << effMuMuMisTag << "   " << NLLvalue;
+      if (CheckGoodFit(fitResult) == true) myString << ID << "   " << value1 << "   " << value2 << "   " << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   " << effMuMuGoodTag << "   " << effMuMuMisTag << "   " << NLLvalue;
       else                                 myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
       fileFitSystematics << myString.str() << endl;
     }
@@ -5856,9 +5842,8 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       BuildPhysicsConstraints(vecConstr,TotalPDF,"AsS");
     }
   constrToys = (RooArgSet*)vecConstr->clone("constrToys");
-  // @TMP@
-  // BuildPhysicsConstraints(vecConstr,TotalPDF,"AfbBound"); // # Special constraint for AFB boundaries #
-  // BuildPhysicsConstraints(vecConstr,TotalPDF,"AsBound");  // # Special constraint for AS  boundaries #
+  BuildPhysicsConstraints(vecConstr,TotalPDF,"AfbBound"); // # Special constraint for AFB boundaries #
+  BuildPhysicsConstraints(vecConstr,TotalPDF,"AsBound");  // # Special constraint for AS  boundaries #
 
 
   // ###################################
