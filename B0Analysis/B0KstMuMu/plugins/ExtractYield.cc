@@ -848,7 +848,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
       // # For correctly tagged events                         #
       // #######################################################
       // @TMP@
-      FlS  = new RooRealVar("FlS","F_{L}",0.0);
+      FlS  = new RooRealVar("FlS","F_{L}",0.5);
       AfbS = new RooRealVar("AfbS","A_{FB}",0.0);
       // FlS  = new RooRealVar("FlS","F_{L}",0.0,0.0,1.0);
       // AfbS = new RooRealVar("AfbS","A_{FB}",0.0,-1.0,1.0);
@@ -873,7 +873,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
     	}
       else
     	{
-    	  FsS = new RooRealVar("FsS","F_{s}",0.0,0.0,1.0);
+    	  FsS = new RooRealVar("FsS","F_{s}",0.5,0.0,1.0);
     	  AsS = new RooRealVar("AsS","A_{s}",0.0,-1.0,1.0);
     	  VarsAng->add(*FsS);
     	  VarsAng->add(*AsS);
@@ -5685,7 +5685,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // # Perform the fit #
       // ###################
       fitResult = MakeMass2AnglesFit(dataSet_q2Bins[i],&TotalPDFq2Bins[i],x,y,z,cq2Bins[i],FitType,vecConstr,&NLLvalue,extText[i],ID);
-      unsigned int nTrials = 0;
+      int nTrials = 0;
       while ((MAXTRIALS > 0) && (nTrials < MAXTRIALS) && (CheckGoodFit(fitResult) == false))
 	{
 	  delete fitResult;
@@ -6403,7 +6403,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       toySample = (RooDataSet*)MyToy->genData(i);
       CopyFitResults(TotalPDF,specBin,fitParam);
       fitResult = MakeMass2AnglesFit(toySample,&TotalPDF,x,y,z,cB0Toy,FitType,vecConstr,&NLLvalue,NULL,i);
-      unsigned int nTrials = 0;
+      int nTrials = 0;
       while ((MAXTRIALS > 0) && (nTrials < MAXTRIALS) && (CheckGoodFit(fitResult) == false))
 	{
 	  delete fitResult;
