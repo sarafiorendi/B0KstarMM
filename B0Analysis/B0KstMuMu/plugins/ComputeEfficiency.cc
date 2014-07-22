@@ -172,12 +172,12 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
   NTuple->ClearNTuple();
   NTuple->SetBranchAddresses(theTree);
   nEntries = theTree->GetEntries();
-  cout << "\n@@@ Computing efficiency type " << type;
+  cout << "\n[ComputeEfficiency::ComputeEfficiency]\t@@@ Computing efficiency type " << type;
   if      (type == 1) cout << " (before filter) @@@" << endl;
   else if (type == 2) cout << " (after filter) @@@" << endl;
   else if (type == 3) cout << " (reco events) @@@" << endl;
   else if (type == 4) cout << " (single candidate events) @@@" << endl;
-  cout << "@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
+  cout << "[ComputeEfficiency::ComputeEfficiency]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
 
   for (int entry = 0; entry < nEntries; entry++)
@@ -1990,7 +1990,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   effFunc1D = new TF1("effFunc1D",Utility->TellMeEffFuncPhi().c_str(),Utility->PI,Utility->PI);
   Utility->InitEffFuncPhi(effFunc1D);
 
-  cout << "\n@@@ Reading coefficients for analytical efficiency for phi from file " << INPUT_PHI << " @@@" << endl;
+  cout << "\n[ComputeEfficiency::Fit3DEfficiencies]\t@@@ Reading coefficients for analytical efficiency for phi from file " << INPUT_PHI << " @@@" << endl;
   fileInput.open(INPUT_PHI,ofstream::in);
   if (fileInput.good() == false)
     {
@@ -2582,7 +2582,7 @@ int main (int argc, char** argv)
       string option = argv[1];
 
 
-      cout << "\n@@@ Settings @@@" << endl;
+      cout << "\n[ComputeEfficiency::main]\t@@@ Settings @@@" << endl;
       cout << "INPUT_THETAL: "           << INPUT_THETAL << endl;
       cout << "INPUT_PHI: "              << INPUT_PHI << endl;
       cout << "INPUT_THETAL_THETAK: "    << INPUT_THETAL_THETAK << endl;
@@ -2621,7 +2621,7 @@ int main (int argc, char** argv)
 
 	  if (SETBATCH == true)
 	    {
-	      cout << "\n@@@ Setting batch mode @@@" << endl;
+	      cout << "\n[ComputeEfficiency::main]\t@@@ Setting batch mode @@@" << endl;
 	      gROOT->SetBatch(true);
 	    }
 	  TApplication theApp ("Applications", &argc, argv);
@@ -2668,7 +2668,7 @@ int main (int argc, char** argv)
 
 	  Utility->SaveEfficiency(fileNameOutput.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff);
 	  if (SETBATCH == false) MakeHistogramsAllBins(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,-1);
-	  cout << "\n@@@ Efficiency computation is done @@@" << endl;
+	  cout << "\n[ComputeEfficiency::main]\t@@@ Efficiency computation is done @@@" << endl;
 
 
 	  delete Utility;
@@ -2684,7 +2684,7 @@ int main (int argc, char** argv)
 
 	  if (SETBATCH == true)
 	    {
-	      cout << "\n@@@ Setting batch mode @@@" << endl;
+	      cout << "\n[ComputeEfficiency::main]\t@@@ Setting batch mode @@@" << endl;
 	      gROOT->SetBatch(true);
 	    }
 	  TApplication theApp ("Applications", &argc, argv);

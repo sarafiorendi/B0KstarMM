@@ -70,7 +70,7 @@ void PrintCurrentTime ()
 
   time(&rawT);
   localT = localtime(&rawT);
-  cout << "The current date/time is: " << asctime(localT) << endl;
+  cout << "[B0KstMuMuScanCuts::PrintCurrentTime]\tThe current date/time is: " << asctime(localT) << endl;
 }
 
 
@@ -225,7 +225,7 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   NTupleS->ClearNTuple();
   NTupleS->SetBranchAddresses(theTreeInS);
   int nEntriesS = theTreeInS->GetEntries();
-  cout << "\n@@@ Total number of events in the Signal tree: " << nEntriesS << " @@@" << endl;
+  cout << "\n[B0KstMuMuScanCuts::CutOptimization]\t@@@ Total number of events in the Signal tree: " << nEntriesS << " @@@" << endl;
   PrintCurrentTime();
 
   vector<double> countS;
@@ -293,7 +293,7 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   NTupleB->ClearNTuple();
   NTupleB->SetBranchAddresses(theTreeInB);
   int nEntriesB = theTreeInB->GetEntries();
-  cout << "\n@@@ Total number of events in the Background tree: " << nEntriesB << " @@@" << endl;
+  cout << "\n[B0KstMuMuScanCuts::CutOptimization]\t@@@ Total number of events in the Background tree: " << nEntriesB << " @@@" << endl;
   PrintCurrentTime();
 
   vector<double> countB;
@@ -416,7 +416,7 @@ int main (int argc, char** argv)
 
       if (SETBATCH == true)
 	{
-	  cout << "\n@@@ Setting batch mode @@@" << endl;
+	  cout << "\n[B0KstMuMuScanCuts::main]\t@@@ Setting batch mode @@@" << endl;
 	  gROOT->SetBatch(true);
 	}
       TApplication theApp ("Applications", &argc, argv);
@@ -435,7 +435,7 @@ int main (int argc, char** argv)
       TGaxis::SetMaxDigits(3);
 
 
-      cout << "\n@@@ Settings @@@" << endl;
+      cout << "\n[B0KstMuMuScanCuts::main]\t@@@ Settings @@@" << endl;
       cout << "Do trig check: "       << DoTrigCheck << endl;
       cout << "Special high q2 bin: " << SpecialHighq2Bin << endl;
       cout << "nEvPrint: "            << nEvPrint << endl;

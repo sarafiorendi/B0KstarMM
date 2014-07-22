@@ -68,7 +68,7 @@ void SelectBestCand (int SignalType)
   NTupleIn->ClearNTuple();
   NTupleIn->SetBranchAddresses(theTreeIn);
   int nEntries = theTreeIn->GetEntries();
-  cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
+  cout << "\n[SingleCandB0KstMuMu::SelectBestCand]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
 
   // ###########################
@@ -477,7 +477,7 @@ void BestCandPerformance (int SignalType)
   NTupleIn->ClearNTuple();
   NTupleIn->SetBranchAddresses(theTreeIn);
   int nEntries = theTreeIn->GetEntries();
-  cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
+  cout << "\n[SingleCandB0KstMuMu::BestCandPerformance]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
 
   // ###########################
@@ -546,7 +546,7 @@ int main (int argc, char** argv)
 	  Utility->ReadSelectionCuts(ParameterFILE);
 
 
-	  cout << "\n@@@ Settings @@@" << endl;
+	  cout << "\n[SingleCandB0KstMuMu::main]\t@@@ Settings @@@" << endl;
 	  cout << "Do Trigger Check: "   << DoTrigCheck << endl;
 	  cout << "DoMCTruth: "          << DoMCTruth << endl;
 	  cout << "TagFromTruth: "       << TagFromTruth << endl;

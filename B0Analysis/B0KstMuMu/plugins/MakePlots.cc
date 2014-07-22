@@ -216,7 +216,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 
   double signalSigma = sqrt( atof(Utility->GetGenericParam("FRACMASSS").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) +
 			     (1. - atof(Utility->GetGenericParam("FRACMASSS").c_str())) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) );
-  cout << "\n@@@ Signal sigma: " << signalSigma << " @@@" << endl;
+  cout << "\n[MakePlots::MakeComparisonDataMC]\t@@@ Signal sigma: " << signalSigma << " @@@" << endl;
 
 
   // ######
@@ -818,7 +818,7 @@ void MakeComparisonDataMC (unsigned int plotType)
   // # Query the MC NTuple #
   // #######################
   TH1D* hM1D;
-  cout << "\n\n@@@ Query to MC @@@" << endl;
+  cout << "\n\n[MakePlots::MakeComparisonDataMC]\t@@@ Query to MC @@@" << endl;
   for (unsigned int i = 0; i < NHisto; i++)
     {
       if (((plotType >= 6) && (plotType <= 13)) || ((plotType >= 18) && (plotType <= 25)))
@@ -872,7 +872,7 @@ void MakeComparisonDataMC (unsigned int plotType)
   // # Query the Data NTuple #
   // #########################
   string queryData;
-  cout << "\n\n@@@ Query to data @@@" << endl;
+  cout << "\n\n[MakePlots::MakeComparisonDataMC]\t@@@ Query to data @@@" << endl;
   if (((plotType >= 6) && (plotType <= 13)) || ((plotType >= 18) && (plotType <= 25)))
     {
       TH1D* hTmp = new TH1D("hTmp","hTmp",nBinsX,minX,maxX);
@@ -1046,7 +1046,7 @@ void MakeComparisonDataMC (unsigned int plotType)
   TH1D* hdiff = (TH1D*)hM1D->Clone("hdiff");
   hdiff->Add(hDsig1D,-1);
   for (int i = 0; i < hdiff->GetNbinsX(); i++) hdiff->SetBinContent(i+1,fabs(hdiff->GetBinContent(i+1)));
-  cout << "\n\n@@@ Percentage difference: " << hdiff->Integral() / 2. << " @@@" << endl;
+  cout << "\n\n[MakePlots::MakeComparisonDataMC]\t@@@ Percentage difference: " << hdiff->Integral() / 2. << " @@@" << endl;
 
 
   // ###################
@@ -1194,7 +1194,7 @@ void CheckPhysicsRegion ()
   ge->SetMarkerStyle(20);
   Utility->MakeGraphVar(ParameterFILE,&geTMP,"Afb");
 
-  cout << "\n@@@ I've found " << geTMP->GetN() << " data points @@@" << endl;
+  cout << "\n[MakePlots::CheckPhysicsRegion]\t@@@ I've found " << geTMP->GetN() << " data points @@@" << endl;
 
   for (int i = 0; i < geTMP->GetN(); i++)
     {
@@ -1930,7 +1930,7 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
   // #########################
   // # Read values from file #
   // #########################
-  cout << "\n@@@ Opening systematics file: " << fileName.c_str() << " @@@" << endl;
+  cout << "\n[MakePlots::EvalMultyRun]\t@@@ Opening systematics file: " << fileName.c_str() << " @@@" << endl;
   inputFile.open(fileName.c_str(), ifstream::in);
   if (inputFile.good() == false)
     {
@@ -1966,7 +1966,7 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
   else if (sysType == 1) hScNLL->SetBins(nBinsHisto*2,-1.0,1.0,nBinsHisto,hScNLL->GetMean(2) - NLLinterval,hScNLL->GetMean(2) + NLLinterval);
   else                   hScNLL->SetBins(nBinsHisto,1.0,-1.0,nBinsHisto,  hScNLL->GetMean(2) - NLLinterval,hScNLL->GetMean(2) + NLLinterval);
 
-  cout << "\n@@@ Rebin NLL scatter plot and refill @@@" << endl;
+  cout << "\n[MakePlots::EvalMultyRun]\t@@@ Rebin NLL scatter plot and refill @@@" << endl;
   hScNLL->Reset();
 
   inputFile.clear();
@@ -1987,7 +1987,7 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
   // ################
   // # Plot and Fit #
   // ################
-  cout << "\n@@@ I'm now fitting and plotting @@@\n" << endl;
+  cout << "\n[MakePlots::EvalMultyRun]\t@@@ I'm now fitting and plotting @@@\n" << endl;
 
   for (unsigned int i = 0; i < nPlots; i++)
     {
@@ -2037,7 +2037,7 @@ void PlotMuMu (string fileName, bool bkgSub)
 
   double signalSigma = sqrt( atof(Utility->GetGenericParam("FRACMASSS").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) +
 			     (1. - atof(Utility->GetGenericParam("FRACMASSS").c_str())) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) );
-  cout << "\n@@@ Signal sigma: " << signalSigma << " @@@" << endl;
+  cout << "\n[MakePlots::PlotMuMu]\t@@@ Signal sigma: " << signalSigma << " @@@" << endl;
 
 
   if (bkgSub == true)
@@ -2073,7 +2073,7 @@ void PlotMuMu (string fileName, bool bkgSub)
   TTree* theTree = (TTree*)file0->Get("B0KstMuMu/B0KstMuMuNTuple");
 
   nEntries = theTree->GetEntries();
-  cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
+  cout << "\n[MakePlots::PlotMuMu]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
 
   TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
@@ -2114,7 +2114,7 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
 
   double signalSigma = sqrt( atof(Utility->GetGenericParam("FRACMASSS").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) +
 			     (1. - atof(Utility->GetGenericParam("FRACMASSS").c_str())) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) );
-  cout << "\n@@@ Signal sigma: " << signalSigma << " @@@" << endl;
+  cout << "\n[MakePlots::PlotKst]\t@@@ Signal sigma: " << signalSigma << " @@@" << endl;
 
 
   if (bkgSub == true)
@@ -2153,7 +2153,7 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
   TTree* theTree = (TTree*)file0->Get("B0KstMuMu/B0KstMuMuNTuple");
 
   nEntries = theTree->GetEntries();
-  cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
+  cout << "\n[MakePlots::PlotKst]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
   TH1D* h1Dsig = new TH1D("h1Dsig","h1Dsig",nBins,minX - extra,maxX + extra);
   h1Dsig->SetXTitle("M(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
@@ -2346,7 +2346,7 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
 
   double signalSigma = sqrt( atof(Utility->GetGenericParam("FRACMASSS").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) +
 			     (1. - atof(Utility->GetGenericParam("FRACMASSS").c_str())) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) );
-  cout << "\n@@@ Signal sigma: " << signalSigma << " @@@" << endl;
+  cout << "\n[MakePlots::PlotKK]\t@@@ Signal sigma: " << signalSigma << " @@@" << endl;
 
 
   TFile* file0 = TFile::Open(fileName.c_str(),"READ");
@@ -2358,7 +2358,7 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
   NTuple->SetBranchAddresses(theTree);
   
   nEntries = theTree->GetEntries();
-  cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
+  cout << "\n[MakePlots::PlotKK]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
 
   TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
@@ -2525,7 +2525,7 @@ void PlotMuHadMass (string fileName)
   NTuple->SetBranchAddresses(theTree);
  
   nEntries = theTree->GetEntries();
-  cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
+  cout << "\n[MakePlots::PlotMuHadMass]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
   TH1D* histoK = new TH1D("histoK","histoK",nBins,minX,maxX);
   histoK->SetXTitle("M(K #mu) (GeV)");
@@ -2612,7 +2612,7 @@ void MakeupNLLandPULLplots (string fileName, string plotType, int specBin)
 
 
   myString << fileName.c_str();
-  cout << "\n\nReading NLL distribution from file: " << myString.str().c_str() << endl;
+  cout << "\n\n[MakePlots::MakeupNLLandPULLplots]\tReading NLL distribution from file: " << myString.str().c_str() << endl;
   fileID.push_back(new TFile(fileName.c_str(),"READ"));
 
   myList = fileID.back()->GetListOfKeys();
@@ -2624,7 +2624,7 @@ void MakeupNLLandPULLplots (string fileName, string plotType, int specBin)
   myString.str("");
   myString << "_PULL.root";
   fileName.replace(fileName.find("_NLL.root"),9,myString.str());
-  cout << "\nReading PULL distribution from file: " << fileName.c_str() << endl;
+  cout << "\n[MakePlots::MakeupNLLandPULLplots]\tReading PULL distribution from file: " << fileName.c_str() << endl;
   fileID.push_back(new TFile(fileName.c_str(),"READ"));
 
   myList = fileID.back()->GetListOfKeys();
@@ -2636,7 +2636,7 @@ void MakeupNLLandPULLplots (string fileName, string plotType, int specBin)
   myString.str("");
   myString << "_Chi2.root";
   fileName.replace(fileName.find("_PULL.root"),10,myString.str());
-  cout << "\nReading Chi2 distribution from file: " << fileName.c_str() << endl;
+  cout << "\n[MakePlots::MakeupNLLandPULLplots]\tReading Chi2 distribution from file: " << fileName.c_str() << endl;
   fileID.push_back(new TFile(fileName.c_str(),"READ"));
 
   myList = fileID.back()->GetListOfKeys();
@@ -2648,7 +2648,7 @@ void MakeupNLLandPULLplots (string fileName, string plotType, int specBin)
   myString.str("");
   myString << "_DIFF.root";
   fileName.replace(fileName.find("_Chi2.root"),10,myString.str());
-  cout << "\nReading DIFF distribution from file: " << fileName.c_str() << endl;
+  cout << "\n[MakePlots::MakeupNLLandPULLplots]\tReading DIFF distribution from file: " << fileName.c_str() << endl;
   fileID.push_back(new TFile(fileName.c_str(),"READ"));
 
   myList = fileID.back()->GetListOfKeys();
@@ -2716,7 +2716,7 @@ void MakePvaluePlot (string fileName, string plotType, int specBin)
   pval->SetMaximum(1.05);
 
 
-  cout << "\n@@@ p-value computaion of NLL distribution from paramter file: " << ParameterFILE << " @@@" << endl;
+  cout << "\n[MakePlots::MakePvaluePlot]\t@@@ p-value computaion of NLL distribution from paramter file: " << ParameterFILE << " @@@" << endl;
 
   for (int i = (specBin == -1 ? 0 : specBin); i < (specBin == -1 ? static_cast<int>(q2Bins.size()-1) : specBin+1); i++)
     {
@@ -2810,7 +2810,7 @@ int main (int argc, char** argv)
 	}
 
 
-      cout << "\n@@@ Settings @@@" << endl;
+      cout << "\n[MakePlots::main]\t@@@ Settings @@@" << endl;
       cout << "ParameterFILE : "       << ParameterFILE << endl;
       cout << "ParameterFILE_MCGEN: "  << ParameterFILE_MCGEN << endl;
       cout << "ParameterFILE_MCRECO: " << ParameterFILE_MCRECO << endl;

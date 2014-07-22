@@ -63,7 +63,7 @@ void AddGenVariables (int SignalType)
   NTupleIn->ClearNTuple();
   NTupleIn->SetBranchAddresses(theTreeIn);
   int nEntries = theTreeIn->GetEntries();
-  cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
+  cout << "\n[AddVarsToCandidates::AddGenVariables]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
 
   for (int entry = 0; entry < nEntries; entry++)
@@ -305,7 +305,7 @@ template<class T> void AddEvWeightPileup (T* NTupleOut)
   NTupleIn->ClearNTuple();
   NTupleIn->SetBranchAddresses(theTreeIn);
   int nEntries = theTreeIn->GetEntries();
-  cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
+  cout << "\n[AddVarsToCandidates::AddEvWeightPileup]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
 
   TFile* fileMC = TFile::Open(PileUpMCFileName,"READ");
@@ -332,7 +332,7 @@ template<class T> void AddEvWeightPileup (T* NTupleOut)
     }
 
 
-  cout << "\n@@@ Assigning the weights to the events @@@" << endl;
+  cout << "\n[AddVarsToCandidates::AddEvWeightPileup]\t@@@ Assigning the weights to the events @@@" << endl;
   for (int entry = 0; entry < nEntries; entry++)
     {
       theTreeIn->GetEntry(entry);      
@@ -388,7 +388,7 @@ template<class T> void AddEvWeightHadpT (T* NTupleOut, string trkSign)
   NTupleIn->ClearNTuple();
   NTupleIn->SetBranchAddresses(theTreeIn);
   nEntries = theTreeIn->GetEntries();
-  cout << "\n@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
+  cout << "\n[AddVarsToCandidates::AddEvWeightHadpT]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
 
   TFile* fileDataMC;
@@ -408,7 +408,7 @@ template<class T> void AddEvWeightHadpT (T* NTupleOut, string trkSign)
   hW->Divide(hMC);
 
 
-  cout << "\n@@@ Assigning the weights to the events @@@" << endl;
+  cout << "\n[AddVarsToCandidates::AddEvWeightHadpT]\t@@@ Assigning the weights to the events @@@" << endl;
   for (int entry = 0; entry < nEntries; entry++)
     {
       theTreeIn->GetEntry(entry);      
@@ -466,7 +466,7 @@ int main (int argc, char** argv)
       NTupleOut->Init();
 
 
-      cout << "\n@@@ Settings @@@" << endl;
+      cout << "\n[AddVarsToCandidates::main]\t@@@ Settings @@@" << endl;
       cout << "PileUp MC file name: "                  << PileUpMCFileName << endl;
       cout << "PileUp data file name: "                << PileUpDataFileName << endl;
       cout << "Positive hadron pT data-MC file name: " << HadppTFileName << endl;
