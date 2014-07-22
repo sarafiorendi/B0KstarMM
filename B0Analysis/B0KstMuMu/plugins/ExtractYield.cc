@@ -4168,8 +4168,13 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
 
   TH1D* histoChiSq1 = new TH1D("histoChiSq1","histoChiSq1",100,0.0,50.0);
   histoChiSq1->SetFillColor(kAzure+6);
-  histoChiSq1->SetXTitle("(fit #font[122]{\55} pdf)^2 / #sigma^2");
+  histoChiSq1->SetXTitle("(fit #font[122]{\55} pdf)#^2 / #sigma#^2");
   histoChiSq1->SetYTitle("Entries [#]");
+
+  TH1D* histoVal1 = new TH1D("histoVal1","histoVal1",100,0.0,400.0);
+  histoVal1->SetFillColor(kAzure+6);
+  histoVal1->SetXTitle("fit");
+  histoVal1->SetYTitle("Entries [#]");
 
   TH1D* histoNLL1 = new TH1D("histoNLL1","histoNLL1",100,1.0,-1.0);
   histoNLL1->SetFillColor(kGreen-7);
@@ -4215,14 +4220,15 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
 				    fabs(GetVar(TotalPDF,varName.c_str())->getErrorHi()),2.));
 	    }
 	  histoDiff1->Fill(TotalPDF->getVariables()->getRealValue(varName.c_str()) - atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str()));
+	  histoVal1->Fill(TotalPDF->getVariables()->getRealValue(varName.c_str()));
 	  histoNLL1->Fill(NLLvalue);
       	}
       delete fitResult;
     }
 
 
-  TCanvas* cNLL1 = new TCanvas("cNLL1","cNLL1",10,10,900,600);
-  cNLL1->Divide(2,2);
+  TCanvas* cNLL1 = new TCanvas("cNLL1","cNLL1",10,10,900,700);
+  cNLL1->Divide(2,3);
   cNLL1->cd(1);
   histoDiff1->Draw();
   cNLL1->cd(2);
@@ -4230,6 +4236,8 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   cNLL1->cd(3);
   histoPull1->Draw();
   cNLL1->cd(4);
+  histoVal1->Draw();
+  cNLL1->cd(5);
   histoChiSq1->Draw();
   cNLL1->Modified();
   cNLL1->Update();
@@ -4245,7 +4253,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
       Canv->Print(fileName.c_str());
 
       myString.clear(); myString.str("");
-      myString << "_" << specBin << "_DIFF.root";
+      myString << "_DIFF.root";
       fNLL = new TFile(fileName.replace(fileName.find(".root"),5,myString.str()).c_str(),"RECREATE");
       fNLL->cd();
       histoDiff1->Write();
@@ -4253,24 +4261,32 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
       delete fNLL;
 
       myString.clear(); myString.str("");
-      myString << "_" << specBin << "_PULL.root";
-      fNLL = new TFile(fileName.replace(fileName.find("_DIFF.root")-2,12,myString.str()).c_str(),"RECREATE");
+      myString << "_PULL.root";
+      fNLL = new TFile(fileName.replace(fileName.find("_DIFF.root"),10,myString.str()).c_str(),"RECREATE");
       fNLL->cd();
       histoPull1->Write();
       fNLL->Close();
       delete fNLL;
 
       myString.clear(); myString.str("");
-      myString << "_" << specBin << "_Chi2.root";
-      fNLL = new TFile(fileName.replace(fileName.find("_PULL.root")-2,12,myString.str()).c_str(),"RECREATE");
+      myString << "_Chi2.root";
+      fNLL = new TFile(fileName.replace(fileName.find("_PULL.root"),10,myString.str()).c_str(),"RECREATE");
       fNLL->cd();
       histoChiSq1->Write();
       fNLL->Close();
       delete fNLL;
 
       myString.clear(); myString.str("");
-      myString << "_" << specBin << "_NLL.root";
-      fNLL = new TFile(fileName.replace(fileName.find("_Chi2.root")-2,12,myString.str()).c_str(),"RECREATE");
+      myString << "_Val1.root";
+      fNLL = new TFile(fileName.replace(fileName.find("_Chi2.root"),10,myString.str()).c_str(),"RECREATE");
+      fNLL->cd();
+      histoVal1->Write();
+      fNLL->Close();
+      delete fNLL;
+
+      myString.clear(); myString.str("");
+      myString << "_NLL.root";
+      fNLL = new TFile(fileName.replace(fileName.find("_Val1.root"),10,myString.str()).c_str(),"RECREATE");
       fNLL->cd();
       histoNLL1->Write();
       fNLL->Close();
@@ -6368,8 +6384,13 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 
   TH1D* histoChiSq1 = new TH1D("histoChiSq1","histoChiSq1",100,0.0,50.0);
   histoChiSq1->SetFillColor(kAzure+6);
-  histoChiSq1->SetXTitle("(fit #font[122]{\55} pdf)^2 / #sigma^2");
+  histoChiSq1->SetXTitle("(fit #font[122]{\55} pdf)#^2 / #sigma#^2");
   histoChiSq1->SetYTitle("Entries [#]");
+
+  TH1D* histoVal1 = new TH1D("histoVal1","histoVal1",100,0.0,1.0);
+  histoVal1->SetFillColor(kAzure+6);
+  histoVal1->SetXTitle("fit");
+  histoVal1->SetYTitle("Entries [#]");
 
   TH1D* histoNLL1 = new TH1D("histoNLL1","histoNLL1",100,1.0,-1.0);
   histoNLL1->SetFillColor(kGreen-7);
@@ -6388,8 +6409,13 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 
   TH1D* histoChiSq2 = new TH1D("histoChiSq2","histoChiSq2",100,0.0,50.0);
   histoChiSq2->SetFillColor(kAzure+6);
-  histoChiSq2->SetXTitle("(fit #font[122]{\55} pdf)^2 / #sigma^2");
+  histoChiSq2->SetXTitle("(fit #font[122]{\55} pdf)#^2 / #sigma#^2");
   histoChiSq2->SetYTitle("Entries [#]");
+
+  TH1D* histoVal2 = new TH1D("histoVal2","histoVal2",100,-1.0,1.0);
+  histoVal2->SetFillColor(kAzure+6);
+  histoVal2->SetXTitle("fit");
+  histoVal2->SetYTitle("Entries [#]");
 
   TH1D* histoNLL2 = new TH1D("histoNLL2","histoNLL2",100,1.0,-1.0);
   histoNLL2->SetFillColor(kGreen-7);
@@ -6447,6 +6473,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 	      histoChiSq1->Fill(pow((TotalPDF->getVariables()->getRealValue(varName.c_str()) - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorHi()),2.));
 	    }
 	  histoDiff1->Fill(TotalPDF->getVariables()->getRealValue(varName.c_str()) - atof(myString.str().c_str()));
+	  histoVal1->Fill(TotalPDF->getVariables()->getRealValue(varName.c_str()));
 	  histoNLL1->Fill(NLLvalue);
 	  
 	  varName = "AfbS";
@@ -6463,14 +6490,15 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 	      histoChiSq2->Fill(pow((TotalPDF->getVariables()->getRealValue(varName.c_str()) - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorHi()),2.));
 	    }
 	  histoDiff2->Fill(TotalPDF->getVariables()->getRealValue(varName.c_str()) - atof(myString.str().c_str()));
+	  histoVal2->Fill(TotalPDF->getVariables()->getRealValue(varName.c_str()));
 	  histoNLL2->Fill(NLLvalue);
 	}
       delete fitResult;
     }
 
 
-  TCanvas* cNLL1 = new TCanvas("cNLL1","cNLL1",10,10,900,600);
-  cNLL1->Divide(2,2);
+  TCanvas* cNLL1 = new TCanvas("cNLL1","cNLL1",10,10,900,700);
+  cNLL1->Divide(2,3);
   cNLL1->cd(1);
   histoDiff1->Draw();
   cNLL1->cd(2);
@@ -6478,12 +6506,14 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   cNLL1->cd(3);
   histoPull1->Draw();
   cNLL1->cd(4);
+  histoVal1->Draw();
+  cNLL1->cd(5);
   histoChiSq1->Draw();
   cNLL1->Modified();
   cNLL1->Update();
 
-  TCanvas* cNLL2 = new TCanvas("cNLL2","cNLL2",10,10,900,600);
-  cNLL2->Divide(2,2);
+  TCanvas* cNLL2 = new TCanvas("cNLL2","cNLL2",10,10,900,700);
+  cNLL2->Divide(2,3);
   cNLL2->cd(1);
   histoDiff2->Draw();
   cNLL2->cd(2);
@@ -6491,6 +6521,8 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   cNLL2->cd(3);
   histoPull2->Draw();
   cNLL2->cd(4);
+  histoVal2->Draw();
+  cNLL2->cd(5);
   histoChiSq2->Draw();
   cNLL2->Modified();
   cNLL2->Update();
@@ -6531,6 +6563,14 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       delete fNLL;
 
       myString.clear(); myString.str("");
+      myString << "_FL_" << specBin << "_Val1.root";
+      fNLL = new TFile(fileName.replace(fileName.find("_FL_"),15,myString.str()).c_str(),"RECREATE");
+      fNLL->cd();
+      histoVal1->Write();
+      fNLL->Close();
+      delete fNLL;
+
+      myString.clear(); myString.str("");
       myString << "_FL_" << specBin << "_NLL.root";
       fNLL = new TFile(fileName.replace(fileName.find("_FL_"),15,myString.str()).c_str(),"RECREATE");
       fNLL->cd();
@@ -6560,6 +6600,14 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       fNLL = new TFile(fileName.replace(fileName.find("_AFB_"),16,myString.str()).c_str(),"RECREATE");
       fNLL->cd();
       histoChiSq2->Write();
+      fNLL->Close();
+      delete fNLL;
+
+      myString.clear(); myString.str("");
+      myString << "_AFB_" << specBin << "_Val2.root";
+      fNLL = new TFile(fileName.replace(fileName.find("_AFB_"),16,myString.str()).c_str(),"RECREATE");
+      fNLL->cd();
+      histoVal2->Write();
       fNLL->Close();
       delete fNLL;
 
