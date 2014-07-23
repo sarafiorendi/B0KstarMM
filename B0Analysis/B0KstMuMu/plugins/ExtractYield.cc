@@ -4166,9 +4166,9 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   histoPull1->SetXTitle("(fit #font[122]{\55} pdf) / #sigma");
   histoPull1->SetYTitle("Entries [#]");
 
-  TH1D* histoChiSq1 = new TH1D("histoChiSq1","histoChiSq1",100,0.0,50.0);
+  TH1D* histoChiSq1 = new TH1D("histoChiSq1","histoChiSq1",100,0.0,30.0);
   histoChiSq1->SetFillColor(kAzure+6);
-  histoChiSq1->SetXTitle("(fit #font[122]{\55} pdf)#^2 / #sigma#^2");
+  histoChiSq1->SetXTitle("(fit #font[122]{\55} pdf){^2} / #sigma{^2}");
   histoChiSq1->SetYTitle("Entries [#]");
 
   TH1D* histoVal1 = new TH1D("histoVal1","histoVal1",100,0.0,400.0);
@@ -6382,9 +6382,9 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   histoPull1->SetXTitle("(fit #font[122]{\55} pdf) / #sigma");
   histoPull1->SetYTitle("Entries [#]");
 
-  TH1D* histoChiSq1 = new TH1D("histoChiSq1","histoChiSq1",100,0.0,50.0);
+  TH1D* histoChiSq1 = new TH1D("histoChiSq1","histoChiSq1",100,0.0,30.0);
   histoChiSq1->SetFillColor(kAzure+6);
-  histoChiSq1->SetXTitle("(fit #font[122]{\55} pdf)#^2 / #sigma#^2");
+  histoChiSq1->SetXTitle("(fit #font[122]{\55} pdf){^2} / #sigma{^2}");
   histoChiSq1->SetYTitle("Entries [#]");
 
   TH1D* histoVal1 = new TH1D("histoVal1","histoVal1",100,0.0,1.0);
@@ -6407,9 +6407,9 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   histoPull2->SetXTitle("(fit #font[122]{\55} pdf) / #sigma");
   histoPull2->SetYTitle("Entries [#]");
 
-  TH1D* histoChiSq2 = new TH1D("histoChiSq2","histoChiSq2",100,0.0,50.0);
+  TH1D* histoChiSq2 = new TH1D("histoChiSq2","histoChiSq2",100,0.0,30.0);
   histoChiSq2->SetFillColor(kAzure+6);
-  histoChiSq2->SetXTitle("(fit #font[122]{\55} pdf)#^2 / #sigma#^2");
+  histoChiSq2->SetXTitle("(fit #font[122]{\55} pdf){^2} / #sigma{^2}");
   histoChiSq2->SetYTitle("Entries [#]");
 
   TH1D* histoVal2 = new TH1D("histoVal2","histoVal2",100,-1.0,1.0);
