@@ -81,14 +81,14 @@ using namespace RooFit;
 // ##########################################
 // # Internal flags to control the workflow #
 // ##########################################
-#define MakeMuMuPlots  false
-#define USEMINOS       false
-#define SETBATCH       false
-#define SAVEPOLY       false // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
-#define SAVEPLOT       false
-#define RESETSIGANGPAR false // Reset signal angular parameters before starting the fit
-#define RESETCOMANGPAR false // Reset combinatorial background angular parameters before starting the fit
-#define FUNCERRBAND    false // Show the p.d.f. error band
+#define MakeMuMuPlots false
+#define USEMINOS      false
+#define SETBATCH      false
+#define SAVEPOLY      false // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
+#define SAVEPLOT      false
+#define RESETsigANG   false // Reset signal angular parameters before starting the fit
+#define RESETcomANG   false // Reset combinatorial background angular parameters before starting the fit
+#define FUNCERRBAND   false // Show the p.d.f. error band
 
 // ##################
 // # External files #
@@ -6815,8 +6815,8 @@ int main(int argc, char** argv)
 	  cout << "SETBATCH  = "       << SETBATCH << endl;
 	  cout << "SAVEPOLY = "        << SAVEPOLY << endl;
 	  cout << "SAVEPLOT = "        << SAVEPLOT << endl;
-	  cout << "RESETSIGANGPAR = "  << RESETSIGANGPAR << endl;
-	  cout << "RESETCOMANGPAR = "  << RESETCOMANGPAR << endl;
+	  cout << "RESETsigANG = "     << RESETsigANG << endl;
+	  cout << "RESETcomANG = "     << RESETcomANG << endl;
 	  cout << "FUNCERRBAND = "     << FUNCERRBAND << endl;
 
 	  cout << "\nPARAMETERFILEIN = " << PARAMETERFILEIN << endl;
@@ -6935,13 +6935,13 @@ int main(int argc, char** argv)
 	  // ###################################
 	  // # Reset signal angular parameters #
 	  // ###################################
-	  if (RESETSIGANGPAR == true) ResetAngularParam(&fitParam);
+	  if (RESETsigANG == true) ResetAngularParam(&fitParam);
 
 
 	  // #####################################################
 	  // # Reset combinatorial background angular parameters #
 	  // #####################################################
-	  if (RESETCOMANGPAR == true) ResetCombPolyParam(&fitParam);
+	  if (RESETcomANG == true) ResetCombPolyParam(&fitParam);
 
 
 	  // ###########################################################################

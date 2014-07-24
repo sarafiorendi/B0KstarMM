@@ -12,6 +12,10 @@ $fileOut = "myRunBin" . $q2bin . ".sh" ;
 print "@@@ File output name: " . $fileOut . " @@@\n" ;
 open(OUT, ">" . $fileOut) ;
 
+print OUT "mkdir " . @ARGV[1] . "\n" ;
+print OUT "cp ../ExtractYield " . @ARGV[1] . "\n" ;
+print OUT "cd " . @ARGV[1] . "\n" ;
+
 for ($count = 0; $count < $nfiles; $count++)
 {
 #    $cmd = "./ExtractYield 86 CombBkgToyBin" . $q2bin . "_" . $count . ".root yesEffCorr " . $q2bin . " " . $count ;
@@ -20,10 +24,9 @@ for ($count = 0; $count < $nfiles; $count++)
 
 #    $cmd = "hadd MCcocktail_1xData_All_" . $count . ".root singleCand_B0ToJPsiKst_MC_NTuple_reduced_0.root singleCand_B0ToPsi2SKst_MC_NTuple_reduced_0.root CombBkgToy_" . $count . ".root singleCand_B0ToKstMuMu_MC_NTuple_" . $count . ".root" ;
 
-    $cmd = "Qsub -l lnxfarm -e -o cocktailMC_" . $q2bin . "_" . $count . ".log -N COCK" . $q2bin . $count . " .././ExtractYield 6 TestMultySamples/MCcocktail_1xData_All_" . $count . ".root yesEffCorr " . $q2bin . " " . $count ;
+    $cmd = "Qsub -l lnxfarm -e -o cocktailMC_" . $q2bin . "_" . $count . ".log -N COCK" . $q2bin . $count . " ./ExtractYield 6 ../TestMultySamples/MCcocktail_1xData_All_" . $count . ".root yesEffCorr " . $q2bin . " " . $count ;
 
-    print OUT "$cmd" ;
-    print OUT "\n" ;
+    print OUT "$cmd" . "\n" ;
 }
 
 close(OUT) ;
