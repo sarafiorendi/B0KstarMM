@@ -81,13 +81,14 @@ using namespace RooFit;
 // ##########################################
 // # Internal flags to control the workflow #
 // ##########################################
-#define MakeMuMuPlots false
-#define USEMINOS      false
-#define SETBATCH      false
-#define SAVEPOLY      false // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
-#define SAVEPLOT      false
-#define RESETANGPAR   false // Reset angular parameters before starting the fit
-#define FUNCERRBAND   false // Show the p.d.f. error band
+#define MakeMuMuPlots  false
+#define USEMINOS       false
+#define SETBATCH       false
+#define SAVEPOLY       false // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
+#define SAVEPLOT       false
+#define RESETSIGANGPAR false // Reset signal angular parameters before starting the fit
+#define RESETCOMANGPAR false // Reset combinatorial background angular parameters before starting the fit
+#define FUNCERRBAND    false // Show the p.d.f. error band
 
 // ##################
 // # External files #
@@ -341,6 +342,7 @@ void BuildPhysicsConstraints   (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, strin
 
 RooAbsPdf* MakeAngWithEffPDF   (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, vector<double>* q2Bins, int q2BinIndx);
 void DeleteFit                 (RooAbsPdf* TotalPDF, string DeleteType);
+void ResetCombPolyParam        (vector<vector<string>*>* fitParam);
 void ResetAngularParam         (vector<vector<string>*>* fitParam);
 double StoreFitResultsInFile   (RooAbsPdf** TotalPDF, RooFitResult* fitResult, RooDataSet* dataSet, RooArgSet* vecConstr);
 void StorePolyResultsInFile    (RooAbsPdf** TotalPDF);
@@ -349,6 +351,7 @@ unsigned int CopyFitResults    (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vec
 
 void GenerateFitParameters     (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, unsigned int q2BinIndx, string option);
 void GenerateDataset           (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2Bins, int q2BinIndx, vector<vector<string>*>* fitParam, string fileName);
+string GeneratePolynomial      (RooRealVar* var, unsigned int nCoef, string sCoef);
 
 void FitDimuonInvMass          (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x, TCanvas* Canv, bool justPlotMuMuMass, bool justKeepPsi, string plotName);
 
@@ -1101,6 +1104,44 @@ void DeleteFit (RooAbsPdf* TotalPDF, string DeleteType)
 	  cout << "[ExtractYield::DeleteFit]\tWrong parameter: " << DeleteType << endl;
 	  exit (EXIT_FAILURE);
 	}
+    }
+}
+
+
+void ResetCombPolyParam (vector<vector<string>*>* fitParam)
+{
+  stringstream myString;
+
+  for (unsigned int j = 0; j < fitParam->operator[](0)->size(); j++)
+    {
+      cout << "\n[ExtractYield::ResetCombPolyParam]\t@@@ Resetting the combinatorial background polynomial coefficients for q^2 bin #" << j << " @@@" << endl;
+
+      for (int i = 0; i < atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC1"))->operator[](j).c_str()); i++)
+        {
+          myString.clear(); myString.str("");
+          myString << "c1Poly" << i;
+          fitParam->operator[](Utility->GetFitParamIndx(myString.str().c_str()))->operator[](j) = "0.0";
+
+          cout << myString.str().c_str() << "\t" << fitParam->operator[](Utility->GetFitParamIndx(myString.str().c_str()))->operator[](j).c_str() << endl;
+         }
+
+      for (int i = 0; i < atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC2"))->operator[](j).c_str()); i++)
+        {
+          myString.clear(); myString.str("");
+          myString << "c2Poly" << i;
+          fitParam->operator[](Utility->GetFitParamIndx(myString.str().c_str()))->operator[](j) = "0.0";
+
+          cout << myString.str().c_str() << "\t" << fitParam->operator[](Utility->GetFitParamIndx(myString.str().c_str()))->operator[](j).c_str() << endl;
+        }
+
+      for (int i = 0; i < atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC3"))->operator[](j).c_str()); i++)
+        {
+          myString.clear(); myString.str("");
+          myString << "c3Poly" << i;
+          fitParam->operator[](Utility->GetFitParamIndx(myString.str().c_str()))->operator[](j) = "0.0";
+
+          cout << myString.str().c_str() << "\t" << fitParam->operator[](Utility->GetFitParamIndx(myString.str().c_str()))->operator[](j).c_str() << endl;
+        }
     }
 }
 
@@ -2552,6 +2593,24 @@ void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2B
 }
 
 
+string GeneratePolynomial (RooRealVar* var, unsigned int nCoef, string sCoef)
+{
+  stringstream myString;
+
+  myString.clear(); myString.str("");
+  myString << "1";
+  for (unsigned int i = 0; i < nCoef; i++)
+    {
+      myString << " + ";
+      for (unsigned int j = 0; j < i+1; j++) myString << var->getPlotLabel() << "*";
+      myString << sCoef << i;
+    }
+  cout << "[ExtractYield::GeneratePolynomial]\tI've generated the polynomial: " << myString.str().c_str() << endl;
+  
+  return myString.str();
+}
+
+
 void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x, TCanvas* Canv, bool justPlotMuMuMass, bool justKeepPsi, string plotName)
 {
   stringstream myString;
@@ -2660,7 +2719,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // # Set p.d.f independent variables to known point #
       // ##################################################
       if (GetVar(*TotalPDFJPsi,x->getPlotLabel()) != NULL) (*TotalPDFJPsi)->getVariables()->setRealValue(x->getPlotLabel(),Utility->B0Mass);
-      JPsiFitResult->Print("v");
+      if (JPsiFitResult != NULL) JPsiFitResult->Print("v");
       ((RooAddPdf*)(*TotalPDFJPsi))->fixCoefRange("subRangeJPsi");
       sigmaJPsi = sqrt((*TotalPDFJPsi)->getVariables()->getRealValue("fracMassJPsi") *
 		       (*TotalPDFJPsi)->getVariables()->getRealValue("sigmaJPsi1")*(*TotalPDFJPsi)->getVariables()->getRealValue("sigmaJPsi1") +
@@ -2780,7 +2839,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // # Set p.d.f independent variables to known point #
       // ##################################################
       if (GetVar(*TotalPDFPsiP,x->getPlotLabel()) != NULL) (*TotalPDFPsiP)->getVariables()->setRealValue(x->getPlotLabel(),Utility->B0Mass);
-      PsiPFitResult->Print("v");
+      if (PsiPFitResult != NULL) PsiPFitResult->Print("v");
       ((RooAddPdf*)(*TotalPDFPsiP))->fixCoefRange("subRangePsiP");
       sigmaPsiP = sqrt((*TotalPDFPsiP)->getVariables()->getRealValue("fracMassPsiP") *
 		       (*TotalPDFPsiP)->getVariables()->getRealValue("sigmaPsiP1")*(*TotalPDFPsiP)->getVariables()->getRealValue("sigmaPsiP1") +
@@ -4388,8 +4447,12 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
       c2Poly[i] = new RooRealVar(myString.str().c_str(),"Comb.bkg.poly.coef.",0.0);
       VarsC2.add(*c2Poly[i]);
     }
-  BkgAngleC1 = new RooPolynomial("BkgAngleC1","Comb.bkg angular shape",*y,VarsC1);
-  BkgAngleC2 = new RooPolynomial("BkgAngleC2","Comb.bkg angular shape",*z,VarsC2);
+  myString.clear(); myString.str("");
+  myString << GeneratePolynomial(y,NCoeffPolyBKGcomb1,"c1Poly");
+  BkgAngleC1 = new RooGenericPdf("BkgAngleC1",myString.str().c_str(),RooArgSet(*y,VarsC1));
+  myString.clear(); myString.str("");
+  myString << GeneratePolynomial(z,NCoeffPolyBKGcomb2,"c2Poly");
+  BkgAngleC2 = new RooGenericPdf("BkgAngleC2",myString.str().c_str(),RooArgSet(*z,VarsC2));
   BkgAnglesC = new RooProdPdf("BkgAnglesC","Background Angle1*Angle2",RooArgSet(*BkgAngleC1,*BkgAngleC2));
 
 
@@ -4463,8 +4526,12 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
       p2Poly[i] = new RooRealVar(myString.str().c_str(),"Peak.bkg.poly.coef.",0.0);
       VarsP2.add(*p2Poly[i]);
     }
-  BkgAngleP1 = new RooPolynomial("BkgAngleP1","Peak.bkg angular shape",*y,VarsP1);
-  BkgAngleP2 = new RooPolynomial("BkgAngleP2","Peak.bkg angular shape",*z,VarsP2);
+  myString.clear(); myString.str("");
+  myString << GeneratePolynomial(y,NCoeffPolyBKGpeak1,"p1Poly");
+  BkgAngleP1 = new RooGenericPdf("BkgAngleP1",myString.str().c_str(),RooArgSet(*y,VarsP1));
+  myString.clear(); myString.str("");
+  myString << GeneratePolynomial(z,NCoeffPolyBKGpeak2,"p2Poly");
+  BkgAngleP2 = new RooGenericPdf("BkgAngleP2",myString.str().c_str(),RooArgSet(*z,VarsP2));
   BkgAnglesP = new RooProdPdf("BkgAnglesP","Background Angle1*Angle2",RooArgSet(*BkgAngleP1,*BkgAngleP2));
 
 
@@ -4766,9 +4833,9 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	  // ###################
       	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebads),Save(true));
       	  else                                                               fitResult = TmpPDF->fitTo(*sideBands,Save(true));
-      	  if (fitResult != NULL) fitResult->Print("v");
+	  if (fitResult != NULL) fitResult->Print("v");
 
-	  
+
       	  // ####################
       	  // # Save fit results #
       	  // ####################
@@ -4778,7 +4845,6 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	  delete TmpPDF;
       	  delete sideBands;
       	  ClearVars(&constrSidebads);
-      	  if (fitResult != NULL) delete fitResult;
 
 
       	  // ################################
@@ -4795,9 +4861,13 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
               myString << "c2Poly" << i;
               if (GetVar(*TotalPDF,myString.str().c_str()) != NULL) GetVar(*TotalPDF,myString.str().c_str())->setConstant(true);
             }
-      	}
 
-      
+
+	  if (CheckGoodFit(fitResult) == true) { cout << "\n[ExtractYield::MakeMass2AnglesFit]\t@@@ Fit converged ! @@@" << endl;       delete fitResult; }
+	  else                                 { cout << "\n[ExtractYield::MakeMass2AnglesFit]\t@@@ Fit didn't converge ! @@@" << endl; return fitResult; }
+	}
+
+
       // ###################
       // # Make actual fit #
       // ###################
@@ -6745,7 +6815,8 @@ int main(int argc, char** argv)
 	  cout << "SETBATCH  = "       << SETBATCH << endl;
 	  cout << "SAVEPOLY = "        << SAVEPOLY << endl;
 	  cout << "SAVEPLOT = "        << SAVEPLOT << endl;
-	  cout << "RESETANGPAR = "     << RESETANGPAR << endl;
+	  cout << "RESETSIGANGPAR = "  << RESETSIGANGPAR << endl;
+	  cout << "RESETCOMANGPAR = "  << RESETCOMANGPAR << endl;
 	  cout << "FUNCERRBAND = "     << FUNCERRBAND << endl;
 
 	  cout << "\nPARAMETERFILEIN = " << PARAMETERFILEIN << endl;
@@ -6861,11 +6932,17 @@ int main(int argc, char** argv)
 	  for (unsigned int i = 0; i < q2Bins.size(); i++) q2BinsHisto[i] = q2Bins[i];
 
 
-	  // ############################
-	  // # Reset angular parameters #
-	  // ############################
-	  if (RESETANGPAR == true) ResetAngularParam(&fitParam);
-	  
+	  // ###################################
+	  // # Reset signal angular parameters #
+	  // ###################################
+	  if (RESETSIGANGPAR == true) ResetAngularParam(&fitParam);
+
+
+	  // #####################################################
+	  // # Reset combinatorial background angular parameters #
+	  // #####################################################
+	  if (RESETCOMANGPAR == true) ResetCombPolyParam(&fitParam);
+
 
 	  // ###########################################################################
 	  // # Prepare file to save fit results in case of systematic error evaluation #
