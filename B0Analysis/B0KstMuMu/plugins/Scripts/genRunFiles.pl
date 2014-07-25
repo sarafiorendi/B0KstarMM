@@ -18,7 +18,7 @@ $fileOut = "myRun_" . $ID . "_bin" . $q2bin . ".sh" ;
 print "@@@ File output name: " . $fileOut . " @@@\n" ;
 open(OUT, ">" . $fileOut) ;
 
-print OUT "mkdir " . $dirNAme . "\n" ;
+print OUT "mkdir " . $dirName . "\n" ;
 print OUT "cp ../ExtractYield " . $dirName . "\n" ;
 print OUT "cd " . $dirName . "\n" ;
 
