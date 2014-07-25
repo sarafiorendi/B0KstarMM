@@ -20,6 +20,7 @@ open(OUT, ">" . $fileOut) ;
 
 print OUT "mkdir " . $dirName . "\n" ;
 print OUT "cp ../ExtractYield " . $dirName . "\n" ;
+print OUT "cp ../../python/ParameterFile.txt " . $dirName . "\n" ;
 print OUT "cd " . $dirName . "\n" ;
 
 
