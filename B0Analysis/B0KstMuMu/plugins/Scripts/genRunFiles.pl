@@ -4,17 +4,24 @@
 # Simple program to generate files that run other programs #
 ############################################################
 
-$q2bin  = @ARGV[0] ;
-$nfiles = 100 ;
+###################
+# Input variables #
+###################
+$ID      = @ARGV[0] ;
+$q2bin   = @ARGV[1] ;
+$dirName = @ARGV[2] ;
+$nfiles  = 100 ;
 
-$fileOut = "myRunBin" . $q2bin . ".sh" ;
+
+$fileOut = "myRun_" . $ID . "_bin" . $q2bin . ".sh" ;
 #$fileOut = "myRun.sh" ;
 print "@@@ File output name: " . $fileOut . " @@@\n" ;
 open(OUT, ">" . $fileOut) ;
 
-print OUT "mkdir " . @ARGV[1] . "\n" ;
-print OUT "cp ../ExtractYield " . @ARGV[1] . "\n" ;
-print OUT "cd " . @ARGV[1] . "\n" ;
+print OUT "mkdir " . $dirNAme . "\n" ;
+print OUT "cp ../ExtractYield " . $dirName . "\n" ;
+print OUT "cd " . $dirName . "\n" ;
+
 
 for ($count = 0; $count < $nfiles; $count++)
 {
@@ -25,6 +32,7 @@ for ($count = 0; $count < $nfiles; $count++)
 #    $cmd = "hadd MCcocktail_1xData_All_" . $count . ".root singleCand_B0ToJPsiKst_MC_NTuple_reduced_0.root singleCand_B0ToPsi2SKst_MC_NTuple_reduced_0.root CombBkgToy_" . $count . ".root singleCand_B0ToKstMuMu_MC_NTuple_" . $count . ".root" ;
 
     $cmd = "Qsub -l lnxfarm -e -o cocktailMC_" . $q2bin . "_" . $count . ".log -N COCK" . $q2bin . $count . " ./ExtractYield 6 ../TestMultySamples/MCcocktail_1xData_All_" . $count . ".root yesEffCorr " . $q2bin . " " . $count ;
+
 
     if ($count == 0)
     {
