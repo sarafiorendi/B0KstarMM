@@ -5911,7 +5911,8 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // # Save observables in systematic error file #
       // #############################################
       myString.clear(); myString.str("");
-      if (CheckGoodFit(fitResult) == true) myString << ID << "   " << value1 << "   " << value2 << "   " << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   " << effMuMuGoodTag << "   " << effMuMuMisTag << "   " << NLLvalue;
+      if (CheckGoodFit(fitResult) == true) myString << ID << "   " << 1./2.+TMath::ATan(value1)/TMath::Pi() << "   " << 3./4.*(1.-(1./2.+TMath::ATan(value1)/TMath::Pi()))*2.*TMath::ATan(value2)/TMath::Pi() << "   " << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   " << effMuMuGoodTag << "   " << effMuMuMisTag << "   " << NLLvalue;
+      // if (CheckGoodFit(fitResult) == true) myString << ID << "   " << value1 << "   " << value2 << "   " << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   " << effMuMuGoodTag << "   " << effMuMuMisTag << "   " << NLLvalue;
       else                                 myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
       fileFitSystematics << myString.str() << endl;
     }
