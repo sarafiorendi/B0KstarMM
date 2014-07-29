@@ -329,7 +329,8 @@ void SetValueAndErrors         (RooAbsPdf* pdf, string varName, double multi, st
 void PrintVariables            (RooArgSet* setVar, string type);
 void ClearVars                 (RooArgSet* vecConstr);
 void CloseAllAndQuit           (TApplication* theApp, TFile* NtplFile);
-string Transformer             (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1 = NULL, RooRealVar* varValIn2 = NULL);
+
+string Transformer             (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1 = NULL, RooRealVar* varValIn2 = NULL, RooRealVar* varValIn3 = NULL);
 string AntiTransformer         (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1 = NULL, RooRealVar* varValIn2 = NULL, RooRealVar* varValIn3 = NULL);
 
 string MakeName                (RooDataSet* data, unsigned int ID);
@@ -563,7 +564,7 @@ void CloseAllAndQuit (TApplication* theApp, TFile* NtplFile)
 }
 
 
-string Transformer (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1, RooRealVar* varValIn2)
+string Transformer (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1, RooRealVar* varValIn2, RooRealVar* varValIn3)
 // ###################
 // # varValIn1 = Fl  #
 // # varValIn2 = Afb #
@@ -581,7 +582,7 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
 	}
       else if (varName == "AfbS")
 	{
-	  myString << "(3/4 * (1 - (1/2 + TMath::ATan(FlS) / TMath::Pi())) * 2*TMath::ATan(" << varName << ") / TMath::Pi())";
+	  myString << "(3/4*(1 - (1/2 + TMath::ATan(FlS) / TMath::Pi())) * 2*TMath::ATan(" << varName << ")/TMath::Pi())";
 	  return myString.str();
 	}
       else if (varName == "FsS")
@@ -591,7 +592,7 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
 	}
       else if (varName == "AsS")
 	{
-	  myString << "(1/2*((1/2 + TMath::ATan(FsS) / TMath::Pi()) + 3*(1/2 + TMath::ATan(FlS) / TMath::Pi())*(1 - (1/2 + TMath::ATan(FsS) / TMath::Pi()))) * 2*TMath::ATan(" << varName << ") / TMath::Pi())";
+	  myString << "(1/2*((1/2 + TMath::ATan(FsS) / TMath::Pi()) + 3*(1/2 + TMath::ATan(FlS) / TMath::Pi())*(1 - (1/2 + TMath::ATan(FsS) / TMath::Pi()))) * 2*TMath::ATan(" << varName << ")/TMath::Pi())";
 	  return myString.str();
 	}
       else
@@ -611,6 +612,18 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
       varValOut    = 3./4. * (1. - (1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi())) * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi();
       varValOutELo = 3./4. * (1. - (1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi())) * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorLo()) / TMath::Pi() - varValOut;
       varValOutEHi = 3./4. * (1. - (1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi())) * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorHi()) / TMath::Pi() - varValOut;
+    }
+  else if ((varName == "FsS") && (varValIn1 != NULL))
+    {
+      varValOut    = 1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi();
+      varValOutELo = 1./2. + TMath::ATan(varValIn1->getVal() + varValIn1->getErrorLo()) / TMath::Pi() - varValOut;
+      varValOutEHi = 1./2. + TMath::ATan(varValIn1->getVal() + varValIn1->getErrorHi()) / TMath::Pi() - varValOut;
+    }
+  else if ((varName == "AsS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (varValIn3 != NULL))
+    {
+      varValOut    = 1./2. * ((1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) + 3.*(1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi())*(1. - (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()))) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi();
+      varValOutELo = 1./2. * ((1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) + 3.*(1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi())*(1. - (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()))) * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorLo()) / TMath::Pi() - varValOut;
+      varValOutEHi = 1./2. * ((1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) + 3.*(1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi())*(1. - (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()))) * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorHi()) / TMath::Pi() - varValOut;
     }
   else
     {
@@ -636,12 +649,12 @@ string AntiTransformer (string varName, double& varValOut, double& varValOutELo,
     {
       if (varName == "FsS")
 	{
-	  myString << "TMath::Tan((" << varName << "- 1/2) * TMath::Pi())";
+	  myString << "TMath::Tan((" << varName << " - 1/2) * TMath::Pi())";
 	  return myString.str();
 	}
       else if (varName == "AsS")
 	{
-	  myString << "TMath::Tan(" << varName << " / (1/2 * (TMath::Tan((FsS - 1/2)*TMath::Pi()) + 3*TMath::Tan((FlS - 1/2)*TMath::Pi())*(1 - TMath::Tan((FsS - 1/2)*TMath::Pi())))) / 2 * TMath::Pi())";
+	  myString << "TMath::Tan(" << varName << " / (1/2*(TMath::Tan((FsS - 1/2)*TMath::Pi()) + 3*TMath::Tan((FlS - 1/2)*TMath::Pi())*(1 - TMath::Tan((FsS - 1/2)*TMath::Pi())))) / 2 * TMath::Pi())";
 	  return myString.str();
 	}
       else
@@ -1998,16 +2011,18 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vec
   vecParStr->push_back("# FS +/- err");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"FsS") != NULL) && (vecConstr->find(string(string("FsS") + string("_constr")).c_str()) == NULL))
     {
+      Transformer("FlS",varVal,varValELo,varValEHi,GetVar(TotalPDF,"FlS"));
       myString.clear(); myString.str("");
-      myString << GetVar(TotalPDF,"FsS")->getVal() << "   " << GetVar(TotalPDF,"FsS")->getErrorLo() << "   " << GetVar(TotalPDF,"FsS")->getErrorHi();
+      myString << varVal << "   " << varValELo << "   " << varValEHi;
       vecParStr->push_back(myString.str());
     }
   else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# AS +/- err");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"AsS") != NULL) && (vecConstr->find(string(string("AsS") + string("_constr")).c_str()) == NULL))
     {
+      Transformer("AsS",varVal,varValELo,varValEHi,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,"FsS"),GetVar(TotalPDF,"AsS"));
       myString.clear(); myString.str("");
-      myString << GetVar(TotalPDF,"AsS")->getVal() << "   " << GetVar(TotalPDF,"AsS")->getErrorLo() << "   " << GetVar(TotalPDF,"AsS")->getErrorHi();
+      myString << varVal << "   " << varValELo << "   " << varValEHi;
       vecParStr->push_back(myString.str());
     }
   else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](q2BinIndx).c_str());
