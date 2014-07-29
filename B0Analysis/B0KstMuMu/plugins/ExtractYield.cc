@@ -4351,8 +4351,8 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   RooDataSet* toySample;
   RooFitResult* fitResult;
   double NLLvalue;
-
   string varName = "nSig";
+
   for (unsigned int i = 0; i < nToy; i++)
     {
       cout << "\n[ExtractYield::MakeMassToy]\t@@@ Now fitting toy #" << i << " @@@\n" << endl;
@@ -4369,21 +4369,19 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
       // ######################################################
       if ((CheckGoodFit(fitResult) == true) && (GetVar(TotalPDF,varName.c_str()) != NULL))
       	{
-      	  if (GetVar(TotalPDF,varName.c_str())->getVal() > atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str()))
+	  myString.clear(); myString.str("");
+	  myString << fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str();
+      	  if (GetVar(TotalPDF,varName.c_str())->getVal() > atof(myString.str().c_str()))
 	    {
-	      histoPull1->Fill((GetVar(TotalPDF,varName.c_str())->getVal() - atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str())) /
-			       fabs(GetVar(TotalPDF,varName.c_str())->getErrorLo()));
-	      histoChiSq1->Fill(pow((GetVar(TotalPDF,varName.c_str())->getVal() - atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str())) /
-				    fabs(GetVar(TotalPDF,varName.c_str())->getErrorLo()),2.));
+	      histoPull1->Fill((GetVar(TotalPDF,varName.c_str())->getVal() - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorLo()));
+	      histoChiSq1->Fill(pow((GetVar(TotalPDF,varName.c_str())->getVal() - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorLo()),2.));
 	    }
 	  else
 	    {
-	      histoPull1->Fill((GetVar(TotalPDF,varName.c_str())->getVal() - atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str())) /
-			       fabs(GetVar(TotalPDF,varName.c_str())->getErrorHi()));
-	      histoChiSq1->Fill(pow((GetVar(TotalPDF,varName.c_str())->getVal() - atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str())) /
-				    fabs(GetVar(TotalPDF,varName.c_str())->getErrorHi()),2.));
+	      histoPull1->Fill((GetVar(TotalPDF,varName.c_str())->getVal() - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorHi()));
+	      histoChiSq1->Fill(pow((GetVar(TotalPDF,varName.c_str())->getVal() - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorHi()),2.));
 	    }
-	  histoDiff1->Fill(GetVar(TotalPDF,varName.c_str())->getVal() - atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str()));
+	  histoDiff1->Fill(GetVar(TotalPDF,varName.c_str())->getVal() - atof(myString.str().c_str()));
 	  histoVal1->Fill(GetVar(TotalPDF,varName.c_str())->getVal());
 	  histoNLL1->Fill(NLLvalue);
       	}
@@ -6611,8 +6609,8 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   RooDataSet* toySample;
   RooFitResult* fitResult;
   double NLLvalue;
-
   string varName;
+
   for (unsigned int i = 0; i < nToy; i++)
     {
       cout << "\n[ExtractYield::MakeMass2AnglesToy]\t@@@ Now fitting toy #" << i << " @@@\n" << endl;
@@ -6644,35 +6642,37 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 	  varName = "FlS";
 	  myString.clear(); myString.str("");
 	  myString << fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin);
-	  if (GetVar(TotalPDF,varName.c_str())->getVal() > atof(myString.str().c_str()))
+	  Transformer("FlS",varVal,varValELo,varValEHi,GetVar(TotalPDF,"FlS"));
+	  if (varVal > atof(myString.str().c_str()))
 	    {
-	      histoPull1->Fill((GetVar(TotalPDF,varName.c_str())->getVal() - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorLo()));
-	      histoChiSq1->Fill(pow((GetVar(TotalPDF,varName.c_str())->getVal() - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorLo()),2.));
+	      histoPull1->Fill((varVal - atof(myString.str().c_str())) / fabs(varValELo));
+	      histoChiSq1->Fill(pow((varVal - atof(myString.str().c_str())) / fabs(varValELo),2.));
 	    }
 	  else
 	    {
-	      histoPull1->Fill((GetVar(TotalPDF,varName.c_str())->getVal() - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorHi()));
-	      histoChiSq1->Fill(pow((GetVar(TotalPDF,varName.c_str())->getVal() - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorHi()),2.));
+	      histoPull1->Fill((varVal - atof(myString.str().c_str())) / fabs(varValEHi));
+	      histoChiSq1->Fill(pow((varVal - atof(myString.str().c_str())) / fabs(varValEHi),2.));
 	    }
-	  histoDiff1->Fill(GetVar(TotalPDF,varName.c_str())->getVal() - atof(myString.str().c_str()));
-	  histoVal1->Fill(GetVar(TotalPDF,varName.c_str())->getVal());
+	  histoDiff1->Fill(varVal - atof(myString.str().c_str()));
+	  histoVal1->Fill(varVal);
 	  histoNLL1->Fill(NLLvalue);
 	  
 	  varName = "AfbS";
 	  myString.clear(); myString.str("");
 	  myString << fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin);
-	  if (GetVar(TotalPDF,varName.c_str())->getVal() > atof(myString.str().c_str()))
+	  Transformer("AfbS",varVal,varValELo,varValEHi,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,"AfbS"));
+	  if (varVal > atof(myString.str().c_str()))
 	    {
-	      histoPull2->Fill((GetVar(TotalPDF,varName.c_str())->getVal() - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorLo()));
-	      histoChiSq2->Fill(pow((GetVar(TotalPDF,varName.c_str())->getVal() - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorLo()),2.));
+	      histoPull2->Fill((varVal - atof(myString.str().c_str())) / fabs(varValELo));
+	      histoChiSq2->Fill(pow((varVal - atof(myString.str().c_str())) / fabs(varValELo),2.));
 	    }
 	  else
 	    {
-	      histoPull2->Fill((GetVar(TotalPDF,varName.c_str())->getVal() - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorHi()));
-	      histoChiSq2->Fill(pow((GetVar(TotalPDF,varName.c_str())->getVal() - atof(myString.str().c_str())) / fabs(GetVar(TotalPDF,varName.c_str())->getErrorHi()),2.));
+	      histoPull2->Fill((varVal - atof(myString.str().c_str())) / fabs(varValEHi));
+	      histoChiSq2->Fill(pow((varVal - atof(myString.str().c_str())) / fabs(varValEHi),2.));
 	    }
-	  histoDiff2->Fill(GetVar(TotalPDF,varName.c_str())->getVal() - atof(myString.str().c_str()));
-	  histoVal2->Fill(GetVar(TotalPDF,varName.c_str())->getVal());
+	  histoDiff2->Fill(varVal - atof(myString.str().c_str()));
+	  histoVal2->Fill(varVal);
 	  histoNLL2->Fill(NLLvalue);
 	}
       delete fitResult;
