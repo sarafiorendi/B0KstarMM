@@ -71,6 +71,7 @@ using namespace RooFit;
 #define MULTYIELD     1.0 // Multiplication factor to the number of entry in toy-MC
 #define NCOEFFPOLYBKG 5   // Maximum number of coefficients (= degree) of the polynomial describing the background in the angular variables
 #define DEGREEINTERP  1   // Polynomial degree for efficiency histogram interpolation
+#define TOLERANCE     0.1 // Tolerance with respect to the boundaries in AntiTransformer [range = (0,1)]
 #define MAXTRIALS     0   // Maximum number of trials in case of fit failure [0 = default single trial]
 
 #define nJPSIS 230000.0
@@ -81,13 +82,14 @@ using namespace RooFit;
 // ##########################################
 // # Internal flags to control the workflow #
 // ##########################################
-#define MakeMuMuPlots false
+#define MAKEmumuPLOTS false
 #define USEMINOS      false
 #define SETBATCH      false
 #define SAVEPOLY      false // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
 #define SAVEPLOT      false
 #define RESETsigANG   false // Reset signal angular parameters before starting the fit
 #define RESETcomANG   false // Reset combinatorial background angular parameters before starting the fit
+#define FULLTOYS      false // Compute generation-and-fit toys
 #define FUNCERRBAND   false // Show the p.d.f. error band
 
 // ##################
@@ -642,18 +644,17 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
 // # varValIn2 = As     #
 // ######################
 {
-  double tolerance = 1e-1;
   double val, limit;
 
   if ((varName == "FlS") && (varValIn1 != NULL))
     {
       varValOut = TMath::Tan((varValIn1->getVal() - 1./2.) * TMath::Pi());
 
-      if ((varValIn1->getVal() + varValIn1->getErrorLo()) <= 0.) val = tolerance;
+      if ((varValIn1->getVal() + varValIn1->getErrorLo()) <= 0.) val = TOLERANCE;
       else                                                       val = varValIn1->getVal() + varValIn1->getErrorLo();
       varValOutELo = TMath::Tan((val - 1./2.) * TMath::Pi()) - varValOut;
 
-      if ((varValIn1->getVal() + varValIn1->getErrorHi()) >= 1.) val = 1. - tolerance;
+      if ((varValIn1->getVal() + varValIn1->getErrorHi()) >= 1.) val = 1. - TOLERANCE;
       else                                                       val = varValIn1->getVal() + varValIn1->getErrorHi();
       varValOutEHi = TMath::Tan((val - 1./2.) * TMath::Pi()) - varValOut;
     }
@@ -663,11 +664,11 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
 
       varValOut = TMath::Tan(varValIn2->getVal() / limit / 2. * TMath::Pi());
 
-      if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= -limit) val = -limit + tolerance;
+      if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= -limit) val = (limit >= 2.*TOLERANCE ? -limit + TOLERANCE : -limit + TOLERANCE*limit);
       else                                                           val = varValIn2->getVal() + varValIn2->getErrorLo();
       varValOutELo = TMath::Tan(val / limit / 2. * TMath::Pi()) - varValOut;
 
-      if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= limit) val = limit - tolerance;
+      if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= limit) val = (limit >= 2.*TOLERANCE ? limit - TOLERANCE : limit - TOLERANCE*limit);
       else                                                          val = varValIn2->getVal() + varValIn2->getErrorHi();
       varValOutEHi = TMath::Tan(val / limit / 2. * TMath::Pi()) - varValOut;
     }
@@ -675,11 +676,11 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
     {
       varValOut = TMath::Tan((varValIn1->getVal() - 1./2.) * TMath::Pi());
 
-      if ((varValIn1->getVal() + varValIn1->getErrorLo()) <= 0.) val = tolerance;
+      if ((varValIn1->getVal() + varValIn1->getErrorLo()) <= 0.) val = TOLERANCE;
       else                                                       val = varValIn1->getVal() + varValIn1->getErrorLo();
       varValOutELo = TMath::Tan((val - 1./2.) * TMath::Pi()) - varValOut;
 
-      if ((varValIn1->getVal() + varValIn1->getErrorHi()) >= 1.) val = 1. - tolerance;
+      if ((varValIn1->getVal() + varValIn1->getErrorHi()) >= 1.) val = 1. - TOLERANCE;
       else                                                       val = varValIn1->getVal() + varValIn1->getErrorHi();
       varValOutEHi = TMath::Tan((val - 1./2.) * TMath::Pi()) - varValOut;
     }
@@ -689,11 +690,11 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
 
       varValOut = TMath::Tan(varValIn3->getVal() / limit / 2. * TMath::Pi());
 
-      if ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -limit) val = -limit + tolerance;
+      if ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -limit) val = (limit >= 2.*TOLERANCE ? -limit + TOLERANCE : -limit + TOLERANCE*limit);
       else                                                           val = varValIn3->getVal() + varValIn3->getErrorLo();
       varValOutELo = TMath::Tan(val / limit / 2. * TMath::Pi()) - varValOut;
 
-      if ((varValIn3->getVal() + varValIn3->getErrorHi()) >= limit) val = limit - tolerance;
+      if ((varValIn3->getVal() + varValIn3->getErrorHi()) >= limit) val = (limit >= 2.*TOLERANCE ? limit - TOLERANCE : limit - TOLERANCE*limit);
       else                                                          val = varValIn3->getVal() + varValIn3->getErrorHi();
       varValOutEHi = TMath::Tan(val / limit / 2. * TMath::Pi()) - varValOut;
     }
@@ -3268,7 +3269,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
       // ########################################
       // # Measure the J/psi and psi(2S) widths #
       // ########################################
-      if (MakeMuMuPlots == true)
+      if (MAKEmumuPLOTS == true)
 	{
 	  TCanvas* cmumuMass_BeforeRej = new TCanvas("cmumuMass_BeforeRej","cmumuMass_BeforeRej",10, 10, 700, 900);
 	  FitDimuonInvMass(SingleCandNTuple,&TotalPDFJPsi,&TotalPDFPsiP,mumuMass,cmumuMass_BeforeRej,false,false,"TotalPDFPsi_BeforeRej");
@@ -3995,355 +3996,359 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   // # Toy-MC generation and fit #
   // #############################
   RooMCStudy* MyToy = new RooMCStudy(*TotalPDF,*x,Extended(true),FitOptions(Extended(true),ExternalConstraints(*vecConstr),Minos(USEMINOS))); // Possible options : "Binned()" = faster; Silence()
-  MyToy->generateAndFit(nToy,nEntryToy,true);
-  Canv->Divide(6,5);
-
-
-  if ((GetVar(TotalPDF,"meanS") != NULL) && (GetVar(TotalPDF,"meanS")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanS") == false))
+  if (FULLTOYS == true)
     {
-      RooRealVar* tmpVar = GetVar(TotalPDF,"meanS");
-      RooPlot* myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](specBin).c_str()) -
-  				       0.4*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())),
-  				       atof(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](specBin).c_str()) +
-  				       0.4*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      MyToy->generateAndFit(nToy,nEntryToy,true);
+      Canv->Divide(6,5);
 
-  if ((GetVar(TotalPDF,"sigmaS1") != NULL) && (GetVar(TotalPDF,"sigmaS1")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaS1") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"sigmaS1");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str()) -
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str()) +
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
 
-  if ((GetVar(TotalPDF,"sigmaS2") != NULL) && (GetVar(TotalPDF,"sigmaS2")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaS2") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"sigmaS2");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](specBin).c_str()) -
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](specBin).c_str()) +
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"meanS") != NULL) && (GetVar(TotalPDF,"meanS")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanS") == false))
+	{
+	  RooRealVar* tmpVar = GetVar(TotalPDF,"meanS");
+	  RooPlot* myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](specBin).c_str()) -
+					   0.4*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())),
+					   atof(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](specBin).c_str()) +
+					   0.4*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
+
+      if ((GetVar(TotalPDF,"sigmaS1") != NULL) && (GetVar(TotalPDF,"sigmaS1")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaS1") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"sigmaS1");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str()) -
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str()) +
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
+
+      if ((GetVar(TotalPDF,"sigmaS2") != NULL) && (GetVar(TotalPDF,"sigmaS2")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaS2") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"sigmaS2");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](specBin).c_str()) -
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](specBin).c_str()) +
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
       
-  if ((GetVar(TotalPDF,"fracMassS") != NULL) && (GetVar(TotalPDF,"fracMassS")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassS") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"fracMassS");
-      myFrame = tmpVar->frame(-0.1,1.1);
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"fracMassS") != NULL) && (GetVar(TotalPDF,"fracMassS")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassS") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"fracMassS");
+	  myFrame = tmpVar->frame(-0.1,1.1);
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"var1") != NULL) && (GetVar(TotalPDF,"var1")->getError() != 0.0) && (IsInConstraints(vecConstr,"var1") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"var1");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str()) - 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str()) + 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"var1") != NULL) && (GetVar(TotalPDF,"var1")->getError() != 0.0) && (IsInConstraints(vecConstr,"var1") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"var1");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str()) - 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str()) + 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"var2") != NULL) && (GetVar(TotalPDF,"var2")->getError() != 0.0) && (IsInConstraints(vecConstr,"var2") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"var2");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str()) - 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str()) + 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"var2") != NULL) && (GetVar(TotalPDF,"var2")->getError() != 0.0) && (IsInConstraints(vecConstr,"var2") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"var2");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str()) - 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str()) + 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"fracMassBExp") != NULL) && (GetVar(TotalPDF,"fracMassBExp")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassBExp") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"fracMassBExp");
-      myFrame = tmpVar->frame(-0.1,1.1);
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"fracMassBExp") != NULL) && (GetVar(TotalPDF,"fracMassBExp")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassBExp") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"fracMassBExp");
+	  myFrame = tmpVar->frame(-0.1,1.1);
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"sigmaMisTag1") != NULL) && (GetVar(TotalPDF,"sigmaMisTag1")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaMisTag1") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"sigmaMisTag1");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str()) -
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str()) +
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"sigmaMisTag1") != NULL) && (GetVar(TotalPDF,"sigmaMisTag1")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaMisTag1") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"sigmaMisTag1");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str()) -
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str()) +
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"sigmaMisTag2") != NULL) && (GetVar(TotalPDF,"sigmaMisTag2")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaMisTag2") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"sigmaMisTag2");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str()) -
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str()) +
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"sigmaMisTag2") != NULL) && (GetVar(TotalPDF,"sigmaMisTag2")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaMisTag2") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"sigmaMisTag2");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str()) -
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str()) +
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"fracMisTag") != NULL) && (GetVar(TotalPDF,"fracMisTag")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMisTag") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"fracMisTag");
-      myFrame = tmpVar->frame(-0.1,1.1);
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"fracMisTag") != NULL) && (GetVar(TotalPDF,"fracMisTag")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMisTag") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"fracMisTag");
+	  myFrame = tmpVar->frame(-0.1,1.1);
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"meanR1") != NULL) && (GetVar(TotalPDF,"meanR1")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanR1") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"meanR1");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanR1"))->operator[](specBin).c_str()) - 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("meanR1"))->operator[](specBin).c_str()) + 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    } 
+      if ((GetVar(TotalPDF,"meanR1") != NULL) && (GetVar(TotalPDF,"meanR1")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanR1") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"meanR1");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanR1"))->operator[](specBin).c_str()) - 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("meanR1"))->operator[](specBin).c_str()) + 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	} 
   
-  if ((GetVar(TotalPDF,"sigmaR1") != NULL) && (GetVar(TotalPDF,"sigmaR1")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaR1") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"sigmaR1");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str()) -
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str()) +
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"sigmaR1") != NULL) && (GetVar(TotalPDF,"sigmaR1")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaR1") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"sigmaR1");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str()) -
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str()) +
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"meanR2") != NULL) && (GetVar(TotalPDF,"meanR2")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanR2") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"meanR2");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanR2"))->operator[](specBin).c_str()) - 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("meanR2"))->operator[](specBin).c_str()) + 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    } 
+      if ((GetVar(TotalPDF,"meanR2") != NULL) && (GetVar(TotalPDF,"meanR2")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanR2") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"meanR2");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanR2"))->operator[](specBin).c_str()) - 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("meanR2"))->operator[](specBin).c_str()) + 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	} 
    
-  if ((GetVar(TotalPDF,"sigmaR2") != NULL) && (GetVar(TotalPDF,"sigmaR2")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaR2") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"sigmaR2");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str()) -
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str()) +
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"sigmaR2") != NULL) && (GetVar(TotalPDF,"sigmaR2")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaR2") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"sigmaR2");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str()) -
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str()) +
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"fracMassBRPeak") != NULL) && (GetVar(TotalPDF,"fracMassBRPeak")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassBRPeak") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"fracMassBRPeak");
-      myFrame = tmpVar->frame(-0.1,1.1);
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"fracMassBRPeak") != NULL) && (GetVar(TotalPDF,"fracMassBRPeak")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassBRPeak") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"fracMassBRPeak");
+	  myFrame = tmpVar->frame(-0.1,1.1);
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"meanL1") != NULL) && (GetVar(TotalPDF,"meanL1")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanL1") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"meanL1");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanL1"))->operator[](specBin).c_str()) - 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("meanL1"))->operator[](specBin).c_str()) + 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"meanL1") != NULL) && (GetVar(TotalPDF,"meanL1")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanL1") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"meanL1");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanL1"))->operator[](specBin).c_str()) - 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("meanL1"))->operator[](specBin).c_str()) + 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"sigmaL1") != NULL) && (GetVar(TotalPDF,"sigmaL1")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaL1") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"sigmaL1");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str()) -
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str()) +
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"sigmaL1") != NULL) && (GetVar(TotalPDF,"sigmaL1")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaL1") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"sigmaL1");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str()) -
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str()) +
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"meanL2") != NULL) && (GetVar(TotalPDF,"meanL2")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanL2") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"meanL2");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanL2"))->operator[](specBin).c_str()) - 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("meanL2"))->operator[](specBin).c_str()) + 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"meanL2") != NULL) && (GetVar(TotalPDF,"meanL2")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanL2") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"meanL2");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanL2"))->operator[](specBin).c_str()) - 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("meanL2"))->operator[](specBin).c_str()) + 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"sigmaL2") != NULL) && (GetVar(TotalPDF,"sigmaL2")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaL2") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"sigmaL2");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str()) -
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str()) +
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"sigmaL2") != NULL) && (GetVar(TotalPDF,"sigmaL2")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaL2") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"sigmaL2");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str()) -
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str()) +
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"fracMassBLPeak") != NULL) && (GetVar(TotalPDF,"fracMassBLPeak")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassBLPeak") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"fracMassBLPeak");
-      myFrame = tmpVar->frame(-0.1,1.1);
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"fracMassBLPeak") != NULL) && (GetVar(TotalPDF,"fracMassBLPeak")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassBLPeak") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"fracMassBLPeak");
+	  myFrame = tmpVar->frame(-0.1,1.1);
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"fracMassBPeak") != NULL) && (GetVar(TotalPDF,"fracMassBPeak")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassBPeak") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"fracMassBPeak");
-      myFrame = tmpVar->frame(-0.1,1.1);
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"fracMassBPeak") != NULL) && (GetVar(TotalPDF,"fracMassBPeak")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassBPeak") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"fracMassBPeak");
+	  myFrame = tmpVar->frame(-0.1,1.1);
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
   
-  if ((GetVar(TotalPDF,"nBkgComb") != NULL) && (GetVar(TotalPDF,"nBkgComb")->getError() != 0.0) && (IsInConstraints(vecConstr,"nBkgComb") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"nBkgComb");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str()) -
-  			      0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str()) +
-  			      0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"nBkgComb") != NULL) && (GetVar(TotalPDF,"nBkgComb")->getError() != 0.0) && (IsInConstraints(vecConstr,"nBkgComb") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"nBkgComb");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str()) -
+				  0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str()) +
+				  0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"nMisTagFrac") != NULL) && (GetVar(TotalPDF,"nMisTagFrac")->getError() != 0.0) && (IsInConstraints(vecConstr,"nMisTagFrac") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"nMisTagFrac");
-      myFrame = tmpVar->frame(-0.1,1.1);
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"nMisTagFrac") != NULL) && (GetVar(TotalPDF,"nMisTagFrac")->getError() != 0.0) && (IsInConstraints(vecConstr,"nMisTagFrac") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"nMisTagFrac");
+	  myFrame = tmpVar->frame(-0.1,1.1);
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"nBkgPeak") != NULL) && (GetVar(TotalPDF,"nBkgPeak")->getError() != 0.0) && (IsInConstraints(vecConstr,"nBkgPeak") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"nBkgPeak");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](specBin).c_str()) -
-  			      0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](specBin).c_str()) +
-  			      0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"nBkgPeak") != NULL) && (GetVar(TotalPDF,"nBkgPeak")->getError() != 0.0) && (IsInConstraints(vecConstr,"nBkgPeak") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"nBkgPeak");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](specBin).c_str()) -
+				  0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](specBin).c_str()) +
+				  0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"nSig") != NULL) && (GetVar(TotalPDF,"nSig")->getError() != 0.0) && (IsInConstraints(vecConstr,"nSig") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"nSig");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str()) - 0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str()) + 0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"nSig") != NULL) && (GetVar(TotalPDF,"nSig")->getError() != 0.0) && (IsInConstraints(vecConstr,"nSig") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"nSig");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str()) - 0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str()) + 0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  myFrame = MyToy->plotNLL(-2000.0,0.0);
-  Canv->cd(it++);
-  myFrame->Draw();
-  Canv->Modified();
-  Canv->Update();
+      myFrame = MyToy->plotNLL(-2000.0,0.0);
+      Canv->cd(it++);
+      myFrame->Draw();
+      Canv->Modified();
+      Canv->Update();
+    }
+  else MyToy->generate(nToy,nEntryToy,true);
 
 
   // #############################################
@@ -6113,475 +6118,479 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   // # Toy-MC generation and fit #
   // #############################
   RooMCStudy* MyToy = new RooMCStudy(*TotalPDF,RooArgSet(*x,*y,*z),Extended(true),ExternalConstraints(*vecConstr),FitOptions(Extended(true),ExternalConstraints(*vecConstr),Minos(USEMINOS)));
-  MyToy->generateAndFit(nToy,nEntryToy,true);
-  Canv->Divide(6,5);
-
-
-  if ((GetVar(TotalPDF,"meanS") != NULL) && (GetVar(TotalPDF,"meanS")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanS") == false))
+  if (FULLTOYS == true)
     {
-      RooRealVar* tmpVar = GetVar(TotalPDF,"meanS");
-      RooPlot* myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](specBin).c_str()) -
- 				       0.4*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())),
- 				       atof(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](specBin).c_str()) +
- 				       0.4*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      MyToy->generateAndFit(nToy,nEntryToy,true);
+      Canv->Divide(6,5);
 
-  if ((GetVar(TotalPDF,"sigmaS1") != NULL) && (GetVar(TotalPDF,"sigmaS1")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaS1") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"sigmaS1");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str()) -
- 			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())),
- 			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str()) +
- 			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
 
-  if ((GetVar(TotalPDF,"sigmaS2") != NULL) && (GetVar(TotalPDF,"sigmaS2")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaS2") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"sigmaS2");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](specBin).c_str()) -
- 			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](specBin).c_str())),
- 			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](specBin).c_str()) +
- 			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"meanS") != NULL) && (GetVar(TotalPDF,"meanS")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanS") == false))
+	{
+	  RooRealVar* tmpVar = GetVar(TotalPDF,"meanS");
+	  RooPlot* myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](specBin).c_str()) -
+					   0.4*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())),
+					   atof(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](specBin).c_str()) +
+					   0.4*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"fracMassS") != NULL) && (GetVar(TotalPDF,"fracMassS")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassS") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"fracMassS");
-      myFrame = tmpVar->frame(-0.1,1.1);
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"sigmaS1") != NULL) && (GetVar(TotalPDF,"sigmaS1")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaS1") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"sigmaS1");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str()) -
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str()) +
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"var1") != NULL) && (GetVar(TotalPDF,"var1")->getError() != 0.0) && (IsInConstraints(vecConstr,"var1") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"var1");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str()) - 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str())),
- 			      atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str()) + 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"sigmaS2") != NULL) && (GetVar(TotalPDF,"sigmaS2")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaS2") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"sigmaS2");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](specBin).c_str()) -
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](specBin).c_str()) +
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS2"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"var2") != NULL) && (GetVar(TotalPDF,"var2")->getError() != 0.0) && (IsInConstraints(vecConstr,"var2") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"var2");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str()) - 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str())),
- 			      atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str()) + 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"fracMassS") != NULL) && (GetVar(TotalPDF,"fracMassS")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassS") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"fracMassS");
+	  myFrame = tmpVar->frame(-0.1,1.1);
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"fracMassBExp") != NULL) && (GetVar(TotalPDF,"fracMassBExp")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassBExp") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"fracMassBExp");
-      myFrame = tmpVar->frame(-0.1,1.1);
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"var1") != NULL) && (GetVar(TotalPDF,"var1")->getError() != 0.0) && (IsInConstraints(vecConstr,"var1") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"var1");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str()) - 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str()) + 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
+
+      if ((GetVar(TotalPDF,"var2") != NULL) && (GetVar(TotalPDF,"var2")->getError() != 0.0) && (IsInConstraints(vecConstr,"var2") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"var2");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str()) - 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str()) + 0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
+
+      if ((GetVar(TotalPDF,"fracMassBExp") != NULL) && (GetVar(TotalPDF,"fracMassBExp")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassBExp") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"fracMassBExp");
+	  myFrame = tmpVar->frame(-0.1,1.1);
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
   
-  if ((GetVar(TotalPDF,"sigmaMisTag1") != NULL) && (GetVar(TotalPDF,"sigmaMisTag1")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaMisTag1") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"sigmaMisTag1");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str()) -
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str()) +
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"sigmaMisTag1") != NULL) && (GetVar(TotalPDF,"sigmaMisTag1")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaMisTag1") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"sigmaMisTag1");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str()) -
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str()) +
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag1"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"sigmaMisTag2") != NULL) && (GetVar(TotalPDF,"sigmaMisTag2")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaMisTag2") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"sigmaMisTag2");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str()) -
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str())),
-  			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str()) +
-  			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"sigmaMisTag2") != NULL) && (GetVar(TotalPDF,"sigmaMisTag2")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaMisTag2") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"sigmaMisTag2");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str()) -
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str()) +
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaMisTag2"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"fracMisTag") != NULL) && (GetVar(TotalPDF,"fracMisTag")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMisTag") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"fracMisTag");
-      myFrame = tmpVar->frame(-0.1,1.1);
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"fracMisTag") != NULL) && (GetVar(TotalPDF,"fracMisTag")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMisTag") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"fracMisTag");
+	  myFrame = tmpVar->frame(-0.1,1.1);
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"meanR1") != NULL) && (GetVar(TotalPDF,"meanR1")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanR1") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"meanR1");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanR1"))->operator[](specBin).c_str()) - 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str())),
- 			      atof(fitParam->operator[](Utility->GetFitParamIndx("meanR1"))->operator[](specBin).c_str()) + 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"meanR1") != NULL) && (GetVar(TotalPDF,"meanR1")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanR1") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"meanR1");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanR1"))->operator[](specBin).c_str()) - 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("meanR1"))->operator[](specBin).c_str()) + 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"sigmaR1") != NULL) && (GetVar(TotalPDF,"sigmaR1")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaR1") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"sigmaR1");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str()) -
- 			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str())),
- 			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str()) +
- 			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"sigmaR1") != NULL) && (GetVar(TotalPDF,"sigmaR1")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaR1") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"sigmaR1");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str()) -
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str()) +
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR1"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"meanR2") != NULL) && (GetVar(TotalPDF,"meanR2")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanR2") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"meanR2");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanR2"))->operator[](specBin).c_str()) - 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str())),
- 			      atof(fitParam->operator[](Utility->GetFitParamIndx("meanR2"))->operator[](specBin).c_str()) + 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    } 
+      if ((GetVar(TotalPDF,"meanR2") != NULL) && (GetVar(TotalPDF,"meanR2")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanR2") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"meanR2");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanR2"))->operator[](specBin).c_str()) - 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("meanR2"))->operator[](specBin).c_str()) + 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	} 
    
-  if ((GetVar(TotalPDF,"sigmaR2") != NULL) && (GetVar(TotalPDF,"sigmaR2")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaR2") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"sigmaR2");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str()) -
- 			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str())),
- 			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str()) +
- 			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"sigmaR2") != NULL) && (GetVar(TotalPDF,"sigmaR2")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaR2") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"sigmaR2");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str()) -
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str()) +
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaR2"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
   
-  if ((GetVar(TotalPDF,"fracMassBRPeak") != NULL) && (GetVar(TotalPDF,"fracMassBRPeak")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassBRPeak") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"fracMassBRPeak");
-      myFrame = tmpVar->frame(-0.1,1.1);
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"fracMassBRPeak") != NULL) && (GetVar(TotalPDF,"fracMassBRPeak")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassBRPeak") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"fracMassBRPeak");
+	  myFrame = tmpVar->frame(-0.1,1.1);
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"meanL1") != NULL) && (GetVar(TotalPDF,"meanL1")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanL1") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"meanL1");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanL1"))->operator[](specBin).c_str()) - 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str())),
- 			      atof(fitParam->operator[](Utility->GetFitParamIndx("meanL1"))->operator[](specBin).c_str()) + 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"meanL1") != NULL) && (GetVar(TotalPDF,"meanL1")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanL1") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"meanL1");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanL1"))->operator[](specBin).c_str()) - 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("meanL1"))->operator[](specBin).c_str()) + 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"sigmaL1") != NULL) && (GetVar(TotalPDF,"sigmaL1")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaL1") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"sigmaL1");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str()) -
- 			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str())),
- 			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str()) +
- 			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"sigmaL1") != NULL) && (GetVar(TotalPDF,"sigmaL1")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaL1") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"sigmaL1");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str()) -
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str()) +
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL1"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"meanL2") != NULL) && (GetVar(TotalPDF,"meanL2")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanL2") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"meanL2");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanL2"))->operator[](specBin).c_str()) - 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str())),
- 			      atof(fitParam->operator[](Utility->GetFitParamIndx("meanL2"))->operator[](specBin).c_str()) + 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"meanL2") != NULL) && (GetVar(TotalPDF,"meanL2")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanL2") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"meanL2");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanL2"))->operator[](specBin).c_str()) - 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("meanL2"))->operator[](specBin).c_str()) + 0.2*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"sigmaL2") != NULL) && (GetVar(TotalPDF,"sigmaL2")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaL2") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"sigmaL2");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str()) -
- 			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str())),
- 			      atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str()) +
- 			      0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"sigmaL2") != NULL) && (GetVar(TotalPDF,"sigmaL2")->getError() != 0.0) && (IsInConstraints(vecConstr,"sigmaL2") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"sigmaL2");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str()) -
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str()) +
+				  0.8*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaL2"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"fracMassBLPeak") != NULL) && (GetVar(TotalPDF,"fracMassBLPeak")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassBLPeak") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"fracMassBLPeak");
-      myFrame = tmpVar->frame(-0.1,1.1);
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"fracMassBLPeak") != NULL) && (GetVar(TotalPDF,"fracMassBLPeak")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassBLPeak") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"fracMassBLPeak");
+	  myFrame = tmpVar->frame(-0.1,1.1);
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"fracMassBPeak") != NULL) && (GetVar(TotalPDF,"fracMassBPeak")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassBPeak") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"fracMassBPeak");
-      myFrame = tmpVar->frame(-0.1,1.1);
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"fracMassBPeak") != NULL) && (GetVar(TotalPDF,"fracMassBPeak")->getError() != 0.0) && (IsInConstraints(vecConstr,"fracMassBPeak") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"fracMassBPeak");
+	  myFrame = tmpVar->frame(-0.1,1.1);
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
   
-  if ((GetVar(TotalPDF,"nBkgComb") != NULL) && (GetVar(TotalPDF,"nBkgComb")->getError() != 0.0) && (IsInConstraints(vecConstr,"nBkgComb") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"nBkgComb");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str()) -
- 			      0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str())),
- 			      atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str()) +
- 			      0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"nBkgComb") != NULL) && (GetVar(TotalPDF,"nBkgComb")->getError() != 0.0) && (IsInConstraints(vecConstr,"nBkgComb") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"nBkgComb");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str()) -
+				  0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str()) +
+				  0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgComb"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"nMisTagFrac") != NULL) && (GetVar(TotalPDF,"nMisTagFrac")->getError() != 0.0) && (IsInConstraints(vecConstr,"nMisTagFrac") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"nMisTagFrac");
-      myFrame = tmpVar->frame(-0.1,1.1);
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"nMisTagFrac") != NULL) && (GetVar(TotalPDF,"nMisTagFrac")->getError() != 0.0) && (IsInConstraints(vecConstr,"nMisTagFrac") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"nMisTagFrac");
+	  myFrame = tmpVar->frame(-0.1,1.1);
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"nBkgPeak") != NULL) && (GetVar(TotalPDF,"nBkgPeak")->getError() != 0.0) && (IsInConstraints(vecConstr,"nBkgPeak") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"nBkgPeak");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](specBin).c_str()) -
- 			      0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](specBin).c_str())),
- 			      atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](specBin).c_str()) +
- 			      0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"nBkgPeak") != NULL) && (GetVar(TotalPDF,"nBkgPeak")->getError() != 0.0) && (IsInConstraints(vecConstr,"nBkgPeak") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"nBkgPeak");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](specBin).c_str()) -
+				  0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](specBin).c_str()) +
+				  0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nBkgPeak"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"nSig") != NULL) && (GetVar(TotalPDF,"nSig")->getError() != 0.0) && (IsInConstraints(vecConstr,"nSig") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"nSig");
-      myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str()) - 0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str())),
- 			      atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str()) + 0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str())));
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"nSig") != NULL) && (GetVar(TotalPDF,"nSig")->getError() != 0.0) && (IsInConstraints(vecConstr,"nSig") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"nSig");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str()) - 0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str()) + 0.6*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str())));
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  for (unsigned int i = 0; i < NCOEFFPOLYBKG; i++)
-    {
-      myString.clear(); myString.str("");
-      myString << "c1Poly" << i;
+      for (unsigned int i = 0; i < NCOEFFPOLYBKG; i++)
+	{
+	  myString.clear(); myString.str("");
+	  myString << "c1Poly" << i;
       
-      if ((GetVar(TotalPDF,myString.str().c_str()) != NULL) && (GetVar(TotalPDF,myString.str().c_str())->getError() != 0.0) && (IsInConstraints(vecConstr,myString.str().c_str()) == false))
- 	{
- 	  tmpVar = GetVar(TotalPDF,myString.str().c_str());
- 	  myFrame = tmpVar->frame(-6.0,6.0);
- 	  MyToy->plotParamOn(myFrame);
- 	  Canv->cd(it++);
- 	  myFrame->Draw();
- 	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
- 	  Canv->cd(it++);
- 	  myFrame->Draw();
- 	}
-    }
+	  if ((GetVar(TotalPDF,myString.str().c_str()) != NULL) && (GetVar(TotalPDF,myString.str().c_str())->getError() != 0.0) && (IsInConstraints(vecConstr,myString.str().c_str()) == false))
+	    {
+	      tmpVar = GetVar(TotalPDF,myString.str().c_str());
+	      myFrame = tmpVar->frame(-6.0,6.0);
+	      MyToy->plotParamOn(myFrame);
+	      Canv->cd(it++);
+	      myFrame->Draw();
+	      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	      Canv->cd(it++);
+	      myFrame->Draw();
+	    }
+	}
 
-  for (unsigned int i = 0; i < NCOEFFPOLYBKG; i++)
-    {
-      myString.clear(); myString.str("");
-      myString << "c2Poly" << i;
+      for (unsigned int i = 0; i < NCOEFFPOLYBKG; i++)
+	{
+	  myString.clear(); myString.str("");
+	  myString << "c2Poly" << i;
       
-      if ((GetVar(TotalPDF,myString.str().c_str()) != NULL) && (GetVar(TotalPDF,myString.str().c_str())->getError() != 0.0) && (IsInConstraints(vecConstr,myString.str().c_str()) == false))
- 	{
- 	  tmpVar = GetVar(TotalPDF,myString.str().c_str());
- 	  myFrame = tmpVar->frame(-6.0,6.0);
- 	  MyToy->plotParamOn(myFrame);
- 	  Canv->cd(it++);
- 	  myFrame->Draw();
- 	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
- 	  Canv->cd(it++);
- 	  myFrame->Draw();
- 	}
-    }
+	  if ((GetVar(TotalPDF,myString.str().c_str()) != NULL) && (GetVar(TotalPDF,myString.str().c_str())->getError() != 0.0) && (IsInConstraints(vecConstr,myString.str().c_str()) == false))
+	    {
+	      tmpVar = GetVar(TotalPDF,myString.str().c_str());
+	      myFrame = tmpVar->frame(-6.0,6.0);
+	      MyToy->plotParamOn(myFrame);
+	      Canv->cd(it++);
+	      myFrame->Draw();
+	      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	      Canv->cd(it++);
+	      myFrame->Draw();
+	    }
+	}
 
-  for (unsigned int i = 0; i < NCOEFFPOLYBKG; i++)
-    {
-      myString.clear(); myString.str("");
-      myString << "p1Poly" << i;
+      for (unsigned int i = 0; i < NCOEFFPOLYBKG; i++)
+	{
+	  myString.clear(); myString.str("");
+	  myString << "p1Poly" << i;
       
-      if ((GetVar(TotalPDF,myString.str().c_str()) != NULL) && (GetVar(TotalPDF,myString.str().c_str())->getError() != 0.0) && (IsInConstraints(vecConstr,myString.str().c_str()) == false))
- 	{
- 	  tmpVar = GetVar(TotalPDF,myString.str().c_str());
- 	  myFrame = tmpVar->frame(-6.0,6.0);
- 	  MyToy->plotParamOn(myFrame);
- 	  Canv->cd(it++);
- 	  myFrame->Draw();
- 	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
- 	  Canv->cd(it++);
- 	  myFrame->Draw();
- 	}
-    }
+	  if ((GetVar(TotalPDF,myString.str().c_str()) != NULL) && (GetVar(TotalPDF,myString.str().c_str())->getError() != 0.0) && (IsInConstraints(vecConstr,myString.str().c_str()) == false))
+	    {
+	      tmpVar = GetVar(TotalPDF,myString.str().c_str());
+	      myFrame = tmpVar->frame(-6.0,6.0);
+	      MyToy->plotParamOn(myFrame);
+	      Canv->cd(it++);
+	      myFrame->Draw();
+	      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	      Canv->cd(it++);
+	      myFrame->Draw();
+	    }
+	}
   
-  for (unsigned int i = 0; i < NCOEFFPOLYBKG; i++)
-    {
-      myString.clear(); myString.str("");
-      myString << "p2Poly" << i;
+      for (unsigned int i = 0; i < NCOEFFPOLYBKG; i++)
+	{
+	  myString.clear(); myString.str("");
+	  myString << "p2Poly" << i;
       
-      if ((GetVar(TotalPDF,myString.str().c_str()) != NULL) && (GetVar(TotalPDF,myString.str().c_str())->getError() != 0.0) && (IsInConstraints(vecConstr,myString.str().c_str()) == false))
- 	{
- 	  tmpVar = GetVar(TotalPDF,myString.str().c_str());
- 	  myFrame = tmpVar->frame(-6.0,6.0);
- 	  MyToy->plotParamOn(myFrame);
- 	  Canv->cd(it++);
- 	  myFrame->Draw();
- 	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
- 	  Canv->cd(it++);
- 	  myFrame->Draw();
- 	}
-    }
+	  if ((GetVar(TotalPDF,myString.str().c_str()) != NULL) && (GetVar(TotalPDF,myString.str().c_str())->getError() != 0.0) && (IsInConstraints(vecConstr,myString.str().c_str()) == false))
+	    {
+	      tmpVar = GetVar(TotalPDF,myString.str().c_str());
+	      myFrame = tmpVar->frame(-6.0,6.0);
+	      MyToy->plotParamOn(myFrame);
+	      Canv->cd(it++);
+	      myFrame->Draw();
+	      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	      Canv->cd(it++);
+	      myFrame->Draw();
+	    }
+	}
 
- if ((GetVar(TotalPDF,"FlS") != NULL) && (GetVar(TotalPDF,"FlS")->getError() != 0.0) && (IsInConstraints(vecConstr,"FlS") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"FlS");
-      myFrame = tmpVar->frame(-0.1,1.1);
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"FlS") != NULL) && (GetVar(TotalPDF,"FlS")->getError() != 0.0) && (IsInConstraints(vecConstr,"FlS") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"FlS");
+	  myFrame = tmpVar->frame(-0.1,1.1);
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"AfbS") != NULL) && (GetVar(TotalPDF,"AfbS")->getError() != 0.0) && (IsInConstraints(vecConstr,"AfbS") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"AfbS");
-      myFrame = tmpVar->frame(-1.1,1.1);
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"AfbS") != NULL) && (GetVar(TotalPDF,"AfbS")->getError() != 0.0) && (IsInConstraints(vecConstr,"AfbS") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"AfbS");
+	  myFrame = tmpVar->frame(-1.1,1.1);
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"FsS") != NULL) && (GetVar(TotalPDF,"FsS")->getError() != 0.0) && (IsInConstraints(vecConstr,"FsS") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"FsS");
-      myFrame = tmpVar->frame(-1.1,1.1);
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"FsS") != NULL) && (GetVar(TotalPDF,"FsS")->getError() != 0.0) && (IsInConstraints(vecConstr,"FsS") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"FsS");
+	  myFrame = tmpVar->frame(-1.1,1.1);
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  if ((GetVar(TotalPDF,"AsS") != NULL) && (GetVar(TotalPDF,"AsS")->getError() != 0.0) && (IsInConstraints(vecConstr,"AsS") == false))
-    {
-      tmpVar = GetVar(TotalPDF,"AsS");
-      myFrame = tmpVar->frame(-1.1,1.1);
-      MyToy->plotParamOn(myFrame);
-      Canv->cd(it++);
-      myFrame->Draw();
-      myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
-      Canv->cd(it++);
-      myFrame->Draw();
-    }
+      if ((GetVar(TotalPDF,"AsS") != NULL) && (GetVar(TotalPDF,"AsS")->getError() != 0.0) && (IsInConstraints(vecConstr,"AsS") == false))
+	{
+	  tmpVar = GetVar(TotalPDF,"AsS");
+	  myFrame = tmpVar->frame(-1.1,1.1);
+	  MyToy->plotParamOn(myFrame);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	  myFrame = MyToy->plotPull(*tmpVar,-5,5,30,true);
+	  Canv->cd(it++);
+	  myFrame->Draw();
+	}
 
-  myFrame = MyToy->plotNLL(-2000.0,0.0);
-  Canv->cd(it++);
-  myFrame->Draw();
-  Canv->Modified();
-  Canv->Update();
+      myFrame = MyToy->plotNLL(-2000.0,0.0);
+      Canv->cd(it++);
+      myFrame->Draw();
+      Canv->Modified();
+      Canv->Update();
+    }
+  else MyToy->generate(nToy,nEntryToy,true);
 
 
   // #############################################
@@ -6955,15 +6964,17 @@ int main(int argc, char** argv)
 	  cout << "MULTYIELD = "     << MULTYIELD << endl;
 	  cout << "NCOEFFPOLYBKG = " << NCOEFFPOLYBKG << endl;
 	  cout << "DEGREEINTERP = "  << DEGREEINTERP << endl;
+	  cout << "TOLERANCE = "     << TOLERANCE << endl;
 	  cout << "MAXTRIALS = "     << MAXTRIALS << endl;
 
-	  cout << "\nMakeMuMuPlots = " << MakeMuMuPlots << endl;
+	  cout << "\nMAKEmumuPLOTS = " << MAKEmumuPLOTS << endl;
 	  cout << "USEMINOS = "        << USEMINOS << endl;
 	  cout << "SETBATCH  = "       << SETBATCH << endl;
 	  cout << "SAVEPOLY = "        << SAVEPOLY << endl;
 	  cout << "SAVEPLOT = "        << SAVEPLOT << endl;
 	  cout << "RESETsigANG = "     << RESETsigANG << endl;
 	  cout << "RESETcomANG = "     << RESETcomANG << endl;
+	  cout << "FULLTOYS = "        << FULLTOYS << endl;
 	  cout << "FUNCERRBAND = "     << FUNCERRBAND << endl;
 
 	  cout << "\nPARAMETERFILEIN = " << PARAMETERFILEIN << endl;
