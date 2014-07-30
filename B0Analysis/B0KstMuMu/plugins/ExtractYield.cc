@@ -2402,7 +2402,7 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vector
       myString.clear(); myString.str("");
       myString << fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"AfbS",1.0,&myString,&value,&errLo,&errHi);
-      AntiTransformer("Afb",value,errLo,errHi,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,"AfbS"));
+      AntiTransformer("AfbS",value,errLo,errHi,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,"AfbS"));
       myString.clear(); myString.str("");
       myString << value << "   " << errLo << "   " << errHi;
       SetValueAndErrors(TotalPDF,"AfbS",1.0,&myString,&value,&errLo,&errHi);
