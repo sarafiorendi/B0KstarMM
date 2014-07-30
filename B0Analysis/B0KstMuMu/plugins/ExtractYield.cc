@@ -331,7 +331,7 @@ void ClearVars                 (RooArgSet* vecConstr);
 void CloseAllAndQuit           (TApplication* theApp, TFile* NtplFile);
 
 string Transformer             (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1 = NULL, RooRealVar* varValIn2 = NULL, RooRealVar* varValIn3 = NULL);
-string AntiTransformer         (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1 = NULL, RooRealVar* varValIn2 = NULL, RooRealVar* varValIn3 = NULL);
+void AntiTransformer           (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1 = NULL, RooRealVar* varValIn2 = NULL, RooRealVar* varValIn3 = NULL);
 
 string MakeName                (RooDataSet* data, unsigned int ID);
 void DrawString                (double Lumi, RooPlot* myFrame = NULL);
@@ -481,8 +481,8 @@ void SetValueAndErrors (RooAbsPdf* pdf, string varName, double multi, stringstre
       	}
       else
       	{
-      	  GetVar(pdf,varName)->setAsymError(-1.0*fabs(*errLo),fabs(*errHi));
-	  GetVar(pdf,varName)->setError((fabs(*errLo) + fabs(*errHi)) / 2.);
+      	  GetVar(pdf,varName)->setAsymError(*errLo,*errHi);
+	  GetVar(pdf,varName)->setError((*errHi - *errLo) / 2.);
       	}
     }
 }
@@ -597,7 +597,7 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
 	}
       else
 	{
-	  cout << "[ExtractYield::Transformer]\tWrong parameter: " << varName << " or NULL variable" << endl;
+	  cout << "[ExtractYield::Transformer]\tWrong parameter: " << varName << endl;
 	  exit (EXIT_FAILURE);
 	}
     }
@@ -627,7 +627,7 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
     }
   else
     {
-      cout << "[ExtractYield::Transformer]\tWrong parameter: " << varName << " or NULL variable" << endl;
+      cout << "[ExtractYield::Transformer]\tWrong parameter: " << varName << endl;
       exit (EXIT_FAILURE);
     }
 
@@ -635,90 +635,73 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
 }
 
 
-string AntiTransformer (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1, RooRealVar* varValIn2, RooRealVar* varValIn3)
+void AntiTransformer (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1, RooRealVar* varValIn2, RooRealVar* varValIn3)
 // ######################
 // # varValIn1 = Fl,Fs  #
 // # varValIn2 = Afb,Fs #
 // # varValIn2 = As     #
 // ######################
 {
-  double val;
-  stringstream myString;
-  myString.clear(); myString.str("");
+  double tolerance = 1e-1;
+  double val, limit;
 
-  if ((varValIn1 == NULL) && (varValIn2 == NULL) && (varValIn3 == NULL))
+  if ((varName == "FlS") && (varValIn1 != NULL))
     {
-      if (varName == "FsS")
-	{
-	  myString << "TMath::Tan((" << varName << " - 1/2) * TMath::Pi())";
-	  return myString.str();
-	}
-      else if (varName == "AsS")
-	{
-	  myString << "TMath::Tan(" << varName << " / (1/2*(TMath::Tan((FsS - 1/2)*TMath::Pi()) + 3*TMath::Tan((FlS - 1/2)*TMath::Pi())*(1 - TMath::Tan((FsS - 1/2)*TMath::Pi())))) / 2 * TMath::Pi())";
-	  return myString.str();
-	}
-      else
-	{
-	  cout << "[ExtractYield::AntiTransformer]\tWrong parameter: " << varName << endl;
-	  exit (EXIT_FAILURE);
-	}
-    }
-  else if ((varName == "FlS") && (varValIn1 != NULL))
-    {
-      varValOut    = TMath::Tan((varValIn1->getVal() - 1./2.) * TMath::Pi());
+      varValOut = TMath::Tan((varValIn1->getVal() - 1./2.) * TMath::Pi());
 
-      if ((varValIn1->getVal() + varValIn1->getErrorLo()) < 0.) val = atof(Utility->GetGenericParam("SlewRateConstr").c_str());
-      else val = varValIn1->getVal() + varValIn1->getErrorLo();
+      if ((varValIn1->getVal() + varValIn1->getErrorLo()) <= 0.) val = tolerance;
+      else                                                       val = varValIn1->getVal() + varValIn1->getErrorLo();
       varValOutELo = TMath::Tan((val - 1./2.) * TMath::Pi()) - varValOut;
 
-      if ((varValIn1->getVal() + varValIn1->getErrorHi()) > 1.) val = 1. - atof(Utility->GetGenericParam("SlewRateConstr").c_str());
-      else val = varValIn1->getVal() + varValIn1->getErrorHi();
+      if ((varValIn1->getVal() + varValIn1->getErrorHi()) >= 1.) val = 1. - tolerance;
+      else                                                       val = varValIn1->getVal() + varValIn1->getErrorHi();
       varValOutEHi = TMath::Tan((val - 1./2.) * TMath::Pi()) - varValOut;
     }
   else if ((varName == "AfbS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
-      varValOut = TMath::Tan(varValIn2->getVal() / (3./4. * (1. - varValIn1->getVal())) / 2. * TMath::Pi());
+      limit = 3./4. * (1. - (1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi()));
 
-      if ((varValIn2->getVal() + varValIn2->getErrorLo()) < -1.) val = -1. + atof(Utility->GetGenericParam("SlewRateConstr").c_str());
-      else val = varValIn2->getVal() + varValIn2->getErrorLo();
-      varValOutELo = TMath::Tan(val / (3./4. * (1. - varValIn1->getVal())) / 2. * TMath::Pi()) - varValOut;
+      varValOut = TMath::Tan(varValIn2->getVal() / limit / 2. * TMath::Pi());
 
-      if ((varValIn2->getVal() + varValIn2->getErrorHi()) > 1.) val = 1. - atof(Utility->GetGenericParam("SlewRateConstr").c_str());
-      else val = varValIn2->getVal() + varValIn2->getErrorHi();
-      varValOutEHi = TMath::Tan(val / (3./4. * (1. - varValIn1->getVal())) / 2. * TMath::Pi()) - varValOut;
+      if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= -limit) val = -limit + tolerance;
+      else                                                           val = varValIn2->getVal() + varValIn2->getErrorLo();
+      varValOutELo = TMath::Tan(val / limit / 2. * TMath::Pi()) - varValOut;
+
+      if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= limit) val = limit - tolerance;
+      else                                                          val = varValIn2->getVal() + varValIn2->getErrorHi();
+      varValOutEHi = TMath::Tan(val / limit / 2. * TMath::Pi()) - varValOut;
     }
   else if ((varName == "FsS") && (varValIn1 != NULL))
     {
-      varValOut    = TMath::Tan((varValIn1->getVal() - 1./2.) * TMath::Pi());
+      varValOut = TMath::Tan((varValIn1->getVal() - 1./2.) * TMath::Pi());
 
-      if ((varValIn1->getVal() + varValIn1->getErrorLo()) < 0.) val = atof(Utility->GetGenericParam("SlewRateConstr").c_str());
-      else val = varValIn1->getVal() + varValIn1->getErrorLo();
+      if ((varValIn1->getVal() + varValIn1->getErrorLo()) <= 0.) val = tolerance;
+      else                                                       val = varValIn1->getVal() + varValIn1->getErrorLo();
       varValOutELo = TMath::Tan((val - 1./2.) * TMath::Pi()) - varValOut;
 
-      if ((varValIn1->getVal() + varValIn1->getErrorHi()) > 1.) val = 1. - atof(Utility->GetGenericParam("SlewRateConstr").c_str());
-      else val = varValIn1->getVal() + varValIn1->getErrorHi();
+      if ((varValIn1->getVal() + varValIn1->getErrorHi()) >= 1.) val = 1. - tolerance;
+      else                                                       val = varValIn1->getVal() + varValIn1->getErrorHi();
       varValOutEHi = TMath::Tan((val - 1./2.) * TMath::Pi()) - varValOut;
     }
   else if ((varName == "AsS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (varValIn3 != NULL))
     {
-      varValOut    = TMath::Tan(varValIn3->getVal() / (1./2. * (varValIn2->getVal() + 3.*varValIn1->getVal()*(1. - varValIn2->getVal()))) / 2. * TMath::Pi());
+      limit = 1./2. * ((1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) + 3.*(1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi())*(1. - (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi())));
 
-      if ((varValIn3->getVal() + varValIn3->getErrorLo()) < -1.) val = -1. + atof(Utility->GetGenericParam("SlewRateConstr").c_str());
-      else val = varValIn3->getVal() + varValIn3->getErrorLo();
-      varValOutELo = TMath::Tan(val / (1./2. * (varValIn2->getVal() + 3.*varValIn1->getVal()*(1. - varValIn2->getVal()))) / 2. * TMath::Pi()) - varValOut;
+      varValOut = TMath::Tan(varValIn3->getVal() / limit / 2. * TMath::Pi());
 
-      if ((varValIn3->getVal() + varValIn3->getErrorHi()) > 1.) val = 1. - atof(Utility->GetGenericParam("SlewRateConstr").c_str());
-      else val = varValIn3->getVal() + varValIn3->getErrorHi();
-      varValOutEHi = TMath::Tan(val / (1./2. * (varValIn2->getVal() + 3.*varValIn1->getVal()*(1. - varValIn2->getVal()))) / 2. * TMath::Pi()) - varValOut;
+      if ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -limit) val = -limit + tolerance;
+      else                                                           val = varValIn3->getVal() + varValIn3->getErrorLo();
+      varValOutELo = TMath::Tan(val / limit / 2. * TMath::Pi()) - varValOut;
+
+      if ((varValIn3->getVal() + varValIn3->getErrorHi()) >= limit) val = limit - tolerance;
+      else                                                          val = varValIn3->getVal() + varValIn3->getErrorHi();
+      varValOutEHi = TMath::Tan(val / limit / 2. * TMath::Pi()) - varValOut;
     }
   else
     {
       cout << "[ExtractYield::AntiTransformer]\tWrong parameter: " << varName << endl;
       exit (EXIT_FAILURE);
     }
-
-  return "";
 }
 
 
@@ -1276,12 +1259,12 @@ void ResetAngularParam (vector<vector<string>*>* fitParam)
     {
       cout << "\n[ExtractYield::ResetAngularParam]\t@@@ Resetting the angular parameters for q^2 bin #" << j << " @@@" << endl;
 
-      fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](j)   = "0.5   0.0   0.0";
-      fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](j)  = "0.0   0.0   0.0";
-      fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](j)   = "0.0   0.0   0.0";
-      fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](j)   = "0.0   0.0   0.0";
-      fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](j)   = "0.05   0.02   0.02";
-      fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](j)   = "0.0   0.0   0.0";
+      fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](j)   = "0.5";
+      fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](j)  = "0.0";
+      fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](j)   = "0.0";
+      fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](j)   = "0.0";
+      fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](j)   = "0.5";
+      fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](j)   = "0.0";
 
       cout << "FL: "   << "\t" << fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](j).c_str() << endl;
       cout << "AFB: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](j).c_str() << endl;
@@ -2098,8 +2081,11 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vector
 
   if (GetVar(TotalPDF,"meanS") != NULL)
     {
-      TotalPDF->getVariables()->setRealValue("meanS",atof(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](q2BinIndx).c_str()));
-      GetVar(TotalPDF,"meanS")->setConstant(false);
+      myString.clear(); myString.str("");
+      myString << fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](q2BinIndx).c_str();
+      SetValueAndErrors(TotalPDF,"meanS",1.0,&myString,&value,&errLo,&errHi);
+      if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,"meanS")->setConstant(true);
+      else                                  GetVar(TotalPDF,"meanS")->setConstant(false);
     }
   if (GetVar(TotalPDF,"sigmaS1") != NULL)
     {
@@ -2414,24 +2400,26 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vector
       myString.clear(); myString.str("");
       myString << fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"FlS",1.0,&myString,&value,&errLo,&errHi);
+      if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,"FlS")->setConstant(true);
+      else                                  GetVar(TotalPDF,"FlS")->setConstant(false);
+
       AntiTransformer("FlS",value,errLo,errHi,GetVar(TotalPDF,"FlS"));
       myString.clear(); myString.str("");
       myString << value << "   " << errLo << "   " << errHi;
       SetValueAndErrors(TotalPDF,"FlS",1.0,&myString,&value,&errLo,&errHi);
-      if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,"FlS")->setConstant(true);
-      else                                  GetVar(TotalPDF,"FlS")->setConstant(false);
     }
   if (GetVar(TotalPDF,"AfbS") != NULL)
     {
       myString.clear(); myString.str("");
       myString << fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(TotalPDF,"AfbS",1.0,&myString,&value,&errLo,&errHi);
+      if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,"AfbS")->setConstant(true);
+      else                                  GetVar(TotalPDF,"AfbS")->setConstant(false);
+
       AntiTransformer("AfbS",value,errLo,errHi,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,"AfbS"));
       myString.clear(); myString.str("");
       myString << value << "   " << errLo << "   " << errHi;
       SetValueAndErrors(TotalPDF,"AfbS",1.0,&myString,&value,&errLo,&errHi);
-      if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,"AfbS")->setConstant(true);
-      else                                  GetVar(TotalPDF,"AfbS")->setConstant(false);
     }
   if (GetVar(TotalPDF,"P1S") != NULL)
     {
@@ -2454,24 +2442,26 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vector
       myString.clear(); myString.str("");
       myString << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](q2BinIndx);
       SetValueAndErrors(TotalPDF,"FsS",1.0,&myString,&value,&errLo,&errHi);
+      if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,"FsS")->setConstant(true);
+      else                                  GetVar(TotalPDF,"FsS")->setConstant(false);
+
       AntiTransformer("FsS",value,errLo,errHi,GetVar(TotalPDF,"FsS"));
       myString.clear(); myString.str("");
       myString << value << "   " << errLo << "   " << errHi;
       SetValueAndErrors(TotalPDF,"FsS",1.0,&myString,&value,&errLo,&errHi);
-      if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,"FsS")->setConstant(true);
-      else                                  GetVar(TotalPDF,"FsS")->setConstant(false);
     }
   if (GetVar(TotalPDF,"AsS") != NULL)
     {
       myString.clear(); myString.str("");
       myString << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](q2BinIndx);
       SetValueAndErrors(TotalPDF,"AsS",1.0,&myString,&value,&errLo,&errHi);
+      if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,"AsS")->setConstant(true);
+      else                                  GetVar(TotalPDF,"AsS")->setConstant(false);
+
       AntiTransformer("AsS",value,errLo,errHi,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,"FsS"),GetVar(TotalPDF,"AsS"));
       myString.clear(); myString.str("");
       myString << value << "   " << errLo << "   " << errHi;
       SetValueAndErrors(TotalPDF,"AsS",1.0,&myString,&value,&errLo,&errHi);
-      if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,"AsS")->setConstant(true);
-      else                                  GetVar(TotalPDF,"AsS")->setConstant(false);
     }
 
 
@@ -7038,7 +7028,6 @@ int main(int argc, char** argv)
 
 	  CTRLfitWRKflow = Utility->GetGenericParam("CtrlFitWrkFlow");
 
-	  fileFitResults << "Slewrate for physics constraints shape: " << Utility->GetGenericParam("SlewRateConstr").c_str() << endl;
 	  fileFitResults << "Normalize to J/psi and not psi(2S): "     << Utility->GetGenericParam("NormJPSInotPSIP").c_str() << " (0 = false; 1 = true)" << endl;
 	  fileFitResults << "Apply constraints: "                      << Utility->GetGenericParam("ApplyConstr").c_str() << " (0 = false; 1 = true)" << endl;
 	  fileFitResults << "Control fit workflow: "                   << CTRLfitWRKflow.c_str() << endl;
