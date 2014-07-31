@@ -572,6 +572,7 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
 // # varValIn2 = Afb #
 // ###################
 {
+  double val;
   stringstream myString;
   myString.clear(); myString.str("");
 
@@ -594,7 +595,9 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
 	}
       else if (varName == "AsS")
 	{
-	  myString << "(1/2*((1/2 + TMath::ATan(FsS) / TMath::Pi()) + 3*(1/2 + TMath::ATan(FlS) / TMath::Pi())*(1 - (1/2 + TMath::ATan(FsS) / TMath::Pi()))) * 2*TMath::ATan(" << varName << ")/TMath::Pi())";
+	  myString << "((1/2*((1/2 + TMath::ATan(FsS) / TMath::Pi()) + 3*(1/2 + TMath::ATan(FlS) / TMath::Pi())*(1 - (1/2 + TMath::ATan(FsS) / TMath::Pi()))) < 1 ? ";
+	  myString << "1/2*((1/2 + TMath::ATan(FsS) / TMath::Pi()) + 3*(1/2 + TMath::ATan(FlS) / TMath::Pi())*(1 - (1/2 + TMath::ATan(FsS) / TMath::Pi()))) : 1) ";
+	  myString << "* 2*TMath::ATan(" << varName << ")/TMath::Pi())";
 	  return myString.str();
 	}
       else
@@ -623,9 +626,12 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
     }
   else if ((varName == "AsS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (varValIn3 != NULL))
     {
-      varValOut    = 1./2. * ((1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) + 3.*(1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi())*(1. - (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()))) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi();
-      varValOutELo = 1./2. * ((1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) + 3.*(1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi())*(1. - (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()))) * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorLo()) / TMath::Pi() - varValOut;
-      varValOutEHi = 1./2. * ((1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) + 3.*(1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi())*(1. - (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()))) * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorHi()) / TMath::Pi() - varValOut;
+      val = 1./2. * ((1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) + 3.*(1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi())*(1. - (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi())));
+      if (val > 1.) val = 1.;
+
+      varValOut    = val * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi();
+      varValOutELo = val * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorLo()) / TMath::Pi() - varValOut;
+      varValOutEHi = val * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorHi()) / TMath::Pi() - varValOut;
     }
   else
     {
