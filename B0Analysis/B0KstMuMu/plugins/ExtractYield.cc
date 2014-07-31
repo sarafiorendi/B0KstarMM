@@ -68,11 +68,11 @@ using namespace RooFit;
 // # Global constants #
 // ####################
 #define NBINS         20
-#define MULTYIELD     1.0 // Multiplication factor to the number of entry in toy-MC
-#define NCOEFFPOLYBKG 5   // Maximum number of coefficients (= degree) of the polynomial describing the background in the angular variables
-#define DEGREEINTERP  1   // Polynomial degree for efficiency histogram interpolation
-#define TOLERANCE     0.1 // Tolerance with respect to the boundaries in AntiTransformer [range = (0,1)]
-#define MAXTRIALS     0   // Maximum number of trials in case of fit failure [0 = default single trial]
+#define MULTYIELD     1.0  // Multiplication factor to the number of entry in toy-MC
+#define NCOEFFPOLYBKG 5    // Maximum number of coefficients (= degree) of the polynomial describing the background in the angular variables
+#define DEGREEINTERP  1    // Polynomial degree for efficiency histogram interpolation
+#define TOLERANCE     0.05 // Tolerance with respect to the boundaries in AntiTransformer [range = (0,1)]
+#define MAXTRIALS     0    // Maximum number of trials in case of fit failure [0 = default single trial]
 
 #define nJPSIS 230000.0
 #define nJPSIB   2500.0
@@ -690,12 +690,14 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
 
       varValOut = TMath::Tan(varValIn3->getVal() / limit / 2. * TMath::Pi());
 
-      if ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -limit) val = (limit >= 2.*TOLERANCE ? -limit + TOLERANCE : -limit + TOLERANCE*limit);
-      else                                                           val = varValIn3->getVal() + varValIn3->getErrorLo();
+      if ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -1.)         val = -1. + TOLERANCE;
+      else if ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -limit) val = (limit >= 2.*TOLERANCE ? -limit + TOLERANCE : -limit + TOLERANCE*limit);
+      else                                                                val = varValIn3->getVal() + varValIn3->getErrorLo();
       varValOutELo = TMath::Tan(val / limit / 2. * TMath::Pi()) - varValOut;
 
-      if ((varValIn3->getVal() + varValIn3->getErrorHi()) >= limit) val = (limit >= 2.*TOLERANCE ? limit - TOLERANCE : limit - TOLERANCE*limit);
-      else                                                          val = varValIn3->getVal() + varValIn3->getErrorHi();
+      if ((varValIn3->getVal() + varValIn3->getErrorHi()) >= 1.)         val = 1. - TOLERANCE;
+      else if ((varValIn3->getVal() + varValIn3->getErrorHi()) >= limit) val = (limit >= 2.*TOLERANCE ? limit - TOLERANCE : limit - TOLERANCE*limit);
+      else                                                               val = varValIn3->getVal() + varValIn3->getErrorHi();
       varValOutEHi = TMath::Tan(val / limit / 2. * TMath::Pi()) - varValOut;
     }
   else
@@ -1498,13 +1500,13 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
 	}
       if (GetVar(*TotalPDF,"FsS") != NULL)
         {
-          fileFitResults << "Fs: " << GetVar(*TotalPDF,"FsS")->getVal() << " +/- " << GetVar(*TotalPDF,"FsS")->getError();
-          fileFitResults << " (" << GetVar(*TotalPDF,"FsS")->getErrorHi() << "/" <<  GetVar(*TotalPDF,"FsS")->getErrorLo() << ")" << endl;
+	  Transformer("FsS",varVal,varValELo,varValEHi,GetVar(*TotalPDF,"FsS"));
+	  fileFitResults << "Fs: " << varVal << " +/- " << (varValEHi - varValELo) / 2. << " (" << varValEHi << "/" << varValELo << ")" << endl;
         }
       if (GetVar(*TotalPDF,"AsS") != NULL)
         {
-          fileFitResults << "As: " << GetVar(*TotalPDF,"AsS")->getVal() << " +/- " << GetVar(*TotalPDF,"AsS")->getError();
-          fileFitResults << " (" << GetVar(*TotalPDF,"AsS")->getErrorHi() << "/" <<  GetVar(*TotalPDF,"AsS")->getErrorLo() << ")" << endl;
+	  Transformer("AsS",varVal,varValELo,varValEHi,GetVar(*TotalPDF,"FlS"),GetVar(*TotalPDF,"FsS"),GetVar(*TotalPDF,"AsS"));
+	  fileFitResults << "As: " << varVal << " +/- " << (varValEHi - varValELo) / 2. << " (" << varValEHi << "/" << varValELo << ")" << endl;
         }
     }
 
@@ -2019,7 +2021,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vec
   vecParStr->push_back("# FS +/- err");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"FsS") != NULL) && (vecConstr->find(string(string("FsS") + string("_constr")).c_str()) == NULL))
     {
-      Transformer("FlS",varVal,varValELo,varValEHi,GetVar(TotalPDF,"FlS"));
+      Transformer("FsS",varVal,varValELo,varValEHi,GetVar(TotalPDF,"FsS"));
       myString.clear(); myString.str("");
       myString << varVal << "   " << varValELo << "   " << varValEHi;
       vecParStr->push_back(myString.str());
@@ -2539,16 +2541,16 @@ void GenerateFitParameters (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
     {
       if (GetVar(TotalPDF,"FlS") != NULL)
 	{
-	  cout << "Fl generation: uniform lower bound = " << GetVar(TotalPDF,"FlS")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"FlS")->getMax() << endl;
-	  TotalPDF->getVariables()->setRealValue("FlS",RooRandom::uniform() * (GetVar(TotalPDF,"FlS")->getMax() - GetVar(TotalPDF,"FlS")->getMin()) + GetVar(TotalPDF,"FlS")->getMin());
+	  cout << "Fl generation: uniform lower bound = -100\thigher bound = 100" << endl;
+	  TotalPDF->getVariables()->setRealValue("FlS", RooRandom::uniform() * 200. - 100.);
 	  GetVar(TotalPDF,"FlS")->setAsymError(-1.0,1.0);
 	  GetVar(TotalPDF,"FlS")->setError(1.0);
 	}
       
       if (GetVar(TotalPDF,"AfbS") != NULL)
 	{
-	  cout << "Afb generation: uniform lower bound = " << GetVar(TotalPDF,"AfbS")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"AfbS")->getMax() << endl;
-	  TotalPDF->getVariables()->setRealValue("AfbS",RooRandom::uniform() * (GetVar(TotalPDF,"AfbS")->getMax() - GetVar(TotalPDF,"AfbS")->getMin()) + GetVar(TotalPDF,"AfbS")->getMin());
+	  cout << "Afb generation: uniform lower bound = -100\thigher bound = 100" << endl;
+	  TotalPDF->getVariables()->setRealValue("AfbS", RooRandom::uniform() * 200. - 100.);
 	  GetVar(TotalPDF,"AfbS")->setAsymError(-1.0,1.0);
 	  GetVar(TotalPDF,"AfbS")->setError(1.0);
 	}
@@ -2575,16 +2577,16 @@ void GenerateFitParameters (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
 
       if (GetVar(TotalPDF,"FsS") != NULL)
 	{
-	  cout << "Fs generation: uniform lower bound = " << GetVar(TotalPDF,"FsS")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"FsS")->getMax() << endl;
-	  TotalPDF->getVariables()->setRealValue("FsS",RooRandom::uniform() * (GetVar(TotalPDF,"FsS")->getMax() - GetVar(TotalPDF,"FsS")->getMin()) + GetVar(TotalPDF,"FsS")->getMin());
+	  cout << "Fs generation: uniform lower bound = -100\thigher bound = 100" << endl;
+	  TotalPDF->getVariables()->setRealValue("FsS", RooRandom::uniform() * 200. - 100.);
 	  GetVar(TotalPDF,"FsS")->setAsymError(-1.0,1.0);
 	  GetVar(TotalPDF,"FsS")->setError(1.0);
 	}
 
       if (GetVar(TotalPDF,"AsS") != NULL)
 	{
-	  cout << "As generation: uniform lower bound = " << GetVar(TotalPDF,"AsS")->getMin() << "\thigher bound = " << GetVar(TotalPDF,"AsS")->getMax() << endl;
-	  TotalPDF->getVariables()->setRealValue("AsS",RooRandom::uniform() * (GetVar(TotalPDF,"AsS")->getMax() - GetVar(TotalPDF,"AsS")->getMin()) + GetVar(TotalPDF,"AsS")->getMin());
+	  cout << "As generation: uniform lower bound = -100\thigher bound = 100" << endl;
+	  TotalPDF->getVariables()->setRealValue("AsS", RooRandom::uniform() * 200. - 100.);
 	  GetVar(TotalPDF,"AsS")->setAsymError(-1.0,1.0);
 	  GetVar(TotalPDF,"AsS")->setError(1.0);
 	}
