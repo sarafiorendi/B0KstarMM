@@ -572,11 +572,12 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
 // # varValIn2 = Afb #
 // ###################
 {
-  double val;
+  double val1,val2,val3,valELo,valEHi;
+  string sVal1,sVal2;
   stringstream myString;
   myString.clear(); myString.str("");
 
-  if ((varValIn1 == NULL) && (varValIn2 == NULL))
+  if (varValIn1 == NULL)
     {
       if (varName == "FlS")
 	{
@@ -585,18 +586,24 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
 	}
       else if (varName == "AfbS")
 	{
-	  myString << "(3/4*(1 - (1/2 + TMath::ATan(FlS) / TMath::Pi())) * 2*TMath::ATan(" << varName << ")/TMath::Pi())";
+	  sVal1 = Transformer("FlS",val1,val2,val3);
+
+	  myString << "(3/4*(1 - " << sVal1 << ") * 2*TMath::ATan(" << varName << ")/TMath::Pi())";
 	  return myString.str();
 	}
       else if (varName == "FsS")
 	{
-	  myString << "(1/2 + TMath::ATan(" << varName << ") / TMath::Pi())";
+	  sVal1 = Transformer("FlS",val1,val2,val3);
+
+	  myString << "(3*(1-" << sVal1 << ")/(7-3*" << sVal1 << ") * (1/2 + TMath::ATan(" << varName << ") / TMath::Pi()))";
 	  return myString.str();
 	}
       else if (varName == "AsS")
 	{
-	  myString << "((1/2*((1/2 + TMath::ATan(FsS) / TMath::Pi()) + 3*(1/2 + TMath::ATan(FlS) / TMath::Pi())*(1 - (1/2 + TMath::ATan(FsS) / TMath::Pi()))) < 1 ? ";
-	  myString << "1/2*((1/2 + TMath::ATan(FsS) / TMath::Pi()) + 3*(1/2 + TMath::ATan(FlS) / TMath::Pi())*(1 - (1/2 + TMath::ATan(FsS) / TMath::Pi()))) : 1) ";
+	  sVal1 = Transformer("FlS",val1,val2,val3);
+	  sVal2 = Transformer("FsS",val1,val2,val3);
+
+	  myString << "((1/2*(" << sVal2 << " + 3*" << sVal1 << "*(1 - " << sVal2 << ")) < 1 ? 1/2*(" << sVal2 << " + 3*" << sVal1 << "*(1 - " << sVal2 << ")) : 1) ";
 	  myString << "* 2*TMath::ATan(" << varName << ")/TMath::Pi())";
 	  return myString.str();
 	}
@@ -614,24 +621,32 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
     }
   else if ((varName == "AfbS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
-      varValOut    = 3./4. * (1. - (1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi())) * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi();
-      varValOutELo = 3./4. * (1. - (1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi())) * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorLo()) / TMath::Pi() - varValOut;
-      varValOutEHi = 3./4. * (1. - (1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi())) * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorHi()) / TMath::Pi() - varValOut;
+      Transformer ("FlS",val1,valELo,valEHi,varValIn1);
+      val2 = 3./4. * (1. - val1);
+
+      varValOut    = val2 * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi();
+      varValOutELo = val2 * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorLo()) / TMath::Pi() - varValOut;
+      varValOutEHi = val2 * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorHi()) / TMath::Pi() - varValOut;
     }
-  else if ((varName == "FsS") && (varValIn1 != NULL))
+  else if ((varName == "FsS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
-      varValOut    = 1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi();
-      varValOutELo = 1./2. + TMath::ATan(varValIn1->getVal() + varValIn1->getErrorLo()) / TMath::Pi() - varValOut;
-      varValOutEHi = 1./2. + TMath::ATan(varValIn1->getVal() + varValIn1->getErrorHi()) / TMath::Pi() - varValOut;
+      Transformer ("FlS",val1,valELo,valEHi,varValIn1);
+      val2 = 3. * (1. - val1) / (7. - 3. * val1);
+
+      varValOut    = val2 * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi());
+      varValOutELo = val2 * (1./2. + TMath::ATan(varValIn2->getVal() + varValIn2->getErrorLo()) / TMath::Pi()) - varValOut;
+      varValOutEHi = val2 * (1./2. + TMath::ATan(varValIn2->getVal() + varValIn2->getErrorHi()) / TMath::Pi()) - varValOut;
     }
   else if ((varName == "AsS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (varValIn3 != NULL))
     {
-      val = 1./2. * ((1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) + 3.*(1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi())*(1. - (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi())));
-      if (val > 1.) val = 1.;
+      Transformer ("FlS",val1,valELo,valEHi,varValIn1);
+      Transformer ("FsS",val2,valELo,valEHi,varValIn1,varValIn2);
+      val3 = 1./2. * (val2 + 3. * val1 * (1. - val2));
+      if (val3 > 1.) val3 = 1.;
 
-      varValOut    = val * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi();
-      varValOutELo = val * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorLo()) / TMath::Pi() - varValOut;
-      varValOutEHi = val * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorHi()) / TMath::Pi() - varValOut;
+      varValOut    = val3 * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi();
+      varValOutELo = val3 * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorLo()) / TMath::Pi() - varValOut;
+      varValOutEHi = val3 * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorHi()) / TMath::Pi() - varValOut;
     }
   else
     {
@@ -650,61 +665,67 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
 // # varValIn2 = As     #
 // ######################
 {
-  double val, limit;
+  double val1,val2,val3,valELo,valEHi,limit;
 
   if ((varName == "FlS") && (varValIn1 != NULL))
     {
       varValOut = TMath::Tan((varValIn1->getVal() - 1./2.) * TMath::Pi());
 
-      if ((varValIn1->getVal() + varValIn1->getErrorLo()) <= 0.) val = TOLERANCE;
-      else                                                       val = varValIn1->getVal() + varValIn1->getErrorLo();
-      varValOutELo = TMath::Tan((val - 1./2.) * TMath::Pi()) - varValOut;
+      if ((varValIn1->getVal() + varValIn1->getErrorLo()) <= 0.) val1 = TOLERANCE;
+      else                                                       val1 = varValIn1->getVal() + varValIn1->getErrorLo();
+      varValOutELo = TMath::Tan((val1 - 1./2.) * TMath::Pi()) - varValOut;
 
-      if ((varValIn1->getVal() + varValIn1->getErrorHi()) >= 1.) val = 1. - TOLERANCE;
-      else                                                       val = varValIn1->getVal() + varValIn1->getErrorHi();
-      varValOutEHi = TMath::Tan((val - 1./2.) * TMath::Pi()) - varValOut;
+      if ((varValIn1->getVal() + varValIn1->getErrorHi()) >= 1.) val1 = 1. - TOLERANCE;
+      else                                                       val1 = varValIn1->getVal() + varValIn1->getErrorHi();
+      varValOutEHi = TMath::Tan((val1 - 1./2.) * TMath::Pi()) - varValOut;
     }
   else if ((varName == "AfbS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
-      limit = 3./4. * (1. - (1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi()));
-
+      Transformer("FlS",val1,valELo,valEHi,varValIn1);
+      limit = 3./4. * (1. - val1);
+      
       varValOut = TMath::Tan(varValIn2->getVal() / limit / 2. * TMath::Pi());
 
-      if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= -limit) val = (limit >= 2.*TOLERANCE ? -limit + TOLERANCE : -limit + TOLERANCE*limit);
-      else                                                           val = varValIn2->getVal() + varValIn2->getErrorLo();
-      varValOutELo = TMath::Tan(val / limit / 2. * TMath::Pi()) - varValOut;
+      if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= -limit) val2 = (limit >= 2.*TOLERANCE ? -limit + TOLERANCE : -limit + TOLERANCE*limit);
+      else                                                           val2 = varValIn2->getVal() + varValIn2->getErrorLo();
+      varValOutELo = TMath::Tan(val2 / limit / 2. * TMath::Pi()) - varValOut;
 
-      if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= limit) val = (limit >= 2.*TOLERANCE ? limit - TOLERANCE : limit - TOLERANCE*limit);
-      else                                                          val = varValIn2->getVal() + varValIn2->getErrorHi();
-      varValOutEHi = TMath::Tan(val / limit / 2. * TMath::Pi()) - varValOut;
+      if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= limit) val2 = (limit >= 2.*TOLERANCE ? limit - TOLERANCE : limit - TOLERANCE*limit);
+      else                                                          val2 = varValIn2->getVal() + varValIn2->getErrorHi();
+      varValOutEHi = TMath::Tan(val2 / limit / 2. * TMath::Pi()) - varValOut;
     }
-  else if ((varName == "FsS") && (varValIn1 != NULL))
+  else if ((varName == "FsS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
-      varValOut = TMath::Tan((varValIn1->getVal() - 1./2.) * TMath::Pi());
+      Transformer("FlS",val1,valELo,valEHi,varValIn1);
+      limit = 3. * (1. - val1) / (7. - 3.*val1);
 
-      if ((varValIn1->getVal() + varValIn1->getErrorLo()) <= 0.) val = TOLERANCE;
-      else                                                       val = varValIn1->getVal() + varValIn1->getErrorLo();
-      varValOutELo = TMath::Tan((val - 1./2.) * TMath::Pi()) - varValOut;
+      varValOut = TMath::Tan((varValIn2->getVal() / limit - 1./2.) * TMath::Pi());
 
-      if ((varValIn1->getVal() + varValIn1->getErrorHi()) >= 1.) val = 1. - TOLERANCE;
-      else                                                       val = varValIn1->getVal() + varValIn1->getErrorHi();
-      varValOutEHi = TMath::Tan((val - 1./2.) * TMath::Pi()) - varValOut;
+      if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= 0.) val2 = TOLERANCE;
+      else                                                       val2 = varValIn2->getVal() + varValIn2->getErrorLo();
+      varValOutELo = TMath::Tan((val2 / limit - 1./2.) * TMath::Pi()) - varValOut;
+
+      if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= 1.) val2 = 1. - TOLERANCE;
+      else                                                       val2 = varValIn2->getVal() + varValIn2->getErrorHi();
+      varValOutEHi = TMath::Tan((val2 / limit - 1./2.) * TMath::Pi()) - varValOut;
     }
   else if ((varName == "AsS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (varValIn3 != NULL))
     {
-      limit = 1./2. * ((1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) + 3.*(1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi())*(1. - (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi())));
+      Transformer("FlS",val1,valELo,valEHi,varValIn1);
+      Transformer("FsS",val2,valELo,valEHi,varValIn1,varValIn2);
+      limit = 1./2. * (val2 + 3. * val1 * (1. - val2));
 
       varValOut = TMath::Tan(varValIn3->getVal() / limit / 2. * TMath::Pi());
 
-      if ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -1.)         val = -1. + TOLERANCE;
-      else if ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -limit) val = (limit >= 2.*TOLERANCE ? -limit + TOLERANCE : -limit + TOLERANCE*limit);
-      else                                                                val = varValIn3->getVal() + varValIn3->getErrorLo();
-      varValOutELo = TMath::Tan(val / limit / 2. * TMath::Pi()) - varValOut;
+      if ((limit < 1.) && ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -limit))    val3 = (limit >= 2.*TOLERANCE ? -limit + TOLERANCE : -limit + TOLERANCE*limit);
+      else if ((limit >= 1.) && ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -1.)) val3 = -1. + TOLERANCE;
+      else                                                                                val3 = varValIn3->getVal() + varValIn3->getErrorLo();
+      varValOutELo = TMath::Tan(val3 / limit / 2. * TMath::Pi()) - varValOut;
 
-      if ((varValIn3->getVal() + varValIn3->getErrorHi()) >= 1.)         val = 1. - TOLERANCE;
-      else if ((varValIn3->getVal() + varValIn3->getErrorHi()) >= limit) val = (limit >= 2.*TOLERANCE ? limit - TOLERANCE : limit - TOLERANCE*limit);
-      else                                                               val = varValIn3->getVal() + varValIn3->getErrorHi();
-      varValOutEHi = TMath::Tan(val / limit / 2. * TMath::Pi()) - varValOut;
+      if ((limit < 1.) && ((varValIn3->getVal() + varValIn3->getErrorHi()) >= limit))    val3 = (limit >= 2.*TOLERANCE ? limit - TOLERANCE : limit - TOLERANCE*limit);
+      else if ((limit >= 1.) && ((varValIn3->getVal() + varValIn3->getErrorHi()) >= 1.)) val3 = 1. - TOLERANCE;
+      else                                                                               val3 = varValIn3->getVal() + varValIn3->getErrorHi();
+      varValOutEHi = TMath::Tan(val3 / limit / 2. * TMath::Pi()) - varValOut;
     }
   else
     {
@@ -985,7 +1006,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	}
       else
     	{
-	  FsS = new RooRealVar("FsS","F_{S}",0.5);
+	  FsS = new RooRealVar("FsS","F_{S}",0.25);
           AsS = new RooRealVar("AsS","A_{S}",0.0);
     	  VarsAng->add(*FsS);
     	  VarsAng->add(*AsS);
@@ -1272,7 +1293,7 @@ void ResetAngularParam (vector<vector<string>*>* fitParam)
       fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](j)  = "0.0";
       fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](j)   = "0.0";
       fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](j)   = "0.0";
-      fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](j)   = "0.5";
+      fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](j)   = "0.25";
       fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](j)   = "0.0";
 
       cout << "FL: "   << "\t" << fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](j).c_str() << endl;
@@ -1506,7 +1527,7 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
 	}
       if (GetVar(*TotalPDF,"FsS") != NULL)
         {
-	  Transformer("FsS",varVal,varValELo,varValEHi,GetVar(*TotalPDF,"FsS"));
+	  Transformer("FsS",varVal,varValELo,varValEHi,GetVar(*TotalPDF,"FlS"),GetVar(*TotalPDF,"FsS"));
 	  fileFitResults << "Fs: " << varVal << " +/- " << (varValEHi - varValELo) / 2. << " (" << varValEHi << "/" << varValELo << ")" << endl;
         }
       if (GetVar(*TotalPDF,"AsS") != NULL)
@@ -2027,7 +2048,7 @@ vector<string>* SaveFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vec
   vecParStr->push_back("# FS +/- err");
   if ((TotalPDF != NULL) && (GetVar(TotalPDF,"FsS") != NULL) && (vecConstr->find(string(string("FsS") + string("_constr")).c_str()) == NULL))
     {
-      Transformer("FsS",varVal,varValELo,varValEHi,GetVar(TotalPDF,"FsS"));
+      Transformer("FsS",varVal,varValELo,varValEHi,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,"FsS"));
       myString.clear(); myString.str("");
       myString << varVal << "   " << varValELo << "   " << varValEHi;
       vecParStr->push_back(myString.str());
@@ -2454,7 +2475,7 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vector
       if ((errLo == 0.0) && (errHi == 0.0)) GetVar(TotalPDF,"FsS")->setConstant(true);
       else                                  GetVar(TotalPDF,"FsS")->setConstant(false);
 
-      AntiTransformer("FsS",value,errLo,errHi,GetVar(TotalPDF,"FsS"));
+      AntiTransformer("FsS",value,errLo,errHi,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,"FsS"));
       myString.clear(); myString.str("");
       myString << value << "   " << errLo << "   " << errHi;
       SetValueAndErrors(TotalPDF,"FsS",1.0,&myString,&value,&errLo,&errHi);
