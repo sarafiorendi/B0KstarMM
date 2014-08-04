@@ -340,7 +340,7 @@ void DrawString                (double Lumi, RooPlot* myFrame = NULL);
 
 bool IsInConstraints           (RooArgSet* vecConstr, string varName);
 void AddGaussConstraint        (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
-void AddPhysicsConstraint      (RooArgSet* vecConstr, RooRealVar* varConstr, double mean, double sigma);
+void AddPhysicsConstraint      (RooArgSet* vecConstr, RooRealVar* varConstr, double mean, double sigma, RooRealVar* auxVar1 = NULL, RooRealVar* auxVar2 = NULL);
 void BuildMassConstraints      (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
 void BuildAngularConstraints   (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
 
@@ -859,8 +859,9 @@ void AddGaussConstraint (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varNa
 }
 
 
-void AddPhysicsConstraint (RooArgSet* vecConstr, RooRealVar* varConstr, double mean, double sigma)
+void AddPhysicsConstraint (RooArgSet* vecConstr, RooRealVar* varConstr, double mean, double sigma, RooRealVar* auxVar1, RooRealVar* auxVar2)
 {
+  RooArgSet tmpSet;
   stringstream myString;
   stringstream myGauss;
   double a,b,c;
@@ -882,7 +883,16 @@ void AddPhysicsConstraint (RooArgSet* vecConstr, RooRealVar* varConstr, double m
   myGauss << "exp(-(" << Transformer(varConstr->getPlotLabel(),a,b,c) << "-" << myMean->getPlotLabel() << ") * (";
   myGauss << Transformer(varConstr->getPlotLabel(),a,b,c) << "-" << myMean->getPlotLabel() << ") / (2*" << mySigma->getPlotLabel() << "*" << mySigma->getPlotLabel() << "))";
 
-  RooGenericPdf* newConstr = new RooGenericPdf(myString.str().c_str(), myGauss.str().c_str(), RooArgSet(*varConstr, *myMean, *mySigma));
+  // @TMP@
+  // RooWorkspace w("w",true);
+  // w.factory("Gaussian::g(x[-10,10],expr::mx('m0+my*y',y[-10,10],m0[-0.5],m1[3],sx[3]");
+
+  tmpSet.add(*varConstr);
+  tmpSet.add(*myMean);
+  tmpSet.add(*mySigma);
+  if (auxVar1 != NULL) tmpSet.add(*auxVar1);
+  if (auxVar2 != NULL) tmpSet.add(*auxVar2);
+  RooGenericPdf* newConstr = new RooGenericPdf(myString.str().c_str(), myGauss.str().c_str(), tmpSet);
   vecConstr->add(*newConstr);
 }
 
@@ -5937,12 +5947,12 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 	  myString.clear(); myString.str("");
 	  myString << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](i);
 	  SetValueAndErrors(NULL,"",1.0,&myString,&varVal1,&varVal1EHi,&varVal1ELo);
-	  AddPhysicsConstraint(vecConstr,GetVar(TotalPDFq2Bins[i],"FsS"),varVal1,(varVal1EHi - varVal1ELo) / 2.);
+	  AddPhysicsConstraint(vecConstr,GetVar(TotalPDFq2Bins[i],"FsS"),varVal1,(varVal1EHi - varVal1ELo) / 2.,GetVar(TotalPDFq2Bins[i],"FlS"));
 
 	  myString.clear(); myString.str("");
 	  myString << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](i);
 	  SetValueAndErrors(NULL,"",1.0,&myString,&varVal1,&varVal1EHi,&varVal1ELo);
-	  AddPhysicsConstraint(vecConstr,GetVar(TotalPDFq2Bins[i],"AsS"),varVal1,(varVal1EHi - varVal1ELo) / 2.);
+	  AddPhysicsConstraint(vecConstr,GetVar(TotalPDFq2Bins[i],"AsS"),varVal1,(varVal1EHi - varVal1ELo) / 2.,GetVar(TotalPDFq2Bins[i],"FlS"),GetVar(TotalPDFq2Bins[i],"FsS"));
       	}
 
 
@@ -6127,12 +6137,12 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       myString.clear(); myString.str("");
       myString << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](specBin);
       SetValueAndErrors(NULL,"",1.0,&myString,&varVal,&varValEHi,&varValELo);
-      AddPhysicsConstraint(vecConstr,GetVar(TotalPDF,"FsS"),varVal,(varValEHi - varValELo) / 2.);
+      AddPhysicsConstraint(vecConstr,GetVar(TotalPDF,"FsS"),varVal,(varValEHi - varValELo) / 2.,GetVar(TotalPDF,"FlS"));
       
       myString.clear(); myString.str("");
       myString << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](specBin);
       SetValueAndErrors(NULL,"",1.0,&myString,&varVal,&varValEHi,&varValELo);
-      AddPhysicsConstraint(vecConstr,GetVar(TotalPDF,"AsS"),varVal,(varValEHi - varValELo) / 2.);
+      AddPhysicsConstraint(vecConstr,GetVar(TotalPDF,"AsS"),varVal,(varValEHi - varValELo) / 2.,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,"FsS"));
     }
 
 
