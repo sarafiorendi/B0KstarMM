@@ -1866,7 +1866,7 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
 // # 2 = BF  multy minima #
 // ########################
 {
-  unsigned int nPlots     = 6;
+  unsigned int nPlots     = 8;
   unsigned int nBinsHisto = 80;
   stringstream myString;
   ifstream inputFile;
@@ -1895,14 +1895,16 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
 
   vecHist[0]->GetXaxis()->SetTitle("F_{L}");
   vecHist[0]->SetBins(nBinsHisto,0.0,1.0);
+  vecHist[1]->GetXaxis()->SetTitle("F_{L} errors");
 
-  vecHist[1]->GetXaxis()->SetTitle("A_{FB}");
-  vecHist[1]->SetBins(nBinsHisto*2,-1.0,1.0);
+  vecHist[2]->GetXaxis()->SetTitle("A_{FB}");
+  vecHist[2]->SetBins(nBinsHisto*2,-1.0,1.0);
+  vecHist[3]->GetXaxis()->SetTitle("A_{FB} errors");
 
-  vecHist[2]->GetXaxis()->SetTitle("Signal yield OR dBF/dq#lower[0.4]{^{2}} (GeV^{#font[122]{\55}2})");
-  vecHist[3]->GetXaxis()->SetTitle("Right-tag I[S*E]");
-  vecHist[4]->GetXaxis()->SetTitle("Mis-tag I[S*E]");
-  vecHist[5]->GetXaxis()->SetTitle("NLL");
+  vecHist[4]->GetXaxis()->SetTitle("Signal yield OR dBF/dq#lower[0.4]{^{2}} (GeV^{#font[122]{\55}2})");
+  vecHist[5]->GetXaxis()->SetTitle("Right-tag I[S*E]");
+  vecHist[6]->GetXaxis()->SetTitle("Mis-tag I[S*E]");
+  vecHist[7]->GetXaxis()->SetTitle("NLL");
 
 
   // ##################################
@@ -1939,7 +1941,7 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
     }
 
 
-  inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6];
+  inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6] >> vecVar[7] >> vecVar[8];
   while (inputFile.eof() == false)
     {
       for (unsigned int i = 0; i < nPlots; i++)
@@ -1955,7 +1957,7 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
 	  if ((vecVar[1] != -2.0) && (vecVar[2] != -2.0)) hScPars->Fill(vecVar[2],vecVar[1]);
 	}
 
-     inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6];
+      inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6] >> vecVar[7] >> vecVar[8];
     }
 
 
@@ -1971,7 +1973,7 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
 
   inputFile.clear();
   inputFile.seekg(0,inputFile.beg);
-  inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6];
+  inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6] >> vecVar[7] >> vecVar[8];
   while (inputFile.eof() == false)
     {
       for (unsigned int i = 0; i < nPlots; i++)
@@ -1979,8 +1981,8 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
       cout << "var" << nPlots << ": " << vecVar[nPlots] << endl;
 
       if (vecVar[nPlots] < NLLlessThan) hScNLL->Fill(vecVar[sysType+1],vecVar[nPlots]);
-      
-      inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6];
+
+      inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6] >> vecVar[7] >> vecVar[8];
     }
 
 

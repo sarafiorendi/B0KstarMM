@@ -67,12 +67,9 @@ using namespace RooFit;
 // ####################
 // # Global constants #
 // ####################
-#define NBINS         20
-#define MULTYIELD     1.0  // Multiplication factor to the number of entry in toy-MC
-#define NCOEFFPOLYBKG 5    // Maximum number of coefficients (= degree) of the polynomial describing the background in the angular variables
-#define DEGREEINTERP  1    // Polynomial degree for efficiency histogram interpolation
-#define TOLERANCE     0.05 // Tolerance with respect to the boundaries in AntiTransformer [range = (0,1)]
-#define MAXTRIALS     0    // Maximum number of trials in case of fit failure [0 = default single trial]
+#define NBINS        20
+#define MULTYIELD     1. // Multiplication factor to the number of entry in toy-MC
+#define NCOEFFPOLYBKG 5  // Maximum number of coefficients (= degree) of the polynomial describing the combinatorial bkg
 
 #define nJPSIS 230000.0
 #define nJPSIB   2500.0
@@ -666,16 +663,17 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
 // ######################
 {
   double val1,val2,val3,valELo,valEHi,limit;
+  double tolerance = atof(Utility->GetGenericParam("Tolerance").c_str());
 
   if ((varName == "FlS") && (varValIn1 != NULL))
     {
       varValOut = TMath::Tan((varValIn1->getVal() - 1./2.) * TMath::Pi());
 
-      if ((varValIn1->getVal() + varValIn1->getErrorLo()) <= 0.) val1 = TOLERANCE;
+      if ((varValIn1->getVal() + varValIn1->getErrorLo()) <= 0.) val1 = tolerance;
       else                                                       val1 = varValIn1->getVal() + varValIn1->getErrorLo();
       varValOutELo = TMath::Tan((val1 - 1./2.) * TMath::Pi()) - varValOut;
 
-      if ((varValIn1->getVal() + varValIn1->getErrorHi()) >= 1.) val1 = 1. - TOLERANCE;
+      if ((varValIn1->getVal() + varValIn1->getErrorHi()) >= 1.) val1 = 1. - tolerance;
       else                                                       val1 = varValIn1->getVal() + varValIn1->getErrorHi();
       varValOutEHi = TMath::Tan((val1 - 1./2.) * TMath::Pi()) - varValOut;
     }
@@ -686,11 +684,11 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
       
       varValOut = TMath::Tan(varValIn2->getVal() / limit / 2. * TMath::Pi());
 
-      if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= -limit) val2 = (limit >= 2.*TOLERANCE ? -limit + TOLERANCE : -limit + TOLERANCE*limit);
+      if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= -limit) val2 = (limit >= 2.*tolerance ? -limit + tolerance : -limit + tolerance*limit);
       else                                                           val2 = varValIn2->getVal() + varValIn2->getErrorLo();
       varValOutELo = TMath::Tan(val2 / limit / 2. * TMath::Pi()) - varValOut;
 
-      if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= limit) val2 = (limit >= 2.*TOLERANCE ? limit - TOLERANCE : limit - TOLERANCE*limit);
+      if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= limit) val2 = (limit >= 2.*tolerance ? limit - tolerance : limit - tolerance*limit);
       else                                                          val2 = varValIn2->getVal() + varValIn2->getErrorHi();
       varValOutEHi = TMath::Tan(val2 / limit / 2. * TMath::Pi()) - varValOut;
     }
@@ -701,11 +699,11 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
 
       varValOut = TMath::Tan((varValIn2->getVal() / limit - 1./2.) * TMath::Pi());
 
-      if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= 0.) val2 = TOLERANCE;
+      if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= 0.) val2 = tolerance;
       else                                                       val2 = varValIn2->getVal() + varValIn2->getErrorLo();
       varValOutELo = TMath::Tan((val2 / limit - 1./2.) * TMath::Pi()) - varValOut;
 
-      if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= 1.) val2 = 1. - TOLERANCE;
+      if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= 1.) val2 = 1. - tolerance;
       else                                                       val2 = varValIn2->getVal() + varValIn2->getErrorHi();
       varValOutEHi = TMath::Tan((val2 / limit - 1./2.) * TMath::Pi()) - varValOut;
     }
@@ -717,13 +715,13 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
 
       varValOut = TMath::Tan(varValIn3->getVal() / limit / 2. * TMath::Pi());
 
-      if ((limit < 1.) && ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -limit))    val3 = (limit >= 2.*TOLERANCE ? -limit + TOLERANCE : -limit + TOLERANCE*limit);
-      else if ((limit >= 1.) && ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -1.)) val3 = -1. + TOLERANCE;
+      if ((limit < 1.) && ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -limit))    val3 = (limit >= 2.*tolerance ? -limit + tolerance : -limit + tolerance*limit);
+      else if ((limit >= 1.) && ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -1.)) val3 = -1. + tolerance;
       else                                                                                val3 = varValIn3->getVal() + varValIn3->getErrorLo();
       varValOutELo = TMath::Tan(val3 / limit / 2. * TMath::Pi()) - varValOut;
 
-      if ((limit < 1.) && ((varValIn3->getVal() + varValIn3->getErrorHi()) >= limit))    val3 = (limit >= 2.*TOLERANCE ? limit - TOLERANCE : limit - TOLERANCE*limit);
-      else if ((limit >= 1.) && ((varValIn3->getVal() + varValIn3->getErrorHi()) >= 1.)) val3 = 1. - TOLERANCE;
+      if ((limit < 1.) && ((varValIn3->getVal() + varValIn3->getErrorHi()) >= limit))    val3 = (limit >= 2.*tolerance ? limit - tolerance : limit - tolerance*limit);
+      else if ((limit >= 1.) && ((varValIn3->getVal() + varValIn3->getErrorHi()) >= 1.)) val3 = 1. - tolerance;
       else                                                                               val3 = varValIn3->getVal() + varValIn3->getErrorHi();
       varValOutEHi = TMath::Tan(val3 / limit / 2. * TMath::Pi()) - varValOut;
     }
@@ -865,6 +863,7 @@ void AddPhysicsConstraint (RooArgSet* vecConstr, RooRealVar* varConstr, double m
   stringstream myString;
   stringstream myGauss;
   double a,b,c;
+  double range = atof(Utility->GetGenericParam("TransRange").c_str());
 
   myString.clear(); myString.str("");
   myString << "mean_" << varConstr->getPlotLabel();
@@ -883,15 +882,23 @@ void AddPhysicsConstraint (RooArgSet* vecConstr, RooRealVar* varConstr, double m
   myGauss << "exp(-(" << Transformer(varConstr->getPlotLabel(),a,b,c) << "-" << myMean->getPlotLabel() << ") * (";
   myGauss << Transformer(varConstr->getPlotLabel(),a,b,c) << "-" << myMean->getPlotLabel() << ") / (2*" << mySigma->getPlotLabel() << "*" << mySigma->getPlotLabel() << "))";
 
-  // @TMP@
-  // RooWorkspace w("w",true);
-  // w.factory("Gaussian::g(x[-10,10],expr::mx('m0+my*y',y[-10,10],m0[-0.5],m1[3],sx[3]");
-
   tmpSet.add(*varConstr);
+  varConstr->setMax(+range);
+  varConstr->setMin(-range);
   tmpSet.add(*myMean);
   tmpSet.add(*mySigma);
-  if (auxVar1 != NULL) tmpSet.add(*auxVar1);
-  if (auxVar2 != NULL) tmpSet.add(*auxVar2);
+  if (auxVar1 != NULL)
+    {
+      tmpSet.add(*auxVar1);
+      auxVar1->setMax(+range);
+      auxVar1->setMin(-range);
+    }
+  if (auxVar2 != NULL)
+    {
+      tmpSet.add(*auxVar2);
+      auxVar2->setMax(+range);
+      auxVar2->setMin(-range);
+    }
   RooGenericPdf* newConstr = new RooGenericPdf(myString.str().c_str(), myGauss.str().c_str(), tmpSet);
   vecConstr->add(*newConstr);
 }
@@ -1113,7 +1120,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	  // # Make 2D efficiency p.d.f. #
 	  // #############################
 	  RooDataHist* histoEff = new RooDataHist("histoEff","histoEff",RooArgSet(*z,*y),Import(*Utility->Get2DEffHistoq2Bin(&cosThetaKBins,&cosThetaLBins,q2BinIndx,GetSignalType(FitType,q2Bins,q2BinIndx),false,make_pair(-1.0,1.0),make_pair(-1.0,1.0)),true));
-	  histoEffPDF           = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(*z,*y),*histoEff,DEGREEINTERP);
+	  histoEffPDF           = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(*z,*y),*histoEff,atoi(Utility->GetGenericParam("DegreeInterp").c_str()));
 	  MyProdPdf* myprodpdf  = new MyProdPdf(*_AnglesPDF,*histoEffPDF);
 	  ROOT::Math::Functor* prodFunctor = new ROOT::Math::Functor(*myprodpdf,myprodpdf->ndim());
 	  AnglesPDF             = new RooFunctorPdfBinding("AngleMisTag","MisTag * Efficiency",*prodFunctor,myprodpdf->vars());
@@ -2525,8 +2532,9 @@ void GenerateFitParameters (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
   unsigned int NCoeffPolyBKGcomb1;
   unsigned int NCoeffPolyBKGcomb2;
   unsigned int NCoeffPolyBKGcomb3;
-
   stringstream myString;
+  double range = atof(Utility->GetGenericParam("TransRange").c_str());
+
 
   CopyFitResults(TotalPDF,q2BinIndx,fitParam);
 
@@ -2578,16 +2586,16 @@ void GenerateFitParameters (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
     {
       if (GetVar(TotalPDF,"FlS") != NULL)
 	{
-	  cout << "Fl generation: uniform lower bound = -100\thigher bound = 100" << endl;
-	  TotalPDF->getVariables()->setRealValue("FlS", RooRandom::uniform() * 200. - 100.);
+	  cout << "Fl generation: uniform lower bound = -" << range << "\thigher bound = +" << range << endl;
+	  TotalPDF->getVariables()->setRealValue("FlS", RooRandom::uniform() * 2.*range - range);
 	  GetVar(TotalPDF,"FlS")->setAsymError(-1.0,1.0);
 	  GetVar(TotalPDF,"FlS")->setError(1.0);
 	}
       
       if (GetVar(TotalPDF,"AfbS") != NULL)
 	{
-	  cout << "Afb generation: uniform lower bound = -100\thigher bound = 100" << endl;
-	  TotalPDF->getVariables()->setRealValue("AfbS", RooRandom::uniform() * 200. - 100.);
+	  cout << "Afb generation: uniform lower bound = -" << range << "\thigher bound = +" << range << endl;
+	  TotalPDF->getVariables()->setRealValue("AfbS", RooRandom::uniform() * 2.*range - range);
 	  GetVar(TotalPDF,"AfbS")->setAsymError(-1.0,1.0);
 	  GetVar(TotalPDF,"AfbS")->setError(1.0);
 	}
@@ -2614,16 +2622,16 @@ void GenerateFitParameters (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
 
       if (GetVar(TotalPDF,"FsS") != NULL)
 	{
-	  cout << "Fs generation: uniform lower bound = -100\thigher bound = 100" << endl;
-	  TotalPDF->getVariables()->setRealValue("FsS", RooRandom::uniform() * 200. - 100.);
+	  cout << "Fs generation: uniform lower bound = -" << range << "\thigher bound = +" << range << endl;
+	  TotalPDF->getVariables()->setRealValue("FsS", RooRandom::uniform() * 2.*range - range);
 	  GetVar(TotalPDF,"FsS")->setAsymError(-1.0,1.0);
 	  GetVar(TotalPDF,"FsS")->setError(1.0);
 	}
 
       if (GetVar(TotalPDF,"AsS") != NULL)
 	{
-	  cout << "As generation: uniform lower bound = -100\thigher bound = 100" << endl;
-	  TotalPDF->getVariables()->setRealValue("AsS", RooRandom::uniform() * 200. - 100.);
+	  cout << "As generation: uniform lower bound = -" << range << "\thigher bound = +" << range << endl;
+	  TotalPDF->getVariables()->setRealValue("AsS", RooRandom::uniform() * 2.*range - range);
 	  GetVar(TotalPDF,"AsS")->setAsymError(-1.0,1.0);
 	  GetVar(TotalPDF,"AsS")->setError(1.0);
 	}
@@ -3993,8 +4001,9 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // # Save observables in systematic error file #
       // #############################################
       myString.clear(); myString.str("");
-      if (CheckGoodFit(fitResult) == true) myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << VecHistoMeas->operator[](0)->GetBinContent(i+1) << "   " << -2.0 << "   " << -2.0 << "   " << NLLvalue;
-      else                                 myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
+      if (CheckGoodFit(fitResult) == true) myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0
+						    << "   " << VecHistoMeas->operator[](0)->GetBinContent(i+1) << "   " << -2.0 << "   " << -2.0 << "   " << NLLvalue;
+      else                                 myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
       fileFitSystematics << myString.str() << endl;
     }
 }
@@ -5968,7 +5977,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // ###################
       fitResult = MakeMass2AnglesFit(dataSet_q2Bins[i],&TotalPDFq2Bins[i],x,y,z,cq2Bins[i],FitType,vecConstr,&NLLvalue,extText[i],ID);
       int nTrials = 0;
-      while ((MAXTRIALS > 0) && (nTrials < MAXTRIALS) && (CheckGoodFit(fitResult) == false))
+      while ((atoi(Utility->GetGenericParam("MaxFitTrials").c_str()) > 0) && (nTrials < atoi(Utility->GetGenericParam("MaxFitTrials").c_str())) && (CheckGoodFit(fitResult) == false))
 	{
 	  delete fitResult;
 	  GenerateFitParameters(TotalPDFq2Bins[i],fitParam,ID,q2Bins,i,"FlAfb");
@@ -6083,8 +6092,9 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // # Save observables in systematic error file #
       // #############################################
       myString.clear(); myString.str("");
-      if (CheckGoodFit(fitResult) == true) myString << ID << "   " << varVal1 << "   " << varVal2 << "   " << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   " << effMuMuGoodTag << "   " << effMuMuMisTag << "   " << NLLvalue;
-      else                                 myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
+      if (CheckGoodFit(fitResult) == true) myString << ID << "   " << varVal1 << "   " << (varVal1EHi - varVal1ELo) / 2. << "   " << varVal2 << "   " << (varVal2EHi - varVal2ELo) / 2.
+						    << "   " << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   " << effMuMuGoodTag << "   " << effMuMuMisTag << "   " << NLLvalue;
+      else                                 myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
       fileFitSystematics << myString.str() << endl;
     }
 }
@@ -6702,7 +6712,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       CopyFitResults(TotalPDF,specBin,fitParam);
       fitResult = MakeMass2AnglesFit(toySample,&TotalPDF,x,y,z,cB0Toy,FitType,vecConstr,&NLLvalue,NULL,i);
       int nTrials = 0;
-      while ((MAXTRIALS > 0) && (nTrials < MAXTRIALS) && (CheckGoodFit(fitResult) == false))
+      while ((atoi(Utility->GetGenericParam("MaxFitTrials").c_str()) > 0) && (nTrials < atoi(Utility->GetGenericParam("MaxFitTrials").c_str())) && (CheckGoodFit(fitResult) == false))
 	{
 	  delete fitResult;
 	  GenerateFitParameters(TotalPDF,fitParam,i,q2Bins,specBin,"FlAfb");
@@ -7002,9 +7012,7 @@ int main(int argc, char** argv)
 	  cout << "NBINS = "         << NBINS << endl;
 	  cout << "MULTYIELD = "     << MULTYIELD << endl;
 	  cout << "NCOEFFPOLYBKG = " << NCOEFFPOLYBKG << endl;
-	  cout << "DEGREEINTERP = "  << DEGREEINTERP << endl;
-	  cout << "TOLERANCE = "     << TOLERANCE << endl;
-	  cout << "MAXTRIALS = "     << MAXTRIALS << endl;
+
 
 	  cout << "\nMAKEmumuPLOTS = " << MAKEmumuPLOTS << endl;
 	  cout << "USEMINOS = "        << USEMINOS << endl;
@@ -7078,11 +7086,15 @@ int main(int argc, char** argv)
 
 	  CTRLfitWRKflow = Utility->GetGenericParam("CtrlFitWrkFlow");
 
-	  fileFitResults << "Normalize to J/psi and not psi(2S): "     << Utility->GetGenericParam("NormJPSInotPSIP").c_str() << " (0 = false; 1 = true)" << endl;
-	  fileFitResults << "Apply constraints: "                      << Utility->GetGenericParam("ApplyConstr").c_str() << " (0 = false; 1 = true)" << endl;
-	  fileFitResults << "Control fit workflow: "                   << CTRLfitWRKflow.c_str() << endl;
-	  fileFitResults << "Control mis-tag fraction workflow: "      << Utility->GetGenericParam("CtrlMisTagWrkFlow").c_str() << endl;
-	  fileFitResults << "Save mis-tag fraction: "                  << Utility->GetGenericParam("SaveMisTagFrac").c_str() << " (0 = false; 1 = true)" << endl;
+	  fileFitResults << "Normalize to J/psi and not psi(2S): " << Utility->GetGenericParam("NormJPSInotPSIP").c_str() << " (0 = false; 1 = true)" << endl;
+	  fileFitResults << "Poly. degree efficiency interp.: "    << Utility->GetGenericParam("DegreeInterp").c_str() << endl;
+	  fileFitResults << "Minimal distance to the boundaries: " << Utility->GetGenericParam("Tolerance").c_str() << endl;
+	  fileFitResults << "Transformed variables range: "        << Utility->GetGenericParam("TransRange").c_str() << endl;
+	  fileFitResults << "Maximum number of trials: "           << Utility->GetGenericParam("MaxFitTrials").c_str() << " (0 = default single trial)" << endl;
+	  fileFitResults << "Apply constraints: "                  << Utility->GetGenericParam("ApplyConstr").c_str() << " (0 = false; 1 = true)" << endl;
+	  fileFitResults << "Control fit workflow: "               << CTRLfitWRKflow.c_str() << endl;
+	  fileFitResults << "Control mis-tag fraction workflow: "  << Utility->GetGenericParam("CtrlMisTagWrkFlow").c_str() << endl;
+	  fileFitResults << "Save mis-tag fraction: "              << Utility->GetGenericParam("SaveMisTagFrac").c_str() << " (0 = false; 1 = true)" << endl;
 	  
 
 	  // ################################################

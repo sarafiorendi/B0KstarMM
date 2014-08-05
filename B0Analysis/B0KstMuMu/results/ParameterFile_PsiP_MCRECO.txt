@@ -2628,10 +2628,22 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # 21st block of parameters #
 ############################
 # Number of generic parameters
-19
+23
 
 # [1 = normalize yields to compute dBF/dq^2 with respect to J/psi; 0 = use psi(2S) instead]
 1
+
+# Polynomial degree for efficiency histogram interpolation
+1
+
+# Minimal distance to the boundaries for the anti-transformation [range = (0,1)]
+0.05
+
+# Transformed variables range [rad] [range = (-value,+value)]
+100
+
+# Maximum number of trials in case of fit failure [0 = default single trial]
+0
 
 # Apply Gaussian constraints in the likelihood [0 = no; 1 = yes]
 1
