@@ -3,10 +3,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[         0,          0]
-NotebookDataLength[     26141,        621]
-NotebookOptionsPosition[     25435,        591]
-NotebookOutlinePosition[     25790,        607]
-CellTagsIndexPosition[     25747,        604]
+NotebookDataLength[     25753,        608]
+NotebookOptionsPosition[     25089,        579]
+NotebookOutlinePosition[     25444,        595]
+CellTagsIndexPosition[     25401,        592]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -63,7 +63,7 @@ Cell[BoxData[{
     RowBox[{"0", "<", "c", "<", "1"}], "&&", 
     RowBox[{
      RowBox[{"-", "1"}], "<", "d", "<", "1"}]}], ",", 
-   RowBox[{"{", "d", "}"}], ",", "Real"}], "]"}]}], "Input",
+   RowBox[{"{", "d", "}"}], ",", "Reals"}], "]"}]}], "Input",
  InitializationCell->True,
  CellChangeTimes->{{3.615986950135428*^9, 3.6159871557237043`*^9}, {
    3.615987217756343*^9, 3.615987243338448*^9}, {3.61598730308317*^9, 
@@ -89,7 +89,7 @@ Cell[BoxData[{
    3.6160075640809402`*^9, {3.6160076772808113`*^9, 3.616007745141279*^9}, {
    3.6160078965647078`*^9, 3.616007926051135*^9}, 3.616008007402089*^9, {
    3.616066221896826*^9, 3.616066274182707*^9}, {3.616089663927121*^9, 
-   3.6160896645786057`*^9}}],
+   3.6160896645786057`*^9}, 3.6162610666510687`*^9}],
 
 Cell[BoxData[
  InterpretationBox[
@@ -359,29 +359,29 @@ cUM4Hz0+AG0eosQ=
                 RowBox[{
                  RowBox[{"{", 
                   RowBox[{
-                  "Compile`$1", ",", "Compile`$2", ",", "Compile`$10", ",", 
-                   "Compile`$11"}], "}"}], ",", 
+                  "Compile`$48", ",", "Compile`$49", ",", "Compile`$68", ",", 
+                   "Compile`$69"}], "}"}], ",", 
                  RowBox[{
-                  RowBox[{"Compile`$1", "=", 
+                  RowBox[{"Compile`$48", "=", 
                    SuperscriptBox["x", "2"]}], ";", 
-                  RowBox[{"Compile`$2", "=", 
+                  RowBox[{"Compile`$49", "=", 
                    SuperscriptBox["y", "2"]}], ";", 
-                  RowBox[{"Compile`$10", "=", 
-                   RowBox[{"-", "Compile`$1"}]}], ";", 
-                  RowBox[{"Compile`$11", "=", 
-                   RowBox[{"1", "+", "Compile`$10"}]}], ";", 
+                  RowBox[{"Compile`$68", "=", 
+                   RowBox[{"-", "Compile`$48"}]}], ";", 
+                  RowBox[{"Compile`$69", "=", 
+                   RowBox[{"1", "+", "Compile`$68"}]}], ";", 
                   RowBox[{
-                   RowBox[{"2", " ", "c", " ", "Compile`$1", " ", 
+                   RowBox[{"2", " ", "c", " ", "Compile`$48", " ", 
                     RowBox[{"(", 
-                    RowBox[{"1", "-", "Compile`$2"}], ")"}]}], "+", 
+                    RowBox[{"1", "-", "Compile`$49"}], ")"}]}], "+", 
                    RowBox[{
                     FractionBox["1", "2"], " ", 
                     RowBox[{"(", 
-                    RowBox[{"1", "-", "c"}], ")"}], " ", "Compile`$11", " ", 
+                    RowBox[{"1", "-", "c"}], ")"}], " ", "Compile`$69", " ", 
                     RowBox[{"(", 
-                    RowBox[{"1", "+", "Compile`$2"}], ")"}]}], "+", 
+                    RowBox[{"1", "+", "Compile`$49"}], ")"}]}], "+", 
                    FractionBox[
-                    RowBox[{"4", " ", "d", " ", "Compile`$11", " ", "y"}], 
+                    RowBox[{"4", " ", "d", " ", "Compile`$69", " ", "y"}], 
                     "3"]}]}]}], "]"}],
                BaselinePosition->Baseline,
                ContentPadding->False,
@@ -425,17 +425,17 @@ cUM4Hz0+AG0eosQ=
      9, 11}, {16, 11, 3, 7, 1, 11}, {13, 8, 10, 11, 8}, {1}}, 
    Function[{$CellContext`x, $CellContext`y, $CellContext`c, $CellContext`d}, 
     
-    Block[{Compile`$1, Compile`$2, Compile`$10, Compile`$11}, 
-     Compile`$1 = $CellContext`x^2; Compile`$2 = $CellContext`y^2; 
-     Compile`$10 = -Compile`$1; Compile`$11 = 1 + Compile`$10; 
+    Block[{Compile`$48, Compile`$49, Compile`$68, Compile`$69}, 
+     Compile`$48 = $CellContext`x^2; Compile`$49 = $CellContext`y^2; 
+     Compile`$68 = -Compile`$48; Compile`$69 = 1 + Compile`$68; 
      2 $CellContext`c 
-       Compile`$1 (1 - Compile`$2) + (1/2) (1 - $CellContext`c) 
-       Compile`$11 (1 + Compile`$2) + (4/3) $CellContext`d 
-       Compile`$11 $CellContext`y]], Evaluate],
+       Compile`$48 (1 - Compile`$49) + (1/2) (1 - $CellContext`c) 
+       Compile`$69 (1 + Compile`$49) + (4/3) $CellContext`d 
+       Compile`$69 $CellContext`y]], Evaluate],
   Editable->False,
   SelectWithContents->True,
   Selectable->False]], "Output",
- CellChangeTimes->{3.6160896778846483`*^9}],
+ CellChangeTimes->{3.6160896778846483`*^9, 3.61626107813916*^9}],
 
 Cell[BoxData[
  RowBox[{
@@ -451,19 +451,7 @@ d\\)\\)]\\)\\) > 0\\)\\)}\\)\[NoBreak] generated message(s) \[NoBreak]\\!\\({\
 \", ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
 ButtonData:>\\\"paclet:ref/ForAll\\\", ButtonNote -> \\\"ForAll::msgs\\\"]\\)\
 \"\>"}]], "Message", "MSG",
- CellChangeTimes->{3.616089677966695*^9}],
-
-Cell[BoxData[
- RowBox[{
-  StyleBox[
-   RowBox[{"Reduce", "::", "bdomv"}], "MessageName"], 
-  RowBox[{
-  ":", " "}], "\<\"Warning: \[NoBreak]\\!\\(Real\\)\[NoBreak] is not a valid \
-domain specification. Assuming it is a variable to eliminate. \
-\\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", ButtonStyle->\\\"Link\\\", \
-ButtonFrame->None, ButtonData:>\\\"paclet:ref/message/Reduce/bdomv\\\", \
-ButtonNote -> \\\"Reduce::bdomv\\\"]\\)\"\>"}]], "Message", "MSG",
- CellChangeTimes->{3.616089677978743*^9}],
+ CellChangeTimes->{3.616089677966695*^9, 3.6162610781861973`*^9}],
 
 Cell[BoxData[
  RowBox[{
@@ -480,7 +468,7 @@ Cell[BoxData[
     RowBox[{"(", 
      RowBox[{"3", "-", 
       RowBox[{"3", " ", "c"}]}], ")"}]}]}]}]], "Output",
- CellChangeTimes->{3.616089678112549*^9}]
+ CellChangeTimes->{3.6160896778846483`*^9, 3.6162610782583637`*^9}]
 }, Open  ]],
 
 Cell[BoxData[{
@@ -572,7 +560,7 @@ Cell[BoxData[{
       RowBox[{"(", 
        RowBox[{"1", "-", "c"}], ")"}]}]}]}], ",", 
    RowBox[{"{", 
-    RowBox[{"a", ",", "b"}], "}"}], ",", "Real"}], "]"}]}], "Input",
+    RowBox[{"a", ",", "b"}], "}"}], ",", "Reals"}], "]"}]}], "Input",
  InitializationCell->True,
  CellChangeTimes->{{3.615990097907176*^9, 3.6159901682619543`*^9}, {
    3.61599188547832*^9, 3.6159919299791603`*^9}, {3.615992546555613*^9, 
@@ -587,7 +575,7 @@ Cell[BoxData[{
    3.616040388837057*^9}, {3.616043825951229*^9, 3.616043876062346*^9}, {
    3.616043947602139*^9, 3.6160440037131643`*^9}, {3.616066256975263*^9, 
    3.6160662933187857`*^9}, 3.6160663724339743`*^9, {3.61608965573232*^9, 
-   3.61608965777591*^9}}]
+   3.61608965777591*^9}, {3.616261069163619*^9, 3.61626107144414*^9}}]
 },
 WindowSize->{1046, 495},
 WindowMargins->{{138, Automatic}, {Automatic, 0}},
@@ -607,14 +595,13 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[422, 15, 3394, 76, 63, "Input",
+Cell[422, 15, 3419, 76, 63, "Input",
  InitializationCell->True],
-Cell[3819, 93, 16098, 344, 64, "Output"],
-Cell[19920, 439, 742, 14, 24, "Message"],
-Cell[20665, 455, 501, 10, 24, "Message"],
-Cell[21169, 467, 453, 15, 47, "Output"]
+Cell[3844, 93, 16135, 344, 64, "Output"],
+Cell[19982, 439, 766, 14, 24, "Message"],
+Cell[20751, 455, 479, 15, 47, "Output"]
 }, Open  ]],
-Cell[21637, 485, 3794, 104, 80, "Input",
+Cell[21245, 473, 3840, 104, 80, "Input",
  InitializationCell->True]
 }
 ]
