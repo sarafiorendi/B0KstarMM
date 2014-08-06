@@ -85,7 +85,7 @@ using namespace RooFit;
 #define SAVEPOLY      false // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
 #define SAVEPLOT      false
 #define RESETsigANG   false // Reset signal angular parameters before starting the fit
-#define RESETcomANG   false // Reset combinatorial background angular parameters before starting the fit
+#define RESETcomANG   false // Reset combinatorial bkg angular parameters before starting the fit
 #define FULLTOYS      false // Compute generation-and-fit toys
 #define FUNCERRBAND   false // Show the p.d.f. error band
 
@@ -564,10 +564,11 @@ void CloseAllAndQuit (TApplication* theApp, TFile* NtplFile)
 
 
 string Transformer (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1, RooRealVar* varValIn2, RooRealVar* varValIn3)
-// ###################
-// # varValIn1 = Fl  #
-// # varValIn2 = Afb #
-// ###################
+// ######################
+// # varValIn1 = Fl,Fs  #
+// # varValIn2 = Afb,Fs #
+// # varValIn2 = As     #
+// ######################
 {
   double val1,val2,val3,valELo,valEHi;
   string sVal1,sVal2;
@@ -909,7 +910,7 @@ void BuildMassConstraints (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string var
 // # All:    apply constraint to all physical angular variables #
 // # sign:   apply constraint to signal                         #
 // # mistag: apply constraint to mistag                         #
-// # peak:   apply constraint to peaking background             #
+// # peak:   apply constraint to peaking bkg                    #
 // ##############################################################
 {
   if ((GetVar(TotalPDF,"sigmaS1")        != NULL) && ((varName == "All") || (varName == "sign"))) AddGaussConstraint(vecConstr, TotalPDF, "sigmaS1");
@@ -941,10 +942,10 @@ void BuildMassConstraints (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string var
 
 
 void BuildAngularConstraints (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName)
-// ##############################################################
-// # comb: apply constraint to angular combinatorial background #
-// # peak: apply constraint to angular peaking background       #
-// ##############################################################
+// #######################################################
+// # comb: apply constraint to angular combinatorial bkg #
+// # peak: apply constraint to angular peaking bkg       #
+// #######################################################
 {
   stringstream myString;
   string polyType;
@@ -4623,14 +4624,14 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
     {
       myString.clear(); myString.str("");
       myString << "c1Poly" << i;
-      c1Poly[i] = new RooRealVar(myString.str().c_str(),"Comb.bkg.poly.coef.",0.0);
+      c1Poly[i] = new RooRealVar(myString.str().c_str(),"Comb. bkg poly. coef.",0.0);
       VarsC1.add(*c1Poly[i]);
     }
   for (unsigned int i = 0; i < NCoeffPolyBKGcomb2; i++)
     {
       myString.clear(); myString.str("");
       myString << "c2Poly" << i;
-      c2Poly[i] = new RooRealVar(myString.str().c_str(),"Comb.bkg.poly.coef.",0.0);
+      c2Poly[i] = new RooRealVar(myString.str().c_str(),"Comb. bkg poly. coef.",0.0);
       VarsC2.add(*c2Poly[i]);
     }
   myString.clear(); myString.str("");
@@ -4702,14 +4703,14 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
     {
       myString.clear(); myString.str("");
       myString << "p1Poly" << i;
-      p1Poly[i] = new RooRealVar(myString.str().c_str(),"Peak.bkg.poly.coef.",0.0);
+      p1Poly[i] = new RooRealVar(myString.str().c_str(),"Peak. bkg poly. coef.",0.0);
       VarsP1.add(*p1Poly[i]);
     }
   for (unsigned int i = 0; i < NCoeffPolyBKGpeak2; i++)
     {
       myString.clear(); myString.str("");
       myString << "p2Poly" << i;
-      p2Poly[i] = new RooRealVar(myString.str().c_str(),"Peak.bkg.poly.coef.",0.0);
+      p2Poly[i] = new RooRealVar(myString.str().c_str(),"Peak. bkg poly. coef.",0.0);
       VarsP2.add(*p2Poly[i]);
     }
   myString.clear(); myString.str("");
@@ -6737,7 +6738,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 	  varName = "FlS";
 	  myString.clear(); myString.str("");
 	  myString << fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin);
-	  Transformer("FlS",varVal,varValELo,varValEHi,GetVar(TotalPDF,"FlS"));
+	  Transformer(varName,varVal,varValELo,varValEHi,GetVar(TotalPDF,"FlS"));
 	  if (varVal > atof(myString.str().c_str()))
 	    {
 	      histoPull1->Fill((varVal - atof(myString.str().c_str())) / fabs(varValELo));
@@ -6755,7 +6756,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 	  varName = "AfbS";
 	  myString.clear(); myString.str("");
 	  myString << fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin);
-	  Transformer("AfbS",varVal,varValELo,varValEHi,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,"AfbS"));
+	  Transformer(varName,varVal,varValELo,varValEHi,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,"AfbS"));
 	  if (varVal > atof(myString.str().c_str()))
 	    {
 	      histoPull2->Fill((varVal - atof(myString.str().c_str())) / fabs(varValELo));
