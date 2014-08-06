@@ -4044,7 +4044,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   // # Toy-MC generation and fit #
   // #############################
   RooMCStudy* MyToy = new RooMCStudy(*TotalPDF,*x,Extended(true),FitOptions(Extended(true),ExternalConstraints(*vecConstr),Minos(USEMINOS))); // Possible options : "Binned()" = faster; Silence()
-  cout << "\n[ExtractYield::MakeMassToy]\t@@@ I'm generating the toys @@@" << endl;aaa
+  cout << "\n[ExtractYield::MakeMassToy]\t@@@ I'm generating the toys @@@" << endl;
   if (FULLTOYS == true)
     {
       MyToy->generateAndFit(nToy,nEntryToy,true);
@@ -6168,7 +6168,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   // # Toy-MC generation and fit #
   // #############################
   RooMCStudy* MyToy = new RooMCStudy(*TotalPDF,RooArgSet(*x,*y,*z),Extended(true),ExternalConstraints(*vecConstr),FitOptions(Extended(true),ExternalConstraints(*vecConstr),Minos(USEMINOS)));
-  cout << "\n[ExtractYield::MakeMass2AnglesToy]\t@@@ I'm generating the toys @@@" << endl;aaa
+  cout << "\n[ExtractYield::MakeMass2AnglesToy]\t@@@ I'm generating the toys @@@" << endl;
   if (FULLTOYS == true)
     {
       MyToy->generateAndFit(nToy,nEntryToy,true);
