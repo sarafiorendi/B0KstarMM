@@ -329,7 +329,9 @@ void PrintVariables            (RooArgSet* setVar, string type);
 void ClearVars                 (RooArgSet* vecConstr);
 void CloseAllAndQuit           (TApplication* theApp, TFile* NtplFile);
 
+// @TMP@
 string Transformer             (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1 = NULL, RooRealVar* varValIn2 = NULL, RooRealVar* varValIn3 = NULL, const TMatrixTSym<double>* Cov = NULL);
+// string Transformer             (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1 = NULL, RooRealVar* varValIn2 = NULL, RooRealVar* varValIn3 = NULL);
 void AntiTransformer           (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1 = NULL, RooRealVar* varValIn2 = NULL, RooRealVar* varValIn3 = NULL);
 
 string MakeName                (RooDataSet* data, unsigned int ID);
@@ -621,7 +623,7 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
       // varValOutELo = 1./2. + TMath::ATan(varValIn1->getVal() + varValIn1->getErrorLo()) / TMath::Pi() - varValOut;
       // varValOutEHi = 1./2. + TMath::ATan(varValIn1->getVal() + varValIn1->getErrorHi()) / TMath::Pi() - varValOut;
     }
-  else if ((varName == "AfbS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (Cov != NULL))
+  else if ((varName == "AfbS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
       Transformer ("FlS",val1,valELo,valEHi,varValIn1);
       val2 = 3./4. * (1. - val1);
@@ -629,14 +631,24 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
       varValOut    = val2 * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi();
 
       // @TMP@
-      varValOutELo = - sqrt( pow(3./4.*val1 * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * valELo,2.) +
-			     pow(val2 * 2./(1. + pow(varValIn2->getVal(),2.)) / TMath::Pi() * varValIn2->getErrorLo(),2.) +
-			     2. * (3./4./(1. + pow(varValIn1->getVal(),2.)) / TMath::Pi() * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi()) *
-			     (val2 * 2./(1. + pow(varValIn2->getVal(),2.)) / TMath::Pi()) * (*Cov)(0,1) );
-      varValOutEHi = + sqrt( pow(3./4.*val1 * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * valEHi,2.) +
-			     pow(val2 * 2./(1. + pow(varValIn2->getVal(),2.)) / TMath::Pi() * varValIn2->getErrorHi(),2.) +
-			     2. * (3./4./(1. + pow(varValIn1->getVal(),2.)) / TMath::Pi() * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi()) *
-			     (val2 * 2./(1. + pow(varValIn2->getVal(),2.)) / TMath::Pi()) * (*Cov)(0,1) );
+      if (Cov != NULL)
+	{
+	  varValOutELo = - sqrt( pow(3./4.*val1 * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * valELo,2.) +
+				 pow(val2 * 2./(1. + pow(varValIn2->getVal(),2.)) / TMath::Pi() * varValIn2->getErrorLo(),2.) +
+				 2. * (3./4./(1. + pow(varValIn1->getVal(),2.)) / TMath::Pi() * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi()) *
+				 (val2 * 2./(1. + pow(varValIn2->getVal(),2.)) / TMath::Pi()) * (*Cov)(0,1) );
+	  varValOutEHi = + sqrt( pow(3./4.*val1 * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * valEHi,2.) +
+				 pow(val2 * 2./(1. + pow(varValIn2->getVal(),2.)) / TMath::Pi() * varValIn2->getErrorHi(),2.) +
+				 2. * (3./4./(1. + pow(varValIn1->getVal(),2.)) / TMath::Pi() * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi()) *
+				 (val2 * 2./(1. + pow(varValIn2->getVal(),2.)) / TMath::Pi()) * (*Cov)(0,1) );
+	}
+      else
+	{
+	  varValOutELo = - sqrt( pow(3./4.*val1 * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * valELo,2.) +
+				 pow(val2 * 2./(1. + pow(varValIn2->getVal(),2.)) / TMath::Pi() * varValIn2->getErrorLo(),2.) );
+	  varValOutEHi = + sqrt( pow(3./4.*val1 * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * valEHi,2.) +
+				 pow(val2 * 2./(1. + pow(varValIn2->getVal(),2.)) / TMath::Pi() * varValIn2->getErrorHi(),2.) );
+	}
       // varValOutELo = val2 * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorLo()) / TMath::Pi() - varValOut;
       // varValOutEHi = val2 * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorHi()) / TMath::Pi() - varValOut;
     }
@@ -6770,7 +6782,9 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 	  varName = "AfbS";
 	  myString.clear(); myString.str("");
 	  myString << fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin);
+	  // @TMP@
 	  Transformer(varName,varVal,varValELo,varValEHi,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,varName.c_str()),NULL,&fitResult->covarianceMatrix());
+	  // Transformer(varName,varVal,varValELo,varValEHi,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,varName.c_str()));
 	  if (varVal > atof(myString.str().c_str()))
 	    {
 	      histoPull2->Fill((varVal - atof(myString.str().c_str())) / fabs(varValELo));
