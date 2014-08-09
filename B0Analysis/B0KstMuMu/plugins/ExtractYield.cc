@@ -633,6 +633,11 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
       // @TMP@
       if (Cov != NULL)
 	{
+	  cout << "AAA covariance element: " << (*Cov)(0,1) << "\tfirst error: " << pow(3./4.*val1 * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * valELo,2.);
+	  cout << "\tsecond error: " << pow(val2 * 2./(1. + pow(varValIn2->getVal(),2.)) / TMath::Pi() * varValIn2->getErrorLo(),2.);
+	  cout << "\tcovriance error : " << 2. * (3./4./(1. + pow(varValIn1->getVal(),2.)) / TMath::Pi() * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi()) *
+	    (val2 * 2./(1. + pow(varValIn2->getVal(),2.)) / TMath::Pi()) * (*Cov)(0,1) << endl;
+
 	  varValOutELo = - sqrt( pow(3./4.*val1 * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * valELo,2.) +
 				 pow(val2 * 2./(1. + pow(varValIn2->getVal(),2.)) / TMath::Pi() * varValIn2->getErrorLo(),2.) +
 				 2. * (3./4./(1. + pow(varValIn1->getVal(),2.)) / TMath::Pi() * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi()) *
