@@ -2773,7 +2773,7 @@ void GenerateDataset (RooAbsPdf* TotalPDF, RooArgSet setVar, vector<double>* q2B
 
   cout << "\n[ExtractYield::GenerateDataset]\t@@@ Generating data-like ntuple @@@" << endl;
   RooRandom::randomGenerator()->SetSeed(q2BinIndx + 1);
-  cout << "[ExtractYield::GenerateDataset]\t@@@ Random seed for parameter file generation set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
+  cout << "[ExtractYield::GenerateDataset]\t@@@ Random seed for dataset file generation set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
 
   // #####################
@@ -7527,10 +7527,10 @@ int main(int argc, char** argv)
 	      MakeDataSets(NTuple,FitType);
 
 
-	      // ##########################################
-	      // # Set seed for random number generator   #
-	      // # in case the toy-MC studies are splited #
-	      // ##########################################
+	      // ################################################
+	      // # Set seed for random number generator in case #
+	      // # the toy-MC studies are splited in jobs       #
+	      // ################################################
 	      RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins.size()-1) + specBin + 1);
 	      cout << "\n[ExtractYield::main]\t@@@ Random seed for toy-MC set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
