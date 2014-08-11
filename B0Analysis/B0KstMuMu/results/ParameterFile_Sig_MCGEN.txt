@@ -2638,11 +2638,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Polynomial degree for efficiency histogram interpolation
 1
 
-# Minimal distance to the boundaries for the anti-transformation [range = (0,1)]
+# Minimum distance to the boundaries for the anti-transformation [range = (0,1)]
 0.05
 
-# Transformed variables range [rad] [range = (-value,+value)]
-100
+# Transformed variables range [range = (-value,+value)]
+1000
 
 # Maximum number of trials in case of fit failure [0 = default single trial]
 0

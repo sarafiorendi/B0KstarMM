@@ -143,6 +143,7 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
 
   gROOT->SetStyle("Plain");
   gROOT->ForceStyle();
+  gStyle->SetTextFont(42);
   gStyle->SetPalette(1);
   gStyle->SetOptFit(1112);
   gStyle->SetOptStat(0);
@@ -496,6 +497,7 @@ void TruthMatching (string fileName, bool truthMatch)
   // ##########################
   gROOT->SetStyle("Plain");
   gROOT->ForceStyle();
+  gStyle->SetTextFont(42);
   gStyle->SetPalette(1);
   gStyle->SetOptFit(1112);
   gStyle->SetOptStat(1110);
@@ -697,6 +699,7 @@ void CompareCosMassGENRECO (string fileNameRECO, string fileNameGEN)
   // ##########################
   gROOT->SetStyle("Plain");
   gROOT->ForceStyle();
+  gStyle->SetTextFont(42);
   gStyle->SetPalette(1);
   gStyle->SetOptFit(1112);
   gStyle->SetOptStat(0);
@@ -863,6 +866,7 @@ void PlotVtxWithPileUpW (string fileNameMC, string fileNameData, unsigned int Tr
   // ##########################
   gROOT->SetStyle("Plain");
   gROOT->ForceStyle();
+  gStyle->SetTextFont(42);
   gStyle->SetPalette(1);
   gStyle->SetOptFit(1112);
   gStyle->SetOptStat(0);
@@ -994,6 +998,7 @@ void PlotCutScans (string fileName, string type)
   // ##########################
   gROOT->SetStyle("Plain");
   gROOT->ForceStyle();
+  gStyle->SetTextFont(42);
   gStyle->SetPalette(1);
   gStyle->SetOptFit(1112);
   gStyle->SetOptStat(1110);
@@ -1024,6 +1029,7 @@ void PlotBkgMC (string fileName, bool iFit, double scaleMCdata)
   // ##########################
   gROOT->SetStyle("Plain");
   gROOT->ForceStyle();
+  gStyle->SetTextFont(42);
   gStyle->SetPalette(1);
   gStyle->SetOptFit(1112);
   gStyle->SetOptStat(1001100);
@@ -1612,48 +1618,37 @@ void ComputeMCfilterEff (string fileName)
 void DrawString (double Lumi)
 {
   stringstream myString;
+  double scaleRespect2CMS = 0.75;
 
-  myString.clear();
-  myString.str("");
+
+  myString.clear(); myString.str("");
   myString << "CMS";
-  TLatex* LumiTex1 = new TLatex(0.1,0.91,myString.str().c_str());
+  TLatex* LumiTex1 = new TLatex(0.1,0.9,myString.str().c_str());
+  LumiTex1->SetTextFont(61);
   LumiTex1->SetTextSize(0.05);
   LumiTex1->SetTextColor(kBlack);
   LumiTex1->SetNDC(true);
-  LumiTex1->DrawLatex(0.1,0.91,myString.str().c_str());
+  LumiTex1->DrawLatex(0.1,0.9,myString.str().c_str());
 
-  myString.clear();
-  myString.str("");
-  myString << "L = " << Lumi <<  " fb#lower[0.4]{^{#font[122]{\55}1}}";
-  TLatex* LumiTex2 = new TLatex(0.43,0.91,myString.str().c_str());
-  LumiTex2->SetTextSize(0.05);
+
+  myString.clear(); myString.str("");
+  myString << "#it{Preliminary}";
+  TLatex* LumiTex2 = new TLatex(0.18,0.9,myString.str().c_str());
+  LumiTex2->SetTextFont(42);
+  LumiTex2->SetTextSize(0.05 * scaleRespect2CMS);
   LumiTex2->SetTextColor(kBlack);
   LumiTex2->SetNDC(true);
-  LumiTex2->DrawLatex(0.43,0.91,myString.str().c_str());
+  LumiTex2->DrawLatex(0.18,0.9,myString.str().c_str());
 
-  double startNDCx = 0.826;
-  double startNDCy = 0.935;
-  TLine* line1 = new TLine(startNDCx-0.005, startNDCy, startNDCx, startNDCy);
-  line1->SetBit(TLine::kLineNDC,true);
-  line1->Draw();
-  TLine* line2 = new TLine(startNDCx, startNDCy, startNDCx+0.005, startNDCy-0.03);
-  line2->SetBit(TLine::kLineNDC,true);
-  line2->Draw();
-  TLine* line3 = new TLine(startNDCx+0.005, startNDCy-0.03, startNDCx+0.010, startNDCy+0.01);
-  line3->SetBit(TLine::kLineNDC,true);
-  line3->Draw();
-  TLine* line4 = new TLine(startNDCx+0.010, startNDCy+0.01, startNDCx+0.032, startNDCy+0.01);
-  line4->SetBit(TLine::kLineNDC,true);
-  line4->Draw();
 
-  myString.clear();
-  myString.str("");
-  myString << "s = 8 TeV";
-  TLatex* LumiTex4 = new TLatex(0.84,0.91,myString.str().c_str());
-  LumiTex4->SetTextSize(0.05);
-  LumiTex4->SetTextColor(kBlack);
-  LumiTex4->SetNDC(true);
-  LumiTex4->DrawLatex(0.84,0.91,myString.str().c_str());
+  myString.clear(); myString.str("");
+  myString << Lumi <<  " fb#lower[0.4]{^{#font[122]{\55}1}} (8 TeV)";
+  TLatex* LumiTex3 = new TLatex(0.81,0.9,myString.str().c_str());
+  LumiTex3->SetTextFont(42);
+  LumiTex3->SetTextSize(0.05 * scaleRespect2CMS);
+  LumiTex3->SetTextColor(kBlack);
+  LumiTex3->SetNDC(true);
+  LumiTex3->DrawLatex(0.81,0.9,myString.str().c_str());
 }
 
 
@@ -1795,6 +1790,7 @@ void showData (int dataType, double offset, bool noHbar)
   // ##########################
   gROOT->SetStyle("Plain");
   gROOT->ForceStyle();
+  gStyle->SetTextFont(42);
   gStyle->SetPalette(1);
   gStyle->SetOptFit(0);
   gStyle->SetOptStat(0);
