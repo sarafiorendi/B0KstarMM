@@ -114,6 +114,7 @@ Utils::effStruct myEff;
 // #######################
 // # Function Definition #
 // #######################
+void SetStyle              ();
 void ComputeEfficiency     (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, double* Vector, double* VectorErr2Pois, double* VectorErr2Weig, unsigned int type,
 			    vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, int SignalType);
 void MakeHistogramsAllBins (vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, Utils::effStruct myEff, int specBin);
@@ -133,6 +134,37 @@ void Test3DEfficiency      (vector<double>* q2Bins, vector<double>* cosThetaKBin
 // ###########################
 // # Function Implementation #
 // ###########################
+void SetStyle ()
+{
+  gROOT->SetStyle("Plain");
+  gROOT->ForceStyle();
+  gStyle->SetTextFont(42);
+
+  gStyle->SetOptFit(1112);
+  gStyle->SetOptStat(1110);
+  gStyle->SetOptTitle(0);
+
+  gStyle->SetPadRightMargin(0.02);
+  gStyle->SetPadTopMargin(0.11);
+  gStyle->SetPadBottomMargin(0.12);
+
+  gStyle->SetTitleFont(42,"x");
+  gStyle->SetTitleFont(42,"y");
+  gStyle->SetTitleOffset(1.05,"x");
+  gStyle->SetTitleOffset(1.0,"y");
+  gStyle->SetTitleSize(0.05,"x");
+  gStyle->SetTitleSize(0.05,"y");
+
+  gStyle->SetLabelFont(42,"x");
+  gStyle->SetLabelFont(42,"y");
+  gStyle->SetLabelSize(0.05,"x");
+  gStyle->SetLabelSize(0.05,"y");
+
+  TGaxis::SetMaxDigits(3);
+  gStyle->SetStatY(0.9);
+}
+
+
 void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, double* Vector, double* VectorErr2Pois, double* VectorErr2Weig, unsigned int type,
 			vector<double>* q2Bins, vector<double>* cosThetaKBins, vector<double>* cosThetaLBins, vector<double>* phiBins, int SignalType)
 // ##########################################################
@@ -2601,16 +2633,9 @@ int main (int argc, char** argv)
       // ##########################
       // # Set histo layout style #
       // ##########################
-      gROOT->SetStyle("Plain");
-      gROOT->ForceStyle();
-      gStyle->SetTextFont(42);
-      gStyle->SetOptFit(1112);
+      SetStyle();
       gStyle->SetOptStat(0);
-      gStyle->SetOptTitle(0);
-      gStyle->SetPadRightMargin(0.02);
-      gStyle->SetTitleOffset(1.25,"y"); 
-      TGaxis::SetMaxDigits(3);
-      
+
 
       if ((option == "Make") && (argc == 7))
 	{

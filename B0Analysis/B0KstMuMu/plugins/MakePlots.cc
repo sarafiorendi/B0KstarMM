@@ -77,6 +77,7 @@ Utils* Utility;
 // #######################
 // # Function Definition #
 // #######################
+void SetStyle              ();
 void DrawString            (double Lumi);
 void MakeComparisonDataMC  (unsigned int plotType);
 TCutG* DrawExclusion       (double Xlow, double Xhigh, double Ylow, double Yhigh, string cutName, unsigned int fillStyle, unsigned int color);
@@ -95,6 +96,37 @@ void MakePvaluePlot        (string fileName, string plotType, int specBin);
 // ###########################
 // # Function Implementation #
 // ###########################
+void SetStyle ()
+{
+  gROOT->SetStyle("Plain");
+  gROOT->ForceStyle();
+  gStyle->SetTextFont(42);
+
+  gStyle->SetOptFit(1112);
+  gStyle->SetOptStat(1110);
+  gStyle->SetOptTitle(0);
+
+  gStyle->SetPadRightMargin(0.02);
+  gStyle->SetPadTopMargin(0.11);
+  gStyle->SetPadBottomMargin(0.12);
+
+  gStyle->SetTitleFont(42,"x");
+  gStyle->SetTitleFont(42,"y");
+  gStyle->SetTitleOffset(1.05,"x");
+  gStyle->SetTitleOffset(1.0,"y");
+  gStyle->SetTitleSize(0.05,"x");
+  gStyle->SetTitleSize(0.05,"y");
+
+  gStyle->SetLabelFont(42,"x");
+  gStyle->SetLabelFont(42,"y");
+  gStyle->SetLabelSize(0.05,"x");
+  gStyle->SetLabelSize(0.05,"y");
+
+  TGaxis::SetMaxDigits(3);
+  gStyle->SetStatY(0.9);
+}
+
+
 void DrawString (double Lumi)
 {
   stringstream myString;
@@ -1240,20 +1272,12 @@ void MakePhysicsPlots (unsigned int PlotType)
   // ##########################
   // # Set histo layout style #
   // ##########################
-  gStyle->SetTextFont(42);
+  SetStyle();
   gStyle->SetOptFit(0);
   gStyle->SetOptStat(0);
-  gStyle->SetPadTopMargin(0.11);
-  gStyle->SetPadBottomMargin(0.12);
-  gStyle->SetTitleOffset(1.1,"x");
-  gStyle->SetTitleOffset(0.95,"y");
-  gStyle->SetTitleSize(0.05,"x");
-  gStyle->SetTitleSize(0.05,"y");
-  gStyle->SetLabelSize(0.05,"x");
-  gStyle->SetLabelSize(0.05,"y");
   gStyle->SetEndErrorSize(8);
 
-  
+
   unsigned int DoF = 0;
   double myGlobalChi2 = 0.0;
 
@@ -2847,15 +2871,7 @@ int main (int argc, char** argv)
       // ##########################
       // # Set histo layout style #
       // ##########################
-      gROOT->SetStyle("Plain");
-      gROOT->ForceStyle();
-      gStyle->SetTextFont(42);
-      gStyle->SetOptFit(1112);
-      gStyle->SetOptStat(1110);
-      gStyle->SetOptTitle(0);
-      gStyle->SetPadRightMargin(0.02);
-      gStyle->SetTitleOffset(1.25,"y"); 
-      TGaxis::SetMaxDigits(3);
+      SetStyle();
 
 
       Utility = new Utils();

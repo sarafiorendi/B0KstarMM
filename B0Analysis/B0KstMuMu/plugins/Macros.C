@@ -75,6 +75,7 @@ using namespace RooFit;
 // #######################
 // # Function Definition #
 // #######################
+void SetStyle               ();
 TH1D* ComputeCumulative     (TH1D* hIN, string hCumulName);
 void PlotHistoEff           (string fileName, unsigned int smothDegree, string effDimension, bool RIGHTflavorTAG, double cosThetaKRange_lo = -1.0, double cosThetaKRange_hi = 1.0, double cosThetaLRange_lo = -1.0, double cosThetaLRange_hi = 1.0, double phiRange_lo = -3.15, double phiRange_hi = 3.15);
 void TruthMatching          (string fileName, bool truthMatch);
@@ -100,6 +101,40 @@ void showData               (int dataType, double offset, bool noHbar);
 // ###########################
 // # Function Implementation #
 // ###########################
+
+
+// ##########################
+// # Set histo layout style #
+// ##########################
+void SetStyle ()
+{
+  gROOT->SetStyle("Plain");
+  gROOT->ForceStyle();
+  gStyle->SetTextFont(42);
+
+  gStyle->SetOptFit(1112);
+  gStyle->SetOptStat(1110);
+  gStyle->SetOptTitle(0);
+
+  gStyle->SetPadRightMargin(0.02);
+  gStyle->SetPadTopMargin(0.11);
+  gStyle->SetPadBottomMargin(0.12);
+
+  gStyle->SetTitleFont(42,"x");
+  gStyle->SetTitleFont(42,"y");
+  gStyle->SetTitleOffset(1.05,"x");
+  gStyle->SetTitleOffset(1.0,"y");
+  gStyle->SetTitleSize(0.05,"x");
+  gStyle->SetTitleSize(0.05,"y");
+
+  gStyle->SetLabelFont(42,"x");
+  gStyle->SetLabelFont(42,"y");
+  gStyle->SetLabelSize(0.05,"x");
+  gStyle->SetLabelSize(0.05,"y");
+
+  TGaxis::SetMaxDigits(3);
+  gStyle->SetStatY(0.9);
+}
 
 
 // ######################################################################
@@ -132,6 +167,14 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
 // # effDimension = "3D" #
 // #######################
 {
+  // ##########################
+  // # Set histo layout style #
+  // ##########################
+  SetStyle();
+  gStyle->SetPalette(1);
+  gStyle->SetOptStat(0);
+
+
   ifstream inputFile;
   double xx, xw, yy, yw, zz, zw, cont, err, tmp;
   vector<double> Xbins;
@@ -139,18 +182,6 @@ void PlotHistoEff (string fileName, unsigned int smothDegree, string effDimensio
   vector<double> Zbins;
   double cosThetaBound = 1.0;
   double phiBound      = TMath::Pi();
-
-
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetTextFont(42);
-  gStyle->SetPalette(1);
-  gStyle->SetOptFit(1112);
-  gStyle->SetOptStat(0);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
 
 
   cout << "[Macros::PlotHistoEff]\tReading binned efficiency file : " << fileName.c_str() << endl;
@@ -495,16 +526,8 @@ void TruthMatching (string fileName, bool truthMatch)
   // ##########################
   // # Set histo layout style #
   // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetTextFont(42);
+  SetStyle();
   gStyle->SetPalette(1);
-  gStyle->SetOptFit(1112);
-  gStyle->SetOptStat(1110);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
 
 
   // #################
@@ -697,16 +720,8 @@ void CompareCosMassGENRECO (string fileNameRECO, string fileNameGEN)
   // ##########################
   // # Set histo layout style #
   // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetTextFont(42);
+  SetStyle();
   gStyle->SetPalette(1);
-  gStyle->SetOptFit(1112);
-  gStyle->SetOptStat(0);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
 
 
   TFile* NtplFileIn1 = TFile::Open(fileNameRECO.c_str(),"READ");
@@ -864,16 +879,9 @@ void PlotVtxWithPileUpW (string fileNameMC, string fileNameData, unsigned int Tr
   // ##########################
   // # Set histo layout style #
   // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetTextFont(42);
+  SetStyle();
   gStyle->SetPalette(1);
-  gStyle->SetOptFit(1112);
   gStyle->SetOptStat(0);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
 
 
   int nEntries;
@@ -996,16 +1004,8 @@ void PlotCutScans (string fileName, string type)
   // ##########################
   // # Set histo layout style #
   // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetTextFont(42);
+  SetStyle();
   gStyle->SetPalette(1);
-  gStyle->SetOptFit(1112);
-  gStyle->SetOptStat(1110);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
 
 
   TCanvas* c1 = new TCanvas("c1","c1",10,10,900,500);
@@ -1027,16 +1027,9 @@ void PlotBkgMC (string fileName, bool iFit, double scaleMCdata)
   // ##########################
   // # Set histo layout style #
   // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetTextFont(42);
+  SetStyle();
   gStyle->SetPalette(1);
-  gStyle->SetOptFit(1112);
   gStyle->SetOptStat(1001100);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetTitleOffset(1.25,"y"); 
-  TGaxis::SetMaxDigits(3);
 
 
   unsigned int nBins = 20;
@@ -1623,22 +1616,22 @@ void DrawString (double Lumi)
 
   myString.clear(); myString.str("");
   myString << "CMS";
-  TLatex* LumiTex1 = new TLatex(0.1,0.9,myString.str().c_str());
+  TLatex* LumiTex1 = new TLatex(0.18,0.9,myString.str().c_str());
   LumiTex1->SetTextFont(61);
   LumiTex1->SetTextSize(0.05);
   LumiTex1->SetTextColor(kBlack);
   LumiTex1->SetNDC(true);
-  LumiTex1->DrawLatex(0.1,0.9,myString.str().c_str());
+  LumiTex1->DrawLatex(0.18,0.9,myString.str().c_str());
 
 
   myString.clear(); myString.str("");
   myString << "#it{Preliminary}";
-  TLatex* LumiTex2 = new TLatex(0.18,0.9,myString.str().c_str());
+  TLatex* LumiTex2 = new TLatex(0.26,0.9,myString.str().c_str());
   LumiTex2->SetTextFont(42);
   LumiTex2->SetTextSize(0.05 * scaleRespect2CMS);
   LumiTex2->SetTextColor(kBlack);
   LumiTex2->SetNDC(true);
-  LumiTex2->DrawLatex(0.18,0.9,myString.str().c_str());
+  LumiTex2->DrawLatex(0.26,0.9,myString.str().c_str());
 
 
   myString.clear(); myString.str("");
@@ -1788,24 +1781,10 @@ void showData (int dataType, double offset, bool noHbar)
   // ##########################
   // # Set histo layout style #
   // ##########################
-  gROOT->SetStyle("Plain");
-  gROOT->ForceStyle();
-  gStyle->SetTextFont(42);
+  SetStyle();
   gStyle->SetPalette(1);
   gStyle->SetOptFit(0);
   gStyle->SetOptStat(0);
-  gStyle->SetOptTitle(0);
-  gStyle->SetPadRightMargin(0.02);
-  gStyle->SetPadTopMargin(0.11);
-  gStyle->SetPadBottomMargin(0.12);
-  gStyle->SetTitleOffset(1.1,"x");
-  gStyle->SetTitleOffset(0.95,"y");
-  gStyle->SetTitleSize(0.05,"x");
-  gStyle->SetTitleSize(0.05,"y");
-  gStyle->SetLabelSize(0.05,"x");
-  gStyle->SetLabelSize(0.05,"y");
-  gStyle->SetEndErrorSize(8);
-  TGaxis::SetMaxDigits(3);
 
 
   stringstream myString;

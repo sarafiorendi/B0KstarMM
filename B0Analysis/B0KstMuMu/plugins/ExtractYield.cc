@@ -332,6 +332,7 @@ void CloseAllAndQuit           (TApplication* theApp, TFile* NtplFile);
 string Transformer             (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooFitResult* fitResult = NULL, RooRealVar* varValIn1 = NULL, RooRealVar* varValIn2 = NULL, RooRealVar* varValIn3 = NULL);
 void AntiTransformer           (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1 = NULL, RooRealVar* varValIn2 = NULL, RooRealVar* varValIn3 = NULL);
 
+void SetStyle                  ();
 string MakeName                (RooDataSet* data, unsigned int ID);
 void DrawString                (double Lumi, RooPlot* myFrame = NULL);
 
@@ -571,7 +572,7 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
 // ######################
 {
   const TMatrixTSym<double>* CovM = (fitResult != NULL ? &fitResult->covarianceMatrix() : NULL);
-  double val1,val2,val3,valELo,valEHi;
+  double val1,val2,val3,val1ELo,val1EHi,val2ELo,val2EHi;
   string sVal1,sVal2;
   stringstream myString;
   myString.clear(); myString.str("");
@@ -621,45 +622,97 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
     }
   else if ((varName == "AfbS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
-      Transformer ("FlS",val1,valELo,valEHi,fitResult,varValIn1);
+      Transformer ("FlS",val1,val1ELo,val1EHi,fitResult,varValIn1);
       val2 = 3./4. * (1. - val1);
 
       varValOut    = val2 * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi();
 
       varValOutELo = val2 * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorLo()) / TMath::Pi() - varValOut;
-      varValOutELo = - sqrt( pow(3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * valELo,2.) + pow(varValOutELo,2.) +
+      varValOutELo = - sqrt( pow(3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1ELo,2.) + pow(varValOutELo,2.) +
 			     2. *
-			     (3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * valELo) / varValIn1->getErrorLo() *
+			     (3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1ELo) / varValIn1->getErrorLo() *
 			     varValOutELo / varValIn2->getErrorLo() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AfbS")) : 0.) );
 
 
       varValOutEHi = val2 * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorHi()) / TMath::Pi() - varValOut;
-      varValOutEHi = + sqrt( pow(3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * valEHi,2.) + pow(varValOutEHi,2.) +
+      varValOutEHi = + sqrt( pow(3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1EHi,2.) + pow(varValOutEHi,2.) +
 			     2. *
-			     (3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * valEHi)  / varValIn1->getErrorHi() *
+			     (3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1EHi)  / varValIn1->getErrorHi() *
 			     varValOutEHi / varValIn2->getErrorHi() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AfbS")) : 0.) );
     }
   else if ((varName == "FsS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
-      Transformer ("FlS",val1,valELo,valEHi,fitResult,varValIn1);
+      Transformer ("FlS",val1,val1ELo,val1EHi,fitResult,varValIn1);
       val2 = 3. * (1. - val1) / (7. - 3. * val1);
 
       varValOut    = val2 * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi());
+
       varValOutELo = val2 * (1./2. + TMath::ATan(varValIn2->getVal() + varValIn2->getErrorLo()) / TMath::Pi()) - varValOut;
+      varValOutELo = - sqrt( pow((3. * (1. - (val1+val1ELo)) / (7. - 3. * (val1+val1ELo)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()),2.) + pow(varValOutELo,2.) +
+			     2. *
+			     (3. * (1. - (val1+val1ELo)) / (7. - 3. * (val1+val1ELo)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) / varValIn1->getErrorLo() *
+			     varValOutELo / varValIn2->getErrorLo() *
+			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) );
+
+
       varValOutEHi = val2 * (1./2. + TMath::ATan(varValIn2->getVal() + varValIn2->getErrorHi()) / TMath::Pi()) - varValOut;
+      varValOutEHi = + sqrt( pow((3. * (1. - (val1+val1EHi)) / (7. - 3. * (val1+val1EHi)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()),2.) + pow(varValOutEHi,2.) +
+			     2. *
+			     (3. * (1. - (val1+val1EHi)) / (7. - 3. * (val1+val1EHi)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) / varValIn1->getErrorHi() *
+			     varValOutEHi / varValIn2->getErrorHi() *
+			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) );
     }
   else if ((varName == "AsS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (varValIn3 != NULL))
     {
-      Transformer ("FlS",val1,valELo,valEHi,fitResult,varValIn1);
-      Transformer ("FsS",val2,valELo,valEHi,fitResult,varValIn1,varValIn2);
+      Transformer ("FlS",val1,val1ELo,val1EHi,fitResult,varValIn1);
+      Transformer ("FsS",val2,val2ELo,val2EHi,fitResult,varValIn1,varValIn2);
+
       val3 = 1./2. * (val2 + 3. * val1 * (1. - val2));
       if (val3 > 1.) val3 = 1.;
 
       varValOut    = val3 * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi();
+
       varValOutELo = val3 * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorLo()) / TMath::Pi() - varValOut;
+      varValOutELo = - sqrt( pow(3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1ELo,2.) +
+			     pow(1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2ELo,2.) +
+			     pow(varValOutELo,2.) + 
+
+			     2. *
+			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1ELo / varValIn1->getErrorLo() *
+			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2ELo / varValIn2->getErrorLo() *
+			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) +
+
+			     2. *
+			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1ELo / varValIn1->getErrorLo() *
+			     varValOutELo / varValIn2->getErrorLo() *
+			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AsS")) : 0.) +
+
+			     2. *
+			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2ELo / varValIn2->getErrorLo() *
+			     varValOutELo / varValIn2->getErrorLo() *
+			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FsS"),fitResult->floatParsFinal().index("AsS")) : 0.) );
+			     
       varValOutEHi = val3 * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorHi()) / TMath::Pi() - varValOut;
+      varValOutEHi = + sqrt( pow(3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi,2.) +
+			     pow(1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2EHi,2.) +
+			     pow(varValOutEHi,2.) + 
+
+			     2. *
+			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi / varValIn1->getErrorHi() *
+			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2EHi / varValIn2->getErrorHi() *
+			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) +
+
+			     2. *
+			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi / varValIn1->getErrorHi() *
+			     varValOutEHi / varValIn2->getErrorHi() *
+			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AsS")) : 0.) +
+
+			     2. *
+			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2EHi / varValIn2->getErrorHi() *
+			     varValOutEHi / varValIn2->getErrorHi() *
+			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FsS"),fitResult->floatParsFinal().index("AsS")) : 0.) );
     }
   else
     {
@@ -749,6 +802,37 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
 }
 
 
+void SetStyle ()
+{
+  gROOT->SetStyle("Plain");
+  gROOT->ForceStyle();
+  gStyle->SetTextFont(42);
+
+  gStyle->SetOptFit(1112);
+  gStyle->SetOptStat(1110);
+  gStyle->SetOptTitle(0);
+
+  gStyle->SetPadRightMargin(0.02);
+  gStyle->SetPadTopMargin(0.11);
+  gStyle->SetPadBottomMargin(0.12);
+
+  gStyle->SetTitleFont(42,"x");
+  gStyle->SetTitleFont(42,"y");
+  gStyle->SetTitleOffset(1.05,"x");
+  gStyle->SetTitleOffset(1.0,"y");
+  gStyle->SetTitleSize(0.05,"x");
+  gStyle->SetTitleSize(0.05,"y");
+
+  gStyle->SetLabelFont(42,"x");
+  gStyle->SetLabelFont(42,"y");
+  gStyle->SetLabelSize(0.05,"x");
+  gStyle->SetLabelSize(0.05,"y");
+
+  TGaxis::SetMaxDigits(3);
+  gStyle->SetStatY(0.9);
+}
+
+
 string MakeName (RooDataSet* data, unsigned int ID)
 {
   stringstream myString;
@@ -766,12 +850,12 @@ void DrawString (double Lumi, RooPlot* myFrame)
 
   myString.clear(); myString.str("");
   myString << "CMS";
-  TLatex* LumiTex1 = new TLatex(0.1,0.9,myString.str().c_str());
+  TLatex* LumiTex1 = new TLatex(0.18,0.9,myString.str().c_str());
   LumiTex1->SetTextFont(61);
   LumiTex1->SetTextSize(0.05);
   LumiTex1->SetTextColor(kBlack);
   LumiTex1->SetNDC(true);
-  if (myFrame == NULL) LumiTex1->DrawLatex(0.1,0.9,myString.str().c_str());
+  if (myFrame == NULL) LumiTex1->DrawLatex(0.18,0.9,myString.str().c_str());
   else
     {
       LumiTex1->Paint();
@@ -781,12 +865,12 @@ void DrawString (double Lumi, RooPlot* myFrame)
 
   myString.clear(); myString.str("");
   myString << "#it{Preliminary}";
-  TLatex* LumiTex2 = new TLatex(0.18,0.9,myString.str().c_str());
+  TLatex* LumiTex2 = new TLatex(0.26,0.9,myString.str().c_str());
   LumiTex2->SetTextFont(42);
   LumiTex2->SetTextSize(0.05 * scaleRespect2CMS);
   LumiTex2->SetTextColor(kBlack);
   LumiTex2->SetNDC(true);
-  if (myFrame == NULL) LumiTex2->DrawLatex(0.18,0.9,myString.str().c_str());
+  if (myFrame == NULL) LumiTex2->DrawLatex(0.26,0.9,myString.str().c_str());
   else
     {
       LumiTex2->Paint();
@@ -1413,8 +1497,8 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
 	  double totalYield    = GetVar(*TotalPDF,"nSig")->getVal() / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
 	  double totalYieldE   = totalYield * sqrt( pow(GetVar(*TotalPDF,"nSig")->getError()/GetVar(*TotalPDF,"nSig")->getVal(),2.) + pow(GetVar(*TotalPDF,"nMisTagFrac")->getError()/(1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.) );
 
-	  double fraction      = (1. - 2.*GetVar(*TotalPDF,"nMisTagFrac")->getVal()) / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
-	  double fractionE     = GetVar(*TotalPDF,"nMisTagFrac")->getError() / pow((1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.);
+	  double fraction      = 1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal();
+	  double fractionE     = GetVar(*TotalPDF,"nMisTagFrac")->getError();
 	  
 	  double signalSigmaT  = sqrt( fraction * pow(signalSigmaGoodT,2.) + (1. - fraction) * pow(signalSigmaMisT,2.) );
 	  double signalSigmaTE = 1./(2.*signalSigmaT) * sqrt( pow((pow(signalSigmaGoodT,2.) - pow(signalSigmaMisT,2.)) * fractionE,2.) +
@@ -2008,7 +2092,7 @@ vector<string>* SaveFitResults (unsigned int q2BinIndx, vector<vector<string>*>*
 
 
   vecParStr->push_back("# FL +/- err");
-  if ((TotalPDF != NULL) && (fitResult != NULL) && (GetVar(TotalPDF,"FlS") != NULL) && (vecConstr->find(string(string("FlS") + string("_constr")).c_str()) == NULL))
+  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"FlS") != NULL) && (vecConstr->find(string(string("FlS") + string("_constr")).c_str()) == NULL))
     {
       Transformer("FlS",varVal,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FlS"));
       myString.clear(); myString.str("");
@@ -2017,7 +2101,7 @@ vector<string>* SaveFitResults (unsigned int q2BinIndx, vector<vector<string>*>*
     }
   else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# AFB +/- err");
-  if ((TotalPDF != NULL) && (fitResult != NULL) && (GetVar(TotalPDF,"AfbS") != NULL) && (vecConstr->find(string(string("AfbS") + string("_constr")).c_str()) == NULL))
+  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"AfbS") != NULL) && (vecConstr->find(string(string("AfbS") + string("_constr")).c_str()) == NULL))
     {
       Transformer("AfbS",varVal,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,"AfbS"));
       myString.clear(); myString.str("");
@@ -2042,7 +2126,7 @@ vector<string>* SaveFitResults (unsigned int q2BinIndx, vector<vector<string>*>*
     }
   else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# FS +/- err");
-  if ((TotalPDF != NULL) && (fitResult != NULL) && (GetVar(TotalPDF,"FsS") != NULL) && (vecConstr->find(string(string("FsS") + string("_constr")).c_str()) == NULL))
+  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"FsS") != NULL) && (vecConstr->find(string(string("FsS") + string("_constr")).c_str()) == NULL))
     {
       Transformer("FsS",varVal,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,"FsS"));
       myString.clear(); myString.str("");
@@ -2051,7 +2135,7 @@ vector<string>* SaveFitResults (unsigned int q2BinIndx, vector<vector<string>*>*
     }
   else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# AS +/- err");
-  if ((TotalPDF != NULL) && (fitResult != NULL) && (GetVar(TotalPDF,"AsS") != NULL) && (vecConstr->find(string(string("AsS") + string("_constr")).c_str()) == NULL))
+  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"AsS") != NULL) && (vecConstr->find(string(string("AsS") + string("_constr")).c_str()) == NULL))
     {
       Transformer("AsS",varVal,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,"FsS"),GetVar(TotalPDF,"AsS"));
       myString.clear(); myString.str("");
@@ -3668,8 +3752,8 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
       totalYield  = GetVar(*TotalPDF,"nSig")->getVal() / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
       totalYieldE = totalYield * sqrt( pow(GetVar(*TotalPDF,"nSig")->getError()/GetVar(*TotalPDF,"nSig")->getVal(),2.) + pow(GetVar(*TotalPDF,"nMisTagFrac")->getError()/(1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.) );
       
-      double fraction  = (1. - 2.*GetVar(*TotalPDF,"nMisTagFrac")->getVal()) / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
-      double fractionE = GetVar(*TotalPDF,"nMisTagFrac")->getError() / pow((1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.);
+      double fraction  = 1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal();
+      double fractionE = GetVar(*TotalPDF,"nMisTagFrac")->getError();
 
       signalSigmaT  = sqrt( fraction * pow(signalSigmaGoodT,2.) + (1. - fraction) * pow(signalSigmaMisT,2.) );
       signalSigmaTE = 1./(2.*signalSigmaT) * sqrt( pow((pow(signalSigmaGoodT,2.) - pow(signalSigmaMisT,2.)) * fractionE,2.) +
@@ -3913,7 +3997,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // ##############################################
       // # Save fit results back into prarameter file #
       // ##############################################
-      vecParStr = SaveFitResults(i,fitParam,configParam,vecConstr,TotalPDFq2Bins[i]);
+      vecParStr = SaveFitResults(i,fitParam,configParam,vecConstr,TotalPDFq2Bins[i],fitResult);
       Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,i);
       vecParStr->clear();
       delete vecParStr;
@@ -3955,13 +4039,13 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 
 	  double nEvMisTag = 0.0;
 	  if (GetVar(TotalPDFq2Bins[i],"nMisTagFrac") != NULL)
-	    nEvMisTag = GetVar(TotalPDFq2Bins[i],"nSig")->getVal() / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal()) * GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal();
+	    nEvMisTag = GetVar(TotalPDFq2Bins[i],"nSig")->getVal() * GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal() / (1. - GetVar(TotalPDFq2Bins[i],"nMisTagFrac")->getVal());
 	  
 	  double num       = (nEvGoodTag / effMuMuGoodTag) + (nEvMisTag / effMuMuMisTag);
 	  double den       = (PsiYieldGoodTag / effPsiGoodTag) + (PsiYieldMisTag / effPsiMisTag);
 	  double dBFdq2    = num / den * (atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7;
-	  double dBFdq2Err = dBFdq2 * sqrt( (pow(num * nEvGoodTagErr      / nEvGoodTag,2.)      + pow(nEvGoodTag         / (effMuMuGoodTag*effMuMuGoodTag) * effMuMuGoodTagErr,2.) + pow(nEvMisTag          / (effMuMuMisTag*effMuMuMisTag) * effMuMuMisTagErr,2.)) / (num*num) +
-					    (pow(den * PsiYieldGoodTagErr / PsiYieldGoodTag,2.) + pow(PsiYieldGoodTagErr / (effPsiGoodTag*effPsiGoodTag)   * effPsiGoodTagErr,2.)  + pow(PsiYieldGoodTagErr / (effPsiMisTag*effPsiMisTag)   * effPsiMisTagErr,2.))  / (den*den) );
+	  double dBFdq2Err = dBFdq2 * sqrt( (pow(num / nEvGoodTag      * nEvGoodTagErr,2.)      + pow(nEvGoodTag         / (effMuMuGoodTag*effMuMuGoodTag) * effMuMuGoodTagErr,2.) + pow(nEvMisTag          / (effMuMuMisTag*effMuMuMisTag) * effMuMuMisTagErr,2.)) / (num*num) +
+					    (pow(den / PsiYieldGoodTag * PsiYieldGoodTagErr,2.) + pow(PsiYieldGoodTagErr / (effPsiGoodTag*effPsiGoodTag)   * effPsiGoodTagErr,2.)  + pow(PsiYieldGoodTagErr / (effPsiMisTag*effPsiMisTag)   * effPsiMisTagErr,2.))  / (den*den) );
 
 	  VecHistoMeas->operator[](0)->SetBinContent(i+1,dBFdq2);
 	  VecHistoMeas->operator[](0)->SetBinError(i+1,dBFdq2Err);
@@ -5140,8 +5224,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  totalYield  = GetVar(*TotalPDF,"nSig")->getVal() / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
 	  totalYieldE = totalYield * sqrt( pow(GetVar(*TotalPDF,"nSig")->getError()/GetVar(*TotalPDF,"nSig")->getVal(),2.) + pow(GetVar(*TotalPDF,"nMisTagFrac")->getError()/(1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.) );
 	  
-	  double fraction  = (1. - 2.*GetVar(*TotalPDF,"nMisTagFrac")->getVal()) / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
-	  double fractionE = GetVar(*TotalPDF,"nMisTagFrac")->getError() / pow((1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.);
+	  double fraction  = 1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal();
+	  double fractionE = GetVar(*TotalPDF,"nMisTagFrac")->getError();
 	  
 	  signalSigmaT  = sqrt( fraction * pow(signalSigmaGoodT,2.) + (1. - fraction) * pow(signalSigmaMisT,2.) );
 	  signalSigmaTE = 1./(2.*signalSigmaT) * sqrt( pow((pow(signalSigmaGoodT,2.) - pow(signalSigmaMisT,2.)) * fractionE,2.) +
@@ -5978,7 +6062,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       Transformer("FlS",varVal1, varVal1ELo,varVal1EHi,fitResult,GetVar(TotalPDFq2Bins[i],"FlS"));
       Transformer("AfbS",varVal2,varVal2ELo,varVal2EHi,fitResult,GetVar(TotalPDFq2Bins[i],"FlS"),GetVar(TotalPDFq2Bins[i],"AfbS"));
 
-      vecParStr = SaveFitResults(i,fitParam,configParam,vecConstr,TotalPDFq2Bins[i]);
+      vecParStr = SaveFitResults(i,fitParam,configParam,vecConstr,TotalPDFq2Bins[i],fitResult);
       Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,i);
       vecParStr->clear();
       delete vecParStr;
@@ -6045,8 +6129,8 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 	      double num       = (nEvGoodTag / effMuMuGoodTag) + (nEvMisTag / effMuMuMisTag);
 	      double den       = (PsiYieldGoodTag / effPsiGoodTag) + (PsiYieldMisTag / effPsiMisTag);
 	      double dBFdq2    = num / den * (atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7;
-	      double dBFdq2Err = dBFdq2 * sqrt( (pow(num * nEvGoodTagErr      / nEvGoodTag,2.)      + pow(nEvGoodTag         / (effMuMuGoodTag*effMuMuGoodTag) * effMuMuGoodTagErr,2.) + pow(nEvMisTag          / (effMuMuMisTag*effMuMuMisTag) * effMuMuMisTagErr,2.)) / (num*num) +
-					        (pow(den * PsiYieldGoodTagErr / PsiYieldGoodTag,2.) + pow(PsiYieldGoodTagErr / (effPsiGoodTag*effPsiGoodTag)   * effPsiGoodTagErr,2.)  + pow(PsiYieldGoodTagErr / (effPsiMisTag*effPsiMisTag)   * effPsiMisTagErr,2.))  / (den*den) );
+	      double dBFdq2Err = dBFdq2 * sqrt( (pow(num / nEvGoodTag      * nEvGoodTagErr,2.)      + pow(nEvGoodTag         / (effMuMuGoodTag*effMuMuGoodTag) * effMuMuGoodTagErr,2.) + pow(nEvMisTag          / (effMuMuMisTag*effMuMuMisTag) * effMuMuMisTagErr,2.)) / (num*num) +
+					        (pow(den / PsiYieldGoodTag * PsiYieldGoodTagErr,2.) + pow(PsiYieldGoodTagErr / (effPsiGoodTag*effPsiGoodTag)   * effPsiGoodTagErr,2.)  + pow(PsiYieldGoodTagErr / (effPsiMisTag*effPsiMisTag)   * effPsiMisTagErr,2.))  / (den*den) );
 
 	      VecHistoMeas->operator[](2)->SetBinContent(i+1,dBFdq2);
 	      VecHistoMeas->operator[](2)->SetBinError(i+1,dBFdq2Err);
@@ -7025,23 +7109,7 @@ int main(int argc, char** argv)
 	  // ##########################
 	  // # Set histo layout style #
 	  // ##########################
-	  gROOT->SetStyle("Plain");
-	  gROOT->ForceStyle();
-	  gStyle->SetTextFont(42);
-	  gStyle->SetOptFit(1112);
-	  gStyle->SetOptStat(1110);
-	  gStyle->SetOptTitle(0);
-	  gStyle->SetPadRightMargin(0.02);
-	  gStyle->SetPadTopMargin(0.11);
-	  gStyle->SetPadBottomMargin(0.12);
-	  gStyle->SetTitleOffset(1.05,"x");
-	  gStyle->SetTitleOffset(1.0,"y");
-	  gStyle->SetTitleSize(0.05,"x");
-	  gStyle->SetTitleSize(0.05,"y");
-	  gStyle->SetLabelSize(0.05,"x");
-	  gStyle->SetLabelSize(0.05,"y");
-	  TGaxis::SetMaxDigits(3);
-	  gStyle->SetStatY(0.9);
+	  SetStyle();
 
 
 	  // ##############################
