@@ -17,6 +17,7 @@ elif par == 'FLAFB':
 else:
     print "Wrong parameter: ", par
     print "Synopsis: python runBatchToy.py type[BF,FLAFB] nBins[0-8,-1] nJobs(per bin)[> 0]"
+    sys.exit("ERROR !")
 
 nBins = int(sys.argv[2])
 if nBins != -1:

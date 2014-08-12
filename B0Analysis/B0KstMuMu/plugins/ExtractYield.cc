@@ -572,7 +572,7 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
 // ######################
 {
   const TMatrixTSym<double>* CovM = (fitResult != NULL ? &fitResult->covarianceMatrix() : NULL);
-  double val1,val2,val3,val1ELo,val1EHi,val2ELo,val2EHi;
+  double val1,val2,val3,valELo,valEHi;
   string sVal1,sVal2;
   stringstream myString;
   myString.clear(); myString.str("");
@@ -581,7 +581,7 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
     {
       if (varName == "FlS")
 	{
-	  myString << "(1/2 + TMath::ATan(" << varName << ") / TMath::Pi())";
+	  myString << "(1/2 + TMath::ATan(" << varName << ")/TMath::Pi())";
 	  return myString.str();
 	}
       else if (varName == "AfbS")
@@ -595,7 +595,7 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
 	{
 	  sVal1 = Transformer("FlS",val1,val2,val3);
 
-	  myString << "(3*(1-" << sVal1 << ")/(7-3*" << sVal1 << ") * (1/2 + TMath::ATan(" << varName << ") / TMath::Pi()))";
+	  myString << "(3*(1-" << sVal1 << ")/(7-3*" << sVal1 << ") * (1/2 + TMath::ATan(" << varName << ")/TMath::Pi()))";
 	  return myString.str();
 	}
       else if (varName == "AsS")
@@ -615,103 +615,99 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
     }
   else if ((varName == "FlS") && (varValIn1 != NULL))
     {
-      varValOut    = 1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi();
+      varValOut    = 1./2. + TMath::ATan(varValIn1->getVal())/TMath::Pi();
 
-      varValOutELo = 1./2. + TMath::ATan(varValIn1->getVal() + varValIn1->getErrorLo()) / TMath::Pi() - varValOut;
-      varValOutEHi = 1./2. + TMath::ATan(varValIn1->getVal() + varValIn1->getErrorHi()) / TMath::Pi() - varValOut;
+      varValOutELo = 1./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * varValIn1->getErrorLo();
+      varValOutEHi = 1./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * varValIn1->getErrorHi();
     }
   else if ((varName == "AfbS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
-      Transformer ("FlS",val1,val1ELo,val1EHi,fitResult,varValIn1);
+      Transformer ("FlS",val1,valELo,valEHi,fitResult,varValIn1);
       val2 = 3./4. * (1. - val1);
 
-      varValOut    = val2 * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi();
+      varValOut    = val2 * 2.*TMath::ATan(varValIn2->getVal())/TMath::Pi();
 
-      varValOutELo = val2 * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorLo()) / TMath::Pi() - varValOut;
-      varValOutELo = - sqrt( pow(3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1ELo,2.) + pow(varValOutELo,2.) +
+      varValOutELo = - sqrt( pow(3./4./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn2->getVal())/TMath::Pi() * varValIn1->getErrorLo(),2.) +
+			     pow(val2 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * varValIn2->getErrorLo(),2.) +
 			     2. *
-			     (3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1ELo) / varValIn1->getErrorLo() *
-			     varValOutELo / varValIn2->getErrorLo() *
+			     3./4./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn2->getVal())/TMath::Pi() *
+			     val2 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AfbS")) : 0.) );
 
-
-      varValOutEHi = val2 * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorHi()) / TMath::Pi() - varValOut;
-      varValOutEHi = + sqrt( pow(3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1EHi,2.) + pow(varValOutEHi,2.) +
+      varValOutEHi = + sqrt( pow(3./4./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn2->getVal())/TMath::Pi() * varValIn1->getErrorHi(),2.) +
+			     pow(val2 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * varValIn2->getErrorHi(),2.) +
 			     2. *
-			     (3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1EHi)  / varValIn1->getErrorHi() *
-			     varValOutEHi / varValIn2->getErrorHi() *
+			     3./4./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn2->getVal())/TMath::Pi() *
+			     val2 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AfbS")) : 0.) );
     }
   else if ((varName == "FsS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
-      Transformer ("FlS",val1,val1ELo,val1EHi,fitResult,varValIn1);
+      Transformer ("FlS",val1,valELo,valEHi,fitResult,varValIn1);
       val2 = 3. * (1. - val1) / (7. - 3. * val1);
 
-      varValOut    = val2 * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi());
+      varValOut    = val2 * (1./2. + TMath::ATan(varValIn2->getVal())/TMath::Pi());
 
-      varValOutELo = val2 * (1./2. + TMath::ATan(varValIn2->getVal() + varValIn2->getErrorLo()) / TMath::Pi()) - varValOut;
-      varValOutELo = - sqrt( pow((3. * (1. - (val1+val1ELo)) / (7. - 3. * (val1+val1ELo)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()),2.) + pow(varValOutELo,2.) +
+      varValOutELo = - sqrt( pow(3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi()*(3. * (1. - val1) - (7. - 3. * val1))/pow(7. - 3. * val1,2.) * (1./2. + TMath::ATan(varValIn2->getVal())/TMath::Pi()) * varValIn1->getErrorLo(),2.) +
+			     pow(val2 * 1./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * varValIn2->getErrorLo(),2.) +
 			     2. *
-			     (3. * (1. - (val1+val1ELo)) / (7. - 3. * (val1+val1ELo)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) / varValIn1->getErrorLo() *
-			     varValOutELo / varValIn2->getErrorLo() *
+			     3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi()*(3. * (1. - val1) - (7. - 3. * val1))/pow(7. - 3. * val1,2.) * (1./2. + TMath::ATan(varValIn2->getVal())/TMath::Pi()) *
+			     val2 * 1./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) );
 
-
-      varValOutEHi = val2 * (1./2. + TMath::ATan(varValIn2->getVal() + varValIn2->getErrorHi()) / TMath::Pi()) - varValOut;
-      varValOutEHi = + sqrt( pow((3. * (1. - (val1+val1EHi)) / (7. - 3. * (val1+val1EHi)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()),2.) + pow(varValOutEHi,2.) +
+      varValOutEHi = + sqrt( pow(3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi()*(3. * (1. - val1) - (7. - 3. * val1))/pow(7. - 3. * val1,2.) * (1./2. + TMath::ATan(varValIn2->getVal())/TMath::Pi()) * varValIn1->getErrorHi(),2.) +
+			     pow(val2 * 1./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * varValIn2->getErrorHi(),2.) +
 			     2. *
-			     (3. * (1. - (val1+val1EHi)) / (7. - 3. * (val1+val1EHi)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) / varValIn1->getErrorHi() *
-			     varValOutEHi / varValIn2->getErrorHi() *
+			     3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi()*(3. * (1. - val1) - (7. - 3. * val1))/pow(7. - 3. * val1,2.) * (1./2. + TMath::ATan(varValIn2->getVal())/TMath::Pi()) *
+			     val2 * 1./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) );
     }
   else if ((varName == "AsS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (varValIn3 != NULL))
     {
-      Transformer ("FlS",val1,val1ELo,val1EHi,fitResult,varValIn1);
-      Transformer ("FsS",val2,val2ELo,val2EHi,fitResult,varValIn1,varValIn2);
+      Transformer ("FlS",val1,valELo,valEHi,fitResult,varValIn1);
+      Transformer ("FsS",val2,valELo,valEHi,fitResult,varValIn1,varValIn2);
 
       val3 = 1./2. * (val2 + 3. * val1 * (1. - val2));
       if (val3 > 1.) val3 = 1.;
 
-      varValOut    = val3 * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi();
+      varValOut    = val3 * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi();
 
-      varValOutELo = val3 * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorLo()) / TMath::Pi() - varValOut;
-      varValOutELo = - sqrt( pow(3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1ELo,2.) +
-			     pow(1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2ELo,2.) +
-			     pow(varValOutELo,2.) + 
+      varValOutELo = - sqrt( pow((val3 == 1. ? 0.0 : 1./2.*3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi()          * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) * varValIn1->getErrorLo(),2.) +
+			     pow((val3 == 1. ? 0.0 : 1./2.*(1. - val2)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) * varValIn2->getErrorLo(),2.) +
+			     pow(val3 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * varValIn3->getErrorLo(),2.) +
 
 			     2. *
-			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1ELo / varValIn1->getErrorLo() *
-			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2ELo / varValIn2->getErrorLo() *
+			     (val3 == 1. ? 0.0 : 1./2.*3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi()          * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
+			     (val3 == 1. ? 0.0 : 1./2.*(1. - val2)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) +
 
 			     2. *
-			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1ELo / varValIn1->getErrorLo() *
-			     varValOutELo / varValIn2->getErrorLo() *
+			     (val3 == 1. ? 0.0 : 1./2.*3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
+			     val3 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AsS")) : 0.) +
 
 			     2. *
-			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2ELo / varValIn2->getErrorLo() *
-			     varValOutELo / varValIn2->getErrorLo() *
+			     (val3 == 1. ? 0.0 : 1./2.*(1. - val2)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
+			     val3 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FsS"),fitResult->floatParsFinal().index("AsS")) : 0.) );
 			     
-      varValOutEHi = val3 * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorHi()) / TMath::Pi() - varValOut;
-      varValOutEHi = + sqrt( pow(3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi,2.) +
-			     pow(1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2EHi,2.) +
-			     pow(varValOutEHi,2.) + 
+      varValOutEHi = + sqrt( pow((val3 == 1. ? 0.0 : 1./2.*3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi()          * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) * varValIn1->getErrorHi(),2.) +
+			     pow((val3 == 1. ? 0.0 : 1./2.*(1. - val2)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) * varValIn2->getErrorHi(),2.) +
+			     pow(val3 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * varValIn3->getErrorHi(),2.) +
 
 			     2. *
-			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi / varValIn1->getErrorHi() *
-			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2EHi / varValIn2->getErrorHi() *
+			     (val3 == 1. ? 0.0 : 1./2.*3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi()          * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
+			     (val3 == 1. ? 0.0 : 1./2.*(1. - val2)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) +
 
 			     2. *
-			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi / varValIn1->getErrorHi() *
-			     varValOutEHi / varValIn2->getErrorHi() *
+			     (val3 == 1. ? 0.0 : 1./2.*3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
+			     val3 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AsS")) : 0.) +
 
 			     2. *
-			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2EHi / varValIn2->getErrorHi() *
-			     varValOutEHi / varValIn2->getErrorHi() *
+			     (val3 == 1. ? 0.0 : 1./2.*(1. - val2)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
+			     val3 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FsS"),fitResult->floatParsFinal().index("AsS")) : 0.) );
     }
   else
@@ -1497,13 +1493,10 @@ double StoreFitResultsInFile (RooAbsPdf** TotalPDF, RooFitResult* fitResult, Roo
 	  double totalYield    = GetVar(*TotalPDF,"nSig")->getVal() / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
 	  double totalYieldE   = totalYield * sqrt( pow(GetVar(*TotalPDF,"nSig")->getError()/GetVar(*TotalPDF,"nSig")->getVal(),2.) + pow(GetVar(*TotalPDF,"nMisTagFrac")->getError()/(1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.) );
 
-	  double fraction      = 1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal();
-	  double fractionE     = GetVar(*TotalPDF,"nMisTagFrac")->getError();
-	  
-	  double signalSigmaT  = sqrt( fraction * pow(signalSigmaGoodT,2.) + (1. - fraction) * pow(signalSigmaMisT,2.) );
-	  double signalSigmaTE = 1./(2.*signalSigmaT) * sqrt( pow((pow(signalSigmaGoodT,2.) - pow(signalSigmaMisT,2.)) * fractionE,2.) +
-							      pow(2. * fraction        * signalSigmaGoodT * signalSigmaGoodTE,2.) +
-							      pow(2. * (1. - fraction) * signalSigmaMisT  * signalSigmaMisTE,2.) );
+	  double signalSigmaT  = sqrt( (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()) * pow(signalSigmaGoodT,2.) + GetVar(*TotalPDF,"nMisTagFrac")->getVal() * pow(signalSigmaMisT,2.) );
+	  double signalSigmaTE = 1./(2.*signalSigmaT) * sqrt( pow((pow(signalSigmaGoodT,2.) - pow(signalSigmaMisT,2.)) * GetVar(*TotalPDF,"nMisTagFrac")->getError(),2.) +
+							      pow(2. * (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()) * signalSigmaGoodT * signalSigmaGoodTE,2.) +
+							      pow(2. * GetVar(*TotalPDF,"nMisTagFrac")->getVal()        * signalSigmaMisT  * signalSigmaMisTE,2.) );
 	  
 	  fileFitResults << "Total signal yield: " << totalYield << " +/- " << totalYieldE << endl;
 	  fileFitResults << "< Total Sigma >: " << signalSigmaT << " +/- " << signalSigmaTE << endl;
@@ -3752,14 +3745,11 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
       totalYield  = GetVar(*TotalPDF,"nSig")->getVal() / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
       totalYieldE = totalYield * sqrt( pow(GetVar(*TotalPDF,"nSig")->getError()/GetVar(*TotalPDF,"nSig")->getVal(),2.) + pow(GetVar(*TotalPDF,"nMisTagFrac")->getError()/(1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.) );
       
-      double fraction  = 1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal();
-      double fractionE = GetVar(*TotalPDF,"nMisTagFrac")->getError();
+      signalSigmaT  = sqrt( (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()) * pow(signalSigmaGoodT,2.) + GetVar(*TotalPDF,"nMisTagFrac")->getVal() * pow(signalSigmaMisT,2.) );
+      signalSigmaTE = 1./(2.*signalSigmaT) * sqrt( pow((pow(signalSigmaGoodT,2.) - pow(signalSigmaMisT,2.)) * GetVar(*TotalPDF,"nMisTagFrac")->getError(),2.) +
+						   pow(2. * (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()) * signalSigmaGoodT * signalSigmaGoodTE,2.) +
+						   pow(2. * GetVar(*TotalPDF,"nMisTagFrac")->getVal()        * signalSigmaMisT  * signalSigmaMisTE,2.) );
 
-      signalSigmaT  = sqrt( fraction * pow(signalSigmaGoodT,2.) + (1. - fraction) * pow(signalSigmaMisT,2.) );
-      signalSigmaTE = 1./(2.*signalSigmaT) * sqrt( pow((pow(signalSigmaGoodT,2.) - pow(signalSigmaMisT,2.)) * fractionE,2.) +
-						   pow(2. * fraction        * signalSigmaGoodT * signalSigmaGoodTE,2.) +
-						   pow(2. * (1. - fraction) * signalSigmaMisT  * signalSigmaMisTE,2.) );
-      
       paveTextX->AddText(Form("%s%1.f#pm%1.f","Total sig yield = ",totalYield,totalYieldE));
     }
   else if (GetVar(*TotalPDF,"nSig") != NULL)
@@ -5224,14 +5214,11 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  totalYield  = GetVar(*TotalPDF,"nSig")->getVal() / (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal());
 	  totalYieldE = totalYield * sqrt( pow(GetVar(*TotalPDF,"nSig")->getError()/GetVar(*TotalPDF,"nSig")->getVal(),2.) + pow(GetVar(*TotalPDF,"nMisTagFrac")->getError()/(1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()),2.) );
 	  
-	  double fraction  = 1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal();
-	  double fractionE = GetVar(*TotalPDF,"nMisTagFrac")->getError();
-	  
-	  signalSigmaT  = sqrt( fraction * pow(signalSigmaGoodT,2.) + (1. - fraction) * pow(signalSigmaMisT,2.) );
-	  signalSigmaTE = 1./(2.*signalSigmaT) * sqrt( pow((pow(signalSigmaGoodT,2.) - pow(signalSigmaMisT,2.)) * fractionE,2.) +
-						       pow(2. * fraction        * signalSigmaGoodT * signalSigmaGoodTE,2.) +
-						       pow(2. * (1. - fraction) * signalSigmaMisT  * signalSigmaMisTE,2.) );
-	  
+	  signalSigmaT  = sqrt( (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()) * pow(signalSigmaGoodT,2.) + GetVar(*TotalPDF,"nMisTagFrac")->getVal() * pow(signalSigmaMisT,2.) );
+	  signalSigmaTE = 1./(2.*signalSigmaT) * sqrt( pow((pow(signalSigmaGoodT,2.) - pow(signalSigmaMisT,2.)) * GetVar(*TotalPDF,"nMisTagFrac")->getError(),2.) +
+						       pow(2. * (1. - GetVar(*TotalPDF,"nMisTagFrac")->getVal()) * signalSigmaGoodT * signalSigmaGoodTE,2.) +
+						       pow(2. * GetVar(*TotalPDF,"nMisTagFrac")->getVal()        * signalSigmaMisT  * signalSigmaMisTE,2.) );
+
 	  paveTextX->AddText(Form("%s%1.f#pm%1.f","Total sig yield = ",totalYield,totalYieldE));
 	}
       else if (GetVar(*TotalPDF,"nSig") != NULL)
@@ -6059,7 +6046,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // ##############################################
       // # Save fit results back into prarameter file #
       // ##############################################
-      Transformer("FlS",varVal1, varVal1ELo,varVal1EHi,fitResult,GetVar(TotalPDFq2Bins[i],"FlS"));
+      Transformer("FlS", varVal1,varVal1ELo,varVal1EHi,fitResult,GetVar(TotalPDFq2Bins[i],"FlS"));
       Transformer("AfbS",varVal2,varVal2ELo,varVal2EHi,fitResult,GetVar(TotalPDFq2Bins[i],"FlS"),GetVar(TotalPDFq2Bins[i],"AfbS"));
 
       vecParStr = SaveFitResults(i,fitParam,configParam,vecConstr,TotalPDFq2Bins[i],fitResult);
