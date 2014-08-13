@@ -727,50 +727,34 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
 // # varValIn2 = As     #
 // ######################
 {
-  double val1,val2,val3,valELo,valEHi,limit;
-  double tolerance = atof(Utility->GetGenericParam("Tolerance").c_str());
+  double val1,val2,valELo,valEHi,limit;
 
   if ((varName == "FlS") && (varValIn1 != NULL))
     {
-      varValOut = TMath::Tan((varValIn1->getVal() - 1./2.) * TMath::Pi());
+      varValOut = TMath::Tan((varValIn1->getVal() - 1./2.)*TMath::Pi());
 
-      if ((varValIn1->getVal() + varValIn1->getErrorLo()) <= 0.) val1 = tolerance;
-      else                                                       val1 = varValIn1->getVal() + varValIn1->getErrorLo();
-      varValOutELo = TMath::Tan((val1 - 1./2.) * TMath::Pi()) - varValOut;
-
-      if ((varValIn1->getVal() + varValIn1->getErrorHi()) >= 1.) val1 = 1. - tolerance;
-      else                                                       val1 = varValIn1->getVal() + varValIn1->getErrorHi();
-      varValOutEHi = TMath::Tan((val1 - 1./2.) * TMath::Pi()) - varValOut;
+      varValOutELo = 1./pow(TMath::Cos((varValIn1->getVal() - 1./2.)*TMath::Pi()),2.)*TMath::Pi() * varValIn1->getErrorLo();
+      varValOutEHi = 1./pow(TMath::Cos((varValIn1->getVal() - 1./2.)*TMath::Pi()),2.)*TMath::Pi() * varValIn1->getErrorHi();
     }
   else if ((varName == "AfbS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
       Transformer("FlS",val1,valELo,valEHi,NULL,varValIn1);
       limit = 3./4. * (1. - val1);
       
-      varValOut = TMath::Tan(varValIn2->getVal() / limit / 2. * TMath::Pi());
+      varValOut = TMath::Tan(varValIn2->getVal() / limit / 2.*TMath::Pi());
 
-      if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= -limit) val2 = (limit >= 2.*tolerance ? -limit + tolerance : -limit + tolerance*limit);
-      else                                                           val2 = varValIn2->getVal() + varValIn2->getErrorLo();
-      varValOutELo = TMath::Tan(val2 / limit / 2. * TMath::Pi()) - varValOut;
-
-      if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= limit) val2 = (limit >= 2.*tolerance ? limit - tolerance : limit - tolerance*limit);
-      else                                                          val2 = varValIn2->getVal() + varValIn2->getErrorHi();
-      varValOutEHi = TMath::Tan(val2 / limit / 2. * TMath::Pi()) - varValOut;
+      varValOutELo = 1./pow(TMath::Cos(varValIn2->getVal() / limit / 2.*TMath::Pi()),2.) / limit / 2.*TMath::Pi() * varValIn2->getErrorLo();
+      varValOutEHi = 1./pow(TMath::Cos(varValIn2->getVal() / limit / 2.*TMath::Pi()),2.) / limit / 2.*TMath::Pi() * varValIn2->getErrorHi();
     }
   else if ((varName == "FsS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
       Transformer("FlS",val1,valELo,valEHi,NULL,varValIn1);
       limit = 3. * (1. - val1) / (7. - 3.*val1);
 
-      varValOut = TMath::Tan((varValIn2->getVal() / limit - 1./2.) * TMath::Pi());
-
-      if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= 0.) val2 = tolerance;
-      else                                                       val2 = varValIn2->getVal() + varValIn2->getErrorLo();
-      varValOutELo = TMath::Tan((val2 / limit - 1./2.) * TMath::Pi()) - varValOut;
-
-      if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= 1.) val2 = 1. - tolerance;
-      else                                                       val2 = varValIn2->getVal() + varValIn2->getErrorHi();
-      varValOutEHi = TMath::Tan((val2 / limit - 1./2.) * TMath::Pi()) - varValOut;
+      varValOut = TMath::Tan((varValIn2->getVal() / limit - 1./2.)*TMath::Pi());
+      
+      varValOutELo = 1./pow(TMath::Cos((varValIn2->getVal() / limit - 1./2.)*TMath::Pi()),2.) / limit * TMath::Pi() * varValIn2->getErrorLo();
+      varValOutEHi = 1./pow(TMath::Cos((varValIn2->getVal() / limit - 1./2.)*TMath::Pi()),2.) / limit * TMath::Pi() * varValIn2->getErrorHi();
     }
   else if ((varName == "AsS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (varValIn3 != NULL))
     {
@@ -778,17 +762,10 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
       Transformer("FsS",val2,valELo,valEHi,NULL,varValIn1,varValIn2);
       limit = 1./2. * (val2 + 3. * val1 * (1. - val2));
 
-      varValOut = TMath::Tan(varValIn3->getVal() / limit / 2. * TMath::Pi());
+      varValOut = TMath::Tan(varValIn3->getVal() / limit / 2.*TMath::Pi());
 
-      if ((limit < 1.) && ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -limit))    val3 = (limit >= 2.*tolerance ? -limit + tolerance : -limit + tolerance*limit);
-      else if ((limit >= 1.) && ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -1.)) val3 = -1. + tolerance;
-      else                                                                                val3 = varValIn3->getVal() + varValIn3->getErrorLo();
-      varValOutELo = TMath::Tan(val3 / limit / 2. * TMath::Pi()) - varValOut;
-
-      if ((limit < 1.) && ((varValIn3->getVal() + varValIn3->getErrorHi()) >= limit))    val3 = (limit >= 2.*tolerance ? limit - tolerance : limit - tolerance*limit);
-      else if ((limit >= 1.) && ((varValIn3->getVal() + varValIn3->getErrorHi()) >= 1.)) val3 = 1. - tolerance;
-      else                                                                               val3 = varValIn3->getVal() + varValIn3->getErrorHi();
-      varValOutEHi = TMath::Tan(val3 / limit / 2. * TMath::Pi()) - varValOut;
+      varValOutELo = 1./pow(TMath::Cos(varValIn3->getVal() / limit / 2.*TMath::Pi()),2.) / limit / 2.*TMath::Pi() * varValIn3->getErrorLo();
+      varValOutEHi = 1./pow(TMath::Cos(varValIn3->getVal() / limit / 2.*TMath::Pi()),2.) / limit / 2.*TMath::Pi() * varValIn3->getErrorHi();
     }
   else
     {
@@ -3294,9 +3271,8 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 	      // ###########################################################################
 	      // # J/psi and psi(2S) keeping based on the event-by-event dimuon mass error #
 	      // ###########################################################################
-              if (((FitType == 36) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true) && (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepJpsi",false) == true)) ||
-
-                  (((FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+              if (((FitType == 36) && (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepJpsi",false) == true)) ||
+                  ((FitType == 56) || (FitType == 76)) ||
 
                   ((((strcmp(CTRLfitWRKflow.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
                     ((strcmp(CTRLfitWRKflow.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
@@ -3306,9 +3282,8 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 
                 SingleCandNTuple_JPsi->add(Vars);
 
-              if (((FitType == 36) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true) && (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepPsiP",false) == true)) ||
-
-                  (((FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+              if (((FitType == 36) && (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepPsiP",false) == true)) ||
+                  ((FitType == 56) || (FitType == 76)) ||
 
                   ((((strcmp(CTRLfitWRKflow.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
                     ((strcmp(CTRLfitWRKflow.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
@@ -3330,7 +3305,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 		    (strcmp(CTRLfitWRKflow.c_str(),"allEvts")           == 0)) &&
 		   (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"rejectPsi",true) == true)) ||
 		  
-		  (((FitType == 36) || (FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)))
+		  ((FitType == 36) || (FitType == 56) || (FitType == 76)))
 		
 		SingleCandNTuple_RejectPsi->add(Vars);
 
@@ -3346,7 +3321,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 		    (strcmp(CTRLfitWRKflow.c_str(),"allEvts")           == 0)) &&
 		   (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepPsi",false) == true)) ||
 		  
-		  (((FitType == 36) || (FitType == 56) || (FitType == 76)) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)))
+		  ((FitType == 36) || (FitType == 56) || (FitType == 76)))
 
 		SingleCandNTuple_KeepPsi->add(Vars);
 	    }
@@ -7125,7 +7100,6 @@ int main(int argc, char** argv)
 
 	  fileFitResults << "Normalize to J/psi and not psi(2S): " << Utility->GetGenericParam("NormJPSInotPSIP").c_str() << " (0 = false; 1 = true)" << endl;
 	  fileFitResults << "Poly. degree efficiency interp.: "    << Utility->GetGenericParam("DegreeInterp").c_str() << endl;
-	  fileFitResults << "Minimal distance to the boundaries: " << Utility->GetGenericParam("Tolerance").c_str() << endl;
 	  fileFitResults << "Transformed variables range: "        << Utility->GetGenericParam("TransRange").c_str() << endl;
 	  fileFitResults << "Maximum number of trials: "           << Utility->GetGenericParam("MaxFitTrials").c_str() << " (0 = default single trial)" << endl;
 	  fileFitResults << "Apply constraints: "                  << Utility->GetGenericParam("ApplyConstr").c_str() << " (0 = false; 1 = true)" << endl;
