@@ -672,42 +672,42 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
 
       varValOut    = val3 * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi();
 
-      varValOutELo = - sqrt( pow((val3 == 1. ? 0.0 : 1./2.*3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi()          * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) * varValIn1->getErrorLo(),2.) +
-			     pow((val3 == 1. ? 0.0 : 1./2.*(1. - val2)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) * varValIn2->getErrorLo(),2.) +
-			     pow(val3 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * varValIn3->getErrorLo(),2.) +
+      varValOutELo = - sqrt( pow((val3 == 1. ? 0.0 : 1./2. * 3.*(1. - val2)  /(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) * varValIn1->getErrorLo(),2.) +
+			     pow((val3 == 1. ? 0.0 : 1./2. * (1. - 3. * val1)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) * varValIn2->getErrorLo(),2.) +
+			     pow(val3 * 2./(1. + pow(varValIn3->getVal(),2.))/TMath::Pi() * varValIn3->getErrorLo(),2.) +
 
 			     2. *
-			     (val3 == 1. ? 0.0 : 1./2.*3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi()          * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
-			     (val3 == 1. ? 0.0 : 1./2.*(1. - val2)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
+			     (val3 == 1. ? 0.0 : 1./2. * 3.*(1. - val2)  /(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
+			     (val3 == 1. ? 0.0 : 1./2. * (1. - 3. * val1)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) +
 
 			     2. *
-			     (val3 == 1. ? 0.0 : 1./2.*3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
-			     val3 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() *
+			     (val3 == 1. ? 0.0 : 1./2. * 3.*(1. - val2)  /(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
+			     val3 * 2./(1. + pow(varValIn3->getVal(),2.))/TMath::Pi() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AsS")) : 0.) +
 
 			     2. *
-			     (val3 == 1. ? 0.0 : 1./2.*(1. - val2)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
-			     val3 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() *
+			     (val3 == 1. ? 0.0 : 1./2. * (1. - 3. * val1)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
+			     val3 * 2./(1. + pow(varValIn3->getVal(),2.))/TMath::Pi() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FsS"),fitResult->floatParsFinal().index("AsS")) : 0.) );
 			     
-      varValOutEHi = + sqrt( pow((val3 == 1. ? 0.0 : 1./2.*3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi()          * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) * varValIn1->getErrorHi(),2.) +
-			     pow((val3 == 1. ? 0.0 : 1./2.*(1. - val2)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) * varValIn2->getErrorHi(),2.) +
-			     pow(val3 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * varValIn3->getErrorHi(),2.) +
+      varValOutEHi = + sqrt( pow((val3 == 1. ? 0.0 : 1./2. * 3.*(1. - val2)  /(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) * varValIn1->getErrorHi(),2.) +
+			     pow((val3 == 1. ? 0.0 : 1./2. * (1. - 3. * val1)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) * varValIn2->getErrorHi(),2.) +
+			     pow(val3 * 2./(1. + pow(varValIn3->getVal(),2.))/TMath::Pi() * varValIn3->getErrorHi(),2.) +
 
 			     2. *
-			     (val3 == 1. ? 0.0 : 1./2.*3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi()          * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
-			     (val3 == 1. ? 0.0 : 1./2.*(1. - val2)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
+			     (val3 == 1. ? 0.0 : 1./2. * 3.*(1. - val2)  /(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
+			     (val3 == 1. ? 0.0 : 1./2. * (1. - 3. * val1)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) +
 
 			     2. *
-			     (val3 == 1. ? 0.0 : 1./2.*3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
-			     val3 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() *
+			     (val3 == 1. ? 0.0 : 1./2. * 3.*(1. - val2)  /(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
+			     val3 * 2./(1. + pow(varValIn3->getVal(),2.))/TMath::Pi() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AsS")) : 0.) +
 
 			     2. *
-			     (val3 == 1. ? 0.0 : 1./2.*(1. - val2)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
-			     val3 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() *
+			     (val3 == 1. ? 0.0 : 1./2. * (1. - 3. * val1)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
+			     val3 * 2./(1. + pow(varValIn3->getVal(),2.))/TMath::Pi() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FsS"),fitResult->floatParsFinal().index("AsS")) : 0.) );
     }
   else
