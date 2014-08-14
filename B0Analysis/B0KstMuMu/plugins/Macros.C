@@ -681,25 +681,25 @@ void dBFfromGEN (string fileName)
   // ###################################################################################################################################################
   // # The differential branching-fraction is: Y_Signal / Y_Ctr[35021242 for J/psi (35033720 for psi(2S))] * Y_GENctr / Y_GENsignal * BF[Signal] / dq2 #
   // ###################################################################################################################################################
-  h0->SetBinContent(1,0833344.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(1) * scaleF);
-  h0->SetBinContent(2,1661610.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(2) * scaleF);
-  h0->SetBinContent(3,1303940.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(3) * scaleF);
-  h0->SetBinContent(4,2415800.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(4) * scaleF);
-  h0->SetBinContent(5,1392740.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(5) * scaleF);
-  h0->SetBinContent(6,2881760.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(6) * scaleF);
-  h0->SetBinContent(7,1364330.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(7) * scaleF);
-  h0->SetBinContent(8,1734950.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(8) * scaleF);
-  h0->SetBinContent(9,1836080.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(9) * scaleF);
+  h0->SetBinContent(1,0833328.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(1) * scaleF);
+  h0->SetBinContent(2,1661590.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(2) * scaleF);
+  h0->SetBinContent(3,1303920.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(3) * scaleF);
+  h0->SetBinContent(4,2415750.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(4) * scaleF);
+  h0->SetBinContent(5,0.0       / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(5) * scaleF);
+  h0->SetBinContent(6,2881710.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(6) * scaleF);
+  h0->SetBinContent(7,0.0       / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(7) * scaleF);
+  h0->SetBinContent(8,1734920.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(8) * scaleF);
+  h0->SetBinContent(9,1836050.0 / (35021242.0 * MCfrac) * GENpsiEv / GENsigMCev * BFsig / h0->GetBinWidth(9) * scaleF);
 
-  h0->SetBinError(1,h0->GetBinContent(1) * sqrt(1./0833344.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
-  h0->SetBinError(2,h0->GetBinContent(2) * sqrt(1./1661610.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
-  h0->SetBinError(3,h0->GetBinContent(3) * sqrt(1./1303940.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
-  h0->SetBinError(4,h0->GetBinContent(4) * sqrt(1./2415800.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
-  h0->SetBinError(5,h0->GetBinContent(5) * sqrt(1./1392740.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
-  h0->SetBinError(6,h0->GetBinContent(6) * sqrt(1./2881760.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
-  h0->SetBinError(7,h0->GetBinContent(7) * sqrt(1./1364330.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
-  h0->SetBinError(8,h0->GetBinContent(8) * sqrt(1./1734950.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
-  h0->SetBinError(9,h0->GetBinContent(9) * sqrt(1./1836080.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
+  h0->SetBinError(1,h0->GetBinContent(1) * sqrt(1./0833328.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
+  h0->SetBinError(2,h0->GetBinContent(2) * sqrt(1./1661590.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
+  h0->SetBinError(3,h0->GetBinContent(3) * sqrt(1./1303920.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
+  h0->SetBinError(4,h0->GetBinContent(4) * sqrt(1./2415750.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
+  h0->SetBinError(5,h0->GetBinContent(5) * sqrt(0.0));
+  h0->SetBinError(6,h0->GetBinContent(6) * sqrt(1./2881710.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
+  h0->SetBinError(7,h0->GetBinContent(7) * sqrt(0.0));
+  h0->SetBinError(8,h0->GetBinContent(8) * sqrt(1./1734920.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
+  h0->SetBinError(9,h0->GetBinContent(9) * sqrt(1./1836050.0 + 1./35021242.0 + 1./GENpsiEv + 1./GENsigMCev));
 
 
   for (int i = 0; i < h0->GetNbinsX(); i++) cout << "--> bin #" << i+1 << "\tentry: " << h0->GetBinContent(i+1) << " +/- " << h0->GetBinError(i+1) << "\twidth: " << h0->GetBinWidth(i+1) << endl;

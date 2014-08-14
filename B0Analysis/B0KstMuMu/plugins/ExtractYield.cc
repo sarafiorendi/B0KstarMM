@@ -2546,10 +2546,11 @@ unsigned int CopyFitResults (RooAbsPdf* TotalPDF, unsigned int q2BinIndx, vector
 
 
   value = 0.0;
-  if (GetVar(TotalPDF,"nSig")        != NULL) value = value + GetVar(TotalPDF,"nSig")->getVal();
-  if (GetVar(TotalPDF,"nBkgComb")    != NULL) value = value + GetVar(TotalPDF,"nBkgComb")->getVal();
-  if (GetVar(TotalPDF,"nMisTagFrac") != NULL) value = value + GetVar(TotalPDF,"nSig")->getVal() * GetVar(TotalPDF,"nMisTagFrac")->getVal() / (1. - GetVar(TotalPDF,"nMisTagFrac")->getVal());
-  if (GetVar(TotalPDF,"nBkgPeak")    != NULL) value = value + GetVar(TotalPDF,"nBkgPeak")->getVal();
+  if (GetVar(TotalPDF,"nSig")         != NULL)  value = value + GetVar(TotalPDF,"nSig")->getVal();
+  if (GetVar(TotalPDF,"nBkgComb")     != NULL)  value = value + GetVar(TotalPDF,"nBkgComb")->getVal();
+  if ((GetVar(TotalPDF,"nSig") != NULL) &&
+      (GetVar(TotalPDF,"nMisTagFrac") != NULL)) value = value + GetVar(TotalPDF,"nSig")->getVal() * GetVar(TotalPDF,"nMisTagFrac")->getVal() / (1. - GetVar(TotalPDF,"nMisTagFrac")->getVal());
+  if (GetVar(TotalPDF,"nBkgPeak")     != NULL)  value = value + GetVar(TotalPDF,"nBkgPeak")->getVal();
   return value;
 }
 
