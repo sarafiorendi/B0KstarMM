@@ -7559,7 +7559,6 @@ int main(int argc, char** argv)
 		  if (i == static_cast<unsigned int>(specBin)) GenerateFitParameters(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,i,"All"); // @TMP@ : "All" "misTagFrac" "FlAfb" "bkgAng"
 
 		  vecParStr = SaveFitResults(i,&fitParam,&configParam,&vecConstr);
-
 		  Utility->SaveFitValues(fileName,vecParStr,i);
 
 		  vecParStr->clear();
