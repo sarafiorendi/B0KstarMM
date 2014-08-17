@@ -7584,7 +7584,15 @@ int main(int argc, char** argv)
 		  if ((specBin != -1) && (i != static_cast<unsigned int>(specBin))) vecParStr = SaveFitResults(i,&fitParam,&configParam,NULL);
 		  else
 		    {
-		      GenerateFitParameters(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,i,"All"); // @TMP@ : "All" "misTagFrac" "FlAfb" "bkgAng"
+		      string constrType = "FlAfb"; // @TMP@ : "All" "misTagFrac" "FlAfb" "bkgAng"
+		      GenerateFitParameters(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,i,constrType);
+
+		      if ((constrType == "FlAfb") && (GetVar(TotalPDFRejectPsi,"FlS") != NULL) && (GetVar(TotalPDFRejectPsi,"FsS") != NULL))
+			{
+			  AddPhysicsConstraint(&vecConstr,GetVar(TotalPDFRejectPsi,"FsS"),0.0,1.0,GetVar(TotalPDFRejectPsi,"FlS"));
+			  if (GetVar(TotalPDFRejectPsi,"AsS") != NULL) AddPhysicsConstraint(&vecConstr,GetVar(TotalPDFRejectPsi,"AsS"),0.0,1.0,GetVar(TotalPDFRejectPsi,"FlS"),GetVar(TotalPDFRejectPsi,"FsS"));
+			}
+
 		      vecParStr = SaveFitResults(i,&fitParam,&configParam,&vecConstr,TotalPDFRejectPsi);
 		    }
 
