@@ -7584,7 +7584,7 @@ int main(int argc, char** argv)
 		  if ((specBin != -1) && (i != static_cast<unsigned int>(specBin))) vecParStr = SaveFitResults(i,&fitParam,&configParam,NULL);
 		  else
 		    {
-		      string constrType = "FlAfb"; // @TMP@ : "All" "misTagFrac" "FlAfb" "bkgAng"
+		      string constrType = "All"; // @TMP@ : "All" "misTagFrac" "FlAfb" "bkgAng"
 		      GenerateFitParameters(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,i,constrType);
 
 		      if ((constrType == "FlAfb") && (GetVar(TotalPDFRejectPsi,"FlS") != NULL) && (GetVar(TotalPDFRejectPsi,"FsS") != NULL))
