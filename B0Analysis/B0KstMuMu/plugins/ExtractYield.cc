@@ -7581,7 +7581,7 @@ int main(int argc, char** argv)
 
 	      for (unsigned int i = 0; i < q2Bins.size()-1; i++)
 		{
-		  if ((specBin != -1) && (i != static_cast<unsigned int>(specBin))) vecParStr = SaveFitResults(i,&fitParam,&configParam,NULL);
+		  if (i != static_cast<unsigned int>(specBin)) vecParStr = SaveFitResults(i,&fitParam,&configParam,NULL);
 		  else
 		    {
 		      string constrType = "All"; // @TMP@ : "All" "misTagFrac" "FlAfb" "bkgAng"
