@@ -123,7 +123,7 @@ void SetStyle ()
   gStyle->SetTitleFont(42,"x");
   gStyle->SetTitleFont(42,"y");
   gStyle->SetTitleOffset(1.05,"x");
-  gStyle->SetTitleOffset(1.0,"y");
+  gStyle->SetTitleOffset(0.95,"y");
   gStyle->SetTitleSize(0.05,"x");
   gStyle->SetTitleSize(0.05,"y");
 

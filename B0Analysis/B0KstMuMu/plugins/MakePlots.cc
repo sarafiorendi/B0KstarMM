@@ -113,7 +113,7 @@ void SetStyle ()
   gStyle->SetTitleFont(42,"x");
   gStyle->SetTitleFont(42,"y");
   gStyle->SetTitleOffset(1.05,"x");
-  gStyle->SetTitleOffset(1.0,"y");
+  gStyle->SetTitleOffset(0.95,"y");
   gStyle->SetTitleSize(0.05,"x");
   gStyle->SetTitleSize(0.05,"y");
 
@@ -1965,7 +1965,7 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
       if (vecVar[nPlots] < NLLlessThan)
 	{
 	  hScNLL->Fill(vecVar[sysType+1],vecVar[nPlots]);
-	  if ((vecVar[1] != -2.0) && (vecVar[2] != -2.0)) hScPars->Fill(vecVar[2],vecVar[1]);
+	  if ((vecVar[1] != -2.0) && (vecVar[3] != -2.0)) hScPars->Fill(vecVar[3],vecVar[1]);
 	}
 
       inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6] >> vecVar[7] >> vecVar[8];
@@ -1991,7 +1991,12 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
 	cout << "var" << i << ": " << vecVar[i] << "\t";
       cout << "var" << nPlots << ": " << vecVar[nPlots] << endl;
 
-      if (vecVar[nPlots] < NLLlessThan) hScNLL->Fill(vecVar[sysType+1],vecVar[nPlots]);
+      if (vecVar[nPlots] < NLLlessThan)
+	{
+	  if      (sysType == 0) hScNLL->Fill(vecVar[1],vecVar[nPlots]);
+	  else if (sysType == 1) hScNLL->Fill(vecVar[3],vecVar[nPlots]);
+	  else                   hScNLL->Fill(vecVar[5],vecVar[nPlots]);
+	}
 
       inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6] >> vecVar[7] >> vecVar[8];
     }
