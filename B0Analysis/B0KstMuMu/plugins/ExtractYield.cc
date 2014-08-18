@@ -80,7 +80,6 @@ using namespace RooFit;
 // # Internal flags to control the workflow #
 // ##########################################
 #define MAKEmumuPLOTS false
-#define USEMINOS      false
 #define SETBATCH      false
 #define SAVEPOLY      false // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
 #define SAVEPLOT      false
@@ -2620,7 +2619,7 @@ void GenerateFitParameters (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
     {
       if (GetVar(TotalPDF,"FlS") != NULL)
 	{
-	  cout << "Fl uniform generation" << endl;
+	  cout << "Fl generation: uniform lower bound = 0\thigher bound = 1" << endl;
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform();
 	  fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](q2BinIndx) = myString.str();
@@ -2628,7 +2627,7 @@ void GenerateFitParameters (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
       
       if (GetVar(TotalPDF,"AfbS") != NULL)
 	{
-	  cout << "Afb uniform generation" << endl;
+	  cout << "Afb generation: uniform lower bound = -1\thigher bound = 1" << endl;
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform() * 2. - 1.;
 	  fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](q2BinIndx) = myString.str();
@@ -2656,7 +2655,7 @@ void GenerateFitParameters (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
 
       if (GetVar(TotalPDF,"FsS") != NULL)
 	{
-	  cout << "Fs uniform generation" << endl;
+	  cout << "Fs generation: uniform lower bound = 0\thigher bound = 1" << endl;
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform();
 	  fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](q2BinIndx) = myString.str();
@@ -2664,7 +2663,7 @@ void GenerateFitParameters (RooAbsPdf* TotalPDF, vector<vector<string>*>* fitPar
 
       if (GetVar(TotalPDF,"AsS") != NULL)
 	{
-	  cout << "As uniform generation" << endl;
+	  cout << "As generation: uniform lower bound = -1\thigher bound = 1" << endl;
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform() * 2. - 1.;
 	  fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](q2BinIndx) = myString.str();
@@ -3598,8 +3597,8 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   // ###################
   // # Make actual fit #
   // ###################
-  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(USEMINOS));
-  else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(USEMINOS));
+  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())));
+  else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())));
 
 
   // ##################################################
@@ -4072,7 +4071,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   // #############################
   // # Toy-MC generation and fit #
   // #############################
-  RooMCStudy* MyToy = new RooMCStudy(*TotalPDF,*x,Extended(true),FitOptions(Extended(true),ExternalConstraints(*vecConstr),Minos(USEMINOS))); // Possible options : "Binned()" = faster; Silence()
+  RooMCStudy* MyToy = new RooMCStudy(*TotalPDF,*x,Extended(true),FitOptions(Extended(true),ExternalConstraints(*vecConstr),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())))); // Possible options : "Binned()" = faster; Silence()
   cout << "\n[ExtractYield::MakeMassToy]\t@@@ I'm generating the toys @@@" << endl;
   if (FULLTOYS == true)
     {
@@ -4876,8 +4875,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // ###################
       // # Make actual fit #
       // ###################
-      if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(USEMINOS));
-      else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(USEMINOS));
+      if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())));
+      else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())));
 
 
       // ##################################################
@@ -5086,8 +5085,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // ###################
       // # Make actual fit #
       // ###################
-      if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(USEMINOS));
-      else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(USEMINOS));
+      if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())));
+      else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())));
 
 
       // ##################################################
@@ -6181,7 +6180,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   // #############################
   // # Toy-MC generation and fit #
   // #############################
-  RooMCStudy* MyToy = new RooMCStudy(*TotalPDF,RooArgSet(*x,*y,*z),Extended(true),ExternalConstraints(*vecConstr),FitOptions(Extended(true),ExternalConstraints(*vecConstr),Minos(USEMINOS)));
+  RooMCStudy* MyToy = new RooMCStudy(*TotalPDF,RooArgSet(*x,*y,*z),Extended(true),ExternalConstraints(*vecConstr),FitOptions(Extended(true),ExternalConstraints(*vecConstr),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str()))));
   cout << "\n[ExtractYield::MakeMass2AnglesToy]\t@@@ I'm generating the toys @@@" << endl;
   if (FULLTOYS == true)
     {
@@ -7019,7 +7018,6 @@ int main(int argc, char** argv)
 
 
 	  cout << "\nMAKEmumuPLOTS = " << MAKEmumuPLOTS << endl;
-	  cout << "USEMINOS = "        << USEMINOS << endl;
 	  cout << "SETBATCH  = "       << SETBATCH << endl;
 	  cout << "SAVEPOLY = "        << SAVEPOLY << endl;
 	  cout << "SAVEPLOT = "        << SAVEPLOT << endl;
@@ -7078,6 +7076,7 @@ int main(int argc, char** argv)
 	  fileFitResults << "Normalize to J/psi and not psi(2S): " << Utility->GetGenericParam("NormJPSInotPSIP").c_str() << " (0 = false; 1 = true)" << endl;
 	  fileFitResults << "Poly. degree efficiency interp.: "    << Utility->GetGenericParam("DegreeInterp").c_str() << endl;
 	  fileFitResults << "Transformed variables range: "        << Utility->GetGenericParam("TransRange").c_str() << endl;
+	  fileFitResults << "Use MINOS: "                          << Utility->GetGenericParam("UseMINOS").c_str() << " (0 = false; 1 = true)" << endl;
 	  fileFitResults << "Apply constraints: "                  << Utility->GetGenericParam("ApplyConstr").c_str() << " (0 = false; 1 = true)" << endl;
 	  fileFitResults << "Control fit workflow: "               << CTRLfitWRKflow.c_str() << endl;
 	  fileFitResults << "Control mis-tag fraction workflow: "  << Utility->GetGenericParam("CtrlMisTagWrkFlow").c_str() << endl;
