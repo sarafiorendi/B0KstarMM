@@ -927,8 +927,8 @@ void AddPhysicsConstraint (RooArgSet* vecConstr, RooRealVar* varConstr, double m
   myGauss << Transformer(varConstr->getPlotLabel(),a,b,c) << "-" << myMean->getPlotLabel() << ") / (2*" << mySigma->getPlotLabel() << "*" << mySigma->getPlotLabel() << "))";
 
   tmpSet.add(*varConstr);
-  varConstr->setMax(+range);
   varConstr->setMin(-range);
+  varConstr->setMax(+range);
   tmpSet.add(*myMean);
   tmpSet.add(*mySigma);
   if (auxVar1 != NULL) tmpSet.add(*auxVar1);
