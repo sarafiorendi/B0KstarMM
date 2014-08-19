@@ -1000,8 +1000,8 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
       // # Make 2D signal*efficiency p.d.f.: integral over phi #
       // # For correctly tagged events                         #
       // #######################################################
-      FlS  = new RooRealVar("FlS","F_{L}",0.5,-atof(Utility->GetGenericParam("TransRange").c_str()),atof(Utility->GetGenericParam("TransRange").c_str()));
-      AfbS = new RooRealVar("AfbS","A_{FB}",0.0,-atof(Utility->GetGenericParam("TransRange").c_str()),atof(Utility->GetGenericParam("TransRange").c_str()));
+      FlS  = new RooRealVar("FlS","F_{L}",0.5);
+      AfbS = new RooRealVar("AfbS","A_{FB}",0.0);
       VarsAng->add(*FlS);
       VarsAng->add(*AfbS);
       VarsAng->add(*y);
@@ -1019,8 +1019,8 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	}
       else
     	{
-	  FsS = new RooRealVar("FsS","F_{S}",0.25,-atof(Utility->GetGenericParam("TransRange").c_str()),atof(Utility->GetGenericParam("TransRange").c_str()));
-          AsS = new RooRealVar("AsS","A_{S}",0.0,-atof(Utility->GetGenericParam("TransRange").c_str()),atof(Utility->GetGenericParam("TransRange").c_str()));
+	  FsS = new RooRealVar("FsS","F_{S}",0.25);
+          AsS = new RooRealVar("AsS","A_{S}",0.0);
     	  VarsAng->add(*FsS);
     	  VarsAng->add(*AsS);
 
@@ -7026,7 +7026,6 @@ int main(int argc, char** argv)
 
 	  fileFitResults << "Normalize to J/psi and not psi(2S): " << Utility->GetGenericParam("NormJPSInotPSIP").c_str() << " (0 = false; 1 = true)" << endl;
 	  fileFitResults << "Poly. degree efficiency interp.: "    << Utility->GetGenericParam("DegreeInterp").c_str() << endl;
-	  fileFitResults << "Transformed variables range: "        << Utility->GetGenericParam("TransRange").c_str() << endl;
 	  fileFitResults << "Use MINOS: "                          << Utility->GetGenericParam("UseMINOS").c_str() << " (0 = false; 1 = true)" << endl;
 	  fileFitResults << "Apply constraints: "                  << Utility->GetGenericParam("ApplyConstr").c_str() << " (0 = false; 1 = true)" << endl;
 	  fileFitResults << "Control fit workflow: "               << CTRLfitWRKflow.c_str() << endl;
