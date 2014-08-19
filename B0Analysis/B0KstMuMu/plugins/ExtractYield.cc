@@ -337,7 +337,6 @@ void DrawString                (double Lumi, RooPlot* myFrame = NULL);
 
 bool IsInConstraints           (RooArgSet* vecConstr, string varName);
 void AddGaussConstraint        (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
-void AddPhysicsConstraint      (RooArgSet* vecConstr, RooRealVar* varConstr, double mean, double sigma, RooRealVar* auxVar1 = NULL, RooRealVar* auxVar2 = NULL);
 void BuildMassConstraints      (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
 void BuildAngularConstraints   (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varName);
 
@@ -897,44 +896,6 @@ void AddGaussConstraint (RooArgSet* vecConstr, RooAbsPdf* TotalPDF, string varNa
   myString << "_constr";
 
   RooGaussian* newConstr = new RooGaussian(myString.str().c_str(), myString.str().c_str(), *varConstr, RooConst(mean), RooConst(sigma));
-  vecConstr->add(*newConstr);
-}
-
-
-void AddPhysicsConstraint (RooArgSet* vecConstr, RooRealVar* varConstr, double mean, double sigma, RooRealVar* auxVar1, RooRealVar* auxVar2)
-{
-  RooArgSet tmpSet;
-  stringstream myString;
-  stringstream myGauss;
-  double a,b,c;
-  double range = atof(Utility->GetGenericParam("TransRange").c_str());
-
-  myString.clear(); myString.str("");
-  myString << "mean_" << varConstr->getPlotLabel();
-  RooRealVar* myMean  = new RooRealVar(myString.str().c_str(),myString.str().c_str(),mean);
-  myMean->setConstant(true);
-
-  myString.clear(); myString.str("");
-  myString << "sigma_" << varConstr->getPlotLabel();
-  RooRealVar* mySigma = new RooRealVar(myString.str().c_str(),myString.str().c_str(),sigma);
-  mySigma->setConstant(true);
-
-  myString.clear(); myString.str("");
-  myString << varConstr->getPlotLabel() << "_constr";
-
-  myGauss.clear(); myGauss.str("");
-  myGauss << "exp(-(" << Transformer(varConstr->getPlotLabel(),a,b,c) << "-" << myMean->getPlotLabel() << ") * (";
-  myGauss << Transformer(varConstr->getPlotLabel(),a,b,c) << "-" << myMean->getPlotLabel() << ") / (2*" << mySigma->getPlotLabel() << "*" << mySigma->getPlotLabel() << "))";
-
-  tmpSet.add(*varConstr);
-  varConstr->setMin(-range);
-  varConstr->setMax(+range);
-  tmpSet.add(*myMean);
-  tmpSet.add(*mySigma);
-  if (auxVar1 != NULL) tmpSet.add(*auxVar1);
-  if (auxVar2 != NULL) tmpSet.add(*auxVar2);
-
-  RooGenericPdf* newConstr = new RooGenericPdf(myString.str().c_str(), myGauss.str().c_str(), tmpSet);
   vecConstr->add(*newConstr);
 }
 
@@ -2095,7 +2056,7 @@ vector<string>* SaveFitResults (unsigned int q2BinIndx, vector<vector<string>*>*
     }
   else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# FS +/- err");
-  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"FsS") != NULL) && (vecConstr->find(string(string("FsS") + string("_constr")).c_str()) == NULL))
+  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"FsS") != NULL) && (fitResult->floatParsFinal().index("FsS") >= 0))
     {
       Transformer("FsS",varVal,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,"FsS"));
       myString.clear(); myString.str("");
@@ -2104,7 +2065,7 @@ vector<string>* SaveFitResults (unsigned int q2BinIndx, vector<vector<string>*>*
     }
   else vecParStr->push_back(fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](q2BinIndx).c_str());
   vecParStr->push_back("# AS +/- err");
-  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"AsS") != NULL) && (vecConstr->find(string(string("AsS") + string("_constr")).c_str()) == NULL))
+  if ((TotalPDF != NULL) && (GetVar(TotalPDF,"AsS") != NULL) && (fitResult->floatParsFinal().index("AsS") >= 0))
     {
       Transformer("AsS",varVal,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,"FsS"),GetVar(TotalPDF,"AsS"));
       myString.clear(); myString.str("");
@@ -5977,17 +5938,12 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       	  if ((strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"allEvts") == 0)) BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
       	  if ((GetVar(TotalPDFq2Bins[i],"nSig") != NULL) || (GetVar(TotalPDFq2Bins[i],"nMisTagFrac") != NULL)) BuildAngularConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
       	}
-      if ((FitType != 46) && (FitType != 56) && (FitType != 66) && (FitType != 76) && (GetVar(TotalPDFq2Bins[i],"FsS") != NULL) && (GetVar(TotalPDFq2Bins[i],"AsS") != NULL))
+      if ((FitType != 46) && (FitType != 56) && (FitType != 66) && (FitType != 76) &&
+	  (GetVar(TotalPDFq2Bins[i],"FsS") != NULL) && (GetVar(TotalPDFq2Bins[i],"AsS") != NULL) &&
+	  (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true))
       	{
-	  myString.clear(); myString.str("");
-	  myString << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](i);
-	  SetValueAndErrors(NULL,"",1.0,&myString,&varVal1,&varVal1EHi,&varVal1ELo);
-	  AddPhysicsConstraint(vecConstr,GetVar(TotalPDFq2Bins[i],"FsS"),varVal1,(varVal1EHi - varVal1ELo) / 2.,GetVar(TotalPDFq2Bins[i],"FlS"));
-
-	  myString.clear(); myString.str("");
-	  myString << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](i);
-	  SetValueAndErrors(NULL,"",1.0,&myString,&varVal1,&varVal1EHi,&varVal1ELo);
-	  AddPhysicsConstraint(vecConstr,GetVar(TotalPDFq2Bins[i],"AsS"),varVal1,(varVal1EHi - varVal1ELo) / 2.,GetVar(TotalPDFq2Bins[i],"FlS"),GetVar(TotalPDFq2Bins[i],"FsS"));
+	  GetVar(TotalPDFq2Bins[i],"FsS")->setConstant(true);
+	  GetVar(TotalPDFq2Bins[i],"AsS")->setConstant(true);
       	}
 
 
@@ -6156,17 +6112,12 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   BuildMassConstraints(vecConstr,TotalPDF,"peak");
   if ((strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"allEvts") == 0)) BuildMassConstraints(vecConstr,TotalPDF,"mistag");
   BuildAngularConstraints(vecConstr,TotalPDF,"peak");
-  if ((specBin != Utility->GetJPsiBin(q2Bins)) && (specBin != Utility->GetPsiPBin(q2Bins)) && (GetVar(TotalPDF,"FsS") != NULL) && (GetVar(TotalPDF,"AsS") != NULL))
+  if ((specBin != Utility->GetJPsiBin(q2Bins)) && (specBin != Utility->GetPsiPBin(q2Bins)) &&
+      (GetVar(TotalPDF,"FsS") != NULL) && (GetVar(TotalPDF,"AsS") != NULL) &&
+      (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true))
     {
-      myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](specBin);
-      SetValueAndErrors(NULL,"",1.0,&myString,&varVal,&varValEHi,&varValELo);
-      AddPhysicsConstraint(vecConstr,GetVar(TotalPDF,"FsS"),varVal,(varValEHi - varValELo) / 2.,GetVar(TotalPDF,"FlS"));
-      
-      myString.clear(); myString.str("");
-      myString << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](specBin);
-      SetValueAndErrors(NULL,"",1.0,&myString,&varVal,&varValEHi,&varValELo);
-      AddPhysicsConstraint(vecConstr,GetVar(TotalPDF,"AsS"),varVal,(varValEHi - varValELo) / 2.,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,"FsS"));
+      GetVar(TotalPDF,"FsS")->setConstant(true);
+      GetVar(TotalPDF,"AsS")->setConstant(true);
     }
 
 
