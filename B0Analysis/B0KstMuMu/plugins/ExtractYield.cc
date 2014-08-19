@@ -87,6 +87,7 @@ using namespace RooFit;
 #define RESETcomANG   false // Reset combinatorial bkg angular parameters before starting the fit
 #define FULLTOYS      false // Compute generation-and-fit toys
 #define FUNCERRBAND   false // Show the p.d.f. error band
+#define MINIMIZER     "Migrad2"
 
 // ##################
 // # External files #
@@ -580,29 +581,33 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
       if (varName == "FlS")
 	{
 	  myString << "(1/2 + TMath::ATan(" << varName << ")/TMath::Pi())";
+	  cout << "[ExtractYield::Transformer]\tTransformer function: " << myString.str().c_str() << endl;
 	  return myString.str();
 	}
       else if (varName == "AfbS")
 	{
-	  sVal1 = Transformer("FlS",val1,val2,val3);
+	  sVal1 = Transformer("FlS",val1,valELo,valEHi);
 
 	  myString << "(3/4*(1 - " << sVal1 << ") * 2*TMath::ATan(" << varName << ")/TMath::Pi())";
+	  cout << "[ExtractYield::Transformer]\tTransformer function: " << myString.str().c_str() << endl;
 	  return myString.str();
 	}
       else if (varName == "FsS")
 	{
-	  sVal1 = Transformer("FlS",val1,val2,val3);
+	  sVal1 = Transformer("FlS",val1,valELo,valEHi);
 
 	  myString << "(3*(1-" << sVal1 << ")/(7-3*" << sVal1 << ") * (1/2 + TMath::ATan(" << varName << ")/TMath::Pi()))";
+	  cout << "[ExtractYield::Transformer]\tTransformer function: " << myString.str().c_str() << endl;
 	  return myString.str();
 	}
       else if (varName == "AsS")
 	{
-	  sVal1 = Transformer("FlS",val1,val2,val3);
-	  sVal2 = Transformer("FsS",val1,val2,val3);
+	  sVal1 = Transformer("FlS",val1,valELo,valEHi);
+	  sVal2 = Transformer("FsS",val1,valELo,valEHi);
 
 	  myString << "((1/2*(" << sVal2 << " + 3*" << sVal1 << "*(1 - " << sVal2 << ")) < 1 ? 1/2*(" << sVal2 << " + 3*" << sVal1 << "*(1 - " << sVal2 << ")) : 1) ";
 	  myString << "* 2*TMath::ATan(" << varName << ")/TMath::Pi())";
+	  cout << "[ExtractYield::Transformer]\tTransformer function: " << myString.str().c_str() << endl;
 	  return myString.str();
 	}
       else
@@ -2894,7 +2899,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // # Make actual fit #
       // ###################
       RooFitResult* JPsiFitResult;
-      JPsiFitResult = (*TotalPDFJPsi)->fitTo(*dataSetJPsi,Extended(true),Save(true),SumCoefRange("subRangeJPsi"),Range("subRangeJPsi"));
+      JPsiFitResult = (*TotalPDFJPsi)->fitTo(*dataSetJPsi,Extended(true),Save(true),SumCoefRange("subRangeJPsi"),Range("subRangeJPsi"),Minimizer(MINIMIZER));
 
 
       // ##################################################
@@ -3011,7 +3016,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // # Make actual fit #
       // ###################
       RooFitResult* PsiPFitResult;
-      PsiPFitResult = (*TotalPDFPsiP)->fitTo(*dataSetPsiP,Extended(true),Save(true),SumCoefRange("subRangePsiP"),Range("subRangePsiP"));
+      PsiPFitResult = (*TotalPDFPsiP)->fitTo(*dataSetPsiP,Extended(true),Save(true),SumCoefRange("subRangePsiP"),Range("subRangePsiP"),Minimizer(MINIMIZER));
 
 
       // ##################################################
@@ -3558,8 +3563,8 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   // ###################
   // # Make actual fit #
   // ###################
-  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())));
-  else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())));
+  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER));
+  else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER));
 
 
   // ##################################################
@@ -3569,7 +3574,6 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   if (fitResult != NULL) fitResult->Print("v");
   // fitTo parameters:
   // - NumCPU(n)
-  // - Hesse(true) OR Minos(true)
   // - FitOptions(const char*):
   //   - "m" = MIGRAD only, i.e. no MINOS
   //   - "s" = Estimate step size with HESSE before starting MIGRAD
@@ -4836,8 +4840,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // ###################
       // # Make actual fit #
       // ###################
-      if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())));
-      else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())));
+      if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER));
+      else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER));
 
 
       // ##################################################
@@ -5006,8 +5010,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	  // ###################
       	  // # Make actual fit #
       	  // ###################
-      	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebads),Save(true));
-      	  else                                                               fitResult = TmpPDF->fitTo(*sideBands,Save(true));
+      	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebads),Save(true),Minimizer(MINIMIZER));
+      	  else                                                               fitResult = TmpPDF->fitTo(*sideBands,Save(true),Minimizer(MINIMIZER));
 	  if (fitResult != NULL) fitResult->Print("v");
 
 
@@ -5046,8 +5050,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // ###################
       // # Make actual fit #
       // ###################
-      if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())));
-      else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())));
+      if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER));
+      else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER));
 
 
       // ##################################################
@@ -6967,7 +6971,6 @@ int main(int argc, char** argv)
 	  cout << "MULTYIELD = "     << MULTYIELD << endl;
 	  cout << "NCOEFFPOLYBKG = " << NCOEFFPOLYBKG << endl;
 
-
 	  cout << "\nMAKEmumuPLOTS = " << MAKEmumuPLOTS << endl;
 	  cout << "SETBATCH  = "       << SETBATCH << endl;
 	  cout << "SAVEPOLY = "        << SAVEPOLY << endl;
@@ -6976,6 +6979,7 @@ int main(int argc, char** argv)
 	  cout << "RESETcomANG = "     << RESETcomANG << endl;
 	  cout << "FULLTOYS = "        << FULLTOYS << endl;
 	  cout << "FUNCERRBAND = "     << FUNCERRBAND << endl;
+	  cout << "MINIMIZER = "       << MINIMIZER << endl;
 
 	  cout << "\nPARAMETERFILEIN = " << PARAMETERFILEIN << endl;
 	  cout << "PARAMETERFILEOUT = "  << PARAMETERFILEOUT << endl;

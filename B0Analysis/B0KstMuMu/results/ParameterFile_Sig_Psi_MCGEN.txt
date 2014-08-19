@@ -2641,7 +2641,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Use MINOS for error computation [0 = no; 1 = yes]
 0
 
-# Apply Gaussian constraints in the likelihood [0 = no; 1 = yes]
+# Apply constraints in the likelihood [0 = no; 1 = yes]
 0
 
 # Control fit workflow:
