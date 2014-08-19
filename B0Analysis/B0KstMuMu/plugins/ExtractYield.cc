@@ -87,7 +87,7 @@ using namespace RooFit;
 #define RESETcomANG   false // Reset combinatorial bkg angular parameters before starting the fit
 #define FULLTOYS      false // Compute generation-and-fit toys
 #define FUNCERRBAND   false // Show the p.d.f. error band
-#define MINIMIZER     "Migrad2"
+#define MINIMIZER     "Minuit2"
 
 // ##################
 // # External files #
