@@ -87,7 +87,7 @@ using namespace RooFit;
 #define RESETcomANG   false // Reset combinatorial bkg angular parameters before starting the fit
 #define FULLTOYS      false // Compute generation-and-fit toys
 #define FUNCERRBAND   false // Show the p.d.f. error band
-#define MINIMIZER     "Minuit2" // Minimizer type for 3D MODEL actual fit
+#define MINIMIZER     "Minuit2" // Minimizer type for 3D MODEL actual fit ["Minuit"; "Minuit2"]
 
 // ##################
 // # External files #
@@ -3834,6 +3834,10 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       myString << vecParStr->operator[](atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)).c_str();
       SetValueAndErrors(NULL,"",1.0,&myString,&effPsiMisTag,&effPsiMisTagErr,&effPsiMisTagErr);
       cout << "\n[ExtractYield::IterativeMassFitq2Bins]\t@@@ Integral of S*E over angular variables for normalization channel mis-tagged events: " << effPsiMisTag << " +/- " << effPsiMisTagErr << " @@@" << endl;
+
+
+      vecParStr->clear();
+      delete vecParStr;
     }
  
  
@@ -3987,6 +3991,9 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 	  fileFitResults << VecHistoMeas->operator[](0)->GetBinContent(i+1) << "   -" << dBFdq2Err << "   " << dBFdq2Err << endl;
 
 	  fileFitResults << "====================================================================" << endl;
+
+	  cout << "\n[ExtractYield::IterativeMassFitq2Bins]\t===> dBF/dq^2 <===" << endl;
+	  cout << VecHistoMeas->operator[](0)->GetBinContent(i+1) << "   -" << dBFdq2Err << "   " << dBFdq2Err << endl;
 	}
 
 
@@ -5862,6 +5869,10 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       myString << vecParStr->operator[](atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)).c_str();
       SetValueAndErrors(NULL,"",1.0,&myString,&effPsiMisTag,&effPsiMisTagErr,&effPsiMisTagErr);
       cout << "\n[ExtractYield::IterativeMass2AnglesFitq2Bins]\t@@@ Integral of S*E over angular variables for normalization channel mis-tagged events: " << effPsiMisTag << " +/- " << effPsiMisTagErr << " @@@" << endl;
+
+
+      vecParStr->clear();
+      delete vecParStr;
     }
   
 
@@ -6058,6 +6069,9 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 	      fileFitResults << effMuMuMisTag << "   -" << effMuMuMisTagErr << "   " << effMuMuMisTagErr << endl;
 
 	      fileFitResults << "====================================================================" << endl;
+
+	      cout << "\n[ExtractYield::IterativeMass2AnglesFitq2Bins]\t===> dBF/dq^2 <===" << endl;
+	      cout << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   -" << dBFdq2Err << "   " << dBFdq2Err << endl;
 	    }
 	}
 
