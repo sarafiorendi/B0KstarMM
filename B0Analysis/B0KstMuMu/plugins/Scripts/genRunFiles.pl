@@ -10,7 +10,7 @@
 $ID      = @ARGV[0] ;
 $q2bin   = @ARGV[1] ;
 $dirName = @ARGV[2] ;
-$nfiles  = 100 ;
+$nfiles  = 400 ;
 
 
 $fileOut = "myRun_" . $ID . "_bin" . $q2bin . ".sh" ;
