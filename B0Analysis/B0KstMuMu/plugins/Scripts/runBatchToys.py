@@ -10,9 +10,9 @@ if len(sys.argv) < 4:
     sys.exit()
 
 par = sys.argv[1]
-if par == 'BF':
+if 'BF' in par:
     fitType = 21
-elif par == 'FLAFB':
+elif 'FLAFB' in par:
     fitType = 26
 else:
     print "Wrong parameter: ", par
