@@ -2902,9 +2902,9 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       JPsiFitResult = (*TotalPDFJPsi)->fitTo(*dataSetJPsi,Extended(true),Save(true),SumCoefRange("subRangeJPsi"),Range("subRangeJPsi"));
 
 
-      // ##################################################
-      // # Set p.d.f independent variables to known point #
-      // ##################################################
+      // ###################################################
+      // # Set p.d.f. independent variables to known point #
+      // ###################################################
       if (GetVar(*TotalPDFJPsi,x->getPlotLabel()) != NULL) (*TotalPDFJPsi)->getVariables()->setRealValue(x->getPlotLabel(),Utility->B0Mass);
       if (JPsiFitResult != NULL) JPsiFitResult->Print("v");
       ((RooAddPdf*)(*TotalPDFJPsi))->fixCoefRange("subRangeJPsi");
@@ -3019,9 +3019,9 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       PsiPFitResult = (*TotalPDFPsiP)->fitTo(*dataSetPsiP,Extended(true),Save(true),SumCoefRange("subRangePsiP"),Range("subRangePsiP"));
 
 
-      // ##################################################
-      // # Set p.d.f independent variables to known point #
-      // ##################################################
+      // ###################################################
+      // # Set p.d.f. independent variables to known point #
+      // ###################################################
       if (GetVar(*TotalPDFPsiP,x->getPlotLabel()) != NULL) (*TotalPDFPsiP)->getVariables()->setRealValue(x->getPlotLabel(),Utility->B0Mass);
       if (PsiPFitResult != NULL) PsiPFitResult->Print("v");
       ((RooAddPdf*)(*TotalPDFPsiP))->fixCoefRange("subRangePsiP");
@@ -3567,9 +3567,9 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())));
 
 
-  // ##################################################
-  // # Set p.d.f independent variables to known point #
-  // ##################################################
+  // ###################################################
+  // # Set p.d.f. independent variables to known point #
+  // ###################################################
   if (GetVar(*TotalPDF,x->getPlotLabel()) != NULL) (*TotalPDF)->getVariables()->setRealValue(x->getPlotLabel(),Utility->B0Mass);
   if (fitResult != NULL) fitResult->Print("v");
   // fitTo parameters:
@@ -4851,9 +4851,9 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())));
 
 
-      // ##################################################
-      // # Set p.d.f independent variables to known point #
-      // ##################################################
+      // ###################################################
+      // # Set p.d.f. independent variables to known point #
+      // ###################################################
       if (GetVar(*TotalPDF,x->getPlotLabel()) != NULL) (*TotalPDF)->getVariables()->setRealValue(x->getPlotLabel(),Utility->B0Mass);
       if (GetVar(*TotalPDF,y->getPlotLabel()) != NULL) (*TotalPDF)->getVariables()->setRealValue(y->getPlotLabel(),0.0);
       if (GetVar(*TotalPDF,z->getPlotLabel()) != NULL) (*TotalPDF)->getVariables()->setRealValue(z->getPlotLabel(),0.0);
@@ -5061,9 +5061,9 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER));
 
 
-      // ##################################################
-      // # Set p.d.f independent variables to known point #
-      // ##################################################
+      // ###################################################
+      // # Set p.d.f. independent variables to known point #
+      // ###################################################
       if (GetVar(*TotalPDF,x->getPlotLabel()) != NULL) (*TotalPDF)->getVariables()->setRealValue(x->getPlotLabel(),Utility->B0Mass);
       if (GetVar(*TotalPDF,y->getPlotLabel()) != NULL) (*TotalPDF)->getVariables()->setRealValue(y->getPlotLabel(),0.0);
       if (GetVar(*TotalPDF,z->getPlotLabel()) != NULL) (*TotalPDF)->getVariables()->setRealValue(z->getPlotLabel(),0.0);
