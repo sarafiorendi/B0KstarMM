@@ -96,6 +96,7 @@ void printData              (int nBins, TVectorD V1, TVectorD V2, TVectorD V3, T
 void offsetData             (int nBins, TVectorD* V1, TVectorD* V2, TVectorD* V3, double offset);
 TGraphAsymmErrors* readData (TString fileName, int dataType, int color, int markerType, bool doFill, int fillStyle, bool noHbar, double offset);
 void showData               (int dataType, double offset, bool noHbar);
+void ZeroCrossing           (string fileName, const double minq2 = 1.2, const double maxq2 = 7.0, const unsigned int nBins = 100);
 
 
 // ###########################
@@ -1877,3 +1878,143 @@ void showData (int dataType, double offset, bool noHbar)
   cData->Modified();
   cData->Update();
  }
+
+
+void ZeroCrossing (string fileName, const double minq2, const double maxq2, const unsigned int nBins)
+{
+  // ##########################
+  // # Set histo layout style #
+  // ##########################
+  SetStyle();
+  gStyle->SetPalette(1);
+
+
+  TFile *_file0 = TFile::Open(fileName.c_str(),"READ");
+  TTree* B0KstMuMuNTuple = (TTree*)_file0->Get("B0KstMuMu/B0KstMuMuNTuple");
+
+  TH1D* hAFB = new TH1D("hAFB","hAFB",nBins,0,8.5);
+  hAFB->GetXaxis()->SetTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+  hAFB->GetYaxis()->SetTitle("A_{FB}");
+  hAFB->SetMarkerStyle(20);
+
+  TH1D* h1p = new TH1D("h1p","h1p",nBins,0,8.5);
+  h1p->GetXaxis()->SetTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+  h1p->GetYaxis()->SetTitle("Entries (#)");
+  h1p->SetMarkerStyle(20);
+  h1p->SetMarkerColor(kBlack);
+  h1p->GetXaxis()->SetRangeUser(minq2,maxq2);
+
+  TH1D* h1m = new TH1D("h1m","h1m",nBins,0,8.5);
+  h1m->GetXaxis()->SetTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+  h1m->GetYaxis()->SetTitle("Entries (#)");
+  h1m->SetMarkerStyle(21);
+  h1m->SetMarkerColor(kRed);
+  h1m->GetXaxis()->SetRangeUser(minq2,maxq2);
+
+  TH2D* h2p = new TH2D("h2p","h2p",nBins,0,8.5,nBins,0,1.0);
+  h2p->GetXaxis()->SetTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+  h2p->GetYaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
+  TH2D* h2m = new TH2D("h2m","h2m",nBins,0,8.5,nBins,0,-1.0);
+  h2m->GetXaxis()->SetTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+  h2m->GetYaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
+
+  TF1* ZeroCrox = new TF1("ZeroCrox","[0]*x + [1]",minq2,maxq2);
+  ZeroCrox->SetLineColor(kRed);
+  ZeroCrox->SetLineWidth(2);
+
+
+  // ####################
+  // # Quering the tree #
+  // ####################
+  B0KstMuMuNTuple->Draw("CosThetaMuArb:mumuMass*mumuMass>>h2p","mumuMass*mumuMass < 8.5 && CosThetaMuArb > 0","goff");
+  B0KstMuMuNTuple->Draw("CosThetaMuArb:mumuMass*mumuMass>>h2m","mumuMass*mumuMass < 8.5 && CosThetaMuArb < 0","goff");
+
+
+  TCanvas* c0 = new TCanvas("c0","c0",900,500);
+  c0->Divide(2,1);
+
+  c0->cd(1);
+  h2p->GetXaxis()->SetRangeUser(minq2,maxq2);
+  h2p->Draw("gcolz");
+
+  c0->cd(2);
+  h2m->GetXaxis()->SetRangeUser(minq2,maxq2);
+  h2m->Draw("gcolz");
+
+  c0->Modified();
+  c0->Update();
+
+
+  // #######################
+  // # Macking projections #
+  // #######################
+  for (unsigned int i = 0; i < nBins; i++)
+    {
+      double counterP = 0.0;
+      double counterM = 0.0;
+      
+      for (unsigned int j = 0; j < nBins; j++)
+	{
+	  counterP += h2p->GetBinContent(i,j);
+	  counterM += h2m->GetBinContent(i,j);
+	}
+      
+      h1p->SetBinContent(i+1,counterP);
+      h1m->SetBinContent(i+1,counterM);
+    }
+
+
+  TCanvas* c1 = new TCanvas("c1","c1",900,500);
+  c1->cd();
+  h1p->Draw("e1p");
+  h1m->Draw("same e1p");
+  c0->Modified();
+  c0->Update();
+
+
+  // ########################################
+  // # Computing forward-backward asymmetry #
+  // ########################################
+  TCanvas* c2 = new TCanvas("c2","c2",900,500);
+  c2->cd();
+
+
+  for (unsigned int i = 0; i < nBins; i++)
+    {
+      if ((h1p->GetBinContent(i+1) != 0.0) || (h1m->GetBinContent(i+1) != 0.0))
+	{
+	  hAFB->SetBinContent(i+1,(h1p->GetBinContent(i+1) - h1m->GetBinContent(i+1)) / (h1p->GetBinContent(i+1) + h1m->GetBinContent(i+1)));
+	  hAFB->SetBinError(i+1,2.*h1p->GetBinContent(i+1)*h1m->GetBinContent(i+1) /
+			    (pow(h1p->GetBinContent(i+1) + h1m->GetBinContent(i+1),2.)) *
+			    sqrt(pow(h1p->GetBinError(i+1) / h1p->GetBinContent(i+1),2.) + pow(h1m->GetBinError(i+1) / h1m->GetBinContent(i+1),2.)));
+	}
+      else
+	{
+	  hAFB->SetBinContent(i+1,0.0);
+	  hAFB->SetBinError(i+1,0.0);
+	}
+    }
+
+  
+  // ###########
+  // # Fitting #
+  // ###########
+  hAFB->GetXaxis()->SetRangeUser(minq2,maxq2);
+  hAFB->Draw("e1p");
+  hAFB->Fit("ZeroCrox","R0");
+  ZeroCrox->Draw("same");
+
+
+  // ################################
+  // # Compute zero crossing porint #
+  // ################################
+  double q0 = -ZeroCrox->GetParameter(1) / ZeroCrox->GetParameter(0);
+  double q0E = q0 * sqrt(pow(ZeroCrox->GetParError(0) / ZeroCrox->GetParameter(0),2.) + pow(ZeroCrox->GetParError(1) / ZeroCrox->GetParameter(1),2.));
+  cout << "\n@@@ Zero crossing point: " << q0 << " +/- " << q0E << " @@@" << endl;
+  cout << "Fit range: [" << minq2 << "-" << maxq2 << "]" << endl;
+  cout << "Number of bins: " << nBins << endl;
+
+
+  c2->Modified();
+  c2->Update();
+}
