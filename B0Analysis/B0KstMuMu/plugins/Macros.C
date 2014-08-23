@@ -1627,12 +1627,12 @@ void DrawString (double Lumi)
 
   myString.clear(); myString.str("");
   myString << "#it{Preliminary}";
-  TLatex* LumiTex2 = new TLatex(0.18,0.9,myString.str().c_str());
+  TLatex* LumiTex2 = new TLatex(0.19,0.9,myString.str().c_str());
   LumiTex2->SetTextFont(42);
   LumiTex2->SetTextSize(0.05 * scaleRespect2CMS);
   LumiTex2->SetTextColor(kBlack);
   LumiTex2->SetNDC(true);
-  LumiTex2->DrawLatex(0.18,0.9,myString.str().c_str());
+  LumiTex2->DrawLatex(0.19,0.9,myString.str().c_str());
 
 
   myString.clear(); myString.str("");
@@ -2008,7 +2008,7 @@ void ZeroCrossing (string fileName, const double minq2, const double maxq2, cons
   // ################################
   // # Compute zero crossing porint #
   // ################################
-  double q0 = -ZeroCrox->GetParameter(1) / ZeroCrox->GetParameter(0);
+  double q0  = -ZeroCrox->GetParameter(1) / ZeroCrox->GetParameter(0);
   double q0E = q0 * sqrt(pow(ZeroCrox->GetParError(0) / ZeroCrox->GetParameter(0),2.) + pow(ZeroCrox->GetParError(1) / ZeroCrox->GetParameter(1),2.));
   cout << "\n@@@ Zero crossing point: " << q0 << " +/- " << q0E << " @@@" << endl;
   cout << "Fit range: [" << minq2 << "-" << maxq2 << "]" << endl;

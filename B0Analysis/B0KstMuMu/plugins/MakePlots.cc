@@ -145,12 +145,12 @@ void DrawString (double Lumi)
 
   myString.clear(); myString.str("");
   myString << "#it{Preliminary}";
-  TLatex* LumiTex2 = new TLatex(0.18,0.9,myString.str().c_str());
+  TLatex* LumiTex2 = new TLatex(0.19,0.9,myString.str().c_str());
   LumiTex2->SetTextFont(42);
   LumiTex2->SetTextSize(0.05 * scaleRespect2CMS);
   LumiTex2->SetTextColor(kBlack);
   LumiTex2->SetNDC(true);
-  LumiTex2->DrawLatex(0.18,0.9,myString.str().c_str());
+  LumiTex2->DrawLatex(0.19,0.9,myString.str().c_str());
 
 
   myString.clear(); myString.str("");
@@ -1303,24 +1303,24 @@ void MakePhysicsPlots (unsigned int PlotType)
   if (PlotType == 0) // Fl
     {
       Utility->MakeGraphVar(ParameterFILE_MCGEN,&ge0,"Fl");
-      ge0->SetMarkerColor(kBlack);
+      ge0->SetMarkerColor(kBlue);
       ge0->SetMarkerStyle(22);
       ge0->SetMarkerSize(1.2);
       ge0->SetFillColor(kWhite);
       ge0->SetFillStyle(0);
-      ge0->SetLineColor(kBlack);
+      ge0->SetLineColor(kBlue);
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-0.02,1.0);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{L}");
 
       Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"Fl");
-      ge1->SetMarkerColor(kBlue);
+      ge1->SetMarkerColor(kBlack);
       ge1->SetMarkerStyle(20);
       ge1->SetMarkerSize(1.2);
       ge1->SetFillColor(kGreen-7);
       ge1->SetFillStyle(3001);
-      ge1->SetLineColor(kBlue);
+      ge1->SetLineColor(kBlack);
       ge1->SetLineWidth(2);
       ge1->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge1->GetYaxis()->SetRangeUser(-0.02,1.0);
@@ -1329,24 +1329,24 @@ void MakePhysicsPlots (unsigned int PlotType)
   else if (PlotType == 1) // Afb
     {
       Utility->MakeGraphVar(ParameterFILE_MCGEN,&ge0,"Afb");
-      ge0->SetMarkerColor(kBlack);
+      ge0->SetMarkerColor(kBlue);
       ge0->SetMarkerStyle(22);
       ge0->SetMarkerSize(1.2);
       ge0->SetFillColor(kWhite);
       ge0->SetFillStyle(0);
-      ge0->SetLineColor(kBlack);
+      ge0->SetLineColor(kBlue);
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-1.04,1.0);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{FB}");
  
       Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"Afb");
-      ge1->SetMarkerColor(kBlue);
+      ge1->SetMarkerColor(kBlack);
       ge1->SetMarkerStyle(20);
       ge1->SetMarkerSize(1.2);
       ge1->SetFillColor(kGreen-7);
       ge1->SetFillStyle(3001);
-      ge1->SetLineColor(kBlue);
+      ge1->SetLineColor(kBlack);
       ge1->SetLineWidth(2);
       ge1->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge1->GetYaxis()->SetRangeUser(-1.04,1.0);
@@ -1355,24 +1355,24 @@ void MakePhysicsPlots (unsigned int PlotType)
   else if (PlotType == 2) // Branching fraction
     {
       Utility->MakeGraphVar(ParameterFILE_MCGEN,&ge0,"BF");
-      ge0->SetMarkerColor(kBlack);
+      ge0->SetMarkerColor(kBlue);
       ge0->SetMarkerStyle(22);
       ge0->SetMarkerSize(1.2);
       ge0->SetFillColor(kWhite);
       ge0->SetFillStyle(0);
-      ge0->SetLineColor(kBlack);
+      ge0->SetLineColor(kBlue);
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(0.0,1.2);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
  
       Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"BF");
-      ge1->SetMarkerColor(kBlue);
+      ge1->SetMarkerColor(kBlack);
       ge1->SetMarkerStyle(20);
       ge1->SetMarkerSize(1.2);
       ge1->SetFillColor(kGreen-7);
       ge1->SetFillStyle(3001);
-      ge1->SetLineColor(kBlue);
+      ge1->SetLineColor(kBlack);
       ge1->SetLineWidth(2);
       ge1->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge1->GetYaxis()->SetRangeUser(0.0,1.2);
@@ -1458,12 +1458,12 @@ void MakePhysicsPlots (unsigned int PlotType)
       // # Graph containing only statistical errors #
       // ############################################
       ge11 = new TGraphAsymmErrors(*ge1);
-      ge11->SetMarkerColor(kBlue);
+      ge11->SetMarkerColor(kBlack);
       ge11->SetMarkerStyle(20);
       ge11->SetMarkerSize(1.2);
       ge11->SetFillColor(kGreen-7);
       ge11->SetFillStyle(3001);
-      ge11->SetLineColor(kBlue);
+      ge11->SetLineColor(kBlack);
       ge11->SetLineWidth(2);
 
 
@@ -1483,12 +1483,12 @@ void MakePhysicsPlots (unsigned int PlotType)
       // # Graph containing only statistical errors #
       // ############################################
       ge11 = new TGraphAsymmErrors(*ge1);
-      ge11->SetMarkerColor(kBlue);
+      ge11->SetMarkerColor(kBlack);
       ge11->SetMarkerStyle(20);
       ge11->SetMarkerSize(1.2);
       ge11->SetFillColor(kGreen-7);
       ge11->SetFillStyle(3001);
-      ge11->SetLineColor(kBlue);
+      ge11->SetLineColor(kBlack);
       ge11->SetLineWidth(2);
 
 
@@ -1508,12 +1508,12 @@ void MakePhysicsPlots (unsigned int PlotType)
       // # Graph containing only statistical errors #
       // ############################################
       ge11 = new TGraphAsymmErrors(*ge1);
-      ge11->SetMarkerColor(kBlue);
+      ge11->SetMarkerColor(kBlack);
       ge11->SetMarkerStyle(20);
       ge11->SetMarkerSize(1.2);
       ge11->SetFillColor(kGreen-7);
       ge11->SetFillStyle(3001);
-      ge11->SetLineColor(kBlue);
+      ge11->SetLineColor(kBlack);
       ge11->SetLineWidth(2);
 
 
@@ -1701,7 +1701,46 @@ void MakePhysicsPlots (unsigned int PlotType)
   leg->SetFillColor(0);
   leg->SetBorderSize(0);
   leg->Draw();
-  
+
+
+  // ###################################
+  // # Extract AFB zero crossing point #
+  // ###################################
+  if ((PlotType == 1) || (PlotType == 11))
+    {
+      TF1* ZeroCrox = new TF1("ZeroCrox","[0]*x + [1]",q2Bins[0],q2Bins[JPsibin]);
+      ZeroCrox->SetLineColor(kBlack);
+      ZeroCrox->SetLineWidth(2);
+
+      ZeroCrox->SetParameter(0,4.0);
+      ZeroCrox->SetParameter(1,-0.3);
+
+      ge0->Fit("ZeroCrox","VEMR0");
+      ZeroCrox->Draw("same");
+
+      double q0  = -ZeroCrox->GetParameter(1) / ZeroCrox->GetParameter(0);
+      double q0E = q0 * sqrt(pow(ZeroCrox->GetParError(0) / ZeroCrox->GetParameter(0),2.) + pow(ZeroCrox->GetParError(1) / ZeroCrox->GetParameter(1),2.));
+      cout << "\n@@@ Zero crossing point: " << q0 << " +/- " << q0E << " @@@" << endl;
+
+
+      // #################################
+      // # Print AFB zero crossing point #
+      // #################################
+      if (FORPAPER == false)
+	{
+	  paveText = new TPaveText(0.12,0.05,0.27,0.18,"NDC");
+	  paveText->SetTextAlign(11);
+	  paveText->SetBorderSize(0.0);
+	  paveText->SetFillColor(kWhite);
+	  paveText->AddText(Form("Zero crossing: %.1f#pm%.1f",q0,q0E));
+	  paveText->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",ZeroCrox->GetChisquare()/static_cast<double>(ZeroCrox->GetNDF())));
+	  paveText->AddText(Form("%s%.2f","p-value = ",TMath::Prob(ZeroCrox->GetChisquare(),ZeroCrox->GetNDF())));
+	  paveText->SetFillStyle(0);
+	  paveText->SetTextSize(0.035);
+	  paveText->Draw();
+	}
+    }
+
 
   // ########################
   // # Draw exclusion zones #
@@ -1839,12 +1878,13 @@ void MakePhysicsPlots (unsigned int PlotType)
   pad1->cd();
   if (FORPAPER == false)
     {
-      paveText = new TPaveText(0.8,0.05,0.97,0.15,"NDC");
+      paveText = new TPaveText(0.75,0.05,0.95,0.18,"NDC");
       paveText->SetTextAlign(11);
       paveText->SetBorderSize(0.0);
       paveText->SetFillColor(kWhite);
+      paveText->AddText("Global compatibility");
       paveText->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myGlobalChi2));
-      paveText->AddText(Form("%s%.3f","p-value = ",TMath::Prob(myGlobalChi2*static_cast<double>(DoF),DoF)));
+      paveText->AddText(Form("%s%.2f","p-value = ",TMath::Prob(myGlobalChi2*static_cast<double>(DoF),DoF)));
       paveText->SetFillStyle(0);
       paveText->SetTextSize(0.035);
       paveText->Draw();
