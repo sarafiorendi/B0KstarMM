@@ -1926,8 +1926,8 @@ void ZeroCrossing (string fileName, const double minq2, const double maxq2, cons
   // ####################
   // # Quering the tree #
   // ####################
-  B0KstMuMuNTuple->Draw("CosThetaMuArb:mumuMass*mumuMass>>h2p","mumuMass*mumuMass < 8.5 && CosThetaMuArb > 0","goff");
-  B0KstMuMuNTuple->Draw("CosThetaMuArb:mumuMass*mumuMass>>h2m","mumuMass*mumuMass < 8.5 && CosThetaMuArb < 0","goff");
+  B0KstMuMuNTuple->Draw("CosThetaMuArb:mumuMass*mumuMass>>h2p","B0MassArb > 5.2 && B0MassArb < 5.34 && mumuMass*mumuMass > 1.0 && mumuMass*mumuMass < 8.5 && CosThetaMuArb > 0","goff");
+  B0KstMuMuNTuple->Draw("CosThetaMuArb:mumuMass*mumuMass>>h2m","B0MassArb > 5.2 && B0MassArb < 5.34 && mumuMass*mumuMass > 1.0 && mumuMass*mumuMass < 8.5 && CosThetaMuArb < 0","goff");
 
 
   TCanvas* c0 = new TCanvas("c0","c0",900,500);
@@ -1945,9 +1945,9 @@ void ZeroCrossing (string fileName, const double minq2, const double maxq2, cons
   c0->Update();
 
 
-  // #######################
-  // # Macking projections #
-  // #######################
+  // ######################
+  // # Making projections #
+  // ######################
   for (unsigned int i = 0; i < nBins; i++)
     {
       double counterP = 0.0;
@@ -1955,8 +1955,8 @@ void ZeroCrossing (string fileName, const double minq2, const double maxq2, cons
       
       for (unsigned int j = 0; j < nBins; j++)
 	{
-	  counterP += h2p->GetBinContent(i,j);
-	  counterM += h2m->GetBinContent(i,j);
+	  counterP += h2p->GetBinContent(i+1,j+1);
+	  counterM += h2m->GetBinContent(i+1,j+1);
 	}
       
       h1p->SetBinContent(i+1,counterP);

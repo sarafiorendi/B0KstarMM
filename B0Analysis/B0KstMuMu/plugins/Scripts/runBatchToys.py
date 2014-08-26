@@ -51,10 +51,14 @@ for i in binList:
         print cp
         system(cp)
 
+        cp = "cp ../../python/ParameterFile.txt " + dir
+        print cp
+        system(cp)
+
         chdir(dir)
 
         toRun = "Qsub -l lnxfarm -e -o toyMC_" + par + "_" + str(nJobs) + "_" + str(i) + ".log -N T" + str(nJobs) + par + str(i) + " ./ExtractYield " + str(fitType)
-        toRun = toRun + " toyMC_" + par + "_" + str(nJobs) + "_" + str(i) + ".root yesEffCorr " + str(i) + " " + str(nToysJob) + " " + str(nJobs) + " ../../../python/ParameterFile.txt"
+        toRun = toRun + " toyMC_" + par + "_" + str(nJobs) + "_" + str(i) + ".root yesEffCorr " + str(i) + " " + str(nToysJob) + " " + str(nJobs) + " ParameterFile.txt"
         print toRun
         system(toRun)
 

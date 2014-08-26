@@ -49,6 +49,8 @@ using std::vector;
 #define FitSysFILE "../efficiency/EffSystematicsData/FitSystematics_q2Bin.txt"
 #define YvalueOutsideLimits 10.0 // Value given to bins with zero error in order not to show them
 #define FORPAPER false           // "true" = make special layout for publication in "MakePhysicsPlots" member function
+#define q0SM  4.0                // Standard Model value of AFB zero crossing point
+#define q0SME 0.2                // Error on q0SM
 
 // ##################
 // # SM predictions #
@@ -1715,12 +1717,13 @@ void MakePhysicsPlots (unsigned int PlotType)
       ZeroCrox->SetParameter(0,4.0);
       ZeroCrox->SetParameter(1,-0.3);
 
-      ge0->Fit("ZeroCrox","VEMR0");
+      ge0->Fit("ZeroCrox","V E MR0");
       ZeroCrox->Draw("same");
 
       double q0  = -ZeroCrox->GetParameter(1) / ZeroCrox->GetParameter(0);
       double q0E = q0 * sqrt(pow(ZeroCrox->GetParError(0) / ZeroCrox->GetParameter(0),2.) + pow(ZeroCrox->GetParError(1) / ZeroCrox->GetParameter(1),2.));
       cout << "\n@@@ Zero crossing point: " << q0 << " +/- " << q0E << " @@@" << endl;
+      cout << "@@@ p-value (for SM compatibility): " << 2.*TMath::Erfc(fabs(q0 - q0SM) / sqrt(q0E*q0E + q0SME*q0SME)) << " @@@" << endl;
 
 
       // #################################
