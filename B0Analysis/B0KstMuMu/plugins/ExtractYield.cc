@@ -4525,7 +4525,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
 	      myString << "_ERR.root";
 	      fNLL = new TFile(fileName.replace(fileName.find("_VAL.root"),9,myString.str()).c_str(),"RECREATE");
 	      fNLL->cd();
-	      histoVal1->Write();
+	      histoErr1->Write();
 	      fNLL->Close();
 	      delete fNLL;
 
@@ -4555,6 +4555,8 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   cNLL1->cd(4);
   histoVal1->Draw();
   cNLL1->cd(5);
+  histoErr1->Draw();
+  cNLL1->cd(6);
   histoChiSq1->Draw();
   cNLL1->Modified();
   cNLL1->Update();
@@ -4605,7 +4607,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
       myString << "_ERR.root";
       fNLL = new TFile(fileName.replace(fileName.find("_VAL.root"),9,myString.str()).c_str(),"RECREATE");
       fNLL->cd();
-      histoVal1->Write();
+      histoErr1->Write();
       fNLL->Close();
       delete fNLL;
 
@@ -6884,7 +6886,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 	      myString << "_FL_" << specBin << "_ERR.root";
 	      fNLL = new TFile(fileName.replace(fileName.find("_FL_"),14,myString.str()).c_str(),"RECREATE");
 	      fNLL->cd();
-	      histoVal1->Write();
+	      histoErr1->Write();
 	      fNLL->Close();
 	      delete fNLL;
 
@@ -6932,7 +6934,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 	      myString << "_AFB_" << specBin << "_ERR.root";
 	      fNLL = new TFile(fileName.replace(fileName.find("_AFB_"),15,myString.str()).c_str(),"RECREATE");
 	      fNLL->cd();
-	      histoVal2->Write();
+	      histoErr2->Write();
 	      fNLL->Close();
 	      delete fNLL;
 
@@ -7031,7 +7033,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       myString << "_FL_" << specBin << "_ERR.root";
       fNLL = new TFile(fileName.replace(fileName.find("_FL_"),14,myString.str()).c_str(),"RECREATE");
       fNLL->cd();
-      histoVal1->Write();
+      histoErr1->Write();
       fNLL->Close();
       delete fNLL;
 
@@ -7079,7 +7081,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       myString << "_AFB_" << specBin << "_ERR.root";
       fNLL = new TFile(fileName.replace(fileName.find("_AFB_"),15,myString.str()).c_str(),"RECREATE");
       fNLL->cd();
-      histoVal2->Write();
+      histoErr2->Write();
       fNLL->Close();
       delete fNLL;
 
