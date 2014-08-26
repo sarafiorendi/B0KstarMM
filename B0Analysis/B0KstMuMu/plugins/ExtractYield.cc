@@ -93,7 +93,7 @@ using namespace RooFit;
 // # External files #
 // ##################
 #define PARAMETERFILEIN  "../python/ParameterFile.txt"
-#define PARAMETERFILEOUT "ParameterFile.txt"
+#define PARAMETERFILEOUT "ParameterFileOut.txt"
 
 
 // ############################################
