@@ -4506,71 +4506,71 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
 	  histoDiff1->Fill(GetVar(TotalPDF,varName.c_str())->getVal() - atof(myString.str().c_str()));
 	  histoVal1->Fill(GetVar(TotalPDF,varName.c_str())->getVal());
 	  histoNLL1->Fill(NLLvalue);
-
-
-	  // ##############
-	  // # Save plots #
-	  // ##############
-	  if ((SAVEPLOT == true) && (i%modulus == 0))
-	    {
-	      cout << "\n[ExtractYield::MakeMassToy]\t@@@ Saving histograms after #" << i << "/" << nToy << " iterations @@@" << endl;
-
-	      string tmpStr = fileName;
-	      TFile* fNLL;
-
-	      Canv->Print(fileName.c_str());
-
-	      myString.clear(); myString.str("");
-	      myString << "_DIFF.root";
-	      fNLL = new TFile(fileName.replace(fileName.find(".root"),5,myString.str()).c_str(),"RECREATE");
-	      fNLL->cd();
-	      histoDiff1->Write();
-	      fNLL->Close();
-	      delete fNLL;
-
-	      myString.clear(); myString.str("");
-	      myString << "_PULL.root";
-	      fNLL = new TFile(fileName.replace(fileName.find("_DIFF.root"),10,myString.str()).c_str(),"RECREATE");
-	      fNLL->cd();
-	      histoPull1->Write();
-	      fNLL->Close();
-	      delete fNLL;
-
-	      myString.clear(); myString.str("");
-	      myString << "_CHI2.root";
-	      fNLL = new TFile(fileName.replace(fileName.find("_PULL.root"),10,myString.str()).c_str(),"RECREATE");
-	      fNLL->cd();
-	      histoChiSq1->Write();
-	      fNLL->Close();
-	      delete fNLL;
-
-	      myString.clear(); myString.str("");
-	      myString << "_VAL.root";
-	      fNLL = new TFile(fileName.replace(fileName.find("_CHI2.root"),10,myString.str()).c_str(),"RECREATE");
-	      fNLL->cd();
-	      histoVal1->Write();
-	      fNLL->Close();
-	      delete fNLL;
-
-	      myString.clear(); myString.str("");
-	      myString << "_ERR.root";
-	      fNLL = new TFile(fileName.replace(fileName.find("_VAL.root"),9,myString.str()).c_str(),"RECREATE");
-	      fNLL->cd();
-	      histoErr1->Write();
-	      fNLL->Close();
-	      delete fNLL;
-
-	      myString.clear(); myString.str("");
-	      myString << "_NLL.root";
-	      fNLL = new TFile(fileName.replace(fileName.find("_ERR.root"),9,myString.str()).c_str(),"RECREATE");
-	      fNLL->cd();
-	      histoNLL1->Write();
-	      fNLL->Close();
-	      delete fNLL;
-
-	      fileName = tmpStr;
-	    }
       	}
+
+
+      // ##############
+      // # Save plots #
+      // ##############
+      if ((SAVEPLOT == true) && (i%modulus == 0))
+	{
+	  cout << "\n[ExtractYield::MakeMassToy]\t@@@ Saving histograms after #" << i << "/" << nToy << " iterations @@@" << endl;
+
+	  string tmpStr = fileName;
+	  TFile* fNLL;
+
+	  Canv->Print(fileName.c_str());
+
+	  myString.clear(); myString.str("");
+	  myString << "_DIFF.root";
+	  fNLL = new TFile(fileName.replace(fileName.find(".root"),5,myString.str()).c_str(),"RECREATE");
+	  fNLL->cd();
+	  histoDiff1->Write();
+	  fNLL->Close();
+	  delete fNLL;
+
+	  myString.clear(); myString.str("");
+	  myString << "_PULL.root";
+	  fNLL = new TFile(fileName.replace(fileName.find("_DIFF.root"),10,myString.str()).c_str(),"RECREATE");
+	  fNLL->cd();
+	  histoPull1->Write();
+	  fNLL->Close();
+	  delete fNLL;
+
+	  myString.clear(); myString.str("");
+	  myString << "_CHI2.root";
+	  fNLL = new TFile(fileName.replace(fileName.find("_PULL.root"),10,myString.str()).c_str(),"RECREATE");
+	  fNLL->cd();
+	  histoChiSq1->Write();
+	  fNLL->Close();
+	  delete fNLL;
+
+	  myString.clear(); myString.str("");
+	  myString << "_VAL.root";
+	  fNLL = new TFile(fileName.replace(fileName.find("_CHI2.root"),10,myString.str()).c_str(),"RECREATE");
+	  fNLL->cd();
+	  histoVal1->Write();
+	  fNLL->Close();
+	  delete fNLL;
+
+	  myString.clear(); myString.str("");
+	  myString << "_ERR.root";
+	  fNLL = new TFile(fileName.replace(fileName.find("_VAL.root"),9,myString.str()).c_str(),"RECREATE");
+	  fNLL->cd();
+	  histoErr1->Write();
+	  fNLL->Close();
+	  delete fNLL;
+
+	  myString.clear(); myString.str("");
+	  myString << "_NLL.root";
+	  fNLL = new TFile(fileName.replace(fileName.find("_ERR.root"),9,myString.str()).c_str(),"RECREATE");
+	  fNLL->cd();
+	  histoNLL1->Write();
+	  fNLL->Close();
+	  delete fNLL;
+
+	  fileName = tmpStr;
+	}
       delete fitResult;
     }
 
@@ -6876,118 +6876,118 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 	  histoDiff2->Fill(varVal - atof(myString.str().c_str()));
 	  histoVal2->Fill(varVal);
 	  histoNLL2->Fill(NLLvalue);
+	}
 
 
-	  // ##############
-	  // # Save plots #
-	  // ##############
-	  if ((SAVEPLOT == true) && (i%modulus == 0))
-	    {
-	      cout << "\n[ExtractYield::MakeMass2AnglesToy]\t@@@ Saving histograms after #" << i << "/" << nToy << " iterations @@@" << endl;
+      // ##############
+      // # Save plots #
+      // ##############
+      if ((SAVEPLOT == true) && (i%modulus == 0))
+	{
+	  cout << "\n[ExtractYield::MakeMass2AnglesToy]\t@@@ Saving histograms after #" << i << "/" << nToy << " iterations @@@" << endl;
 
-	      string tmpStr = fileName;
-	      TFile* fNLL;
+	  string tmpStr = fileName;
+	  TFile* fNLL;
 
-	      Canv->Print(fileName.c_str());
+	  Canv->Print(fileName.c_str());
 
-	      myString.clear(); myString.str("");
-	      myString << "FL_" << specBin << "_DIFF.root";
-	      fNLL = new TFile(fileName.replace(fileName.find(".root")-1,6,myString.str()).c_str(),"RECREATE");
-	      fNLL->cd();
-	      histoDiff1->Write();
-	      fNLL->Close();
-	      delete fNLL;
+	  myString.clear(); myString.str("");
+	  myString << "FL_" << specBin << "_DIFF.root";
+	  fNLL = new TFile(fileName.replace(fileName.find(".root")-1,6,myString.str()).c_str(),"RECREATE");
+	  fNLL->cd();
+	  histoDiff1->Write();
+	  fNLL->Close();
+	  delete fNLL;
 
-	      myString.clear(); myString.str("");
-	      myString << "_FL_" << specBin << "_PULL.root";
-	      fNLL = new TFile(fileName.replace(fileName.find("_FL_"),15,myString.str()).c_str(),"RECREATE");
-	      fNLL->cd();
-	      histoPull1->Write();
-	      fNLL->Close();
-	      delete fNLL;
+	  myString.clear(); myString.str("");
+	  myString << "_FL_" << specBin << "_PULL.root";
+	  fNLL = new TFile(fileName.replace(fileName.find("_FL_"),15,myString.str()).c_str(),"RECREATE");
+	  fNLL->cd();
+	  histoPull1->Write();
+	  fNLL->Close();
+	  delete fNLL;
 
-	      myString.clear(); myString.str("");
-	      myString << "_FL_" << specBin << "_CHI2.root";
-	      fNLL = new TFile(fileName.replace(fileName.find("_FL_"),15,myString.str()).c_str(),"RECREATE");
-	      fNLL->cd();
-	      histoChiSq1->Write();
-	      fNLL->Close();
-	      delete fNLL;
+	  myString.clear(); myString.str("");
+	  myString << "_FL_" << specBin << "_CHI2.root";
+	  fNLL = new TFile(fileName.replace(fileName.find("_FL_"),15,myString.str()).c_str(),"RECREATE");
+	  fNLL->cd();
+	  histoChiSq1->Write();
+	  fNLL->Close();
+	  delete fNLL;
 
-	      myString.clear(); myString.str("");
-	      myString << "_FL_" << specBin << "_VAL.root";
-	      fNLL = new TFile(fileName.replace(fileName.find("_FL_"),15,myString.str()).c_str(),"RECREATE");
-	      fNLL->cd();
-	      histoVal1->Write();
-	      fNLL->Close();
-	      delete fNLL;
+	  myString.clear(); myString.str("");
+	  myString << "_FL_" << specBin << "_VAL.root";
+	  fNLL = new TFile(fileName.replace(fileName.find("_FL_"),15,myString.str()).c_str(),"RECREATE");
+	  fNLL->cd();
+	  histoVal1->Write();
+	  fNLL->Close();
+	  delete fNLL;
 
-	      myString.clear(); myString.str("");
-	      myString << "_FL_" << specBin << "_ERR.root";
-	      fNLL = new TFile(fileName.replace(fileName.find("_FL_"),14,myString.str()).c_str(),"RECREATE");
-	      fNLL->cd();
-	      histoErr1->Write();
-	      fNLL->Close();
-	      delete fNLL;
+	  myString.clear(); myString.str("");
+	  myString << "_FL_" << specBin << "_ERR.root";
+	  fNLL = new TFile(fileName.replace(fileName.find("_FL_"),14,myString.str()).c_str(),"RECREATE");
+	  fNLL->cd();
+	  histoErr1->Write();
+	  fNLL->Close();
+	  delete fNLL;
 
-	      myString.clear(); myString.str("");
-	      myString << "_FL_" << specBin << "_NLL.root";
-	      fNLL = new TFile(fileName.replace(fileName.find("_FL_"),14,myString.str()).c_str(),"RECREATE");
-	      fNLL->cd();
-	      histoNLL1->Write();
-	      fNLL->Close();
-	      delete fNLL;
+	  myString.clear(); myString.str("");
+	  myString << "_FL_" << specBin << "_NLL.root";
+	  fNLL = new TFile(fileName.replace(fileName.find("_FL_"),14,myString.str()).c_str(),"RECREATE");
+	  fNLL->cd();
+	  histoNLL1->Write();
+	  fNLL->Close();
+	  delete fNLL;
 
-	      myString.clear(); myString.str("");
-	      myString << "_AFB_" << specBin << "_DIFF.root";
-	      fNLL = new TFile(fileName.replace(fileName.find("_FL_"),14,myString.str()).c_str(),"RECREATE");
-	      fNLL->cd();
-	      histoDiff2->Write();
-	      fNLL->Close();
-	      delete fNLL;
+	  myString.clear(); myString.str("");
+	  myString << "_AFB_" << specBin << "_DIFF.root";
+	  fNLL = new TFile(fileName.replace(fileName.find("_FL_"),14,myString.str()).c_str(),"RECREATE");
+	  fNLL->cd();
+	  histoDiff2->Write();
+	  fNLL->Close();
+	  delete fNLL;
 
-	      myString.clear(); myString.str("");
-	      myString << "_AFB_" << specBin << "_PULL.root";
-	      fNLL = new TFile(fileName.replace(fileName.find("_AFB_"),16,myString.str()).c_str(),"RECREATE");
-	      fNLL->cd();
-	      histoPull2->Write();
-	      fNLL->Close();
-	      delete fNLL;
+	  myString.clear(); myString.str("");
+	  myString << "_AFB_" << specBin << "_PULL.root";
+	  fNLL = new TFile(fileName.replace(fileName.find("_AFB_"),16,myString.str()).c_str(),"RECREATE");
+	  fNLL->cd();
+	  histoPull2->Write();
+	  fNLL->Close();
+	  delete fNLL;
 
-	      myString.clear(); myString.str("");
-	      myString << "_AFB_" << specBin << "_CHI2.root";
-	      fNLL = new TFile(fileName.replace(fileName.find("_AFB_"),16,myString.str()).c_str(),"RECREATE");
-	      fNLL->cd();
-	      histoChiSq2->Write();
-	      fNLL->Close();
-	      delete fNLL;
+	  myString.clear(); myString.str("");
+	  myString << "_AFB_" << specBin << "_CHI2.root";
+	  fNLL = new TFile(fileName.replace(fileName.find("_AFB_"),16,myString.str()).c_str(),"RECREATE");
+	  fNLL->cd();
+	  histoChiSq2->Write();
+	  fNLL->Close();
+	  delete fNLL;
 
-	      myString.clear(); myString.str("");
-	      myString << "_AFB_" << specBin << "_VAL.root";
-	      fNLL = new TFile(fileName.replace(fileName.find("_AFB_"),16,myString.str()).c_str(),"RECREATE");
-	      fNLL->cd();
-	      histoVal2->Write();
-	      fNLL->Close();
-	      delete fNLL;
+	  myString.clear(); myString.str("");
+	  myString << "_AFB_" << specBin << "_VAL.root";
+	  fNLL = new TFile(fileName.replace(fileName.find("_AFB_"),16,myString.str()).c_str(),"RECREATE");
+	  fNLL->cd();
+	  histoVal2->Write();
+	  fNLL->Close();
+	  delete fNLL;
 
-	      myString.clear(); myString.str("");
-	      myString << "_AFB_" << specBin << "_ERR.root";
-	      fNLL = new TFile(fileName.replace(fileName.find("_AFB_"),15,myString.str()).c_str(),"RECREATE");
-	      fNLL->cd();
-	      histoErr2->Write();
-	      fNLL->Close();
-	      delete fNLL;
+	  myString.clear(); myString.str("");
+	  myString << "_AFB_" << specBin << "_ERR.root";
+	  fNLL = new TFile(fileName.replace(fileName.find("_AFB_"),15,myString.str()).c_str(),"RECREATE");
+	  fNLL->cd();
+	  histoErr2->Write();
+	  fNLL->Close();
+	  delete fNLL;
 
-	      myString.clear(); myString.str("");
-	      myString << "_AFB_" << specBin << "_NLL.root";
-	      fNLL = new TFile(fileName.replace(fileName.find("_AFB_"),15,myString.str()).c_str(),"RECREATE");
-	      fNLL->cd();
-	      histoNLL2->Write();
-	      fNLL->Close();
-	      delete fNLL;
+	  myString.clear(); myString.str("");
+	  myString << "_AFB_" << specBin << "_NLL.root";
+	  fNLL = new TFile(fileName.replace(fileName.find("_AFB_"),15,myString.str()).c_str(),"RECREATE");
+	  fNLL->cd();
+	  histoNLL2->Write();
+	  fNLL->Close();
+	  delete fNLL;
 
-	      fileName = tmpStr;
-	    }
+	  fileName = tmpStr;
 	}
       delete fitResult;
     }
