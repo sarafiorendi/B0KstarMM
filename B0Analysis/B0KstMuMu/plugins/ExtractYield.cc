@@ -1382,10 +1382,13 @@ void ResetAngularParam (vector<vector<string>*>* fitParam, RooAbsPdf* pdf)
 double StoreFitResultsInFile (RooAbsPdf* pdf, RooFitResult* fitResult, RooDataSet* dataSet, RooArgSet* vecConstr)
 {
   RooAbsReal* NLL;
+
   double signalSigmaGoodT  = 0.0;
   double signalSigmaGoodTE = 0.0;
+
   double signalSigmaMisT   = 0.0;
   double signalSigmaMisTE  = 0.0;
+
   double varVal;
   double varValELo;
   double varValEHi;
@@ -3598,14 +3601,19 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   RooFitResult* fitResult = NULL;
   RooArgSet VarsYield;
   stringstream myString;
+
   double signalSigmaGoodT  = 0.0;
   double signalSigmaGoodTE = 0.0;
+
   double signalSigmaMisT   = 0.0;
   double signalSigmaMisTE  = 0.0;
+
   double signalSigmaT      = 0.0;
   double signalSigmaTE     = 0.0;
+
   double totalYield        = 0.0;
   double totalYieldE       = 0.0;
+
   unsigned int nElements   = 0;
   unsigned int it          = 0;
   TString legNames[6];
@@ -3758,7 +3766,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   if ((GetVar(*TotalPDF,"nSig") != NULL) || (GetVar(*TotalPDF,"nMisTagFrac") != NULL))
     {
       paveTextX->AddText(Form("%s%.3f#pm%.3f","#mu = ",GetVar(*TotalPDF,"meanS")->getVal(),GetVar(*TotalPDF,"meanS")->getError()));
-      paveTextX->AddText(Form("%s%.3f#pm%.3f","Total < #sigma > = ",signalSigmaT,signalSigmaTE));
+      paveTextX->AddText(Form("%s%.3f#pm%.3f","< #sigma > = ",signalSigmaT,signalSigmaTE));
     }
   paveTextX->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
   
@@ -4478,7 +4486,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
 
   TH1D* histoChiSq1 = new TH1D("histoChiSq1","histoChiSq1",100,0.0,30.0);
   histoChiSq1->SetFillColor(kAzure+6);
-  histoChiSq1->SetXTitle("(fit #font[122]{\55} pdf){^2} / #sigma{^2}");
+  histoChiSq1->SetXTitle("(fit #font[122]{\55} pdf)^{2} / #sigma^{2}");
   histoChiSq1->SetYTitle("Entries [#]");
 
   TH1D* histoVal1 = new TH1D("histoVal1","histoVal1",100,0.0,400.0);
@@ -4965,14 +4973,19 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
   RooFitResult* fitResult = NULL;
   RooArgSet VarsYield;
   stringstream myString;
+
   double signalSigmaGoodT  = 0.0;
   double signalSigmaGoodTE = 0.0;
+
   double signalSigmaMisT   = 0.0;
   double signalSigmaMisTE  = 0.0;
-  double signalSigmaT      = 0.0;
+
+  double signalSigmaT      = Utility->GetB0Width();
   double signalSigmaTE     = 0.0;
+
   double totalYield        = 0.0;
   double totalYieldE       = 0.0;
+
   unsigned int nElements   = 0;
   unsigned int it          = 0;
   TString legNames[6];
@@ -5340,7 +5353,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       if ((GetVar(*TotalPDF,"nSig") != NULL) || (GetVar(*TotalPDF,"nMisTagFrac") != NULL))
 	{
 	  paveTextX->AddText(Form("%s%.3f#pm%.3f","#mu = ",GetVar(*TotalPDF,"meanS")->getVal(),GetVar(*TotalPDF,"meanS")->getError()));
-	  paveTextX->AddText(Form("%s%.3f#pm%.3f","Total < #sigma > = ",signalSigmaT,signalSigmaTE));
+	  paveTextX->AddText(Form("%s%.3f#pm%.3f","< #sigma > = ",signalSigmaT,signalSigmaTE));
 	}
       paveTextX->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
       
@@ -5714,7 +5727,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       (*TotalPDF)->plotOn(myFrameSignalRegionY, Name((*TotalPDF)->getPlotLabel()), LineColor(kBlack), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*z)));
 
-      if (GetVar(*TotalPDF,"nSig")        != NULL)
+      if (GetVar(*TotalPDF,"nSig") != NULL)
 	{
 	  (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*Signal), FillStyle(3345), FillColor(kBlue), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*z)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*Signal), LineStyle(7),    LineColor(kBlue), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*z)), DrawOption("L"));
@@ -5724,12 +5737,12 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*z)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*MassAngleMisTag), LineStyle(8),    LineColor(kGreen+1), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*z)), DrawOption("L"));
 	}
-      if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("signalRegion"), Project(RooArgSet(*x,*z)));
-      if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("signalRegion"), Project(RooArgSet(*x,*z)));
+      if (GetVar(*TotalPDF,"nBkgComb") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("signalRegion"), Project(RooArgSet(*x,*z)));
+      if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("signalRegion"), Project(RooArgSet(*x,*z)));
 
 
       TPaveText* paveTextSignalRegionY = new TPaveText(0.12,0.75,0.4,0.88,"NDC");
-      paveTextSignalRegionY->AddText(Form("%s%.1f%s","Signal region: #pm",atof(Utility->GetGenericParam("NSigmaB0").c_str())," < #sigma >"));
+      paveTextSignalRegionY->AddText(Form("%s%.1f%s [%.3f]","Signal region: #pm",atof(Utility->GetGenericParam("NSigmaB0").c_str())," < #sigma >",signalSigmaT));
       paveTextSignalRegionY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameSignalRegionY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
       paveTextSignalRegionY->SetTextAlign(11);
       paveTextSignalRegionY->SetBorderSize(0.0);
@@ -5774,7 +5787,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       (*TotalPDF)->plotOn(myFrameHighSideBY, Name((*TotalPDF)->getPlotLabel()), LineColor(kBlack), ProjectionRange("highSideband"), Project(RooArgSet(*x,*z)));
 
-      if (GetVar(*TotalPDF,"nSig")        != NULL)
+      if (GetVar(*TotalPDF,"nSig") != NULL)
 	{
 	  (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*Signal), FillStyle(3345), FillColor(kBlue), ProjectionRange("highSideband"), Project(RooArgSet(*x,*z)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*Signal), LineStyle(7),    LineColor(kBlue), ProjectionRange("highSideband"), Project(RooArgSet(*x,*z)), DrawOption("L"));
@@ -5784,8 +5797,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), ProjectionRange("highSideband"), Project(RooArgSet(*x,*z)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*MassAngleMisTag), LineStyle(8),    LineColor(kGreen+1), ProjectionRange("highSideband"), Project(RooArgSet(*x,*z)), DrawOption("L"));
 	}
-      if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("highSideband"), Project(RooArgSet(*x,*z)));
-      if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("highSideband"), Project(RooArgSet(*x,*z)));
+      if (GetVar(*TotalPDF,"nBkgComb") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("highSideband"), Project(RooArgSet(*x,*z)));
+      if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("highSideband"), Project(RooArgSet(*x,*z)));
 
 
       TPaveText* paveTextHighSideBY = new TPaveText(0.12,0.75,0.4,0.88,"NDC");
@@ -5839,7 +5852,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       (*TotalPDF)->plotOn(myFrameLowSideBZ, Name((*TotalPDF)->getPlotLabel()), LineColor(kBlack), ProjectionRange("lowSideband"), Project(RooArgSet(*x,*y)));
 
-      if (GetVar(*TotalPDF,"nSig")        != NULL)
+      if (GetVar(*TotalPDF,"nSig") != NULL)
 	{
 	  (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*Signal), FillStyle(3345), FillColor(kBlue), ProjectionRange("lowSideband"), Project(RooArgSet(*x,*y)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*Signal), LineStyle(7),    LineColor(kBlue), ProjectionRange("lowSideband"), Project(RooArgSet(*x,*y)), DrawOption("L"));
@@ -5849,8 +5862,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), ProjectionRange("lowSideband"), Project(RooArgSet(*x,*y)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*MassAngleMisTag), LineStyle(8),    LineColor(kGreen+1), ProjectionRange("lowSideband"), Project(RooArgSet(*x,*y)), DrawOption("L"));
 	}
-      if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("lowSideband"), Project(RooArgSet(*x,*y)));
-      if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("lowSideband"), Project(RooArgSet(*x,*y)));
+      if (GetVar(*TotalPDF,"nBkgComb") != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("lowSideband"), Project(RooArgSet(*x,*y)));
+      if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("lowSideband"), Project(RooArgSet(*x,*y)));
 
 
       TPaveText* paveTextLowSideBZ = new TPaveText(0.12,0.75,0.4,0.88,"NDC");
@@ -5899,7 +5912,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       (*TotalPDF)->plotOn(myFrameSignalRegionZ, Name((*TotalPDF)->getPlotLabel()), LineColor(kBlack), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*y)));
 
-      if (GetVar(*TotalPDF,"nSig")        != NULL)
+      if (GetVar(*TotalPDF,"nSig") != NULL)
 	{
 	  (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*Signal), FillStyle(3345), FillColor(kBlue), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*y)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*Signal), LineStyle(7),    LineColor(kBlue), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*y)), DrawOption("L"));
@@ -5909,12 +5922,12 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*y)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*MassAngleMisTag), LineStyle(8),    LineColor(kGreen+1), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*y)), DrawOption("L"));
 	}
-      if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("signalRegion"), Project(RooArgSet(*x,*y)));
-      if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("signalRegion"), Project(RooArgSet(*x,*y)));
+      if (GetVar(*TotalPDF,"nBkgComb") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("signalRegion"), Project(RooArgSet(*x,*y)));
+      if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("signalRegion"), Project(RooArgSet(*x,*y)));
 
 
       TPaveText* paveTextSignalRegionZ = new TPaveText(0.12,0.75,0.4,0.88,"NDC");
-      paveTextSignalRegionZ->AddText(Form("%s%.1f%s","Signal region: #pm",atof(Utility->GetGenericParam("NSigmaB0").c_str())," < #sigma >"));
+      paveTextSignalRegionZ->AddText(Form("%s%.1f%s [%.3f]","Signal region: #pm",atof(Utility->GetGenericParam("NSigmaB0").c_str())," < #sigma >",signalSigmaT));
       paveTextSignalRegionZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameSignalRegionZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
       paveTextSignalRegionZ->SetTextAlign(11);
       paveTextSignalRegionZ->SetBorderSize(0.0);
@@ -5959,7 +5972,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       (*TotalPDF)->plotOn(myFrameHighSideBZ, Name((*TotalPDF)->getPlotLabel()), LineColor(kBlack), ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)));
 
-      if (GetVar(*TotalPDF,"nSig")        != NULL)
+      if (GetVar(*TotalPDF,"nSig") != NULL)
 	{
 	  (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*Signal), FillStyle(3345), FillColor(kBlue), ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*Signal), LineStyle(7),    LineColor(kBlue), ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)), DrawOption("L"));
@@ -5969,8 +5982,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*MassAngleMisTag), LineStyle(8),    LineColor(kGreen+1), ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)), DrawOption("L"));
 	}
-      if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)));
-      if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)));
+      if (GetVar(*TotalPDF,"nBkgComb") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)));
+      if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)));
 
 
       TPaveText* paveTextHighSideBZ = new TPaveText(0.12,0.75,0.4,0.88,"NDC");
@@ -6898,7 +6911,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 
   TH1D* histoChiSq1 = new TH1D("histoChiSq1","histoChiSq1",100,0.0,30.0);
   histoChiSq1->SetFillColor(kAzure+6);
-  histoChiSq1->SetXTitle("(fit #font[122]{\55} pdf){^2} / #sigma{^2}");
+  histoChiSq1->SetXTitle("(fit #font[122]{\55} pdf)^{2} / #sigma^{2}");
   histoChiSq1->SetYTitle("Entries [#]");
 
   TH1D* histoVal1 = new TH1D("histoVal1","histoVal1",100,0.0,1.0);
@@ -6928,7 +6941,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 
   TH1D* histoChiSq2 = new TH1D("histoChiSq2","histoChiSq2",100,0.0,30.0);
   histoChiSq2->SetFillColor(kAzure+6);
-  histoChiSq2->SetXTitle("(fit #font[122]{\55} pdf){^2} / #sigma{^2}");
+  histoChiSq2->SetXTitle("(fit #font[122]{\55} pdf)^{2} / #sigma^{2}");
   histoChiSq2->SetYTitle("Entries [#]");
 
   TH1D* histoVal2 = new TH1D("histoVal2","histoVal2",100,-1.0,1.0);
