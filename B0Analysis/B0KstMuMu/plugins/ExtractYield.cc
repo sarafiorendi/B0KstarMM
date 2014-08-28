@@ -1300,34 +1300,22 @@ void ResetCombPolyParam (vector<vector<string>*>* fitParam, RooAbsPdf* pdf)
     }
   else if (pdf != NULL)
     {
+      myString.clear(); myString.str("");
+      myString << "0.0";
+
       for (unsigned int i = 0; i < NCOEFFPOLYBKG; i++)
 	{
 	  myCoeff.clear(); myCoeff.str("");
 	  myCoeff << "c1Poly" << i;
-	  if (GetVar(pdf,myCoeff.str().c_str()) != NULL)
-	    {
-	      myString.clear(); myString.str("");
-	      myString << "0.0";
-	      SetValueAndErrors(pdf,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
-	    }
+	  SetValueAndErrors(pdf,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
 
 	  myCoeff.clear(); myCoeff.str("");
 	  myCoeff << "c2Poly" << i;
-	  if (GetVar(pdf,myCoeff.str().c_str()) != NULL)
-	    {
-	      myString.clear(); myString.str("");
-	      myString << "0.0";
-	      SetValueAndErrors(pdf,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
-	    }
+	  SetValueAndErrors(pdf,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
 
 	  myCoeff.clear(); myCoeff.str("");
 	  myCoeff << "c3Poly" << i;
-	  if (GetVar(pdf,myCoeff.str().c_str()) != NULL)
-	    {
-	      myString.clear(); myString.str("");
-	      myString << "0.0";
-	      SetValueAndErrors(pdf,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
-	    }
+	  SetValueAndErrors(pdf,myCoeff.str(),1.0,&myString,&value,&errLo,&errHi);
 	}
     }
   else
@@ -1357,12 +1345,12 @@ void ResetAngularParam (vector<vector<string>*>* fitParam, RooAbsPdf* pdf)
 	  fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](j)  = "0.25";
 	  fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](j)  = "0.0";
 
-	  cout << "FL: "   << "\t" << fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](j).c_str() << endl;
-	  cout << "AFB: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](j).c_str() << endl;
-	  cout << "P1: "   << "\t" << fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](j).c_str() << endl;
-	  cout << "P2: "   << "\t" << fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](j).c_str() << endl;
-	  cout << "FS: "   << "\t" << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](j).c_str() << endl;
-	  cout << "AS: "   << "\t" << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](j).c_str() << endl;
+	  cout << "FL: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](j).c_str()  << endl;
+	  cout << "AFB: " << "\t" << fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](j).c_str() << endl;
+	  cout << "P1: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](j).c_str()  << endl;
+	  cout << "P2: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](j).c_str()  << endl;
+	  cout << "FS: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](j).c_str()  << endl;
+	  cout << "AS: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](j).c_str()  << endl;
 	}
     }
   else if (pdf != NULL)
@@ -1382,14 +1370,6 @@ void ResetAngularParam (vector<vector<string>*>* fitParam, RooAbsPdf* pdf)
       myString.clear(); myString.str("");
       myString << "0.0";
       SetValueAndErrors(pdf,"P2S",1.0,&myString,&value,&errLo,&errHi);
-
-      myString.clear(); myString.str("");
-      myString << "0.25";
-      SetValueAndErrors(pdf,"FsS",1.0,&myString,&value,&errLo,&errHi);
-
-      myString.clear(); myString.str("");
-      myString << "0.0";
-      SetValueAndErrors(pdf,"AsS",1.0,&myString,&value,&errLo,&errHi);
     }
   else
     {
@@ -2589,7 +2569,7 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
 // # option = "All"        #
 // # option = "misTagFrac" #
 // # option = "FlAfb"      #
-// # option = "bkgAng"     #
+// # option = "combBkgAng" #
 // #########################
 {
   stringstream myString;
@@ -2705,7 +2685,7 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
   NCoeffPolyBKGcomb2 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC2"))->operator[](q2BinIndx).c_str());
   NCoeffPolyBKGcomb3 = atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC3"))->operator[](q2BinIndx).c_str());
 
-  if ((option == "All") || (option == "bkgAng"))
+  if ((option == "All") || (option == "combBkgAng"))
     {
       for (unsigned int i = 0; i < NCoeffPolyBKGcomb1; i++)
 	{
@@ -7951,7 +7931,7 @@ int main(int argc, char** argv)
 
 	      for (unsigned int i = 0; i < q2Bins.size()-1; i++)
 		{
-		  if (i == static_cast<unsigned int>(specBin)) GenerateFitParameters(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,i,"All"); // @TMP@ : "All" "misTagFrac" "FlAfb" "bkgAng"
+		  if (i == static_cast<unsigned int>(specBin)) GenerateFitParameters(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,i,"All"); // @TMP@ : "All" "misTagFrac" "FlAfb" "combBkgAng"
 
 		  vecParStr = SaveFitResults(i,&fitParam,&configParam,&vecConstr);
 		  Utility->SaveFitValues(fileName,vecParStr,i);
