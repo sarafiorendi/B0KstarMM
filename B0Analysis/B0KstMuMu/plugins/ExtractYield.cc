@@ -1300,6 +1300,8 @@ void ResetCombPolyParam (vector<vector<string>*>* fitParam, RooAbsPdf* pdf)
     }
   else if (pdf != NULL)
     {
+      cout << "\n[ExtractYield::ResetCombPolyParam]\t@@@ Resetting the combinatorial background polynomial coefficients in the p.d.f. @@@" << endl;
+
       myString.clear(); myString.str("");
       myString << "0.0";
 
@@ -1355,6 +1357,8 @@ void ResetAngularParam (vector<vector<string>*>* fitParam, RooAbsPdf* pdf)
     }
   else if (pdf != NULL)
     {
+      cout << "\n[ExtractYield::ResetAngularParam]\t@@@ Resetting the angular parameters in the p.d.f. @@@" << endl;
+
       myString.clear(); myString.str("");
       myString << "0.5";
       SetValueAndErrors(pdf,"FlS",1.0,&myString,&value,&errLo,&errHi);
