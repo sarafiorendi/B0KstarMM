@@ -1950,10 +1950,12 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
   vecHist[0]->GetXaxis()->SetTitle("F_{L}");
   vecHist[0]->SetBins(nBinsHisto,0.0,1.0);
   vecHist[1]->GetXaxis()->SetTitle("F_{L} errors");
+  vecHist[1]->SetBins(nBinsHisto*nPlots,1.0,-1.0);
 
   vecHist[2]->GetXaxis()->SetTitle("A_{FB}");
   vecHist[2]->SetBins(nBinsHisto*2,-1.0,1.0);
   vecHist[3]->GetXaxis()->SetTitle("A_{FB} errors");
+  vecHist[3]->SetBins(nBinsHisto*nPlots,1.0,-1.0);
 
   vecHist[4]->GetXaxis()->SetTitle("Signal yield OR dBF/dq#lower[0.4]{^{2}} (GeV^{#font[122]{\55}2})");
   vecHist[5]->GetXaxis()->SetTitle("Right-tag I[S*E]");
