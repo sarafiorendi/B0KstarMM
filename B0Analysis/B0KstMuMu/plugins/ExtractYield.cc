@@ -3624,7 +3624,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   unsigned int it          = 0;
   TString legNames[6];
 
-  TLegend* legX;
+  TLegend* legX = NULL;
 
 
   // ###################
@@ -5009,31 +5009,31 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       localCanv[i] = new TCanvas(myString.str().c_str(),myString.str().c_str(),20,20,700,500);
     }
 
-  TLegend*   legX;
+  TLegend*   legX                  = NULL;
   
-  TPaveText* paveTextY;
-  TLegend*   legY;
+  TPaveText* paveTextY             = NULL;
+  TLegend*   legY                  = NULL;
   
-  TPaveText* paveTextZ;
-  TLegend*   legZ;
+  TPaveText* paveTextZ             = NULL;
+  TLegend*   legZ                  = NULL;
   
-  TPaveText* paveTextLowSideBY;
-  TLegend*   legLowSideBY;
+  TPaveText* paveTextLowSideBY     = NULL;
+  TLegend*   legLowSideBY          = NULL;
   
-  TPaveText* paveTextSignalRegionY;
-  TLegend*   legSignalRegionY;
+  TPaveText* paveTextSignalRegionY = NULL;
+  TLegend*   legSignalRegionY      = NULL;
   
-  TPaveText* paveTextHighSideBY;
-  TLegend*   legHighSideBY;
+  TPaveText* paveTextHighSideBY    = NULL;
+  TLegend*   legHighSideBY         = NULL;
   
-  TPaveText* paveTextLowSideBZ;
-  TLegend*   legLowSideBZ;
+  TPaveText* paveTextLowSideBZ     = NULL;
+  TLegend*   legLowSideBZ          = NULL;
 
-  TPaveText* paveTextSignalRegionZ;
-  TLegend*   legSignalRegionZ;
+  TPaveText* paveTextSignalRegionZ = NULL;
+  TLegend*   legSignalRegionZ      = NULL;
   
-  TPaveText* paveTextHighSideBZ;
-  TLegend*   legHighSideBZ;
+  TPaveText* paveTextHighSideBZ    = NULL;
+  TLegend*   legHighSideBZ         = NULL;
 
 
   if ((FitType == 36) || (FitType == 56) || (FitType == 76))
