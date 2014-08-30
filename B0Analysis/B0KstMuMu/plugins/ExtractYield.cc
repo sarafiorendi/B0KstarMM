@@ -326,7 +326,7 @@ bool CheckGoodFit              (RooFitResult* fitResult, TPaveText* paveText = N
 RooRealVar* GetVar             (RooAbsPdf* pdf, string varName);
 void SetValueAndErrors         (RooAbsPdf* pdf, string varName, double multi, stringstream* myString, double* val, double* errLo, double* errHi);
 void PrintVariables            (RooArgSet* setVar, string type);
-void ClearVars                 (RooArgSet* vecConstr);
+void ClearVars                 (RooArgSet* vecVars);
 void CloseAllAndQuit           (TApplication* theApp, TFile* NtplFile);
 
 string Transformer             (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooFitResult* fitResult = NULL, RooRealVar* varValIn1 = NULL, RooRealVar* varValIn2 = NULL, RooRealVar* varValIn3 = NULL);
@@ -529,14 +529,14 @@ void PrintVariables (RooArgSet* setVar, string type)
 }
 
 
-void ClearVars (RooArgSet* vecConstr)
+void ClearVars (RooArgSet* vecVars)
 {
-  int nEle = vecConstr->getSize();
+  int nEle = vecVars->getSize();
 
-  TIterator* it = vecConstr->createIterator();
+  TIterator* it = vecVars->createIterator();
   for (int i = 0; i < nEle; i++) delete it->Next();
 
-  vecConstr->removeAll();
+  vecVars->removeAll();
 }
 
 
@@ -1374,6 +1374,8 @@ void ResetAngularParam (vector<vector<string>*>* fitParam, RooAbsPdf* pdf)
       myString.clear(); myString.str("");
       myString << "0.0";
       SetValueAndErrors(pdf,"P2S",1.0,&myString,&value,&errLo,&errHi);
+
+      // @TMP@ : I do not reset Fs and As
     }
   else
     {
@@ -3622,6 +3624,8 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   unsigned int it          = 0;
   TString legNames[6];
 
+  TLegend* legX;
+
 
   // ###################
   // # Make actual fit #
@@ -3774,7 +3778,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
     }
   paveTextX->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
   
-  TLegend* legX = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+  legX = new TLegend(0.78, 0.65, 0.97, 0.88, "");
   it = 0;
   for (unsigned int i = 0; i < 2*nElements; i++)
     {
@@ -3834,6 +3838,8 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
       myString << (*TotalPDF)->getPlotLabel() << "_" << ID << ".pdf";
       Canv->Print(myString.str().c_str());
     }
+
+  if (SETBATCH == true) delete legX;
 
 
   VarsYield.Clear();
@@ -5003,6 +5009,32 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       localCanv[i] = new TCanvas(myString.str().c_str(),myString.str().c_str(),20,20,700,500);
     }
 
+  TLegend*   legX;
+  
+  TPaveText* paveTextY;
+  TLegend*   legY;
+  
+  TPaveText* paveTextZ;
+  TLegend*   legZ;
+  
+  TPaveText* paveTextLowSideBY;
+  TLegend*   legLowSideBY;
+  
+  TPaveText* paveTextSignalRegionY;
+  TLegend*   legSignalRegionY;
+  
+  TPaveText* paveTextHighSideBY;
+  TLegend*   legHighSideBY;
+  
+  TPaveText* paveTextLowSideBZ;
+  TLegend*   legLowSideBZ;
+
+  TPaveText* paveTextSignalRegionZ;
+  TLegend*   legSignalRegionZ;
+  
+  TPaveText* paveTextHighSideBZ;
+  TLegend*   legHighSideBZ;
+
 
   if ((FitType == 36) || (FitType == 56) || (FitType == 76))
     {
@@ -5047,7 +5079,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       TPaveText* paveTextY = (TPaveText*)myFrameY->findObject(myString.str().c_str());
       paveTextY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
-      TLegend* legY = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legY = new TLegend(0.78, 0.65, 0.97, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
 	{
@@ -5086,7 +5118,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       TPaveText* paveTextZ = (TPaveText*)myFrameZ->findObject(myString.str().c_str());
       paveTextZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
-      TLegend* legZ = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legZ = new TLegend(0.78, 0.65, 0.97, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
 	{
@@ -5155,11 +5187,10 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	{
 	  cout << "[ExtractYield::MakeMass2AnglesFit]\t@@@ Making comb. angular background sideband fit @@@" << endl;
 
-      	  RooAbsPdf* TmpPDF = NULL;
+      	  RooAbsPdf* TmpPDF     = NULL;
       	  RooDataSet* sideBands = NULL;
       	  RooRealVar frac("frac","Fraction",0.5,0.0,1.0);
       	  RooArgSet constrSidebads;
-      	  ClearVars(&constrSidebads);
       	  BuildAngularConstraints(&constrSidebads,*TotalPDF,"peak");
 
 
@@ -5361,7 +5392,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       paveTextX->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
       
-      TLegend* legX = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legX = new TLegend(0.78, 0.65, 0.97, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
   	{
@@ -5406,7 +5437,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  Project(RooArgSet(*x,*z)));
 
 
-      TPaveText* paveTextY = new TPaveText(0.12,0.82,0.4,0.86,"NDC");
+      paveTextY = new TPaveText(0.12,0.82,0.4,0.86,"NDC");
       paveTextY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
       paveTextY->SetTextAlign(11);
       paveTextY->SetBorderSize(0.0);
@@ -5422,7 +5453,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       myFrameY->Draw();
 
-      TLegend* legY = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legY = new TLegend(0.78, 0.65, 0.97, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
       	{
@@ -5476,7 +5507,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  Project(RooArgSet(*x,*y)));
 
 
-      TPaveText* paveTextZ = new TPaveText(0.12,0.82,0.4,0.86,"NDC");
+      paveTextZ = new TPaveText(0.12,0.82,0.4,0.86,"NDC");
       paveTextZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
       paveTextZ->SetTextAlign(11);
       paveTextZ->SetBorderSize(0.0);
@@ -5492,7 +5523,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	}
       myFrameZ->Draw();
 
-      TLegend* legZ = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legZ = new TLegend(0.78, 0.65, 0.97, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
       	{
@@ -5685,7 +5716,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("lowSideband"), Project(RooArgSet(*x,*z)));
 
 
-      TPaveText* paveTextLowSideBY = new TPaveText(0.12,0.75,0.4,0.88,"NDC");
+      paveTextLowSideBY = new TPaveText(0.12,0.75,0.4,0.88,"NDC");
       paveTextLowSideBY->AddText("Low sideband");
       paveTextLowSideBY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameLowSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
       paveTextLowSideBY->SetTextAlign(11);
@@ -5697,7 +5728,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       DrawString(LUMI,myFrameLowSideBY);
       myFrameLowSideBY->Draw();
 
-      TLegend* legLowSideBY = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legLowSideBY = new TLegend(0.78, 0.65, 0.97, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
 	{
@@ -5745,7 +5776,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("signalRegion"), Project(RooArgSet(*x,*z)));
 
 
-      TPaveText* paveTextSignalRegionY = new TPaveText(0.12,0.75,0.4,0.88,"NDC");
+      paveTextSignalRegionY = new TPaveText(0.12,0.75,0.4,0.88,"NDC");
       paveTextSignalRegionY->AddText(Form("%s%.1f%s [%.3f]","Signal region: #pm",atof(Utility->GetGenericParam("NSigmaB0").c_str())," < #sigma >",signalSigmaT));
       paveTextSignalRegionY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameSignalRegionY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
       paveTextSignalRegionY->SetTextAlign(11);
@@ -5757,7 +5788,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       DrawString(LUMI,myFrameSignalRegionY);
       myFrameSignalRegionY->Draw();
 
-      TLegend* legSignalRegionY = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legSignalRegionY = new TLegend(0.78, 0.65, 0.97, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
 	{
@@ -5805,7 +5836,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("highSideband"), Project(RooArgSet(*x,*z)));
 
 
-      TPaveText* paveTextHighSideBY = new TPaveText(0.12,0.75,0.4,0.88,"NDC");
+      paveTextHighSideBY = new TPaveText(0.12,0.75,0.4,0.88,"NDC");
       paveTextHighSideBY->AddText("High sideband");
       paveTextHighSideBY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameHighSideBY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
       paveTextHighSideBY->SetTextAlign(11);
@@ -5817,7 +5848,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       DrawString(LUMI,myFrameHighSideBY);
       myFrameHighSideBY->Draw();
 
-      TLegend* legHighSideBY = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legHighSideBY = new TLegend(0.78, 0.65, 0.97, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
 	{
@@ -5870,7 +5901,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("lowSideband"), Project(RooArgSet(*x,*y)));
 
 
-      TPaveText* paveTextLowSideBZ = new TPaveText(0.12,0.75,0.4,0.88,"NDC");
+      paveTextLowSideBZ = new TPaveText(0.12,0.75,0.4,0.88,"NDC");
       paveTextLowSideBZ->AddText("Low sideband");
       paveTextLowSideBZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameLowSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
       paveTextLowSideBZ->SetTextAlign(11);
@@ -5882,7 +5913,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       DrawString(LUMI,myFrameLowSideBZ);
       myFrameLowSideBZ->Draw();
 
-      TLegend* legLowSideBZ = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legLowSideBZ = new TLegend(0.78, 0.65, 0.97, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
 	{
@@ -5930,7 +5961,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("signalRegion"), Project(RooArgSet(*x,*y)));
 
 
-      TPaveText* paveTextSignalRegionZ = new TPaveText(0.12,0.75,0.4,0.88,"NDC");
+      paveTextSignalRegionZ = new TPaveText(0.12,0.75,0.4,0.88,"NDC");
       paveTextSignalRegionZ->AddText(Form("%s%.1f%s [%.3f]","Signal region: #pm",atof(Utility->GetGenericParam("NSigmaB0").c_str())," < #sigma >",signalSigmaT));
       paveTextSignalRegionZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameSignalRegionZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
       paveTextSignalRegionZ->SetTextAlign(11);
@@ -5942,7 +5973,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       DrawString(LUMI,myFrameSignalRegionZ);
       myFrameSignalRegionZ->Draw();
 
-      TLegend* legSignalRegionZ = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legSignalRegionZ = new TLegend(0.78, 0.65, 0.97, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
 	{
@@ -5990,7 +6021,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)));
 
 
-      TPaveText* paveTextHighSideBZ = new TPaveText(0.12,0.75,0.4,0.88,"NDC");
+      paveTextHighSideBZ = new TPaveText(0.12,0.75,0.4,0.88,"NDC");
       paveTextHighSideBZ->AddText("High sideband");
       paveTextHighSideBZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameHighSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
       paveTextHighSideBZ->SetTextAlign(11);
@@ -6002,7 +6033,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       DrawString(LUMI,myFrameHighSideBZ);
       myFrameHighSideBZ->Draw();
 
-      TLegend* legHighSideBZ = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legHighSideBZ = new TLegend(0.78, 0.65, 0.97, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
 	{
@@ -6049,7 +6080,39 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
     }
 
-  if (SETBATCH == true) for (unsigned int i = 0; i < nCanv; i++) delete localCanv[i];
+  if (SETBATCH == true)
+    {
+      delete legX;
+
+      delete paveTextY;
+      delete legY;
+
+      delete paveTextZ;
+      delete legZ;
+
+
+      delete paveTextLowSideBY;
+      delete legLowSideBY;
+
+      delete paveTextSignalRegionY;
+      delete legSignalRegionY;
+
+      delete paveTextHighSideBY;
+      delete legHighSideBY;
+
+
+      delete paveTextLowSideBZ;
+      delete legLowSideBZ;
+
+      delete paveTextSignalRegionZ;
+      delete legSignalRegionZ;
+
+      delete paveTextHighSideBZ;
+      delete legHighSideBZ;
+
+
+      for (unsigned int i = 0; i < nCanv; i++) delete localCanv[i];
+    }
   else
     for (unsigned int i = 0; i < nCanv; i++)
       {
