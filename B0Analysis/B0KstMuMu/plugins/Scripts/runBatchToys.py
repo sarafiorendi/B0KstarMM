@@ -39,21 +39,21 @@ for i in binList:
 
         dir = "./" + par + "_" + str(nJobs) + "_" + str(i) + "/"
 
-        mkdir = "mkdir " + dir
-        print mkdir
-        system(mkdir)
+        cmd = "mkdir " + dir
+        print cmd
+        system(cmd)
 
-        cp = "cp ../ExtractYield.cc " + dir
-        print cp
-        system(cp)
+        cmd = "cp ../ExtractYield.cc " + dir
+        print cmd
+        system(cmd)
 
-        cp = "cp ../ExtractYield " + dir
-        print cp
-        system(cp)
+        cmd = "cp ../ExtractYield " + dir
+        print cmd
+        system(cmd)
 
-        cp = "cp ../../python/ParameterFile.txt " + dir
-        print cp
-        system(cp)
+        cmd = "cp ../../python/ParameterFile.txt " + dir
+        print cmd
+        system(cmd)
 
         chdir(dir)
 
@@ -65,3 +65,5 @@ for i in binList:
         chdir("..")
 
         nJobs = nJobs - 1
+
+chdir("..")

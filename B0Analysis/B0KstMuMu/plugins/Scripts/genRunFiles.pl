@@ -45,4 +45,11 @@ for ($count = 0; $count < $nfiles; $count++)
     print OUT "$cmd" . "\n" ;
 }
 
+
+#########################
+# In case you need this #
+#########################
+#print OUT "cd ..\n" ;
+
+
 close(OUT) ;
