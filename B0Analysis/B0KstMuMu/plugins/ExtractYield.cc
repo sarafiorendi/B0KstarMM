@@ -6178,33 +6178,16 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
   if (SETBATCH == true)
     {
       delete legX;
-
-      delete paveTextY;
       delete legY;
-
-      delete paveTextZ;
       delete legZ;
 
-
-      delete paveTextLowSideBY;
       delete legLowSideBY;
-
-      delete paveTextSignalRegionY;
       delete legSignalRegionY;
-
-      delete paveTextHighSideBY;
       delete legHighSideBY;
 
-
-      delete paveTextLowSideBZ;
       delete legLowSideBZ;
-
-      delete paveTextSignalRegionZ;
       delete legSignalRegionZ;
-
-      delete paveTextHighSideBZ;
       delete legHighSideBZ;
-
 
       for (unsigned int i = 0; i < nCanv; i++) delete localCanv[i];
     }
