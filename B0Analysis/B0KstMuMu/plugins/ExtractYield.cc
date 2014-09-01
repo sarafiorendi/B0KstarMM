@@ -7173,7 +7173,6 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       // # Reset parameters in pdf #
       // ###########################
       ResetCombPolyParam(NULL,TotalPDF);
-      ResetAngularParam(NULL,TotalPDF);
 
       fitResult = MakeMass2AnglesFit(toySample,&TotalPDF,x,y,z,cB0Toy,FitType,vecConstr,&NLLvalue,NULL,i);
       if (CheckGoodFit(fitResult) == true) cout << "\n[ExtractYield::MakeMass2AnglesToy]\t@@@ Fit converged ! @@@" << endl;
