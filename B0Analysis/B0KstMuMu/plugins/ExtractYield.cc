@@ -8270,11 +8270,7 @@ int main(int argc, char** argv)
 	  fileFitSystematics.close();
 	  if (SETBATCH == true)
 	    {
-	      RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins.size()-1) + specBin + 1);
-	      cout << "\n[ExtractYield::main]\t@@@ Random seed for toy-MC set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
-	      unsigned int waitT = static_cast<unsigned int>(RooRandom::uniform()*30.);
-	      sleep(waitT);
-	      cout << "Waited for " << waitT << " [s]\tBye bye !" << endl;
+	      cout << "Bye bye !" << endl;
 	      CloseAllAndQuit(theApp,NtplFile);
 	    }
 	  else
