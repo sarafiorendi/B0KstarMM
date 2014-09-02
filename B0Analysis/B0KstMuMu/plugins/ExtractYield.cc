@@ -8272,9 +8272,9 @@ int main(int argc, char** argv)
 	    {
 	      RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins.size()-1) + specBin + 1);
 	      cout << "\n[ExtractYield::main]\t@@@ Random seed for toy-MC set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
-	      unsigned int waitT = 1000 + static_cast<unsigned int>(RooRandom::uniform()*1000.);
-	      usleep(waitT);
-	      cout << "Waited for " << waitT << " [us]\tBye bye !" << endl;
+	      unsigned int waitT = static_cast<unsigned int>(RooRandom::uniform()*30.);
+	      sleep(waitT);
+	      cout << "Waited for " << waitT << " [s]\tBye bye !" << endl;
 	      CloseAllAndQuit(theApp,NtplFile);
 	    }
 	  else
