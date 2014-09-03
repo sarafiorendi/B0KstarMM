@@ -1927,6 +1927,9 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
   vector<TCanvas*> vecCanv;
   vector<TH1D*> vecHist;
   vector<double> vecVar;
+  vector<double> vecMean;
+  vector<double> vecErr1;
+  vector<double> vecErr2;
   TPaveStats* stD;
 
 
@@ -1944,6 +1947,9 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
       vecHist.back()->SetFillColor(kAzure+6);
 
       vecVar.push_back(0.0);
+      vecMean.push_back(0.0);
+      vecErr1.push_back(0.0);
+      vecErr2.push_back(0.0);
     }
   vecVar.push_back(0.0); // ID run number
 
@@ -2000,6 +2006,21 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
   inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6] >> vecVar[7] >> vecVar[8];
   while (inputFile.eof() == false)
     {
+      // ####################
+      // # Weighted average #
+      // ####################
+      if ((vecVar[1] != -2.0) && (vecVar[3] != -2.0))
+	{
+	  vecMean[0] += vecVar[1] / (vecVar[2] * vecVar[2]);
+	  vecErr1[0] += 1.        / fabs(vecVar[2]);
+	  vecErr2[0] += 1.        / (vecVar[2] * vecVar[2]);
+
+	  vecMean[1] += vecVar[3] / (vecVar[4] * vecVar[4]);
+	  vecErr1[1] += 1.        / fabs(vecVar[4]);
+	  vecErr2[1] += 1.        / (vecVar[4] * vecVar[4]);
+	}
+
+
       for (unsigned int i = 0; i < nPlots; i++)
 	{
  	  if (vecVar[i+1] != -2.0) vecHist[i]->Fill(vecVar[i+1]);
@@ -2015,6 +2036,16 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
 
       inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6] >> vecVar[7] >> vecVar[8];
     }
+
+
+  // ####################
+  // # Weighted average #
+  // ####################
+  vecMean[0] = vecMean[0] / vecErr2[0];
+  vecErr2[0] = 1. / vecErr2[0];
+
+  vecMean[1] = vecMean[1] / vecErr2[1];
+  vecErr2[1] = 1. / vecErr2[1];
 
 
   // #####################################
@@ -2072,6 +2103,14 @@ void EvalMultyRun (unsigned int sysType, string fileName, double NLLinterval, do
       cout << "@@@ Histogram #" << i << " mean = " << vecHist[i]->GetMean() << "   -" << vecHist[i]->GetRMS()/sqrt(vecHist[i]->GetEntries()) << "   " << vecHist[i]->GetRMS()/sqrt(vecHist[i]->GetEntries());
       cout << "\t(RMS = " << vecHist[i]->GetRMS() << "; Entries = " << vecHist[i]->GetEntries() << ") @@@\n" << endl;
     }
+
+
+  // ####################
+  // # Weighted average #
+  // ####################
+  cout << "@@@ Weighted average parameter 0: " << vecMean[0] << " +/- " << vecErr2[0] << "\t1 / error: " << vecErr1[0] << " @@@" << endl;
+  cout << "@@@ Weighted average parameter 1: " << vecMean[1] << " +/- " << vecErr2[1] << "\t1 / error: " << vecErr1[1] << " @@@" << endl;
+
 
   cScNLL->cd();
   hScNLL->Draw("gcolz");

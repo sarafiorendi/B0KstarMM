@@ -7,7 +7,7 @@ import sys
 
 if len(sys.argv) < 4:
     print "Synopsis: python runBatchToy.py type[BF,FLAFB] nBins[0-8,-1] nJobs(per bin)[> 0]"
-    sys.exit()
+    sys.exit("ERROR !")
 
 par = sys.argv[1]
 if 'BF' in par:
