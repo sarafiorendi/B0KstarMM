@@ -4545,7 +4545,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
 
 
   // ################
-  // # Save ntuoles #
+  // # Save ntuples #
   // ################
   TFile* fNLL;
   
@@ -6903,7 +6903,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 
 
   // ################
-  // # Save ntuoles #
+  // # Save ntuples #
   // ################
   TFile* fNLL;
     

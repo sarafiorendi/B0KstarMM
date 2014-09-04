@@ -45,7 +45,7 @@ for j in range(0, nJobs):
 #########################
 for i in range(0, nFiles):
     outputFile = fileList[0][i]
-    outputFile = outputFile.replace("_1_","",1)
+    outputFile = outputFile.replace("_1_","_",1)
     cmd = "hadd " + outputFile + " "
 
     for j in range(0, nJobs):
