@@ -76,7 +76,6 @@ using namespace RooFit;
 // # Function Definition #
 // #######################
 void SetStyle               ();
-TH1D* ComputeCumulative     (TH1D* hIN, string hCumulName);
 void PlotHistoEff           (string fileName, unsigned int smothDegree, string effDimension, bool RIGHTflavorTAG, double cosThetaKRange_lo = -1.0, double cosThetaKRange_hi = 1.0, double cosThetaLRange_lo = -1.0, double cosThetaLRange_hi = 1.0, double phiRange_lo = -3.15, double phiRange_hi = 3.15);
 void TruthMatching          (string fileName, bool truthMatch);
 void dBFfromGEN             (string fileName);
@@ -135,27 +134,6 @@ void SetStyle ()
 
   TGaxis::SetMaxDigits(3);
   gStyle->SetStatY(0.9);
-}
-
-
-// ######################################################################
-// # Sub-program to compute the cumulative distribution of an histogram #
-// ######################################################################
-TH1D* ComputeCumulative(TH1D* hIN, string hCumulName)
-{
-  TH1D* hCumul = (TH1D*)hIN->Clone(hCumulName.c_str());
-  for (int i = 1; i <= hIN->GetNbinsX(); i++)
-    {
-      hCumul->SetBinContent(i,0.0);
-      hCumul->SetBinError(i,0.0);
-    }      
-
-  for (int i = 1; i <= hIN->GetNbinsX(); i++)
-    for (int j = i; j <= hIN->GetNbinsX(); j++)
-      hCumul->SetBinContent(j, hCumul->GetBinContent(j) + hIN->GetBinContent(i));
-
-  cout << "Maximum of comulative: " << hCumul->GetMaximum() << endl;
-  return hCumul;
 }
 
 
@@ -1013,8 +991,10 @@ void PlotCutScans (string fileName, string type)
   c1->Divide(2,1);
   c1->cd(1);
   h0->Draw();
+
   c1->cd(2);
   h1->Draw();
+
   c1->Modified();
   c1->Update();
 }
