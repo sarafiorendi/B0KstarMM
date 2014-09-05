@@ -9,6 +9,7 @@
 ###################
 $q2bin   = @ARGV[0] ;
 $dirName = @ARGV[1] ;
+$makeDir = true ;
 $nfiles  = 400 ;
 
 
@@ -21,10 +22,13 @@ open(OUT, ">" . $fileOut) ;
 #########################
 # In case you need this #
 #########################
-#print OUT "mkdir " . $dirName . "\n" ;
-#print OUT "cp ../ExtractYield " . $dirName . "\n" ;
-#print OUT "cp ../../python/ParameterFile.txt " . $dirName . "\n" ;
-#print OUT "cd " . $dirName . "\n" ;
+if (makeDir == true)
+{
+    print OUT "mkdir " . $dirName . "\n" ;
+    print OUT "cp ../ExtractYield " . $dirName . "\n" ;
+    print OUT "cp ../../python/ParameterFile.txt " . $dirName . "\n" ;
+    print OUT "cd " . $dirName . "\n" ;
+}
 
 
 for ($count = 0; $count < $nfiles; $count++)
@@ -49,7 +53,10 @@ for ($count = 0; $count < $nfiles; $count++)
 #########################
 # In case you need this #
 #########################
-#print OUT "cd ..\n" ;
+if (makeDir == true)
+{
+    print OUT "cd ..\n" ;
+}
 
 
 close(OUT) ;
