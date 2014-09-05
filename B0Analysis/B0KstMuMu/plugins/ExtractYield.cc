@@ -4079,9 +4079,16 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // # Save observables in systematic error file #
       // #############################################
       myString.clear(); myString.str("");
-      if (CheckGoodFit(fitResult) == true) myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0
-						    << "   " << VecHistoMeas->operator[](0)->GetBinContent(i+1) << "   " << -2.0 << "   " << -2.0 << "   " << NLLvalue;
-      else                                 myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
+      if (CheckGoodFit(fitResult) == true) myString << ID << "   "
+						    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
+						    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
+						    << VecHistoMeas->operator[](0)->GetBinContent(i+1) << "   " << VecHistoMeas->operator[](0)->GetBinError(i+1) << "   "
+						    << -2.0 << "   " << -2.0 << "   " << NLLvalue;
+      else myString << ID << "   "
+		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
+		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
+		    << -2.0 << "   " << -2.0 << "   "
+		    << -2.0 << "   " << -2.0 << "   " << -2.0;
       fileFitSystematics << myString.str() << endl;
     }
 }
@@ -6244,9 +6251,16 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // # Save observables in systematic error file #
       // #############################################
       myString.clear(); myString.str("");
-      if (CheckGoodFit(fitResult) == true) myString << ID << "   " << varVal1 << "   " << (varVal1EHi - varVal1ELo) / 2. << "   " << varVal2 << "   " << (varVal2EHi - varVal2ELo) / 2.
-						    << "   " << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   " << effMuMuGoodTag << "   " << effMuMuMisTag << "   " << NLLvalue;
-      else                                 myString << ID << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0 << "   " << -2.0;
+      if (CheckGoodFit(fitResult) == true) myString << ID << "   "
+						    << varVal1 << "   " << varVal1EHi << "   " << varVal1ELo << "   "
+						    << varVal2 << "   " << varVal2EHi << "   " << varVal2ELo << "   "
+						    << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   " << VecHistoMeas->operator[](2)->GetBinError(i+1) << "   "
+						    << effMuMuGoodTag << "   " << effMuMuMisTag << "   " << NLLvalue;
+      else myString << ID << "   "
+		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
+		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
+		    << -2.0 << "   " << -2.0 << "   "
+		    << -2.0 << "   " << -2.0 << "   " << -2.0;
       fileFitSystematics << myString.str() << endl;
     }
 }
