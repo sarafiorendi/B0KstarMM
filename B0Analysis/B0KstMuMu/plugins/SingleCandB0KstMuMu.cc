@@ -29,10 +29,10 @@ using std::string;
 // ####################
 // # Global constants #
 // ####################
-#define DoTrigCheck   1
-#define DoMCTruth     false // Compute the single candidate variables from MC-GEN values
-#define TagFromTruth  false // Assign the CP-eigenstate from MC-GEN
-#define ParameterFILE "../python/ParameterFile.txt"
+#define DoTrigCheck     1
+#define DoMCTruth       false // Compute the single candidate variables from MC-GEN values
+#define TagFromTruth    false // Assign the CP-eigenstate from MC-GEN
+#define PARAMETERFILEIN "/python/ParameterFile.txt"
 
 
 // ####################
@@ -542,15 +542,15 @@ int main (int argc, char** argv)
 	  string localVar    = "1";
 
 	  Utility = new Utils();
-	  Utility->ReadTriggerPathsANDCutsANDEntries(ParameterFILE);
-	  Utility->ReadSelectionCuts(ParameterFILE);
+	  Utility->ReadTriggerPathsANDCutsANDEntries(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str());
+	  Utility->ReadSelectionCuts(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str());
 
 
 	  cout << "\n[SingleCandB0KstMuMu::main]\t@@@ Settings @@@" << endl;
 	  cout << "Do Trigger Check: "   << DoTrigCheck << endl;
 	  cout << "DoMCTruth: "          << DoMCTruth << endl;
 	  cout << "TagFromTruth: "       << TagFromTruth << endl;
-	  cout << "ParameterFILE: "      << ParameterFILE << endl;
+	  cout << "PARAMETERFILEIN: "    << PARAMETERFILEIN << endl;
 	  cout << "Default SignalType: " << localVar << endl;
 
 

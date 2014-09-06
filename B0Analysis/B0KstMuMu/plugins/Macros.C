@@ -49,7 +49,7 @@ using namespace RooFit;
 // ####################
 // # Global constants #
 // ####################
-#define DIREXPTCOMP "Data2012B0KstMuMuResults/PredictionSM/"
+#define DIRSMCOMP "Data2012B0KstMuMuResults/PredictionSM/"
 
 #define ordinateRange 1e-2
 
@@ -1771,7 +1771,7 @@ void showData (int dataType, double offset, bool noHbar)
   stringstream myString;
 
   myString.clear(); myString.str("");
-  myString << DIREXPTCOMP << "BinningFile.root";
+  myString << DIRSMCOMP << "BinningFile.root";
   TFile* binningFile = TFile::Open(myString.str().c_str(),"READ");
   TList* myList = binningFile->GetListOfKeys();
   TCanvas* myCanv = (TCanvas*)((dynamic_cast<TKey*>(myList->At(0)))->ReadObj());
@@ -1799,27 +1799,27 @@ void showData (int dataType, double offset, bool noHbar)
   vector<TGraphAsymmErrors*> dVar;
 
   myString.clear(); myString.str("");
-  myString << DIREXPTCOMP << "CMS.data";
+  myString << DIRSMCOMP << "CMS.data";
   dVar.push_back(readData(myString.str().c_str(),dataType,1,20,false,0,noHbar,0.0*offset));
 
   myString.clear(); myString.str("");
-  myString << DIREXPTCOMP << "LHCb_1fb.data";
+  myString << DIRSMCOMP << "LHCb_1fb.data";
   dVar.push_back(readData(myString.str().c_str(),dataType,2,21,false,0,noHbar,0.0*offset));
 
   myString.clear(); myString.str("");
-  myString << DIREXPTCOMP << "BaBar.data";
+  myString << DIRSMCOMP << "BaBar.data";
   dVar.push_back(readData(myString.str().c_str(),dataType,4,23,false,0,noHbar,2.0*offset));
 
   myString.clear(); myString.str("");
-  myString << DIREXPTCOMP << "Belle.data";
+  myString << DIRSMCOMP << "Belle.data";
   dVar.push_back(readData(myString.str().c_str(),dataType,8,28,false,0,noHbar,-2.0*offset));
 
   myString.clear(); myString.str("");
-  myString << DIREXPTCOMP << "CDF.data";
+  myString << DIRSMCOMP << "CDF.data";
   dVar.push_back(readData(myString.str().c_str(),dataType,kGray+1,29,false,0,noHbar,-1.0*offset));
 
   myString.clear(); myString.str("");
-  myString << DIREXPTCOMP << "Theory.data";
+  myString << DIRSMCOMP << "Theory.data";
   dVar.push_back(readData(myString.str().c_str(),dataType,kBlue,20,true,3001,noHbar,0.0*offset));
 
 

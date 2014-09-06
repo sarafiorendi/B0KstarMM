@@ -92,7 +92,7 @@ using namespace RooFit;
 // ##################
 // # External files #
 // ##################
-#define PARAMETERFILEIN  "../python/ParameterFile.txt"
+#define PARAMETERFILEIN  "/python/ParameterFile.txt"
 #define PARAMETERFILEOUT "ParameterFileOut.txt"
 
 
@@ -320,7 +320,7 @@ private:
   RooAbsPdf& _pdf1; 
   RooAbsPdf& _pdf2; 
   RooArgList _vars; 
-}; 
+};
 
 bool CheckGoodFit              (RooFitResult* fitResult, TPaveText* paveText = NULL);
 RooRealVar* GetVar             (RooAbsPdf* pdf, string varName);
@@ -3897,7 +3897,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // ######################
       // # Good-tagged events #
       // ######################
-      Utility->ReadParVsq2Bins(PARAMETERFILEIN,"I[S*E]okTag",&vecParStr);
+      Utility->ReadParVsq2Bins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),"I[S*E]okTag",&vecParStr);
       myString.clear(); myString.str("");
       myString << vecParStr->operator[](atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)).c_str();
       SetValueAndErrors(NULL,"",1.0,&myString,&effPsiGoodTag,&effPsiGoodTagErr,&effPsiGoodTagErr);
@@ -3907,7 +3907,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // #####################
       // # Mis-tagged events #
       // #####################
-      Utility->ReadParVsq2Bins(PARAMETERFILEIN,"I[S*E]misTag",&vecParStr);
+      Utility->ReadParVsq2Bins(myString.str().c_str(),"I[S*E]misTag",&vecParStr);
       myString.clear(); myString.str("");
       myString << vecParStr->operator[](atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)).c_str();
       SetValueAndErrors(NULL,"",1.0,&myString,&effPsiMisTag,&effPsiMisTagErr,&effPsiMisTagErr);
@@ -4021,7 +4021,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 	  // ######################
 	  // # Good-tagged events #
 	  // ######################
-          Utility->ReadParVsq2Bins(PARAMETERFILEIN,"I[S*E]okTag",&vecParStr);
+          Utility->ReadParVsq2Bins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),"I[S*E]okTag",&vecParStr);
 	  myString.clear(); myString.str("");
 	  myString << vecParStr->operator[](i).c_str();
 	  SetValueAndErrors(NULL,"",1.0,&myString,&effMuMuGoodTag,&effMuMuGoodTagErr,&effMuMuGoodTagErr);
@@ -4032,7 +4032,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 	  // #####################
 	  // # Mis-tagged events #
 	  // #####################
-	  Utility->ReadParVsq2Bins(PARAMETERFILEIN,"I[S*E]misTag",&vecParStr);
+	  Utility->ReadParVsq2Bins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),"I[S*E]misTag",&vecParStr);
 	  myString.clear(); myString.str("");
 	  myString << vecParStr->operator[](i).c_str();
 	  SetValueAndErrors(NULL,"",1.0,&myString,&effMuMuMisTag,&effMuMuMisTagErr,&effMuMuMisTagErr);
@@ -6025,7 +6025,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // ######################
       // # Good-tagged events #
       // ######################
-      Utility->ReadParVsq2Bins(PARAMETERFILEIN,"I[S*E]okTag",&vecParStr);
+      Utility->ReadParVsq2Bins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),"I[S*E]okTag",&vecParStr);
       myString.clear(); myString.str("");
       myString << vecParStr->operator[](atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)).c_str();
       SetValueAndErrors(NULL,"",1.0,&myString,&effPsiGoodTag,&effPsiGoodTagErr,&effPsiGoodTagErr);
@@ -6035,7 +6035,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // #####################
       // # Mis-tagged events #
       // #####################
-      Utility->ReadParVsq2Bins(PARAMETERFILEIN,"I[S*E]misTag",&vecParStr);
+      Utility->ReadParVsq2Bins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),"I[S*E]misTag",&vecParStr);
       myString.clear(); myString.str("");
       myString << vecParStr->operator[](atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)).c_str();
       SetValueAndErrors(NULL,"",1.0,&myString,&effPsiMisTag,&effPsiMisTagErr,&effPsiMisTagErr);
@@ -6983,7 +6983,7 @@ int main(int argc, char** argv)
 	  ((FitType >= 21)   && (FitType <= 26)   && (argc == 8)) ||
 	  (((FitType == 56)  || (FitType == 76))  && (argc == 4)))
 	{
-	  ParameterFILE = PARAMETERFILEIN;
+	  ParameterFILE = Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str();
 
 
  	  // ###################

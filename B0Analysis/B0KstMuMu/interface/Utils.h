@@ -227,7 +227,8 @@ class Utils
 
   void SaveFitValues (std::string fileName, std::vector<std::string>* vecParStr, int indx, std::string str = "");
 
-  unsigned int ParFileBlockN (std::string blockName);
+  std::string MakeAnalysisPATH (std::string relativePath);
+  unsigned int ParFileBlockN   (std::string blockName);
 
   unsigned int GetFitParamIndx    (std::string varName);
   unsigned int GetConfigParamIndx (std::string varName);

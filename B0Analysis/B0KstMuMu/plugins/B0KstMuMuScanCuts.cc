@@ -40,7 +40,7 @@ using std::vector;
 #define SpecialHighq2Bin 7.3 // [GeV/c2]2
 #define nEvPrint 200000
 #define SETBATCH true // Set batch mode
-#define ParameterFILE "../python/ParameterFile.txt"
+#define PARAMETERFILEIN "/python/ParameterFile.txt"
 
 
 // ####################
@@ -466,14 +466,14 @@ int main (int argc, char** argv)
       cout << "Special high q2 bin: " << SpecialHighq2Bin << endl;
       cout << "nEvPrint: "            << nEvPrint << endl;
       cout << "SETBATCH: "            << SETBATCH << endl;
-      cout << "Parameter file: "      << ParameterFILE << endl;
+      cout << "Parameter file: "      << PARAMETERFILEIN << endl;
 
 
       Utility = new Utils();
-      Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
-      Utility->ReadTriggerPathsANDCutsANDEntries(ParameterFILE);
-      Utility->ReadSelectionCuts(ParameterFILE);
-      Utility->ReadGenericParam(ParameterFILE);
+      Utility->ReadAllBins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins);
+      Utility->ReadTriggerPathsANDCutsANDEntries(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str());
+      Utility->ReadSelectionCuts(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str());
+      Utility->ReadGenericParam(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str());
 
  
       CutOptimization(scanType,q2Region,MCFile,DataFile);

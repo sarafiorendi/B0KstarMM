@@ -15,6 +15,7 @@
 // # Global constants #
 // ####################
 #define YvalueOutsideLimits 10.0 // Value given to bins with zero error in order not to show them
+#define ANALYPATH "ANALYPATH"
 
 Utils::Utils (bool rightFlavorTag)
 {
@@ -69,7 +70,7 @@ Utils::Utils (bool rightFlavorTag)
   RIGHTflavorTAG = rightFlavorTag;
 
   // Define names of the files containing the histogram of the efficiency
-  DirEfficiency  = "../efficiency/";
+  DirEfficiency  = "/efficiency/";
 
   Histo2DEffNameOkTagSig   = "H2Deff_OkTag_q2Bin_interp";
   Histo2DEffNameOkTagJPsi  = "H2Deff_OkTagJPsi_q2Bin_interp";
@@ -107,6 +108,7 @@ Utils::Utils (bool rightFlavorTag)
   // # Print out internal variables #
   // ################################
   std::cout << "\n@@@@@@ Utils class settings : private @@@@@@" << std::endl;
+  std::cout << "Analysis environment variable: " << ANALYPATH << std::endl;
   std::cout << "nFitObserv: "                << nFitObserv << std::endl;
   std::cout << "ProbThreshold: "             << ProbThreshold << std::endl;
   std::cout << "scrambleFraction: "          << scrambleFraction << std::endl;
@@ -704,7 +706,7 @@ TH2D* Utils::Get2DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector
 
 
   myString.clear(); myString.str("");
-  myString << DirEfficiency.c_str() << GetHisto2DEffName(SignalType) << "_" << q2Indx << ".txt";
+  myString << (DirEfficiency != "" ? MakeAnalysisPATH(DirEfficiency).c_str() : "") << GetHisto2DEffName(SignalType) << "_" << q2Indx << ".txt";
   std::cout << "[Utils::Get2DEffHistoq2Bin]\tReading 2D binned efficiency file : " << myString.str().c_str() << std::endl;
   inputFile.open(myString.str().c_str(), std::ifstream::in);
   if (inputFile.good() == false)
@@ -817,7 +819,7 @@ TH3D* Utils::Get3DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector
 
 
   myString.clear(); myString.str("");
-  myString << DirEfficiency.c_str() << GetHisto3DEffName(SignalType) << "_" << q2Indx << ".txt";
+  myString << MakeAnalysisPATH(DirEfficiency).c_str() << GetHisto3DEffName(SignalType) << "_" << q2Indx << ".txt";
   std::cout << "[Utils::Get3DEffHistoq2Bin]\tReading 3D binned efficiency file : " << myString.str().c_str() << std::endl;
   inputFile.open(myString.str().c_str(), std::ifstream::in);
   if (inputFile.good() == false)
@@ -3385,6 +3387,24 @@ void Utils::SaveFitValues (std::string fileName, std::vector<std::string>* vecPa
   delete ParameterFile;
 }
 
+
+std::string Utils::MakeAnalysisPATH (std::string relativePath)
+{
+  std::stringstream myString;
+  char* absolutePath = getenv(ANALYPATH);
+
+  if (absolutePath == NULL)
+    {
+      std::cout << "[Utils::MakeAnalysisPATH]\tAnalysis environment variable " << ANALYPATH << " not defined" << std::endl;
+      exit (EXIT_FAILURE);
+    }
+  myString.clear(); myString.str("");
+  myString << absolutePath << relativePath;
+
+  return myString.str();
+}
+
+
 unsigned int Utils::ParFileBlockN (std::string blockName)
 {
   // #########################
@@ -4260,6 +4280,10 @@ void Utils::SetHisto3DEffName (int SignalType, std::string newName)
 }
 
 void Utils::SetDirEfficiency (std::string newName)
+// ###############################################
+// # If DirEfficiency = "" then the program will #
+// # use a relative path to the efficiency files #
+// ###############################################
 {
   DirEfficiency = newName;
 }

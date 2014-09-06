@@ -77,16 +77,16 @@ using std::make_pair;
 #define INPUT_PHI           "Phi_B0ToKstMuMu.txt"
 #define INPUT_THETAL_THETAK "ThetaK_B0ToKstMuMu.txt"
 
-#define RIGHTtag      true
-#define SAVEPLOT      false
-#define CHECKnegEFF   true
-#define EFFis2Dnot3D  true
-#define NFILES        100
-#define GENEFF        "../efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
-// "../efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt" OR "../efficiency/EffRndGenBinFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
-#define SETBATCH      true // Set batch mode when making binned efficiency
-#define ParameterFILE "../python/ParameterFile.txt"
-#define ordinateRange 1e-2
+#define RIGHTtag        true
+#define SAVEPLOT        false
+#define CHECKnegEFF     true
+#define EFFis2Dnot3D    true
+#define NFILES          100
+#define GENEFF          "/efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
+// "/efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt" OR "/efficiency/EffRndGenBinFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
+#define SETBATCH        true // Set batch mode when making binned efficiency
+#define PARAMETERFILEIN "/python/ParameterFile.txt"
+#define ordinateRange   1e-2
 
 
 // ####################
@@ -1003,7 +1003,7 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
   TCanvas* cEff2 = new TCanvas("cEff2", "Efficiency integrated over all variables but one", 30, 30, 700, 500);
   TCanvas* cEff3 = new TCanvas("cEff3", "Efficiency integrated over all variables but one", 40, 40, 700, 500);
 
-  tmpString = GENEFF;
+  tmpString = Utility->MakeAnalysisPATH(GENEFF);
   tmpString.erase(tmpString.find(".txt"),4);
 
   vector<TH1D*> Hq2;
@@ -2306,7 +2306,7 @@ void Test2DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   // #######################################################
   if (strcmp(analyORbin.c_str(),"ANALY") == 0)
     {
-      Utility->ReadAnalyticalEff(ParameterFILE,q2Bins,cosThetaKBins,cosThetaLBins,&effFuncs2D,"effFuncs2D",Utility->ParFileBlockN("analyEffokTag"));
+      Utility->ReadAnalyticalEff(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),q2Bins,cosThetaKBins,cosThetaLBins,&effFuncs2D,"effFuncs2D",Utility->ParFileBlockN("analyEffokTag"));
       effFunc2D = effFuncs2D[q2BinIndx];
       cEff->cd(2);
       effFunc2D->GetXaxis()->SetLabelSize(0.05);
@@ -2507,7 +2507,7 @@ void Test3DEfficiency (vector<double>* q2Bins, vector<double>* cosThetaKBins, ve
   // ##############################
   // # Read analytical efficiency #
   // ##############################
-  Utility->ReadAnalyticalEff(ParameterFILE,q2Bins,cosThetaKBins,cosThetaLBins,phiBins,&effFuncs3D,"effFuncs3D",Utility->ParFileBlockN("analyEffokTag"));
+  Utility->ReadAnalyticalEff(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,&effFuncs3D,"effFuncs3D",Utility->ParFileBlockN("analyEffokTag"));
   EffFunc3D = effFuncs3D[q2BinIndx];
   Utility->EffMinValue3D(cosThetaKBins,cosThetaLBins,phiBins,EffFunc3D);
 
@@ -2619,15 +2619,15 @@ int main (int argc, char** argv)
       cout << "INPUT_PHI: "              << INPUT_PHI << endl;
       cout << "INPUT_THETAL_THETAK: "    << INPUT_THETAL_THETAK << endl;
 
-      cout << "\nRIGHTtag: "    << RIGHTtag << endl;
-      cout << "SAVEPLOT: "      << SAVEPLOT << endl;
-      cout << "CHECKnegEFF: "   << CHECKnegEFF << endl;
-      cout << "EFFis2Dnot3D: "  << EFFis2Dnot3D << endl;
-      cout << "NFILES: "        << NFILES << endl;
-      cout << "GENEFF: "        << GENEFF << endl;
-      cout << "SETBATCH: "      << SETBATCH << endl;
-      cout << "ParameterFILE: " << ParameterFILE << endl;
-      cout << "ordinateRange: " << ordinateRange << endl;
+      cout << "\nRIGHTtag: "      << RIGHTtag << endl;
+      cout << "SAVEPLOT: "        << SAVEPLOT << endl;
+      cout << "CHECKnegEFF: "     << CHECKnegEFF << endl;
+      cout << "EFFis2Dnot3D: "    << EFFis2Dnot3D << endl;
+      cout << "NFILES: "          << NFILES << endl;
+      cout << "GENEFF: "          << GENEFF << endl;
+      cout << "SETBATCH: "        << SETBATCH << endl;
+      cout << "PARAMETERFILEIN: " << PARAMETERFILEIN << endl;
+      cout << "ordinateRange: "   << ordinateRange << endl;
 
 
       // ##########################
@@ -2670,11 +2670,11 @@ int main (int argc, char** argv)
 
 
 	  Utility = new Utils(RIGHTtag);
-	  if (Utility->RIGHTflavorTAG == true) Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
-	  else                                 Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
-	  Utility->ReadPreselectionCut(ParameterFILE);
-	  Utility->ReadSelectionCuts(ParameterFILE);
-	  Utility->ReadGenericParam(ParameterFILE);
+	  if (Utility->RIGHTflavorTAG == true) Utility->ReadAllBins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
+	  else                                 Utility->ReadAllBins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
+	  Utility->ReadPreselectionCut(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str());
+	  Utility->ReadSelectionCuts(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str());
+	  Utility->ReadGenericParam(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str());
 
 
 	  // ###################################
@@ -2717,8 +2717,8 @@ int main (int argc, char** argv)
 
     
 	  Utility = new Utils(RIGHTtag);
-	  if (Utility->RIGHTflavorTAG == true) Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
-	  else                                 Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
+	  if (Utility->RIGHTflavorTAG == true) Utility->ReadAllBins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
+	  else                                 Utility->ReadAllBins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
 	  if (option == "ReadBin") ReadEfficiencies(true, &q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,false,&myEff,CHECKnegEFF,SAVEPLOT,specBin,EFFis2Dnot3D,atoi(SignalType.c_str()));
 	  else                     ReadEfficiencies(false,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,false,&myEff,CHECKnegEFF,SAVEPLOT,specBin,EFFis2Dnot3D,atoi(SignalType.c_str()));
 
@@ -2737,8 +2737,8 @@ int main (int argc, char** argv)
 
 
 	  Utility = new Utils(RIGHTtag);
-	  if (Utility->RIGHTflavorTAG == true) Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
-	  else                                 Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
+	  if (Utility->RIGHTflavorTAG == true) Utility->ReadAllBins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
+	  else                                 Utility->ReadAllBins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
 	  if (option == "ReadAnaly") ReadEfficiencies(true, &q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,true,&myEff,CHECKnegEFF,SAVEPLOT,specBin,EFFis2Dnot3D);
 	  else                       ReadEfficiencies(false,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput,true,&myEff,CHECKnegEFF,SAVEPLOT,specBin,EFFis2Dnot3D);
 
@@ -2753,8 +2753,8 @@ int main (int argc, char** argv)
 
 
 	  Utility = new Utils(RIGHTtag);
-	  if (Utility->RIGHTflavorTAG == true) Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
-	  else                                 Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
+	  if (Utility->RIGHTflavorTAG == true) Utility->ReadAllBins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
+	  else                                 Utility->ReadAllBins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
 	  GenerateEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,fileNameInput);
 
 
@@ -2773,8 +2773,8 @@ int main (int argc, char** argv)
 
 
 	  Utility = new Utils(RIGHTtag);
-	  if (Utility->RIGHTflavorTAG == true) Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
-	  else                                 Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
+	  if (Utility->RIGHTflavorTAG == true) Utility->ReadAllBins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
+	  else                                 Utility->ReadAllBins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
 	  Utility->ReadEfficiency(fileNameInput.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,&myEff);
 
 	  if      (option == "Fit1DEff") Fit1DEfficiencies(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,whichVar2Fit,q2BinIndx,"Theta.txt");
@@ -2797,8 +2797,8 @@ int main (int argc, char** argv)
 
 
 	  Utility = new Utils(RIGHTtag);
-	  if (Utility->RIGHTflavorTAG == true) Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
-	  else                                 Utility->ReadAllBins(ParameterFILE,&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
+	  if (Utility->RIGHTflavorTAG == true) Utility->ReadAllBins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"goodTag");
+	  else                                 Utility->ReadAllBins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,"misTag");
 	  Utility->ReadEfficiency(fileNameInput.c_str(),&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,&myEff);
 	  
 	  if      (option == "Test2DEff") Test2DEfficiency(&q2Bins,&cosThetaKBins,&cosThetaLBins,&phiBins,myEff,q2BinIndx,atoi(SignalType.c_str()),analyORbin,SAVEPLOT);

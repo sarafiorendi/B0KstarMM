@@ -42,11 +42,10 @@ using std::vector;
 // ####################
 // # Global constants #
 // ####################
-#define ParameterFILE        "../python/ParameterFile.txt"
-#define ParameterFILE_MCGEN  "../results/ParameterFile_Sig_Psi_MCGEN.txt"
-#define ParameterFILE_MCRECO "../results/ParameterFile_Sig_MCRECO.txt"
+#define PARAMETERFILEIN      "/python/ParameterFile.txt"
+#define ParameterFILE_MCGEN  "/results/ParameterFile_Sig_Psi_MCGEN.txt"
+#define ParameterFILE_MCRECO "/results/ParameterFile_Sig_MCRECO.txt"
 
-#define FitSysFILE "../efficiency/EffSystematicsData/FitSystematics_q2Bin.txt"
 #define YvalueOutsideLimits 10.0 // Value given to bins with zero error in order not to show them
 #define FORPAPER false           // "true" = make special layout for publication in "MakePhysicsPlots" member function
 #define q0SM  4.0                // Standard Model value of AFB zero crossing point
@@ -1208,11 +1207,11 @@ void CheckPhysicsRegion ()
   TLine* line1;
   TLine* line2;
 
-  double LUMI = Utility->ReadLumi(ParameterFILE);
-  Utility->MakeGraphVar(ParameterFILE,&ge,"Fl");
+  double LUMI = Utility->ReadLumi(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str());
+  Utility->MakeGraphVar(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&ge,"Fl");
   ge->SetMarkerColor(kBlack);
   ge->SetMarkerStyle(20);
-  Utility->MakeGraphVar(ParameterFILE,&geTMP,"Afb");
+  Utility->MakeGraphVar(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&geTMP,"Afb");
 
   cout << "\n[MakePlots::CheckPhysicsRegion]\t@@@ I've found " << geTMP->GetN() << " data points @@@" << endl;
 
@@ -1274,10 +1273,10 @@ void MakePhysicsPlots (unsigned int PlotType)
   // # Read q^2 bins from config file #
   // ##################################
   vector<double> q2Bins;
-  Utility->Readq2Bins(ParameterFILE,&q2Bins);
+  Utility->Readq2Bins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&q2Bins);
   unsigned int JPsibin = Utility->GetJPsiBin(&q2Bins);
   unsigned int PsiPbin = Utility->GetPsiPBin(&q2Bins);
-  double LUMI          = Utility->ReadLumi(ParameterFILE);
+  double LUMI          = Utility->ReadLumi(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str());
   double* q2Bins_      = Utility->MakeBinning(&q2Bins);
 
 
@@ -1304,7 +1303,7 @@ void MakePhysicsPlots (unsigned int PlotType)
  
   if (PlotType == 0) // Fl
     {
-      Utility->MakeGraphVar(ParameterFILE_MCGEN,&ge0,"Fl");
+      Utility->MakeGraphVar(Utility->MakeAnalysisPATH(ParameterFILE_MCGEN).c_str(),&ge0,"Fl");
       ge0->SetMarkerColor(kBlue);
       ge0->SetMarkerStyle(22);
       ge0->SetMarkerSize(1.2);
@@ -1316,7 +1315,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->GetYaxis()->SetRangeUser(-0.02,1.0);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{L}");
 
-      Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"Fl");
+      Utility->MakeGraphVar(Utility->MakeAnalysisPATH(ParameterFILE_MCRECO).c_str(),&ge1,"Fl");
       ge1->SetMarkerColor(kBlack);
       ge1->SetMarkerStyle(20);
       ge1->SetMarkerSize(1.2);
@@ -1330,7 +1329,7 @@ void MakePhysicsPlots (unsigned int PlotType)
      }
   else if (PlotType == 1) // Afb
     {
-      Utility->MakeGraphVar(ParameterFILE_MCGEN,&ge0,"Afb");
+      Utility->MakeGraphVar(Utility->MakeAnalysisPATH(ParameterFILE_MCGEN).c_str(),&ge0,"Afb");
       ge0->SetMarkerColor(kBlue);
       ge0->SetMarkerStyle(22);
       ge0->SetMarkerSize(1.2);
@@ -1342,7 +1341,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->GetYaxis()->SetRangeUser(-1.04,1.0);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{FB}");
  
-      Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"Afb");
+      Utility->MakeGraphVar(Utility->MakeAnalysisPATH(ParameterFILE_MCRECO).c_str(),&ge1,"Afb");
       ge1->SetMarkerColor(kBlack);
       ge1->SetMarkerStyle(20);
       ge1->SetMarkerSize(1.2);
@@ -1356,7 +1355,7 @@ void MakePhysicsPlots (unsigned int PlotType)
     }
   else if (PlotType == 2) // Branching fraction
     {
-      Utility->MakeGraphVar(ParameterFILE_MCGEN,&ge0,"BF");
+      Utility->MakeGraphVar(Utility->MakeAnalysisPATH(ParameterFILE_MCGEN).c_str(),&ge0,"BF");
       ge0->SetMarkerColor(kBlue);
       ge0->SetMarkerStyle(22);
       ge0->SetMarkerSize(1.2);
@@ -1368,7 +1367,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->GetYaxis()->SetRangeUser(0.0,1.2);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
  
-      Utility->MakeGraphVar(ParameterFILE_MCRECO,&ge1,"BF");
+      Utility->MakeGraphVar(Utility->MakeAnalysisPATH(ParameterFILE_MCRECO).c_str(),&ge1,"BF");
       ge1->SetMarkerColor(kBlack);
       ge1->SetMarkerStyle(20);
       ge1->SetMarkerSize(1.2);
@@ -1382,7 +1381,7 @@ void MakePhysicsPlots (unsigned int PlotType)
     }
   else if (PlotType == 10) // Fl
     {
-      Utility->MakeGraphVar(ParameterFILE,&ge0,"Fl");
+      Utility->MakeGraphVar(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&ge0,"Fl");
       ge0->SetMarkerColor(kBlack);
       ge0->SetMarkerStyle(20);
       ge0->SetMarkerSize(1.2);
@@ -1394,7 +1393,7 @@ void MakePhysicsPlots (unsigned int PlotType)
     }
   else if (PlotType == 11) // Afb
     {
-      Utility->MakeGraphVar(ParameterFILE,&ge0,"Afb");
+      Utility->MakeGraphVar(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&ge0,"Afb");
       ge0->SetMarkerColor(kBlack);
       ge0->SetMarkerStyle(20);
       ge0->SetMarkerSize(1.2);
@@ -1406,7 +1405,7 @@ void MakePhysicsPlots (unsigned int PlotType)
     }
   else if (PlotType == 12) // Branching fraction
     {
-      Utility->MakeGraphVar(ParameterFILE,&ge0,"BF");
+      Utility->MakeGraphVar(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&ge0,"BF");
       ge0->SetMarkerColor(kBlack);
       ge0->SetMarkerStyle(20);
       ge0->SetMarkerSize(1.2);
@@ -1453,7 +1452,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   // # Adding systematic errors #
   // ############################
   vector<vector<double>*> vecObs; // Vector containing the pointers to the vectors containing the fit-observable systematic errors
-  Utility->ReadFitSystematics(ParameterFILE,&vecObs);
+  Utility->ReadFitSystematics(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&vecObs);
   if (PlotType == 0) // Fl
     {
       // ############################################
@@ -2712,7 +2711,7 @@ void MakeFitResPlots (string fileName, string plotType, int specBin, string varN
 
 
   vector<vector<double>*> vecNLL;
-  Utility->ReadNLLval(ParameterFILE,&vecNLL);
+  Utility->ReadNLLval(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&vecNLL);
   val = Utility->GetNLLval(&vecNLL,plotType,specBin);
 
   TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
@@ -2759,11 +2758,11 @@ void MakePvaluePlot (string fileName, int specBin)
 
 
   vector<double> q2Bins;
-  Utility->Readq2Bins(ParameterFILE,&q2Bins);
+  Utility->Readq2Bins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&q2Bins);
   double* q2Bins_ = Utility->MakeBinning(&q2Bins);
 
   vector<vector<double>*> vecNLL;
-  Utility->ReadNLLval(ParameterFILE,&vecNLL);
+  Utility->ReadNLLval(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&vecNLL);
 
   TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
   c0->cd();
@@ -2775,7 +2774,7 @@ void MakePvaluePlot (string fileName, int specBin)
   pval->SetMaximum(1.05);
 
 
-  cout << "\n[MakePlots::MakePvaluePlot]\t@@@ p-value computaion of NLL distribution from paramter file: " << ParameterFILE << " @@@" << endl;
+  cout << "\n[MakePlots::MakePvaluePlot]\t@@@ p-value computaion of NLL distribution from paramter file: " << PARAMETERFILEIN << " @@@" << endl;
 
   for (int i = (specBin == -1 ? 0 : specBin); i < (specBin == -1 ? static_cast<int>(q2Bins.size()-1) : specBin+1); i++)
     {
@@ -2830,15 +2829,12 @@ int main (int argc, char** argv)
       string tmpStr2;
       
 
-      if ((option == "EvalMultyRun") && (argc >= 3))
+      if ((option == "EvalMultyRun") && (argc == 6))
 	{
-	  intVal = atoi(argv[2]);
-	  if (argc >= 4) fileName = argv[3];
-	  else           fileName = FitSysFILE;
-	  if (argc >= 5) realVal1 = atof(argv[4]);
-	  else           realVal1 = 0.0;
-	  if (argc == 6) realVal2 = atof(argv[5]);
-	  else           realVal2 = 0.0;
+	  intVal   = atoi(argv[2]);
+	  fileName = argv[3];
+	  realVal1 = atof(argv[4]);
+	  realVal2 = atof(argv[5]);
 	}
       else if (((option == "Phy") || (option == "DataMC")) && (argc == 3)) intVal = atoi(argv[2]);
       else if ((option == "Pval") && (argc == 4))
@@ -2871,7 +2867,7 @@ int main (int argc, char** argv)
 	{
 	  cout << "./MakePlots [Phy EvalMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass]" << endl;
 	  cout << "            [Phy: 0-2||10-12]" << endl;
-	  cout << "            [EvalMultyRun: 0-2 [fileName] [NLL interval] [NLL less than]]" << endl;
+	  cout << "            [EvalMultyRun: 0-2 fileName NLL_interval NLL_less_than]" << endl;
 	  cout << "            [DataMC: 0-27]" << endl;
 	  cout << "            [Pval: fileName q^2_bin_index]" << endl;
 	  cout << "            [FitRes: fileName plotType q^2_bin_index varName lowBound highBound]" << endl;
@@ -2884,7 +2880,7 @@ int main (int argc, char** argv)
 
 
       cout << "\n[MakePlots::main]\t@@@ Settings @@@" << endl;
-      cout << "ParameterFILE : "       << ParameterFILE << endl;
+      cout << "PARAMETERFILEIN : "     << PARAMETERFILEIN << endl;
       cout << "ParameterFILE_MCGEN: "  << ParameterFILE_MCGEN << endl;
       cout << "ParameterFILE_MCRECO: " << ParameterFILE_MCRECO << endl;
 
@@ -2899,9 +2895,8 @@ int main (int argc, char** argv)
       cout << "SingleCand_MCkstPsi2S: "  << SingleCand_MCkstPsi2S << endl;
       cout << "SingleCand_Data: "        << SingleCand_Data << endl;
 
-      cout << "\nFitSysFILE: "        << FitSysFILE << endl;
-      cout << "YvalueOutsideLimits: " << YvalueOutsideLimits << endl;
-      cout << "FORPAPER: "            << FORPAPER << endl;
+      cout << "\nYvalueOutsideLimits: " << YvalueOutsideLimits << endl;
+      cout << "FORPAPER: "              << FORPAPER << endl;
 
       cout << "\noption: " << option << endl;
       cout << "intVal: "   << intVal << endl;
@@ -2922,7 +2917,7 @@ int main (int argc, char** argv)
 
 
       Utility = new Utils();
-      Utility->ReadGenericParam(ParameterFILE);
+      Utility->ReadGenericParam(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str());
 
       if      (option == "Phy")          MakePhysicsPlots(intVal);
       else if (option == "EvalMultyRun") EvalMultyRun(intVal,fileName,realVal1,realVal2);
@@ -2938,7 +2933,7 @@ int main (int argc, char** argv)
 	{
 	  cout << "./MakePlots [Phy EvalMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass]" << endl;
 	  cout << "            [Phy: 0-2||10-12]" << endl;
-	  cout << "            [EvalMultyRun: 0-2 [fileName] [NLL interval] [NLL less than]]" << endl;
+	  cout << "            [EvalMultyRun: 0-2 fileName NLL_interval NLL_less_than]" << endl;
 	  cout << "            [DataMC: 0-27]" << endl;
 	  cout << "            [Pval: fileName q^2_bin_index]" << endl;
 	  cout << "            [FitRes: fileName plotType q^2_bin_index varName lowBound highBound]" << endl;
@@ -3024,7 +3019,7 @@ int main (int argc, char** argv)
     {
       cout << "./MakePlots [Phy EvalMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass]" << endl;
       cout << "            [Phy: 0-2||10-12]" << endl;
-      cout << "            [EvalMultyRun: 0-2 [fileName] [NLL interval] [NLL less than]]" << endl;
+      cout << "            [EvalMultyRun: 0-2 fileName NLL_interval NLL_less_than]" << endl;
       cout << "            [DataMC: 0-27]" << endl;
       cout << "            [Pval: fileName q^2_bin_index]" << endl;
       cout << "            [FitRes: fileName plotType q^2_bin_index varName lowBound highBound]" << endl;

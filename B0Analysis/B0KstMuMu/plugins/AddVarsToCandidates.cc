@@ -32,7 +32,7 @@ using std::vector;
 #define PileUpDataFileName "PileUp/PileupData_HLTx"
 #define HadppTFileName     "HadppTDataMC.root"
 #define HadmpTFileName     "HadmpTDataMC.root"
-#define ParameterFILE      "../python/ParameterFile.txt"
+#define PARAMETERFILEIN    "/python/ParameterFile.txt"
 
 
 // ####################
@@ -453,7 +453,7 @@ int main (int argc, char** argv)
       string localVar    = argv[4];
 
       Utility = new Utils();
-      Utility->ReadTriggerPathsANDCutsANDEntries(ParameterFILE);
+      Utility->ReadTriggerPathsANDCutsANDEntries(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str());
 
       TFile* NtplFileIn = new TFile(fileNameIn.c_str(), "READ");
       theTreeIn = (TTree*) NtplFileIn->Get("B0KstMuMu/B0KstMuMuNTuple");
@@ -474,7 +474,7 @@ int main (int argc, char** argv)
       cout << "PileUp data file name: "                << PileUpDataFileName << endl;
       cout << "Positive hadron pT data-MC file name: " << HadppTFileName << endl;
       cout << "Negative hadron pT data-MC file name: " << HadmpTFileName << endl;
-      cout << "ParameterFILE: "                        << ParameterFILE << endl;
+      cout << "PARAMETERFILEIN: "                      << PARAMETERFILEIN << endl;
 
 
       if (option == "pileupW")
