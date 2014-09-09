@@ -29,7 +29,6 @@ if (makeDir == true)
     print OUT "cp ../../python/ParameterFile.txt " . $dirName . "\n" ;
     print OUT "cd " . $dirName . "\n" ;
 }
-print OUT "source InitAnalysis.sh\n" ;
 
 
 for ($count = 0; $count < $nfiles; $count++)
