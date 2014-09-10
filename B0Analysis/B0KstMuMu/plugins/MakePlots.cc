@@ -1912,6 +1912,7 @@ void MakePhysicsPlots (unsigned int PlotType)
 
 
 void EvalMultyRun (string plotType, string fileName, unsigned int q2BinIndx, double NLLinterval, double NLLlessThan)
+// @TMP@ : weighted average to be re-defined
 // ####################
 // # plotType = "Fl"  #
 // # plotType = "Afb" #
@@ -2731,7 +2732,6 @@ void MakeFitResPlots (string fileName, string plotType, int specBin, string varN
 // ##################################
 {
   stringstream myString;
-  string nTupleName = "FitResults3";
   double val;
 
 
@@ -2741,7 +2741,6 @@ void MakeFitResPlots (string fileName, string plotType, int specBin, string varN
   SetStyle();
   gStyle->SetOptFit(0);
   gStyle->SetOptStat(0);
-  cout << "\n@@@ Ntuple name: " << nTupleName << " @@@" << endl; 
 
 
   vector<vector<double>*> vecNLL;
@@ -2751,7 +2750,7 @@ void MakeFitResPlots (string fileName, string plotType, int specBin, string varN
   TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
 
   TFile* fileID = TFile::Open(fileName.c_str(),"READ");
-  TTree* theTree = (TTree*)fileID->Get(nTupleName.c_str());
+  TTree* theTree = (TTree*)fileID->Get("FitResults");
   TH1D* histo = new TH1D("histo","histo",100,lowBound,highBound);
   histo->SetXTitle(varName.c_str());
   histo->SetYTitle("Enstries (#)");
@@ -2825,10 +2824,10 @@ void MakePvaluePlot (string fileName, int specBin)
 
       if (fileID->IsZombie() == false)
 	{
-	  TTree* theTree = (TTree*)fileID->Get("FitResults3");
+	  TTree* theTree = (TTree*)fileID->Get("FitResults");
 	  int nEvents = theTree->GetEntries();
 	  myString.clear(); myString.str("");
-	  myString << "nll>" << val;
+	  myString << "nll > " << val;
 	  int integral = theTree->Draw("nll",myString.str().c_str(),"goff");
 
 	  pval->SetBinContent(i+1,integral / nEvents);

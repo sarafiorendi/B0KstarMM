@@ -476,8 +476,8 @@ void SetValueAndErrors (RooAbsPdf* pdf, string varName, double multi, stringstre
       pdf->getVariables()->setRealValue(varName.c_str(),*val);
       if ((*errLo == 0.0) && (*errHi == 0.0))
       	{
-      	  GetVar(pdf,varName)->setAsymError(-1.0,1.0);
-      	  GetVar(pdf,varName)->setError(1.0);
+	  GetVar(pdf,varName)->setAsymError(0.0,0.0);
+	  GetVar(pdf,varName)->setError(0.0);
       	}
       else
       	{
@@ -2979,7 +2979,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       (*TotalPDFJPsi)->plotOn(myFrameJPsi, Components(*JPsi), FillStyle(3345), FillColor(kBlue), DrawOption("F"));
       (*TotalPDFJPsi)->plotOn(myFrameJPsi, Components(*JPsi), LineStyle(7),    LineColor(kBlue), DrawOption("L"));
       if (justKeepPsi != true) (*TotalPDFJPsi)->plotOn(myFrameJPsi, Components(*BkgmumuMassJPsi), LineStyle(4), LineColor(kRed));
-      (*TotalPDFJPsi)->paramOn(myFrameJPsi,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nJPsiMass,*nBkgMassJPsi)));
+      (*TotalPDFJPsi)->paramOn(myFrameJPsi,Format("NEU",AutoPrecision(1)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nJPsiMass,*nBkgMassJPsi)));
 
       myString.clear(); myString.str("");
       myString << (*TotalPDFJPsi)->getPlotLabel() << "_paramBox";
@@ -3098,7 +3098,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       (*TotalPDFPsiP)->plotOn(myFramePsiP, Components(*PsiP), FillStyle(3345), FillColor(kBlue), DrawOption("F"));
       (*TotalPDFPsiP)->plotOn(myFramePsiP, Components(*PsiP), LineStyle(7),    LineColor(kBlue), DrawOption("L"));
       if (justKeepPsi != true) (*TotalPDFPsiP)->plotOn(myFramePsiP, Components(*BkgmumuMassPsiP), LineStyle(4), LineColor(kRed));
-      (*TotalPDFPsiP)->paramOn(myFramePsiP,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nPsiPMass,*nBkgMassPsiP)));
+      (*TotalPDFPsiP)->paramOn(myFramePsiP,Format("NEU",AutoPrecision(1)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nPsiPMass,*nBkgMassPsiP)));
 
       myString.clear(); myString.str("");
       myString << (*TotalPDFPsiP)->getPlotLabel() << "_paramBox";
@@ -3703,7 +3703,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
       VarsYield.add(*nBkgPeak);
     }
 
-  (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(VarsYield),ShowConstants(true));
+  (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(1)),Layout(0.11,0.42,0.88),Parameters(VarsYield),ShowConstants(true));
   // Format options:
   // - "N" add name
   // - "E" add error
@@ -4491,13 +4491,16 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   // #############################################
   // # Re-make all the fits and save the results #
   // #############################################
-  double fit, error, pdf, nll;
+  double fit_BF, error_BF, pdf_BF;
+  double nll;
 
-  TTree* FitResults1 = new TTree("FitResults1","Fit results for variable 1");
-  FitResults1->Branch("fit",  &fit,  "fit/D");
-  FitResults1->Branch("error",&error,"error/D");
-  FitResults1->Branch("pdf",  &pdf,  "pdf/D");
-  FitResults1->Branch("nll",  &nll,  "nll/D");
+  TTree* FitResults = new TTree("FitResults","Toy fit results");
+
+  FitResults->Branch("fit_BF",  &fit_BF,  "fit_BF/D");
+  FitResults->Branch("error_BF",&error_BF,"error_BF/D");
+  FitResults->Branch("pdf_BF",  &pdf_BF,  "pdf_BF/D");
+
+  FitResults->Branch("nll",&nll,"nll/D");
 
 
   cout << "\n[ExtractYield::MakeMassToy]\t@@@ Now fit total TOY invariant mass @@@" << endl;
@@ -4527,13 +4530,14 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
       	{
 	  myString.clear(); myString.str("");
 	  myString << fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str();
-	  if (GetVar(TotalPDF,varName.c_str())->getVal() > atof(myString.str().c_str())) error = GetVar(TotalPDF,varName.c_str())->getErrorLo();
-	  else                                                                           error = GetVar(TotalPDF,varName.c_str())->getErrorHi();
-	  fit = GetVar(TotalPDF,varName.c_str())->getVal();
-	  pdf = atof(myString.str().c_str());
+	  if (GetVar(TotalPDF,varName.c_str())->getVal() > atof(myString.str().c_str())) error_BF = GetVar(TotalPDF,varName.c_str())->getErrorLo();
+	  else                                                                           error_BF = GetVar(TotalPDF,varName.c_str())->getErrorHi();
+	  fit_BF = GetVar(TotalPDF,varName.c_str())->getVal();
+	  pdf_BF = atof(myString.str().c_str());
+
+
 	  nll = NLLvalue;
-	  
-	  FitResults1->Fill();
+	  FitResults->Fill();
 	}
 
 
@@ -4556,15 +4560,13 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   // ################
   TFile* fNLL;
   
-  myString.clear(); myString.str("");
-  myString << "_YIELD.root";
-  fNLL = new TFile(fileName.replace(fileName.find(".root"),5,myString.str()).c_str(),"RECREATE");
+  fNLL = new TFile(fileName.c_str(),"RECREATE");
   fNLL->cd();
-  FitResults1->Write();
+  FitResults->Write();
   fNLL->Close();
   delete fNLL;
 
-  delete FitResults1;
+  delete FitResults;
 }
 
 
@@ -4923,7 +4925,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       else (*TotalPDF)->plotOn(myFrameY, Name((*TotalPDF)->getPlotLabel()), LineColor(kBlue), Project(*z));
       legNames[nElements++] = "Total p.d.f.";
 
-      (*TotalPDF)->paramOn(myFrameY,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nSig)));
+      (*TotalPDF)->paramOn(myFrameY,Format("NEU",AutoPrecision(1)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nSig)));
 
 
       myString.clear(); myString.str("");
@@ -4962,7 +4964,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       else (*TotalPDF)->plotOn(myFrameZ, Name((*TotalPDF)->getPlotLabel()), LineColor(kBlue), Project(*y));
 
-      (*TotalPDF)->paramOn(myFrameZ,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nSig)));
+      (*TotalPDF)->paramOn(myFrameZ,Format("NEU",AutoPrecision(1)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nSig)));
       
 
       myString.clear(); myString.str("");
@@ -5174,7 +5176,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  VarsYield.add(*nBkgPeak);
 	}
 
-      (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(2)),Layout(0.11,0.42,0.88),Parameters(VarsYield),ShowConstants(true));
+      (*TotalPDF)->paramOn(myFrameX,Format("NEU",AutoPrecision(1)),Layout(0.11,0.42,0.88),Parameters(VarsYield),ShowConstants(true));
   
       
       myString.clear(); myString.str("");
@@ -6810,25 +6812,26 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   // #############################################
   // # Re-make all the fits and save the results #
   // #############################################
-  double fit, error, pdf, nll;
+  double fit_BF, error_BF, pdf_BF;
+  double fit_Fl, error_Fl, pdf_Fl;
+  double fit_Afb, error_Afb, pdf_Afb;
+  double nll;
 
-  TTree* FitResults1 = new TTree("FitResults1","Fit results for variable 1");
-  FitResults1->Branch("fit",  &fit,  "fit/D");
-  FitResults1->Branch("error",&error,"error/D");
-  FitResults1->Branch("pdf",  &pdf,  "pdf/D");
-  FitResults1->Branch("nll",  &nll,  "nll/D");
+  TTree* FitResults = new TTree("FitResults","Toy fit results");
 
-  TTree* FitResults2 = new TTree("FitResults2","Fit results for variable 2");
-  FitResults2->Branch("fit",  &fit,  "fit/D");
-  FitResults2->Branch("error",&error,"error/D");
-  FitResults2->Branch("pdf",  &pdf,  "pdf/D");
-  FitResults2->Branch("nll",  &nll,  "nll/D");
+  FitResults->Branch("fit_BF",  &fit_BF,  "fit_BF/D");
+  FitResults->Branch("error_BF",&error_BF,"error_BF/D");
+  FitResults->Branch("pdf_BF",  &pdf_BF,  "pdf_BF/D");
 
-  TTree* FitResults3 = new TTree("FitResults3","Fit results for variable 3");
-  FitResults3->Branch("fit",  &fit,  "fit/D");
-  FitResults3->Branch("error",&error,"error/D");
-  FitResults3->Branch("pdf",  &pdf,  "pdf/D");
-  FitResults3->Branch("nll",  &nll,  "nll/D");
+  FitResults->Branch("fit_Fl",  &fit_Fl,  "fit_Fl/D");
+  FitResults->Branch("error_Fl",&error_Fl,"error_Fl/D");
+  FitResults->Branch("pdf_Fl",  &pdf_Fl,  "pdf_Fl/D");
+
+  FitResults->Branch("fit_Afb",  &fit_Afb,  "fit_Afb/D");
+  FitResults->Branch("error_Afb",&error_Afb,"error_Afb/D");
+  FitResults->Branch("pdf_Afb",  &pdf_Afb,  "pdf_Afb/D");
+
+  FitResults->Branch("nll",&nll,"nll/D");
 
 
   cout << "\n[ExtractYield::MakeMass2AnglesToy]\t@@@ Now fit total TOY invariant mass and angles @@@" << endl;
@@ -6866,39 +6869,34 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 	  varName = "nSig";
 	  myString.clear(); myString.str("");
 	  myString << fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str();
-	  if (GetVar(TotalPDF,varName.c_str())->getVal() > atof(myString.str().c_str())) error = GetVar(TotalPDF,varName.c_str())->getErrorLo();
-	  else                                                                           error = GetVar(TotalPDF,varName.c_str())->getErrorHi();
-	  fit = GetVar(TotalPDF,varName.c_str())->getVal();
-	  pdf = atof(myString.str().c_str());
-	  nll = NLLvalue;
-
-	  FitResults1->Fill();
+	  if (GetVar(TotalPDF,varName.c_str())->getVal() > atof(myString.str().c_str())) error_BF = GetVar(TotalPDF,varName.c_str())->getErrorLo();
+	  else                                                                           error_BF = GetVar(TotalPDF,varName.c_str())->getErrorHi();
+	  fit_BF = GetVar(TotalPDF,varName.c_str())->getVal();
+	  pdf_BF = atof(myString.str().c_str());
 
 
 	  varName = "FlS";
 	  myString.clear(); myString.str("");
 	  myString << fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin);
 	  Transformer(varName,varVal,varValELo,varValEHi,fitResult,GetVar(TotalPDF,varName.c_str()));
-	  if (varVal > atof(myString.str().c_str())) error = varValELo;
-	  else                                       error = varValEHi;
-	  fit = varVal;
-	  pdf = atof(myString.str().c_str());
-	  nll = NLLvalue;
-	  
-	  FitResults2->Fill();
+	  if (varVal > atof(myString.str().c_str())) error_Fl = varValELo;
+	  else                                       error_Fl = varValEHi;
+	  fit_Fl = varVal;
+	  pdf_Fl = atof(myString.str().c_str());
 
 
 	  varName = "AfbS";
 	  myString.clear(); myString.str("");
 	  myString << fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin);
 	  Transformer(varName,varVal,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,varName.c_str()));
-	  if (varVal > atof(myString.str().c_str())) error = varValELo;
-	  else                                       error = varValEHi;
-	  fit = varVal;
-	  pdf = atof(myString.str().c_str());
-	  nll = NLLvalue;
+	  if (varVal > atof(myString.str().c_str())) error_Afb = varValELo;
+	  else                                       error_Afb = varValEHi;
+	  fit_Afb = varVal;
+	  pdf_Afb = atof(myString.str().c_str());
 
-	  FitResults3->Fill();
+
+	  nll = NLLvalue;
+	  FitResults->Fill();
 	}
 
 
@@ -6920,34 +6918,14 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   // # Save ntuples #
   // ################
   TFile* fNLL;
-    
-  myString.clear(); myString.str("");
-  myString << "YIELD_" << specBin << ".root";
-  fNLL = new TFile(fileName.replace(fileName.find(".root")-1,6,myString.str()).c_str(),"RECREATE");
+
+  fNLL = new TFile(fileName.c_str(),"RECREATE");
   fNLL->cd();
-  FitResults1->Write();
-  fNLL->Close();
-  delete fNLL;
-  
-  myString.clear(); myString.str("");
-  myString << "_FL_" << specBin << ".root";
-  fNLL = new TFile(fileName.replace(fileName.find("_YIELD_"),13,myString.str()).c_str(),"RECREATE");
-  fNLL->cd();
-  FitResults2->Write();
-  fNLL->Close();
-  delete fNLL;
-  
-  myString.clear(); myString.str("");
-  myString << "_AFB_" << specBin << ".root";
-  fNLL = new TFile(fileName.replace(fileName.find("_FL_"),10,myString.str()).c_str(),"RECREATE");
-  fNLL->cd();
-  FitResults3->Write();
+  FitResults->Write();
   fNLL->Close();
   delete fNLL;
 
-  delete FitResults1;
-  delete FitResults2;
-  delete FitResults3;
+  delete FitResults;
 }
 
 
