@@ -29,6 +29,7 @@
 #include <fstream>
 #include <vector>
 
+#include "ReadParameters.h"
 #include "Utils.h"
 #include "B0KstMuMuSingleCandTreeContent.h"
 
@@ -78,20 +79,20 @@ Utils* Utility;
 // #######################
 // # Function Definition #
 // #######################
-void SetStyle             ();
-void DrawString           (double Lumi);
-void MakeComparisonDataMC (unsigned int plotType);
-TCutG* DrawExclusion      (double Xlow, double Xhigh, double Ylow, double Yhigh, string cutName, unsigned int fillStyle, unsigned int color);
+void SetStyle              ();
+void DrawString            (double Lumi);
+void MakeComparisonDataMC  (unsigned int plotType);
+TCutG* DrawExclusion       (double Xlow, double Xhigh, double Ylow, double Yhigh, string cutName, unsigned int fillStyle, unsigned int color);
 TGraphAsymmErrors* ReadFromASCII (string fileName, unsigned int PlotType, vector<double>* q2Bins, vector<double>* vxs, vector<double>* vys, vector<double>* vxel, vector<double>* vxeh, vector<double>* vyel, vector<double>* vyeh);
-void CheckPhysicsRegion   ();
-void MakePhysicsPlots     (unsigned int PlotType);
-void EvalMultyRun         (string plotType, string fileName, unsigned int q2BinIndx, double NLLinterval, double NLLlessThan);
-void PlotMuMu             (string fileName, bool bkgSub);
-void PlotKst              (string fileName, bool bkgSub, bool fitParamAreFixed);
-void PlotKK               (string fileName, bool bkgSub, string RECOorGEN);
-void PlotMuHadMass        (string fileName);
-void MakeFitResPlots      (string fileName, string plotType, int specBin, string varName, double lowBound, double highBound);
-void MakePvaluePlot       (string fileName, int specBin);
+void CheckPhysicsRegion    ();
+void MakePhysicsPlots      (unsigned int PlotType);
+void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx);
+void PlotMuMu              (string fileName, bool bkgSub);
+void PlotKst               (string fileName, bool bkgSub, bool fitParamAreFixed);
+void PlotKK                (string fileName, bool bkgSub, string RECOorGEN);
+void PlotMuHadMass         (string fileName);
+void MakeFitResPlots       (string fileName, string plotType, int specBin, string varName, double lowBound, double highBound);
+void MakePvaluePlot        (string fileName, int specBin);
 
 
 // ###########################
@@ -1911,253 +1912,132 @@ void MakePhysicsPlots (unsigned int PlotType)
 }
 
 
-void EvalMultyRun (string plotType, string fileName, unsigned int q2BinIndx, double NLLinterval, double NLLlessThan)
-// @TMP@ : weighted average to be re-defined
-// ####################
-// # plotType = "Fl"  #
-// # plotType = "Afb" #
-// # plotType = "P1"  #
-// # plotType = "P2"  #
-// # plotType = "BF"  #
-// ####################
+void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
 {
-  unsigned int nPlots     = 11;
-  unsigned int nBinsHisto = 80;
-  double minError = 0.01;
-  double maxPulls = 5.0;
-  double tmpError;
-  stringstream myString;
   ifstream inputFile;
-  vector<TCanvas*> vecCanv;
-  vector<TH1D*> vecHist;
-  vector<double> vecVar;
-  vector<double> vecMean;
-  vector<double> vecErr1;
-  vector<double> vecErr2;
-  TPaveStats* stD;
+
+  unsigned int nPar = 12;
+
+  double ID;
+  double fit_Fl,  errorHi_Fl,  errorLo_Fl,  pdf_Fl;
+  double fit_Afb, errorHi_Afb, errorLo_Afb, pdf_Afb;
+  double fit_BF,  error_BF, pdf_BF;
+  double effMuMuGoodTag, effMuMuMisTag;
+  double nll;
+
+  vector<double>                vecVar;
+  vector<string>                ParVector;
   vector<vector<string>*>       fitParam;
   vector<vector<unsigned int>*> configParam;
-  
-  
+
+  ReadParameters* ParameterFile = new ReadParameters(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str());
+
+
   // ###################
   // # Read parameters #
   // ###################
   Utility->ReadFitStartingValues(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&fitParam,&configParam,Utility->ParFileBlockN("fitValBins"));
+  ParameterFile->ReadFromFile(Utility->ParFileBlockN("BF"),&ParVector);
+  pdf_Fl  = atof(fitParam[Utility->GetFitParamIndx("FlS")]->operator[](q2BinIndx).c_str());
+  pdf_Afb = atof(fitParam[Utility->GetFitParamIndx("AfbS")]->operator[](q2BinIndx).c_str());
+  pdf_BF  = atof(ParVector[q2BinIndx].c_str());
 
 
-  for (unsigned int i = 0; i < nPlots; i++)
-    {
-      myString.clear(); myString.str("");
-      myString << "c" << i;
-      vecCanv.push_back(new TCanvas(myString.str().c_str(),myString.str().c_str(),10,10,700,500));
-      vecCanv.back()->cd();
+  // #####################
+  // # NTuple definition #
+  // #####################
+  TTree* FitResults = new TTree("FitResults","Systematic-error fit results");
 
-      myString.clear(); myString.str("");
-      myString << "h" << i;
-      vecHist.push_back(new TH1D(myString.str().c_str(),myString.str().c_str(),nBinsHisto,1.0,-1.0));
-      vecHist.back()->GetYaxis()->SetTitle("Entries");
-      vecHist.back()->SetFillColor(kAzure+6);
+  FitResults->Branch("ID",&ID,"ID/D");
 
-      vecVar.push_back(0.0);
-      vecMean.push_back(0.0);
-      vecErr1.push_back(0.0);
-      vecErr2.push_back(0.0);
-    }
-  vecVar.push_back(0.0); // ID run number
+  FitResults->Branch("fit_Fl",    &fit_Fl,    "fit_Fl/D");
+  FitResults->Branch("errorHi_Fl",&errorHi_Fl,"errorHi_Fl/D");
+  FitResults->Branch("errorLo_Fl",&errorLo_Fl,"errorLo_Fl/D");
+  FitResults->Branch("pdf_Fl",    &pdf_Fl,    "pdf_Fl/D");
 
-  vecHist[0]->GetXaxis()->SetTitle("F_{L}");
-  vecHist[0]->SetBins(nBinsHisto,0.0,1.0);
-  vecHist[1]->GetXaxis()->SetTitle("F_{L} error high");
-  vecHist[1]->SetBins(nBinsHisto*nPlots,1.0,-1.0);
-  vecHist[2]->GetXaxis()->SetTitle("F_{L} error low");
-  vecHist[2]->SetBins(nBinsHisto*nPlots,1.0,-1.0);
+  FitResults->Branch("fit_Afb",    &fit_Afb,    "fit_Afb/D");
+  FitResults->Branch("errorHi_Afb",&errorHi_Afb,"errorHi_Afb/D");
+  FitResults->Branch("errorLo_Afb",&errorLo_Afb,"errorLo_Afb/D");
+  FitResults->Branch("pdf_Afb",    &pdf_Afb,    "pdf_Afb/D");
 
-  vecHist[3]->GetXaxis()->SetTitle("A_{FB}");
-  vecHist[3]->SetBins(nBinsHisto*2,-1.0,1.0);
-  vecHist[4]->GetXaxis()->SetTitle("A_{FB} error high");
-  vecHist[4]->SetBins(nBinsHisto*nPlots,1.0,-1.0);
-  vecHist[5]->GetXaxis()->SetTitle("A_{FB} error low");
-  vecHist[5]->SetBins(nBinsHisto*nPlots,1.0,-1.0);
+  FitResults->Branch("fit_BF",  &fit_BF,  "fit_BF/D");
+  FitResults->Branch("error_BF",&error_BF,"error_BF/D");
+  FitResults->Branch("pdf_BF",  &pdf_BF,  "pdf_BF/D");
+  
+  FitResults->Branch("effMuMuGoodTag",&effMuMuGoodTag,"effMuMuGoodTag/D");
+  FitResults->Branch("effMuMuMisTag", &effMuMuMisTag, "effMuMuMisTag/D");
 
-  vecHist[6]->GetXaxis()->SetTitle("dBF/dq#lower[0.4]{^{2}} (GeV^{#font[122]{\55}2})");
-  vecHist[7]->GetXaxis()->SetTitle("dBF/dq#lower[0.4]{^{2}} errors (GeV^{#font[122]{\55}2})");
-
-  vecHist[8]->GetXaxis()->SetTitle("Right-tag I[S*E]");
-  vecHist[9]->GetXaxis()->SetTitle("Mis-tag I[S*E]");
-  vecHist[10]->GetXaxis()->SetTitle("NLL");
-
-
-  // ##################################
-  // # Scatter plot : variable vs NLL #
-  // ##################################
-  TCanvas* cScNLL = new TCanvas("cScNLL","cScNLL",10,10,700,500);
-  cScNLL->cd();
-  TH2D* hScNLL = new TH2D("hScNLL","hScNLL",nBinsHisto,1.0,-1.0,nBinsHisto,1.0,-1.0);
-  hScNLL->GetXaxis()->SetTitle("Parameter Value");
-  hScNLL->GetYaxis()->SetTitle("NLL");
-  hScNLL->GetZaxis()->SetTitle("Entries");
-
-
-  // #########################################
-  // # Scatter plot : variable1 vs variable2 #
-  // #########################################
-  TCanvas* cScPars = new TCanvas("cScPars","cScPars",10,10,700,500);
-  cScPars->cd();
-  TH2D* hScPars = new TH2D("hScPars","hScPars",nBinsHisto*2,-1.0,1.0,nBinsHisto,0.0,1.0);
-  hScPars->GetXaxis()->SetTitle("A_{FB}");
-  hScPars->GetYaxis()->SetTitle("F_{L}");
-  hScPars->GetZaxis()->SetTitle("Entries");
+  FitResults->Branch("nll",&nll,"nll/D");
 
 
   // #########################
   // # Read values from file #
   // #########################
-  cout << "\n[MakePlots::EvalMultyRun]\t@@@ Opening systematics file: " << fileName.c_str() << " @@@" << endl;
+  cout << "\n[MakePlots::GenNTupleFromMultyRun]\t@@@ Opening systematics file: " << fileName.c_str() << " @@@" << endl;
   inputFile.open(fileName.c_str(), ifstream::in);
   if (inputFile.good() == false)
     {
-      cout << "[MakePlots::EvalMultyRun]\tError opening file : " << fileName.c_str() << endl;
+      cout << "[MakePlots::GenNTupleFromMultyRun]\tError opening file : " << fileName.c_str() << endl;
       exit (EXIT_FAILURE);
     }
 
 
-  inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6] >> vecVar[7] >> vecVar[8] >> vecVar[9] >> vecVar[10] >> vecVar[11];
+  for (unsigned int i = 0; i < nPar; i++)
+    {
+      vecVar.push_back(0.0);
+      inputFile >> vecVar.back();
+      cout << "var" << i << ": " << vecVar.back() << "\t";
+    }
+  cout << endl;
+
   while (inputFile.eof() == false)
     {
-      // ####################
-      // # Weighted average #
-      // ####################
-      if ((vecVar[1] != -2.0) &&
-	  (fabs(vecVar[2]) > minError) && (fabs(vecVar[3]) > minError) &&
-	  (fabs(vecVar[1] - atof(fitParam[Utility->GetFitParamIndx("FlS")]->operator[](q2BinIndx).c_str())) / vecVar[2] < maxPulls) &&
-	  (fabs(vecVar[1] - atof(fitParam[Utility->GetFitParamIndx("FlS")]->operator[](q2BinIndx).c_str())) / vecVar[3] < maxPulls))
+      if (vecVar[1] != -2.0)
 	{
-	  if (vecVar[1] < atof(fitParam[Utility->GetFitParamIndx("FlS")]->operator[](q2BinIndx).c_str()))
-	    tmpError = vecVar[2];
-	  else tmpError = vecVar[3];
-	  vecMean[0] += vecVar[1] / (tmpError * tmpError);
-	  vecErr1[0] += 1.        / fabs(tmpError);
-	  vecErr2[0] += 1.        / (tmpError * tmpError);
+	  ID          = vecVar[0];
+
+	  fit_Fl      = vecVar[1];
+	  errorHi_Fl  = vecVar[2];
+	  errorLo_Fl  = vecVar[3];
+
+	  fit_Afb     = vecVar[4];
+	  errorHi_Afb = vecVar[5];
+	  errorLo_Afb = vecVar[6];
+
+	  fit_BF      = vecVar[7];
+	  error_BF    = vecVar[8];
+
+	  effMuMuGoodTag = vecVar[9];
+	  effMuMuMisTag  = vecVar[10];
+
+	  nll         = vecVar[11];
+
+	  FitResults->Fill();
 	}
 
-      if ((vecVar[4] != -2.0) &&
-	  (fabs(vecVar[5]) > minError) && (fabs(vecVar[6]) > minError) &&
-	  (fabs(vecVar[4] - atof(fitParam[Utility->GetFitParamIndx("AfbS")]->operator[](q2BinIndx).c_str())) / vecVar[5] < maxPulls) &&
-	  (fabs(vecVar[4] - atof(fitParam[Utility->GetFitParamIndx("AfbS")]->operator[](q2BinIndx).c_str())) / vecVar[6] < maxPulls))
+      for (unsigned int i = 0; i < nPar; i++)
 	{
-	  if (vecVar[4] < atof(fitParam[Utility->GetFitParamIndx("AfbS")]->operator[](q2BinIndx).c_str()))
-	    tmpError = vecVar[5];
-	  else tmpError = vecVar[6];
-	  vecMean[1] += vecVar[4] / (tmpError * tmpError);
-	  vecErr1[1] += 1.        / fabs(tmpError);
-	  vecErr2[1] += 1.        / (tmpError * tmpError);
-	}
-
-
-      for (unsigned int i = 0; i < nPlots; i++)
-	{
- 	  if (vecVar[i+1] != -2.0) vecHist[i]->Fill(vecVar[i+1]);
+	  vecVar[i];
+	  inputFile >> vecVar[i];
 	  cout << "var" << i << ": " << vecVar[i] << "\t";
 	}
-      cout << "var" << nPlots << ": " << vecVar[nPlots] << endl;
-      
-      if (vecVar[nPlots] < NLLlessThan)
-	{
-	  hScNLL->Fill(vecVar[1],vecVar[nPlots]);
-	  if ((vecVar[1] != -2.0) && (vecVar[4] != -2.0)) hScPars->Fill(vecVar[4],vecVar[1]);
-	}
-
-      inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6] >> vecVar[7] >> vecVar[8] >> vecVar[9] >> vecVar[10] >> vecVar[11];
+      cout << endl;
     }
 
 
-  // ####################
-  // # Weighted average #
-  // ####################
-  vecMean[0] = vecMean[0] / vecErr2[0];
-  vecErr2[0] = sqrt(1. / vecErr2[0]);
-
-  vecMean[1] = vecMean[1] / vecErr2[1];
-  vecErr2[1] = sqrt(1. / vecErr2[1]);
-
-
-  // #####################################
-  // # Rebin NLL scatter plot and refill #
-  // #####################################
-  if      (plotType == "Fl")  hScNLL->SetBins(nBinsHisto,0.0,1.0,nBinsHisto,   hScNLL->GetMean(2) - NLLinterval,hScNLL->GetMean(2) + NLLinterval);
-  else if (plotType == "Afb") hScNLL->SetBins(nBinsHisto*2,-1.0,1.0,nBinsHisto,hScNLL->GetMean(2) - NLLinterval,hScNLL->GetMean(2) + NLLinterval);
-  else                        hScNLL->SetBins(nBinsHisto,1.0,-1.0,nBinsHisto,  hScNLL->GetMean(2) - NLLinterval,hScNLL->GetMean(2) + NLLinterval);
-
-  cout << "\n[MakePlots::EvalMultyRun]\t@@@ Rebin NLL scatter plot and refill @@@" << endl;
-  hScNLL->Reset();
-
-  inputFile.clear();
-  inputFile.seekg(0,inputFile.beg);
-  inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6] >> vecVar[7] >> vecVar[8] >> vecVar[9] >> vecVar[10] >> vecVar[11];
-  while (inputFile.eof() == false)
-    {
-      for (unsigned int i = 0; i < nPlots; i++)
-	cout << "var" << i << ": " << vecVar[i] << "\t";
-      cout << "var" << nPlots << ": " << vecVar[nPlots] << endl;
-
-      if (vecVar[nPlots] < NLLlessThan)
-	{
-	  if      (plotType == "Fl")  hScNLL->Fill(vecVar[1],vecVar[nPlots]);
-	  else if (plotType == "Afb") hScNLL->Fill(vecVar[4],vecVar[nPlots]);
-	  else                        hScNLL->Fill(vecVar[7],vecVar[nPlots]);
-	}
-
-      inputFile >> vecVar[0] >> vecVar[1] >> vecVar[2] >> vecVar[3] >> vecVar[4] >> vecVar[5] >> vecVar[6] >> vecVar[7] >> vecVar[8] >> vecVar[9] >> vecVar[10] >> vecVar[11];
-    }
-
-
-  // ################
-  // # Plot and Fit #
-  // ################
-  cout << "\n[MakePlots::EvalMultyRun]\t@@@ I'm now fitting and plotting @@@\n" << endl;
-
-  for (unsigned int i = 0; i < nPlots; i++)
-    {
-      vecCanv[i]->cd();
-      vecHist[i]->Draw();
-      vecHist[i]->Fit("gaus");
-      vecCanv[i]->Modified();
-      vecCanv[i]->Update();
-
-      stD = (TPaveStats*)vecHist[i]->FindObject("stats");
-      stD->SetX1NDC(0.75);
-      stD->SetX2NDC(0.98);
-      stD->SetY1NDC(0.70);
-      stD->SetY2NDC(0.90);
-
-      vecCanv[i]->Modified();
-      vecCanv[i]->Update();
-
-      cout << "@@@ Histogram #" << i << " mean = " << vecHist[i]->GetMean() << "   -" << vecHist[i]->GetRMS()/sqrt(vecHist[i]->GetEntries()) << "   " << vecHist[i]->GetRMS()/sqrt(vecHist[i]->GetEntries());
-      cout << "\t(RMS = " << vecHist[i]->GetRMS() << "; Entries = " << vecHist[i]->GetEntries() << ") @@@\n" << endl;
-    }
-
-
-  // ####################
-  // # Weighted average #
-  // ####################
-  cout << "Min error --> " << minError << "\tMax pulls --> " << maxPulls << endl;
-  cout << "@@@ Weighted average parameter 0: " << vecMean[0] << " +/- " << vecErr2[0] << "\t1 / error: " << vecErr1[0] << " @@@" << endl;
-  cout << "@@@ Weighted average parameter 1: " << vecMean[1] << " +/- " << vecErr2[1] << "\t1 / error: " << vecErr1[1] << " @@@" << endl;
-
-
-  cScNLL->cd();
-  hScNLL->Draw("gcolz");
-  cScNLL->Modified();
-  cScNLL->Update();
-
-  cScPars->cd();
-  hScPars->Draw("gcolz");
-  cScPars->Modified();
-  cScPars->Update();
-
+  // ###############
+  // # Save ntuple #
+  // ###############
+  fileName.replace(fileName.find(".txt"),4,".root");
+  TFile* fileID = new TFile(fileName.c_str(),"RECREATE");
+  fileID->cd();
+  FitResults->Write();
+  fileID->Close();
+  delete fileID;
 
   inputFile.close();
+  ParVector.clear();
+  delete ParameterFile;
 }
 
 
@@ -2862,13 +2742,10 @@ int main (int argc, char** argv)
       string tmpStr2;
       
 
-      if ((option == "EvalMultyRun") && (argc == 7))
+      if ((option == "GenMultyRun") && (argc == 4))
 	{
-	  tmpStr1  = argv[2];
-	  fileName = argv[3];
-	  intVal   = atoi(argv[4]);
-	  realVal1 = atof(argv[5]);
-	  realVal2 = atof(argv[6]);
+	  fileName = argv[2];
+	  intVal   = atoi(argv[3]);
 	}
       else if (((option == "Phy") || (option == "DataMC")) && (argc == 3)) intVal = atoi(argv[2]);
       else if ((option == "Pval") && (argc == 4))
@@ -2899,9 +2776,9 @@ int main (int argc, char** argv)
       else if ((option == "MuHadMass") && (argc == 3)) fileName = argv[2];
       else if (option != "PhyRegion")
 	{
-	  cout << "./MakePlots [Phy EvalMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass]" << endl;
+	  cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass]" << endl;
 	  cout << "            [Phy: 0-2||10-12]" << endl;
-	  cout << "            [EvalMultyRun: plotType fileName q^2_bin_index NLL_interval NLL_less_than]" << endl;
+	  cout << "            [GenMultyRun: fileName]" << endl;
 	  cout << "            [DataMC: 0-27]" << endl;
 	  cout << "            [Pval: fileName q^2_bin_index]" << endl;
 	  cout << "            [FitRes: fileName plotType q^2_bin_index varName lowBound highBound]" << endl;
@@ -2940,7 +2817,7 @@ int main (int argc, char** argv)
       cout << "tmpStr1: "  << tmpStr1 << endl; 
       cout << "tmpStr2: "  << tmpStr2 << endl; 
 
-      if (option == "getHfromToy") gROOT->SetBatch(true);
+      if (option == "GenMultyRun") gROOT->SetBatch(true);
       TApplication theApp ("Applications", &argc, argv);
 
 
@@ -2953,21 +2830,21 @@ int main (int argc, char** argv)
       Utility = new Utils();
       Utility->ReadGenericParam(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str());
 
-      if      (option == "Phy")          MakePhysicsPlots(intVal);
-      else if (option == "EvalMultyRun") EvalMultyRun(tmpStr1,fileName,intVal,realVal1,realVal2);
-      else if (option == "DataMC")       MakeComparisonDataMC(intVal);
-      else if (option == "PhyRegion")    CheckPhysicsRegion();
-      else if (option == "Pval")         MakePvaluePlot(fileName,intVal);
-      else if (option == "FitRes")       MakeFitResPlots(fileName,tmpStr1,intVal,tmpStr2,realVal1,realVal2);
-      else if (option == "MuMuMass")     PlotMuMu(fileName,intVal);
-      else if (option == "KKMass")       PlotKK(fileName,intVal,tmpStr1);
-      else if (option == "KstMass")      PlotKst(fileName,intVal,true);
-      else if (option == "MuHadMass")    PlotMuHadMass(fileName);
+      if      (option == "Phy")         MakePhysicsPlots(intVal);
+      else if (option == "GenMultyRun") GenNTupleFromMultyRun(fileName,intVal);
+      else if (option == "DataMC")      MakeComparisonDataMC(intVal);
+      else if (option == "PhyRegion")   CheckPhysicsRegion();
+      else if (option == "Pval")        MakePvaluePlot(fileName,intVal);
+      else if (option == "FitRes")      MakeFitResPlots(fileName,tmpStr1,intVal,tmpStr2,realVal1,realVal2);
+      else if (option == "MuMuMass")    PlotMuMu(fileName,intVal);
+      else if (option == "KKMass")      PlotKK(fileName,intVal,tmpStr1);
+      else if (option == "KstMass")     PlotKst(fileName,intVal,true);
+      else if (option == "MuHadMass")   PlotMuHadMass(fileName);
       else
 	{
-	  cout << "./MakePlots [Phy EvalMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass]" << endl;
+	  cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass]" << endl;
 	  cout << "            [Phy: 0-2||10-12]" << endl;
-	  cout << "            [EvalMultyRun: plotType fileName q^2_bin_index NLL_interval NLL_less_than]" << endl;
+	  cout << "            [GenMultyRun: fileName q^2_bin_index]" << endl;
 	  cout << "            [DataMC: 0-27]" << endl;
 	  cout << "            [Pval: fileName q^2_bin_index]" << endl;
 	  cout << "            [FitRes: fileName plotType q^2_bin_index varName lowBound highBound]" << endl;
@@ -2995,7 +2872,7 @@ int main (int argc, char** argv)
 	  cout << "12 = BF Data vs Theory" << endl;
 
 	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-	  cout << "For [FitRes EvalMultyRun]:" << endl;
+	  cout << "For [FitRes]:" << endl;
 	  cout << "Fl" << endl;
 	  cout << "Afb" << endl;
 	  cout << "P1" << endl;
@@ -3040,14 +2917,14 @@ int main (int argc, char** argv)
 	}
 
       delete Utility;
-      theApp.Run (); // Eventloop on air
+      if (option != "GenMultyRun") theApp.Run (); // Eventloop on air
       return EXIT_SUCCESS;
     }
   else
     {
-      cout << "./MakePlots [Phy EvalMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass]" << endl;
+      cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass]" << endl;
       cout << "            [Phy: 0-2||10-12]" << endl;
-      cout << "            [EvalMultyRun: plotType fileName q^2_bin_index NLL_interval NLL_less_than]" << endl;
+      cout << "            [GenMultyRun: fileName q^2_bin_index]" << endl;
       cout << "            [DataMC: 0-27]" << endl;
       cout << "            [Pval: fileName q^2_bin_index]" << endl;
       cout << "            [FitRes: fileName plotType q^2_bin_index varName lowBound highBound]" << endl;
@@ -3075,7 +2952,7 @@ int main (int argc, char** argv)
       cout << "12 = BF Data vs Theory" << endl;
 
       cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-      cout << "For [FitRes EvalMultyRun]:" << endl;
+      cout << "For [FitRes] :" << endl;
       cout << "Fl" << endl;
       cout << "Afb" << endl;
       cout << "P1" << endl;

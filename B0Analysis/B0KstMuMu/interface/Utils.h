@@ -188,8 +188,8 @@ class Utils
   void ReadFitSystematics                (std::string fileName, std::vector<std::vector<double>*>* vecParam);
   void ReadParVsq2Bins                   (std::string fileName, std::string praName, std::vector<std::string>** vecParam);
 
-  void SaveAnalyticalEff (std::string fileName, TF2* effFunc, double q2Val);
-  void SaveAnalyticalEff (std::string fileName, TF3* effFunc, double q2Val);
+  void SaveAnalyticalEff               (std::string fileName, TF2* effFunc, double q2Val);
+  void SaveAnalyticalEff               (std::string fileName, TF3* effFunc, double q2Val);
   void SaveAnalyticalEffFullCovariance (std::string fileName, TMatrixTSym<double>* covMatrix, double q2Val);
 
   std::string TellMeEffFuncThetaKThetaLPhi ();

@@ -4555,9 +4555,9 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
     }
 
 
-  // ################
-  // # Save ntuples #
-  // ################
+  // ###############
+  // # Save ntuple #
+  // ###############
   TFile* fNLL;
   
   fNLL = new TFile(fileName.c_str(),"RECREATE");
@@ -6914,9 +6914,9 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
     }
 
 
-  // ################
-  // # Save ntuples #
-  // ################
+  // ###############
+  // # Save ntuple #
+  // ###############
   TFile* fNLL;
 
   fNLL = new TFile(fileName.c_str(),"RECREATE");
