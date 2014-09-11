@@ -2764,7 +2764,7 @@ void GenerateDataset (RooAbsPdf* pdf, RooArgSet setVar, unsigned int fileIndx, v
 
 
   cout << "\n[ExtractYield::GenerateDataset]\t@@@ Generating data-like ntuple @@@" << endl;
-  RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins.size()-1) + specBin + 1);
+  RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins->size()-1) + q2BinIndx + 1);
   cout << "[ExtractYield::GenerateDataset]\t@@@ Random seed for dataset file generation set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
 
