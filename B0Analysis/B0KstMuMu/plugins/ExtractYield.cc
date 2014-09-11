@@ -351,7 +351,7 @@ vector<string>* SaveFitResults (unsigned int q2BinIndx, vector<vector<string>*>*
 unsigned int CopyFitResults    (RooAbsPdf* pdf, unsigned int q2BinIndx, vector<vector<string>*>* fitParam, unsigned int countMisTag = 0, unsigned int countGoodTag = 0);
 
 void GenerateFitParameters     (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, unsigned int q2BinIndx, string option);
-void GenerateDataset           (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, int q2BinIndx, RooArgSet setVar, string fileName);
+void GenerateDataset           (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, int q2BinIndx, RooArgSet setVar, RooArgSet* vecConstr, string fileName);
 string GeneratePolynomial      (RooRealVar* var, unsigned int nCoef, string sCoef);
 
 void FitDimuonInvMass          (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x, TCanvas* Canv, bool justPlotMuMuMass, bool justKeepPsi, string plotName);
@@ -537,12 +537,15 @@ void PrintVariables (RooArgSet* setVar, string type)
 
 void ClearVars (RooArgSet* vecVars)
 {
-  int nEle = vecVars->getSize();
-
-  TIterator* it = vecVars->createIterator();
-  for (int i = 0; i < nEle; i++) delete it->Next();
-
-  vecVars->removeAll();
+  if (vecVars != NULL)
+    {
+      int nEle = vecVars->getSize();
+      
+      TIterator* it = vecVars->createIterator();
+      for (int i = 0; i < nEle; i++) delete it->Next();
+      
+      vecVars->removeAll();
+    }
 }
 
 
@@ -2743,12 +2746,11 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
 }
 
 
-void GenerateDataset (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, int q2BinIndx, RooArgSet setVar, string fileName)
+void GenerateDataset (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, int q2BinIndx, RooArgSet setVar, RooArgSet* vecConstr, string fileName)
 {
   TFile* NtplFileOut;
   TTree* theTreeOut;
   B0KstMuMuSingleCandTreeContent* NTupleOut;
-  RooArgSet* vecConstr = NULL;
   RooMCStudy* MyToy;
   RooDataSet* toySample;
   RooRealVar* var;
@@ -2758,7 +2760,7 @@ void GenerateDataset (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigne
   // ######################
   // # Create output tree #
   // ######################
-  NtplFileOut = new TFile(fileName.c_str(), "RECREATE");
+  NtplFileOut = new TFile(fileName.c_str(),"RECREATE");
   NtplFileOut->mkdir("B0KstMuMu");
   NtplFileOut->cd("B0KstMuMu");
   theTreeOut = new TTree("B0KstMuMuNTuple","B0KstMuMuNTuple");
@@ -2773,8 +2775,15 @@ void GenerateDataset (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigne
 
 
   // #####################
+  // # Initialize p.d.f. #
+  // #####################
+  nEntryToy = CopyFitResults(pdf,q2BinIndx,fitParam);
+
+
+  // #####################
   // # Apply constraints #
   // #####################
+  ClearVars(vecConstr);
   BuildMassConstraints(vecConstr,pdf,"sign");
   BuildMassConstraints(vecConstr,pdf,"peak");
   if ((strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"allEvts") == 0)) BuildMassConstraints(vecConstr,pdf,"mistag");
@@ -2788,11 +2797,16 @@ void GenerateDataset (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigne
     }
 
 
+  // ###################################
+  // # Print variables and constraints #
+  // ###################################
+  PrintVariables(pdf->getVariables(),"vars");
+  PrintVariables(vecConstr,"cons");
+
+
   // #####################
   // # Toy-MC generation #
   // #####################
-  nEntryToy = CopyFitResults(pdf,q2BinIndx,fitParam);
-  PrintVariables(pdf->getVariables(),"vars");
   MyToy = new RooMCStudy(*pdf,setVar,Extended(true),ExternalConstraints(*vecConstr));
   MyToy->generate(1,nEntryToy,true);
 
@@ -2801,7 +2815,7 @@ void GenerateDataset (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigne
   // # Loop over the events #
   // ########################
   toySample = (RooDataSet*)MyToy->genData(0);
-  for (unsigned int entry = 0; entry < nEntryToy; entry++)
+  for (unsigned int entry = 0; entry < static_cast<unsigned int>(toySample->sumEntries()); entry++)
     {
       if (q2BinIndx == Utility->GetJPsiBin(q2Bins))
 	{
@@ -7033,7 +7047,7 @@ int main(int argc, char** argv)
 	      fileIndx    = atoi(argv[5]);
 	      tmpFileName = argv[6];
 	    }
-	  else if ((!(((FitType >= 21) && (FitType <= 26)) || (FitType == 96))) &&
+	  else if ((!(((FitType >= 21) && (FitType <= 26)) || ((FitType >= 81) && (FitType <= 86)) || (FitType == 96))) &&
 		   ((correct4Efficiency == "noEffCorr") || (correct4Efficiency == "yesEffCorr")))
 	    {
 	      if (argc >= 6)
@@ -7248,7 +7262,7 @@ int main(int argc, char** argv)
 	      ((FitType >= 61) && (FitType <= 66)) ||
 	      (FitType == 76))
 	    {
-	      NtplFile = new TFile(fileName.c_str(), "READ");
+	      NtplFile = new TFile(fileName.c_str(),"READ");
 	      theTree  = (TTree*) NtplFile->Get("B0KstMuMu/B0KstMuMuNTuple");
 	      NTuple   = new B0KstMuMuSingleCandTreeContent();
 	      NTuple->Init();
@@ -7559,7 +7573,7 @@ int main(int argc, char** argv)
                   // # Generate dataset for B0 inv. mass model #                                                                                                                                                                                                                                                     
                   // ###########################################                                                                                                                                                                                                                                                     
                   InstantiateMassFit(&TotalPDFRejectPsi,B0MassArb,"TotalPDFRejectPsi",&configParam,specBin);
-                  GenerateDataset(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,specBin,RooArgSet(*B0MassArb),fileName);
+                  GenerateDataset(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,specBin,RooArgSet(*B0MassArb),&vecConstr,fileName);
                 }
               else if (FitType == 86) // Fl-Afb-fit
                 {
@@ -7567,7 +7581,7 @@ int main(int argc, char** argv)
                   // # Generate dataset for B0 inv. mass and angles model #                                                                                                                                                                                                                                          
                   // ######################################################                                                                                                                                                                                                                                          
                   InstantiateMass2AnglesFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,CosThetaMuArb,CosThetaKArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,&q2Bins,specBin,specBin,make_pair(effFuncs.first->operator[](specBin),effFuncs.second->operator[](specBin)));
-                  GenerateDataset(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,specBin,RooArgSet(*B0MassArb,*CosThetaMuArb,*CosThetaKArb),fileName);
+                  GenerateDataset(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,specBin,RooArgSet(*B0MassArb,*CosThetaMuArb,*CosThetaKArb),&vecConstr,fileName);
                 }
 	    }
 	  else if (FitType == 96)
