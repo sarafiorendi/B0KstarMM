@@ -351,7 +351,7 @@ vector<string>* SaveFitResults (unsigned int q2BinIndx, vector<vector<string>*>*
 unsigned int CopyFitResults    (RooAbsPdf* pdf, unsigned int q2BinIndx, vector<vector<string>*>* fitParam, unsigned int countMisTag = 0, unsigned int countGoodTag = 0);
 
 void GenerateFitParameters     (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, unsigned int q2BinIndx, string option);
-void GenerateDataset           (RooAbsPdf* pdf, RooArgSet setVar, unsigned int fileIndx, vector<double>* q2Bins, int q2BinIndx, vector<vector<string>*>* fitParam, string fileName);
+void GenerateDataset           (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, int q2BinIndx, RooArgSet setVar, string fileName);
 string GeneratePolynomial      (RooRealVar* var, unsigned int nCoef, string sCoef);
 
 void FitDimuonInvMass          (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x, TCanvas* Canv, bool justPlotMuMuMass, bool justKeepPsi, string plotName);
@@ -2591,7 +2591,6 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
 
   CopyFitResults(pdf,q2BinIndx,fitParam);
 
-  cout << "\n[ExtractYield::GenerateFitParameters]\t@@@ Generating p.d.f. @@@" << endl;
   RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins->size()-1) + q2BinIndx + 1);
   cout << "\n[ExtractYield::GenerateFitParameters]\t@@@ Random seed for parameter file generation set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
@@ -2738,7 +2737,7 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
 }
 
 
-void GenerateDataset (RooAbsPdf* pdf, RooArgSet setVar, unsigned int fileIndx, vector<double>* q2Bins, int q2BinIndx, vector<vector<string>*>* fitParam, string fileName)
+void GenerateDataset (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, int q2BinIndx, RooArgSet setVar, string fileName)
 {
   TFile* NtplFileOut;
   TTree* theTreeOut;
@@ -2763,7 +2762,6 @@ void GenerateDataset (RooAbsPdf* pdf, RooArgSet setVar, unsigned int fileIndx, v
   NTupleOut->MakeTreeBranches(theTreeOut);
 
 
-  cout << "\n[ExtractYield::GenerateDataset]\t@@@ Generating data-like ntuple @@@" << endl;
   RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins->size()-1) + q2BinIndx + 1);
   cout << "[ExtractYield::GenerateDataset]\t@@@ Random seed for dataset file generation set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
@@ -7555,7 +7553,7 @@ int main(int argc, char** argv)
                   // # Generate dataset for B0 inv. mass model #                                                                                                                                                                                                                                                     
                   // ###########################################                                                                                                                                                                                                                                                     
                   InstantiateMassFit(&TotalPDFRejectPsi,B0MassArb,"TotalPDFRejectPsi",&configParam,specBin);
-                  GenerateDataset(TotalPDFRejectPsi,RooArgSet(*B0MassArb),fileIndx,&q2Bins,specBin,&fitParam,fileName);
+                  GenerateDataset(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,specBin,RooArgSet(*B0MassArb),fileName);
                 }
               else if (FitType == 86) // Fl-Afb-fit
                 {
@@ -7563,7 +7561,7 @@ int main(int argc, char** argv)
                   // # Generate dataset for B0 inv. mass and angles model #                                                                                                                                                                                                                                          
                   // ######################################################                                                                                                                                                                                                                                          
                   InstantiateMass2AnglesFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,CosThetaMuArb,CosThetaKArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,&q2Bins,specBin,specBin,make_pair(effFuncs.first->operator[](specBin),effFuncs.second->operator[](specBin)));
-                  GenerateDataset(TotalPDFRejectPsi,RooArgSet(*B0MassArb,*CosThetaMuArb,*CosThetaKArb),fileIndx,&q2Bins,specBin,&fitParam,fileName);
+                  GenerateDataset(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,specBin,RooArgSet(*B0MassArb,*CosThetaMuArb,*CosThetaKArb),fileName);
                 }
 	    }
 	  else if (FitType == 96)

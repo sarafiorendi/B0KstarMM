@@ -9,7 +9,6 @@
 ###################
 $q2bin   = @ARGV[0] ;
 $dirName = @ARGV[1] ;
-$makeDir = true ;
 $nfiles  = 400 ;
 
 
@@ -19,10 +18,7 @@ print "@@@ File output name: " . $fileOut . " @@@\n" ;
 open(OUT, ">" . $fileOut) ;
 
 
-#########################
-# In case you need this #
-#########################
-if (makeDir == true)
+if ($dirName != "")
 {
     print OUT "mkdir " . $dirName . "\n" ;
     print OUT "cp ../ExtractYield " . $dirName . "\n" ;
@@ -50,10 +46,7 @@ for ($count = 0; $count < $nfiles; $count++)
 }
 
 
-#########################
-# In case you need this #
-#########################
-if (makeDir == true)
+if ($dirName != "")
 {
     print OUT "cd ..\n" ;
 }
