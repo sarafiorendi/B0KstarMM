@@ -12,3 +12,4 @@ else
     echo @@@ Directory with data: $DATADIR @@@
     echo @@@ Data year: $DATAYEAR @@@
     echo @@@ Unset DISPLAY @@@
+fi
