@@ -2619,8 +2619,6 @@ void MakeFitResPlots (string fileName, string plotType, int specBin, string varN
   // # Set histo layout style #
   // ##########################
   SetStyle();
-  gStyle->SetOptFit(0);
-  gStyle->SetOptStat(0);
 
 
   vector<vector<double>*> vecNLL;
@@ -2778,7 +2776,7 @@ int main (int argc, char** argv)
 	{
 	  cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass]" << endl;
 	  cout << "            [Phy: 0-2||10-12]" << endl;
-	  cout << "            [GenMultyRun: fileName]" << endl;
+	  cout << "            [GenMultyRun: fileName q^2_bin_index]" << endl;
 	  cout << "            [DataMC: 0-27]" << endl;
 	  cout << "            [Pval: fileName q^2_bin_index]" << endl;
 	  cout << "            [FitRes: fileName plotType q^2_bin_index varName lowBound highBound]" << endl;
