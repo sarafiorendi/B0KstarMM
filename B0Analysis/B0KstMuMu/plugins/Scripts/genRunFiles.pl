@@ -18,7 +18,7 @@ print "@@@ File output name: " . $fileOut . " @@@\n" ;
 open(OUT, ">" . $fileOut) ;
 
 
-if ($dirName != "")
+if ($dirName ne "")
 {
     print OUT "mkdir " . $dirName . "\n" ;
     print OUT "cp ../ExtractYield " . $dirName . "\n" ;
@@ -46,7 +46,7 @@ for ($count = 0; $count < $nfiles; $count++)
 }
 
 
-if ($dirName != "")
+if ($dirName ne "")
 {
     print OUT "cd ..\n" ;
 }
