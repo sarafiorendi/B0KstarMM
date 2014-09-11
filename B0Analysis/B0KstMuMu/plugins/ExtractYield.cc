@@ -7042,7 +7042,7 @@ int main(int argc, char** argv)
 	      fileIndx      = atoi(argv[6]);
 	      ParameterFILE = argv[7];
 	    }
-	  else if (FitType == 96) fileIndx = atoi(argv[5]);
+	  else if (((FitType >= 81) && (FitType <= 86)) || (FitType == 96)) fileIndx = atoi(argv[5]);
 
 
 	  cout << "\n[ExtractYield::main]\t@@@ Input variables from command line @@@" << endl;
