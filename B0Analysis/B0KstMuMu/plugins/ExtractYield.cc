@@ -500,16 +500,19 @@ void PrintVariables (RooArgSet* setVar, string type)
       cout <<   "@@@ Printing variables @@@" << endl;
       cout <<   "@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       
-      TIterator* it = setVar->createIterator();
-      for (int i = 0; i < nEleSet; i++)
+      if (setVar != NULL)
 	{
-	  tmpVar = (RooRealVar*)it->Next();
-	  cout << "Variable: " << i;
-	  cout << "\tname: "   << tmpVar->GetName();
-	  cout << "\tvalue: "  << tmpVar->getVal();
-	  cout << "\terr: "    << tmpVar->getError();
-	  cout << "\tErrLo: "  << tmpVar->getErrorLo();
-	  cout << "\tErrHi: "  << tmpVar->getErrorHi() << endl;
+	  TIterator* it = setVar->createIterator();
+	  for (int i = 0; i < nEleSet; i++)
+	    {
+	      tmpVar = (RooRealVar*)it->Next();
+	      cout << "Variable: " << i;
+	      cout << "\tname: "   << tmpVar->GetName();
+	      cout << "\tvalue: "  << tmpVar->getVal();
+	      cout << "\terr: "    << tmpVar->getError();
+	      cout << "\tErrLo: "  << tmpVar->getErrorLo();
+	      cout << "\tErrHi: "  << tmpVar->getErrorHi() << endl;
+	    }
 	}
     }
   else if (type == "cons")
@@ -518,8 +521,11 @@ void PrintVariables (RooArgSet* setVar, string type)
       cout <<   "@@@@@@@@@ Printing constraints @@@@@@@@@" << endl;
       cout <<   "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
 
-      TIterator* it = setVar->createIterator();
-      for (int i = 0; i < nEleSet; i++) PrintVariables(((RooAbsPdf*)it->Next())->getVariables(),"vars");
+      if (setVar != NULL)
+	{
+	  TIterator* it = setVar->createIterator();
+	  for (int i = 0; i < nEleSet; i++) PrintVariables(((RooAbsPdf*)it->Next())->getVariables(),"vars");
+	}
     }
   else
     {
