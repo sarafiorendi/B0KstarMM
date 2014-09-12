@@ -582,7 +582,7 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
 // ######################
 {
   const TMatrixTSym<double>* CovM = (fitResult != NULL ? &fitResult->covarianceMatrix() : NULL);
-  double val1,val2,val3,valELo,valEHi;
+  double val1,val2,val3,val1ELo,val1EHi,val2ELo,val2EHi;
   string sVal1,sVal2;
   stringstream myString;
   myString.clear(); myString.str("");
@@ -598,7 +598,7 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
 	}
       else if (varName == "AfbS")
 	{
-	  sVal1 = Transformer("FlS",val1,valELo,valEHi);
+	  sVal1 = Transformer("FlS",val1,val1ELo,val1EHi);
 
 	  myString << "(3/4*(1 - " << sVal1 << ") * 2*TMath::ATan(" << varName << ")/TMath::Pi())";
 	  cout << "[ExtractYield::Transformer]\tTransformer function: " << myString.str().c_str() << endl;
@@ -606,7 +606,7 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
 	}
       else if (varName == "FsS")
 	{
-	  sVal1 = Transformer("FlS",val1,valELo,valEHi);
+	  sVal1 = Transformer("FlS",val1,val1ELo,val1EHi);
 
 	  myString << "(3*(1-" << sVal1 << ")/(7-3*" << sVal1 << ") * (1/2 + TMath::ATan(" << varName << ")/TMath::Pi()))";
 	  cout << "[ExtractYield::Transformer]\tTransformer function: " << myString.str().c_str() << endl;
@@ -614,8 +614,8 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
 	}
       else if (varName == "AsS")
 	{
-	  sVal1 = Transformer("FlS",val1,valELo,valEHi);
-	  sVal2 = Transformer("FsS",val1,valELo,valEHi);
+	  sVal1 = Transformer("FlS",val1,val1ELo,val1EHi);
+	  sVal2 = Transformer("FsS",val1,val1ELo,val1EHi);
 
 	  myString << "((1/2*(" << sVal2 << " + 3*" << sVal1 << "*(1 - " << sVal2 << ")) < 1 ? 1/2*(" << sVal2 << " + 3*" << sVal1 << "*(1 - " << sVal2 << ")) : 1) ";
 	  myString << "* 2*TMath::ATan(" << varName << ")/TMath::Pi())";
@@ -630,99 +630,103 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
     }
   else if ((varName == "FlS") && (varValIn1 != NULL))
     {
-      varValOut    = 1./2. + TMath::ATan(varValIn1->getVal())/TMath::Pi();
+      varValOut    = 1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi();
 
-      varValOutELo = 1./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * varValIn1->getErrorLo();
-      varValOutEHi = 1./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * varValIn1->getErrorHi();
+      varValOutELo = 1./2. + TMath::ATan(varValIn1->getVal() + varValIn1->getErrorLo()) / TMath::Pi() - varValOut;
+      varValOutEHi = 1./2. + TMath::ATan(varValIn1->getVal() + varValIn1->getErrorHi()) / TMath::Pi() - varValOut;
     }
   else if ((varName == "AfbS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
-      Transformer ("FlS",val1,valELo,valEHi,fitResult,varValIn1);
+      Transformer("FlS",val1,val1ELo,val1EHi,fitResult,varValIn1);
       val2 = 3./4. * (1. - val1);
 
-      varValOut    = val2 * 2.*TMath::ATan(varValIn2->getVal())/TMath::Pi();
+      varValOut    = val2 * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi();
 
-      varValOutELo = - sqrt( pow(3./4./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn2->getVal())/TMath::Pi() * varValIn1->getErrorLo(),2.) +
-			     pow(val2 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * varValIn2->getErrorLo(),2.) +
+      varValOutELo = val2 * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorLo()) / TMath::Pi() - varValOut;
+      varValOutELo = - sqrt( pow(3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1ELo,2.) + pow(varValOutELo,2.) +
 			     2. *
-			     3./4./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn2->getVal())/TMath::Pi() *
-			     val2 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() *
+			     (3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1ELo) / varValIn1->getErrorLo() *
+			     varValOutELo / varValIn2->getErrorLo() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AfbS")) : 0.) );
 
-      varValOutEHi = + sqrt( pow(3./4./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn2->getVal())/TMath::Pi() * varValIn1->getErrorHi(),2.) +
-			     pow(val2 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * varValIn2->getErrorHi(),2.) +
+
+      varValOutEHi = val2 * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorHi()) / TMath::Pi() - varValOut;
+      varValOutEHi = + sqrt( pow(3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1EHi,2.) + pow(varValOutEHi,2.) +
 			     2. *
-			     3./4./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn2->getVal())/TMath::Pi() *
-			     val2 * 2./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() *
+			     (3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1EHi)  / varValIn1->getErrorHi() *
+			     varValOutEHi / varValIn2->getErrorHi() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AfbS")) : 0.) );
     }
   else if ((varName == "FsS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
-      Transformer ("FlS",val1,valELo,valEHi,fitResult,varValIn1);
+      Transformer("FlS",val1,val1ELo,val1EHi,fitResult,varValIn1);
       val2 = 3. * (1. - val1) / (7. - 3. * val1);
 
-      varValOut    = val2 * (1./2. + TMath::ATan(varValIn2->getVal())/TMath::Pi());
+      varValOut    = val2 * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi());
 
-      varValOutELo = - sqrt( pow(3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi()*(3. * (1. - val1) - (7. - 3. * val1))/pow(7. - 3. * val1,2.) * (1./2. + TMath::ATan(varValIn2->getVal())/TMath::Pi()) * varValIn1->getErrorLo(),2.) +
-			     pow(val2 * 1./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * varValIn2->getErrorLo(),2.) +
+      varValOutELo = val2 * (1./2. + TMath::ATan(varValIn2->getVal() + varValIn2->getErrorLo()) / TMath::Pi()) - varValOut;
+      varValOutELo = - sqrt( pow((3. * (1. - (val1+val1ELo)) / (7. - 3. * (val1+val1ELo)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()),2.) + pow(varValOutELo,2.) +
 			     2. *
-			     3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi()*(3. * (1. - val1) - (7. - 3. * val1))/pow(7. - 3. * val1,2.) * (1./2. + TMath::ATan(varValIn2->getVal())/TMath::Pi()) *
-			     val2 * 1./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() *
+			     (3. * (1. - (val1+val1ELo)) / (7. - 3. * (val1+val1ELo)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) / varValIn1->getErrorLo() *
+			     varValOutELo / varValIn2->getErrorLo() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) );
 
-      varValOutEHi = + sqrt( pow(3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi()*(3. * (1. - val1) - (7. - 3. * val1))/pow(7. - 3. * val1,2.) * (1./2. + TMath::ATan(varValIn2->getVal())/TMath::Pi()) * varValIn1->getErrorHi(),2.) +
-			     pow(val2 * 1./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * varValIn2->getErrorHi(),2.) +
+
+      varValOutEHi = val2 * (1./2. + TMath::ATan(varValIn2->getVal() + varValIn2->getErrorHi()) / TMath::Pi()) - varValOut;
+      varValOutEHi = + sqrt( pow((3. * (1. - (val1+val1EHi)) / (7. - 3. * (val1+val1EHi)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()),2.) + pow(varValOutEHi,2.) +
 			     2. *
-			     3./(1. + pow(varValIn1->getVal(),2.))/TMath::Pi()*(3. * (1. - val1) - (7. - 3. * val1))/pow(7. - 3. * val1,2.) * (1./2. + TMath::ATan(varValIn2->getVal())/TMath::Pi()) *
-			     val2 * 1./(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() *
+			     (3. * (1. - (val1+val1EHi)) / (7. - 3. * (val1+val1EHi)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) / varValIn1->getErrorHi() *
+			     varValOutEHi / varValIn2->getErrorHi() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) );
     }
   else if ((varName == "AsS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (varValIn3 != NULL))
     {
-      Transformer ("FlS",val1,valELo,valEHi,fitResult,varValIn1);
-      Transformer ("FsS",val2,valELo,valEHi,fitResult,varValIn1,varValIn2);
-
+      Transformer("FlS",val1,val1ELo,val1EHi,fitResult,varValIn1);
+      Transformer("FsS",val2,val2ELo,val2EHi,fitResult,varValIn1,varValIn2);
+      
       val3 = 1./2. * (val2 + 3. * val1 * (1. - val2));
       if (val3 > 1.) val3 = 1.;
-
-      varValOut    = val3 * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi();
-
-      varValOutELo = - sqrt( pow((val3 == 1. ? 0.0 : 1./2. * 3.*(1. - val2)  /(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) * varValIn1->getErrorLo(),2.) +
-			     pow((val3 == 1. ? 0.0 : 1./2. * (1. - 3. * val1)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) * varValIn2->getErrorLo(),2.) +
-			     pow(val3 * 2./(1. + pow(varValIn3->getVal(),2.))/TMath::Pi() * varValIn3->getErrorLo(),2.) +
+      
+      varValOut    = val3 * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi();
+      
+      varValOutELo = val3 * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorLo()) / TMath::Pi() - varValOut;
+      varValOutELo = - sqrt( pow(3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1ELo,2.) +
+			     pow(1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2ELo,2.) +
+			     pow(varValOutELo,2.) + 
 
 			     2. *
-			     (val3 == 1. ? 0.0 : 1./2. * 3.*(1. - val2)  /(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
-			     (val3 == 1. ? 0.0 : 1./2. * (1. - 3. * val1)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
+			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1ELo / varValIn1->getErrorLo() *
+			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2ELo / varValIn2->getErrorLo() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) +
 
 			     2. *
-			     (val3 == 1. ? 0.0 : 1./2. * 3.*(1. - val2)  /(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
-			     val3 * 2./(1. + pow(varValIn3->getVal(),2.))/TMath::Pi() *
+			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1ELo / varValIn1->getErrorLo() *
+			     varValOutELo / varValIn2->getErrorLo() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AsS")) : 0.) +
 
 			     2. *
-			     (val3 == 1. ? 0.0 : 1./2. * (1. - 3. * val1)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
-			     val3 * 2./(1. + pow(varValIn3->getVal(),2.))/TMath::Pi() *
+			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2ELo / varValIn2->getErrorLo() *
+			     varValOutELo / varValIn2->getErrorLo() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FsS"),fitResult->floatParsFinal().index("AsS")) : 0.) );
 			     
-      varValOutEHi = + sqrt( pow((val3 == 1. ? 0.0 : 1./2. * 3.*(1. - val2)  /(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) * varValIn1->getErrorHi(),2.) +
-			     pow((val3 == 1. ? 0.0 : 1./2. * (1. - 3. * val1)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) * varValIn2->getErrorHi(),2.) +
-			     pow(val3 * 2./(1. + pow(varValIn3->getVal(),2.))/TMath::Pi() * varValIn3->getErrorHi(),2.) +
+      varValOutEHi = val3 * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorHi()) / TMath::Pi() - varValOut;
+      varValOutEHi = + sqrt( pow(3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi,2.) +
+			     pow(1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2EHi,2.) +
+			     pow(varValOutEHi,2.) + 
 
 			     2. *
-			     (val3 == 1. ? 0.0 : 1./2. * 3.*(1. - val2)  /(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
-			     (val3 == 1. ? 0.0 : 1./2. * (1. - 3. * val1)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
+			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi / varValIn1->getErrorHi() *
+			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2EHi / varValIn2->getErrorHi() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) +
 
 			     2. *
-			     (val3 == 1. ? 0.0 : 1./2. * 3.*(1. - val2)  /(1. + pow(varValIn1->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
-			     val3 * 2./(1. + pow(varValIn3->getVal(),2.))/TMath::Pi() *
+			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi / varValIn1->getErrorHi() *
+			     varValOutEHi / varValIn2->getErrorHi() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AsS")) : 0.) +
 
 			     2. *
-			     (val3 == 1. ? 0.0 : 1./2. * (1. - 3. * val1)/(1. + pow(varValIn2->getVal(),2.))/TMath::Pi() * 2.*TMath::ATan(varValIn3->getVal())/TMath::Pi()) *
-			     val3 * 2./(1. + pow(varValIn3->getVal(),2.))/TMath::Pi() *
+			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2EHi / varValIn2->getErrorHi() *
+			     varValOutEHi / varValIn2->getErrorHi() *
 			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FsS"),fitResult->floatParsFinal().index("AsS")) : 0.) );
     }
   else
@@ -743,46 +747,67 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
 // # varValIn2 = As     #
 // ######################
 {
-  double val1,val2,valELo,valEHi,limit;
+  double val1,val2,val3,valELo,valEHi,limit;
+  double tolerance = atof(Utility->GetGenericParam("Tolerance").c_str());
 
 
   if ((varName == "FlS") && (varValIn1 != NULL))
     {
-      varValOut = TMath::Tan((varValIn1->getVal() - 1./2.)*TMath::Pi());
+      varValOut = TMath::Tan((varValIn1->getVal() - 1./2.) * TMath::Pi());
 
-      varValOutELo = 1./pow(TMath::Cos((varValIn1->getVal() - 1./2.)*TMath::Pi()),2.)*TMath::Pi() * varValIn1->getErrorLo();
-      varValOutEHi = 1./pow(TMath::Cos((varValIn1->getVal() - 1./2.)*TMath::Pi()),2.)*TMath::Pi() * varValIn1->getErrorHi();
+      if ((varValIn1->getVal() + varValIn1->getErrorLo()) <= 0.) val1 = tolerance;
+      else                                                       val1 = varValIn1->getVal() + varValIn1->getErrorLo();
+      varValOutELo = TMath::Tan((val1 - 1./2.) * TMath::Pi()) - varValOut;
+
+      if ((varValIn1->getVal() + varValIn1->getErrorHi()) >= 1.) val1 = 1. - tolerance;
+      else                                                       val1 = varValIn1->getVal() + varValIn1->getErrorHi();
+      varValOutEHi = TMath::Tan((val1 - 1./2.) * TMath::Pi()) - varValOut;
     }
   else if ((varName == "AfbS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
       Transformer("FlS",val1,valELo,valEHi,NULL,varValIn1);
       limit = 3./4. * (1. - val1);
       
-      varValOut = TMath::Tan(varValIn2->getVal() / limit / 2.*TMath::Pi());
+      varValOut = TMath::Tan(varValIn2->getVal() / limit / 2. * TMath::Pi());
 
-      varValOutELo = 1./pow(TMath::Cos(varValIn2->getVal() / limit / 2.*TMath::Pi()),2.) / limit / 2.*TMath::Pi() * varValIn2->getErrorLo();
-      varValOutEHi = 1./pow(TMath::Cos(varValIn2->getVal() / limit / 2.*TMath::Pi()),2.) / limit / 2.*TMath::Pi() * varValIn2->getErrorHi();
+      if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= -limit) val2 = (limit >= 2.*tolerance ? -limit + tolerance : -limit + tolerance*limit);
+      else                                                           val2 = varValIn2->getVal() + varValIn2->getErrorLo();
+      varValOutELo = TMath::Tan(val2 / limit / 2. * TMath::Pi()) - varValOut;
+
+      if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= limit) val2 = (limit >= 2.*tolerance ? limit - tolerance : limit - tolerance*limit);
+      else                                                          val2 = varValIn2->getVal() + varValIn2->getErrorHi();
+      varValOutEHi = TMath::Tan(val2 / limit / 2. * TMath::Pi()) - varValOut;
     }
   else if ((varName == "FsS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
       Transformer("FlS",val1,valELo,valEHi,NULL,varValIn1);
       limit = 3. * (1. - val1) / (7. - 3.*val1);
 
-      varValOut = TMath::Tan((varValIn2->getVal() / limit - 1./2.)*TMath::Pi());
-      
-      varValOutELo = 1./pow(TMath::Cos((varValIn2->getVal() / limit - 1./2.)*TMath::Pi()),2.) / limit * TMath::Pi() * varValIn2->getErrorLo();
-      varValOutEHi = 1./pow(TMath::Cos((varValIn2->getVal() / limit - 1./2.)*TMath::Pi()),2.) / limit * TMath::Pi() * varValIn2->getErrorHi();
+      varValOut = TMath::Tan((varValIn2->getVal() / limit - 1./2.) * TMath::Pi());
+
+      if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= 0.) val2 = tolerance;
+      else                                                       val2 = varValIn2->getVal() + varValIn2->getErrorLo();
+      varValOutELo = TMath::Tan((val2 / limit - 1./2.) * TMath::Pi()) - varValOut;
+
+      if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= 1.) val2 = 1. - tolerance;
+      else                                                       val2 = varValIn2->getVal() + varValIn2->getErrorHi();
+      varValOutEHi = TMath::Tan((val2 / limit - 1./2.) * TMath::Pi()) - varValOut;
     }
   else if ((varName == "AsS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (varValIn3 != NULL))
     {
       Transformer("FlS",val1,valELo,valEHi,NULL,varValIn1);
       Transformer("FsS",val2,valELo,valEHi,NULL,varValIn1,varValIn2);
-      limit = 1./2. * (val2 + 3. * val1 * (1. - val2));
+      limit = (1./2. * (val2 + 3. * val1 * (1. - val2)) > 1. ? 1. : 1./2. * (val2 + 3. * val1 * (1. - val2)));
 
-      varValOut = TMath::Tan(varValIn3->getVal() / limit / 2.*TMath::Pi());
+      varValOut = TMath::Tan(varValIn3->getVal() / limit / 2. * TMath::Pi());
 
-      varValOutELo = 1./pow(TMath::Cos(varValIn3->getVal() / limit / 2.*TMath::Pi()),2.) / limit / 2.*TMath::Pi() * varValIn3->getErrorLo();
-      varValOutEHi = 1./pow(TMath::Cos(varValIn3->getVal() / limit / 2.*TMath::Pi()),2.) / limit / 2.*TMath::Pi() * varValIn3->getErrorHi();
+      if ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -limit) val3 = (limit >= 2.*tolerance ? -limit + tolerance : -limit + tolerance*limit);
+      else                                                           val3 = varValIn3->getVal() + varValIn3->getErrorLo();
+      varValOutELo = TMath::Tan(val3 / limit / 2. * TMath::Pi()) - varValOut;
+
+      if ((varValIn3->getVal() + varValIn3->getErrorHi()) >= limit) val3 = (limit >= 2.*tolerance ? limit - tolerance : limit - tolerance*limit);
+      else                                                          val3 = varValIn3->getVal() + varValIn3->getErrorHi();
+      varValOutEHi = TMath::Tan(val3 / limit / 2. * TMath::Pi()) - varValOut;
     }
   else
     {
@@ -2999,7 +3024,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       if (GetVar(*TotalPDFJPsi,x->getPlotLabel()) != NULL) (*TotalPDFJPsi)->getVariables()->setRealValue(x->getPlotLabel(),Utility->B0Mass);
       if (JPsiFitResult != NULL) JPsiFitResult->Print("v");
       ((RooAddPdf*)(*TotalPDFJPsi))->fixCoefRange("subRangeJPsi");
-      sigmaJPsi = sqrt(GetVar(*TotalPDFJPsi,"fracMassJPsi")->getVal()        * pow(GetVar(*TotalPDFJPsi,"sigmaJPsi1")->getVal(),2.) + (1. - GetVar(*TotalPDFJPsi,"fracMassJPsi")->getVal()) * pow(GetVar(*TotalPDFJPsi,"sigmaJPsi2")->getVal(),2.));
+      sigmaJPsi = sqrt(GetVar(*TotalPDFJPsi,"fracMassJPsi")->getVal() * pow(GetVar(*TotalPDFJPsi,"sigmaJPsi1")->getVal(),2.) + (1. - GetVar(*TotalPDFJPsi,"fracMassJPsi")->getVal()) * pow(GetVar(*TotalPDFJPsi,"sigmaJPsi2")->getVal(),2.));
       sigmaJPsiE = 1./(2.*sigmaJPsi) * sqrt( pow((pow(GetVar(*TotalPDFJPsi,"sigmaJPsi1")->getVal(),2.) - pow(GetVar(*TotalPDFJPsi,"sigmaJPsi2")->getVal(),2.)) * GetVar(*TotalPDFJPsi,"fracMassJPsi")->getError(),2.) +
 					     pow(2. * GetVar(*TotalPDFJPsi,"fracMassJPsi")->getVal()        * GetVar(*TotalPDFJPsi,"sigmaJPsi1")->getVal() * GetVar(*TotalPDFJPsi,"sigmaJPsi1")->getError(),2.) +
 					     pow(2. * (1. - GetVar(*TotalPDFJPsi,"fracMassJPsi")->getVal()) * GetVar(*TotalPDFJPsi,"sigmaJPsi2")->getVal() * GetVar(*TotalPDFJPsi,"sigmaJPsi2")->getError(),2.) );
@@ -3118,7 +3143,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       if (GetVar(*TotalPDFPsiP,x->getPlotLabel()) != NULL) (*TotalPDFPsiP)->getVariables()->setRealValue(x->getPlotLabel(),Utility->B0Mass);
       if (PsiPFitResult != NULL) PsiPFitResult->Print("v");
       ((RooAddPdf*)(*TotalPDFPsiP))->fixCoefRange("subRangePsiP");
-      sigmaPsiP = sqrt(GetVar(*TotalPDFPsiP,"fracMassPsiP")->getVal()        * pow(GetVar(*TotalPDFPsiP,"sigmaPsiP1")->getVal(),2.) + (1. - GetVar(*TotalPDFPsiP,"fracMassPsiP")->getVal()) * pow(GetVar(*TotalPDFPsiP,"sigmaPsiP2")->getVal(),2.));
+      sigmaPsiP = sqrt(GetVar(*TotalPDFPsiP,"fracMassPsiP")->getVal() * pow(GetVar(*TotalPDFPsiP,"sigmaPsiP1")->getVal(),2.) + (1. - GetVar(*TotalPDFPsiP,"fracMassPsiP")->getVal()) * pow(GetVar(*TotalPDFPsiP,"sigmaPsiP2")->getVal(),2.));
       sigmaPsiPE = 1./(2.*sigmaPsiP) * sqrt( pow((pow(GetVar(*TotalPDFPsiP,"sigmaPsiP1")->getVal(),2.) - pow(GetVar(*TotalPDFPsiP,"sigmaPsiP2")->getVal(),2.)) * GetVar(*TotalPDFPsiP,"fracMassPsiP")->getError(),2.) +
 					     pow(2. * GetVar(*TotalPDFPsiP,"fracMassPsiP")->getVal()        * GetVar(*TotalPDFPsiP,"sigmaPsiP1")->getVal() * GetVar(*TotalPDFPsiP,"sigmaPsiP1")->getError(),2.) +
 					     pow(2. * (1. - GetVar(*TotalPDFPsiP,"fracMassPsiP")->getVal()) * GetVar(*TotalPDFPsiP,"sigmaPsiP2")->getVal() * GetVar(*TotalPDFPsiP,"sigmaPsiP2")->getError(),2.) );
