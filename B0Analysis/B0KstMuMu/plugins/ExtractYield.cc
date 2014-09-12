@@ -683,7 +683,6 @@ string Transformer (string varName, double& varValOut, double& varValOutELo, dou
     {
       Transformer("FlS",val1,val1ELo,val1EHi,fitResult,varValIn1);
       Transformer("FsS",val2,val2ELo,val2EHi,fitResult,varValIn1,varValIn2);
-      
       val3 = 1./2. * (val2 + 3. * val1 * (1. - val2));
       if (val3 > 1.) val3 = 1.;
       
@@ -755,13 +754,21 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
     {
       varValOut = TMath::Tan((varValIn1->getVal() - 1./2.) * TMath::Pi());
 
-      if ((varValIn1->getVal() + varValIn1->getErrorLo()) <= 0.) val1 = tolerance;
-      else                                                       val1 = varValIn1->getVal() + varValIn1->getErrorLo();
-      varValOutELo = TMath::Tan((val1 - 1./2.) * TMath::Pi()) - varValOut;
+      if (varValIn1->getErrorLo() == -1.0) varValOutELo = varValIn1->getErrorLo();
+      else
+	{
+	  if ((varValIn1->getVal() + varValIn1->getErrorLo()) <= 0.) val1 = tolerance;
+	  else                                                       val1 = varValIn1->getVal() + varValIn1->getErrorLo();
+	  varValOutELo = TMath::Tan((val1 - 1./2.) * TMath::Pi()) - varValOut;
+	}
 
-      if ((varValIn1->getVal() + varValIn1->getErrorHi()) >= 1.) val1 = 1. - tolerance;
-      else                                                       val1 = varValIn1->getVal() + varValIn1->getErrorHi();
-      varValOutEHi = TMath::Tan((val1 - 1./2.) * TMath::Pi()) - varValOut;
+      if (varValIn1->getErrorHi() == 1.0) varValOutEHi = varValIn1->getErrorHi();
+      else
+	{
+	  if ((varValIn1->getVal() + varValIn1->getErrorHi()) >= 1.) val1 = 1. - tolerance;
+	  else                                                       val1 = varValIn1->getVal() + varValIn1->getErrorHi();
+	  varValOutEHi = TMath::Tan((val1 - 1./2.) * TMath::Pi()) - varValOut;
+	}
     }
   else if ((varName == "AfbS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
@@ -770,13 +777,21 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
       
       varValOut = TMath::Tan(varValIn2->getVal() / limit / 2. * TMath::Pi());
 
-      if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= -limit) val2 = (limit >= 2.*tolerance ? -limit + tolerance : -limit + tolerance*limit);
-      else                                                           val2 = varValIn2->getVal() + varValIn2->getErrorLo();
-      varValOutELo = TMath::Tan(val2 / limit / 2. * TMath::Pi()) - varValOut;
+      if (varValIn2->getErrorLo() == -1.0) varValOutELo = varValIn2->getErrorLo();
+      else
+	{
+	  if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= -limit) val2 = (limit >= 2.*tolerance ? -limit + tolerance : -limit + tolerance*limit);
+	  else                                                           val2 = varValIn2->getVal() + varValIn2->getErrorLo();
+	  varValOutELo = TMath::Tan(val2 / limit / 2. * TMath::Pi()) - varValOut;
+	}
 
-      if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= limit) val2 = (limit >= 2.*tolerance ? limit - tolerance : limit - tolerance*limit);
-      else                                                          val2 = varValIn2->getVal() + varValIn2->getErrorHi();
-      varValOutEHi = TMath::Tan(val2 / limit / 2. * TMath::Pi()) - varValOut;
+      if (varValIn2->getErrorHi() == 1.0) varValOutEHi = varValIn2->getErrorHi();
+      else
+	{
+	  if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= limit) val2 = (limit >= 2.*tolerance ? limit - tolerance : limit - tolerance*limit);
+	  else                                                          val2 = varValIn2->getVal() + varValIn2->getErrorHi();
+	  varValOutEHi = TMath::Tan(val2 / limit / 2. * TMath::Pi()) - varValOut;
+	}
     }
   else if ((varName == "FsS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
@@ -785,29 +800,46 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
 
       varValOut = TMath::Tan((varValIn2->getVal() / limit - 1./2.) * TMath::Pi());
 
-      if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= 0.) val2 = tolerance;
-      else                                                       val2 = varValIn2->getVal() + varValIn2->getErrorLo();
-      varValOutELo = TMath::Tan((val2 / limit - 1./2.) * TMath::Pi()) - varValOut;
+      if (varValIn2->getErrorLo() == -1.0) varValOutELo = varValIn2->getErrorLo();
+      else
+	{
+	  if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= 0.) val2 = tolerance;
+	  else                                                       val2 = varValIn2->getVal() + varValIn2->getErrorLo();
+	  varValOutELo = TMath::Tan((val2 / limit - 1./2.) * TMath::Pi()) - varValOut;
+	}
 
-      if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= 1.) val2 = 1. - tolerance;
-      else                                                       val2 = varValIn2->getVal() + varValIn2->getErrorHi();
-      varValOutEHi = TMath::Tan((val2 / limit - 1./2.) * TMath::Pi()) - varValOut;
+      if (varValIn2->getErrorHi() == 1.0) varValOutEHi = varValIn2->getErrorHi();
+      else
+	{
+	  if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= 1.) val2 = 1. - tolerance;
+	  else                                                       val2 = varValIn2->getVal() + varValIn2->getErrorHi();
+	  varValOutEHi = TMath::Tan((val2 / limit - 1./2.) * TMath::Pi()) - varValOut;
+	}
     }
   else if ((varName == "AsS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (varValIn3 != NULL))
     {
       Transformer("FlS",val1,valELo,valEHi,NULL,varValIn1);
       Transformer("FsS",val2,valELo,valEHi,NULL,varValIn1,varValIn2);
-      limit = (1./2. * (val2 + 3. * val1 * (1. - val2)) > 1. ? 1. : 1./2. * (val2 + 3. * val1 * (1. - val2)));
+      limit = 1./2. * (val2 + 3. * val1 * (1. - val2));
+      if (limit > 1.) limit = 1.;
 
       varValOut = TMath::Tan(varValIn3->getVal() / limit / 2. * TMath::Pi());
 
-      if ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -limit) val3 = (limit >= 2.*tolerance ? -limit + tolerance : -limit + tolerance*limit);
-      else                                                           val3 = varValIn3->getVal() + varValIn3->getErrorLo();
-      varValOutELo = TMath::Tan(val3 / limit / 2. * TMath::Pi()) - varValOut;
+      if (varValIn3->getErrorLo() == -1.0) varValOutELo = varValIn3->getErrorLo();
+      else
+	{
+	  if ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -limit) val3 = (limit >= 2.*tolerance ? -limit + tolerance : -limit + tolerance*limit);
+	  else                                                           val3 = varValIn3->getVal() + varValIn3->getErrorLo();
+	  varValOutELo = TMath::Tan(val3 / limit / 2. * TMath::Pi()) - varValOut;
+	}
 
-      if ((varValIn3->getVal() + varValIn3->getErrorHi()) >= limit) val3 = (limit >= 2.*tolerance ? limit - tolerance : limit - tolerance*limit);
-      else                                                          val3 = varValIn3->getVal() + varValIn3->getErrorHi();
-      varValOutEHi = TMath::Tan(val3 / limit / 2. * TMath::Pi()) - varValOut;
+      if (varValIn3->getErrorHi() == 1.0) varValOutEHi = varValIn3->getErrorHi();
+      else
+	{
+	  if ((varValIn3->getVal() + varValIn3->getErrorHi()) >= limit) val3 = (limit >= 2.*tolerance ? limit - tolerance : limit - tolerance*limit);
+	  else                                                          val3 = varValIn3->getVal() + varValIn3->getErrorHi();
+	  varValOutEHi = TMath::Tan(val3 / limit / 2. * TMath::Pi()) - varValOut;
+	}
     }
   else
     {

@@ -1850,9 +1850,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # P2 +/- err
 0.0
 # FS +/- err
-0.0661676   -0.0190019   0.0190019
+0.066207   -0.0186713   0.0192524
 # AS +/- err
--0.102212   -0.0135083   0.0135083
+-0.102142   -0.0144192   0.0140719
 ###################################################################
 # Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -2193,7 +2193,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 1.0   0.0   0.0
 
 # q^2 bin 6
-0.00383351   -1.67945e-05   1.67945e-05
+0.00383348   -1.76726e-05   1.76726e-05
 
 # q^2 bin 7
 1.0   0.0   0.0
@@ -2227,7 +2227,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 1.0   0.0   0.0
 
 # q^2 bin 6
-0.000596721   -4.17961e-06   4.17961e-06
+0.000596754   -4.14554e-06   4.14554e-06
 
 # q^2 bin 7
 1.0   0.0   0.0
@@ -2637,7 +2637,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 1
 
 # Tolerance to boundaries for the anti-transformation [range = (0,1)]
-0.01
+0.05
 
 # Use MINOS for error computation [0 = no; 1 = yes]
 1

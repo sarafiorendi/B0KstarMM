@@ -1925,6 +1925,9 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
   double effMuMuGoodTag, effMuMuMisTag;
   double nll;
 
+  vector<double> vecMean;
+  vector<double> vecErr;
+
   vector<double>                vecVar;
   vector<string>                ParVector;
   vector<vector<string>*>       fitParam;
@@ -1984,6 +1987,9 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
 
   for (unsigned int i = 0; i < nPar; i++)
     {
+      vecMean.push_back(0.0);
+      vecErr.push_back(0.0);
+
       vecVar.push_back(0.0);
       inputFile >> vecVar.back();
       cout << "var" << i << ": " << vecVar.back() << "\t";
@@ -2013,6 +2019,32 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
 	  nll         = vecVar[11];
 
 	  FitResults->Fill();
+
+
+	  // ####################
+	  // # Weighted average #
+	  // ####################
+	  if (vecVar[1] < pdf_Fl)
+	    {
+	      vecMean[0] += vecVar[1] / (vecVar[2] * vecVar[2]);
+	      vecErr[0]  += 1.        / (vecVar[2] * vecVar[2]);
+	    }
+	  else 
+	    {
+	      vecMean[0] += vecVar[1] / (vecVar[3] * vecVar[3]);
+	      vecErr[0]  += 1.        / (vecVar[3] * vecVar[3]);
+	    }
+
+	  if (vecVar[4] < pdf_Afb)
+	    {
+	      vecMean[1] += vecVar[4] / (vecVar[5] * vecVar[5]);
+	      vecErr[1]  += 1.        / (vecVar[5] * vecVar[5]);
+	    }
+	  else 
+	    {
+	      vecMean[1] += vecVar[4] / (vecVar[6] * vecVar[6]);
+	      vecErr[1]  += 1.        / (vecVar[6] * vecVar[6]);
+	    }
 	}
 
       for (unsigned int i = 0; i < nPar; i++)
@@ -2024,6 +2056,19 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
       cout << endl;
     }
 
+
+  // ####################
+  // # Weighted average #
+  // ####################
+  vecMean[0] = vecMean[0] / vecErr[0];
+  vecErr[0]  = 1.         / vecErr[0];
+
+  vecMean[1] = vecMean[1] / vecErr[1];
+  vecErr[1]  = 1.         / vecErr[1];
+  
+  cout << "@@@ Weighted average parameter 0: " << vecMean[0] << " +/- " << vecErr[0] << " @@@" << endl;
+  cout << "@@@ Weighted average parameter 1: " << vecMean[1] << " +/- " << vecErr[1] << " @@@" << endl;
+  
 
   // ###############
   // # Save ntuple #
