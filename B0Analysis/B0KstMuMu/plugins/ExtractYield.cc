@@ -324,7 +324,7 @@ private:
 
 bool CheckGoodFit              (RooFitResult* fitResult, TPaveText* paveText = NULL);
 RooRealVar* GetVar             (RooAbsPdf* pdf, string varName);
-string GetValueAndErrors       (RooAbsPdf* pdf, string varName, double& val, double& errLo, double& errHi);
+bool GetValueAndErrors         (RooAbsPdf* pdf, string varName, stringstream* myString, double& val, double& errLo, double& errHi);
 void SetValueAndErrors         (RooAbsPdf* pdf, string varName, double multi, stringstream* myString, double* val, double* errLo, double* errHi);
 void PrintVariables            (RooArgSet* setVar, string type);
 void ClearVars                 (RooArgSet* vecVars);
@@ -446,23 +446,21 @@ RooRealVar* GetVar (RooAbsPdf* pdf, string varName)
 }
 
 
-string GetValueAndErrors (RooAbsPdf* pdf, string varName, double& val, double& errLo, double& errHi)
+bool GetValueAndErrors (RooAbsPdf* pdf, string varName, stringstream* myString, double& val, double& errLo, double& errHi)
 {
-  stringstream myString;
-  myString.clear(); myString.str("");
-
-
   if (GetVar(pdf,varName.c_str()) != NULL)
     {
       val   = GetVar(pdf,varName.c_str())->getVal();
       errLo = GetVar(pdf,varName.c_str())->getErrorLo();
       errHi = GetVar(pdf,varName.c_str())->getErrorHi();
 
-      myString << val << "   " << errHi << "   " << errLo;
+      (*myString) << val << "   " << errHi << "   " << errLo << "   ";
+      return true;
     }
+  else (*myString) << "0.0   0.0   0.0";
 
 
-  return myString.str();
+  return false;
 }
 
 
@@ -6360,14 +6358,19 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // # Save observables in systematic error file #
       // #############################################
       myString.clear(); myString.str("");
-      if (CheckGoodFit(fitResult) == true) myString << ID << "   "
-						    << varVal1 << "   " << varVal1EHi << "   " << varVal1ELo << "   "
-						    << varVal2 << "   " << varVal2EHi << "   " << varVal2ELo << "   "
-						    << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   " << VecHistoMeas->operator[](2)->GetBinError(i+1) << "   "
-						    << effMuMuGoodTag << "   " << effMuMuMisTag << "   "
-						    << GetValueAndErrors(TotalPDFq2Bins[i],"FlS", varVal1,varVal1ELo,varVal1EHi)
-						    << GetValueAndErrors(TotalPDFq2Bins[i],"AfbS",varVal2,varVal2ELo,varVal2EHi)
-						    << NLLvalue;
+      if (CheckGoodFit(fitResult) == true)
+	{
+	  myString << ID << "   "
+		   << varVal1 << "   " << varVal1EHi << "   " << varVal1ELo << "   "
+		   << varVal2 << "   " << varVal2EHi << "   " << varVal2ELo << "   "
+		   << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   " << VecHistoMeas->operator[](2)->GetBinError(i+1) << "   "
+		   << effMuMuGoodTag << "   " << effMuMuMisTag << "   ";
+
+	  GetValueAndErrors(TotalPDFq2Bins[i],"FlS", &myString,varVal1,varVal1ELo,varVal1EHi);
+	  GetValueAndErrors(TotalPDFq2Bins[i],"AfbS",&myString,varVal2,varVal2ELo,varVal2EHi);
+
+	  myString << NLLvalue;
+	}
       else myString << ID << "   "
 		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
 		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
