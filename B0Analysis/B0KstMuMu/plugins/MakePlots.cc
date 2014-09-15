@@ -2088,9 +2088,9 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
   vecErr[1]  = sqrt(1. / vecErr[1]);
   
   cout << "\n@@@ Selected events: " << minErr << " < |error| < " << maxErr << " @@@" << endl;
-  cout << "@@@ Weighted average parameter 0: " << vecMean[0] << " +/- " << vecErr[0] << " @@@" << endl;
-  cout << "@@@ Weighted average parameter 1: " << vecMean[1] << " +/- " << vecErr[1] << " @@@" << endl;
-  
+  cout << "@@@ Weighted average parameter 0: " << vecMean[0] << " +/- " << vecErr[0] << " --> " << " Original value: " << TMath::Tan((pdf_Fl - 1./2.) * TMath::Pi()) <<  " @@@" << endl;
+  cout << "@@@ Weighted average parameter 1: " << vecMean[1] << " +/- " << vecErr[1] << " --> " << " Original value: " << TMath::Tan(pdf_Afb / (3./4. * (1. - pdf_Fl)) / 2. * TMath::Pi()) <<  " @@@" << endl;
+
 
   // ###############
   // # Save ntuple #

@@ -6927,7 +6927,9 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   // #############################################
   double fit_BF, error_BF, pdf_BF;
   double fit_Fl, error_Fl, pdf_Fl;
+  double fitOrg_Fl, errorOrg_Fl, pdfOrg_Fl;
   double fit_Afb, error_Afb, pdf_Afb;
+  double fitOrg_Afb, errorOrg_Afb, pdfOrg_Afb;
   double nll;
 
   TTree* FitResults = new TTree("FitResults","Toy fit results");
@@ -6940,9 +6942,17 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   FitResults->Branch("error_Fl",&error_Fl,"error_Fl/D");
   FitResults->Branch("pdf_Fl",  &pdf_Fl,  "pdf_Fl/D");
 
+  FitResults->Branch("fitOrg_Fl",  &fitOrg_Fl,  "fitOrg_Fl/D");
+  FitResults->Branch("errorOrg_Fl",&errorOrg_Fl,"errorOrg_Fl/D");
+  FitResults->Branch("pdfOrg_Fl",  &pdfOrg_Fl,  "pdfOrg_Fl/D");
+
   FitResults->Branch("fit_Afb",  &fit_Afb,  "fit_Afb/D");
   FitResults->Branch("error_Afb",&error_Afb,"error_Afb/D");
   FitResults->Branch("pdf_Afb",  &pdf_Afb,  "pdf_Afb/D");
+
+  FitResults->Branch("fitOrg_Afb",  &fitOrg_Afb,  "fitOrg_Afb/D");
+  FitResults->Branch("errorOrg_Afb",&errorOrg_Afb,"errorOrg_Afb/D");
+  FitResults->Branch("pdfOrg_Afb",  &pdfOrg_Afb,  "pdfOrg_Afb/D");
 
   FitResults->Branch("nll",&nll,"nll/D");
 
@@ -6990,19 +7000,27 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 
 
 	  varName = "FlS";
-	  fit_Fl = GetVar(TotalPDF,varName.c_str())->getVal();
+	  pdf_Fl = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
+	  Transformer(varName,fit_Fl,varValELo,varValEHi,fitResult,GetVar(TotalPDF,varName.c_str()));
+	  if (fit_Fl > pdf_Fl) error_Fl = varValELo;
+	  else                 error_Fl = varValEHi;
+	  fitOrg_Fl = GetVar(TotalPDF,varName.c_str())->getVal();
           tmpVar1.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str()));
-          AntiTransformer("FlS",pdf_Fl,varValELo,varValEHi,&tmpVar1);
-          if (fit_Fl > pdf_Fl) error_Fl = GetVar(TotalPDF,varName.c_str())->getErrorLo();
-          else                 error_Fl = GetVar(TotalPDF,varName.c_str())->getErrorHi();
+          AntiTransformer("FlS",pdfOrg_Fl,varValELo,varValEHi,&tmpVar1);
+          if (fitOrg_Fl > pdfOrg_Fl) errorOrg_Fl = GetVar(TotalPDF,varName.c_str())->getErrorLo();
+          else                       errorOrg_Fl = GetVar(TotalPDF,varName.c_str())->getErrorHi();
 
 
 	  varName = "AfbS";
-	  fit_Afb = GetVar(TotalPDF,varName.c_str())->getVal();
+	  pdf_Afb = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
+	  Transformer(varName,fit_Afb,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,varName.c_str()));
+	  if (fit_Afb > pdf_Afb) error_Afb = varValELo;
+	  else                   error_Afb = varValEHi;
+	  fitOrg_Afb = GetVar(TotalPDF,varName.c_str())->getVal();
           tmpVar2.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str()));
-          AntiTransformer("AfbS",pdf_Afb,varValELo,varValEHi,&tmpVar1,&tmpVar2);
-          if (fit_Afb > pdf_Afb) error_Afb = GetVar(TotalPDF,varName.c_str())->getErrorLo();
-          else                   error_Afb = GetVar(TotalPDF,varName.c_str())->getErrorHi();
+          AntiTransformer("AfbS",pdfOrg_Afb,varValELo,varValEHi,&tmpVar1,&tmpVar2);
+          if (fitOrg_Afb > pdfOrg_Afb) errorOrg_Afb = GetVar(TotalPDF,varName.c_str())->getErrorLo();
+          else                         errorOrg_Afb = GetVar(TotalPDF,varName.c_str())->getErrorHi();
 
 
 	  nll = NLLvalue;
