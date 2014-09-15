@@ -772,7 +772,7 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
     }
   else if ((varName == "AfbS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
-      Transformer("FlS",val1,valELo,valEHi,NULL,varValIn1);
+      Transformer("FlS",val1,valELo,valEHi,varValIn1);
       limit = 3./4. * (1. - val1);
       
       varValOut = TMath::Tan(varValIn2->getVal() / limit / 2. * TMath::Pi());
@@ -795,7 +795,7 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
     }
   else if ((varName == "FsS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
-      Transformer("FlS",val1,valELo,valEHi,NULL,varValIn1);
+      Transformer("FlS",val1,valELo,valEHi,varValIn1);
       limit = 3. * (1. - val1) / (7. - 3.*val1);
 
       varValOut = TMath::Tan((varValIn2->getVal() / limit - 1./2.) * TMath::Pi());
@@ -818,8 +818,8 @@ void AntiTransformer (string varName, double& varValOut, double& varValOutELo, d
     }
   else if ((varName == "AsS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (varValIn3 != NULL))
     {
-      Transformer("FlS",val1,valELo,valEHi,NULL,varValIn1);
-      Transformer("FsS",val2,valELo,valEHi,NULL,varValIn1,varValIn2);
+      Transformer("FlS",val1,valELo,valEHi,varValIn1);
+      Transformer("FsS",val2,valELo,valEHi,varValIn1,varValIn2);
       limit = 1./2. * (val2 + 3. * val1 * (1. - val2));
       if (limit > 1.) limit = 1.;
 

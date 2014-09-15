@@ -1925,6 +1925,9 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
   double effMuMuGoodTag, effMuMuMisTag;
   double nll;
 
+  double minErr = 0.01;
+  double maxErr = 1.0;
+
   vector<double> vecMean;
   vector<double> vecErr;
 
@@ -2024,23 +2027,23 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
 	  // ####################
 	  // # Weighted average #
 	  // ####################
-	  if (vecVar[1] < pdf_Fl)
+	  if ((vecVar[1] < pdf_Fl) && (fabs(vecVar[2]) > minErr) && (fabs(vecVar[2]) < maxErr))
 	    {
 	      vecMean[0] += vecVar[1] / (vecVar[2] * vecVar[2]);
 	      vecErr[0]  += 1.        / (vecVar[2] * vecVar[2]);
 	    }
-	  else 
+	  else if ((fabs(vecVar[3]) > minErr) && (fabs(vecVar[2]) < maxErr))
 	    {
 	      vecMean[0] += vecVar[1] / (vecVar[3] * vecVar[3]);
 	      vecErr[0]  += 1.        / (vecVar[3] * vecVar[3]);
 	    }
 
-	  if (vecVar[4] < pdf_Afb)
+	  if ((vecVar[4] < pdf_Afb) && (fabs(vecVar[5]) > minErr) && (fabs(vecVar[5]) < maxErr))
 	    {
 	      vecMean[1] += vecVar[4] / (vecVar[5] * vecVar[5]);
 	      vecErr[1]  += 1.        / (vecVar[5] * vecVar[5]);
 	    }
-	  else 
+	  else if ((fabs(vecVar[6]) > minErr) && (fabs(vecVar[6]) < maxErr))
 	    {
 	      vecMean[1] += vecVar[4] / (vecVar[6] * vecVar[6]);
 	      vecErr[1]  += 1.        / (vecVar[6] * vecVar[6]);
@@ -2061,11 +2064,12 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
   // # Weighted average #
   // ####################
   vecMean[0] = vecMean[0] / vecErr[0];
-  vecErr[0]  = 1.         / vecErr[0];
+  vecErr[0]  = sqrt(1. / vecErr[0]);
 
   vecMean[1] = vecMean[1] / vecErr[1];
-  vecErr[1]  = 1.         / vecErr[1];
+  vecErr[1]  = sqrt(1. / vecErr[1]);
   
+  cout << "\n@@@ Selected events: " << minErr << " < |error| < " << maxErr << " @@@" << endl;
   cout << "@@@ Weighted average parameter 0: " << vecMean[0] << " +/- " << vecErr[0] << " @@@" << endl;
   cout << "@@@ Weighted average parameter 1: " << vecMean[1] << " +/- " << vecErr[1] << " @@@" << endl;
   
