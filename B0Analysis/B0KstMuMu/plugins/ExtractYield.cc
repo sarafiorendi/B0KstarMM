@@ -324,6 +324,7 @@ private:
 
 bool CheckGoodFit              (RooFitResult* fitResult, TPaveText* paveText = NULL);
 RooRealVar* GetVar             (RooAbsPdf* pdf, string varName);
+string GetValueAndErrors       (RooAbsPdf* pdf, string varName, double& val, double& errLo, double& errHi);
 void SetValueAndErrors         (RooAbsPdf* pdf, string varName, double multi, stringstream* myString, double* val, double* errLo, double* errHi);
 void PrintVariables            (RooArgSet* setVar, string type);
 void ClearVars                 (RooArgSet* vecVars);
@@ -442,6 +443,26 @@ bool CheckGoodFit (RooFitResult* fitResult, TPaveText* paveText)
 RooRealVar* GetVar (RooAbsPdf* pdf, string varName)
 {
   return (RooRealVar*)(pdf->getVariables()->find(varName.c_str()));
+}
+
+
+string GetValueAndErrors (RooAbsPdf* pdf, string varName, double& val, double& errLo, double& errHi)
+{
+  stringstream myString;
+  myString.clear(); myString.str("");
+
+
+  if (GetVar(pdf,varName.c_str()) != NULL)
+    {
+      val   = GetVar(pdf,varName.c_str())->getVal();
+      errLo = GetVar(pdf,varName.c_str())->getErrorLo();
+      errHi = GetVar(pdf,varName.c_str())->getErrorHi();
+
+      myString << val << "   " << errHi << "   " << errLo;
+    }
+
+
+  return myString.str();
 }
 
 
@@ -1462,9 +1483,7 @@ double StoreFitResultsInFile (RooAbsPdf* pdf, RooFitResult* fitResult, RooDataSe
   double signalSigmaMisT   = 0.0;
   double signalSigmaMisTE  = 0.0;
 
-  double varVal;
-  double varValELo;
-  double varValEHi;
+  double varVal, varValELo, varValEHi;
   double NLLvalue = 0.0;
 
 
@@ -1766,9 +1785,7 @@ vector<string>* SaveFitResults (unsigned int q2BinIndx, vector<vector<string>*>*
   unsigned int NCoeffPolyBKGcomb2 = 0;
   unsigned int NCoeffPolyBKGpeak3 = 0;
   unsigned int NCoeffPolyBKGcomb3 = 0;
-  double varVal;
-  double varValELo;
-  double varValEHi;
+  double varVal, varValELo, varValEHi;
 
   vecParStr = new vector<string>;
 
@@ -4176,7 +4193,10 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 						    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
 						    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
 						    << VecHistoMeas->operator[](0)->GetBinContent(i+1) << "   " << VecHistoMeas->operator[](0)->GetBinError(i+1) << "   "
-						    << -2.0 << "   " << -2.0 << "   " << NLLvalue;
+						    << -2.0 << "   " << -2.0 << "   "
+						    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
+						    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
+						    << NLLvalue;
       else myString << ID << "   "
 		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
 		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
@@ -4198,7 +4218,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   RooRealVar* tmpVar;
   RooPlot* myFrame;
 
-  
+
   // #####################
   // # Initialize p.d.f. #
   // #####################
@@ -4234,11 +4254,11 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
 
       if ((GetVar(TotalPDF,"meanS") != NULL) && (GetVar(TotalPDF,"meanS")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanS") == false))
 	{
-	  RooRealVar* tmpVar = GetVar(TotalPDF,"meanS");
-	  RooPlot* myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](specBin).c_str()) -
-					   0.4*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())),
-					   atof(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](specBin).c_str()) +
-					   0.4*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())));
+	  tmpVar = GetVar(TotalPDF,"meanS");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](specBin).c_str()) -
+				  0.4*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](specBin).c_str()) +
+				  0.4*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())));
 	  MyToy->plotParamOn(myFrame);
 	  Canv->cd(it++);
 	  myFrame->Draw();
@@ -4601,7 +4621,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   RooDataSet* toySample;
   RooFitResult* fitResult;
   double NLLvalue;
-  string varName = "nSig";
+  string varName;
 
 
   for (unsigned int i = 0; i < nToy; i++)
@@ -4621,12 +4641,11 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
       // ######################################################
       if ((CheckGoodFit(fitResult) == true) && (GetVar(TotalPDF,varName.c_str()) != NULL))
       	{
-	  myString.clear(); myString.str("");
-	  myString << fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str();
-	  if (GetVar(TotalPDF,varName.c_str())->getVal() > atof(myString.str().c_str())) error_BF = GetVar(TotalPDF,varName.c_str())->getErrorLo();
-	  else                                                                           error_BF = GetVar(TotalPDF,varName.c_str())->getErrorHi();
+	  varName = "nSig";
 	  fit_BF = GetVar(TotalPDF,varName.c_str())->getVal();
-	  pdf_BF = atof(myString.str().c_str());
+	  pdf_BF = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
+	  if (fit_BF > pdf_BF) error_BF = GetVar(TotalPDF,varName.c_str())->getErrorLo();
+	  else                 error_BF = GetVar(TotalPDF,varName.c_str())->getErrorHi();
 
 
 	  nll = NLLvalue;
@@ -6091,13 +6110,8 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
   double effMuMuMisTag     = 1.0;
   double effMuMuMisTagErr  = 0.0;
 
-  double varVal1;
-  double varVal1ELo;
-  double varVal1EHi;
-
-  double varVal2;
-  double varVal2ELo;
-  double varVal2EHi;
+  double varVal1, varVal1ELo, varVal1EHi;
+  double varVal2, varVal2ELo, varVal2EHi;
 
   TCanvas*    cq2Bins[q2Bins->size()-1];
   RooDataSet* dataSet_q2Bins[q2Bins->size()-1];
@@ -6350,12 +6364,18 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 						    << varVal1 << "   " << varVal1EHi << "   " << varVal1ELo << "   "
 						    << varVal2 << "   " << varVal2EHi << "   " << varVal2ELo << "   "
 						    << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   " << VecHistoMeas->operator[](2)->GetBinError(i+1) << "   "
-						    << effMuMuGoodTag << "   " << effMuMuMisTag << "   " << NLLvalue;
+						    << effMuMuGoodTag << "   " << effMuMuMisTag << "   "
+						    << GetValueAndErrors(TotalPDFq2Bins[i],"FlS", varVal1,varVal1ELo,varVal1EHi)
+						    << GetValueAndErrors(TotalPDFq2Bins[i],"AfbS",varVal2,varVal2ELo,varVal2EHi)
+						    << NLLvalue;
       else myString << ID << "   "
 		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
 		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
 		    << -2.0 << "   " << -2.0 << "   "
-		    << -2.0 << "   " << -2.0 << "   " << -2.0;
+		    << -2.0 << "   " << -2.0 << "   "
+		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
+		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
+		    << -2.0;
       fileFitSystematics << myString.str() << endl;
     }
 }
@@ -6369,9 +6389,6 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   unsigned int nEntryToy;
   stringstream myString;
   unsigned int it = 1;
-  double varVal;
-  double varValELo;
-  double varValEHi;
   RooRealVar* tmpVar;
   RooPlot* myFrame;
 
@@ -6435,11 +6452,11 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 
       if ((GetVar(TotalPDF,"meanS") != NULL) && (GetVar(TotalPDF,"meanS")->getError() != 0.0) && (IsInConstraints(vecConstr,"meanS") == false))
 	{
-	  RooRealVar* tmpVar = GetVar(TotalPDF,"meanS");
-	  RooPlot* myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](specBin).c_str()) -
-					   0.4*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())),
-					   atof(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](specBin).c_str()) +
-					   0.4*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())));
+	  tmpVar = GetVar(TotalPDF,"meanS");
+	  myFrame = tmpVar->frame(atof(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](specBin).c_str()) -
+				  0.4*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())),
+				  atof(fitParam->operator[](Utility->GetFitParamIndx("meanS"))->operator[](specBin).c_str()) +
+				  0.4*fabs(atof(fitParam->operator[](Utility->GetFitParamIndx("sigmaS1"))->operator[](specBin).c_str())));
 	  MyToy->plotParamOn(myFrame);
 	  Canv->cd(it++);
 	  myFrame->Draw();
@@ -6932,6 +6949,9 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   cB0Toy->Divide(3,3);
   RooDataSet* toySample;
   RooFitResult* fitResult;
+  RooRealVar tmpVar1("tmpVar1","tmpVar1",0.0);
+  RooRealVar tmpVar2("tmpVar2","tmpVar2",0.0);
+  double varValELo, varValEHi;
   double NLLvalue;
   string varName;
 
@@ -6960,32 +6980,26 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       if ((CheckGoodFit(fitResult) == true) && (GetVar(TotalPDF,"FlS") != NULL) && (GetVar(TotalPDF,"AfbS") != NULL))
 	{
 	  varName = "nSig";
-	  myString.clear(); myString.str("");
-	  myString << fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str();
-	  if (GetVar(TotalPDF,varName.c_str())->getVal() > atof(myString.str().c_str())) error_BF = GetVar(TotalPDF,varName.c_str())->getErrorLo();
-	  else                                                                           error_BF = GetVar(TotalPDF,varName.c_str())->getErrorHi();
 	  fit_BF = GetVar(TotalPDF,varName.c_str())->getVal();
-	  pdf_BF = atof(myString.str().c_str());
+	  pdf_BF = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
+	  if (fit_BF > pdf_BF) error_BF = GetVar(TotalPDF,varName.c_str())->getErrorLo();
+	  else                 error_BF = GetVar(TotalPDF,varName.c_str())->getErrorHi();
 
 
 	  varName = "FlS";
-	  myString.clear(); myString.str("");
-	  myString << fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin);
-	  Transformer(varName,varVal,varValELo,varValEHi,fitResult,GetVar(TotalPDF,varName.c_str()));
-	  if (varVal > atof(myString.str().c_str())) error_Fl = varValELo;
-	  else                                       error_Fl = varValEHi;
-	  fit_Fl = varVal;
-	  pdf_Fl = atof(myString.str().c_str());
+	  fit_Fl = GetVar(TotalPDF,varName.c_str())->getVal();
+          tmpVar1.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str()));
+          AntiTransformer("FlS",pdf_Fl,varValELo,varValEHi,&tmpVar1);
+          if (fit_Fl > pdf_Fl) error_Fl = GetVar(TotalPDF,varName.c_str())->getErrorLo();
+          else                 error_Fl = GetVar(TotalPDF,varName.c_str())->getErrorHi();
 
 
 	  varName = "AfbS";
-	  myString.clear(); myString.str("");
-	  myString << fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin);
-	  Transformer(varName,varVal,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,varName.c_str()));
-	  if (varVal > atof(myString.str().c_str())) error_Afb = varValELo;
-	  else                                       error_Afb = varValEHi;
-	  fit_Afb = varVal;
-	  pdf_Afb = atof(myString.str().c_str());
+	  fit_Afb = GetVar(TotalPDF,varName.c_str())->getVal();
+          tmpVar2.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str()));
+          AntiTransformer("AfbS",pdf_Afb,varValELo,varValEHi,&tmpVar1,&tmpVar2);
+          if (fit_Afb > pdf_Afb) error_Afb = GetVar(TotalPDF,varName.c_str())->getErrorLo();
+          else                   error_Afb = GetVar(TotalPDF,varName.c_str())->getErrorHi();
 
 
 	  nll = NLLvalue;

@@ -1916,13 +1916,15 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
 {
   ifstream inputFile;
 
-  unsigned int nPar = 12;
+  unsigned int nPar = 18;
 
   double ID;
   double fit_Fl,  errorHi_Fl,  errorLo_Fl,  pdf_Fl;
   double fit_Afb, errorHi_Afb, errorLo_Afb, pdf_Afb;
   double fit_BF,  error_BF, pdf_BF;
   double effMuMuGoodTag, effMuMuMisTag;
+  double fitOrg_Fl,  errorHiOrg_Fl,  errorLoOrg_Fl;
+  double fitOrg_Afb, errorHiOrg_Afb, errorLoOrg_Afb;
   double nll;
 
   double minErr = 0.01;
@@ -1973,6 +1975,14 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
   FitResults->Branch("effMuMuGoodTag",&effMuMuGoodTag,"effMuMuGoodTag/D");
   FitResults->Branch("effMuMuMisTag", &effMuMuMisTag, "effMuMuMisTag/D");
 
+  FitResults->Branch("fitOrg_Fl",    &fitOrg_Fl,    "fitOrg_Fl/D");
+  FitResults->Branch("errorHiOrg_Fl",&errorHiOrg_Fl,"errorHiOrg_Fl/D");
+  FitResults->Branch("errorLoOrg_Fl",&errorLoOrg_Fl,"errorLoOrg_Fl/D");
+
+  FitResults->Branch("fitOrg_Afb",    &fitOrg_Afb,    "fitOrg_Afb/D");
+  FitResults->Branch("errorHiOrg_Afb",&errorHiOrg_Afb,"errorHiOrg_Afb/D");
+  FitResults->Branch("errorLoOrg_Afb",&errorLoOrg_Afb,"errorLoOrg_Afb/D");
+
   FitResults->Branch("nll",&nll,"nll/D");
 
 
@@ -2019,7 +2029,15 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
 	  effMuMuGoodTag = vecVar[9];
 	  effMuMuMisTag  = vecVar[10];
 
-	  nll         = vecVar[11];
+	  fitOrg_Fl      = vecVar[11];
+	  errorHiOrg_Fl  = vecVar[12];
+	  errorLoOrg_Fl  = vecVar[13];
+
+	  fitOrg_Afb     = vecVar[14];
+	  errorHiOrg_Afb = vecVar[15];
+	  errorLoOrg_Afb = vecVar[16];
+
+	  nll         = vecVar[17];
 
 	  FitResults->Fill();
 
@@ -2027,26 +2045,26 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
 	  // ####################
 	  // # Weighted average #
 	  // ####################
-	  if ((vecVar[1] < pdf_Fl) && (fabs(vecVar[2]) > minErr) && (fabs(vecVar[2]) < maxErr))
+	  if ((vecVar[11] < pdf_Fl) && (fabs(vecVar[12]) > minErr) && (fabs(vecVar[12]) < maxErr))
 	    {
-	      vecMean[0] += vecVar[1] / (vecVar[2] * vecVar[2]);
-	      vecErr[0]  += 1.        / (vecVar[2] * vecVar[2]);
+	      vecMean[0] += vecVar[11] / (vecVar[12] * vecVar[12]);
+	      vecErr[0]  += 1.        / (vecVar[12] * vecVar[12]);
 	    }
-	  else if ((fabs(vecVar[3]) > minErr) && (fabs(vecVar[2]) < maxErr))
+	  else if ((fabs(vecVar[13]) > minErr) && (fabs(vecVar[13]) < maxErr))
 	    {
-	      vecMean[0] += vecVar[1] / (vecVar[3] * vecVar[3]);
-	      vecErr[0]  += 1.        / (vecVar[3] * vecVar[3]);
+	      vecMean[0] += vecVar[11] / (vecVar[13] * vecVar[13]);
+	      vecErr[0]  += 1.        / (vecVar[13] * vecVar[13]);
 	    }
 
-	  if ((vecVar[4] < pdf_Afb) && (fabs(vecVar[5]) > minErr) && (fabs(vecVar[5]) < maxErr))
+	  if ((vecVar[14] < pdf_Afb) && (fabs(vecVar[15]) > minErr) && (fabs(vecVar[15]) < maxErr))
 	    {
-	      vecMean[1] += vecVar[4] / (vecVar[5] * vecVar[5]);
-	      vecErr[1]  += 1.        / (vecVar[5] * vecVar[5]);
+	      vecMean[1] += vecVar[4] / (vecVar[15] * vecVar[15]);
+	      vecErr[1]  += 1.        / (vecVar[15] * vecVar[15]);
 	    }
-	  else if ((fabs(vecVar[6]) > minErr) && (fabs(vecVar[6]) < maxErr))
+	  else if ((fabs(vecVar[16]) > minErr) && (fabs(vecVar[16]) < maxErr))
 	    {
-	      vecMean[1] += vecVar[4] / (vecVar[6] * vecVar[6]);
-	      vecErr[1]  += 1.        / (vecVar[6] * vecVar[6]);
+	      vecMean[1] += vecVar[14] / (vecVar[16] * vecVar[16]);
+	      vecErr[1]  += 1.        / (vecVar[16] * vecVar[16]);
 	    }
 	}
 
