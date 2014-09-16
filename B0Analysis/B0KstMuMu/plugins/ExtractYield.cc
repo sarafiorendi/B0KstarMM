@@ -322,43 +322,41 @@ private:
   RooArgList _vars; 
 };
 
-bool CheckGoodFit              (RooFitResult* fitResult, TPaveText* paveText = NULL);
-RooRealVar* GetVar             (RooAbsPdf* pdf, string varName);
-bool GetValueAndErrors         (RooAbsPdf* pdf, string varName, stringstream* myString, double& val, double& errLo, double& errHi);
-void SetValueAndErrors         (RooAbsPdf* pdf, string varName, double multi, stringstream* myString, double* val, double* errLo, double* errHi);
-void PrintVariables            (RooArgSet* setVar, string type);
-void ClearVars                 (RooArgSet* vecVars);
-void CloseAllAndQuit           (TApplication* theApp, TFile* NtplFile);
+bool CheckGoodFit               (RooFitResult* fitResult, TPaveText* paveText = NULL);
+RooRealVar* GetVar              (RooAbsPdf* pdf, string varName);
+bool GetValueAndErrors          (RooAbsPdf* pdf, string varName, stringstream* myString, double& val, double& errLo, double& errHi);
+void SetValueAndErrors          (RooAbsPdf* pdf, string varName, double multi, stringstream* myString, double* val, double* errLo, double* errHi);
+void PrintVariables             (RooArgSet* setVar, string type);
+void ClearVars                  (RooArgSet* vecVars);
+void CloseAllAndQuit            (TApplication* theApp, TFile* NtplFile);
 
-string Transformer             (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooFitResult* fitResult = NULL, RooRealVar* varValIn1 = NULL, RooRealVar* varValIn2 = NULL, RooRealVar* varValIn3 = NULL);
-void AntiTransformer           (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1 = NULL, RooRealVar* varValIn2 = NULL, RooRealVar* varValIn3 = NULL);
+void SetStyle                   ();
+string MakeName                 (const RooDataSet* data, unsigned int ID);
+void DrawString                 (double Lumi, RooPlot* myFrame = NULL);
 
-void SetStyle                  ();
-string MakeName                (RooDataSet* data, unsigned int ID);
-void DrawString                (double Lumi, RooPlot* myFrame = NULL);
+bool IsInConstraints            (RooArgSet* vecConstr, string varName);
+void AddGaussConstraint         (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName);
+void BuildMassConstraints       (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName);
+void BuildAngularConstraints    (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName);
 
-bool IsInConstraints           (RooArgSet* vecConstr, string varName);
-void AddGaussConstraint        (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName);
-void BuildMassConstraints      (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName);
-void BuildAngularConstraints   (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName);
+RooAbsPdf* MakeAngWithEffPDF    (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, vector<double>* q2Bins, int q2BinIndx);
+void DeleteFit                  (RooAbsPdf* pdf, string DeleteType);
+void ResetCombPolyParam         (vector<vector<string>*>* fitParam = NULL, RooAbsPdf* pdf = NULL);
+void ResetAngularParam          (vector<vector<string>*>* fitParam = NULL, RooAbsPdf* pdf = NULL);
+double StoreFitResultsInFile    (RooAbsPdf* pdf, RooFitResult* fitResult, RooDataSet* dataSet, RooArgSet* vecConstr);
+void StorePolyResultsInFile     (RooAbsPdf* pdf);
+vector<string>* SaveFitResults  (unsigned int q2BinIndx, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr, RooAbsPdf* pdf = NULL, RooFitResult* fitResult = NULL);
+unsigned int CopyFitResults     (RooAbsPdf* pdf, unsigned int q2BinIndx, vector<vector<string>*>* fitParam, unsigned int countMisTag = 0, unsigned int countGoodTag = 0);
 
-RooAbsPdf* MakeAngWithEffPDF   (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, vector<double>* q2Bins, int q2BinIndx);
-void DeleteFit                 (RooAbsPdf* pdf, string DeleteType);
-void ResetCombPolyParam        (vector<vector<string>*>* fitParam = NULL, RooAbsPdf* pdf = NULL);
-void ResetAngularParam         (vector<vector<string>*>* fitParam = NULL, RooAbsPdf* pdf = NULL);
-double StoreFitResultsInFile   (RooAbsPdf* pdf, RooFitResult* fitResult, RooDataSet* dataSet, RooArgSet* vecConstr);
-void StorePolyResultsInFile    (RooAbsPdf* pdf);
-vector<string>* SaveFitResults (unsigned int q2BinIndx, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr, RooAbsPdf* pdf = NULL, RooFitResult* fitResult = NULL);
-unsigned int CopyFitResults    (RooAbsPdf* pdf, unsigned int q2BinIndx, vector<vector<string>*>* fitParam, unsigned int countMisTag = 0, unsigned int countGoodTag = 0);
+void GenerateFitParameters      (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, unsigned int q2BinIndx, string option);
+void GenerateDatasetFromPDF     (RooAbsPdf* pdf,      unsigned int fileIndx, vector<double>* q2Bins, int q2BinIndx, RooArgSet setVar, string fileName, vector<vector<string>*>* fitParam, RooArgSet* vecConstr);
+void GenerateDatasetFromDataset (RooDataSet* dataSet, unsigned int fileIndx, vector<double>* q2Bins, int q2BinIndx, RooArgSet setVar, string fileName);
+string GeneratePolynomial       (RooRealVar* var, unsigned int nCoef, string sCoef);
 
-void GenerateFitParameters     (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, unsigned int q2BinIndx, string option);
-void GenerateDataset           (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, int q2BinIndx, RooArgSet setVar, RooArgSet* vecConstr, string fileName);
-string GeneratePolynomial      (RooRealVar* var, unsigned int nCoef, string sCoef);
+void FitDimuonInvMass           (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x, TCanvas* Canv, bool justPlotMuMuMass, bool justKeepPsi, string plotName);
 
-void FitDimuonInvMass          (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x, TCanvas* Canv, bool justPlotMuMuMass, bool justKeepPsi, string plotName);
-
-void MakeDataSets              (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType);
-unsigned int GetSignalType     (unsigned int FitType, vector<double>* q2Bins, int q2BinIndx);
+void MakeDataSets               (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType);
+unsigned int GetSignalType      (unsigned int FitType, vector<double>* q2Bins, int q2BinIndx);
 
 // ==================
 // ===> 1D MODEL <===
@@ -435,6 +433,7 @@ bool CheckGoodFit (RooFitResult* fitResult, TPaveText* paveText)
 	  return false;
 	}
     }
+
 
   return false;
 }
@@ -593,281 +592,6 @@ void CloseAllAndQuit (TApplication* theApp, TFile* NtplFile)
 }
 
 
-string Transformer (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooFitResult* fitResult, RooRealVar* varValIn1, RooRealVar* varValIn2, RooRealVar* varValIn3)
-// ######################
-// # varValIn1 = Fl,Fs  #
-// # varValIn2 = Afb,Fs #
-// # varValIn2 = As     #
-// ######################
-{
-  const TMatrixTSym<double>* CovM = (fitResult != NULL ? &fitResult->covarianceMatrix() : NULL);
-  double val1,val2,val3,val1ELo,val1EHi,val2ELo,val2EHi;
-  string sVal1,sVal2;
-  stringstream myString;
-  myString.clear(); myString.str("");
-
-
-  if (varValIn1 == NULL)
-    {
-      if (varName == "FlS")
-	{
-	  myString << "(1/2 + TMath::ATan(" << varName << ")/TMath::Pi())";
-	  cout << "[ExtractYield::Transformer]\tTransformer function: " << myString.str().c_str() << endl;
-	  return myString.str();
-	}
-      else if (varName == "AfbS")
-	{
-	  sVal1 = Transformer("FlS",val1,val1ELo,val1EHi);
-
-	  myString << "(3/4*(1 - " << sVal1 << ") * 2*TMath::ATan(" << varName << ")/TMath::Pi())";
-	  cout << "[ExtractYield::Transformer]\tTransformer function: " << myString.str().c_str() << endl;
-	  return myString.str();
-	}
-      else if (varName == "FsS")
-	{
-	  sVal1 = Transformer("FlS",val1,val1ELo,val1EHi);
-
-	  myString << "(3*(1-" << sVal1 << ")/(7-3*" << sVal1 << ") * (1/2 + TMath::ATan(" << varName << ")/TMath::Pi()))";
-	  cout << "[ExtractYield::Transformer]\tTransformer function: " << myString.str().c_str() << endl;
-	  return myString.str();
-	}
-      else if (varName == "AsS")
-	{
-	  sVal1 = Transformer("FlS",val1,val1ELo,val1EHi);
-	  sVal2 = Transformer("FsS",val1,val1ELo,val1EHi);
-
-	  myString << "((1/2*(" << sVal2 << " + 3*" << sVal1 << "*(1 - " << sVal2 << ")) < 1 ? 1/2*(" << sVal2 << " + 3*" << sVal1 << "*(1 - " << sVal2 << ")) : 1) ";
-	  myString << "* 2*TMath::ATan(" << varName << ")/TMath::Pi())";
-	  cout << "[ExtractYield::Transformer]\tTransformer function: " << myString.str().c_str() << endl;
-	  return myString.str();
-	}
-      else
-	{
-	  cout << "[ExtractYield::Transformer]\tWrong parameter: " << varName << endl;
-	  exit (EXIT_FAILURE);
-	}
-    }
-  else if ((varName == "FlS") && (varValIn1 != NULL))
-    {
-      varValOut    = 1./2. + TMath::ATan(varValIn1->getVal()) / TMath::Pi();
-
-      varValOutELo = 1./2. + TMath::ATan(varValIn1->getVal() + varValIn1->getErrorLo()) / TMath::Pi() - varValOut;
-      varValOutEHi = 1./2. + TMath::ATan(varValIn1->getVal() + varValIn1->getErrorHi()) / TMath::Pi() - varValOut;
-    }
-  else if ((varName == "AfbS") && (varValIn1 != NULL) && (varValIn2 != NULL))
-    {
-      Transformer("FlS",val1,val1ELo,val1EHi,fitResult,varValIn1);
-      val2 = 3./4. * (1. - val1);
-
-      varValOut    = val2 * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi();
-
-      varValOutELo = val2 * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorLo()) / TMath::Pi() - varValOut;
-      varValOutELo = - sqrt( pow(3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1ELo,2.) + pow(varValOutELo,2.) +
-			     2. *
-			     (3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1ELo) / varValIn1->getErrorLo() *
-			     varValOutELo / varValIn2->getErrorLo() *
-			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AfbS")) : 0.) );
-
-
-      varValOutEHi = val2 * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorHi()) / TMath::Pi() - varValOut;
-      varValOutEHi = + sqrt( pow(3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1EHi,2.) + pow(varValOutEHi,2.) +
-			     2. *
-			     (3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1EHi)  / varValIn1->getErrorHi() *
-			     varValOutEHi / varValIn2->getErrorHi() *
-			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AfbS")) : 0.) );
-    }
-  else if ((varName == "FsS") && (varValIn1 != NULL) && (varValIn2 != NULL))
-    {
-      Transformer("FlS",val1,val1ELo,val1EHi,fitResult,varValIn1);
-      val2 = 3. * (1. - val1) / (7. - 3. * val1);
-
-      varValOut    = val2 * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi());
-
-      varValOutELo = val2 * (1./2. + TMath::ATan(varValIn2->getVal() + varValIn2->getErrorLo()) / TMath::Pi()) - varValOut;
-      varValOutELo = - sqrt( pow((3. * (1. - (val1+val1ELo)) / (7. - 3. * (val1+val1ELo)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()),2.) + pow(varValOutELo,2.) +
-			     2. *
-			     (3. * (1. - (val1+val1ELo)) / (7. - 3. * (val1+val1ELo)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) / varValIn1->getErrorLo() *
-			     varValOutELo / varValIn2->getErrorLo() *
-			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) );
-
-
-      varValOutEHi = val2 * (1./2. + TMath::ATan(varValIn2->getVal() + varValIn2->getErrorHi()) / TMath::Pi()) - varValOut;
-      varValOutEHi = + sqrt( pow((3. * (1. - (val1+val1EHi)) / (7. - 3. * (val1+val1EHi)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()),2.) + pow(varValOutEHi,2.) +
-			     2. *
-			     (3. * (1. - (val1+val1EHi)) / (7. - 3. * (val1+val1EHi)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) / varValIn1->getErrorHi() *
-			     varValOutEHi / varValIn2->getErrorHi() *
-			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) );
-    }
-  else if ((varName == "AsS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (varValIn3 != NULL))
-    {
-      Transformer("FlS",val1,val1ELo,val1EHi,fitResult,varValIn1);
-      Transformer("FsS",val2,val2ELo,val2EHi,fitResult,varValIn1,varValIn2);
-      val3 = 1./2. * (val2 + 3. * val1 * (1. - val2));
-      if (val3 > 1.) val3 = 1.;
-      
-      varValOut    = val3 * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi();
-      
-      varValOutELo = val3 * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorLo()) / TMath::Pi() - varValOut;
-      varValOutELo = - sqrt( pow(3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1ELo,2.) +
-			     pow(1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2ELo,2.) +
-			     pow(varValOutELo,2.) + 
-
-			     2. *
-			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1ELo / varValIn1->getErrorLo() *
-			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2ELo / varValIn2->getErrorLo() *
-			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) +
-
-			     2. *
-			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1ELo / varValIn1->getErrorLo() *
-			     varValOutELo / varValIn2->getErrorLo() *
-			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AsS")) : 0.) +
-
-			     2. *
-			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2ELo / varValIn2->getErrorLo() *
-			     varValOutELo / varValIn2->getErrorLo() *
-			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FsS"),fitResult->floatParsFinal().index("AsS")) : 0.) );
-			     
-      varValOutEHi = val3 * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorHi()) / TMath::Pi() - varValOut;
-      varValOutEHi = + sqrt( pow(3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi,2.) +
-			     pow(1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2EHi,2.) +
-			     pow(varValOutEHi,2.) + 
-
-			     2. *
-			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi / varValIn1->getErrorHi() *
-			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2EHi / varValIn2->getErrorHi() *
-			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) +
-
-			     2. *
-			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi / varValIn1->getErrorHi() *
-			     varValOutEHi / varValIn2->getErrorHi() *
-			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AsS")) : 0.) +
-
-			     2. *
-			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2EHi / varValIn2->getErrorHi() *
-			     varValOutEHi / varValIn2->getErrorHi() *
-			     (CovM != NULL ? (*CovM)(fitResult->floatParsFinal().index("FsS"),fitResult->floatParsFinal().index("AsS")) : 0.) );
-    }
-  else
-    {
-      cout << "[ExtractYield::Transformer]\tWrong parameter: " << varName << endl;
-      exit (EXIT_FAILURE);
-    }
-
-
-  return "";
-}
-
-
-void AntiTransformer (string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1, RooRealVar* varValIn2, RooRealVar* varValIn3)
-// ######################
-// # varValIn1 = Fl,Fs  #
-// # varValIn2 = Afb,Fs #
-// # varValIn2 = As     #
-// ######################
-{
-  double val1,val2,val3,valELo,valEHi,limit;
-  double tolerance = atof(Utility->GetGenericParam("TransfTolerance").c_str());
-
-
-  if ((varName == "FlS") && (varValIn1 != NULL))
-    {
-      varValOut = TMath::Tan((varValIn1->getVal() - 1./2.) * TMath::Pi());
-
-      if (varValIn1->getErrorLo() == -1.0) varValOutELo = varValIn1->getErrorLo();
-      else
-	{
-	  if ((varValIn1->getVal() + varValIn1->getErrorLo()) <= 0.) val1 = tolerance;
-	  else                                                       val1 = varValIn1->getVal() + varValIn1->getErrorLo();
-	  varValOutELo = TMath::Tan((val1 - 1./2.) * TMath::Pi()) - varValOut;
-	}
-
-      if (varValIn1->getErrorHi() == 1.0) varValOutEHi = varValIn1->getErrorHi();
-      else
-	{
-	  if ((varValIn1->getVal() + varValIn1->getErrorHi()) >= 1.) val1 = 1. - tolerance;
-	  else                                                       val1 = varValIn1->getVal() + varValIn1->getErrorHi();
-	  varValOutEHi = TMath::Tan((val1 - 1./2.) * TMath::Pi()) - varValOut;
-	}
-    }
-  else if ((varName == "AfbS") && (varValIn1 != NULL) && (varValIn2 != NULL))
-    {
-      Transformer("FlS",val1,valELo,valEHi,NULL,varValIn1);
-      limit = 3./4. * (1. - val1);
-      
-      varValOut = TMath::Tan(varValIn2->getVal() / limit / 2. * TMath::Pi());
-
-      if (varValIn2->getErrorLo() == -1.0) varValOutELo = varValIn2->getErrorLo();
-      else
-	{
-	  if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= -limit) val2 = (limit >= 2.*tolerance ? -limit + tolerance : -limit + tolerance*limit);
-	  else                                                           val2 = varValIn2->getVal() + varValIn2->getErrorLo();
-	  varValOutELo = TMath::Tan(val2 / limit / 2. * TMath::Pi()) - varValOut;
-	}
-
-      if (varValIn2->getErrorHi() == 1.0) varValOutEHi = varValIn2->getErrorHi();
-      else
-	{
-	  if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= limit) val2 = (limit >= 2.*tolerance ? limit - tolerance : limit - tolerance*limit);
-	  else                                                          val2 = varValIn2->getVal() + varValIn2->getErrorHi();
-	  varValOutEHi = TMath::Tan(val2 / limit / 2. * TMath::Pi()) - varValOut;
-	}
-    }
-  else if ((varName == "FsS") && (varValIn1 != NULL) && (varValIn2 != NULL))
-    {
-      Transformer("FlS",val1,valELo,valEHi,NULL,varValIn1);
-      limit = 3. * (1. - val1) / (7. - 3.*val1);
-
-      varValOut = TMath::Tan((varValIn2->getVal() / limit - 1./2.) * TMath::Pi());
-
-      if (varValIn2->getErrorLo() == -1.0) varValOutELo = varValIn2->getErrorLo();
-      else
-	{
-	  if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= 0.) val2 = tolerance;
-	  else                                                       val2 = varValIn2->getVal() + varValIn2->getErrorLo();
-	  varValOutELo = TMath::Tan((val2 / limit - 1./2.) * TMath::Pi()) - varValOut;
-	}
-
-      if (varValIn2->getErrorHi() == 1.0) varValOutEHi = varValIn2->getErrorHi();
-      else
-	{
-	  if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= 1.) val2 = 1. - tolerance;
-	  else                                                       val2 = varValIn2->getVal() + varValIn2->getErrorHi();
-	  varValOutEHi = TMath::Tan((val2 / limit - 1./2.) * TMath::Pi()) - varValOut;
-	}
-    }
-  else if ((varName == "AsS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (varValIn3 != NULL))
-    {
-      Transformer("FlS",val1,valELo,valEHi,NULL,varValIn1);
-      Transformer("FsS",val2,valELo,valEHi,NULL,varValIn1,varValIn2);
-      limit = 1./2. * (val2 + 3. * val1 * (1. - val2));
-      if (limit > 1.) limit = 1.;
-
-      varValOut = TMath::Tan(varValIn3->getVal() / limit / 2. * TMath::Pi());
-
-      if (varValIn3->getErrorLo() == -1.0) varValOutELo = varValIn3->getErrorLo();
-      else
-	{
-	  if ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -limit) val3 = (limit >= 2.*tolerance ? -limit + tolerance : -limit + tolerance*limit);
-	  else                                                           val3 = varValIn3->getVal() + varValIn3->getErrorLo();
-	  varValOutELo = TMath::Tan(val3 / limit / 2. * TMath::Pi()) - varValOut;
-	}
-
-      if (varValIn3->getErrorHi() == 1.0) varValOutEHi = varValIn3->getErrorHi();
-      else
-	{
-	  if ((varValIn3->getVal() + varValIn3->getErrorHi()) >= limit) val3 = (limit >= 2.*tolerance ? limit - tolerance : limit - tolerance*limit);
-	  else                                                          val3 = varValIn3->getVal() + varValIn3->getErrorHi();
-	  varValOutEHi = TMath::Tan(val3 / limit / 2. * TMath::Pi()) - varValOut;
-	}
-    }
-  else
-    {
-      cout << "[ExtractYield::AntiTransformer]\tWrong parameter: " << varName << endl;
-      exit (EXIT_FAILURE);
-    }
-}
-
-
 void SetStyle ()
 {
   gROOT->SetStyle("Plain");
@@ -899,12 +623,14 @@ void SetStyle ()
 }
 
 
-string MakeName (RooDataSet* data, unsigned int ID)
+string MakeName (const RooDataSet* data, unsigned int ID)
 {
   stringstream myString;
 
+
   myString.clear(); myString.str("");
   myString << data->GetName() << "_" << ID;
+
 
   return myString.str();
 }
@@ -967,6 +693,7 @@ bool IsInConstraints (RooArgSet* vecConstr, string varName)
   string tmp;
   int nEle = vecConstr->getSize();
 
+
   TIterator* it = vecConstr->createIterator();
   for (int i = 0; i < nEle; i++)
     {
@@ -974,6 +701,7 @@ bool IsInConstraints (RooArgSet* vecConstr, string varName)
       tmp = it->Next()->GetName();
       if (tmp.replace(tmp.find("_constr"),7,"") == varName) return true;
     }
+
 
   return false;
 }
@@ -1107,8 +835,8 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
     	  // #####################
     	  // # P-wave decay rate #
     	  // #####################
-	  myString << "(3/4 * (3/2 * " << Transformer("FlS",a,b,c) << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-          myString << "(3/8 * (1-" << Transformer("FlS",a,b,c) << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + " << Transformer("AfbS",a,b,c) << "*" << y->getPlotLabel() << ") * ";
+	  myString << "(3/4 * (3/2 * " << Utility->Transformer("FlS",a,b,c) << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+          myString << "(3/8 * (1-" << Utility->Transformer("FlS",a,b,c) << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + " << Utility->Transformer("AfbS",a,b,c) << "*" << y->getPlotLabel() << ") * ";
           myString << "(1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ")))";
 	}
       else
@@ -1121,11 +849,11 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
     	  // ###########################
     	  // # S and P-wave decay rate #
     	  // ###########################
-          myString << "(9/16 * ((2/3*" << Transformer("FsS",a,b,c) << " + 4/3*" << Transformer("AsS",a,b,c) << "*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
-          myString << "(1-" << Transformer("FsS",a,b,c) << ") * ";
-          myString << "(2*" << Transformer("FlS",a,b,c) << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
-          myString << "1/2*(1-" << Transformer("FlS",a,b,c) << ") * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
-          myString << "4/3*" << Transformer("AfbS",a,b,c) << " * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * " << y->getPlotLabel() << ")))";
+          myString << "(9/16 * ((2/3*" << Utility->Transformer("FsS",a,b,c) << " + 4/3*" << Utility->Transformer("AsS",a,b,c) << "*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+          myString << "(1-" << Utility->Transformer("FsS",a,b,c) << ") * ";
+          myString << "(2*" << Utility->Transformer("FlS",a,b,c) << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+          myString << "1/2*(1-" << Utility->Transformer("FlS",a,b,c) << ") * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+          myString << "4/3*" << Utility->Transformer("AfbS",a,b,c) << " * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * " << y->getPlotLabel() << ")))";
     	}
 
       VarsPoly->removeAll();
@@ -1180,8 +908,8 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	  // #####################
 	  // # P-wave decay rate #
 	  // #####################
-          myString << "(3/4 * (3/2 * " << Transformer("FlS",a,b,c) << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-	  myString << "(3/8 * (1-" << Transformer("FlS",a,b,c) <<") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - " << Transformer("AfbS",a,b,c) << "*" << y->getPlotLabel() << ") * ";
+          myString << "(3/4 * (3/2 * " << Utility->Transformer("FlS",a,b,c) << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+	  myString << "(3/8 * (1-" << Utility->Transformer("FlS",a,b,c) <<") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - " << Utility->Transformer("AfbS",a,b,c) << "*" << y->getPlotLabel() << ") * ";
           myString << "(1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ")))";
 	}
       else
@@ -1189,11 +917,11 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	  // ###########################
 	  // # S and P-wave decay rate #
 	  // ###########################
-	  myString << "(9/16 * ((2/3*" << Transformer("FsS",a,b,c) << " - 4/3*" << Transformer("AsS",a,b,c) << "*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
-          myString << "(1-" << Transformer("FsS",a,b,c) << ") * ";
-          myString << "(2*" << Transformer("FlS",a,b,c) << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
-          myString << "1/2*(1-" << Transformer("FlS",a,b,c) << ") * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - ";
-          myString << "4/3*" << Transformer("AfbS",a,b,c) << " * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * " << y->getPlotLabel() << ")))";
+	  myString << "(9/16 * ((2/3*" << Utility->Transformer("FsS",a,b,c) << " - 4/3*" << Utility->Transformer("AsS",a,b,c) << "*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+          myString << "(1-" << Utility->Transformer("FsS",a,b,c) << ") * ";
+          myString << "(2*" << Utility->Transformer("FlS",a,b,c) << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+          myString << "1/2*(1-" << Utility->Transformer("FlS",a,b,c) << ") * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - ";
+          myString << "4/3*" << Utility->Transformer("AfbS",a,b,c) << " * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * " << y->getPlotLabel() << ")))";
  	}
 
       cout << "\n[ExtractYield::MakeAngWithEffPDF]\t@@@ 2D angular p.d.f. @@@" << endl;
@@ -1301,36 +1029,36 @@ void DeleteFit (RooAbsPdf* pdf, string DeleteType)
 	}
       else if (DeleteType == "All")
 	{
-	  if (pdf->getComponents()->find("MassS1")             != NULL) delete pdf->getComponents()->find("MassS1");
-	  if (pdf->getComponents()->find("MassS2")             != NULL) delete pdf->getComponents()->find("MassS2");
-	  if (pdf->getComponents()->find("MassSignal")         != NULL) delete pdf->getComponents()->find("MassSignal");
-	  if (pdf->getComponents()->find("AngleS")             != NULL) delete pdf->getComponents()->find("AngleS");
-	  if (pdf->getComponents()->find("Signal")             != NULL) delete pdf->getComponents()->find("Signal");
+	  if (pdf->getComponents()->find("MassS1")           != NULL) delete pdf->getComponents()->find("MassS1");
+	  if (pdf->getComponents()->find("MassS2")           != NULL) delete pdf->getComponents()->find("MassS2");
+	  if (pdf->getComponents()->find("MassSignal")       != NULL) delete pdf->getComponents()->find("MassSignal");
+	  if (pdf->getComponents()->find("AngleS")           != NULL) delete pdf->getComponents()->find("AngleS");
+	  if (pdf->getComponents()->find("Signal")           != NULL) delete pdf->getComponents()->find("Signal");
 
-	  if (pdf->getComponents()->find("EffPDFsign")         != NULL) delete pdf->getComponents()->find("EffPDFsign");
-	  if (pdf->getComponents()->find("EffPDFnorm")         != NULL) delete pdf->getComponents()->find("EffPDFnorm");
+	  if (pdf->getComponents()->find("EffPDFsign")       != NULL) delete pdf->getComponents()->find("EffPDFsign");
+	  if (pdf->getComponents()->find("EffPDFnorm")       != NULL) delete pdf->getComponents()->find("EffPDFnorm");
 
-	  if (pdf->getComponents()->find("BkgMassExp1")        != NULL) delete pdf->getComponents()->find("BkgMassExp1");
-	  if (pdf->getComponents()->find("BkgMassExp2")        != NULL) delete pdf->getComponents()->find("BkgMassExp2");
+	  if (pdf->getComponents()->find("BkgMassExp1")      != NULL) delete pdf->getComponents()->find("BkgMassExp1");
+	  if (pdf->getComponents()->find("BkgMassExp2")      != NULL) delete pdf->getComponents()->find("BkgMassExp2");
 
-	  if (pdf->getComponents()->find("MassMisTag1")        != NULL) delete pdf->getComponents()->find("MassMisTag1");
-	  if (pdf->getComponents()->find("MassMisTag2")        != NULL) delete pdf->getComponents()->find("MassMisTag2");
-	  if (pdf->getComponents()->find("MassMisTag")         != NULL) delete pdf->getComponents()->find("MassMisTag");
-	  if (pdf->getComponents()->find("AngleMisTag")        != NULL) delete pdf->getComponents()->find("AngleMisTag");
+	  if (pdf->getComponents()->find("MassMisTag1")      != NULL) delete pdf->getComponents()->find("MassMisTag1");
+	  if (pdf->getComponents()->find("MassMisTag2")      != NULL) delete pdf->getComponents()->find("MassMisTag2");
+	  if (pdf->getComponents()->find("MassMisTag")       != NULL) delete pdf->getComponents()->find("MassMisTag");
+	  if (pdf->getComponents()->find("AngleMisTag")      != NULL) delete pdf->getComponents()->find("AngleMisTag");
 
-	  if (pdf->getComponents()->find("BkgMassRPeak1")      != NULL) delete pdf->getComponents()->find("BkgMassRPeak1");
-	  if (pdf->getComponents()->find("BkgMassRPeak2")      != NULL) delete pdf->getComponents()->find("BkgMassRPeak1");
-	  if (pdf->getComponents()->find("BkgMassRPeak")       != NULL) delete pdf->getComponents()->find("BkgMassRPeak1");
-	  if (pdf->getComponents()->find("BkgMassLPeak1")      != NULL) delete pdf->getComponents()->find("BkgMassLPeak1");
-	  if (pdf->getComponents()->find("BkgMassLPeak2")      != NULL) delete pdf->getComponents()->find("BkgMassLPeak1");
-	  if (pdf->getComponents()->find("BkgMassLPeak")       != NULL) delete pdf->getComponents()->find("BkgMassLPeak1");
-	  if (pdf->getComponents()->find("BkgMassComb")        != NULL) delete pdf->getComponents()->find("BkgMassComb");
-	  if (pdf->getComponents()->find("BkgMassPeak")        != NULL) delete pdf->getComponents()->find("BkgMassPeak");
-	  if (pdf->getComponents()->find("BkgAnglesC")         != NULL) delete pdf->getComponents()->find("BkgAnglesC");
-	  if (pdf->getComponents()->find("BkgAnglesP")         != NULL) delete pdf->getComponents()->find("BkgAnglesP");
-	  if (pdf->getComponents()->find("BkgMassAngleComb")   != NULL) delete pdf->getComponents()->find("BkgMassAngleComb");
-	  if (pdf->getComponents()->find("MassAngleMisTag")    != NULL) delete pdf->getComponents()->find("MassAngleMisTag");
-	  if (pdf->getComponents()->find("BkgMassAnglePeak")   != NULL) delete pdf->getComponents()->find("BkgMassAnglePeak");
+	  if (pdf->getComponents()->find("BkgMassRPeak1")    != NULL) delete pdf->getComponents()->find("BkgMassRPeak1");
+	  if (pdf->getComponents()->find("BkgMassRPeak2")    != NULL) delete pdf->getComponents()->find("BkgMassRPeak1");
+	  if (pdf->getComponents()->find("BkgMassRPeak")     != NULL) delete pdf->getComponents()->find("BkgMassRPeak1");
+	  if (pdf->getComponents()->find("BkgMassLPeak1")    != NULL) delete pdf->getComponents()->find("BkgMassLPeak1");
+	  if (pdf->getComponents()->find("BkgMassLPeak2")    != NULL) delete pdf->getComponents()->find("BkgMassLPeak1");
+	  if (pdf->getComponents()->find("BkgMassLPeak")     != NULL) delete pdf->getComponents()->find("BkgMassLPeak1");
+	  if (pdf->getComponents()->find("BkgMassComb")      != NULL) delete pdf->getComponents()->find("BkgMassComb");
+	  if (pdf->getComponents()->find("BkgMassPeak")      != NULL) delete pdf->getComponents()->find("BkgMassPeak");
+	  if (pdf->getComponents()->find("BkgAnglesC")       != NULL) delete pdf->getComponents()->find("BkgAnglesC");
+	  if (pdf->getComponents()->find("BkgAnglesP")       != NULL) delete pdf->getComponents()->find("BkgAnglesP");
+	  if (pdf->getComponents()->find("BkgMassAngleComb") != NULL) delete pdf->getComponents()->find("BkgMassAngleComb");
+	  if (pdf->getComponents()->find("MassAngleMisTag")  != NULL) delete pdf->getComponents()->find("MassAngleMisTag");
+	  if (pdf->getComponents()->find("BkgMassAnglePeak") != NULL) delete pdf->getComponents()->find("BkgMassAnglePeak");
 
 	  if (pdf != NULL) delete pdf;
 	}
@@ -1670,12 +1398,12 @@ double StoreFitResultsInFile (RooAbsPdf* pdf, RooFitResult* fitResult, RooDataSe
       // #######################
       if (GetVar(pdf,"FlS") != NULL)
 	{
-	  Transformer("FlS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"));
+	  Utility->Transformer("FlS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"));
 	  fileFitResults << "Fl: " << varVal << " +/- " << (varValEHi - varValELo) / 2. << " (" << varValEHi << "/" << varValELo << ")" << endl;
 	}
       if (GetVar(pdf,"AfbS") != NULL)
 	{
-	  Transformer("AfbS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"AfbS"));
+	  Utility->Transformer("AfbS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"AfbS"));
 	  fileFitResults << "Afb: " << varVal << " +/- " << (varValEHi - varValELo) / 2. << " (" << varValEHi << "/" << varValELo << ")" << endl;
 	}
       if (GetVar(pdf,"P1S") != NULL)
@@ -1690,12 +1418,12 @@ double StoreFitResultsInFile (RooAbsPdf* pdf, RooFitResult* fitResult, RooDataSe
 	}
       if (GetVar(pdf,"FsS") != NULL)
         {
-	  Transformer("FsS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"FsS"));
+	  Utility->Transformer("FsS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"FsS"));
 	  fileFitResults << "Fs: " << varVal << " +/- " << (varValEHi - varValELo) / 2. << " (" << varValEHi << "/" << varValELo << ")" << endl;
         }
       if (GetVar(pdf,"AsS") != NULL)
         {
-	  Transformer("AsS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"FsS"),GetVar(pdf,"AsS"));
+	  Utility->Transformer("AsS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"FsS"),GetVar(pdf,"AsS"));
 	  fileFitResults << "As: " << varVal << " +/- " << (varValEHi - varValELo) / 2. << " (" << varValEHi << "/" << varValELo << ")" << endl;
         }
     }
@@ -2164,7 +1892,7 @@ vector<string>* SaveFitResults (unsigned int q2BinIndx, vector<vector<string>*>*
   vecParStr->push_back("# FL +/- err");
   if ((pdf != NULL) && (GetVar(pdf,"FlS") != NULL) && (vecConstr->find(string(string("FlS") + string("_constr")).c_str()) == NULL))
     {
-      Transformer("FlS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"));
+      Utility->Transformer("FlS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"));
       myString.clear(); myString.str("");
       myString << varVal << "   " << varValELo << "   " << varValEHi;
       vecParStr->push_back(myString.str());
@@ -2173,7 +1901,7 @@ vector<string>* SaveFitResults (unsigned int q2BinIndx, vector<vector<string>*>*
   vecParStr->push_back("# AFB +/- err");
   if ((pdf != NULL) && (GetVar(pdf,"AfbS") != NULL) && (vecConstr->find(string(string("AfbS") + string("_constr")).c_str()) == NULL))
     {
-      Transformer("AfbS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"AfbS"));
+      Utility->Transformer("AfbS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"AfbS"));
       myString.clear(); myString.str("");
       myString << varVal << "   " << varValELo << "   " << varValEHi;
       vecParStr->push_back(myString.str());
@@ -2198,7 +1926,7 @@ vector<string>* SaveFitResults (unsigned int q2BinIndx, vector<vector<string>*>*
   vecParStr->push_back("# FS +/- err");
   if ((pdf != NULL) && (GetVar(pdf,"FsS") != NULL) && (fitResult->floatParsFinal().index("FsS") >= 0))
     {
-      Transformer("FsS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"FsS"));
+      Utility->Transformer("FsS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"FsS"));
       myString.clear(); myString.str("");
       myString << varVal << "   " << varValELo << "   " << varValEHi;
       vecParStr->push_back(myString.str());
@@ -2207,7 +1935,7 @@ vector<string>* SaveFitResults (unsigned int q2BinIndx, vector<vector<string>*>*
   vecParStr->push_back("# AS +/- err");
   if ((pdf != NULL) && (GetVar(pdf,"AsS") != NULL) && (fitResult->floatParsFinal().index("AsS") >= 0))
     {
-      Transformer("AsS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"FsS"),GetVar(pdf,"AsS"));
+      Utility->Transformer("AsS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"FsS"),GetVar(pdf,"AsS"));
       myString.clear(); myString.str("");
       myString << varVal << "   " << varValELo << "   " << varValEHi;
       vecParStr->push_back(myString.str());
@@ -2583,7 +2311,7 @@ unsigned int CopyFitResults (RooAbsPdf* pdf, unsigned int q2BinIndx, vector<vect
       if ((errLo == 0.0) && (errHi == 0.0)) GetVar(pdf,"FlS")->setConstant(true);
       else                                  GetVar(pdf,"FlS")->setConstant(false);
 
-      AntiTransformer("FlS",value,errLo,errHi,GetVar(pdf,"FlS"));
+      Utility->AntiTransformer("FlS",value,errLo,errHi,GetVar(pdf,"FlS"));
       myString.clear(); myString.str("");
       myString << value << "   " << errLo << "   " << errHi;
       SetValueAndErrors(pdf,"FlS",1.0,&myString,&value,&errLo,&errHi);
@@ -2596,7 +2324,7 @@ unsigned int CopyFitResults (RooAbsPdf* pdf, unsigned int q2BinIndx, vector<vect
       if ((errLo == 0.0) && (errHi == 0.0)) GetVar(pdf,"AfbS")->setConstant(true);
       else                                  GetVar(pdf,"AfbS")->setConstant(false);
 
-      AntiTransformer("AfbS",value,errLo,errHi,GetVar(pdf,"FlS"),GetVar(pdf,"AfbS"));
+      Utility->AntiTransformer("AfbS",value,errLo,errHi,GetVar(pdf,"FlS"),GetVar(pdf,"AfbS"));
       myString.clear(); myString.str("");
       myString << value << "   " << errLo << "   " << errHi;
       SetValueAndErrors(pdf,"AfbS",1.0,&myString,&value,&errLo,&errHi);
@@ -2625,7 +2353,7 @@ unsigned int CopyFitResults (RooAbsPdf* pdf, unsigned int q2BinIndx, vector<vect
       if ((errLo == 0.0) && (errHi == 0.0)) GetVar(pdf,"FsS")->setConstant(true);
       else                                  GetVar(pdf,"FsS")->setConstant(false);
 
-      AntiTransformer("FsS",value,errLo,errHi,GetVar(pdf,"FlS"),GetVar(pdf,"FsS"));
+      Utility->AntiTransformer("FsS",value,errLo,errHi,GetVar(pdf,"FlS"),GetVar(pdf,"FsS"));
       myString.clear(); myString.str("");
       myString << value << "   " << errLo << "   " << errHi;
       SetValueAndErrors(pdf,"FsS",1.0,&myString,&value,&errLo,&errHi);
@@ -2638,7 +2366,7 @@ unsigned int CopyFitResults (RooAbsPdf* pdf, unsigned int q2BinIndx, vector<vect
       if ((errLo == 0.0) && (errHi == 0.0)) GetVar(pdf,"AsS")->setConstant(true);
       else                                  GetVar(pdf,"AsS")->setConstant(false);
 
-      AntiTransformer("AsS",value,errLo,errHi,GetVar(pdf,"FlS"),GetVar(pdf,"FsS"),GetVar(pdf,"AsS"));
+      Utility->AntiTransformer("AsS",value,errLo,errHi,GetVar(pdf,"FlS"),GetVar(pdf,"FsS"),GetVar(pdf,"AsS"));
       myString.clear(); myString.str("");
       myString << value << "   " << errLo << "   " << errHi;
       SetValueAndErrors(pdf,"AsS",1.0,&myString,&value,&errLo,&errHi);
@@ -2818,15 +2546,16 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
 }
 
 
-void GenerateDataset (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, int q2BinIndx, RooArgSet setVar, RooArgSet* vecConstr, string fileName)
+void GenerateDatasetFromPDF (RooAbsPdf* pdf, unsigned int fileIndx, vector<double>* q2Bins, int q2BinIndx, RooArgSet setVar, string fileName, vector<vector<string>*>* fitParam, RooArgSet* vecConstr)
 {
   TFile* NtplFileOut;
   TTree* theTreeOut;
   B0KstMuMuSingleCandTreeContent* NTupleOut;
-  RooMCStudy* MyToy;
+  unsigned int nEntryToy;
   RooDataSet* toySample;
   RooRealVar* var;
-  unsigned int nEntryToy;
+
+  RooMCStudy* MyToy;
 
 
   // ######################
@@ -2843,7 +2572,7 @@ void GenerateDataset (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigne
 
 
   RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins->size()-1) + q2BinIndx + 1);
-  cout << "[ExtractYield::GenerateDataset]\t@@@ Random seed for dataset file generation set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
+  cout << "\n[ExtractYield::GenerateDatasetFromPDF]\t@@@ Random seed for dataset file generation set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
 
   // #####################
@@ -2939,6 +2668,140 @@ void GenerateDataset (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigne
   delete NTupleOut;
   delete NtplFileOut;
   delete MyToy;
+}
+
+
+void GenerateDatasetFromDataset (RooDataSet* dataSet,  unsigned int fileIndx, vector<double>* q2Bins, int q2BinIndx, RooArgSet setVar, string fileName)
+{
+  stringstream myString;
+  TFile* NtplFileOut;
+  TTree* theTreeOut;
+  B0KstMuMuSingleCandTreeContent* NTupleOut;
+  unsigned int nEntryToy;
+  RooDataSet* toySample;
+  RooRealVar* var;
+
+  double nBins = NBINS / 2.;
+  double espilon = 1e-3;
+  unsigned int interpDegree = 1;
+  vector<RooMCStudy*>  MyToy;
+  vector<RooDataSet*>  myDataSet;
+  vector<RooDataHist*> myHistoDataset;
+  vector<RooHistPdf*>  myHistoPDF;
+
+
+  // ######################
+  // # Create output tree #
+  // ######################
+  NtplFileOut = new TFile(fileName.c_str(),"RECREATE");
+  NtplFileOut->mkdir("B0KstMuMu");
+  NtplFileOut->cd("B0KstMuMu");
+  theTreeOut = new TTree("B0KstMuMuNTuple","B0KstMuMuNTuple");
+  NTupleOut  = new B0KstMuMuSingleCandTreeContent();
+  NTupleOut->Init();
+  NTupleOut->ClearNTuple();
+  NTupleOut->MakeTreeBranches(theTreeOut);
+
+
+  RooRandom::randomGenerator()->SetSeed(fileIndx*(q2Bins->size()-1) + q2BinIndx + 1);
+  cout << "\n[ExtractYield::GenerateDatasetFromDataset]\t@@@ Random seed for dataset file generation set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
+
+
+  // #####################
+  // # Initialize p.d.f. #
+  // #####################
+  cout << "[ExtractYield::GenerateDatasetFromDataset]\tNumber of bins per variable : " << nBins << "\tDegree of interpolation : " << interpDegree << endl;
+  myString.clear(); myString.str("");
+  myString << "(mumuMass*mumuMass) > " << q2Bins->operator[](q2BinIndx) << " && (mumuMass*mumuMass) <= " << q2Bins->operator[](q2BinIndx+1);
+  cout << "[ExtractYield::GenerateDatasetFromDataset]\tCut string: " << myString.str() << endl;
+  toySample = (RooDataSet*)dataSet->reduce(myString.str().c_str());
+  cout << "[ExtractYield::GenerateDatasetFromDataset]\tNumber of events: " << toySample->sumEntries() << endl;
+  nEntryToy = static_cast<unsigned int>(toySample->sumEntries() * MULTYIELD);
+
+  TIterator* it = setVar.createIterator();
+  for (int i = 0; i < setVar.getSize(); i++)
+    {
+      var = (RooRealVar*)it->Next();
+      var->setBins(nBins);
+
+      myDataSet.push_back((RooDataSet*)toySample->reduce(*var));
+      
+      myHistoDataset.push_back(myDataSet.back()->binnedClone());
+      myHistoPDF.push_back(new RooHistPdf("myHistoPDF","myHistoPDF",*var,*myHistoDataset.back(),interpDegree));
+      
+      
+      // #####################
+      // # Toy-MC generation #
+      // #####################
+      MyToy.push_back(new RooMCStudy(*myHistoPDF.back(),*var));
+      MyToy.back()->generate(1,nEntryToy,true);
+    }
+
+
+  // ########################
+  // # Loop over the events #
+  // ########################
+  toySample = (RooDataSet*)MyToy[0]->genData(0);
+  for (unsigned int entry = 0; entry < static_cast<unsigned int>(toySample->sumEntries()); entry++)
+    {
+      if (q2BinIndx == Utility->GetJPsiBin(q2Bins))
+	{
+	  NTupleOut->mumuMass->push_back(Utility->JPsiMass);
+	  NTupleOut->mumuMassE->push_back(espilon);
+	}
+      else if (q2BinIndx == Utility->GetPsiPBin(q2Bins))
+	{
+	  NTupleOut->mumuMass->push_back(Utility->PsiPMass);
+	  NTupleOut->mumuMassE->push_back(espilon);
+	}
+      else if (q2BinIndx < Utility->GetJPsiBin(q2Bins))
+	{
+	  NTupleOut->mumuMass->push_back(sqrt(q2Bins->operator[](q2BinIndx)) + espilon);
+	  NTupleOut->mumuMassE->push_back(0.0);
+	}
+      else if (q2BinIndx > Utility->GetPsiPBin(q2Bins))
+	{
+	  NTupleOut->mumuMass->push_back(sqrt(q2Bins->operator[](q2BinIndx+1)) - espilon);
+	  NTupleOut->mumuMassE->push_back(0.0);
+	}
+      else
+	{
+	  NTupleOut->mumuMass->push_back((sqrt(q2Bins->operator[](q2BinIndx)) + sqrt(q2Bins->operator[](q2BinIndx+1))) / 2.);
+	  NTupleOut->mumuMassE->push_back(0.0);
+	}
+      
+      for (unsigned int i = 0; i < MyToy.size(); i++)
+	{
+	  if ((var = (RooRealVar*)(MyToy[i]->genData(0)->get(entry)->find("B0MassArb")))               != NULL) NTupleOut->B0MassArb          = var->getVal();
+	  else if ((var = (RooRealVar*)(MyToy[i]->genData(0)->get(entry)->find("CosThetaMuArb")))      != NULL) NTupleOut->CosThetaMuArb      = var->getVal();
+	  else if ((var = (RooRealVar*)(MyToy[i]->genData(0)->get(entry)->find("CosThetaKArb")))       != NULL) NTupleOut->CosThetaKArb       = var->getVal();
+	  else if ((var = (RooRealVar*)(MyToy[i]->genData(0)->get(entry)->find("PhiKstMuMuPlaneArb"))) != NULL) NTupleOut->PhiKstMuMuPlaneArb = var->getVal();
+	}
+
+      NTupleOut->truthMatchSignal->push_back(false);
+      NTupleOut->rightFlavorTag = (RooRandom::uniform() < 0.5 ? false : true);
+      NTupleOut->TrigCat        = 1;
+
+      theTreeOut->Fill();
+      NTupleOut->ClearNTuple();
+    }
+
+
+  // #############
+  // # Save data #
+  // #############
+  NtplFileOut->cd("B0KstMuMu");
+  theTreeOut->Write();
+  NtplFileOut->Close("R");
+  delete NTupleOut;
+  delete NtplFileOut;
+  for (unsigned int i = 0; i < MyToy.size(); i++)
+    {
+      delete MyToy[i];
+      delete myDataSet[i];
+      delete myHistoDataset[i];
+      delete myHistoPDF[i];
+    }
 }
 
 
@@ -6258,8 +6121,8 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // ##############################################
       // # Save fit results back into prarameter file #
       // ##############################################
-      Transformer("FlS", varVal1,varVal1ELo,varVal1EHi,fitResult,GetVar(TotalPDFq2Bins[i],"FlS"));
-      Transformer("AfbS",varVal2,varVal2ELo,varVal2EHi,fitResult,GetVar(TotalPDFq2Bins[i],"FlS"),GetVar(TotalPDFq2Bins[i],"AfbS"));
+      Utility->Transformer("FlS", varVal1,varVal1ELo,varVal1EHi,fitResult,GetVar(TotalPDFq2Bins[i],"FlS"));
+      Utility->Transformer("AfbS",varVal2,varVal2ELo,varVal2EHi,fitResult,GetVar(TotalPDFq2Bins[i],"FlS"),GetVar(TotalPDFq2Bins[i],"AfbS"));
 
       vecParStr = SaveFitResults(i,fitParam,configParam,vecConstr,TotalPDFq2Bins[i],fitResult);
       Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,i);
@@ -7001,24 +6864,24 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 
 	  varName = "FlS";
 	  pdf_Fl = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
-	  Transformer(varName,fit_Fl,varValELo,varValEHi,fitResult,GetVar(TotalPDF,varName.c_str()));
+	  Utility->Transformer(varName,fit_Fl,varValELo,varValEHi,fitResult,GetVar(TotalPDF,varName.c_str()));
 	  if (fit_Fl > pdf_Fl) error_Fl = varValELo;
 	  else                 error_Fl = varValEHi;
 	  fitOrg_Fl = GetVar(TotalPDF,varName.c_str())->getVal();
           tmpVar1.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str()));
-          AntiTransformer("FlS",pdfOrg_Fl,varValELo,varValEHi,&tmpVar1);
+          Utility->AntiTransformer("FlS",pdfOrg_Fl,varValELo,varValEHi,&tmpVar1);
           if (fitOrg_Fl > pdfOrg_Fl) errorOrg_Fl = GetVar(TotalPDF,varName.c_str())->getErrorLo();
           else                       errorOrg_Fl = GetVar(TotalPDF,varName.c_str())->getErrorHi();
 
 
 	  varName = "AfbS";
 	  pdf_Afb = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
-	  Transformer(varName,fit_Afb,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,varName.c_str()));
+	  Utility->Transformer(varName,fit_Afb,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,varName.c_str()));
 	  if (fit_Afb > pdf_Afb) error_Afb = varValELo;
 	  else                   error_Afb = varValEHi;
 	  fitOrg_Afb = GetVar(TotalPDF,varName.c_str())->getVal();
           tmpVar2.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str()));
-          AntiTransformer("AfbS",pdfOrg_Afb,varValELo,varValEHi,&tmpVar1,&tmpVar2);
+          Utility->AntiTransformer("AfbS",pdfOrg_Afb,varValELo,varValEHi,&tmpVar1,&tmpVar2);
           if (fitOrg_Afb > pdfOrg_Afb) errorOrg_Afb = GetVar(TotalPDF,varName.c_str())->getErrorLo();
           else                         errorOrg_Afb = GetVar(TotalPDF,varName.c_str())->getErrorHi();
 
@@ -7080,14 +6943,15 @@ int main(int argc, char** argv)
       TFile* NtplFile           = NULL;
 
 
-      if (((((FitType >= 1)  && (FitType <= 6))   ||
-	    (FitType == 36)                       ||
-	    ((FitType >= 41) && (FitType <= 46))  ||
-	    ((FitType >= 61) && (FitType <= 66))  ||
-	    ((FitType >= 81) && (FitType <= 86))) && (argc >= 4)) ||
-	  ((FitType == 96)   &&                      (argc == 6)) ||
-	  ((FitType >= 21)   && (FitType <= 26)   && (argc == 8)) ||
-	  (((FitType == 56)  || (FitType == 76))  && (argc == 4)))
+      if (((((FitType >= 1)  && (FitType <= 6)) || (FitType == 36) || ((FitType >= 41) && (FitType <= 46)) || ((FitType >= 61) && (FitType <= 66))) && (argc >= 4)) ||
+
+	  (((FitType == 56)  || (FitType == 76)) && (argc == 4)) ||
+
+	  ((((FitType >= 81) && (FitType <= 86)) || (FitType == 96)) && (argc == 6)) ||
+
+	  ((FitType == 881) && (argc == 7)) ||
+
+	  ((FitType >= 21)  && (FitType <= 26) && (argc == 8)))
 	{
 	  ParameterFILE = Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str();
 
@@ -7110,6 +6974,7 @@ int main(int argc, char** argv)
 	      ((FitType >= 61) && (FitType <= 66)) ||
 	      (FitType == 76)                      ||
 	      ((FitType >= 81) && (FitType <= 86)) ||
+	      (FitType == 881)                     ||
 	      (FitType == 96))
 	    {
 	      fileName           = argv[2];
@@ -7269,10 +7134,11 @@ int main(int argc, char** argv)
 	      delete configParam[i];
 	    }
 	  configParam.clear();
-	  if (FitType == 2) Utility->ReadFitStartingValues(ParameterFILE,&fitParam,&configParam,Utility->ParFileBlockN("fitValGlob"));
-	  else              Utility->ReadFitStartingValues((((correct4Efficiency.find("yesEffCorrGen") == string::npos) && tmpFileName.size() != 0) ? tmpFileName : ParameterFILE),
-							   &fitParam,&configParam,
-							   (((correct4Efficiency.find("yesEffCorrGen") == string::npos) && tmpFileName.size() != 0) ? 1 : Utility->ParFileBlockN("fitValBins")));
+	  if (FitType == 2)        Utility->ReadFitStartingValues(ParameterFILE,&fitParam,&configParam,Utility->ParFileBlockN("fitValGlob"));
+	  else if (FitType != 881) Utility->ReadFitStartingValues((((correct4Efficiency.find("yesEffCorrGen") == string::npos) && tmpFileName.size() != 0) ? tmpFileName : ParameterFILE),
+								  &fitParam,&configParam,
+								  (((correct4Efficiency.find("yesEffCorrGen") == string::npos) && tmpFileName.size() != 0) ? 1 : Utility->ParFileBlockN("fitValBins")));
+	  else                     Utility->ReadFitStartingValues(ParameterFILE,&fitParam,&configParam,Utility->ParFileBlockN("fitValBins"));
 
 
 	  // #############################################################
@@ -7370,7 +7236,7 @@ int main(int argc, char** argv)
 	      // ##############################
 	      // # Select the proper fit type #
 	      // ##############################
-	      if ((FitType == 1) || (FitType == 2) || (FitType == 41) || (FitType == 61))
+	      if ((FitType == 1) || (FitType == 2) || (FitType == 41) || (FitType == 61)) // Branching fraction
 		{
 		  if (FitType == 2)
 		    {
@@ -7627,7 +7493,7 @@ int main(int argc, char** argv)
 	      cout << "\n[ExtractYield::main]\t@@@ Random seed for toy-MC set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
 
-	      if (FitType == 21)
+	      if (FitType == 21) // Branching fraction
 		{
 		  // ####################################
 		  // # Make toy-MC for B0 inv. mass fit #
@@ -7659,22 +7525,42 @@ int main(int argc, char** argv)
 	      MakeDataSets(NTuple,FitType);
 
 
-	      if (FitType == 81)
+	      if (FitType == 81) // Branching fraction
                 {
-                  // ###########################################                                                                                                                                                                                                                                                     
-                  // # Generate dataset for B0 inv. mass model #                                                                                                                                                                                                                                                     
-                  // ###########################################                                                                                                                                                                                                                                                     
+                  // ###########################################
+                  // # Generate dataset for B0 inv. mass model #
+                  // ###########################################
                   InstantiateMassFit(&TotalPDFRejectPsi,B0MassArb,"TotalPDFRejectPsi",&configParam,specBin);
-                  GenerateDataset(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,specBin,RooArgSet(*B0MassArb),&vecConstr,fileName);
+                  GenerateDatasetFromPDF(TotalPDFRejectPsi,fileIndx,&q2Bins,specBin,RooArgSet(*B0MassArb),fileName,&fitParam,&vecConstr);
                 }
               else if (FitType == 86) // Fl-Afb-fit
                 {
-                  // ######################################################                                                                                                                                                                                                                                          
-                  // # Generate dataset for B0 inv. mass and angles model #                                                                                                                                                                                                                                          
-                  // ######################################################                                                                                                                                                                                                                                          
+                  // ######################################################
+                  // # Generate dataset for B0 inv. mass and angles model #
+                  // ######################################################
                   InstantiateMass2AnglesFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,CosThetaMuArb,CosThetaKArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,&q2Bins,specBin,specBin,make_pair(effFuncs.first->operator[](specBin),effFuncs.second->operator[](specBin)));
-                  GenerateDataset(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,specBin,RooArgSet(*B0MassArb,*CosThetaMuArb,*CosThetaKArb),&vecConstr,fileName);
+                  GenerateDatasetFromPDF(TotalPDFRejectPsi,fileIndx,&q2Bins,specBin,RooArgSet(*B0MassArb,*CosThetaMuArb,*CosThetaKArb),fileName,&fitParam,&vecConstr);
                 }
+	    }
+	  else if (FitType == 881) // Dataset
+	    {
+	      NtplFile = new TFile(fileName.c_str(),"READ");
+	      theTree  = (TTree*) NtplFile->Get("B0KstMuMu/B0KstMuMuNTuple");
+	      NTuple   = new B0KstMuMuSingleCandTreeContent();
+	      NTuple->Init();
+	      
+	      
+	      // #################
+	      // # Make datasets #
+	      // #################
+	      cout << "\n[ExtractYield::main]\t@@@ Making datasets @@@" << endl;
+	      MakeDataSets(NTuple,FitType);
+	      
+	      
+	      // #################################
+	      // # Generate dataset from dataset #
+	      // #################################
+	      GenerateDatasetFromDataset(SingleCandNTuple_RejectPsi,fileIndx,&q2Bins,specBin,RooArgSet(*B0MassArb,*CosThetaMuArb,*CosThetaKArb),tmpFileName.c_str());
 	    }
 	  else if (FitType == 96)
 	    {
@@ -7743,6 +7629,7 @@ int main(int argc, char** argv)
 	  cout << "               [[if yesEffCorrGen]indx AND effFileName.txt]" << endl;
 	  cout << "               [[if toy-MC]nToy AND indx AND ParameterFile.txt] " << endl;
 	  cout << "               [[if 8x or 9x]indx]" << endl;
+	  cout << "               [[if 88x]indx AND outputFileName.root]" << endl;
 	  cout << "               [indx] [ParameterFile.txt]" << endl;
 
 	  cout << "\n --> noEffCorr     = no eff. correction" << endl;
@@ -7760,6 +7647,7 @@ int main(int argc, char** argv)
       cout << "               [[if yesEffCorrGen]indx AND effFileName.txt]" << endl;
       cout << "               [[if toy-MC]nToy AND indx AND ParameterFile.txt] " << endl;
       cout << "               [[if 8x or 9x]indx]" << endl;
+      cout << "               [[if 88x]indx AND outputFileName.root]" << endl;
       cout << "               [indx] [ParameterFile.txt]" << endl;
 
       cout << "\n --> noEffCorr     = no eff. correction" << endl;
@@ -7794,6 +7682,7 @@ int main(int argc, char** argv)
       cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Genera dataset @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "FitType = 81: 1D generare dataset with (B0Mass) distribution from pdf" << endl;
       cout << "FitType = 86: 3D generare dataset with (B0Mass, cos(theta_K), cos(theta_l)) distribution from pdf" << endl;
+      cout << "FitType = 881: generare dataset from dataset" << endl;
       cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       
       cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Genera parameter @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;

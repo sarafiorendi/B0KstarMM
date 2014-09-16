@@ -10,6 +10,9 @@
 #include <TMatrixTSym.h>
 #include <TGraphAsymmErrors.h>
 
+#include <RooRealVar.h>
+#include <RooFitResult.h>
+
 #include <string>
 #include <vector>
 
@@ -226,6 +229,11 @@ class Utils
   bool IsThisData (std::string fileName);
 
   void SaveFitValues (std::string fileName, std::vector<std::string>* vecParStr, int indx, std::string str = "");
+
+#if ROOFIT
+  std::string Transformer (std::string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooFitResult* fitResult = NULL, RooRealVar* varValIn1 = NULL, RooRealVar* varValIn2 = NULL, RooRealVar* varValIn3 = NULL);
+  void AntiTransformer (std::string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1 = NULL, RooRealVar* varValIn2 = NULL, RooRealVar* varValIn3 = NULL);
+#endif
 
   std::string MakeAnalysisPATH (std::string relativePath);
   unsigned int ParFileBlockN   (std::string blockName);

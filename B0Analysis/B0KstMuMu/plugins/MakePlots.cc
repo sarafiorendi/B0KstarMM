@@ -22,6 +22,8 @@
 #include <TGraphBentErrors.h>
 #include <TKey.h>
 
+#include <RooRealVar.h>
+
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
@@ -1916,7 +1918,7 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
 {
   ifstream inputFile;
 
-  unsigned int nPar = 18;
+  unsigned int nPar = 21;
 
   double ID;
   double fit_Fl,  errorHi_Fl,  errorLo_Fl,  pdf_Fl;
@@ -2090,6 +2092,23 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
   cout << "\n@@@ Selected events: " << minErr << " < |error| < " << maxErr << " @@@" << endl;
   cout << "@@@ Weighted average parameter 0: " << vecMean[0] << " +/- " << vecErr[0] << " --> " << " Original value: " << TMath::Tan((pdf_Fl - 1./2.) * TMath::Pi()) <<  " @@@" << endl;
   cout << "@@@ Weighted average parameter 1: " << vecMean[1] << " +/- " << vecErr[1] << " --> " << " Original value: " << TMath::Tan(pdf_Afb / (3./4. * (1. - pdf_Fl)) / 2. * TMath::Pi()) <<  " @@@" << endl;
+
+  double varVal;
+  double varValELo;
+  double varValEHi;
+
+  RooRealVar tmpVar1("tmpVar1","tmpVar1",0.0);
+  RooRealVar tmpVar2("tmpVar2","tmpVar2",0.0);
+
+  tmpVar1.setVal(vecMean[0]);
+  tmpVar1.setError(vecErr[0]);
+  Utility->Transformer("FlS",varVal,varValELo,varValEHi,NULL,&tmpVar1);
+  cout << "@@@ Transformed weighted average parameter 0: " << varVal << " +" << varValEHi << "/-" << varValELo << " --> " << " Original value: " << pdf_Fl <<  " @@@" << endl;
+
+  tmpVar2.setVal(vecMean[1]);
+  tmpVar2.setError(vecErr[1]);
+  Utility->Transformer("AfbS",varVal,varValELo,varValEHi,NULL,&tmpVar1,&tmpVar2);
+  cout << "@@@ Transformed weighted average parameter 1: " << varVal << " +" << varValEHi << "/-" << varValELo << " --> " << " Original value: " << pdf_Afb <<  " @@@" << endl;
 
 
   // ###############
