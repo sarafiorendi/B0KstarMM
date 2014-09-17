@@ -2717,8 +2717,8 @@ allEvts
 ############################
 # 23rd block of parameters #
 ############################
-# Data type
+# Dataset type
 1
 
-# [0 = Monte Carlo; 1 = Data]
-0
+# [0 = data; 1 = MC B0-->K*mumu; 3 = MC B0-->K*J/psi; 5 = MC B0-->K*psi(2S)]
+1

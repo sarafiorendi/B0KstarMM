@@ -1918,7 +1918,7 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
 {
   ifstream inputFile;
 
-  unsigned int nPar = 21;
+  unsigned int nPar = 18;
 
   double ID;
   double fit_Fl,  errorHi_Fl,  errorLo_Fl,  pdf_Fl;
@@ -2047,26 +2047,26 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
 	  // ####################
 	  // # Weighted average #
 	  // ####################
-	  if ((vecVar[11] < pdf_Fl) && (fabs(vecVar[12]) > minErr) && (fabs(vecVar[12]) < maxErr))
+	  if ((vecVar[1] < pdf_Fl) && (fabs(vecVar[2]) > minErr) && (fabs(vecVar[2]) < maxErr))
 	    {
 	      vecMean[0] += vecVar[11] / (vecVar[12] * vecVar[12]);
-	      vecErr[0]  += 1.        / (vecVar[12] * vecVar[12]);
+	      vecErr[0]  += 1.         / (vecVar[12] * vecVar[12]);
 	    }
-	  else if ((fabs(vecVar[13]) > minErr) && (fabs(vecVar[13]) < maxErr))
+	  else if ((fabs(vecVar[3]) > minErr) && (fabs(vecVar[3]) < maxErr))
 	    {
 	      vecMean[0] += vecVar[11] / (vecVar[13] * vecVar[13]);
-	      vecErr[0]  += 1.        / (vecVar[13] * vecVar[13]);
+	      vecErr[0]  += 1.         / (vecVar[13] * vecVar[13]);
 	    }
 
-	  if ((vecVar[14] < pdf_Afb) && (fabs(vecVar[15]) > minErr) && (fabs(vecVar[15]) < maxErr))
+	  if ((vecVar[4] < pdf_Afb) && (fabs(vecVar[5]) > minErr) && (fabs(vecVar[5]) < maxErr))
 	    {
-	      vecMean[1] += vecVar[4] / (vecVar[15] * vecVar[15]);
-	      vecErr[1]  += 1.        / (vecVar[15] * vecVar[15]);
+	      vecMean[1] += vecVar[14] / (vecVar[15] * vecVar[15]);
+	      vecErr[1]  += 1.         / (vecVar[15] * vecVar[15]);
 	    }
-	  else if ((fabs(vecVar[16]) > minErr) && (fabs(vecVar[16]) < maxErr))
+	  else if ((fabs(vecVar[6]) > minErr) && (fabs(vecVar[6]) < maxErr))
 	    {
 	      vecMean[1] += vecVar[14] / (vecVar[16] * vecVar[16]);
-	      vecErr[1]  += 1.        / (vecVar[16] * vecVar[16]);
+	      vecErr[1]  += 1.         / (vecVar[16] * vecVar[16]);
 	    }
 	}
 
@@ -2083,16 +2083,6 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
   // ####################
   // # Weighted average #
   // ####################
-  vecMean[0] = vecMean[0] / vecErr[0];
-  vecErr[0]  = sqrt(1. / vecErr[0]);
-
-  vecMean[1] = vecMean[1] / vecErr[1];
-  vecErr[1]  = sqrt(1. / vecErr[1]);
-  
-  cout << "\n@@@ Selected events: " << minErr << " < |error| < " << maxErr << " @@@" << endl;
-  cout << "@@@ Weighted average parameter 0: " << vecMean[0] << " +/- " << vecErr[0] << " --> " << " Original value: " << TMath::Tan((pdf_Fl - 1./2.) * TMath::Pi()) <<  " @@@" << endl;
-  cout << "@@@ Weighted average parameter 1: " << vecMean[1] << " +/- " << vecErr[1] << " --> " << " Original value: " << TMath::Tan(pdf_Afb / (3./4. * (1. - pdf_Fl)) / 2. * TMath::Pi()) <<  " @@@" << endl;
-
   double varVal;
   double varValELo;
   double varValEHi;
@@ -2100,15 +2090,34 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
   RooRealVar tmpVar1("tmpVar1","tmpVar1",0.0);
   RooRealVar tmpVar2("tmpVar2","tmpVar2",0.0);
 
+  vecMean[0] = vecMean[0] / vecErr[0];
+  vecErr[0]  = sqrt(1.    / vecErr[0]);
+
+  vecMean[1] = vecMean[1] / vecErr[1];
+  vecErr[1]  = sqrt(1.    / vecErr[1]);
+  
+  cout << "\n@@@ Selected events: " << minErr << " < |error| < " << maxErr << " @@@" << endl;
+
+  tmpVar1.setVal(pdf_Fl);
+  tmpVar1.setError(0.0);
+  Utility->AntiTransformer("FlS",varVal,varValELo,varValEHi,&tmpVar1);
+  cout << "@@@ Weighted average parameter 0: " << vecMean[0] << " +/- " << vecErr[0] << " --> " << " Original value: " << varVal <<  " @@@" << endl;
+
+  tmpVar1.setVal(varVal);
+  tmpVar2.setVal(pdf_Afb);
+  tmpVar2.setError(0.0);
+  Utility->AntiTransformer("AfbS",varVal,varValELo,varValEHi,&tmpVar1,&tmpVar2);
+  cout << "@@@ Weighted average parameter 1: " << vecMean[1] << " +/- " << vecErr[1] << " --> " << " Original value: " << varVal <<  " @@@" << endl;
+
   tmpVar1.setVal(vecMean[0]);
   tmpVar1.setError(vecErr[0]);
   Utility->Transformer("FlS",varVal,varValELo,varValEHi,NULL,&tmpVar1);
-  cout << "@@@ Transformed weighted average parameter 0: " << varVal << " +" << varValEHi << "/-" << varValELo << " --> " << " Original value: " << pdf_Fl <<  " @@@" << endl;
+  cout << "@@@ Transformed weighted average parameter 0: " << varVal << " +" << varValEHi << "/" << varValELo << " --> " << " Original value: " << pdf_Fl <<  " @@@" << endl;
 
   tmpVar2.setVal(vecMean[1]);
   tmpVar2.setError(vecErr[1]);
   Utility->Transformer("AfbS",varVal,varValELo,varValEHi,NULL,&tmpVar1,&tmpVar2);
-  cout << "@@@ Transformed weighted average parameter 1: " << varVal << " +" << varValEHi << "/-" << varValELo << " --> " << " Original value: " << pdf_Afb <<  " @@@" << endl;
+  cout << "@@@ Transformed weighted average parameter 1: " << varVal << " +" << varValEHi << "/" << varValELo << " --> " << " Original value: " << pdf_Afb <<  " @@@" << endl;
 
 
   // ###############

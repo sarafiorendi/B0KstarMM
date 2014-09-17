@@ -355,7 +355,7 @@ string GeneratePolynomial       (RooRealVar* var, unsigned int nCoef, string sCo
 
 void FitDimuonInvMass           (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x, TCanvas* Canv, bool justPlotMuMuMass, bool justKeepPsi, string plotName);
 
-void MakeDataSets               (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType);
+void MakeDatasets               (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType);
 unsigned int GetSignalType      (unsigned int FitType, vector<double>* q2Bins, int q2BinIndx);
 
 // ==================
@@ -2217,7 +2217,7 @@ unsigned int CopyFitResults (RooAbsPdf* pdf, unsigned int q2BinIndx, vector<vect
       (NCoeffPolyBKGpeak2 > NCOEFFPOLYBKG) || (NCoeffPolyBKGcomb2 > NCOEFFPOLYBKG) ||
       (NCoeffPolyBKGpeak3 > NCOEFFPOLYBKG) || (NCoeffPolyBKGcomb3 > NCOEFFPOLYBKG))
     {
-      cout << "[ExtractYield::CopyFitResults]\tDegree of poly bkg is not within allowed limits: ";
+      cout << "[ExtractYield::CopyFitResults]\tDegree of poly bkg is not within allowed limits : ";
       cout << NCoeffPolyBKGpeak1 << "\t" << NCoeffPolyBKGcomb1 << "\t" << NCoeffPolyBKGpeak2 << "\t" << NCoeffPolyBKGcomb2 << "\t" << NCoeffPolyBKGpeak3 << "\t" << NCoeffPolyBKGcomb3 << endl;
       exit (EXIT_FAILURE);
     }
@@ -2408,7 +2408,7 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
     {
       if ((atoi(Utility->GetGenericParam("CtrlMisTagWrkFlow").c_str()) == 0) && (GetVar(pdf,"nMisTagFrac") != NULL))
 	{
-	  cout << "Mis-tag fraction generation: gaussian mean = " << GetVar(pdf,"nMisTagFrac")->getVal() << "\tsigma = " << GetVar(pdf,"nMisTagFrac")->getError() << endl;
+	  cout << "Mis-tag fraction generation : gaussian mean = " << GetVar(pdf,"nMisTagFrac")->getVal() << "\tsigma = " << GetVar(pdf,"nMisTagFrac")->getError() << endl;
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::gaussian() * GetVar(pdf,"nMisTagFrac")->getError() + GetVar(pdf,"nMisTagFrac")->getVal();
 	  fitParam->operator[](Utility->GetFitParamIndx("nMisTagFrac"))->operator[](q2BinIndx) = myString.str();
@@ -2420,7 +2420,7 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
     {
       if (GetVar(pdf,"var1") != NULL)
 	{
-	  cout << "Background var1 generation: uniform lower bound = 0\thigher bound = 1" << endl;
+	  cout << "Background var1 generation : uniform lower bound = 0\thigher bound = 1" << endl;
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform();
 	  fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](q2BinIndx) = myString.str();
@@ -2428,7 +2428,7 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
 
       if (GetVar(pdf,"var2") != NULL)
 	{
-	  cout << "Background var2 generation: uniform lower bound = 0\thigher bound = 1" << endl;
+	  cout << "Background var2 generation : uniform lower bound = 0\thigher bound = 1" << endl;
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform();
 	  fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](q2BinIndx) = myString.str();
@@ -2448,7 +2448,7 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
     {
       if (GetVar(pdf,"FlS") != NULL)
 	{
-	  cout << "Fl generation: uniform lower bound = 0\thigher bound = 1" << endl;
+	  cout << "Fl generation : uniform lower bound = 0\thigher bound = 1" << endl;
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform();
 	  fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](q2BinIndx) = myString.str();
@@ -2456,7 +2456,7 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
       
       if (GetVar(pdf,"AfbS") != NULL)
 	{
-	  cout << "Afb generation: uniform lower bound = -1\thigher bound = 1" << endl;
+	  cout << "Afb generation : uniform lower bound = -1\thigher bound = 1" << endl;
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform() * 2. - 1.;
 	  fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](q2BinIndx) = myString.str();
@@ -2468,7 +2468,7 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
     {
       if (GetVar(pdf,"P1S") != NULL)
 	{
-	  cout << "P1 generation: uniform lower bound = " << GetVar(pdf,"P1S")->getMin() << "\thigher bound = " << GetVar(pdf,"P1S")->getMax() << endl;
+	  cout << "P1 generation : uniform lower bound = " << GetVar(pdf,"P1S")->getMin() << "\thigher bound = " << GetVar(pdf,"P1S")->getMax() << endl;
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform() * (GetVar(pdf,"P1S")->getMax() - GetVar(pdf,"P1S")->getMin()) + GetVar(pdf,"P1S")->getMin();
 	  fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](q2BinIndx) = myString.str();
@@ -2476,7 +2476,7 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
 
       if (GetVar(pdf,"P2S") != NULL)
 	{
-	  cout << "P2 generation: uniform lower bound = " << GetVar(pdf,"P2S")->getMin() << "\thigher bound = " << GetVar(pdf,"P2S")->getMax() << endl;
+	  cout << "P2 generation : uniform lower bound = " << GetVar(pdf,"P2S")->getMin() << "\thigher bound = " << GetVar(pdf,"P2S")->getMax() << endl;
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform() * (GetVar(pdf,"P2S")->getMax() - GetVar(pdf,"P2S")->getMin()) + GetVar(pdf,"P2S")->getMin();
 	  fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](q2BinIndx) = myString.str();
@@ -2484,7 +2484,7 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
 
       if (GetVar(pdf,"FsS") != NULL)
 	{
-	  cout << "Fs generation: uniform lower bound = 0\thigher bound = 1" << endl;
+	  cout << "Fs generation : uniform lower bound = 0\thigher bound = 1" << endl;
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform();
 	  fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](q2BinIndx) = myString.str();
@@ -2492,7 +2492,7 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
 
       if (GetVar(pdf,"AsS") != NULL)
 	{
-	  cout << "As generation: uniform lower bound = -1\thigher bound = 1" << endl;
+	  cout << "As generation : uniform lower bound = -1\thigher bound = 1" << endl;
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform() * 2. - 1.;
 	  fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](q2BinIndx) = myString.str();
@@ -2512,7 +2512,7 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
 	  myCoeff << "c1Poly" << i;
 	  if (GetVar(pdf,myString.str().c_str()) != NULL)
 	    {
-	      cout << myString.str().c_str() << " generation: gaussian mean = " << GetVar(pdf,myCoeff.str().c_str())->getVal() << "\tsigma = " << GetVar(pdf,myCoeff.str().c_str())->getError() << endl;
+	      cout << myString.str().c_str() << " generation : gaussian mean = " << GetVar(pdf,myCoeff.str().c_str())->getVal() << "\tsigma = " << GetVar(pdf,myCoeff.str().c_str())->getError() << endl;
 	      myString.clear(); myString.str("");
 	      myString << RooRandom::gaussian() * GetVar(pdf,myCoeff.str().c_str())->getError() + GetVar(pdf,myCoeff.str().c_str())->getVal();
 	      fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx) = myString.str();
@@ -2524,7 +2524,7 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
 	  myCoeff << "c2Poly" << i;
 	  if (GetVar(pdf,myString.str().c_str()) != NULL)
 	    {
-	      cout << myString.str().c_str() << " generation: gaussian mean = " << GetVar(pdf,myCoeff.str().c_str())->getVal() << "\tsigma = " << GetVar(pdf,myCoeff.str().c_str())->getError() << endl;
+	      cout << myString.str().c_str() << " generation : gaussian mean = " << GetVar(pdf,myCoeff.str().c_str())->getVal() << "\tsigma = " << GetVar(pdf,myCoeff.str().c_str())->getError() << endl;
 	      myString.clear(); myString.str("");
 	      myString << RooRandom::gaussian() * GetVar(pdf,myCoeff.str().c_str())->getError() + GetVar(pdf,myCoeff.str().c_str())->getVal();
 	      fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx) = myString.str();
@@ -2536,7 +2536,7 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
 	  myCoeff << "c3Poly" << i;
 	  if (GetVar(pdf,myString.str().c_str()) != NULL)
 	    {
-	      cout << myString.str().c_str() << " generation: gaussian mean = " << GetVar(pdf,myCoeff.str().c_str())->getVal() << "\tsigma = " << GetVar(pdf,myCoeff.str().c_str())->getError() << endl;
+	      cout << myString.str().c_str() << " generation : gaussian mean = " << GetVar(pdf,myCoeff.str().c_str())->getVal() << "\tsigma = " << GetVar(pdf,myCoeff.str().c_str())->getError() << endl;
 	      myString.clear(); myString.str("");
 	      myString << RooRandom::gaussian() * GetVar(pdf,myCoeff.str().c_str())->getError() + GetVar(pdf,myCoeff.str().c_str())->getVal();
 	      fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx) = myString.str();
@@ -2552,7 +2552,7 @@ void GenerateDatasetFromPDF (RooAbsPdf* pdf, unsigned int fileIndx, vector<doubl
   TTree* theTreeOut;
   B0KstMuMuSingleCandTreeContent* NTupleOut;
   unsigned int nEntryToy;
-  RooDataSet* toySample;
+  RooDataSet* subSample;
   RooRealVar* var;
 
   RooMCStudy* MyToy;
@@ -2615,8 +2615,8 @@ void GenerateDatasetFromPDF (RooAbsPdf* pdf, unsigned int fileIndx, vector<doubl
   // ########################
   // # Loop over the events #
   // ########################
-  toySample = (RooDataSet*)MyToy->genData(0);
-  for (unsigned int entry = 0; entry < static_cast<unsigned int>(toySample->sumEntries()); entry++)
+  subSample = (RooDataSet*)MyToy->genData(0);
+  for (unsigned int entry = 0; entry < static_cast<unsigned int>(subSample->sumEntries()); entry++)
     {
       if (q2BinIndx == Utility->GetJPsiBin(q2Bins))
 	{
@@ -2635,19 +2635,19 @@ void GenerateDatasetFromPDF (RooAbsPdf* pdf, unsigned int fileIndx, vector<doubl
 	}
 
       var = NULL;
-      var = (RooRealVar*)(toySample->get(entry)->find("B0MassArb"));
+      var = (RooRealVar*)(subSample->get(entry)->find("B0MassArb"));
       if (var != NULL) NTupleOut->B0MassArb = var->getVal();
 
       var = NULL;
-      var = (RooRealVar*)(toySample->get(entry)->find("CosThetaMuArb"));
+      var = (RooRealVar*)(subSample->get(entry)->find("CosThetaMuArb"));
       if (var != NULL) NTupleOut->CosThetaMuArb = var->getVal();
 
       var = NULL;
-      var = (RooRealVar*)(toySample->get(entry)->find("CosThetaKArb"));
+      var = (RooRealVar*)(subSample->get(entry)->find("CosThetaKArb"));
       if (var != NULL) NTupleOut->CosThetaKArb = var->getVal();
 
       var = NULL;
-      var = (RooRealVar*)(toySample->get(entry)->find("PhiKstMuMuPlaneArb"));
+      var = (RooRealVar*)(subSample->get(entry)->find("PhiKstMuMuPlaneArb"));
       if (var != NULL) NTupleOut->PhiKstMuMuPlaneArb = var->getVal();
       
       NTupleOut->truthMatchSignal->push_back(false);
@@ -2678,11 +2678,11 @@ void GenerateDatasetFromDataset (RooDataSet* dataSet,  unsigned int fileIndx, ve
   TTree* theTreeOut;
   B0KstMuMuSingleCandTreeContent* NTupleOut;
   unsigned int nEntryToy;
-  RooDataSet* toySample;
+  RooDataSet* subSample;
   RooRealVar* var;
 
   double nBins = NBINS / 2.;
-  double espilon = 1e-3;
+  double epsilon = 1e-3;
   unsigned int interpDegree = 1;
   vector<RooMCStudy*>  MyToy;
   vector<RooDataSet*>  myDataSet;
@@ -2714,9 +2714,9 @@ void GenerateDatasetFromDataset (RooDataSet* dataSet,  unsigned int fileIndx, ve
   myString.clear(); myString.str("");
   myString << "(mumuMass*mumuMass) > " << q2Bins->operator[](q2BinIndx) << " && (mumuMass*mumuMass) <= " << q2Bins->operator[](q2BinIndx+1);
   cout << "[ExtractYield::GenerateDatasetFromDataset]\tCut string: " << myString.str() << endl;
-  toySample = (RooDataSet*)dataSet->reduce(myString.str().c_str());
-  cout << "[ExtractYield::GenerateDatasetFromDataset]\tNumber of events: " << toySample->sumEntries() << endl;
-  nEntryToy = static_cast<unsigned int>(toySample->sumEntries() * MULTYIELD);
+  subSample = (RooDataSet*)dataSet->reduce(myString.str().c_str());
+  cout << "[ExtractYield::GenerateDatasetFromDataset]\tNumber of events : " << subSample->sumEntries() << endl;
+  nEntryToy = static_cast<unsigned int>(subSample->sumEntries() * MULTYIELD);
 
   TIterator* it = setVar.createIterator();
   for (int i = 0; i < setVar.getSize(); i++)
@@ -2724,7 +2724,7 @@ void GenerateDatasetFromDataset (RooDataSet* dataSet,  unsigned int fileIndx, ve
       var = (RooRealVar*)it->Next();
       var->setBins(nBins);
 
-      myDataSet.push_back((RooDataSet*)toySample->reduce(*var));
+      myDataSet.push_back((RooDataSet*)subSample->reduce(*var));
       
       myHistoDataset.push_back(myDataSet.back()->binnedClone());
       myHistoPDF.push_back(new RooHistPdf("myHistoPDF","myHistoPDF",*var,*myHistoDataset.back(),interpDegree));
@@ -2741,32 +2741,27 @@ void GenerateDatasetFromDataset (RooDataSet* dataSet,  unsigned int fileIndx, ve
   // ########################
   // # Loop over the events #
   // ########################
-  toySample = (RooDataSet*)MyToy[0]->genData(0);
-  for (unsigned int entry = 0; entry < static_cast<unsigned int>(toySample->sumEntries()); entry++)
+  cout << "[ExtractYield::GenerateDatasetFromDataset]\t@@@ I recognize that this is a dataset type : " << Utility->WhatIsThis(ParameterFILE) << " @@@" << endl;
+  for (unsigned int entry = 0; entry < static_cast<unsigned int>(MyToy[0]->genData(0)->sumEntries()); entry++)
     {
       if (q2BinIndx == Utility->GetJPsiBin(q2Bins))
 	{
 	  NTupleOut->mumuMass->push_back(Utility->JPsiMass);
-	  NTupleOut->mumuMassE->push_back(espilon);
+	  NTupleOut->mumuMassE->push_back(epsilon);
 	}
       else if (q2BinIndx == Utility->GetPsiPBin(q2Bins))
 	{
 	  NTupleOut->mumuMass->push_back(Utility->PsiPMass);
-	  NTupleOut->mumuMassE->push_back(espilon);
+	  NTupleOut->mumuMassE->push_back(epsilon);
 	}
-      else if (q2BinIndx < Utility->GetJPsiBin(q2Bins))
+      else if ((q2BinIndx < Utility->GetJPsiBin(q2Bins)) || (Utility->WhatIsThis(ParameterFILE) == Utility->B0ToPsi2SKst))
 	{
-	  NTupleOut->mumuMass->push_back(sqrt(q2Bins->operator[](q2BinIndx)) + espilon);
+	  NTupleOut->mumuMass->push_back(sqrt(q2Bins->operator[](q2BinIndx)) + epsilon);
 	  NTupleOut->mumuMassE->push_back(0.0);
 	}
-      else if (q2BinIndx > Utility->GetPsiPBin(q2Bins))
+      else if ((q2BinIndx > Utility->GetPsiPBin(q2Bins)) || (Utility->WhatIsThis(ParameterFILE) == Utility->B0ToJPsiKst))
 	{
-	  NTupleOut->mumuMass->push_back(sqrt(q2Bins->operator[](q2BinIndx+1)) - espilon);
-	  NTupleOut->mumuMassE->push_back(0.0);
-	}
-      else
-	{
-	  NTupleOut->mumuMass->push_back((sqrt(q2Bins->operator[](q2BinIndx)) + sqrt(q2Bins->operator[](q2BinIndx+1))) / 2.);
+	  NTupleOut->mumuMass->push_back(sqrt(q2Bins->operator[](q2BinIndx+1)) - epsilon);
 	  NTupleOut->mumuMassE->push_back(0.0);
 	}
       
@@ -2843,7 +2838,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
     {
       myString.clear(); myString.str("");
       myString << "(mumuMass > " << 0.0 << " && mumuMass < " << 4.5 << ")";
-      cout << "[ExtractYield::FitDimuonInvMass]\tCut for dimuon invariant mass: " << myString.str().c_str() << endl;
+      cout << "[ExtractYield::FitDimuonInvMass]\tCut for dimuon invariant mass : " << myString.str().c_str() << endl;
       RooDataSet* dataSetJPsi = (RooDataSet*)dataSet->reduce(myString.str().c_str());
       x->setRange("subRangeJPsi",0.0,4.5);
  
@@ -2870,7 +2865,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // #####################################################
       myString.clear(); myString.str("");
       myString << "(mumuMass > " << 2.4 << " && mumuMass < " << 3.5 << ")";
-      cout << "[ExtractYield::FitDimuonInvMass]\tCut for dimuon invariant mass: " << myString.str().c_str() << endl;
+      cout << "[ExtractYield::FitDimuonInvMass]\tCut for dimuon invariant mass : " << myString.str().c_str() << endl;
       RooDataSet* dataSetJPsi = (RooDataSet*)dataSet->reduce(myString.str().c_str());
       x->setRange("subRangeJPsi",2.4,3.5);
       NBins = 50;
@@ -2989,7 +2984,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // #######################################################
       myString.clear(); myString.str("");
       myString << "(mumuMass > " << 3.3 << " && mumuMass < " << 4.1 << ")";
-      cout << "[ExtractYield::FitDimuonInvMass]\tCut for dimuon invariant mass: " << myString.str().c_str() << endl;
+      cout << "[ExtractYield::FitDimuonInvMass]\tCut for dimuon invariant mass : " << myString.str().c_str() << endl;
       RooDataSet* dataSetPsiP = (RooDataSet*)dataSet->reduce(myString.str().c_str());
       x->setRange("subRangePsiP",3.3,4.1);
       NBins = 40;
@@ -3176,7 +3171,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
 }
 
 
-void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
+void MakeDatasets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 {
   stringstream myString;
 
@@ -3237,7 +3232,7 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
       NTuple->ClearNTuple();
       NTuple->SetBranchAddresses(theTree);
       int nEntries = theTree->GetEntries();
-      cout << "[ExtractYield::MakeDataSets]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
+      cout << "[ExtractYield::MakeDatasets]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
       for (int entry = 0; entry < nEntries; entry++)
 	{
 	  theTree->GetEntry(entry);
@@ -3324,19 +3319,19 @@ void MakeDataSets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 	}
 
 
-      cout << "\n[ExtractYield::MakeDataSets]\t@@@ NTuple with all data @@@" << endl;
+      cout << "\n[ExtractYield::MakeDatasets]\t@@@ NTuple with all data @@@" << endl;
       SingleCandNTuple->Print("v");
 
-      cout << "\n[ExtractYield::MakeDataSets]\t@@@ NTuple with J/psi region @@@" << endl;
+      cout << "\n[ExtractYield::MakeDatasets]\t@@@ NTuple with J/psi region @@@" << endl;
       SingleCandNTuple_JPsi->Print("v");
       
-      cout << "\n[ExtractYield::MakeDataSets]\t@@@ NTuple with psi(2S) region @@@" << endl;
+      cout << "\n[ExtractYield::MakeDatasets]\t@@@ NTuple with psi(2S) region @@@" << endl;
       SingleCandNTuple_PsiP->Print("v");
       
-      cout << "\n[ExtractYield::MakeDataSets]\t@@@ NTuple without J/psi and psi(2S) regions @@@" << endl;
+      cout << "\n[ExtractYield::MakeDatasets]\t@@@ NTuple without J/psi and psi(2S) regions @@@" << endl;
       SingleCandNTuple_RejectPsi->Print("v");
 
-      cout << "\n[ExtractYield::MakeDataSets]\t@@@ NTuple with just J/psi and psi(2S) regions @@@" << endl;
+      cout << "\n[ExtractYield::MakeDatasets]\t@@@ NTuple with just J/psi and psi(2S) regions @@@" << endl;
       SingleCandNTuple_KeepPsi->Print("v");
 
 
@@ -3378,7 +3373,7 @@ unsigned int GetSignalType (unsigned int FitType, vector<double>* q2Bins, int q2
   unsigned int SignalType;
 
 
-  if (q2BinIndx < 0)
+  if ((q2BinIndx < 0) || (q2BinIndx >= static_cast<int>(q2Bins->size())-1))
     {
       cout << "[ExtractYield::GetSignalType]\tIncorrect bin index for signal type determination : " << q2BinIndx << endl;
       exit (EXIT_FAILURE);
@@ -3387,9 +3382,11 @@ unsigned int GetSignalType (unsigned int FitType, vector<double>* q2Bins, int q2
   if      (((FitType >= 01)    && (FitType < 40))    || (((FitType == 96)    || ((FitType >= 81)    && (FitType <= 86)))    && (q2BinIndx != Utility->GetJPsiBin(q2Bins)) && (q2BinIndx != Utility->GetPsiPBin(q2Bins)))) SignalType = 1;
   else if (((FitType >= 41)    && (FitType < 60))    || (((FitType == 96)    || ((FitType >= 81)    && (FitType <= 86)))    && (q2BinIndx == Utility->GetJPsiBin(q2Bins))))                                               SignalType = 3;
   else if (((FitType >= 61)    && (FitType < 80))    || (((FitType == 96)    || ((FitType >= 81)    && (FitType <= 86)))    && (q2BinIndx == Utility->GetPsiPBin(q2Bins))))                                               SignalType = 5;
+
   else if (((FitType >= 01*10) && (FitType < 40*10)) || (((FitType == 96*10) || ((FitType >= 81*10) && (FitType <= 86*10))) && (q2BinIndx != Utility->GetJPsiBin(q2Bins)) && (q2BinIndx != Utility->GetPsiPBin(q2Bins)))) SignalType = 1;
   else if (((FitType >= 41*10) && (FitType < 60*10)) || (((FitType == 96*10) || ((FitType >= 81*10) && (FitType <= 86*10))) && (q2BinIndx == Utility->GetJPsiBin(q2Bins))))                                               SignalType = 3;
   else if (((FitType >= 61*10) && (FitType < 80*10)) || (((FitType == 96*10) || ((FitType >= 81*10) && (FitType <= 86*10))) && (q2BinIndx == Utility->GetPsiPBin(q2Bins))))                                               SignalType = 5;
+
   else
     {
       cout << "[ExtractYield::GetSignalType]\tFit type not valid : " << FitType << endl;
@@ -3872,7 +3869,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       myString.clear(); myString.str("");
       myString << vecParStr->operator[](atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)).c_str();
       SetValueAndErrors(NULL,"",1.0,&myString,&effPsiGoodTag,&effPsiGoodTagErr,&effPsiGoodTagErr);
-      cout << "\n[ExtractYield::IterativeMassFitq2Bins]\t@@@ Integral of S*E over angular variables for normalization channel good-tagged events: " << effPsiGoodTag << " +/- " << effPsiGoodTagErr << " @@@" << endl;
+      cout << "\n[ExtractYield::IterativeMassFitq2Bins]\t@@@ Integral of S*E over angular variables for normalization channel good-tagged events : " << effPsiGoodTag << " +/- " << effPsiGoodTagErr << " @@@" << endl;
 
 
       // #####################
@@ -3882,7 +3879,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       myString.clear(); myString.str("");
       myString << vecParStr->operator[](atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)).c_str();
       SetValueAndErrors(NULL,"",1.0,&myString,&effPsiMisTag,&effPsiMisTagErr,&effPsiMisTagErr);
-      cout << "\n[ExtractYield::IterativeMassFitq2Bins]\t@@@ Integral of S*E over angular variables for normalization channel mis-tagged events: " << effPsiMisTag << " +/- " << effPsiMisTagErr << " @@@" << endl;
+      cout << "\n[ExtractYield::IterativeMassFitq2Bins]\t@@@ Integral of S*E over angular variables for normalization channel mis-tagged events : " << effPsiMisTag << " +/- " << effPsiMisTagErr << " @@@" << endl;
 
 
       vecParStr->clear();
@@ -3928,7 +3925,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       myString << "(mumuMass*mumuMass) > " << q2Bins->operator[](i) << " && (mumuMass*mumuMass) <= " << q2Bins->operator[](i+1);
       cout << "\n[ExtractYield::IterativeMassFitq2Bins]\tCut string: " << myString.str() << endl;
       dataSet_q2Bins[i] = (RooDataSet*)dataSet->reduce(myString.str().c_str());
-      cout << "[ExtractYield::IterativeMassFitq2Bins]\tNumber of events: " << dataSet_q2Bins[i]->sumEntries() << endl;
+      cout << "[ExtractYield::IterativeMassFitq2Bins]\tNumber of events : " << dataSet_q2Bins[i]->sumEntries() << endl;
 
       unsigned int countMisTag  = 0;
       unsigned int countGoodTag = 0;
@@ -3940,7 +3937,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 	      else                                                                  countGoodTag++;
 	    }
 	}
-      cout << "[ExtractYield::IterativeMassFitq2Bins]\tDynamic mis-tag fraction: " << static_cast<double>(countMisTag) / static_cast<double>(countMisTag + countGoodTag) << " = (" << countMisTag << "/(" << countMisTag << "+" << countGoodTag << "))" << endl;
+      cout << "[ExtractYield::IterativeMassFitq2Bins]\tDynamic mis-tag fraction : " << static_cast<double>(countMisTag) / static_cast<double>(countMisTag + countGoodTag) << " = (" << countMisTag << "/(" << countMisTag << "+" << countGoodTag << "))" << endl;
 
       myString.clear(); myString.str("");
       myString << "TotalPDFq2Bin_" << i;
@@ -4062,7 +4059,10 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
 		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
 		    << -2.0 << "   " << -2.0 << "   "
-		    << -2.0 << "   " << -2.0 << "   " << -2.0;
+		    << -2.0 << "   " << -2.0 << "   "
+		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
+		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
+		    << -2.0;
       fileFitSystematics << myString.str() << endl;
     }
 }
@@ -5042,7 +5042,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	  myString.clear(); myString.str("");
 	  myString << "B0MassArb < " << GetVar(*TotalPDF,"meanS")->getVal() - atof(Utility->GetGenericParam("NSigmaB0").c_str())*Utility->GetB0Width();
 	  myString << " || B0MassArb > " << GetVar(*TotalPDF,"meanS")->getVal() + atof(Utility->GetGenericParam("NSigmaB0").c_str())*Utility->GetB0Width();
-      	  cout << "[ExtractYield::MakeMass2AnglesFit]\tCut for B0 sidebands: " << myString.str().c_str() << endl;
+      	  cout << "[ExtractYield::MakeMass2AnglesFit]\tCut for B0 sidebands : " << myString.str().c_str() << endl;
       	  sideBands = (RooDataSet*)dataSet->reduce(myString.str().c_str());
 
 
@@ -5999,7 +5999,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       myString.clear(); myString.str("");
       myString << vecParStr->operator[](atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)).c_str();
       SetValueAndErrors(NULL,"",1.0,&myString,&effPsiGoodTag,&effPsiGoodTagErr,&effPsiGoodTagErr);
-      cout << "\n[ExtractYield::IterativeMass2AnglesFitq2Bins]\t@@@ Integral of S*E over angular variables for normalization channel good-tagged events: " << effPsiGoodTag << " +/- " << effPsiGoodTagErr << " @@@" << endl;
+      cout << "\n[ExtractYield::IterativeMass2AnglesFitq2Bins]\t@@@ Integral of S*E over angular variables for normalization channel good-tagged events : " << effPsiGoodTag << " +/- " << effPsiGoodTagErr << " @@@" << endl;
 
 
       // #####################
@@ -6009,7 +6009,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       myString.clear(); myString.str("");
       myString << vecParStr->operator[](atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)).c_str();
       SetValueAndErrors(NULL,"",1.0,&myString,&effPsiMisTag,&effPsiMisTagErr,&effPsiMisTagErr);
-      cout << "\n[ExtractYield::IterativeMass2AnglesFitq2Bins]\t@@@ Integral of S*E over angular variables for normalization channel mis-tagged events: " << effPsiMisTag << " +/- " << effPsiMisTagErr << " @@@" << endl;
+      cout << "\n[ExtractYield::IterativeMass2AnglesFitq2Bins]\t@@@ Integral of S*E over angular variables for normalization channel mis-tagged events : " << effPsiMisTag << " +/- " << effPsiMisTagErr << " @@@" << endl;
 
 
       vecParStr->clear();
@@ -6058,7 +6058,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       myString << "(mumuMass*mumuMass) > " << q2Bins->operator[](i) << " && (mumuMass*mumuMass) <= " << q2Bins->operator[](i+1);
       cout << "\n[ExtractYield::IterativeMass2AnglesFitq2Bins]\tCut string: " << myString.str() << endl;
       dataSet_q2Bins[i] = (RooDataSet*)dataSet->reduce(myString.str().c_str());
-      cout << "[ExtractYield::IterativeMass2AnglesFitq2Bins]\tNumber of events: " << dataSet_q2Bins[i]->sumEntries() << endl;
+      cout << "[ExtractYield::IterativeMass2AnglesFitq2Bins]\tNumber of events : " << dataSet_q2Bins[i]->sumEntries() << endl;
 
       unsigned int countMisTag  = 0;
       unsigned int countGoodTag = 0;
@@ -6070,7 +6070,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 	      else                                                                  countGoodTag++;
 	    }
 	}
-      cout << "[ExtractYield::IterativeMass2AnglesFitq2Bins]\tDynamic mis-tag fraction: " << static_cast<double>(countMisTag) / static_cast<double>(countMisTag + countGoodTag) << " = (" << countMisTag << "/(" << countMisTag << "+" << countGoodTag << "))" << endl;
+      cout << "[ExtractYield::IterativeMass2AnglesFitq2Bins]\tDynamic mis-tag fraction : " << static_cast<double>(countMisTag) / static_cast<double>(countMisTag + countGoodTag) << " = (" << countMisTag << "/(" << countMisTag << "+" << countGoodTag << "))" << endl;
 
       myString.clear(); myString.str("");
       myString << "TotalPDFq2Bin_" << i;
@@ -6874,6 +6874,9 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
           else                       errorOrg_Fl = GetVar(TotalPDF,varName.c_str())->getErrorHi();
 
 
+	  tmpVar1.setVal(pdfOrg_Fl);
+
+
 	  varName = "AfbS";
 	  pdf_Afb = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
 	  Utility->Transformer(varName,fit_Afb,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,varName.c_str()));
@@ -7206,8 +7209,8 @@ int main(int argc, char** argv)
 	  // # Read other parameters : this also allow to understand if the parameter file is well written #
  	  // ###############################################################################################
 	  LUMI = Utility->ReadLumi(ParameterFILE);
-	  if (Utility->IsThisData(ParameterFILE) == true) cout << "\n[ExtractYield::main]\t@@@ I recognize that this is a DATA file @@@" << endl;
-	  else                                            cout << "\n[ExtractYield::main]\t@@@ I recognize that this is a Monte Carlo file @@@" << endl;
+	  if (Utility->WhatIsThis(ParameterFILE) == 0) cout << "\n[ExtractYield::main]\t@@@ I recognize that this is a DATA file @@@" << endl;
+	  else                                         cout << "\n[ExtractYield::main]\t@@@ I recognize that this is a Monte Carlo file @@@" << endl;
 
 
 	  // ###################
@@ -7230,7 +7233,7 @@ int main(int argc, char** argv)
 	      // # Make datasets #
 	      // #################
 	      cout << "\n[ExtractYield::main]\t@@@ Making datasets @@@" << endl;
-	      MakeDataSets(NTuple,FitType);
+	      MakeDatasets(NTuple,FitType);
 
 
 	      // ##############################
@@ -7482,7 +7485,7 @@ int main(int argc, char** argv)
 	      // # Make datasets #
 	      // #################
 	      cout << "\n[ExtractYield::main]\t@@@ Making datasets @@@" << endl;
-	      MakeDataSets(NTuple,FitType);
+	      MakeDatasets(NTuple,FitType);
 
 
 	      // ################################################
@@ -7522,7 +7525,7 @@ int main(int argc, char** argv)
 	      // # Make datasets #
 	      // #################
 	      cout << "\n[ExtractYield::main]\t@@@ Making datasets @@@" << endl;
-	      MakeDataSets(NTuple,FitType);
+	      MakeDatasets(NTuple,FitType);
 
 
 	      if (FitType == 81) // Branching fraction
@@ -7554,7 +7557,7 @@ int main(int argc, char** argv)
 	      // # Make datasets #
 	      // #################
 	      cout << "\n[ExtractYield::main]\t@@@ Making datasets @@@" << endl;
-	      MakeDataSets(NTuple,FitType);
+	      MakeDatasets(NTuple,FitType);
 	      
 	      
 	      // #################################
@@ -7568,7 +7571,7 @@ int main(int argc, char** argv)
 	      // # Make datasets #
 	      // #################
 	      cout << "\n[ExtractYield::main]\t@@@ Making datasets @@@" << endl;
-	      MakeDataSets(NTuple,FitType);
+	      MakeDatasets(NTuple,FitType);
 
 
 	      if (FitType == 96) // Fl-Afb-fit

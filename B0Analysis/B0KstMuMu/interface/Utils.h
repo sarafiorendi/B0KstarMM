@@ -226,7 +226,7 @@ class Utils
   void AddConstraint3D              (TH3D** histo, double abscissaErr, double Tval, double Terr, double TerrRescale, unsigned int ID, std::vector<int> toBeAdded[]);
   void AddConstraintThetaKThetaLPhi (int SignalType);
 
-  bool IsThisData (std::string fileName);
+  int WhatIsThis (std::string fileName);
 
   void SaveFitValues (std::string fileName, std::vector<std::string>* vecParStr, int indx, std::string str = "");
 

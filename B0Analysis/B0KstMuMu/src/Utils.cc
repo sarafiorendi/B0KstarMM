@@ -3346,9 +3346,9 @@ void Utils::AddConstraintThetaKThetaLPhi (int SignalType)
   // AddConstraint3D(...);
 }
 
-bool Utils::IsThisData (std::string fileName)
+int Utils::WhatIsThis (std::string fileName)
 {
-  bool val = true;
+  int val;
   std::vector<std::string> ParVector;
   ReadParameters* ParameterFile = new ReadParameters(fileName.c_str());
 
@@ -3357,7 +3357,7 @@ bool Utils::IsThisData (std::string fileName)
   // # Read data type (Data or MC) #
   // ###############################
   ParameterFile->ReadFromFile(ParFileBlockN("dtype"),&ParVector);
-  for (unsigned int i = 0; i < ParVector.size(); i++) val = val * atoi(ParVector[i].c_str());
+  for (unsigned int i = 0; i < ParVector.size(); i++) val = atoi(ParVector[i].c_str());
 
 
   ParVector.clear();
