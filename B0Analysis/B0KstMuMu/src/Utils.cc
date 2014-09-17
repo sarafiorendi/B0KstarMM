@@ -3348,7 +3348,7 @@ void Utils::AddConstraintThetaKThetaLPhi (int SignalType)
 
 int Utils::WhatIsThis (std::string fileName)
 {
-  int val;
+  int val = 0;
   std::vector<std::string> ParVector;
   ReadParameters* ParameterFile = new ReadParameters(fileName.c_str());
 
