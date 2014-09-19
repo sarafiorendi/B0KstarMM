@@ -6868,8 +6868,8 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 	  if (fit_Fl > pdf_Fl) error_Fl = varValELo;
 	  else                 error_Fl = varValEHi;
 	  fitOrg_Fl = GetVar(TotalPDF,varName.c_str())->getVal();
-          tmpVar1.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str()));
-          Utility->AntiTransformer("FlS",pdfOrg_Fl,varValELo,varValEHi,&tmpVar1);
+          tmpVar1.setVal(pdf_Fl);
+          Utility->AntiTransformer(varName.c_str(),pdfOrg_Fl,varValELo,varValEHi,&tmpVar1);
           if (fitOrg_Fl > pdfOrg_Fl) errorOrg_Fl = GetVar(TotalPDF,varName.c_str())->getErrorLo();
           else                       errorOrg_Fl = GetVar(TotalPDF,varName.c_str())->getErrorHi();
 
@@ -6883,8 +6883,8 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 	  if (fit_Afb > pdf_Afb) error_Afb = varValELo;
 	  else                   error_Afb = varValEHi;
 	  fitOrg_Afb = GetVar(TotalPDF,varName.c_str())->getVal();
-          tmpVar2.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str()));
-          Utility->AntiTransformer("AfbS",pdfOrg_Afb,varValELo,varValEHi,&tmpVar1,&tmpVar2);
+          tmpVar2.setVal(pdf_Afb);
+          Utility->AntiTransformer(varName.c_str(),pdfOrg_Afb,varValELo,varValEHi,&tmpVar1,&tmpVar2);
           if (fitOrg_Afb > pdfOrg_Afb) errorOrg_Afb = GetVar(TotalPDF,varName.c_str())->getErrorLo();
           else                         errorOrg_Afb = GetVar(TotalPDF,varName.c_str())->getErrorHi();
 
