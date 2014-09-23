@@ -516,8 +516,10 @@ void TruthMatching (string fileName, bool truthMatch)
   TTree* B0KstMuMuNTuple = (TTree*)_file0->Get("B0KstMuMu/B0KstMuMuNTuple");
 
 
-  double minX = 3.8;
-  double maxX = 6.8;
+  double minX    = 4.55;
+  double maxX    = 6.10;
+  double intMinX = 5.00;
+  double intMaxX = 5.56;
   unsigned int nBins;
   if (truthMatch == true) nBins = 300;
   else                    nBins = 100;
@@ -548,10 +550,10 @@ void TruthMatching (string fileName, bool truthMatch)
       f0->SetParName(4,"G-Ampli2");
 
       f0->SetParameter(0,5.28);
-      f0->SetParameter(1,0.03);
-      f0->SetParameter(2,0.06);
-      f0->SetParameter(3,20000.0);
-      f0->SetParameter(4,10000.0);
+      f0->SetParameter(1,0.06);
+      f0->SetParameter(2,0.03);
+      f0->SetParameter(3,14000.0);
+      f0->SetParameter(4,70000.0);
     }
   else
     {
@@ -559,38 +561,42 @@ void TruthMatching (string fileName, bool truthMatch)
       B0KstMuMuNTuple->Draw("bBarMass>>hbar","genSignal == 2 && truthMatchSignal == 0 && genSignHasFSR == 0");
       hb->Add(hbar);
 
-      f0 = new TF1("f0","[2]*TMath::Gaus(x,[0],[1]) + [4]*TMath::Gaus(x,[0],[3]) + ([5]+[6]*(x-[7])*(x-[7]))",minX,maxX);
+      f0 = new TF1("f0","[3]*TMath::Gaus(x,[0],[1]) + [4]*TMath::Gaus(x,[0],[2]) + ([5]+[6]*(x-[7])*(x-[7]))",3.8,6.8);
 
       f0->SetParName(0,"G-Mean1");
       f0->SetParName(1,"G-Sigma1");
-      f0->SetParName(2,"G-Ampli1");
+      f0->SetParName(2,"G-Sigma2");
 
-      f0->SetParName(3,"G-Sigma2");
+      f0->SetParName(3,"G-Ampli1");
       f0->SetParName(4,"G-Ampli2");
 
       f0->SetParName(5,"P-Offset");
       f0->SetParName(6,"P-Ampli");
       f0->SetParName(7,"P-Shift");
 
-      f0->SetParameter(0,5.28);
-      f0->SetParameter(1,0.1);
-      f0->SetParameter(2,30.0);
+      // #############################################
+      // # Measured from fit with truthMatch == true #
+      // #############################################
+      f0->FixParameter(0,5.28);
+      f0->FixParameter(1,0.05737);
+      f0->FixParameter(2,0.02790);
 
-      f0->SetParameter(3,0.03);
-      f0->SetParameter(4,50.0);
+      f0->SetParameter(3,55.0);
+      f0->SetParameter(4,35.0);
 
-      f0->SetParameter(5,10.0);
-      f0->SetParameter(6,-4.0);
+      f0->SetParameter(5, 20.0);
+      f0->SetParameter(6,-20.0);
       f0->SetParameter(7,5.28);
     }
 
 
-  hb->Fit("f0","0");
+  hb->Fit("f0","VMR0");
   hb->Draw();
   hb->GetFunction("f0")->SetLineColor(kBlue);
   hb->GetFunction("f0")->Draw("same");
 
-  cout << "Integral of the full fit function: " << f0->Integral(minX,maxX)/((maxX - minX) / static_cast<double>(nBins)) << "\tEntries: " << hb->GetEntries() << endl;
+  cout << "\nIntegrals low bound: " << intMinX << "\thigh bound: " << intMaxX << endl;
+  cout << "Integral of the full fit function: " << f0->Integral(intMinX,intMaxX)/((maxX - minX) / static_cast<double>(nBins)) << "\tEntries: " << hb->GetEntries() << endl;
 
 
   if (truthMatch == true)
@@ -615,7 +621,7 @@ void TruthMatching (string fileName, bool truthMatch)
     }
 
 
-  cout << "Integral of the signal: " << f1->Integral(minX,maxX)/((maxX - minX) / static_cast<double>(nBins)) << endl;
+  cout << "Integral of the signal: " << f1->Integral(intMinX,intMaxX)/((maxX - minX) / static_cast<double>(nBins)) << endl;
 }
 
 
