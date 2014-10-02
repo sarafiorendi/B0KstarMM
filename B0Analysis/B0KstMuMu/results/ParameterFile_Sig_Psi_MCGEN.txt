@@ -2648,11 +2648,10 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0
 
 # Control fit workflow:
-# trueMistag      = keep only true mis-tagged ev.
-# trueGoodtag     = keep only true good-tagged ev.
-# trueAll&FitFrac = keep all true ev. and fit just for mistag fraction
-# trueAll&NoFFrac = keep all true ev. and do not fit for mistag fraction
-# allEvts         = keep all events
+# trueMistag  = keep only true mis-tagged events
+# trueGoodtag = keep only true good-tagged events
+# trueAll     = keep all true events
+# allEvts     = keep all events
 allEvts
 
 # Control mistag fraction workflow [0 = fixed; 1 = free with constraint; 2 = free; 3 = dynamic]

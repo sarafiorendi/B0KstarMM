@@ -337,7 +337,7 @@ void DrawString                 (double Lumi, RooPlot* myFrame = NULL);
 bool IsInConstraints            (RooArgSet* vecConstr, string varName);
 void AddGaussConstraint         (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName);
 void BuildMassConstraints       (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName);
-void BuildAngularConstraints    (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName);
+void BuildAngularConstraints    (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName, vector<vector<string>*>* fitParam = NULL, vector<double>* q2Bins = NULL);
 
 RooAbsPdf* MakeAngWithEffPDF    (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, vector<double>* q2Bins, int q2BinIndx);
 void DeleteFit                  (RooAbsPdf* pdf, string DeleteType);
@@ -715,14 +715,17 @@ void AddGaussConstraint (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName)
   myString.clear(); myString.str("");
   myString << varName;
 
-  RooRealVar* varConstr = GetVar(pdf,myString.str().c_str());
-  double mean  = GetVar(pdf,myString.str().c_str())->getVal();
-  double sigma = (varConstr->getErrorHi() - varConstr->getErrorLo()) / 2.;
-
-  myString << "_constr";
-
-  RooGaussian* newConstr = new RooGaussian(myString.str().c_str(), myString.str().c_str(), *varConstr, RooConst(mean), RooConst(sigma));
-  vecConstr->add(*newConstr);
+  if (GetVar(pdf,myString.str().c_str())->isConstant() == false)
+    {
+      RooRealVar* varConstr = GetVar(pdf,myString.str().c_str());
+      double mean  = GetVar(pdf,myString.str().c_str())->getVal();
+      double sigma = (varConstr->getErrorHi() - varConstr->getErrorLo()) / 2.;
+      
+      myString << "_constr";
+      
+      RooGaussian* newConstr = new RooGaussian(myString.str().c_str(), myString.str().c_str(), *varConstr, RooConst(mean), RooConst(sigma));
+      vecConstr->add(*newConstr);
+    }
 }
 
 
@@ -734,60 +737,117 @@ void BuildMassConstraints (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName)
 // # peak:   apply constraint to peaking bkg                    #
 // ##############################################################
 {
-  if ((GetVar(pdf,"sigmaS1")        != NULL) && ((varName == "All") || (varName == "sign"))) AddGaussConstraint(vecConstr, pdf, "sigmaS1");
-  if ((GetVar(pdf,"sigmaS2")        != NULL) && ((varName == "All") || (varName == "sign"))) AddGaussConstraint(vecConstr, pdf, "sigmaS2");
-  if ((GetVar(pdf,"fracMassS")      != NULL) && ((varName == "All") || (varName == "sign"))) AddGaussConstraint(vecConstr, pdf, "fracMassS");
+  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true)
+    {
+      if ((GetVar(pdf,"sigmaS1")        != NULL) && ((varName == "All") || (varName == "sign"))) AddGaussConstraint(vecConstr, pdf, "sigmaS1");
+      if ((GetVar(pdf,"sigmaS2")        != NULL) && ((varName == "All") || (varName == "sign"))) AddGaussConstraint(vecConstr, pdf, "sigmaS2");
+      if ((GetVar(pdf,"fracMassS")      != NULL) && ((varName == "All") || (varName == "sign"))) AddGaussConstraint(vecConstr, pdf, "fracMassS");
   
-  if ((GetVar(pdf,"sigmaMisTag1")   != NULL) && ((varName == "All") || (varName == "mistag"))) AddGaussConstraint(vecConstr, pdf, "sigmaMisTag1");
-  if ((GetVar(pdf,"sigmaMisTag2")   != NULL) && ((varName == "All") || (varName == "mistag"))) AddGaussConstraint(vecConstr, pdf, "sigmaMisTag2");
-  if ((GetVar(pdf,"fracMisTag")     != NULL) && ((varName == "All") || (varName == "mistag"))) AddGaussConstraint(vecConstr, pdf, "fracMisTag");
+      if ((GetVar(pdf,"sigmaMisTag1")   != NULL) && ((varName == "All") || (varName == "mistag"))) AddGaussConstraint(vecConstr, pdf, "sigmaMisTag1");
+      if ((GetVar(pdf,"sigmaMisTag2")   != NULL) && ((varName == "All") || (varName == "mistag"))) AddGaussConstraint(vecConstr, pdf, "sigmaMisTag2");
+      if ((GetVar(pdf,"fracMisTag")     != NULL) && ((varName == "All") || (varName == "mistag"))) AddGaussConstraint(vecConstr, pdf, "fracMisTag");
 
-  if ((GetVar(pdf,"meanR1")         != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "meanR1");
-  if ((GetVar(pdf,"sigmaR1")        != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "sigmaR1");
-  if ((GetVar(pdf,"meanR2")         != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "meanR2");
-  if ((GetVar(pdf,"sigmaR2")        != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "sigmaR2");
-  if ((GetVar(pdf,"fracMassBRPeak") != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "fracMassBRPeak");
+      if ((GetVar(pdf,"meanR1")         != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "meanR1");
+      if ((GetVar(pdf,"sigmaR1")        != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "sigmaR1");
+      if ((GetVar(pdf,"meanR2")         != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "meanR2");
+      if ((GetVar(pdf,"sigmaR2")        != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "sigmaR2");
+      if ((GetVar(pdf,"fracMassBRPeak") != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "fracMassBRPeak");
 
-  if ((GetVar(pdf,"meanL1")         != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "meanL1");
-  if ((GetVar(pdf,"sigmaL1")        != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "sigmaL1");
-  if ((GetVar(pdf,"meanL2")         != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "meanL2");
-  if ((GetVar(pdf,"sigmaL2")        != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "sigmaL2");
-  if ((GetVar(pdf,"fracMassBLPeak") != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "fracMassBLPeak");
+      if ((GetVar(pdf,"meanL1")         != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "meanL1");
+      if ((GetVar(pdf,"sigmaL1")        != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "sigmaL1");
+      if ((GetVar(pdf,"meanL2")         != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "meanL2");
+      if ((GetVar(pdf,"sigmaL2")        != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "sigmaL2");
+      if ((GetVar(pdf,"fracMassBLPeak") != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "fracMassBLPeak");
 
-  if ((GetVar(pdf,"fracMassBPeak")  != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "fracMassBPeak");
-  
-  if ((atoi(Utility->GetGenericParam("CtrlMisTagWrkFlow").c_str()) == 1) && (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") != 0))
-    if ((GetVar(pdf,"nMisTagFrac") != NULL) && ((varName == "All") || (varName == "mistag"))) AddGaussConstraint(vecConstr, pdf, "nMisTagFrac");
-  if ((GetVar(pdf,"nBkgPeak") != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "nBkgPeak");
+      if ((GetVar(pdf,"fracMassBPeak")  != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "fracMassBPeak");
+
+      if (((strcmp(CTRLfitWRKflow.c_str(),"trueAll") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"allEvts") == 0)) && (atoi(Utility->GetGenericParam("CtrlMisTagWrkFlow").c_str()) == 1))
+	if ((GetVar(pdf,"nMisTagFrac") != NULL) && ((varName == "All") || (varName == "mistag"))) AddGaussConstraint(vecConstr, pdf, "nMisTagFrac");
+
+      if ((GetVar(pdf,"nBkgPeak") != NULL) && ((varName == "All") || (varName == "peak"))) AddGaussConstraint(vecConstr, pdf, "nBkgPeak");
+    }
 }
 
 
-void BuildAngularConstraints (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName)
+void BuildAngularConstraints (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName, vector<vector<string>*>* fitParam, vector<double>* q2Bins)
 // #######################################################
+// # sign: apply constraint to angular S-wave signal     #
 // # comb: apply constraint to angular combinatorial bkg #
 // # peak: apply constraint to angular peaking bkg       #
 // #######################################################
 {
   stringstream myString;
-  string polyType;
 
 
-  if (varName == "peak") polyType = "p";
-  else                   polyType = "c";
-
-  for (unsigned int i = 0; i < NCOEFFPOLYBKG; i++)
+  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true)
     {
-      myString.clear(); myString.str("");
-      myString << polyType.c_str() << "1Poly" << i;
-      if (GetVar(pdf,myString.str().c_str()) != NULL) AddGaussConstraint(vecConstr, pdf, myString.str().c_str());
+      if (((varName == "peak") && ((GetVar(pdf,"nSig") != NULL) || (GetVar(pdf,"nMisTagFrac") != NULL))) || (varName == "comb"))
+	{
+	  string polyType;
+	  if (varName == "peak") polyType = "p";
+	  else                   polyType = "c";
 
-      myString.clear(); myString.str("");
-      myString << polyType.c_str() << "2Poly" << i;
-      if (GetVar(pdf,myString.str().c_str()) != NULL) AddGaussConstraint(vecConstr, pdf, myString.str().c_str());
 
-      myString.clear(); myString.str("");
-      myString << polyType.c_str() << "3Poly" << i;
-      if (GetVar(pdf,myString.str().c_str()) != NULL) AddGaussConstraint(vecConstr, pdf, myString.str().c_str());
+	  for (unsigned int i = 0; i < NCOEFFPOLYBKG; i++)
+	    {
+	      myString.clear(); myString.str("");
+	      myString << polyType.c_str() << "1Poly" << i;
+	      if (GetVar(pdf,myString.str().c_str()) != NULL) AddGaussConstraint(vecConstr, pdf, myString.str().c_str());
+
+	      myString.clear(); myString.str("");
+	      myString << polyType.c_str() << "2Poly" << i;
+	      if (GetVar(pdf,myString.str().c_str()) != NULL) AddGaussConstraint(vecConstr, pdf, myString.str().c_str());
+
+	      myString.clear(); myString.str("");
+	      myString << polyType.c_str() << "3Poly" << i;
+	      if (GetVar(pdf,myString.str().c_str()) != NULL) AddGaussConstraint(vecConstr, pdf, myString.str().c_str());
+	    }
+	}
+      else if (varName == "sign")
+	{
+	  double value, errLo, errHi;
+	  RooRealVar tmpVar1("tmpVar1","tmpVar1",0.0);
+	  RooRealVar tmpVar2("tmpVar2","tmpVar2",0.0);
+	  RooRealVar tmpVar3("tmpVar3","tmpVar3",0.0);
+
+
+	  value = atof(fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[]((atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins))).c_str());
+	  tmpVar3.setVal(value);
+
+	  value = atof(fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[]((atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins))).c_str());
+	  tmpVar2.setVal(value);
+
+	  value = atof(fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[]((atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins))).c_str());
+	  tmpVar1.setVal(value);
+
+
+	  Utility->AntiTransformer("FlS",value,errLo,errHi,&tmpVar1);
+
+
+	  tmpVar1.setVal(value);
+
+	  Utility->AntiTransformer("FsS",value,errLo,errHi,&tmpVar1,&tmpVar2);
+	  myString.clear(); myString.str("");
+	  myString << value << "   " << errLo << "   " << errHi;
+	  SetValueAndErrors(pdf,"FsS",1.0,&myString,&value,&errLo,&errHi);
+
+	  if (GetVar(pdf,"FsS") != NULL) GetVar(pdf,"FsS")->setConstant(true);
+	  
+	  
+	  tmpVar2.setVal(value);
+
+	  Utility->AntiTransformer("AsS",value,errLo,errHi,&tmpVar1,&tmpVar2,&tmpVar3);
+	  myString.clear(); myString.str("");
+	  myString << value << "   " << errLo << "   " << errHi;
+	  SetValueAndErrors(pdf,"AsS",1.0,&myString,&value,&errLo,&errHi);
+	  
+	  if (GetVar(pdf,"AsS") != NULL) GetVar(pdf,"AsS")->setConstant(true);
+	}
+      else
+	{
+	  cout << "[ExtractYield::BuildAngularConstraints]\tWrong parameter: " << varName << endl;
+	  exit (EXIT_FAILURE);
+	}
     }
 }
 
@@ -2587,15 +2647,9 @@ void GenerateDatasetFromPDF (RooAbsPdf* pdf, unsigned int fileIndx, vector<doubl
   ClearVars(vecConstr);
   BuildMassConstraints(vecConstr,pdf,"sign");
   BuildMassConstraints(vecConstr,pdf,"peak");
-  if ((strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"allEvts") == 0)) BuildMassConstraints(vecConstr,pdf,"mistag");
+  BuildMassConstraints(vecConstr,pdf,"mistag");
   BuildAngularConstraints(vecConstr,pdf,"peak");
-  if ((q2BinIndx != Utility->GetJPsiBin(q2Bins)) && (q2BinIndx != Utility->GetPsiPBin(q2Bins)) &&
-      (GetVar(pdf,"FsS") != NULL) && (GetVar(pdf,"AsS") != NULL) &&
-      (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true))
-    {
-      GetVar(pdf,"FsS")->setConstant(true);
-      GetVar(pdf,"AsS")->setConstant(true);
-    }
+  if ((q2BinIndx != Utility->GetJPsiBin(q2Bins)) && (q2BinIndx != Utility->GetPsiPBin(q2Bins))) BuildAngularConstraints(vecConstr,pdf,"sign",fitParam,q2Bins);
 
 
   // ###################################
@@ -3265,10 +3319,10 @@ void MakeDatasets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
               if (((FitType == 36) && (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepJpsi",false) == true)) ||
                   ((FitType == 56) || (FitType == 76)) ||
 
-                  ((((strcmp(CTRLfitWRKflow.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
-                    ((strcmp(CTRLfitWRKflow.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
-                    (((strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
-                    (strcmp(CTRLfitWRKflow.c_str(),"allEvts")           == 0)) &&
+                  ((((strcmp(CTRLfitWRKflow.c_str(),"trueGoodtag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+                    ((strcmp(CTRLfitWRKflow.c_str(),"trueMistag")  == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
+                    ((strcmp(CTRLfitWRKflow.c_str(),"trueAll")     == 0) && (NTuple->truthMatchSignal->at(0) == true)) ||
+                    (strcmp(CTRLfitWRKflow.c_str(),"allEvts")      == 0)) &&
                    (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepJpsi",false) == true)))
 
                 SingleCandNTuple_JPsi->add(Vars);
@@ -3276,10 +3330,10 @@ void MakeDatasets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
               if (((FitType == 36) && (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepPsiP",false) == true)) ||
                   ((FitType == 56) || (FitType == 76)) ||
 
-                  ((((strcmp(CTRLfitWRKflow.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
-                    ((strcmp(CTRLfitWRKflow.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
-                    (((strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
-                    (strcmp(CTRLfitWRKflow.c_str(),"allEvts")           == 0)) &&
+                  ((((strcmp(CTRLfitWRKflow.c_str(),"trueGoodtag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+                    ((strcmp(CTRLfitWRKflow.c_str(),"trueMistag")  == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
+                    ((strcmp(CTRLfitWRKflow.c_str(),"trueAll")     == 0) && (NTuple->truthMatchSignal->at(0) == true)) ||
+                    (strcmp(CTRLfitWRKflow.c_str(),"allEvts")      == 0)) &&
                    (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepPsiP",false) == true)))
 		
 		SingleCandNTuple_PsiP->add(Vars);
@@ -3290,10 +3344,10 @@ void MakeDatasets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 	      // #############################################################################
 	      if (((!(FitType == 36) && !(FitType == 56) && !(FitType == 76)) &&
 		   
-		   (((strcmp(CTRLfitWRKflow.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
-		    ((strcmp(CTRLfitWRKflow.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
-		    (((strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
-		    (strcmp(CTRLfitWRKflow.c_str(),"allEvts")           == 0)) &&
+		   (((strcmp(CTRLfitWRKflow.c_str(),"trueGoodtag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+		    ((strcmp(CTRLfitWRKflow.c_str(),"trueMistag")  == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
+		    ((strcmp(CTRLfitWRKflow.c_str(),"trueAll")     == 0) && (NTuple->truthMatchSignal->at(0) == true)) ||
+		    (strcmp(CTRLfitWRKflow.c_str(),"allEvts")      == 0)) &&
 		   (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"rejectPsi",true) == true)) ||
 		  
 		  ((FitType == 36) || (FitType == 56) || (FitType == 76)))
@@ -3306,10 +3360,10 @@ void MakeDatasets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
 	      // ###########################################################################
 	      if (((!(FitType == 36) && !(FitType == 56) && !(FitType == 76)) &&
 		   
-		   (((strcmp(CTRLfitWRKflow.c_str(),"trueGoodtag")      == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
-		    ((strcmp(CTRLfitWRKflow.c_str(),"trueMistag")       == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
-		    (((strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0)) && (NTuple->truthMatchSignal->at(0) == true)) ||
-		    (strcmp(CTRLfitWRKflow.c_str(),"allEvts")           == 0)) &&
+		   (((strcmp(CTRLfitWRKflow.c_str(),"trueGoodtag") == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == true)) ||
+		    ((strcmp(CTRLfitWRKflow.c_str(),"trueMistag")  == 0) && (NTuple->truthMatchSignal->at(0) == true) && (NTuple->rightFlavorTag == false)) ||
+		    ((strcmp(CTRLfitWRKflow.c_str(),"trueAll")     == 0) && (NTuple->truthMatchSignal->at(0) == true)) ||
+		    (strcmp(CTRLfitWRKflow.c_str(),"allEvts")      == 0)) &&
 		   (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepPsi",false) == true)) ||
 		  
 		  ((FitType == 36) || (FitType == 56) || (FitType == 76)))
@@ -3956,7 +4010,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       ClearVars(vecConstr);
       BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"sign");
       BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
-      if ((strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"allEvts") == 0)) BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
+      BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
 
 
       // ###################################
@@ -4092,7 +4146,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   ClearVars(vecConstr);
   BuildMassConstraints(vecConstr,TotalPDF,"sign");
   BuildMassConstraints(vecConstr,TotalPDF,"peak");
-  if ((strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"allEvts") == 0)) BuildMassConstraints(vecConstr,TotalPDF,"mistag");
+  BuildMassConstraints(vecConstr,TotalPDF,"mistag");
 
 
   // ###################################
@@ -5380,53 +5434,62 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // ################################
       // @TMP@
       // if ((FitType != 26) && (GetVar(*TotalPDF,"FlS") != NULL) && (GetVar(*TotalPDF,"AfbS") != NULL))
-      	// {
-      	//   // #############################
-      	//   // # Turn off all the printout #
-      	//   // #############################
-      	//   RooMsgService::instance().setGlobalKillBelow(RooFit::FATAL);
+      // 	{
+      // 	  // #############################
+      // 	  // # Turn off all the printout #
+      // 	  // #############################
+      // 	  RooMsgService::instance().setGlobalKillBelow(RooFit::FATAL);
 
 
-      	//   RooAbsReal* NLL;
-      	//   if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
-      	//   else                                                               NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
+      // 	  string varName;
+      // 	  RooAbsReal* NLL;
+      // 	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
+      // 	  else                                                               NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
+	  
+	  
+      // 	  localCanv[3]->cd();
+      // 	  RooMinuit RooMin(*NLL);
+      // 	  RooPlot* myFrameNLL = RooMin.contour(*GetVar(*TotalPDF,"AfbS"),*GetVar(*TotalPDF,"FlS"),1.0,2.0,3.0);
+      // 	  DrawString(LUMI,myFrameY);
+      // 	  myFrameNLL->Draw();
 
 
-      	//   localCanv[3]->cd();
-      	//   RooMinuit RooMin(*NLL);
-      	//   RooPlot* myFrameNLL = RooMin.contour(*GetVar(*TotalPDF,"AfbS"),*GetVar(*TotalPDF,"FlS"),1.0,2.0,3.0);
-      	//   DrawString(LUMI,myFrameY);
-      	//   myFrameNLL->Draw();
+      // 	  varName = "FlS";
+      // 	  GetVar(*TotalPDF,varName.c_str())->setRange(GetVar(*TotalPDF,varName.c_str())->getVal() + GetVar(*TotalPDF,varName.c_str())->getErrorLo() * atof(Utility->GetGenericParam("NSigmaB0").c_str()),
+      // 						      GetVar(*TotalPDF,varName.c_str())->getVal() + GetVar(*TotalPDF,varName.c_str())->getErrorHi() * atof(Utility->GetGenericParam("NSigmaB0").c_str()));
+      // 	  localCanv[4]->cd();
+      // 	  RooPlot* myFrameNLLVar1 = GetVar(*TotalPDF,varName.c_str())->frame();
+      // 	  NLL->plotOn(myFrameNLLVar1, ShiftToZero());
+      // 	  RooAbsReal* var1Profile = NLL->createProfile(*(GetVar(*TotalPDF,varName.c_str())));
+      // 	  var1Profile->plotOn(myFrameNLLVar1, LineColor(kRed));
+      // 	  myFrameNLLVar1->SetMinimum(0);
+      // 	  myFrameNLLVar1->SetMaximum(5);
+      // 	  myFrameNLLVar1->Draw();
 
 
-      	//   localCanv[4]->cd();
-        //   RooPlot* myFrameNLLVar1 = GetVar(*TotalPDF,"FlS")->frame();
-      	//   NLL->plotOn(myFrameNLLVar1, ShiftToZero());
-      	//   RooAbsReal* var1Profile = NLL->createProfile(*(GetVar(*TotalPDF,"FlS")));
-      	//   var1Profile->plotOn(myFrameNLLVar1, LineColor(kRed));
-      	//   myFrameNLLVar1->SetMinimum(0);
-      	//   myFrameNLLVar1->SetMaximum(5);
-        //   myFrameNLLVar1->Draw();
+      // 	  varName = "AfbS";
+      // 	  GetVar(*TotalPDF,varName.c_str())->setRange(-10.0, 90.);
+      // 	  GetVar(*TotalPDF,varName.c_str())->setRange(GetVar(*TotalPDF,varName.c_str())->getVal() + GetVar(*TotalPDF,varName.c_str())->getErrorLo() * atof(Utility->GetGenericParam("NSigmaB0").c_str()),
+      // 						      GetVar(*TotalPDF,varName.c_str())->getVal() + GetVar(*TotalPDF,varName.c_str())->getErrorHi() * atof(Utility->GetGenericParam("NSigmaB0").c_str()));
+      // 	  localCanv[5]->cd();
+      // 	  RooPlot* myFrameNLLVar2 = GetVar(*TotalPDF,varName.c_str())->frame();
+      // 	  NLL->plotOn(myFrameNLLVar2);
+      // 	  NLL->plotOn(myFrameNLLVar2, ShiftToZero());
+      // 	  RooAbsReal* var2Profile = NLL->createProfile(*(GetVar(*TotalPDF,varName.c_str())));
+      // 	  var2Profile->plotOn(myFrameNLLVar2, LineColor(kRed));
+      // 	  myFrameNLLVar2->SetMinimum(0);
+      // 	  myFrameNLLVar2->SetMaximum(5);
+      // 	  myFrameNLLVar2->Draw();
 
 
-      	//   localCanv[5]->cd();
-        //   RooPlot* myFrameNLLVar2 = GetVar(*TotalPDF,"AfbS")->frame();
-      	//   NLL->plotOn(myFrameNLLVar2, ShiftToZero());
-      	//   RooAbsReal* var2Profile = NLL->createProfile(*(GetVar(*TotalPDF,"AfbS")));
-      	//   var2Profile->plotOn(myFrameNLLVar2, LineColor(kRed));
-      	//   myFrameNLLVar2->SetMinimum(0);
-      	//   myFrameNLLVar2->SetMaximum(5);
-        //   myFrameNLLVar2->Draw();
+      // 	  delete NLL;
 
 
-      	//   delete NLL;
-
-
-      	//   // ############################
-      	//   // # Turn on all the printout #
-      	//   // ############################
-      	//   RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
-      	// }
+      // 	  // ############################
+      // 	  // # Turn on all the printout #
+      // 	  // ############################
+      // 	  RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
+      // 	}
 
 
       // ####################
@@ -6020,8 +6083,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
   fileFitResults << "\n@@@@@@@@@@@@@@@@@@@@@ Angular analysis vs q^2 @@@@@@@@@@@@@@@@@@@@@@" << endl;
   for (unsigned int i = (specBin == -1 ? 0 : specBin); i < (specBin == -1 ? q2Bins->size()-1 : specBin+1); i++)
     {
-      if ((FitType != 46) && (FitType != 56) &&
-	  (FitType != 66) && (FitType != 76) &&
+      if ((FitType != 46) && (FitType != 56) && (FitType != 66) && (FitType != 76) &&
 	  (Utility->ValIsInPsi(q2Bins,(q2Bins->operator[](i+1)+q2Bins->operator[](i))/2.) == true))
 	{
 	  // ###################################
@@ -6091,15 +6153,9 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       	{
       	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"sign");
       	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
-      	  if ((strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"allEvts") == 0)) BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
-      	  if ((GetVar(TotalPDFq2Bins[i],"nSig") != NULL) || (GetVar(TotalPDFq2Bins[i],"nMisTagFrac") != NULL)) BuildAngularConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
-      	}
-      if ((FitType != 46) && (FitType != 56) && (FitType != 66) && (FitType != 76) &&
-	  (GetVar(TotalPDFq2Bins[i],"FsS") != NULL) && (GetVar(TotalPDFq2Bins[i],"AsS") != NULL) &&
-	  (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true))
-      	{
-	  GetVar(TotalPDFq2Bins[i],"FsS")->setConstant(true);
-	  GetVar(TotalPDFq2Bins[i],"AsS")->setConstant(true);
+	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
+	  BuildAngularConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
+	  if ((FitType != 46) && (FitType != 66)) BuildAngularConstraints(vecConstr,TotalPDFq2Bins[i],"sign",fitParam,q2Bins);
       	}
 
 
@@ -6287,15 +6343,9 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   ClearVars(vecConstr);
   BuildMassConstraints(vecConstr,TotalPDF,"sign");
   BuildMassConstraints(vecConstr,TotalPDF,"peak");
-  if ((strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"allEvts") == 0)) BuildMassConstraints(vecConstr,TotalPDF,"mistag");
+  BuildMassConstraints(vecConstr,TotalPDF,"mistag");
   BuildAngularConstraints(vecConstr,TotalPDF,"peak");
-  if ((specBin != Utility->GetJPsiBin(q2Bins)) && (specBin != Utility->GetPsiPBin(q2Bins)) &&
-      (GetVar(TotalPDF,"FsS") != NULL) && (GetVar(TotalPDF,"AsS") != NULL) &&
-      (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true))
-    {
-      GetVar(TotalPDF,"FsS")->setConstant(true);
-      GetVar(TotalPDF,"AsS")->setConstant(true);
-    }
+  if ((specBin != Utility->GetJPsiBin(q2Bins)) && (specBin != Utility->GetPsiPBin(q2Bins))) BuildAngularConstraints(vecConstr,TotalPDF,"sign",fitParam,q2Bins);
 
 
   // ###################################
@@ -7256,7 +7306,7 @@ int main(int argc, char** argv)
 		      CopyFitResults(TotalPDFRejectPsi,0,&fitParam);
 		      ClearVars(&vecConstr);
 		      BuildMassConstraints(&vecConstr,TotalPDFRejectPsi,"sign");
-		      if ((strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"allEvts") == 0)) BuildMassConstraints(&vecConstr,TotalPDFRejectPsi,"mistag");
+		      BuildMassConstraints(&vecConstr,TotalPDFRejectPsi,"mistag");
 		      PrintVariables(TotalPDFRejectPsi->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
 		      MakeMassFit(SingleCandNTuple_RejectPsi,&TotalPDFRejectPsi,B0MassArb,cB0MassArbRejectPsi,&vecConstr,&NLLvalue,NULL,fileIndx);
@@ -7287,7 +7337,7 @@ int main(int argc, char** argv)
 		      CopyFitResults(TotalPDFPsi,1,&fitParam);
 		      ClearVars(&vecConstr);
 		      BuildMassConstraints(&vecConstr,TotalPDFPsi,"sign");
-		      if ((strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"allEvts") == 0)) BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
+		      BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
 		      PrintVariables(TotalPDFPsi->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
 		      MakeMassFit(SingleCandNTuple_JPsi,&TotalPDFPsi,B0MassArb,cB0MassArbJPsi,&vecConstr,&NLLvalue,NULL,fileIndx);
@@ -7307,7 +7357,7 @@ int main(int argc, char** argv)
 		      CopyFitResults(TotalPDFPsi,2,&fitParam);
 		      ClearVars(&vecConstr);
 		      BuildMassConstraints(&vecConstr,TotalPDFPsi,"sign");
-		      if ((strcmp(CTRLfitWRKflow.c_str(),"trueAll&NoFFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"trueAll&FitFrac") == 0) || (strcmp(CTRLfitWRKflow.c_str(),"allEvts") == 0)) BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
+		      BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
 		      PrintVariables(TotalPDFPsi->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
 		      MakeMassFit(SingleCandNTuple_PsiP,&TotalPDFPsi,B0MassArb,cB0MassArbPsiP,&vecConstr,&NLLvalue,NULL,fileIndx);

@@ -1877,7 +1877,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg var-1 (tau1 or mean) [GeV/c2]
 0.19
 # Bkg var-2 (tau2 or width) [GeV/c2]
-0.01   -0.001   0.001
+0.01
 # Fraction
 0.94
 ###################################################################
@@ -1994,9 +1994,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.46   -0.01   0.01
+0.0393772
 # AFB +/- err
-0.40   -0.01   0.01
+0.5535
 # P1 +/- err
 0.0
 # P2 +/- err
@@ -2646,11 +2646,10 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 1
 
 # Control fit workflow:
-# trueMistag      = keep only true mis-tagged ev.
-# trueGoodtag     = keep only true good-tagged ev.
-# trueAll&FitFrac = keep all true ev. and fit just for mistag fraction
-# trueAll&NoFFrac = keep all true ev. and do not fit for mistag fraction
-# allEvts         = keep all events
+# trueMistag  = keep only true mis-tagged events
+# trueGoodtag = keep only true good-tagged events
+# trueAll     = keep all true events
+# allEvts     = keep all events
 allEvts
 
 # Control mistag fraction workflow [0 = fixed; 1 = free with constraint; 2 = free; 3 = dynamic]
