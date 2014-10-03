@@ -3423,7 +3423,9 @@ std::string Utils::Transformer (std::string varName, double& varValOut, double& 
 	{
 	  sVal1 = Transformer("FlS",val1,val1ELo,val1EHi);
 
-	  myString << "(3*(1-" << sVal1 << ")/(7-3*" << sVal1 << ") * (1/2 + TMath::ATan(" << varName << ")/TMath::Pi()))";
+	  // @TMP@
+	  // myString << "(3*(1-" << sVal1 << ")/(7-3*" << sVal1 << ") * (1/2 + TMath::ATan(" << varName << ")/TMath::Pi()))";
+	  myString << "(" << varName << ")";
 	  std::cout << "[Utils::Transformer]\tTransformer function: " << myString.str().c_str() << std::endl;
 	  return myString.str();
 	}
@@ -3432,8 +3434,10 @@ std::string Utils::Transformer (std::string varName, double& varValOut, double& 
 	  sVal1 = Transformer("FlS",val1,val1ELo,val1EHi);
 	  sVal2 = Transformer("FsS",val1,val1ELo,val1EHi);
 
-	  myString << "((1/2*(" << sVal2 << " + 3*" << sVal1 << "*(1 - " << sVal2 << ")) < 1 ? 1/2*(" << sVal2 << " + 3*" << sVal1 << "*(1 - " << sVal2 << ")) : 1) ";
-	  myString << "* 2*TMath::ATan(" << varName << ")/TMath::Pi())";
+	  // @TMP@
+	  // myString << "((1/2*(" << sVal2 << " + 3*" << sVal1 << "*(1 - " << sVal2 << ")) < 1 ? 1/2*(" << sVal2 << " + 3*" << sVal1 << "*(1 - " << sVal2 << ")) : 1) ";
+	  // myString << "* 2*TMath::ATan(" << varName << ")/TMath::Pi())";
+	  myString << "(" << varName << ")";
 	  std::cout << "[Utils::Transformer]\tTransformer function: " << myString.str().c_str() << std::endl;
 	  return myString.str();
 	}
@@ -3505,6 +3509,11 @@ std::string Utils::Transformer (std::string varName, double& varValOut, double& 
 			     varValOutEHi / varValIn2->getErrorHi() *
 			     (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("FsS") != -1 ?
 			      (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) : 0.));
+
+      // @TMP@
+      varValOut    = varValIn2->getVal();
+      varValOutELo = varValIn2->getErrorLo();
+      varValOutEHi = varValIn2->getErrorHi();
     }
   else if ((varName == "AsS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (varValIn3 != NULL))
     {
@@ -3566,6 +3575,11 @@ std::string Utils::Transformer (std::string varName, double& varValOut, double& 
 			     varValOutEHi / varValIn3->getErrorHi() *
 			     (CovM != NULL && fitResult->floatParsFinal().index("FsS") != -1 && fitResult->floatParsFinal().index("AsS") != -1 ?
 			      (*CovM)(fitResult->floatParsFinal().index("FsS"),fitResult->floatParsFinal().index("AsS")) : 0.) : 0.));
+
+      // @TMP@
+      varValOut    = varValIn3->getVal();
+      varValOutELo = varValIn3->getErrorLo();
+      varValOutEHi = varValIn3->getErrorHi();
     }
   else
     {
@@ -3654,6 +3668,11 @@ void Utils::AntiTransformer (std::string varName, double& varValOut, double& var
 	  else                                                       val2 = varValIn2->getVal() + varValIn2->getErrorHi();
 	  varValOutEHi = TMath::Tan((val2 / limit - 1./2.) * TMath::Pi()) - varValOut;
 	}
+
+      // @TMP@
+      varValOut    = varValIn2->getVal();
+      varValOutELo = varValIn2->getErrorLo();
+      varValOutEHi = varValIn2->getErrorHi();
     }
   else if ((varName == "AsS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (varValIn3 != NULL))
     {
@@ -3679,6 +3698,11 @@ void Utils::AntiTransformer (std::string varName, double& varValOut, double& var
 	  else                                                          val3 = varValIn3->getVal() + varValIn3->getErrorHi();
 	  varValOutEHi = TMath::Tan(val3 / limit / 2. * TMath::Pi()) - varValOut;
 	}
+
+      // @TMP@
+      varValOut    = varValIn3->getVal();
+      varValOutELo = varValIn3->getErrorLo();
+      varValOutEHi = varValIn3->getErrorHi();
     }
   else
     {

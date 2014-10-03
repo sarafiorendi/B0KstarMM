@@ -882,7 +882,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
       // # Make 2D signal*efficiency p.d.f.: integral over phi #
       // # For correctly tagged events                         #
       // #######################################################
-      FlS  = new RooRealVar("FlS","F_{L}",0.5);
+      FlS  = new RooRealVar("FlS","F_{L}",0.0);
       AfbS = new RooRealVar("AfbS","A_{FB}",0.0);
       VarsAng->add(*FlS);
       VarsAng->add(*AfbS);
@@ -901,7 +901,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	}
       else
     	{
-	  FsS = new RooRealVar("FsS","F_{S}",0.25);
+	  FsS = new RooRealVar("FsS","F_{S}",0.0,0.0,1.0); // @TMP@
           AsS = new RooRealVar("AsS","A_{S}",0.0);
     	  VarsAng->add(*FsS);
     	  VarsAng->add(*AsS);
@@ -5468,7 +5468,6 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
 
       // 	  varName = "AfbS";
-      // 	  GetVar(*TotalPDF,varName.c_str())->setRange(-10.0, 90.);
       // 	  GetVar(*TotalPDF,varName.c_str())->setRange(GetVar(*TotalPDF,varName.c_str())->getVal() + GetVar(*TotalPDF,varName.c_str())->getErrorLo() * atof(Utility->GetGenericParam("NSigmaB0").c_str()),
       // 						      GetVar(*TotalPDF,varName.c_str())->getVal() + GetVar(*TotalPDF,varName.c_str())->getErrorHi() * atof(Utility->GetGenericParam("NSigmaB0").c_str()));
       // 	  localCanv[5]->cd();
