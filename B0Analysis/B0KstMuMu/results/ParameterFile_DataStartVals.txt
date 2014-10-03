@@ -1021,7 +1021,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle1 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle1 poly ###
-3
+2
 # Bkg angle1 poly coeff. c0
 0.0
 # Bkg angle1 poly coeff. c1
@@ -1082,9 +1082,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.384773
+0.435995
 # AFB +/- err
-0.79402
+-0.629836
 # P1 +/- err
 0.0
 # P2 +/- err
@@ -1234,9 +1234,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.826223
+0.229854
 # AFB +/- err
-0.955907
+-0.34519
 # P1 +/- err
 0.0
 # P2 +/- err
@@ -1386,9 +1386,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.865861
+0.909549
 # AFB +/- err
--0.706745
+0.668939
 # P1 +/- err
 0.0
 # P2 +/- err
@@ -1690,9 +1690,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.788846
+0.680062
 # AFB +/- err
--0.563756
+0.389101
 # P1 +/- err
 0.0
 # P2 +/- err
@@ -1933,7 +1933,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle1 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle1 poly ###
-3
+4
 # Bkg angle1 poly coeff. c0
 0.0
 # Bkg angle1 poly coeff. c1
@@ -1994,9 +1994,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.375169
+0.579263
 # AFB +/- err
-0.15377
+0.723676
 # P1 +/- err
 0.0
 # P2 +/- err
@@ -2146,9 +2146,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.949596
+0.389541
 # AFB +/- err
--0.117094
+0.999235
 # P1 +/- err
 0.0
 # P2 +/- err

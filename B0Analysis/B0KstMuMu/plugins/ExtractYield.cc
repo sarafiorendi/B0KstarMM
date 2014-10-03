@@ -901,7 +901,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	}
       else
     	{
-	  FsS = new RooRealVar("FsS","F_{S}",0.0,0.0,1.0); // @TMP@
+	  FsS = new RooRealVar("FsS","F_{S}",0.0,0.0,1.0); // @TMP@ : to be eliminated when able to fit for Fs and As
           AsS = new RooRealVar("AsS","A_{S}",0.0);
     	  VarsAng->add(*FsS);
     	  VarsAng->add(*AsS);
@@ -5443,8 +5443,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       // 	  string varName;
       // 	  RooAbsReal* NLL;
-      // 	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
-      // 	  else                                                               NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
+      // 	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Minimizer(MINIMIZER));
+      // 	  else                                                               NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),Minimizer(MINIMIZER));
 	  
 	  
       // 	  localCanv[3]->cd();
@@ -5481,14 +5481,14 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // 	  myFrameNLLVar2->Draw();
 
 
-      // 	  delete NLL;
+      	//   delete NLL;
 
 
-      // 	  // ############################
-      // 	  // # Turn on all the printout #
-      // 	  // ############################
-      // 	  RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
-      // 	}
+      	//   // ############################
+      	//   // # Turn on all the printout #
+      	//   // ############################
+      	//   RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
+      	// }
 
 
       // ####################

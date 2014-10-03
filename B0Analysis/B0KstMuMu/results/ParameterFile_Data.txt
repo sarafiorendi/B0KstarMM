@@ -802,7 +802,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@ q^2 bin 0 @@@@@@@@@@@@@@@@@@@@@@@@@@@#
 # Signal mean [GeV/c2]
-5.26584   -0.00462358   0.00475132
+5.26586   -0.00466032   0.00470331
 # Signal sigma-1 [GeV/c2]
 0.0304184   -0.000275016   0.000275016
 # Signal sigma-2 [GeV/c2]
@@ -811,7 +811,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.831529   -0.00692895   0.00692895
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
-0.211876   -0.0334057   0.044695
+0.211413   -0.0331041   0.044886
 # Bkg var-2 (tau2 or width) [GeV/c2]
 0.0
 # Fraction
@@ -848,13 +848,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # Combinatorial bkg yield
-90.8529   -10.7214   11.8427
+90.7583   -10.7039   11.8371
 # Mistag fraction
 0.124   -0.002   0.002
 # Peaking bkg yield
 0.0
 # Signal yield
-73.6599   -9.37604   9.83772
+73.6619   -9.29766   9.90994
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -871,9 +871,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle1 poly ###
 2
 # Bkg angle1 poly coeff. c0
-0.0
+0.0340505   -0.12849   0.12849
 # Bkg angle1 poly coeff. c1
-0.0
+-0.904369   -0.218079   0.218079
 # Bkg angle1 poly coeff. c2
 0.0
 # Bkg angle1 poly coeff. c3
@@ -895,11 +895,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle2 poly ###
 3
 # Bkg angle2 poly coeff. c0
-0.0
+0.674291   -0.813252   0.813252
 # Bkg angle2 poly coeff. c1
-0.0
+1.39724   -0.873107   0.873107
 # Bkg angle2 poly coeff. c2
-0.0
+-2.24064   -1.35172   1.35172
 # Bkg angle2 poly coeff. c3
 0.0
 # Bkg angle2 poly coeff. c4
@@ -930,17 +930,17 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.614848   -0.0927988   0.0996082
+0.629653   -0.0941522   0.0918019
 # AFB +/- err
--0.288056   -0.0694073   0.581578
+-0.276984   -0.0697729   0.489522
 # P1 +/- err
 0.0
 # P2 +/- err
 0.0
 # FS +/- err
-0.000919657   -9.99815e-05   0.00012909
+7.10639e-09   -0.00176938   0.00176938
 # AS +/- err
--0.102206   -0.00350943   0.00351868
+-0.102267   -0.00341357   0.00341357
 ###################################################################
 # Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -954,7 +954,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@ q^2 bin 1 @@@@@@@@@@@@@@@@@@@@@@@@@@@#
 # Signal mean [GeV/c2]
-5.27395   -0.00402694   0.00406081
+5.27422   -0.00398581   0.00398075
 # Signal sigma-1 [GeV/c2]
 0.0308886   -0.000179248   0.000179248
 # Signal sigma-2 [GeV/c2]
@@ -963,11 +963,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.844362   -0.00428812   0.00428812
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
-0.290151   -0.032503   0.0412163
+0.258313   -0.0553765   0.0510329
 # Bkg var-2 (tau2 or width) [GeV/c2]
-0.0
+-0.0591   -0.064323   0.064323
 # Fraction
-0.0
+0.975961   -0.223108   0.0240393
 ###################################################################
 # Sigma-1 mistag [GeV/c2]
 0.117281   -0.00412318   0.00412318
@@ -1000,13 +1000,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # Combinatorial bkg yield
-288.738   -19.9008   20.6129
+283.279   -20.5924   21.4469
 # Mistag fraction
 0.129   -0.001   0.001
 # Peaking bkg yield
 0.0
 # Signal yield
-126.594   -13.9256   14.5256
+131.272   -14.973   15.6525
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1021,11 +1021,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle1 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle1 poly ###
-3
+2
 # Bkg angle1 poly coeff. c0
-0.0
+0.00184717   -0.000140741   0.000140741
 # Bkg angle1 poly coeff. c1
-0.0
+-0.997882   -0.169247   0.169247
 # Bkg angle1 poly coeff. c2
 0.0
 # Bkg angle1 poly coeff. c3
@@ -1047,13 +1047,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle2 poly ###
 4
 # Bkg angle2 poly coeff. c0
-0.0
+-0.881972   -0.401424   0.401424
 # Bkg angle2 poly coeff. c1
-0.0
+0.14246   -1.06186   1.06186
 # Bkg angle2 poly coeff. c2
-0.0
+0.0830484   -0.64114   0.64114
 # Bkg angle2 poly coeff. c3
-0.0
+1.03192   -1.13549   1.13549
 # Bkg angle2 poly coeff. c4
 0.0
 ### Number of coefficients of the peak.bkg angle3 poly ###
@@ -1082,31 +1082,31 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.789454   -0.0837877   0.0772893
+0.783283   -0.0823751   0.0599415
 # AFB +/- err
--0.126141   -0.0623442   0.179196
+-0.116027   -0.063523   0.166922
 # P1 +/- err
 0.0
 # P2 +/- err
 0.0
 # FS +/- err
-0.000919657   -9.99815e-05   0.00012909
+7.10639e-09   -0.00176938   0.00176938
 # AS +/- err
--0.102206   -0.00350943   0.00351868
+-0.102267   -0.00341357   0.00341357
 ###################################################################
 # Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians
 0
 # Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials; 3 = erfc
-1
+2
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
 
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@ q^2 bin 2 @@@@@@@@@@@@@@@@@@@@@@@@@@@#
 # Signal mean [GeV/c2]
-5.27601   -0.00461539   0.00467239
+5.27597   -0.00457319   0.00472413
 # Signal sigma-1 [GeV/c2]
 0.0311103   -0.000192986   0.000192986
 # Signal sigma-2 [GeV/c2]
@@ -1115,7 +1115,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.857988   -0.0043915   0.0043915
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
-0.248376   -0.0296985   0.0373578
+0.248359   -0.0298736   0.0371442
 # Bkg var-2 (tau2 or width) [GeV/c2]
 0.0
 # Fraction
@@ -1152,13 +1152,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # Combinatorial bkg yield
-216.331   -17.2998   18.1017
+216.079   -17.1962   18.2004
 # Mistag fraction
 0.134   -0.001   0.001
 # Peaking bkg yield
 0.0
 # Signal yield
-102.825   -12.4448   12.9913
+102.969   -12.4622   12.9821
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1175,11 +1175,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle1 poly ###
 3
 # Bkg angle1 poly coeff. c0
-0.0
+-0.371655   -0.302466   0.302466
 # Bkg angle1 poly coeff. c1
-0.0
+-0.746712   -0.187083   0.187083
 # Bkg angle1 poly coeff. c2
-0.0
+0.624848   -0.49525   0.49525
 # Bkg angle1 poly coeff. c3
 0.0
 # Bkg angle1 poly coeff. c4
@@ -1199,13 +1199,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle2 poly ###
 4
 # Bkg angle2 poly coeff. c0
-0.0
+-1.3381   -0.540814   0.540814
 # Bkg angle2 poly coeff. c1
-0.0
+1.41569   -1.54337   1.54337
 # Bkg angle2 poly coeff. c2
-0.0
+1.21027   -0.824211   0.824211
 # Bkg angle2 poly coeff. c3
-0.0
+-0.812571   -1.66359   1.66359
 # Bkg angle2 poly coeff. c4
 0.0
 ### Number of coefficients of the peak.bkg angle3 poly ###
@@ -1234,17 +1234,17 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.616554   -0.0898718   0.0899787
+0.614436   -0.090943   0.0929414
 # AFB +/- err
-0.0258171   -0.160746   0.142372
+0.0260911   -0.161425   0.142926
 # P1 +/- err
 0.0
 # P2 +/- err
 0.0
 # FS +/- err
-0.000919657   -9.99815e-05   0.00012909
+7.10639e-09   -0.00176938   0.00176938
 # AS +/- err
--0.102206   -0.00350943   0.00351868
+-0.102267   -0.00341357   0.00341357
 ###################################################################
 # Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -1258,7 +1258,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@ q^2 bin 3 @@@@@@@@@@@@@@@@@@@@@@@@@@@#
 # Signal mean [GeV/c2]
-5.27556   -0.00307821   0.00308815
+5.27557   -0.00309192   0.0030698
 # Signal sigma-1 [GeV/c2]
 0.0301922   -0.000149067   0.000149067
 # Signal sigma-2 [GeV/c2]
@@ -1267,7 +1267,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.85582   -0.0038636   0.0038636
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
-0.466197   -0.0685269   0.0961875
+0.466601   -0.068918   0.0957902
 # Bkg var-2 (tau2 or width) [GeV/c2]
 0.0
 # Fraction
@@ -1304,13 +1304,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # Combinatorial bkg yield
-342.969   -22.2703   23.3157
+342.949   -22.3195   23.2286
 # Mistag fraction
 0.132   -0.001   0.001
 # Peaking bkg yield
 0.0
 # Signal yield
-221.273   -17.7069   18.3495
+221.321   -17.6659   18.3624
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1327,13 +1327,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle1 poly ###
 4
 # Bkg angle1 poly coeff. c0
-0.0
+-0.455335   -0.345202   0.345202
 # Bkg angle1 poly coeff. c1
-0.0
+1.32101   -1.00384   1.00384
 # Bkg angle1 poly coeff. c2
-0.0
+0.483664   -0.48501   0.48501
 # Bkg angle1 poly coeff. c3
-0.0
+-2.12218   -1.12148   1.12148
 # Bkg angle1 poly coeff. c4
 0.0
 ### Number of coefficients of the peak.bkg angle2 poly ###
@@ -1351,9 +1351,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle2 poly ###
 2
 # Bkg angle2 poly coeff. c0
-0.0
+-0.589874   -0.184825   0.184825
 # Bkg angle2 poly coeff. c1
-0.0
+0.642339   -0.405721   0.405721
 # Bkg angle2 poly coeff. c2
 0.0
 # Bkg angle2 poly coeff. c3
@@ -1386,17 +1386,17 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.512722   -0.0543226   0.0554453
+0.503676   -0.0570472   0.0577032
 # AFB +/- err
-0.0348524   -0.0902019   0.0913705
+0.0370001   -0.0931271   0.0918928
 # P1 +/- err
 0.0
 # P2 +/- err
 0.0
 # FS +/- err
-0.000919657   -9.99815e-05   0.00012909
+7.10639e-09   -0.00176938   0.00176938
 # AS +/- err
--0.102206   -0.00350943   0.00351868
+-0.102267   -0.00341357   0.00341357
 ###################################################################
 # Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -1562,7 +1562,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@ q^2 bin 5 @@@@@@@@@@@@@@@@@@@@@@@@@@@#
 # Signal mean [GeV/c2]
-5.27448   -0.0026293   0.00266119
+5.27451   -0.00263918   0.00265361
 # Signal sigma-1 [GeV/c2]
 0.0311809   -0.000128223   0.000128223
 # Signal sigma-2 [GeV/c2]
@@ -1571,7 +1571,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.872235   -0.00312221   0.00312221
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
-0.224935   -0.0163211   0.018387
+0.225157   -0.0163822   0.0183495
 # Bkg var-2 (tau2 or width) [GeV/c2]
 0.0
 # Fraction
@@ -1608,13 +1608,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # Combinatorial bkg yield
-566.706   -28.1697   28.9395
+567.118   -28.1595   28.9706
 # Mistag fraction
 0.132   -0.001   0.001
 # Peaking bkg yield
 0.0
 # Signal yield
-313.763   -21.2595   21.6163
+313.325   -21.1918   21.6749
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1631,13 +1631,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle1 poly ###
 4
 # Bkg angle1 poly coeff. c0
-0.0
+-0.530319   -0.274895   0.274895
 # Bkg angle1 poly coeff. c1
-0.0
+1.66526   -0.841977   0.841977
 # Bkg angle1 poly coeff. c2
-0.0
+0.655107   -0.395758   0.395758
 # Bkg angle1 poly coeff. c3
-0.0
+-1.97223   -0.910566   0.910566
 # Bkg angle1 poly coeff. c4
 0.0
 ### Number of coefficients of the peak.bkg angle2 poly ###
@@ -1655,13 +1655,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle2 poly ###
 4
 # Bkg angle2 poly coeff. c0
-0.0
+-1.04296   -0.274064   0.274064
 # Bkg angle2 poly coeff. c1
-0.0
+1.08148   -0.669623   0.669623
 # Bkg angle2 poly coeff. c2
-0.0
+0.572102   -0.370894   0.370894
 # Bkg angle2 poly coeff. c3
-0.0
+-1.33713   -0.722219   0.722219
 # Bkg angle2 poly coeff. c4
 0.0
 ### Number of coefficients of the peak.bkg angle3 poly ###
@@ -1690,17 +1690,17 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.365595   -0.0443753   0.0451622
+0.363696   -0.0481112   0.0472865
 # AFB +/- err
-0.161448   -0.0624643   0.0617034
+0.161807   -0.0637935   0.0625165
 # P1 +/- err
 0.0
 # P2 +/- err
 0.0
 # FS +/- err
-0.000919657   -9.99815e-05   0.00012909
+7.10639e-09   -0.00176938   0.00176938
 # AS +/- err
--0.102206   -0.00350943   0.00351868
+-0.102267   -0.00341357   0.00341357
 ###################################################################
 # Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -1866,7 +1866,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@ q^2 bin 7 @@@@@@@@@@@@@@@@@@@@@@@@@@@#
 # Signal mean [GeV/c2]
-5.27636   -0.0032055   0.0031806
+5.27624   -0.00314422   0.00326094
 # Signal sigma-1 [GeV/c2]
 0.0316837   -0.00017388   0.00017388
 # Signal sigma-2 [GeV/c2]
@@ -1875,11 +1875,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.863067   -0.00426259   0.00426259
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
-0.194413   -0.0278523   0.036479
+0.196689   -0.0283308   0.0365398
 # Bkg var-2 (tau2 or width) [GeV/c2]
-0.0103875   -0.00600826   0.0148666
+0.0104466   -0.00605209   0.0146428
 # Fraction
-0.940298   -0.0573692   0.0369421
+0.938921   -0.0551419   0.0382786
 ###################################################################
 # Sigma-1 mistag [GeV/c2]
 0.1082   -0.00297102   0.00297102
@@ -1912,13 +1912,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # Combinatorial bkg yield
-176.559   -16.9187   17.5059
+177.401   -16.693   17.7748
 # Mistag fraction
 0.132   -0.001   0.001
 # Peaking bkg yield
 0.0
 # Signal yield
-194.101   -15.8009   16.3718
+193.2   -15.8228   16.2888
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1933,15 +1933,15 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle1 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle1 poly ###
-3
+4
 # Bkg angle1 poly coeff. c0
-0.0
+-0.710965   -0.478252   0.478252
 # Bkg angle1 poly coeff. c1
-0.0
+1.35741   -1.2143   1.2143
 # Bkg angle1 poly coeff. c2
-0.0
+1.16768   -0.70706   0.70706
 # Bkg angle1 poly coeff. c3
-0.0
+-1.50381   -1.29926   1.29926
 # Bkg angle1 poly coeff. c4
 0.0
 ### Number of coefficients of the peak.bkg angle2 poly ###
@@ -1959,9 +1959,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle2 poly ###
 2
 # Bkg angle2 poly coeff. c0
-0.0
+-0.128189   -0.093914   0.093914
 # Bkg angle2 poly coeff. c1
-0.0
+-0.865218   -0.150791   0.150791
 # Bkg angle2 poly coeff. c2
 0.0
 # Bkg angle2 poly coeff. c3
@@ -1994,17 +1994,17 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.417434   -0.0569191   0.0578377
+0.437537   -0.05352   0.0567124
 # AFB +/- err
-0.416264   -0.848386   0.046689
+0.414074   -0.841705   0.0433536
 # P1 +/- err
 0.0
 # P2 +/- err
 0.0
 # FS +/- err
-0.000919657   -9.99815e-05   0.00012909
+7.10639e-09   -0.00176938   0.00176938
 # AS +/- err
--0.102206   -0.00350943   0.00351868
+-0.102267   -0.00341357   0.00341357
 ###################################################################
 # Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -2018,7 +2018,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@ q^2 bin 8 @@@@@@@@@@@@@@@@@@@@@@@@@@@#
 # Signal mean [GeV/c2]
-5.27964   -0.00294719   0.00290111
+5.27965   -0.00292611   0.0029244
 # Signal sigma-1 [GeV/c2]
 0.031461   -0.000217572   0.000217572
 # Signal sigma-2 [GeV/c2]
@@ -2027,7 +2027,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.828301   -0.00675468   0.00675468
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
-0.509866   -0.149297   0.335012
+0.511209   -0.149309   0.337309
 # Bkg var-2 (tau2 or width) [GeV/c2]
 0.0
 # Fraction
@@ -2064,13 +2064,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # Combinatorial bkg yield
-81.4942   -11.9082   12.8684
+81.834   -11.9304   12.8852
 # Mistag fraction
 0.137   -0.001   0.001
 # Peaking bkg yield
 0.0
 # Signal yield
-206.69   -14.938   15.5258
+206.403   -14.9372   15.5172
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -2087,9 +2087,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle1 poly ###
 2
 # Bkg angle1 poly coeff. c0
-0.0
+-0.256259   -0.295968   0.295968
 # Bkg angle1 poly coeff. c1
-0.0
+0.283786   -0.589176   0.589176
 # Bkg angle1 poly coeff. c2
 0.0
 # Bkg angle1 poly coeff. c3
@@ -2111,9 +2111,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ### Number of coefficients of the comb.bkg angle2 poly ###
 2
 # Bkg angle2 poly coeff. c0
-0.0
+0.218614   -0.160328   0.160328
 # Bkg angle2 poly coeff. c1
-0.0
+-0.777978   -0.244894   0.244894
 # Bkg angle2 poly coeff. c2
 0.0
 # Bkg angle2 poly coeff. c3
@@ -2146,17 +2146,17 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.378904   -0.0541262   0.0539497
+0.379221   -0.0533495   0.053557
 # AFB +/- err
-0.350726   -0.0778199   0.0703426
+0.351505   -0.0775516   0.0700019
 # P1 +/- err
 0.0
 # P2 +/- err
 0.0
 # FS +/- err
-0.000919657   -9.99815e-05   0.00012909
+7.10639e-09   -0.00176938   0.00176938
 # AS +/- err
--0.102206   -0.00350943   0.00351868
+-0.102267   -0.00341357   0.00341357
 ###################################################################
 # Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -2175,24 +2175,31 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 9
 
 # q^2 bin 0
+0.00325786   -0.000108128   0.000108128
 
 # q^2 bin 1
+0.00349039   -5.52705e-05   5.52705e-05
 
 # q^2 bin 2
+0.00340818   -3.71944e-05   3.71944e-05
 
 # q^2 bin 3
+0.00341081   -5.11131e-06   5.11131e-06
 
 # q^2 bin 4
 0.0037615   -4.43008e-06   4.43008e-06
 
 # q^2 bin 5
+0.0036477   -2.94805e-05   2.94805e-05
 
 # q^2 bin 6
 0.00383351   -1.76927e-05   1.76927e-05
 
 # q^2 bin 7
+0.0034663   -0.000111151   0.000111151
 
 # q^2 bin 8
+0.00345002   -5.21625e-05   5.21625e-05
 
 
 ############################
@@ -2202,24 +2209,31 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 9
 
 # q^2 bin 0
+0.0004653   -4.6784e-05   4.6784e-05
 
 # q^2 bin 1
+0.000489795   -7.80845e-05   7.80845e-05
 
 # q^2 bin 2
+0.000575354   -6.08142e-05   6.08142e-05
 
 # q^2 bin 3
+0.00054237   -2.96831e-05   2.96831e-05
 
 # q^2 bin 4
 0.000565492   -8.59692e-07   8.59692e-07
 
 # q^2 bin 5
+0.000598119   -2.28289e-05   2.28289e-05
 
 # q^2 bin 6
 0.00059674   -4.10635e-06   4.10635e-06
 
 # q^2 bin 7
+0.000483052   -3.41651e-05   3.41651e-05
 
 # q^2 bin 8
+0.000516622   -1.01096e-05   1.01096e-05
 
 
 ############################
@@ -2229,31 +2243,31 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 9
 
 # q^2 bin 0
-0.456192   -0.0693707   0.0693707
+0.45986   -0.0658336   0.0658336
 
 # q^2 bin 1
-0.332178   -0.0470099   0.0470099
+0.343317   -0.0490046   0.0490046
 
 # q^2 bin 2
-0.346885   -0.046281   0.046281
+0.347924   -0.0466027   0.0466027
 
 # q^2 bin 3
-0.485599   -0.0416996   0.0416996
+0.483837   -0.0414512   0.0414512
 
 # q^2 bin 4
 0.0   0.0   0.0
 
 # q^2 bin 5
-0.612414   -0.0433297   0.0433297
+0.610519   -0.0433513   0.0433513
 
 # q^2 bin 6
 0.0   0.0   0.0
 
 # q^2 bin 7
-0.650812   -0.059845   0.059845
+0.654183   -0.0599155   0.0599155
 
 # q^2 bin 8
-0.418462   -0.0313716   0.0313716
+0.419652   -0.0314012   0.0314012
 
 
 ############################
@@ -2379,51 +2393,51 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 # q^2 bin 0
 # FL
--733.74
+-733.877
 # AFB
--733.74
+-733.877
 # P1
 0.0
 # P2
 0.0
 # Branching-Fraction
--733.74
+-733.877
 
 # q^2 bin 1
 # FL
--2087.7
+-2087.94
 # AFB
--2087.7
+-2087.94
 # P1
 0.0
 # P2
 0.0
 # Branching-Fraction
--2087.7
+-2087.94
 
 # q^2 bin 2
 # FL
--1497.3
+-1497.28
 # AFB
--1497.3
+-1497.28
 # P1
 0.0
 # P2
 0.0
 # Branching-Fraction
--1497.3
+-1497.28
 
 # q^2 bin 3
 # FL
--2958.44
+-2958.53
 # AFB
--2958.44
+-2958.53
 # P1
 0.0
 # P1
 0.0
 # Branching-Fraction
--2958.44
+-2958.53
 
 # q^2 bin 4
 # FL
@@ -2439,15 +2453,15 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 # q^2 bin 5
 # FL
--5013.81
+-5013.34
 # AFB
--5013.81
+-5013.34
 # P1
 0.0
 # P2
 0.0
 # Branching-Fraction
--5013.81
+-5013.34
 
 # q^2 bin 6
 # FL
@@ -2463,27 +2477,27 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 # q^2 bin 7
 # FL
--1905.11
+-1905.67
 # AFB
--1905.11
+-1905.67
 # P1
 0.0
 # P2
 0.0
 # Branching-Fraction
--1905.11
+-1905.67
 
 # q^2 bin 8
 # FL
--1511.86
+-1511.9
 # AFB
--1511.86
+-1511.9
 # P1
 0.0
 # P2
 0.0
 # Branching-Fraction
--1511.86
+-1511.9
 
 
 ############################
