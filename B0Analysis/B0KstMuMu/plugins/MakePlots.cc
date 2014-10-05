@@ -2214,8 +2214,8 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
   h2Dbkg->SetMarkerStyle(21);
   h2Dbkg->SetMarkerColor(kRed);
 
-  TF1* fsig = new TF1("fsig","[9]*([6]*TMath::Gaus(x,[0],[1]) + [7]*TMath::Gaus(x,[2],[3]) + [8]*TMath::Gaus(x,[4],[5]))",minX,maxX);
-  TF1* fbkg = new TF1("fbkg","[0]",minX,maxX);
+  TF1* fsig = new TF1("fsig","[6]*([2]*TMath::Gaus(x,[0],[1]) + [5]*TMath::Gaus(x,[3],[4]))",minX,maxX);
+  TF1* fbkg = new TF1("fbkg","[0] + [1]*x",minX,maxX);
   TF1* f0 = new TF1("f0","fsig + fbkg",minX,maxX);
 
   fsig->SetLineColor(kBlue);
@@ -2228,16 +2228,14 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
 
   f0->SetParName(0,"#mu-1");
   f0->SetParName(1,"#sigma-1");
-  f0->SetParName(2,"#mu-2");
-  f0->SetParName(3,"#sigma-2");
-  f0->SetParName(4,"#mu-3");
-  f0->SetParName(5,"#sigma-3");
-  f0->SetParName(6,"Ampli-1");
-  f0->SetParName(7,"Ampli-2");
-  f0->SetParName(8,"Ampli-3");
+  f0->SetParName(2,"Ampli-S1");
+  f0->SetParName(3,"#mu-2");
+  f0->SetParName(4,"#sigma-2");
+  f0->SetParName(5,"Ampli-S2");
+  f0->SetParName(6,"Ampli-S");
 
-  f0->SetParName(9,"Ampli-S");
-  f0->SetParName(10,"Ampli-B");
+  f0->SetParName(7,"Ampli-B");
+  f0->SetParName(8,"Slope-B");
 
 
   if (fitParamAreFixed == true)
@@ -2245,33 +2243,28 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
       // #######################################
       // # From fit to RECO B0 --> J/psi K* MC #
       // #######################################
-      f0->FixParameter(0, 8.94874e-01);
-      f0->FixParameter(1, 1.51833e-02);
-      f0->FixParameter(2, 9.06088e-01);
-      f0->FixParameter(3, 3.43700e-02);
-      f0->FixParameter(4, 8.64557e-01);
-      f0->FixParameter(5, 1.82772e-02);
-      f0->FixParameter(6, 1.44773e+04);
-      f0->FixParameter(7, 6.97267e+03);
-      f0->FixParameter(8, 2.59535e+03);
+      f0->FixParameter(0, 8.94440e-01);
+      f0->FixParameter(1, 1.27969e-02);
+      f0->FixParameter(2, 8.36339e+03);
+      f0->FixParameter(3, 8.94996e-01);
+      f0->FixParameter(4, 2.99200e-02);
+      f0->FixParameter(5, 1.01805e+04);
     }
   else
     {
       // ####################
       // # Starting valiues #
       // ####################
-      f0->SetParameter(0,0.892);
-      f0->SetParameter(1,0.02);
-      f0->SetParameter(2,0.892);
-      f0->SetParameter(3,0.04);
-      f0->SetParameter(4,0.892);
-      f0->SetParameter(5,0.05);
-      f0->SetParameter(6,24000);
-      f0->SetParameter(7,12000);
-      f0->SetParameter(8,04000);
+      f0->SetParameter(0, 0.892);
+      f0->SetParameter(1, 0.01);
+      f0->SetParameter(2, 6000);
+      f0->SetParameter(3, 0.892);
+      f0->SetParameter(4, 0.03);
+      f0->SetParameter(5, 5000);
     }
-  f0->SetParameter(9,1.6);
-  f0->SetParameter(10,2000);
+  f0->SetParameter(6, 1.0);
+  f0->SetParameter(7, -4000);
+  f0->SetParameter(8,  6000);
 
 
   tmpstring = "(B0notB0bar == 1)";
@@ -2325,12 +2318,10 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
   fsig->SetParameter(4,f0->GetParameter(4));
   fsig->SetParameter(5,f0->GetParameter(5));
   fsig->SetParameter(6,f0->GetParameter(6));
-  fsig->SetParameter(7,f0->GetParameter(7));
-  fsig->SetParameter(8,f0->GetParameter(8));
-  fsig->SetParameter(9,f0->GetParameter(9));
   fsig->Draw("same");
 
-  fbkg->SetParameter(0,f0->GetParameter(10));
+  fbkg->SetParameter(0,f0->GetParameter(7));
+  fbkg->SetParameter(1,f0->GetParameter(8));
   fbkg->Draw("same");
 
   TLegend* leg0 = new TLegend(0.15, 0.6, 0.35, 0.85, "");
@@ -2359,6 +2350,10 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
 
   c1->Modified();
   c1->Update();
+
+
+  cout << "\nSignal integral [" << minX << ";" << maxX << "] = "  << fsig->Integral(minX,maxX) / (static_cast<double>(maxX + extra - (minX - extra)) / static_cast<double>(nBins)) << endl;
+  cout << "Backgrund integral [" << minX << ";" << maxX << "] = " << fbkg->Integral(minX,maxX) / (static_cast<double>(maxX + extra - (minX - extra)) / static_cast<double>(nBins)) << endl;
 }
 
 

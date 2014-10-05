@@ -5443,10 +5443,10 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       // 	  string varName;
       // 	  RooAbsReal* NLL;
-      // 	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Minimizer(MINIMIZER));
-      // 	  else                                                               NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),Minimizer(MINIMIZER));
-	  
-	  
+      // 	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
+      // 	  else                                                               NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
+
+
       // 	  localCanv[3]->cd();
       // 	  RooMinuit RooMin(*NLL);
       // 	  RooPlot* myFrameNLL = RooMin.contour(*GetVar(*TotalPDF,"AfbS"),*GetVar(*TotalPDF,"FlS"),1.0,2.0,3.0);
