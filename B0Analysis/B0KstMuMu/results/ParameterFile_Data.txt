@@ -933,6 +933,8 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.629653   -0.0941522   0.0918019
 # AFB +/- err
 -0.276984   -0.0697729   0.489522
+# AFB +/- err
+# set:-0.03   measurement:-0.027794   -0.0   0.0
 # P1 +/- err
 0.0
 # P2 +/- err
@@ -1997,6 +1999,8 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.437537   -0.05352   0.0567124
 # AFB +/- err
 0.414074   -0.841705   0.0433536
+# AFB +/- err for error computation
+# set:0.326   measurement:0.33697   -0.0   0.0
 # P1 +/- err
 0.0
 # P2 +/- err

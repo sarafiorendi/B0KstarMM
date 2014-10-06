@@ -342,7 +342,7 @@ void BuildAngularConstraints    (RooArgSet* vecConstr, RooAbsPdf* pdf, string va
 RooAbsPdf* MakeAngWithEffPDF    (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, vector<double>* q2Bins, int q2BinIndx);
 void DeleteFit                  (RooAbsPdf* pdf, string DeleteType);
 void ResetCombPolyParam         (vector<vector<string>*>* fitParam = NULL, RooAbsPdf* pdf = NULL);
-void ResetAngularParam          (vector<vector<string>*>* fitParam = NULL, RooAbsPdf* pdf = NULL);
+void ResetAngularParam          (vector<vector<string>*>* fitParam);
 double StoreFitResultsInFile    (RooAbsPdf* pdf, RooFitResult* fitResult, RooDataSet* dataSet, RooArgSet* vecConstr);
 void StorePolyResultsInFile     (RooAbsPdf* pdf);
 vector<string>* SaveFitResults  (unsigned int q2BinIndx, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr, RooAbsPdf* pdf = NULL, RooFitResult* fitResult = NULL);
@@ -1202,60 +1202,26 @@ void ResetCombPolyParam (vector<vector<string>*>* fitParam, RooAbsPdf* pdf)
 }
 
 
-void ResetAngularParam (vector<vector<string>*>* fitParam, RooAbsPdf* pdf)
+void ResetAngularParam (vector<vector<string>*>* fitParam)
 {
-  stringstream myString;
-  double value, errLo, errHi;
-
-
-  if (fitParam != NULL)
+  for (unsigned int j = 0; j < fitParam->operator[](0)->size(); j++)
     {
-      for (unsigned int j = 0; j < fitParam->operator[](0)->size(); j++)
-	{
-	  cout << "\n[ExtractYield::ResetAngularParam]\t@@@ Resetting the angular parameters for q^2 bin #" << j << " @@@" << endl;
+      cout << "\n[ExtractYield::ResetAngularParam]\t@@@ Resetting the angular parameters for q^2 bin #" << j << " @@@" << endl;
 
-	  fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](j)  = "0.5";
-	  fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](j) = "0.0";
-	  fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](j)  = "0.0";
-	  fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](j)  = "0.0";
-	  fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](j)  = "0.25";
-	  fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](j)  = "0.0";
+      fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](j)  = "0.5";
+      fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](j) = "0.0";
+      fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](j)  = "0.0";
+      fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](j)  = "0.0";
+      fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](j)  = "0.25";
+      fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](j)  = "0.0";
 
-	  cout << "FL: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](j).c_str()  << endl;
-	  cout << "AFB: " << "\t" << fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](j).c_str() << endl;
-	  cout << "P1: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](j).c_str()  << endl;
-	  cout << "P2: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](j).c_str()  << endl;
-	  cout << "FS: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](j).c_str()  << endl;
-	  cout << "AS: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](j).c_str()  << endl;
-	}
-    }
-  else if (pdf != NULL)
-    {
-      cout << "\n[ExtractYield::ResetAngularParam]\t@@@ Resetting the angular parameters in the p.d.f. @@@" << endl;
-
-      myString.clear(); myString.str("");
-      myString << "0.5";
-      SetValueAndErrors(pdf,"FlS",1.0,&myString,&value,&errLo,&errHi);
-
-      myString.clear(); myString.str("");
-      myString << "0.0";
-      SetValueAndErrors(pdf,"AfbS",1.0,&myString,&value,&errLo,&errHi);
-
-      myString.clear(); myString.str("");
-      myString << "0.0";
-      SetValueAndErrors(pdf,"P1S",1.0,&myString,&value,&errLo,&errHi);
-
-      myString.clear(); myString.str("");
-      myString << "0.0";
-      SetValueAndErrors(pdf,"P2S",1.0,&myString,&value,&errLo,&errHi);
-
-      // @TMP@ : I do not reset Fs and As
-    }
-  else
-    {
-      cout << "[ExtractYield::ResetAngularParam]\tIncorrect parameter : one, and only one, shuld be non NULL" << endl;
-      exit (EXIT_FAILURE);
-    }
+      cout << "FL: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](j).c_str()  << endl;
+      cout << "AFB: " << "\t" << fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](j).c_str() << endl;
+      cout << "P1: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](j).c_str()  << endl;
+      cout << "P2: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](j).c_str()  << endl;
+      cout << "FS: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](j).c_str()  << endl;
+      cout << "AS: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](j).c_str()  << endl;
+    }   
 }
 
 
@@ -5439,13 +5405,16 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // 	  localCanv[3]->cd();
       // 	  RooMinuit RooMin(*NLL);
       // 	  RooPlot* myFrameNLL = RooMin.contour(*GetVar(*TotalPDF,"AfbS"),*GetVar(*TotalPDF,"FlS"),1.0,2.0,3.0);
-      // 	  DrawString(LUMI,myFrameNLL);
-      // 	  myFrameNLL->Draw();
+      // 	  if (myFrameNLL != NULL)
+      // 	    {
+      // 	      DrawString(LUMI,myFrameNLL);
+      // 	      myFrameNLL->Draw();
+      // 	    }
 
 
       // 	  varName = "FlS";
       // 	  GetVar(*TotalPDF,varName.c_str())->setRange(GetVar(*TotalPDF,varName.c_str())->getVal() + GetVar(*TotalPDF,varName.c_str())->getErrorLo() * atof(Utility->GetGenericParam("NSigmaB0").c_str()),
-      // 						      GetVar(*TotalPDF,varName.c_str())->getVal() + GetVar(*TotalPDF,varName.c_str())->getErrorHi() * atof(Utility->GetGenericParam("NSigmaB0").c_str()));
+      // 	  					      GetVar(*TotalPDF,varName.c_str())->getVal() + GetVar(*TotalPDF,varName.c_str())->getErrorHi() * atof(Utility->GetGenericParam("NSigmaB0").c_str()));
       // 	  localCanv[4]->cd();
       // 	  RooPlot* myFrameNLLVar1 = GetVar(*TotalPDF,varName.c_str())->frame();
       // 	  NLL->plotOn(myFrameNLLVar1, ShiftToZero());
@@ -5459,7 +5428,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       // 	  varName = "AfbS";
       // 	  GetVar(*TotalPDF,varName.c_str())->setRange(GetVar(*TotalPDF,varName.c_str())->getVal() + GetVar(*TotalPDF,varName.c_str())->getErrorLo() * atof(Utility->GetGenericParam("NSigmaB0").c_str()),
-      // 						      GetVar(*TotalPDF,varName.c_str())->getVal() + GetVar(*TotalPDF,varName.c_str())->getErrorHi() * atof(Utility->GetGenericParam("NSigmaB0").c_str()));
+      // 	  					      GetVar(*TotalPDF,varName.c_str())->getVal() + GetVar(*TotalPDF,varName.c_str())->getErrorHi() * atof(Utility->GetGenericParam("NSigmaB0").c_str()));
       // 	  localCanv[5]->cd();
       // 	  RooPlot* myFrameNLLVar2 = GetVar(*TotalPDF,varName.c_str())->frame();
       // 	  NLL->plotOn(myFrameNLLVar2);
@@ -5472,14 +5441,14 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // 	  myFrameNLLVar2->Draw();
 
 
-      	//   delete NLL;
-
-
-      	//   // ############################
-      	//   // # Turn on all the printout #
-      	//   // ############################
-      	//   RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
-      	// }
+      // 	  delete NLL;
+	  
+	  
+      // 	  // ############################
+      // 	  // # Turn on all the printout #
+      // 	  // ############################
+      // 	  RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
+      // 	}
 
 
       // ####################
