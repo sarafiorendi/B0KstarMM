@@ -3415,7 +3415,12 @@ std::string Utils::Transformer (std::string varName, double& varValOut, double& 
 	{
 	  sVal1 = Transformer("FlS",val1,val1ELo,val1EHi);
 
+	  // @TMP@
+	  // double tolerance = atof(GetGenericParam("TransfTolerance").c_str());
 	  myString << "(3/4*(1 - " << sVal1 << ") * 2*TMath::ATan(" << varName << ")/TMath::Pi())";
+	  // myString << "(abs(3/4*(1 - " << sVal1 << ") * 2*TMath::ATan(" << varName << ")/TMath::Pi()) < 3/4*(1 - " << sVal1 << ")-" << tolerance << " ? ";
+	  // myString << "3/4*(1 - " << sVal1 << ") * 2*TMath::ATan(" << varName << ")/TMath::Pi() : (TMath::ATan(" << varName << ") > 0  ? ";
+	  // myString << "3/4*(1 - " << sVal1 << ")-" << tolerance << " : -3/4*(1 - " << sVal1 << ")+" << tolerance << "))";
 	  std::cout << "[Utils::Transformer]\tTransformer function: " << myString.str().c_str() << std::endl;
 	  return myString.str();
 	}
@@ -3669,7 +3674,7 @@ void Utils::AntiTransformer (std::string varName, double& varValOut, double& var
 	  varValOutEHi = TMath::Tan((val2 / limit - 1./2.) * TMath::Pi()) - varValOut;
 	}
 
-      // @TMP@
+      // @TMP@ : to be eliminated when able to fit for Fs and As
       varValOut    = varValIn2->getVal();
       varValOutELo = varValIn2->getErrorLo();
       varValOutEHi = varValIn2->getErrorHi();
@@ -3699,7 +3704,7 @@ void Utils::AntiTransformer (std::string varName, double& varValOut, double& var
 	  varValOutEHi = TMath::Tan(val3 / limit / 2. * TMath::Pi()) - varValOut;
 	}
 
-      // @TMP@
+      // @TMP@ : to be eliminated when able to fit for Fs and As
       varValOut    = varValIn3->getVal();
       varValOutELo = varValIn3->getErrorLo();
       varValOutEHi = varValIn3->getErrorHi();

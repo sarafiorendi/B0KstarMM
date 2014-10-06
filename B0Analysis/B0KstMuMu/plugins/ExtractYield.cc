@@ -5450,7 +5450,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // 	  localCanv[3]->cd();
       // 	  RooMinuit RooMin(*NLL);
       // 	  RooPlot* myFrameNLL = RooMin.contour(*GetVar(*TotalPDF,"AfbS"),*GetVar(*TotalPDF,"FlS"),1.0,2.0,3.0);
-      // 	  DrawString(LUMI,myFrameY);
+      // 	  DrawString(LUMI,myFrameNLL);
       // 	  myFrameNLL->Draw();
 
 
@@ -5464,6 +5464,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // 	  var1Profile->plotOn(myFrameNLLVar1, LineColor(kRed));
       // 	  myFrameNLLVar1->SetMinimum(0);
       // 	  myFrameNLLVar1->SetMaximum(5);
+      // 	  DrawString(LUMI,myFrameNLLVar1);
       // 	  myFrameNLLVar1->Draw();
 
 
@@ -5478,6 +5479,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // 	  var2Profile->plotOn(myFrameNLLVar2, LineColor(kRed));
       // 	  myFrameNLLVar2->SetMinimum(0);
       // 	  myFrameNLLVar2->SetMaximum(5);
+      // 	  DrawString(LUMI,myFrameNLLVar2);
       // 	  myFrameNLLVar2->Draw();
 
 
