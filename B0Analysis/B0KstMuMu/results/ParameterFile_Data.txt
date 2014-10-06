@@ -2637,7 +2637,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 1
 
 # Tolerance to boundaries for the anti-transformation [range = (0,1)]
-0.05
+0.01
 
 # Use MINOS for error computation [0 = no; 1 = yes]
 1

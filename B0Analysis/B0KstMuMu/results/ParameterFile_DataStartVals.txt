@@ -963,11 +963,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.844362   -0.00428812   0.00428812
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
-0.3
+0.2
 # Bkg var-2 (tau2 or width) [GeV/c2]
-0.03
+0.0
 # Fraction
-0.5
+0.0
 ###################################################################
 # Sigma-1 mistag [GeV/c2]
 0.117281   -0.00412318   0.00412318
@@ -1099,7 +1099,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians
 0
 # Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials; 3 = erfc
-2
+1
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
 
@@ -2637,7 +2637,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 1
 
 # Tolerance to boundaries for the anti-transformation [range = (0,1)]
-0.05
+0.01
 
 # Use MINOS for error computation [0 = no; 1 = yes]
 1

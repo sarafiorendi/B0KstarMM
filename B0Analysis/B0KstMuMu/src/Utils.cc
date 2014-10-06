@@ -3177,7 +3177,7 @@ void Utils::AddConstraintThetaKThetaL (TH2D** histo, std::vector<double>* cosThe
 }
 
 void Utils::AddConstraint3D (TH3D** histo, double abscissaErr, double Tval, double Terr, double TerrRescale, unsigned int ID, std::vector<int> toBeAdded[])
-// @TMP@
+// @TMP@ : to be reviewed
 {
   std::stringstream myString;
   
@@ -3337,13 +3337,8 @@ void Utils::AddConstraint3D (TH3D** histo, double abscissaErr, double Tval, doub
 
 void Utils::AddConstraintThetaKThetaLPhi (int SignalType)
 {
-  // double abscissaErr = 1e-2;
-  // std::vector<std::string> toBeAdded;
-  // std::vector< std::pair<double,double> > constraints;
-
   std::cout << "[Utils::AddConstraintThetaKThetaLPhi]\t @TMP@ Not implemented yet : " << SignalType << std::endl;
-
-  // AddConstraint3D(...);
+  exit (EXIT_FAILURE);
 }
 
 int Utils::WhatIsThis (std::string fileName)
@@ -3415,12 +3410,7 @@ std::string Utils::Transformer (std::string varName, double& varValOut, double& 
 	{
 	  sVal1 = Transformer("FlS",val1,val1ELo,val1EHi);
 
-	  // @TMP@
-	  // double tolerance = atof(GetGenericParam("TransfTolerance").c_str());
 	  myString << "(3/4*(1 - " << sVal1 << ") * 2*TMath::ATan(" << varName << ")/TMath::Pi())";
-	  // myString << "(abs(3/4*(1 - " << sVal1 << ") * 2*TMath::ATan(" << varName << ")/TMath::Pi()) < 3/4*(1 - " << sVal1 << ")-" << tolerance << " ? ";
-	  // myString << "3/4*(1 - " << sVal1 << ") * 2*TMath::ATan(" << varName << ")/TMath::Pi() : (TMath::ATan(" << varName << ") > 0  ? ";
-	  // myString << "3/4*(1 - " << sVal1 << ")-" << tolerance << " : -3/4*(1 - " << sVal1 << ")+" << tolerance << "))";
 	  std::cout << "[Utils::Transformer]\tTransformer function: " << myString.str().c_str() << std::endl;
 	  return myString.str();
 	}

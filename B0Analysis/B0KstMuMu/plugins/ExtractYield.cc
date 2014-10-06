@@ -3662,20 +3662,6 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   // ###################################################
   if (GetVar(*TotalPDF,x->getPlotLabel()) != NULL) (*TotalPDF)->getVariables()->setRealValue(x->getPlotLabel(),Utility->B0Mass);
   if (fitResult != NULL) fitResult->Print("v");
-  // fitTo parameters:
-  // - NumCPU(n)
-  // - FitOptions(const char*):
-  //   - "m" = MIGRAD only, i.e. no MINOS
-  //   - "s" = Estimate step size with HESSE before starting MIGRAD
-  //   - "h" = Run HESSE after MIGRAD
-  //   - "e" = Perform extended MLL fit
-  //   - "0" = Run MIGRAD with strategy MINUIT 0 (faster, but no corr. matrix at end)
-  //           Does not apply to HESSE or MINOS, if run afterwards
-  //   - "q" = Switch off verbose mode
-  //   - "l" = Save log file with parameter values at each MINUIT step
-  //   - "v" = Show changed parameters at each MINUIT step
-  //   - "t" = Time fit
-  //   - "r" = Save fit output in RooFitResult object (return value is object RFR pointer)
 
 
   // ################
@@ -4519,14 +4505,15 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   // #############################################
   // # Re-make all the fits and save the results #
   // #############################################
-  double fit_BF, error_BF, pdf_BF;
+  double fit_BF, errorLo_BF, errorHi_BF, pdf_BF;
   double nll;
 
   TTree* FitResults = new TTree("FitResults","Toy fit results");
 
-  FitResults->Branch("fit_BF",  &fit_BF,  "fit_BF/D");
-  FitResults->Branch("error_BF",&error_BF,"error_BF/D");
-  FitResults->Branch("pdf_BF",  &pdf_BF,  "pdf_BF/D");
+  FitResults->Branch("fit_BF",    &fit_BF,    "fit_BF/D");
+  FitResults->Branch("errorLo_BF",&errorLo_BF,"errorLo_BF/D");
+  FitResults->Branch("errorHi_BF",&errorHi_BF,"errorHi_BF/D");
+  FitResults->Branch("pdf_BF",    &pdf_BF,    "pdf_BF/D");
 
   FitResults->Branch("nll",&nll,"nll/D");
 
@@ -4546,6 +4533,8 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
 
       toySample = (RooDataSet*)MyToy->genData(i);
       CopyFitResults(TotalPDF,specBin,fitParam);
+
+
       fitResult = MakeMassFit(toySample,&TotalPDF,x,cB0Toy,vecConstr,&NLLvalue,NULL,i);
       if (CheckGoodFit(fitResult) == true) cout << "\n[ExtractYield::MakeMassToy]\t@@@ Fit converged ! @@@" << endl;
       else                                 cout << "\n[ExtractYield::MakeMassToy]\t@@@ Fit didn't converge ! @@@" << endl;
@@ -4559,8 +4548,8 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
 	  varName = "nSig";
 	  fit_BF = GetVar(TotalPDF,varName.c_str())->getVal();
 	  pdf_BF = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
-	  if (fit_BF > pdf_BF) error_BF = GetVar(TotalPDF,varName.c_str())->getErrorLo();
-	  else                 error_BF = GetVar(TotalPDF,varName.c_str())->getErrorHi();
+	  errorLo_BF = GetVar(TotalPDF,varName.c_str())->getErrorLo();
+	  errorHi_BF = GetVar(TotalPDF,varName.c_str())->getErrorHi();
 
 
 	  nll = NLLvalue;
@@ -6839,34 +6828,39 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   // #############################################
   // # Re-make all the fits and save the results #
   // #############################################
-  double fit_BF, error_BF, pdf_BF;
-  double fit_Fl, error_Fl, pdf_Fl;
-  double fitOrg_Fl, errorOrg_Fl, pdfOrg_Fl;
-  double fit_Afb, error_Afb, pdf_Afb;
-  double fitOrg_Afb, errorOrg_Afb, pdfOrg_Afb;
+  double fit_BF, errorLo_BF, errorHi_BF, pdf_BF;
+  double fit_Fl, errorLo_Fl, errorHi_Fl, pdf_Fl;
+  double fitOrg_Fl, errorOrgLo_Fl, errorOrgHi_Fl, pdfOrg_Fl;
+  double fit_Afb, errorLo_Afb, errorHi_Afb, pdf_Afb;
+  double fitOrg_Afb, errorOrgLo_Afb, errorOrgHi_Afb, pdfOrg_Afb;
   double nll;
 
   TTree* FitResults = new TTree("FitResults","Toy fit results");
 
-  FitResults->Branch("fit_BF",  &fit_BF,  "fit_BF/D");
-  FitResults->Branch("error_BF",&error_BF,"error_BF/D");
-  FitResults->Branch("pdf_BF",  &pdf_BF,  "pdf_BF/D");
+  FitResults->Branch("fit_BF",    &fit_BF,    "fit_BF/D");
+  FitResults->Branch("errorLo_BF",&errorLo_BF,"errorLo_BF/D");
+  FitResults->Branch("errorHi_BF",&errorHi_BF,"errorHi_BF/D");
+  FitResults->Branch("pdf_BF",    &pdf_BF,    "pdf_BF/D");
 
-  FitResults->Branch("fit_Fl",  &fit_Fl,  "fit_Fl/D");
-  FitResults->Branch("error_Fl",&error_Fl,"error_Fl/D");
-  FitResults->Branch("pdf_Fl",  &pdf_Fl,  "pdf_Fl/D");
+  FitResults->Branch("fit_Fl",    &fit_Fl,    "fit_Fl/D");
+  FitResults->Branch("errorLo_Fl",&errorLo_Fl,"errorLo_Fl/D");
+  FitResults->Branch("errorHi_Fl",&errorHi_Fl,"errorHi_Fl/D");
+  FitResults->Branch("pdf_Fl",    &pdf_Fl,    "pdf_Fl/D");
 
-  FitResults->Branch("fitOrg_Fl",  &fitOrg_Fl,  "fitOrg_Fl/D");
-  FitResults->Branch("errorOrg_Fl",&errorOrg_Fl,"errorOrg_Fl/D");
-  FitResults->Branch("pdfOrg_Fl",  &pdfOrg_Fl,  "pdfOrg_Fl/D");
+  FitResults->Branch("fitOrg_Fl",    &fitOrg_Fl,    "fitOrg_Fl/D");
+  FitResults->Branch("errorOrgLo_Fl",&errorOrgLo_Fl,"errorOrgLo_Fl/D");
+  FitResults->Branch("errorOrgHi_Fl",&errorOrgHi_Fl,"errorOrgHi_Fl/D");
+  FitResults->Branch("pdfOrg_Fl",    &pdfOrg_Fl,    "pdfOrg_Fl/D");
 
-  FitResults->Branch("fit_Afb",  &fit_Afb,  "fit_Afb/D");
-  FitResults->Branch("error_Afb",&error_Afb,"error_Afb/D");
-  FitResults->Branch("pdf_Afb",  &pdf_Afb,  "pdf_Afb/D");
+  FitResults->Branch("fit_Afb",    &fit_Afb,    "fit_Afb/D");
+  FitResults->Branch("errorLo_Afb",&errorLo_Afb,"errorLo_Afb/D");
+  FitResults->Branch("errorHi_Afb",&errorHi_Afb,"errorHi_Afb/D");
+  FitResults->Branch("pdf_Afb",    &pdf_Afb,    "pdf_Afb/D");
 
-  FitResults->Branch("fitOrg_Afb",  &fitOrg_Afb,  "fitOrg_Afb/D");
-  FitResults->Branch("errorOrg_Afb",&errorOrg_Afb,"errorOrg_Afb/D");
-  FitResults->Branch("pdfOrg_Afb",  &pdfOrg_Afb,  "pdfOrg_Afb/D");
+  FitResults->Branch("fitOrg_Afb",    &fitOrg_Afb,    "fitOrg_Afb/D");
+  FitResults->Branch("errorOrgLo_Afb",&errorOrgLo_Afb,"errorOrgLo_Afb/D");
+  FitResults->Branch("errorOrgHi_Afb",&errorOrgHi_Afb,"errorOrgHi_Afb/D");
+  FitResults->Branch("pdfOrg_Afb",    &pdfOrg_Afb,    "pdfOrg_Afb/D");
 
   FitResults->Branch("nll",&nll,"nll/D");
 
@@ -6891,10 +6885,18 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       toySample = (RooDataSet*)MyToy->genData(i);
       CopyFitResults(TotalPDF,specBin,fitParam);
 
+
+      // #####################
+      // # Apply constraints #
+      // #####################
+      if ((specBin != Utility->GetJPsiBin(q2Bins)) && (specBin != Utility->GetPsiPBin(q2Bins))) BuildAngularConstraints(vecConstr,TotalPDF,"sign",fitParam,q2Bins);
+
+
       // ###########################
       // # Reset parameters in pdf #
       // ###########################
       ResetCombPolyParam(NULL,TotalPDF);
+
 
       fitResult = MakeMass2AnglesFit(toySample,&TotalPDF,x,y,z,cB0Toy,FitType,vecConstr,&NLLvalue,NULL,i);
       if (CheckGoodFit(fitResult) == true) cout << "\n[ExtractYield::MakeMass2AnglesToy]\t@@@ Fit converged ! @@@" << endl;
@@ -6909,20 +6911,20 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 	  varName = "nSig";
 	  fit_BF = GetVar(TotalPDF,varName.c_str())->getVal();
 	  pdf_BF = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
-	  if (fit_BF > pdf_BF) error_BF = GetVar(TotalPDF,varName.c_str())->getErrorLo();
-	  else                 error_BF = GetVar(TotalPDF,varName.c_str())->getErrorHi();
+	  errorLo_BF = GetVar(TotalPDF,varName.c_str())->getErrorLo();
+	  errorHi_BF = GetVar(TotalPDF,varName.c_str())->getErrorHi();
 
 
 	  varName = "FlS";
 	  pdf_Fl = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
 	  Utility->Transformer(varName,fit_Fl,varValELo,varValEHi,fitResult,GetVar(TotalPDF,varName.c_str()));
-	  if (fit_Fl > pdf_Fl) error_Fl = varValELo;
-	  else                 error_Fl = varValEHi;
+	  errorLo_Fl = varValELo;
+	  errorHi_Fl = varValEHi;
 	  fitOrg_Fl = GetVar(TotalPDF,varName.c_str())->getVal();
           tmpVar1.setVal(pdf_Fl);
           Utility->AntiTransformer(varName.c_str(),pdfOrg_Fl,varValELo,varValEHi,&tmpVar1);
-          if (fitOrg_Fl > pdfOrg_Fl) errorOrg_Fl = GetVar(TotalPDF,varName.c_str())->getErrorLo();
-          else                       errorOrg_Fl = GetVar(TotalPDF,varName.c_str())->getErrorHi();
+          errorOrgLo_Fl = GetVar(TotalPDF,varName.c_str())->getErrorLo();
+          errorOrgHi_Fl = GetVar(TotalPDF,varName.c_str())->getErrorHi();
 
 
 	  tmpVar1.setVal(pdfOrg_Fl);
@@ -6931,13 +6933,13 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 	  varName = "AfbS";
 	  pdf_Afb = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
 	  Utility->Transformer(varName,fit_Afb,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,varName.c_str()));
-	  if (fit_Afb > pdf_Afb) error_Afb = varValELo;
-	  else                   error_Afb = varValEHi;
+	  errorLo_Afb = varValELo;
+	  errorHi_Afb = varValEHi;
 	  fitOrg_Afb = GetVar(TotalPDF,varName.c_str())->getVal();
           tmpVar2.setVal(pdf_Afb);
           Utility->AntiTransformer(varName.c_str(),pdfOrg_Afb,varValELo,varValEHi,&tmpVar1,&tmpVar2);
-          if (fitOrg_Afb > pdfOrg_Afb) errorOrg_Afb = GetVar(TotalPDF,varName.c_str())->getErrorLo();
-          else                         errorOrg_Afb = GetVar(TotalPDF,varName.c_str())->getErrorHi();
+          errorOrgLo_Afb = GetVar(TotalPDF,varName.c_str())->getErrorLo();
+          errorOrgHi_Afb = GetVar(TotalPDF,varName.c_str())->getErrorHi();
 
 
 	  nll = NLLvalue;
