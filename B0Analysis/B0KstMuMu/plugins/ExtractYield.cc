@@ -5,9 +5,9 @@
 // # Search for @TMP@ to look for temporary code options                          #
 // ################################################################################
 // # TO DO:                                                                       #
-// # - when computing systematic error from MC-statistics for efficiency I do not #
-// #   propagate from control channels                                            #
-// # - implement 4D fits                                                          #
+// # - implement 4D fits (B0 mass and three decay angles)                         #
+// # - implement 5D fits (K-pi mass, B0 mass and three decay angles) to           #
+// #   disentable S and P-waves                                                   #
 // ################################################################################
 
 #include <TROOT.h>
