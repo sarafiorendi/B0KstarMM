@@ -1200,6 +1200,8 @@ TGraphAsymmErrors* ReadFromASCII (string fileName, unsigned int PlotType, vector
 
 void CheckPhysicsRegion ()
 {
+  stringstream myString;
+  double offset = 0.02;
   TCanvas* canv0 = new TCanvas("canv0","canv0",10,10,1200,600);
   TGraphAsymmErrors* ge;
   TGraphAsymmErrors* geTMP;
@@ -1209,6 +1211,7 @@ void CheckPhysicsRegion ()
   histo->SetYTitle("F_{L}");
   TLine* line1;
   TLine* line2;
+  TLatex* binIndx;
 
   double LUMI = Utility->ReadLumi(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str());
   Utility->MakeGraphVar(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&ge,"Fl");
@@ -1218,26 +1221,38 @@ void CheckPhysicsRegion ()
 
   cout << "\n[MakePlots::CheckPhysicsRegion]\t@@@ I've found " << geTMP->GetN() << " data points @@@" << endl;
 
+  canv0->cd();
+  histo->Draw();
+
   for (int i = 0; i < geTMP->GetN(); i++)
     {
       ge->SetPoint(i,geTMP->GetY()[i],ge->GetY()[i]);
       ge->SetPointEXhigh(i,geTMP->GetErrorYhigh(i));
       ge->SetPointEXlow(i,geTMP->GetErrorYlow(i));
+
+      myString.clear(); myString.str("");
+      myString << i;
+      binIndx = new TLatex(0.5,0.5,myString.str().c_str());
+      binIndx->SetTextFont(61);
+      binIndx->SetTextSize(0.04);
+      binIndx->SetTextColor(kBlue);
+      binIndx->SetNDC(false);
+      binIndx->DrawLatex(geTMP->GetY()[i] + offset,ge->GetY()[i] + offset,myString.str().c_str());
     }
-
-
-  canv0->cd();
-  histo->Draw();
+  
+  
   ge->Draw("pe1");
 
   line1 = new TLine(-3.0/4.0,0.0,0.0,1.0);
   line1->SetLineColor(kRed);
   line1->SetLineWidth(2);
+  line1->SetLineStyle(2);
   line1->Draw("same");
 
   line2 = new TLine(+3.0/4.0,0.0,0.0,1.0);
   line2->SetLineColor(kRed);
   line2->SetLineWidth(2);
+  line2->SetLineStyle(2);
   line2->Draw("same");
 
   DrawString(LUMI);
