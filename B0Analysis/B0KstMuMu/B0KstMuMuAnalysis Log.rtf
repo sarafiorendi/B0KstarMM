@@ -1179,7 +1179,7 @@ HLT-trigger cuts:\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
 \b0 \cf0 \ulnone (A) Search best candidate based on best B0 vtx CL\
-(B) If Fisher test of variance with respect to K* PDG mass is positive then tag the flavor based on best distance\
+(B) If Fisher test of variance with respect to K* PDG mass is positive then tag the flavour based on best distance\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ul \
 Performance without step (B):\
@@ -1194,7 +1194,7 @@ Performance without step (B):\
 \b0  (number of selected truth-matched events / total number of selected events)\
 - 
 \b Flavor-Tagging efficiency: 86.3%
-\b0  (number of correctly assigned flavor state / total number of flavor states in the selected events)\
+\b0  (number of correctly assigned flavour state / total number of flavour states in the selected events)\
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ul Performance with step (B) with confidence level set to 70%:\
@@ -1209,7 +1209,7 @@ Performance without step (B):\
 \b0  (number of selected truth-matched events / total number of selected events)\
 - 
 \b Flavor-Tagging efficiency: 90.5%
-\b0  (number of correctly assigned flavor state / total number of flavor states in the selected events)\
+\b0  (number of correctly assigned flavour state / total number of flavour states in the selected events)\
 \
 \
 @@@@@@@@@@@@@@@@@@\
@@ -1486,11 +1486,9 @@ All q2 bins\
 Determine fit starting values\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ulnone - Step-1: Fit mass-angles --- constraints --- NO-MINOS	[X] Multi minima scan\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 - Step-2: Fit mass-angles --- constraints --- MINOS		[X] Starting values from step-1\
+- Step-2: Fit mass-angles --- constraints --- MINOS		[X] Starting values from step-1\
 - Step-3: Fit mass-angles --- constraints --- MINOS		[X] Starting values from step-2\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \
+\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 \cf0 \ul Final fit:\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
@@ -1579,13 +1577,26 @@ pp cross section at 7 TeV: 48.44 mb\
 \b0  @\
 @@@@@@@@@@@@@@\
 1. Apply correction procedure to data\
-2. Validate observable errors - how ?\
-3. Mistag for S-wave should be ~50%\
-4. LHCb discovered a new dimuon resonance from B+ \'97> mu+mu- K+ at m(mumu) ~4.2 (17.64) GeV and ~3.77 (14.21) GeV\
+2. How do I validate observable errors ( with manual MINOS procedure ? )\
+3. Why Fs ( S-wave fraction ) is so small in my data ?\
+4. How can I compute systematic error associated to mistag for S-wave ? ( should be ~50% )\
+5. LHCb discovered a new dimuon resonance from B+ \'97> mu+mu- K+ at m(mumu) ~4.2 (17.64) GeV and ~3.77 (14.21) GeV\
+\
+
+\b === New observables ===\
+
+\b0 - Rivedere: Fit3DEff + Test3DEff + InterpEff3D.m\
+- Implement new p.d.f.s\
+- Compute efficiency\
+- Measure p.d.f. parameters from MC\
+- Closure tests\
+- Perform measurements\
+- Evaluate systematic uncertainties\
 \
 
 \b === Improvements to the code ===\
 
 \b0 1. Define PDF classes + virtual PDF class: implement PDF + save/load parameters + toy\
 2. Use XML for configuration file\
-3. Improve efficiency description}
+3. Improve efficiency description\
+}

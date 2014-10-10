@@ -10,8 +10,10 @@
 #include <TMatrixTSym.h>
 #include <TGraphAsymmErrors.h>
 
+#if ROOFIT
 #include <RooRealVar.h>
 #include <RooFitResult.h>
+#endif
 
 #include <string>
 #include <vector>

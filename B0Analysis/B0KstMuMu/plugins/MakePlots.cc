@@ -2131,12 +2131,12 @@ void PlotMuMu (string fileName, bool bkgSub)
   c0->cd();
 
   TH1D* hDsig = new TH1D("hDsig","hDsig",nBins,minX,maxX);
-  hDsig->SetXTitle("M(#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
+  hDsig->SetXTitle("m(#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
   hDsig->SetYTitle("Entries / (0.014 GeV)");
   hDsig->SetMarkerStyle(20);
 
   TH1D* hDbkg = new TH1D("hDbkg","hDbkg",nBins,minX,maxX);
-  hDbkg->SetXTitle("M(#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
+  hDbkg->SetXTitle("m(#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
   hDbkg->SetYTitle("Entries / (0.014 GeV)");
   hDbkg->SetMarkerStyle(20);
 
@@ -2207,24 +2207,24 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
   cout << "\n[MakePlots::PlotKst]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
   TH1D* h1Dsig = new TH1D("h1Dsig","h1Dsig",nBins,minX - extra,maxX + extra);
-  h1Dsig->SetXTitle("M(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
+  h1Dsig->SetXTitle("m(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
   h1Dsig->SetYTitle("Entries / (0.004 GeV)");
   h1Dsig->SetMarkerStyle(20);
 
   TH1D* h2Dsig = new TH1D("h2Dsig","h2Dsig",nBins,minX - extra,maxX + extra);
-  h2Dsig->SetXTitle("M(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
+  h2Dsig->SetXTitle("m(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
   h2Dsig->SetYTitle("Entries / (0.004 GeV)");
   h2Dsig->SetMarkerStyle(21);
   h2Dsig->SetMarkerColor(kRed);
 
 
   TH1D* h1Dbkg = new TH1D("h1Dbkg","h1Dbkg",nBins,minX - extra,maxX + extra);
-  h1Dbkg->SetXTitle("M(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
+  h1Dbkg->SetXTitle("m(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
   h1Dbkg->SetYTitle("Entries / (0.004 GeV)");
   h1Dbkg->SetMarkerStyle(20);
 
   TH1D* h2Dbkg = new TH1D("h2Dbkg","h2Dbkg",nBins,minX - extra,maxX + extra);
-  h2Dbkg->SetXTitle("M(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
+  h2Dbkg->SetXTitle("m(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
   h2Dbkg->SetYTitle("Entries / (0.004 GeV)");
   h2Dbkg->SetMarkerStyle(21);
   h2Dbkg->SetMarkerColor(kRed);
@@ -2291,7 +2291,7 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
   theTree->Draw("kstBarMass>>h2Dsig",tmpstring.c_str());
 
   TH1D* h3Dsig = (TH1D*)h1Dsig->Clone("h3Dsig");
-  h3Dsig->SetXTitle("M(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
+  h3Dsig->SetXTitle("m(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
   h3Dsig->SetYTitle("Entries / (0.004 GeV)");
   h3Dsig->SetMarkerStyle(20);
 
@@ -2307,7 +2307,7 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
   theTree->Draw("kstBarMass>>h2Dbkg",tmpstring.c_str());
 
   TH1D* h3Dbkg = (TH1D*)h1Dbkg->Clone("h3Dbkg");
-  h3Dbkg->SetXTitle("M(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
+  h3Dbkg->SetXTitle("m(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
   h3Dbkg->SetYTitle("Entries / (0.004 GeV)");
   h3Dbkg->SetMarkerStyle(20);
 
@@ -2412,22 +2412,22 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
   TCanvas* c2 = new TCanvas("c2","c2",30,30,700,500);
 
   TH1D* hKKSig = new TH1D("hKKSig","hKKSig",nBins,KKminX,KKmaxX);
-  hKKSig->SetXTitle("M(#font[122]{K}#lower[0.6]{^{#font[122]{+}}}#font[122]{K}#lower[0.6]{^{#font[122]{\55}}}) (GeV)");
+  hKKSig->SetXTitle("m(#font[122]{K}#lower[0.6]{^{#font[122]{+}}}#font[122]{K}#lower[0.6]{^{#font[122]{\55}}}) (GeV)");
   hKKSig->SetYTitle("Entries / (0.005 GeV)");
   hKKSig->SetFillColor(kAzure+6);
 
   TH1D* hKKBkg = new TH1D("hKKBkg","hKKBkg",nBins,KKminX,KKmaxX);
-  hKKBkg->SetXTitle("M(#font[122]{K}#lower[0.6]{^{#font[122]{+}}}#font[122]{K}#lower[0.6]{^{#font[122]{\55}}}) (GeV)");
+  hKKBkg->SetXTitle("m(#font[122]{K}#lower[0.6]{^{#font[122]{+}}}#font[122]{K}#lower[0.6]{^{#font[122]{\55}}}) (GeV)");
   hKKBkg->SetYTitle("Entries / (0.005 GeV)");
   hKKBkg->SetFillColor(kAzure+6);
 
   TH1D* hKstSig = new TH1D("hKstSig","hKstSig",nBins,KstminX - Kstextra,KstmaxX + Kstextra);
-  hKstSig->SetXTitle("M(K #pi) (GeV)");
+  hKstSig->SetXTitle("m(K #pi) (GeV)");
   hKstSig->SetYTitle("Entries / (0.022 GeV)");
   hKstSig->SetMarkerStyle(20);
 
   TH1D* hKstBkg = new TH1D("hKstBkg","hKstBkg",nBins,KstminX - Kstextra,KstmaxX + Kstextra);
-  hKstBkg->SetXTitle("M(K #pi) (GeV)");
+  hKstBkg->SetXTitle("m(K #pi) (GeV)");
   hKstBkg->SetYTitle("Entries / (0.022 GeV)");
   hKstSig->SetMarkerStyle(20);
 
@@ -2574,12 +2574,12 @@ void PlotMuHadMass (string fileName)
   cout << "\n[MakePlots::PlotMuHadMass]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
   TH1D* histoK = new TH1D("histoK","histoK",nBins,minX,maxX);
-  histoK->SetXTitle("M(K #mu) (GeV)");
+  histoK->SetXTitle("m(K #mu) (GeV)");
   histoK->SetYTitle("Entries / (0.056 GeV)");
   histoK->SetFillColor(kAzure+6);
 
   TH1D* histoPi = new TH1D("histoPi","histoPi",nBins,minX,maxX);
-  histoPi->SetXTitle("M(#pi #mu) (GeV)");
+  histoPi->SetXTitle("m(#pi #mu) (GeV)");
   histoPi->SetYTitle("Entries / (0.056 GeV)");
   histoPi->SetFillColor(kAzure+6);
 

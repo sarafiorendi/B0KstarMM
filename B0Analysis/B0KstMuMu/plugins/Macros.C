@@ -507,6 +507,7 @@ void TruthMatching (string fileName, bool truthMatch)
   // ##########################
   SetStyle();
   gStyle->SetPalette(1);
+  gStyle->SetOptStat(1001110);
 
 
   // #################
@@ -521,15 +522,15 @@ void TruthMatching (string fileName, bool truthMatch)
   double intMinX = 5.00;
   double intMaxX = 5.56;
   unsigned int nBins;
-  if (truthMatch == true) nBins = 300;
+  if (truthMatch == true) nBins = 600;
   else                    nBins = 100;
 
   TH1D* hb = new TH1D("hb","hb",nBins,minX,maxX);
-  hb->SetXTitle("M(K #pi #mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
+  hb->SetXTitle("m(K #pi #mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
   hb->SetYTitle("Entries");
 
   TH1D* hbar = new TH1D("hbar","hbar",nBins,minX,maxX);
-  hbar->SetXTitle("M(K #pi #mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
+  hbar->SetXTitle("m(K #pi #mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
   hbar->SetYTitle("Entries");
 
   TF1 *f0, *f1;
@@ -577,9 +578,9 @@ void TruthMatching (string fileName, bool truthMatch)
       // #############################################
       // # Measured from fit with truthMatch == true #
       // #############################################
-      f0->FixParameter(0,5.28);
-      f0->FixParameter(1,0.05737);
-      f0->FixParameter(2,0.02790);
+      f0->FixParameter(0,5.27962);
+      f0->FixParameter(1,0.0571392);
+      f0->FixParameter(2,0.0277426);
 
       f0->SetParameter(3,55.0);
       f0->SetParameter(4,35.0);
@@ -1035,19 +1036,19 @@ void PlotBkgMC (string fileName, bool iFit, double scaleMCdata)
 
   TH1D* h0 = new TH1D("h0","h0",nBins,B0Mass - B0MassIntervalLeft,B0Mass + B0MassIntervalRight);
   h0->Sumw2();
-  h0->SetXTitle("M(K #pi #mu^{+} #mu^{-}) (GeV)");
+  h0->SetXTitle("m(K #pi #mu^{+} #mu^{-}) (GeV)");
   h0->SetYTitle("Entries / (0.028 GeV)");
   h0->SetMarkerStyle(20);
 
   TH1D* h1 = new TH1D("h1","h1",nBins,B0Mass - B0MassIntervalLeft,B0Mass + B0MassIntervalRight);
   h1->Sumw2();
-  h1->SetXTitle("M(K #pi #mu^{+} #mu^{-}) (GeV)");
+  h1->SetXTitle("m(K #pi #mu^{+} #mu^{-}) (GeV)");
   h1->SetYTitle("Entries / (0.028 GeV)");
   h1->SetMarkerStyle(20);
 
   TH1D* h2 = new TH1D("h2","h2",nBins,B0Mass - B0MassIntervalLeft,B0Mass + B0MassIntervalRight);
   h2->Sumw2();
-  h2->SetXTitle("M(K #pi #mu^{+} #mu^{-}) (GeV)");
+  h2->SetXTitle("m(K #pi #mu^{+} #mu^{-}) (GeV)");
   h2->SetYTitle("Entries / (0.028 GeV)");
   h2->SetMarkerStyle(20);
 
