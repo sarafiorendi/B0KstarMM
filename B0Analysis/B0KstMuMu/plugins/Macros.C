@@ -1056,7 +1056,7 @@ void PlotBkgMC (string fileName, bool iFit, double scaleMCdata)
   // ################
   // # J/psi region #
   // ################
-  theTree->Draw("B0MassArb>>h0","B0MassArb > 5.27953 - 0.28 && B0MassArb < 5.27953 + 0.28 && genSignal == 0 && truthMatchSignal == 1 && mumuMass > 3.096916 - 5*mumuMassE && mumuMass < 3.096916 + 3*mumuMassE");
+  theTree->Draw("B0MassArb>>h0","B0MassArb > 5.27953 - 0.28 && B0MassArb < 5.27953 + 0.28 && genSignal == 0 && truthMatchSignal == 1 && mumuMass > 3.096916 - 3*mumuMassE && mumuMass < 3.096916 + 3*mumuMassE");
   h0->Scale(scaleMCdata);
 
   TF1* f0  = new TF1("f0", "[0]*([1]*TMath::Gaus(x,[2],[3]) + (1-[1])*TMath::Gaus(x,[2],[4])) + [5]*TMath::Gaus(x,[6],[7]) + [8]*TMath::Gaus(x,[9],[10])",B0Mass - B0MassIntervalLeft,B0Mass + B0MassIntervalRight);
@@ -1138,7 +1138,7 @@ void PlotBkgMC (string fileName, bool iFit, double scaleMCdata)
   // ###############################
   // # J/psi AND psi(2S) rejection #
   // ###############################
-  theTree->Draw("B0MassArb>>h2","B0MassArb > 5.27953 - 0.28 && B0MassArb < 5.27953 + 0.28 && genSignal == 0 && truthMatchSignal == 1 && mumuMass < 3.096916 - 5*mumuMassE || mumuMass > 3.68609 + 3*mumuMassE || (mumuMass > 3.096916 + 3*mumuMassE && mumuMass < 3.68609 - 3*mumuMassE)");
+  theTree->Draw("B0MassArb>>h2","B0MassArb > 5.27953 - 0.28 && B0MassArb < 5.27953 + 0.28 && genSignal == 0 && truthMatchSignal == 1 && mumuMass < 3.096916 - 3*mumuMassE || mumuMass > 3.68609 + 3*mumuMassE || (mumuMass > 3.096916 + 3*mumuMassE && mumuMass < 3.68609 - 3*mumuMassE)");
   h2->Scale(scaleMCdata);
 
 
