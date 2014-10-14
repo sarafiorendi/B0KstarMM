@@ -23,6 +23,7 @@
 #include <TLegend.h>
 #include <TPaveText.h>
 #include <TLatex.h>
+#include <TCutG.h>
 #include <Math/Functor.h>
 
 #include <RooRealVar.h>
@@ -79,7 +80,7 @@ using namespace RooFit;
 // ##########################################
 // # Internal flags to control the workflow #
 // ##########################################
-#define MAKEmumuPLOTS true
+#define MAKEmumuPLOTS false
 #define SETBATCH      false
 #define SAVEPOLY      false // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
 #define SAVEPLOT      false
@@ -353,9 +354,9 @@ void GenerateDatasetFromPDF     (RooAbsPdf* pdf,      unsigned int fileIndx, vec
 void GenerateDatasetFromDataset (RooDataSet* dataSet, unsigned int fileIndx, vector<double>* q2Bins, int q2BinIndx, RooArgSet setVar, string fileName);
 string GeneratePolynomial       (RooRealVar* var, unsigned int nCoef, string sCoef);
 
-void FitDimuonInvMass           (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x, TCanvas* Canv, bool justPlotMuMuMass, bool justKeepPsi, string plotName);
+void FitDimuonInvMass           (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x, TCanvas* Canv, bool justPlotMuMuMass, bool justKeepPsi, string plotName, vector<double>* q2Bins);
 
-void MakeDatasets               (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType);
+void MakeDatasets               (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType, vector<double>* q2Bins);
 unsigned int GetSignalType      (unsigned int FitType, vector<double>* q2Bins, int q2BinIndx);
 
 // ==================
@@ -2839,7 +2840,7 @@ string GeneratePolynomial (RooRealVar* var, unsigned int nCoef, string sCoef)
 }
 
 
-void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x, TCanvas* Canv, bool justPlotMuMuMass, bool justKeepPsi, string plotName)
+void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x, TCanvas* Canv, bool justPlotMuMuMass, bool justKeepPsi, string plotName, vector<double>* q2Bins)
 {
   stringstream myString;
   double sigmaJPsi, sigmaJPsiE;
@@ -2876,6 +2877,8 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
   else
     {
       Canv->Divide(1,2);
+
+
 
 
       // ### J/psi ###
@@ -2997,6 +3000,26 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       legJPsi->Draw("same");
 
 
+      // #######################
+      // # Draw exclusion zone #
+      // #######################
+      myString.clear(); myString.str("");
+      myString << plotName.c_str() << "_JPsi";
+      TCutG* ExclusionZoneJPsi = new TCutG(myString.str().c_str(),5);
+      ExclusionZoneJPsi->SetVarX("");
+      ExclusionZoneJPsi->SetVarY("");
+      ExclusionZoneJPsi->SetPoint(0,sqrt(q2Bins->operator[](Utility->GetJPsiBin(q2Bins))),0.0);
+      ExclusionZoneJPsi->SetPoint(1,sqrt(q2Bins->operator[](Utility->GetJPsiBin(q2Bins)+1)),0.0);
+      ExclusionZoneJPsi->SetPoint(2,sqrt(q2Bins->operator[](Utility->GetJPsiBin(q2Bins)+1)),1e6);
+      ExclusionZoneJPsi->SetPoint(3,sqrt(q2Bins->operator[](Utility->GetJPsiBin(q2Bins))),1e6);
+      ExclusionZoneJPsi->SetPoint(4,sqrt(q2Bins->operator[](Utility->GetJPsiBin(q2Bins))),0.0);
+      ExclusionZoneJPsi->SetFillColor(kRed);
+      ExclusionZoneJPsi->SetFillStyle(3003);
+      ExclusionZoneJPsi->Draw("F");
+
+
+
+
       // ### psi(2S) ###
 
       // #######################################################
@@ -3116,6 +3139,26 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       legPsiP->Draw("same");
 
 
+      // #######################
+      // # Draw exclusion zone #
+      // #######################
+      myString.clear(); myString.str("");
+      myString << plotName.c_str() << "_PsiP";
+      TCutG* ExclusionZonePsiP = new TCutG(myString.str().c_str(),5);
+      ExclusionZonePsiP->SetVarX("");
+      ExclusionZonePsiP->SetVarY("");
+      ExclusionZonePsiP->SetPoint(0,sqrt(q2Bins->operator[](Utility->GetPsiPBin(q2Bins))),0.0);
+      ExclusionZonePsiP->SetPoint(1,sqrt(q2Bins->operator[](Utility->GetPsiPBin(q2Bins)+1)),0.0);
+      ExclusionZonePsiP->SetPoint(2,sqrt(q2Bins->operator[](Utility->GetPsiPBin(q2Bins)+1)),1e6);
+      ExclusionZonePsiP->SetPoint(3,sqrt(q2Bins->operator[](Utility->GetPsiPBin(q2Bins))),1e6);
+      ExclusionZonePsiP->SetPoint(4,sqrt(q2Bins->operator[](Utility->GetPsiPBin(q2Bins))),0.0);
+      ExclusionZonePsiP->SetFillColor(kRed);
+      ExclusionZonePsiP->SetFillStyle(3003);
+      ExclusionZonePsiP->Draw("F");
+
+
+
+
       // ##############
       // # Save plots #
       // ##############
@@ -3191,7 +3234,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
 }
 
 
-void MakeDatasets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
+void MakeDatasets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType, vector<double>* q2Bins)
 {
   stringstream myString;
 
@@ -3361,19 +3404,19 @@ void MakeDatasets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType)
       if (MAKEmumuPLOTS == true)
 	{
 	  TCanvas* cmumuMass_BeforeRej = new TCanvas("cmumuMass_BeforeRej","cmumuMass_BeforeRej",10,10,700,900);
-	  FitDimuonInvMass(SingleCandNTuple,&TotalPDFJPsi,&TotalPDFPsiP,mumuMass,cmumuMass_BeforeRej,false,false,"TotalPDFPsi_BeforeRej");
+	  FitDimuonInvMass(SingleCandNTuple,&TotalPDFJPsi,&TotalPDFPsiP,mumuMass,cmumuMass_BeforeRej,false,false,"TotalPDFPsi_BeforeRej",q2Bins);
 
 	  TCanvas* cmumuMass_JPsi = new TCanvas("cmumuMass_JPsi","cmumuMass_JPsi",10,10,700,900);
-	  FitDimuonInvMass(SingleCandNTuple_JPsi,&TotalPDFJPsi_JPsi,&TotalPDFPsiP_JPsi,mumuMass,cmumuMass_JPsi,false,true,"TotalPDFPsi_JPsi");
+	  FitDimuonInvMass(SingleCandNTuple_JPsi,&TotalPDFJPsi_JPsi,&TotalPDFPsiP_JPsi,mumuMass,cmumuMass_JPsi,false,true,"TotalPDFPsi_JPsi",q2Bins);
 
 	  TCanvas* cmumuMass_PsiP = new TCanvas("cmumuMass_PsiP","cmumuMass_PsiP",10,10,700,900);
-	  FitDimuonInvMass(SingleCandNTuple_PsiP,&TotalPDFJPsi_JPsi,&TotalPDFPsiP_JPsi,mumuMass,cmumuMass_PsiP,false,true,"TotalPDFPsi_PsiP");
+	  FitDimuonInvMass(SingleCandNTuple_PsiP,&TotalPDFJPsi_JPsi,&TotalPDFPsiP_JPsi,mumuMass,cmumuMass_PsiP,false,true,"TotalPDFPsi_PsiP",q2Bins);
 	  
 	  TCanvas* cmumuMass_RejPsi = new TCanvas("cmumuMass_RejPsi","cmumuMass_RejPsi",10,10,700,900);
-	  FitDimuonInvMass(SingleCandNTuple_RejectPsi,&TotalPDFJPsi_RejPsi,&TotalPDFPsiP_RejPsi,mumuMass,cmumuMass_RejPsi,false,true,"TotalPDFPsi_RejPsi");
+	  FitDimuonInvMass(SingleCandNTuple_RejectPsi,&TotalPDFJPsi_RejPsi,&TotalPDFPsiP_RejPsi,mumuMass,cmumuMass_RejPsi,false,true,"TotalPDFPsi_RejPsi",q2Bins);
 	  
 	  TCanvas* cmumuMass_KeepPsi = new TCanvas("cmumuMass_KeepPsi","cmumuMass_KeepPsi",10,10,700,900);
-	  FitDimuonInvMass(SingleCandNTuple_KeepPsi,&TotalPDFJPsi_KeepPsi,&TotalPDFPsiP_KeepPsi,mumuMass,cmumuMass_KeepPsi,false,true,"TotalPDFPsi_KeepPsi");
+	  FitDimuonInvMass(SingleCandNTuple_KeepPsi,&TotalPDFJPsi_KeepPsi,&TotalPDFPsiP_KeepPsi,mumuMass,cmumuMass_KeepPsi,false,true,"TotalPDFPsi_KeepPsi",q2Bins);
 	}
     }
   
@@ -7255,7 +7298,7 @@ int main(int argc, char** argv)
 	      // # Make datasets #
 	      // #################
 	      cout << "\n[ExtractYield::main]\t@@@ Making datasets @@@" << endl;
-	      MakeDatasets(NTuple,FitType);
+	      MakeDatasets(NTuple,FitType,&q2Bins);
 
 
 	      // ##############################
@@ -7507,7 +7550,7 @@ int main(int argc, char** argv)
 	      // # Make datasets #
 	      // #################
 	      cout << "\n[ExtractYield::main]\t@@@ Making datasets @@@" << endl;
-	      MakeDatasets(NTuple,FitType);
+	      MakeDatasets(NTuple,FitType,&q2Bins);
 
 
 	      // ################################################
@@ -7547,7 +7590,7 @@ int main(int argc, char** argv)
 	      // # Make datasets #
 	      // #################
 	      cout << "\n[ExtractYield::main]\t@@@ Making datasets @@@" << endl;
-	      MakeDatasets(NTuple,FitType);
+	      MakeDatasets(NTuple,FitType,&q2Bins);
 
 
 	      if (FitType == 81) // Branching fraction
@@ -7579,7 +7622,7 @@ int main(int argc, char** argv)
 	      // # Make datasets #
 	      // #################
 	      cout << "\n[ExtractYield::main]\t@@@ Making datasets @@@" << endl;
-	      MakeDatasets(NTuple,FitType);
+	      MakeDatasets(NTuple,FitType,&q2Bins);
 	      
 	      
 	      // #################################
@@ -7593,7 +7636,7 @@ int main(int argc, char** argv)
 	      // # Make datasets #
 	      // #################
 	      cout << "\n[ExtractYield::main]\t@@@ Making datasets @@@" << endl;
-	      MakeDatasets(NTuple,FitType);
+	      MakeDatasets(NTuple,FitType,&q2Bins);
 
 
 	      if (FitType == 96) // Fl-Afb-fit
