@@ -3879,25 +3879,13 @@ bool Utils::PsiRejection (double myB0Mass, double myMuMuMass, double myMuMuMassE
 
   if (seleType == "keepJpsi")
     {
-      if ((fabs(myMuMuMass - JPsiMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * myMuMuMassE) &&
-
-	  ((B0andPsiCut == false) ||
-
-	   ((B0andPsiCut == true) &&
-	    (((myMuMuMass < JPsiMass) && (fabs((myB0Mass - B0Mass) - (myMuMuMass - JPsiMass)) < atof(GetGenericParam("B&psiMassJpsiLo").c_str()))) ||
-	     ((myMuMuMass > JPsiMass) && (fabs((myB0Mass - B0Mass) - (myMuMuMass - JPsiMass)) < atof(GetGenericParam("B&psiMassJpsiHi").c_str())))))))
-
+      if ((fabs(myMuMuMass - JPsiMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * myMuMuMassE) && (B0andPsiCut == false))
+	
 	return true;
     }
   else if (seleType == "keepPsiP")
     {
-      if ((fabs(myMuMuMass - PsiPMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * myMuMuMassE) &&
-
-	  ((B0andPsiCut == false) ||
-
-	   ((B0andPsiCut == true) &&
-	    (((myMuMuMass < PsiPMass) && (fabs((myB0Mass - B0Mass) - (myMuMuMass - PsiPMass)) < atof(GetGenericParam("B&psiMassPsiPLo").c_str()))) ||
-	     ((myMuMuMass > PsiPMass) && (fabs((myB0Mass - B0Mass) - (myMuMuMass - PsiPMass)) < atof(GetGenericParam("B&psiMassPsiPHi").c_str())))))))
+      if ((fabs(myMuMuMass - PsiPMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * myMuMuMassE) && (B0andPsiCut == false))
 
 	return true;
     }
@@ -3927,24 +3915,8 @@ bool Utils::PsiRejection (double myB0Mass, double myMuMuMass, double myMuMuMassE
   else if (seleType == "keepPsi")
     {
       if (((fabs(myMuMuMass - JPsiMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * myMuMuMassE)  ||
-	   (fabs(myMuMuMass - PsiPMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * myMuMuMassE)) &&
+	   (fabs(myMuMuMass - PsiPMass) < atof(GetGenericParam("NSigmaPsi").c_str()) * myMuMuMassE)) && (B0andPsiCut == false))
 
-	  ((B0andPsiCut == false) ||
-
-	   ((B0andPsiCut == true) &&
-
-	    (((myMuMuMass < JPsiMass) &&
-	      ((fabs((myB0Mass - B0Mass) - (myMuMuMass - JPsiMass)) < atof(GetGenericParam("B&psiMassJpsiLo").c_str()))   ||
-	       (fabs((myB0Mass - B0Mass) - (myMuMuMass - PsiPMass)) < atof(GetGenericParam("B&psiMassPsiPLo").c_str())))) ||
-	     
-	     ((myMuMuMass > PsiPMass) &&
-	      ((fabs((myB0Mass - B0Mass) - (myMuMuMass - JPsiMass)) < atof(GetGenericParam("B&psiMassJpsiHi").c_str()))   ||
-	       (fabs((myB0Mass - B0Mass) - (myMuMuMass - PsiPMass)) < atof(GetGenericParam("B&psiMassPsiPHi").c_str())))) ||
-	     
-	     ((myMuMuMass > JPsiMass) && (myMuMuMass < PsiPMass) &&
-	      ((fabs((myB0Mass - B0Mass) - (myMuMuMass - JPsiMass)) < atof(GetGenericParam("B&psiMassJpsiHi").c_str()))    ||
-	       (fabs((myB0Mass - B0Mass) - (myMuMuMass - PsiPMass)) < atof(GetGenericParam("B&psiMassPsiPLo").c_str()))))))))
-	
 	return true;
     }
   else

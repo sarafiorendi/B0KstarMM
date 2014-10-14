@@ -243,7 +243,7 @@ class Utils
   unsigned int GetFitParamIndx    (std::string varName);
   unsigned int GetConfigParamIndx (std::string varName);
 
-  bool PsiRejection   (double myB0Mass, double myMuMuMass, double myMuMuMassE, std::string seleType, bool B0andPsiCut);
+  bool PsiRejection   (double myB0Mass, double myMuMuMass, double myMuMuMassE, std::string seleType, bool B0andPsiCut = false);
   bool ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigCheck, double evFraction, int* BestCandIndx, bool* B0notB0bar, int* TrigCat, unsigned int* countCands);
   bool FlavorTagger   (B0KstMuMuTreeContent* NTuple, unsigned int i, bool* B0notB0bar);
 
