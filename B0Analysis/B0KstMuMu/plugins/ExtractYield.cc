@@ -79,7 +79,7 @@ using namespace RooFit;
 // ##########################################
 // # Internal flags to control the workflow #
 // ##########################################
-#define MAKEmumuPLOTS false
+#define MAKEmumuPLOTS true
 #define SETBATCH      false
 #define SAVEPOLY      false // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
 #define SAVEPLOT      false
@@ -3881,7 +3881,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // #####################
       // # Mis-tagged events #
       // #####################
-      Utility->ReadParVsq2Bins(myString.str().c_str(),"I[S*E]misTag",&vecParStr);
+      Utility->ReadParVsq2Bins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),"I[S*E]misTag",&vecParStr);
       myString.clear(); myString.str("");
       myString << vecParStr->operator[](atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->GetJPsiBin(q2Bins) : Utility->GetPsiPBin(q2Bins)).c_str();
       SetValueAndErrors(NULL,"",1.0,&myString,&effPsiMisTag,&effPsiMisTagErr,&effPsiMisTagErr);

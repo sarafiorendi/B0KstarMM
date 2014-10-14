@@ -2442,6 +2442,15 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
   hDalitzBkg->SetZTitle("Entries / (0.03x0.125 (GeV#lower[0.4]{^{4}}))");
 
 
+  if      (RECOorGEN == "RECO") cout << "\n@@@ Using RECO information @@@" << endl;
+  else if (RECOorGEN == "GEN")  cout << "\n@@@ Using GEN information @@@" << endl;
+  else
+    {
+      cout << "[MakePlots::PlotKK]\tWrong parameter: " << RECOorGEN << endl;
+      exit (EXIT_FAILURE);
+    }
+
+
   for (int entry = 0; entry < nEntries; entry++)
     {
       theTree->GetEntry(entry);
@@ -2492,11 +2501,6 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
 	      massKpi = Utility->computeInvMass(NTuple->genKstTrkmPx,NTuple->genKstTrkmPy,NTuple->genKstTrkmPz,Utility->kaonMass,
 						NTuple->genKstTrkpPx,NTuple->genKstTrkpPy,NTuple->genKstTrkpPz,Utility->pionMass);
 	    }
-	}
-      else
-	{
-	  cout << "[MakePlots::PlotKK]\tWrong parameter: " << RECOorGEN << endl;
-	  exit (EXIT_FAILURE);
 	}
 
 
