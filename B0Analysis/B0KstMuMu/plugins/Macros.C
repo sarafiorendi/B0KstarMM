@@ -967,23 +967,20 @@ void PlotCutScans (string fileName, string type)
 
   TFile* _file = TFile::Open(fileName.c_str(),"READ");
 
-  myString.clear();
-  myString.str("");
+  myString.clear(); myString.str("");
   myString << "c0_" << type;
   TCanvas* c0 = (TCanvas*)_file->Get(myString.str().c_str());
 
-  myString.clear();
-  myString.str("");
+  myString.clear(); myString.str("");
   myString << "c0_" << type << "_1";
   TPad* p0 = (TPad*)c0->GetPrimitive(myString.str().c_str());
   TH1D* h0 = (TH1D*)p0->GetPrimitive("histoR1");
 
-  myString.clear();
-  myString.str("");
+  myString.clear(); myString.str("");
   myString << "c0_" << type << "_4";
   TPad* p1 = (TPad*)c0->GetPrimitive(myString.str().c_str());
   TH1D* h1 = (TH1D*)p1->GetPrimitive("histoR4");
-  h1->SetYTitle("S / #sqrt{(S+B)}");
+  h1->SetYTitle("S / sqrt(S+B)");
 
 
   // ##########################
@@ -991,6 +988,7 @@ void PlotCutScans (string fileName, string type)
   // ##########################
   SetStyle();
   gStyle->SetPalette(1);
+  gStyle->SetOptStat(0);
 
 
   TCanvas* c1 = new TCanvas("c1","c1",10,10,900,500);
@@ -1239,8 +1237,7 @@ void DivideNTuple (string fileNameIn, string fileNameOut, unsigned int n)
   fileNameOut.replace(fileNameOut.find(".root"),5,"");
   for (unsigned int i = 0; i < n; i++)
     {
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << fileNameOut << "_" << i << ".root";
       cout << "\n@@@ Making file n #" << i << " --> " << myString.str().c_str() << " @@@" << endl;
 

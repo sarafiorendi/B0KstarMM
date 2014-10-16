@@ -172,35 +172,42 @@ void MakeComparisonDataMC (unsigned int plotType)
 // #############################################
 // # plotType =  0 --> B0 pT                   #
 // # plotType =  1 --> B0 eta                  #
+// # plotType =  2 --> B0 vtx CL               #
+// # plotType =  3 --> B0 L/sigma              #
+// # plotType =  4 --> B0 cos(alpha)           #
 // #############################################
-// # plotType =  2 --> mu+ pT                  #
-// # plotType =  3 --> mu- pT                  #
-// # plotType =  4 --> mu+ eta                 #
-// # plotType =  5 --> mu- eta                 #
-// # plotType =  6 --> mu+ phi, eta range      #
-// # plotType =  7 --> mu+ phi, eta range      #
-// # plotType =  8 --> mu+ phi, eta range      #
+// # plotType =  5 --> mu+ pT                  #
+// # plotType =  6 --> mu- pT                  #
+// # plotType =  7 --> mu+ eta                 #
+// # plotType =  8 --> mu- eta                 #
 // # plotType =  9 --> mu+ phi, eta range      #
-// # plotType = 10 --> mu- phi, eta range      #
-// # plotType = 11 --> mu- phi, eta range      #
-// # plotType = 12 --> mu- phi, eta range      #
+// # plotType = 10 --> mu+ phi, eta range      #
+// # plotType = 11 --> mu+ phi, eta range      #
+// # plotType = 12 --> mu+ phi, eta range      #
 // # plotType = 13 --> mu- phi, eta range      #
+// # plotType = 14 --> mu- phi, eta range      #
+// # plotType = 15 --> mu- phi, eta range      #
+// # plotType = 16 --> mu- phi, eta range      #
 // #############################################
-// # plotType = 14 --> K*0 trk+ pT             #
-// # plotType = 15 --> K*0 trk- pT             #
-// # plotType = 16 --> K*0 trk+ eta            #
-// # plotType = 17 --> K*0 trk+ eta            #
-// # plotType = 18 --> K*0 trk+ phi, eta range #
-// # plotType = 19 --> K*0 trk+ phi, eta range #
-// # plotType = 20 --> K*0 trk+ phi, eta range #
+// # plotType = 17 --> K*0 trk+ pT             #
+// # plotType = 18 --> K*0 trk- pT             #
+// # plotType = 19 --> K*0 trk+ eta            #
+// # plotType = 20 --> K*0 trk+ eta            #
 // # plotType = 21 --> K*0 trk+ phi, eta range #
-// # plotType = 22 --> K*0 trk- phi, eta range #
-// # plotType = 23 --> K*0 trk- phi, eta range #
-// # plotType = 24 --> K*0 trk- phi, eta range #
+// # plotType = 22 --> K*0 trk+ phi, eta range #
+// # plotType = 23 --> K*0 trk+ phi, eta range #
+// # plotType = 24 --> K*0 trk+ phi, eta range #
 // # plotType = 25 --> K*0 trk- phi, eta range #
+// # plotType = 26 --> K*0 trk- phi, eta range #
+// # plotType = 27 --> K*0 trk- phi, eta range #
+// # plotType = 28 --> K*0 trk- phi, eta range #
 // #############################################
-// # plotType = 26 --> cos(theta_K)            #
-// # plotType = 27 --> cos(theta_l)            #
+// # plotType = 29 --> cos(theta_K)            #
+// # plotType = 30 --> cos(theta_l)            #
+// # plotType = 31 --> phi                     #
+// #############################################
+// # plotType = 32 --> K*0 trk+ DCA/sigma      #
+// # plotType = 33 --> K*0 trk- DCA/sigma      #
 // #############################################
 {
   stringstream myString;
@@ -259,25 +266,51 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "B0eta.pdf";
     }
+  else if (plotType == 2)
+    {
+      Xtitle = "B^{0} vtx. CL";
+      minX = 0.0;
+      maxX = 1.0;
 
+      fileName = "B0vtxCL.pdf";
+   }
+  else if (plotType == 3)
+    {
+      Xtitle = "B^{0} L/#sigma";
+      minX = 0.0;
+      maxX = 100.0;
+
+      fileName = "B0vtxLS.pdf";
+   }
+  else if (plotType == 4)
+    {
+      Xtitle = "B^{0} cos(#alpha)";
+      minX = 0.9994;
+      maxX = 1.0;
+
+      nBinsX = 28;
+
+      fileName = "B0cosAlphaBS.pdf";
+   }
+  
   // #########
   // # Muons #
   // #########
-  else if (plotType == 2)
+  else if (plotType == 5)
     {
       Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} p_{T} (GeV)";
       maxX = 40.0;
 
       fileName = "MuppT.pdf";
     }
-  else if (plotType == 3)
+  else if (plotType == 6)
     {
       Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}} p_{T} (GeV)";
       maxX = 40.0;
 
       fileName = "MumpT.pdf";
     }
-  else if (plotType == 4)
+  else if (plotType == 7)
     {
       Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #eta";
       minX = -2.4;
@@ -285,7 +318,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "Mupeta.pdf";
     }
-  else if (plotType == 5)
+  else if (plotType == 8)
     {
       Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}} #eta";
       minX = -2.4;
@@ -293,7 +326,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "Mumeta.pdf";
     }
-  else if (plotType == 6)
+  else if (plotType == 9)
     {
       Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #phi";
       minX = -3.15;
@@ -307,7 +340,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "Mupphi_eta0.pdf";
     }
-  else if (plotType == 7)
+  else if (plotType == 10)
     {
       Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #phi";
       minX = -3.15;
@@ -321,7 +354,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "Mupphi_eta1.pdf";
     }
-  else if (plotType == 8)
+  else if (plotType == 11)
     {
       Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #phi";
       minX = -3.15;
@@ -335,7 +368,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "Mupphi_eta2.pdf";
     }
-  else if (plotType == 9)
+  else if (plotType == 12)
     {
       Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #phi";
       minX = -3.15;
@@ -349,7 +382,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "Mupphi_eta3.pdf";
     }
-  else if (plotType == 10)
+  else if (plotType == 13)
     {
       Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}} #phi";
       minX = -3.15;
@@ -363,7 +396,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "Mumphi_eta0.pdf";
     }
-  else if (plotType == 11)
+  else if (plotType == 14)
     {
       Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}} #phi";
       minX = -3.15;
@@ -377,7 +410,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "Mumphi_eta1.pdf";
     }
-  else if (plotType == 12)
+  else if (plotType == 15)
     {
       Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}} #phi";
       minX = -3.15;
@@ -391,7 +424,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "Mumphi_eta2.pdf";
     }
-  else if (plotType == 13)
+  else if (plotType == 16)
     {
       Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}} #phi";
       minX = -3.15;
@@ -409,21 +442,21 @@ void MakeComparisonDataMC (unsigned int plotType)
   // ###########
   // # Hadrons #
   // ###########
-  else if (plotType == 14)
+  else if (plotType == 17)
     {
       Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} p_{T} (GeV)";
       maxX = 20.0;
 
       fileName = "KstTrkppT.pdf";
     }
-  else if (plotType == 15)
+  else if (plotType == 18)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk{#font[122]{\55}} p_{T} (GeV)";
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{\55} p_{T} (GeV)";
       maxX = 20.0;
 
       fileName = "KstTrkmpT.pdf";
     }
-  else if (plotType == 16)
+  else if (plotType == 19)
     {
       Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} #eta";
       minX = -3.0;
@@ -431,15 +464,15 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "KstTrkpeta.pdf";
     }
-  else if (plotType == 17)
+  else if (plotType == 20)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk{#font[122]{\55}} #eta";
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{\55} #eta";
       minX = -3.0;
       maxX = 3.0;
 
       fileName = "KstTrkmeta.pdf";
     }
-  else if (plotType == 18)
+  else if (plotType == 21)
     {
       Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} #phi";
       minX = -3.15;
@@ -453,7 +486,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "KstTrkpphi_eta0.pdf";
     }
-  else if (plotType == 19)
+  else if (plotType == 22)
     {
       Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} #phi";
       minX = -3.15;
@@ -467,7 +500,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "KstTrkpphi_eta1.pdf";
     }
-  else if (plotType == 20)
+  else if (plotType == 23)
     {
       Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} #phi";
       minX = -3.15;
@@ -481,7 +514,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "KstTrkpphi_eta2.pdf";
     }
-  else if (plotType == 21)
+  else if (plotType == 24)
     {
       Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} #phi";
       minX = -3.15;
@@ -495,9 +528,9 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "KstTrkpphi_eta3.pdf";
    }
-  else if (plotType == 22)
+  else if (plotType == 25)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk{#font[122]{\55}} #phi";
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{\55} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -509,9 +542,9 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "KstTrkmphi_eta0.pdf";
    }
-  else if (plotType == 23)
+  else if (plotType == 26)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk{#font[122]{\55}} #phi";
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{\55} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -523,9 +556,9 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "KstTrkmphi_eta1.pdf";
    }
-  else if (plotType == 24)
+  else if (plotType == 27)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk{#font[122]{\55}} #phi";
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{\55} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -537,9 +570,9 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "KstTrkmphi_eta2.pdf";
     }
-  else if (plotType == 25)
+  else if (plotType == 28)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk{#font[122]{\55}} #phi";
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{\55} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -551,11 +584,31 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "KstTrkmphi_eta3.pdf";
    }
+  else if (plotType == 29)
+    {
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} DCA/#sigma";
+      minX = 0.0;
+      maxX = 40;
+
+      nBinsX = 40;
+
+      fileName = "KstTrkpDCABS.pdf";
+   }
+  else if (plotType == 30)
+    {
+      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{\55} DCA/#sigma";
+      minX = 0.0;
+      maxX = 40;
+
+      nBinsX = 40;
+
+      fileName = "KstTrkmDCABS.pdf";
+   }
 
   // ##########
   // # Angles #
   // ##########
-  else if (plotType == 26)
+  else if (plotType == 31)
     {
       Xtitle = "cos(#theta#lower[-0.4]{_{#font[122]{K}}})";
       minX = -1.0;
@@ -565,7 +618,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       fileName = "CosThetaK_dataMC.pdf";
    }
-  else if (plotType == 27)
+  else if (plotType == 32)
     {
       Xtitle = "cos(#theta#lower[-0.4]{_{#font[12]{l}}})";
       minX = -1.0;
@@ -574,6 +627,16 @@ void MakeComparisonDataMC (unsigned int plotType)
       nBinsX = 20;
 
       fileName = "CosThetaL_dataMC.pdf";
+   }
+  else if (plotType == 33)
+    {
+      Xtitle = "#phi";
+      minX = -3.15;
+      maxX = 3.15;
+
+      nBinsX = 20;
+
+      fileName = "phi_dataMC.pdf";
    }
 
 
@@ -630,52 +693,24 @@ void MakeComparisonDataMC (unsigned int plotType)
   myString << "((abs(mumuMass - " << Utility->JPsiMass << ") < " << atof(Utility->GetGenericParam("NSigmaPsi").c_str()) << " * mumuMassE) ||";
   myString << " (abs(mumuMass - " << Utility->PsiPMass << ") < " << atof(Utility->GetGenericParam("NSigmaPsi").c_str()) << " * mumuMassE)))";
   bkgMassQuery = myString.str();
-  if (plotType == 0)
-    query = "B0pT"; // B0 pT
-  else if (plotType == 1)
-    query = "B0Eta"; // B0 eta
 
-  else if (plotType == 2)
-    query = "sqrt(mupPx*mupPx+mupPy*mupPy)"; // mu+ pT
-  else if (plotType == 3)
-    query = "sqrt(mumPx*mumPx+mumPy*mumPy)"; // mu- pT
-  else if (plotType == 4)
-    query = "0.5*log((sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) + mupPz) / (sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) - mupPz))"; // mu+ eta
-  else if (plotType == 5)
-    query = "0.5*log((sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) + mumPz) / (sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) - mumPz))"; // mu- eta
-  else if (plotType == 6)
-    {
-      query = "atan(mupPy / mupPx)"; // mu+ phi in eta range
-      tmpstring = "0.5*log((sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) + mupPz) / (sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) - mupPz))";
-      myString.clear();
-      myString.str("");
-      myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
-      selection = myString.str(); // mu+ eta range
-      aVar = "mupPx";
-      bVar = "mupPy";
-    }
-  else if (plotType == 7)
-    {
-      query = "atan(mupPy / mupPx)"; // mu+ phi in eta range
-      tmpstring = "0.5*log((sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) + mupPz) / (sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) - mupPz))";
-      myString.clear();
-      myString.str("");
-      myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
-      selection = myString.str(); // mu+ eta range
-      aVar = "mupPx";
-      bVar = "mupPy";
-    }
-  else if (plotType == 8)
-    {
-      query = "atan(mupPy / mupPx)"; // mu+ phi in eta range
-      tmpstring = "0.5*log((sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) + mupPz) / (sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) - mupPz))";
-      myString.clear();
-      myString.str("");
-      myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
-      selection = myString.str(); // mu+ eta range
-      aVar = "mupPx";
-      bVar = "mupPy";
-    }
+
+  // ######
+  // # B0 #
+  // ######
+  if      (plotType == 0) query = "B0pT";        // B0 pT
+  else if (plotType == 1) query = "B0Eta";       // B0 eta
+  else if (plotType == 2) query = "bVtxCL";      // B0 vtx CL
+  else if (plotType == 3) query = "bLBS/bLBSE";  // B0 L/sigma
+  else if (plotType == 4) query = "bCosAlphaBS"; // B0 cos(alpha)
+
+  // #########
+  // # Muons #
+  // #########
+  else if (plotType == 5) query = "sqrt(mupPx*mupPx+mupPy*mupPy)"; // mu+ pT
+  else if (plotType == 6) query = "sqrt(mumPx*mumPx+mumPy*mumPy)"; // mu- pT
+  else if (plotType == 7) query = "0.5*log((sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) + mupPz) / (sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) - mupPz))"; // mu+ eta
+  else if (plotType == 8) query = "0.5*log((sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) + mumPz) / (sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) - mumPz))"; // mu- eta
   else if (plotType == 9)
     {
       query = "atan(mupPy / mupPx)"; // mu+ phi in eta range
@@ -689,36 +724,36 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 10)
     {
-      query = "atan(mumPy / mumPx)"; // mu- phi in eta range
-      tmpstring = "0.5*log((sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) + mumPz) / (sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) - mumPz))";
+      query = "atan(mupPy / mupPx)"; // mu+ phi in eta range
+      tmpstring = "0.5*log((sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) + mupPz) / (sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) - mupPz))";
       myString.clear();
       myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
-      selection = myString.str(); // mu- eta range
-      aVar = "mumPx";
-      bVar = "mumPy";
+      selection = myString.str(); // mu+ eta range
+      aVar = "mupPx";
+      bVar = "mupPy";
     }
   else if (plotType == 11)
     {
-      query = "atan(mumPy / mumPx)"; // mu- phi in eta range
-      tmpstring = "0.5*log((sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) + mumPz) / (sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) - mumPz))";
+      query = "atan(mupPy / mupPx)"; // mu+ phi in eta range
+      tmpstring = "0.5*log((sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) + mupPz) / (sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) - mupPz))";
       myString.clear();
       myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
-      selection = myString.str(); // mu- eta range
-      aVar = "mumPx";
-      bVar = "mumPy";
+      selection = myString.str(); // mu+ eta range
+      aVar = "mupPx";
+      bVar = "mupPy";
     }
   else if (plotType == 12)
     {
-      query = "atan(mumPy / mumPx)"; // mu- phi in eta range
-      tmpstring = "0.5*log((sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) + mumPz) / (sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) - mumPz))";
+      query = "atan(mupPy / mupPx)"; // mu+ phi in eta range
+      tmpstring = "0.5*log((sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) + mupPz) / (sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) - mupPz))";
       myString.clear();
       myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
-      selection = myString.str(); // mu- eta range
-      aVar = "mumPx";
-      bVar = "mumPy";
+      selection = myString.str(); // mu+ eta range
+      aVar = "mupPx";
+      bVar = "mupPy";
     }
   else if (plotType == 13)
     {
@@ -731,48 +766,47 @@ void MakeComparisonDataMC (unsigned int plotType)
       aVar = "mumPx";
       bVar = "mumPy";
     }
-  
   else if (plotType == 14)
-    query = "sqrt(kstTrkpPx*kstTrkpPx+kstTrkpPy*kstTrkpPy)"; // K*0 trk+ pT
+    {
+      query = "atan(mumPy / mumPx)"; // mu- phi in eta range
+      tmpstring = "0.5*log((sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) + mumPz) / (sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) - mumPz))";
+      myString.clear();
+      myString.str("");
+      myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
+      selection = myString.str(); // mu- eta range
+      aVar = "mumPx";
+      bVar = "mumPy";
+    }
   else if (plotType == 15)
-    query = "sqrt(kstTrkmPx*kstTrkmPx+kstTrkmPy*kstTrkmPy)"; // K*0 trk- pT
+    {
+      query = "atan(mumPy / mumPx)"; // mu- phi in eta range
+      tmpstring = "0.5*log((sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) + mumPz) / (sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) - mumPz))";
+      myString.clear();
+      myString.str("");
+      myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
+      selection = myString.str(); // mu- eta range
+      aVar = "mumPx";
+      bVar = "mumPy";
+    }
   else if (plotType == 16)
-    query = "0.5*log((sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) + kstTrkpPz) / (sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) - kstTrkpPz))"; // K*0 trk+ eta
-  else if (plotType == 17)
-    query = "0.5*log((sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) + kstTrkmPz) / (sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) - kstTrkmPz))"; // K*0 trk- eta
-  else if (plotType == 18)
     {
-      query = "atan(kstTrkpPy / kstTrkpPx)"; // K*0 trk+ phi in eta range
-      tmpstring = "0.5*log((sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) + kstTrkpPz) / (sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) - kstTrkpPz))";
+      query = "atan(mumPy / mumPx)"; // mu- phi in eta range
+      tmpstring = "0.5*log((sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) + mumPz) / (sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) - mumPz))";
       myString.clear();
       myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
-      selection = myString.str(); // K*0 trk+ eta range
-      aVar = "kstTrkpPx";
-      bVar = "kstTrkpPy";
+      selection = myString.str(); // mu- eta range
+      aVar = "mumPx";
+      bVar = "mumPy";
     }
-  else if (plotType == 19)
-    {
-      query = "atan(kstTrkpPy / kstTrkpPx)"; // K*0 trk+ phi in eta range
-      tmpstring = "0.5*log((sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) + kstTrkpPz) / (sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) - kstTrkpPz))";
-      myString.clear();
-      myString.str("");
-      myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
-      selection = myString.str(); // K*0 trk+ eta range
-      aVar = "kstTrkpPx";
-      bVar = "kstTrkpPy";
-    }
-  else if (plotType == 20)
-    {
-      query = "atan(kstTrkpPy / kstTrkpPx)"; // K*0 trk+ phi in eta range
-      tmpstring = "0.5*log((sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) + kstTrkpPz) / (sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) - kstTrkpPz))";
-      myString.clear();
-      myString.str("");
-      myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
-      selection = myString.str(); // K*0 trk+ eta range
-      aVar = "kstTrkpPx";
-      bVar = "kstTrkpPy";
-    }
+
+  // ###########
+  // # Hadrons #
+  // ########### 
+  else if (plotType == 17) query = "sqrt(kstTrkpPx*kstTrkpPx+kstTrkpPy*kstTrkpPy)"; // K*0 trk+ pT
+  else if (plotType == 18) query = "sqrt(kstTrkmPx*kstTrkmPx+kstTrkmPy*kstTrkmPy)"; // K*0 trk- pT
+  else if (plotType == 19) query = "0.5*log((sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) + kstTrkpPz) / (sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) - kstTrkpPz))"; // K*0 trk+ eta
+  else if (plotType == 20) query = "0.5*log((sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) + kstTrkmPz) / (sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) - kstTrkmPz))"; // K*0 trk- eta
   else if (plotType == 21)
     {
       query = "atan(kstTrkpPy / kstTrkpPx)"; // K*0 trk+ phi in eta range
@@ -786,36 +820,36 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 22)
     {
-      query = "atan(kstTrkmPy / kstTrkmPx)"; // K*0 trk- phi in eta range
-      tmpstring = "0.5*log((sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) + kstTrkmPz) / (sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) - kstTrkmPz))";
+      query = "atan(kstTrkpPy / kstTrkpPx)"; // K*0 trk+ phi in eta range
+      tmpstring = "0.5*log((sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) + kstTrkpPz) / (sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) - kstTrkpPz))";
       myString.clear();
       myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
-      selection = myString.str(); // K*0 trk- eta range
-      aVar = "kstTrkmPx";
-      bVar = "kstTrkmPy";
+      selection = myString.str(); // K*0 trk+ eta range
+      aVar = "kstTrkpPx";
+      bVar = "kstTrkpPy";
     }
   else if (plotType == 23)
     {
-      query = "atan(kstTrkmPy / kstTrkmPx)"; // K*0 trk- phi in eta range
-      tmpstring = "0.5*log((sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) + kstTrkmPz) / (sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) - kstTrkmPz))";
+      query = "atan(kstTrkpPy / kstTrkpPx)"; // K*0 trk+ phi in eta range
+      tmpstring = "0.5*log((sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) + kstTrkpPz) / (sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) - kstTrkpPz))";
       myString.clear();
       myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
-      selection = myString.str(); // K*0 trk- eta range
-      aVar = "kstTrkmPx";
-      bVar = "kstTrkmPy";
+      selection = myString.str(); // K*0 trk+ eta range
+      aVar = "kstTrkpPx";
+      bVar = "kstTrkpPy";
     }
   else if (plotType == 24)
     {
-      query = "atan(kstTrkmPy / kstTrkmPx)"; // K*0 trk- phi in eta range
-      tmpstring = "0.5*log((sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) + kstTrkmPz) / (sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) - kstTrkmPz))";
+      query = "atan(kstTrkpPy / kstTrkpPx)"; // K*0 trk+ phi in eta range
+      tmpstring = "0.5*log((sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) + kstTrkpPz) / (sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) - kstTrkpPz))";
       myString.clear();
       myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
-      selection = myString.str(); // K*0 trk- eta range
-      aVar = "kstTrkmPx";
-      bVar = "kstTrkmPy";
+      selection = myString.str(); // K*0 trk+ eta range
+      aVar = "kstTrkpPx";
+      bVar = "kstTrkpPy";
     }
   else if (plotType == 25)
     {
@@ -828,9 +862,49 @@ void MakeComparisonDataMC (unsigned int plotType)
       aVar = "kstTrkmPx";
       bVar = "kstTrkmPy";
     }
+  else if (plotType == 26)
+    {
+      query = "atan(kstTrkmPy / kstTrkmPx)"; // K*0 trk- phi in eta range
+      tmpstring = "0.5*log((sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) + kstTrkmPz) / (sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) - kstTrkmPz))";
+      myString.clear();
+      myString.str("");
+      myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
+      selection = myString.str(); // K*0 trk- eta range
+      aVar = "kstTrkmPx";
+      bVar = "kstTrkmPy";
+    }
+  else if (plotType == 27)
+    {
+      query = "atan(kstTrkmPy / kstTrkmPx)"; // K*0 trk- phi in eta range
+      tmpstring = "0.5*log((sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) + kstTrkmPz) / (sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) - kstTrkmPz))";
+      myString.clear();
+      myString.str("");
+      myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
+      selection = myString.str(); // K*0 trk- eta range
+      aVar = "kstTrkmPx";
+      bVar = "kstTrkmPy";
+    }
+  else if (plotType == 28)
+    {
+      query = "atan(kstTrkmPy / kstTrkmPx)"; // K*0 trk- phi in eta range
+      tmpstring = "0.5*log((sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) + kstTrkmPz) / (sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) - kstTrkmPz))";
+      myString.clear();
+      myString.str("");
+      myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
+      selection = myString.str(); // K*0 trk- eta range
+      aVar = "kstTrkmPx";
+      bVar = "kstTrkmPy";
+    }
+  else if (plotType == 29) query = "kstTrkpDCABS/kstTrkpDCABSE"; // K*0 trk+ DCA/sigma
+  else if (plotType == 30) query = "kstTrkmDCABS/kstTrkmDCABSE"; // K*0 trk- DCA/sigma
   
-  else if (plotType == 26) query = "CosThetaKArb";  // cos(theta_K)
-  else if (plotType == 27) query = "CosThetaMuArb"; // cos(theta_l)
+  // ##########
+  // # Angles #
+  // ##########
+  else if (plotType == 31) query = "CosThetaKArb";       // cos(theta_K)
+  else if (plotType == 32) query = "CosThetaMuArb";      // cos(theta_l)
+  else if (plotType == 33) query = "PhiKstMuMuPlaneArb"; // phi
+
 
 
   TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
@@ -840,10 +914,10 @@ void MakeComparisonDataMC (unsigned int plotType)
   // # Query the MC NTuple #
   // #######################
   TH1D* hM1D;
-  cout << "\n\n[MakePlots::MakeComparisonDataMC]\t@@@ Query to MC @@@" << endl;
+  cout << "\n\n[MakePlots::MakeComparisonDataMC]\t@@@ Query the MC @@@" << endl;
   for (unsigned int i = 0; i < NHisto; i++)
     {
-      if (((plotType >= 6) && (plotType <= 13)) || ((plotType >= 18) && (plotType <= 25)))
+      if (((plotType >= 9) && (plotType <= 16)) || ((plotType >= 21) && (plotType <= 28)))
 	{
 	  TH1D* hTmp = new TH1D("hTmp","hTmp",nBinsX,minX,maxX);
 
@@ -894,8 +968,8 @@ void MakeComparisonDataMC (unsigned int plotType)
   // # Query the Data NTuple #
   // #########################
   string queryData;
-  cout << "\n\n[MakePlots::MakeComparisonDataMC]\t@@@ Query to data @@@" << endl;
-  if (((plotType >= 6) && (plotType <= 13)) || ((plotType >= 18) && (plotType <= 25)))
+  cout << "\n\n[MakePlots::MakeComparisonDataMC]\t@@@ Query the data @@@" << endl;
+  if (((plotType >= 9) && (plotType <= 16)) || ((plotType >= 21) && (plotType <= 28)))
     {
       TH1D* hTmp = new TH1D("hTmp","hTmp",nBinsX,minX,maxX);
       
@@ -985,7 +1059,6 @@ void MakeComparisonDataMC (unsigned int plotType)
   // # B0 --> K* psi(2S) #
   h1DVec[1]->Scale(1./h1DVec[1]->Integral() * Utility->PsiPKpiBF);
 
-
   hM1D = (TH1D*)h1DVec[0]->Clone("hM1D");
   hM1D->SetXTitle(Xtitle.c_str());
   hM1D->SetYTitle("Norm. entries");
@@ -1005,15 +1078,21 @@ void MakeComparisonDataMC (unsigned int plotType)
   hDsig1D->GetYaxis()->SetRangeUser(0.0,(hM1D->GetBinContent(hM1D->GetMaximumBin()) > hDsig1D->GetBinContent(hDsig1D->GetMaximumBin()) ?
   					 hM1D->GetBinContent(hM1D->GetMaximumBin()) : hDsig1D->GetBinContent(hDsig1D->GetMaximumBin()))*1.1);
 
-  if (((plotType >= 6) && (plotType <= 13)) ||
-      ((plotType >= 18) && (plotType <= 25)) ||
-      (plotType == 26) ||
-      (plotType == 27)) leg = new TLegend(0.15, 0.15, 0.34, 0.25, "");
-  else if ((plotType == 1) ||
-	   (plotType == 4) ||
-	   (plotType == 5) ||
-	   (plotType == 16) ||
-	   (plotType == 17)) leg = new TLegend(0.15, 0.79, 0.34, 0.89, "");
+  if ((plotType == 3)  ||
+      (plotType == 4)  ||
+      ((plotType >= 9) && (plotType <= 16))  ||
+      ((plotType >= 21) && (plotType <= 28)) ||
+      (plotType == 29) ||
+      (plotType == 30) ||
+      (plotType == 31) ||
+      (plotType == 32) ||
+      (plotType == 33))
+    leg = new TLegend(0.15, 0.15, 0.34, 0.25, "");
+  else if ((plotType == 1)  ||
+	   (plotType == 7)  ||
+	   (plotType == 8)  ||
+	   (plotType == 19) ||
+	   (plotType == 20)) leg = new TLegend(0.15, 0.75, 0.34, 0.85, "");
   else leg = new TLegend(0.8, 0.15, 0.97, 0.25, "");
   leg->AddEntry(hM1D,"MC");
   leg->AddEntry(hDsig1D,"Data");
@@ -1027,28 +1106,37 @@ void MakeComparisonDataMC (unsigned int plotType)
   TPaveStats* stM = (TPaveStats*)hM1D->FindObject("stats");
   stM->SetFillColor(kAzure+6);
   TPaveStats* stD = (TPaveStats*)hDsig1D->FindObject("stats");
-  if ((plotType == 0) ||
-      (plotType == 2) ||
-      (plotType == 3) ||
-      (plotType == 14) ||
-      (plotType == 15) ||
-      (plotType == 26))
+  if ((plotType == 0)  ||
+      (plotType == 3)  ||
+      (plotType == 5)  ||
+      (plotType == 6)  ||
+      (plotType == 17) ||
+      (plotType == 18) ||
+      (plotType == 29) ||
+      (plotType == 30) ||
+      (plotType == 31))
     {
       stD->SetX1NDC(0.55);
       stD->SetX2NDC(0.75);
     }
-  else if ((plotType == 1) ||
-	   (plotType == 4) ||
-	   (plotType == 5) ||
-	   (plotType == 16) ||
-	   (plotType == 17))
+  else if ((plotType == 1)  ||
+	   (plotType == 7)  ||
+	   (plotType == 8)  ||
+	   (plotType == 19) ||
+	   (plotType == 20))
     {
-      stD->SetY1NDC(0.4);
-      stD->SetY2NDC(0.7);
+      stD->SetY1NDC(0.3);
+      stD->SetY2NDC(0.6);
     }
-  else if (((plotType >= 6) && (plotType <= 13)) ||
-	   ((plotType >= 18) && (plotType <= 25)) ||
-	   (plotType == 27))
+  else if ((plotType == 2) || (plotType == 4))
+    {
+      stD->SetX1NDC(0.15);
+      stD->SetX2NDC(0.35);
+
+      stM->SetX1NDC(0.4);
+      stM->SetX2NDC(0.6);
+    }
+  else
     {
       stD->SetX1NDC(0.4);
       stD->SetX2NDC(0.6);
@@ -2872,81 +2960,6 @@ int main (int argc, char** argv)
       else if (option == "KKMass")      PlotKK(fileName,intVal,tmpStr1);
       else if (option == "KstMass")     PlotKst(fileName,intVal,true);
       else if (option == "MuHadMass")   PlotMuHadMass(fileName);
-      else
-	{
-	  cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass]" << endl;
-	  cout << "            [Phy: 0-2||10-12]" << endl;
-	  cout << "            [GenMultyRun: fileName q^2_bin_index]" << endl;
-	  cout << "            [DataMC: 0-27]" << endl;
-	  cout << "            [Pval: fileName q^2_bin_index]" << endl;
-	  cout << "            [FitRes: fileName plotType q^2_bin_index varName lowBound highBound]" << endl;
-	  cout << "            [MuMuMass OR KstMass: dataFileName bkgSub]" << endl;
-	  cout << "            [KKMass: dataFileName bkgSub RECOorGEN]" << endl;
-	  cout << "            [MuHadMass: dataFileName]" << endl;
-
-	  cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-	  cout << "For [MuMuMass KKMass KstMass]:" << endl;
-	  cout << "bkgSub = 0 (do not subtract background)" << endl;
-	  cout << "bkgSub = 1 (subtract background)" << endl;
-
-	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-	  cout << "For [KKMass]:" << endl;
-	  cout << "RECOorGEN = RECO (use RECO information)" << endl;
-	  cout << "RECOorGEN = GEN (use GEN information)" << endl;
-      
-	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-	  cout << "For [Phy]:" << endl;
-	  cout << "0 = Fl GEN vs RECO-MC" << endl;
-	  cout << "1 = Afb GEN vs RECO-MC" << endl;
-	  cout << "2 = BF GEN vs RECO-MC" << endl;
-	  cout << "10 = Fl Data vs Theory" << endl;
-	  cout << "11 = Afb Data vs Theory" << endl;
-	  cout << "12 = BF Data vs Theory" << endl;
-
-	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-	  cout << "For [FitRes]:" << endl;
-	  cout << "Fl" << endl;
-	  cout << "Afb" << endl;
-	  cout << "P1" << endl;
-	  cout << "P2" << endl;
-	  cout << "BF" << endl;
-
-	  cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-	  cout << "For [DataMC]:" << endl;
-	  cout << "0 = B0 pT" << endl;
-	  cout << "1 = B0 eta" << endl;
-
-	  cout << "2 = mu+ pT" << endl;
-	  cout << "3 = mu- pT" << endl;
-	  cout << "4 = mu+ eta" << endl;
-	  cout << "5 = mu- eta" << endl;
-	  cout << "6 = mu+ phi, eta range" << endl;
-	  cout << "7 = mu+ phi, eta range" << endl;
-	  cout << "8 = mu+ phi, eta range" << endl;
-	  cout << "9 = mu+ phi, eta range" << endl;
-	  cout << "10 = mu- phi, eta range" << endl;
-	  cout << "11 = mu- phi, eta range" << endl;
-	  cout << "12 = mu- phi, eta range" << endl;
-	  cout << "13 = mu- phi, eta range" << endl;
-	  
-	  cout << "14 = K*0 trk+ pT" << endl;
-	  cout << "15 = K*0 trk- pT" << endl;
-	  cout << "16 = K*0 trk+ eta" << endl;
-	  cout << "17 = K*0 trk- eta" << endl;
-	  cout << "18 = K*0 trk+ phi, eta range" << endl;
-	  cout << "19 = K*0 trk+ phi, eta range" << endl;
-	  cout << "20 = K*0 trk+ phi, eta range" << endl;
-	  cout << "21 = K*0 trk+ phi, eta range" << endl;
-	  cout << "22 = K*0 trk- phi, eta range" << endl;
-	  cout << "23 = K*0 trk- phi, eta range" << endl;
-	  cout << "24 = K*0 trk- phi, eta range" << endl;
-	  cout << "25 = K*0 trk- phi, eta range" << endl;
-
-	  cout << "26 = cos(theta_K)" << endl;
-	  cout << "27 = cos(theta_l)" << endl;
-
-	  return EXIT_FAILURE;
-	}
 
       delete Utility;
       if (option != "GenMultyRun") theApp.Run (); // Eventloop on air
@@ -2995,35 +3008,42 @@ int main (int argc, char** argv)
       cout << "For [DataMC]:" << endl;
       cout << "0 = B0 pT" << endl;
       cout << "1 = B0 eta" << endl;
+      cout << "2 = B0 vtx CL" << endl;
+      cout << "3 = B0 L/sigma" << endl;
+      cout << "4 = B0 cos(alpha)" << endl;
 
-      cout << "2 = mu+ pT" << endl;
-      cout << "3 = mu- pT" << endl;
-      cout << "4 = mu+ eta" << endl;
-      cout << "5 = mu- eta" << endl;
-      cout << "6 = mu+ phi, eta range" << endl;
-      cout << "7 = mu+ phi, eta range" << endl;
-      cout << "8 = mu+ phi, eta range" << endl;
+      cout << "5 = mu+ pT" << endl;
+      cout << "6 = mu- pT" << endl;
+      cout << "7 = mu+ eta" << endl;
+      cout << "8 = mu- eta" << endl;
       cout << "9 = mu+ phi, eta range" << endl;
-      cout << "10 = mu- phi, eta range" << endl;
-      cout << "11 = mu- phi, eta range" << endl;
-      cout << "12 = mu- phi, eta range" << endl;
+      cout << "10 = mu+ phi, eta range" << endl;
+      cout << "11 = mu+ phi, eta range" << endl;
+      cout << "12 = mu+ phi, eta range" << endl;
       cout << "13 = mu- phi, eta range" << endl;
+      cout << "14 = mu- phi, eta range" << endl;
+      cout << "15 = mu- phi, eta range" << endl;
+      cout << "16 = mu- phi, eta range" << endl;
 
-      cout << "14 = K*0 trk+ pT" << endl;
-      cout << "15 = K*0 trk- pT" << endl;
-      cout << "16 = K*0 trk+ eta" << endl;
-      cout << "17 = K*0 trk- eta" << endl;
-      cout << "18 = K*0 trk+ phi, eta range" << endl;
-      cout << "19 = K*0 trk+ phi, eta range" << endl;
-      cout << "20 = K*0 trk+ phi, eta range" << endl;
+      cout << "17 = K*0 trk+ pT" << endl;
+      cout << "18 = K*0 trk- pT" << endl;
+      cout << "19 = K*0 trk+ eta" << endl;
+      cout << "20 = K*0 trk- eta" << endl;
       cout << "21 = K*0 trk+ phi, eta range" << endl;
-      cout << "22 = K*0 trk- phi, eta range" << endl;
-      cout << "23 = K*0 trk- phi, eta range" << endl;
-      cout << "24 = K*0 trk- phi, eta range" << endl;
+      cout << "22 = K*0 trk+ phi, eta range" << endl;
+      cout << "23 = K*0 trk+ phi, eta range" << endl;
+      cout << "24 = K*0 trk+ phi, eta range" << endl;
       cout << "25 = K*0 trk- phi, eta range" << endl;
+      cout << "26 = K*0 trk- phi, eta range" << endl;
+      cout << "27 = K*0 trk- phi, eta range" << endl;
+      cout << "28 = K*0 trk- phi, eta range" << endl;
 
-      cout << "26 = cos(theta_K)" << endl;
-      cout << "27 = cos(theta_l)" << endl;
+      cout << "29 = K*0 trk+ DCA/sigma" << endl;
+      cout << "30 = K*0 trk- DCA/sigma" << endl;
+
+      cout << "31 = cos(theta_K)" << endl;
+      cout << "32 = cos(theta_l)" << endl;
+      cout << "33 = phi" << endl;
 
       return EXIT_FAILURE;
     }
