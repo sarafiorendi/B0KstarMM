@@ -2437,9 +2437,9 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
   double DalitzminY  = 14.5;
   double DalitzmaxY  = 27.0;
   unsigned int nBins = 100;
-  double KKmass;
-  double massPsiK;
-  double massKpi;
+  double KKmass      = 0.0;
+  double massPsiK    = 0.0;
+  double massKpi     = 0.0;
 
   double signalSigma = sqrt( atof(Utility->GetGenericParam("FRACMASSS").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) +
 			     (1. - atof(Utility->GetGenericParam("FRACMASSS").c_str())) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) );
