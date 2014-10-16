@@ -201,13 +201,12 @@ void MakeComparisonDataMC (unsigned int plotType)
 // # plotType = 26 --> K*0 trk- phi, eta range #
 // # plotType = 27 --> K*0 trk- phi, eta range #
 // # plotType = 28 --> K*0 trk- phi, eta range #
+// # plotType = 29 --> K*0 trk+ DCA/sigma      #
+// # plotType = 30 --> K*0 trk- DCA/sigma      #
 // #############################################
-// # plotType = 29 --> cos(theta_K)            #
-// # plotType = 30 --> cos(theta_l)            #
-// # plotType = 31 --> phi                     #
-// #############################################
-// # plotType = 32 --> K*0 trk+ DCA/sigma      #
-// # plotType = 33 --> K*0 trk- DCA/sigma      #
+// # plotType = 31 --> cos(theta_K)            #
+// # plotType = 32 --> cos(theta_l)            #
+// # plotType = 33 --> phi                     #
 // #############################################
 {
   stringstream myString;
@@ -645,7 +644,7 @@ void MakeComparisonDataMC (unsigned int plotType)
   // #################
   for (unsigned int i = 0; i < NHisto; i++)
     {
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "h1D" << i;
       h1DVec.push_back(new TH1D(myString.str().c_str(),myString.str().c_str(),nBinsX,minX,maxX));
       h1DVec.back()->Sumw2();
@@ -677,15 +676,13 @@ void MakeComparisonDataMC (unsigned int plotType)
   string aVar         = "";
   string bVar         = "";
   
-  myString.clear();
-  myString.str("");
+  myString.clear(); myString.str("");
   myString << "((abs(B0MassArb - " << Utility->B0Mass << ") < " << atof(Utility->GetGenericParam("NSigmaB0S").c_str())*signalSigma << ") && ";
   myString << "((abs(mumuMass - " << Utility->JPsiMass << ") < " << atof(Utility->GetGenericParam("NSigmaPsi").c_str()) << " * mumuMassE) ||";
   myString << " (abs(mumuMass - " << Utility->PsiPMass << ") < " << atof(Utility->GetGenericParam("NSigmaPsi").c_str()) << " * mumuMassE)))";
   sigMassQuery = myString.str();
 
-  myString.clear();
-  myString.str("");
+  myString.clear(); myString.str("");
   myString << "(((B0MassArb > " << Utility->B0Mass + atof(Utility->GetGenericParam("NSigmaB0B").c_str())*signalSigma << " && B0MassArb < "
 	   << Utility->B0Mass + (atof(Utility->GetGenericParam("NSigmaB0B").c_str()) + atof(Utility->GetGenericParam("NSigmaB0S").c_str()))*signalSigma << ") || ";
   myString << "(B0MassArb < " << Utility->B0Mass - atof(Utility->GetGenericParam("NSigmaB0B").c_str())*signalSigma << " && B0MassArb > "
@@ -715,8 +712,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     {
       query = "atan(mupPy / mupPx)"; // mu+ phi in eta range
       tmpstring = "0.5*log((sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) + mupPz) / (sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) - mupPz))";
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
       selection = myString.str(); // mu+ eta range
       aVar = "mupPx";
@@ -726,8 +722,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     {
       query = "atan(mupPy / mupPx)"; // mu+ phi in eta range
       tmpstring = "0.5*log((sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) + mupPz) / (sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) - mupPz))";
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
       selection = myString.str(); // mu+ eta range
       aVar = "mupPx";
@@ -737,8 +732,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     {
       query = "atan(mupPy / mupPx)"; // mu+ phi in eta range
       tmpstring = "0.5*log((sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) + mupPz) / (sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) - mupPz))";
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
       selection = myString.str(); // mu+ eta range
       aVar = "mupPx";
@@ -748,8 +742,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     {
       query = "atan(mupPy / mupPx)"; // mu+ phi in eta range
       tmpstring = "0.5*log((sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) + mupPz) / (sqrt(mupPx*mupPx + mupPy*mupPy + mupPz*mupPz) - mupPz))";
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
       selection = myString.str(); // mu+ eta range
       aVar = "mupPx";
@@ -759,8 +752,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     {
       query = "atan(mumPy / mumPx)"; // mu- phi in eta range
       tmpstring = "0.5*log((sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) + mumPz) / (sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) - mumPz))";
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
       selection = myString.str(); // mu- eta range
       aVar = "mumPx";
@@ -770,8 +762,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     {
       query = "atan(mumPy / mumPx)"; // mu- phi in eta range
       tmpstring = "0.5*log((sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) + mumPz) / (sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) - mumPz))";
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
       selection = myString.str(); // mu- eta range
       aVar = "mumPx";
@@ -781,8 +772,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     {
       query = "atan(mumPy / mumPx)"; // mu- phi in eta range
       tmpstring = "0.5*log((sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) + mumPz) / (sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) - mumPz))";
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
       selection = myString.str(); // mu- eta range
       aVar = "mumPx";
@@ -792,8 +782,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     {
       query = "atan(mumPy / mumPx)"; // mu- phi in eta range
       tmpstring = "0.5*log((sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) + mumPz) / (sqrt(mumPx*mumPx + mumPy*mumPy + mumPz*mumPz) - mumPz))";
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
       selection = myString.str(); // mu- eta range
       aVar = "mumPx";
@@ -811,8 +800,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     {
       query = "atan(kstTrkpPy / kstTrkpPx)"; // K*0 trk+ phi in eta range
       tmpstring = "0.5*log((sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) + kstTrkpPz) / (sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) - kstTrkpPz))";
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
       selection = myString.str(); // K*0 trk+ eta range
       aVar = "kstTrkpPx";
@@ -822,8 +810,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     {
       query = "atan(kstTrkpPy / kstTrkpPx)"; // K*0 trk+ phi in eta range
       tmpstring = "0.5*log((sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) + kstTrkpPz) / (sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) - kstTrkpPz))";
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
       selection = myString.str(); // K*0 trk+ eta range
       aVar = "kstTrkpPx";
@@ -833,8 +820,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     {
       query = "atan(kstTrkpPy / kstTrkpPx)"; // K*0 trk+ phi in eta range
       tmpstring = "0.5*log((sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) + kstTrkpPz) / (sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) - kstTrkpPz))";
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
       selection = myString.str(); // K*0 trk+ eta range
       aVar = "kstTrkpPx";
@@ -844,8 +830,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     {
       query = "atan(kstTrkpPy / kstTrkpPx)"; // K*0 trk+ phi in eta range
       tmpstring = "0.5*log((sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) + kstTrkpPz) / (sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy + kstTrkpPz*kstTrkpPz) - kstTrkpPz))";
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
       selection = myString.str(); // K*0 trk+ eta range
       aVar = "kstTrkpPx";
@@ -855,8 +840,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     {
       query = "atan(kstTrkmPy / kstTrkmPx)"; // K*0 trk- phi in eta range
       tmpstring = "0.5*log((sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) + kstTrkmPz) / (sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) - kstTrkmPz))";
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
       selection = myString.str(); // K*0 trk- eta range
       aVar = "kstTrkmPx";
@@ -866,8 +850,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     {
       query = "atan(kstTrkmPy / kstTrkmPx)"; // K*0 trk- phi in eta range
       tmpstring = "0.5*log((sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) + kstTrkmPz) / (sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) - kstTrkmPz))";
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
       selection = myString.str(); // K*0 trk- eta range
       aVar = "kstTrkmPx";
@@ -877,8 +860,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     {
       query = "atan(kstTrkmPy / kstTrkmPx)"; // K*0 trk- phi in eta range
       tmpstring = "0.5*log((sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) + kstTrkmPz) / (sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) - kstTrkmPz))";
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
       selection = myString.str(); // K*0 trk- eta range
       aVar = "kstTrkmPx";
@@ -888,8 +870,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     {
       query = "atan(kstTrkmPy / kstTrkmPx)"; // K*0 trk- phi in eta range
       tmpstring = "0.5*log((sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) + kstTrkmPz) / (sqrt(kstTrkmPx*kstTrkmPx + kstTrkmPy*kstTrkmPy + kstTrkmPz*kstTrkmPz) - kstTrkmPz))";
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(" << tmpstring << " > " << minY << " && " << tmpstring << " < " << maxY << ")";
       selection = myString.str(); // K*0 trk- eta range
       aVar = "kstTrkmPx";
@@ -922,8 +903,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 	  TH1D* hTmp = new TH1D("hTmp","hTmp",nBinsX,minX,maxX);
 
 	  tmpstring = weightVar + "*(" + selection + " && " + aVar + " > 0 && " + sigMassQuery + ")";
-	  myString.clear();
-	  myString.str("");
+	  myString.clear(); myString.str("");
 	  myString << query + ">>hTmp";
 	  cout << "\nPlot: " << myString.str().c_str() << endl;
 	  cout << "Selection: " << tmpstring.c_str() << endl;
@@ -931,8 +911,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 	  h1DVec[i]->Add(hTmp);
 
 	  tmpstring = weightVar + "*(" + selection + " && " + aVar + " < 0 && " + bVar + " < 0 && " + sigMassQuery + ")";
-	  myString.clear();
-	  myString.str("");
+	  myString.clear(); myString.str("");
 	  myString << query + "-TMath::Pi()>>hTmp";
 	  cout << "\nPlot: " << myString.str().c_str() << endl;
 	  cout << "Selection: " << tmpstring.c_str() << endl;
@@ -940,8 +919,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 	  h1DVec[i]->Add(hTmp);
 
 	  tmpstring = weightVar + "*(" + selection + " && " + aVar + " < 0 && " + bVar + " > 0 && " + sigMassQuery + ")";
-	  myString.clear();
-	  myString.str("");
+	  myString.clear(); myString.str("");
 	  myString << query + "+TMath::Pi()>>hTmp";
 	  cout << "\nPlot: " << myString.str().c_str() << endl;
 	  cout << "Selection: " << tmpstring.c_str() << endl;
@@ -953,8 +931,7 @@ void MakeComparisonDataMC (unsigned int plotType)
       else
 	{
 	  tmpstring = weightVar + "*(" + sigMassQuery + ")";
-	  myString.clear();
-	  myString.str("");
+	  myString.clear(); myString.str("");
 	  myString << "h1D" << i;
 	  queryMC.push_back(query + ">>" + myString.str().c_str());
 	  cout << "\nPlot: " << queryMC.back().c_str() << endl;
@@ -975,8 +952,7 @@ void MakeComparisonDataMC (unsigned int plotType)
       
 
       tmpstring = selection + " && " + aVar + " > 0 && " + sigMassQuery;
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << query + ">>hTmp";
       cout << "\nPlot: " << myString.str().c_str() << endl;
       cout << "Selection: " << tmpstring.c_str() << endl;
@@ -984,8 +960,7 @@ void MakeComparisonDataMC (unsigned int plotType)
       hDsig1D->Add(hTmp);
       
       tmpstring = selection + " && " + aVar + " < 0 && " + bVar + " < 0 && " + sigMassQuery;
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << query + "-TMath::Pi()>>hTmp";
       cout << "\nPlot: " << myString.str().c_str() << endl;
       cout << "Selection: " << tmpstring.c_str() << endl;
@@ -993,8 +968,7 @@ void MakeComparisonDataMC (unsigned int plotType)
       hDsig1D->Add(hTmp);
       
       tmpstring = selection + " && " + aVar + " < 0 && " + bVar + " > 0 && " + sigMassQuery;
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << query + "+TMath::Pi()>>hTmp";
       cout << "\nPlot: " << myString.str().c_str() << endl;
       cout << "Selection: " << tmpstring.c_str() << endl;
@@ -1003,8 +977,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 
 
       tmpstring = selection + " && " + aVar + " > 0 && " + bkgMassQuery;
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << query + ">>hTmp";
       cout << "\nPlot: " << myString.str().c_str() << endl;
       cout << "Selection: " << tmpstring.c_str() << endl;
@@ -1012,8 +985,7 @@ void MakeComparisonDataMC (unsigned int plotType)
       hDbkg1D->Add(hTmp);
       
       tmpstring = selection + " && " + aVar + " < 0 && " + bVar + " < 0 && " + bkgMassQuery;
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << query + "-TMath::Pi()>>hTmp";
       cout << "\nPlot: " << myString.str().c_str() << endl;
       cout << "Selection: " << tmpstring.c_str() << endl;
@@ -1021,8 +993,7 @@ void MakeComparisonDataMC (unsigned int plotType)
       hDbkg1D->Add(hTmp);
       
       tmpstring = selection + " && " + aVar + " < 0 && " + bVar + " > 0 && " + bkgMassQuery;
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << query + "+TMath::Pi()>>hTmp";
       cout << "\nPlot: " << myString.str().c_str() << endl;
       cout << "Selection: " << tmpstring.c_str() << endl;
@@ -2181,13 +2152,11 @@ void PlotMuMu (string fileName, bool bkgSub)
 
   if (bkgSub == true)
     {
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(abs(B0MassArb - " << Utility->B0Mass << ") < " << atof(Utility->GetGenericParam("NSigmaB0S").c_str())*signalSigma << ")";
       sigMassQuery = myString.str();
       
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "((B0MassArb > " << Utility->B0Mass+atof(Utility->GetGenericParam("NSigmaB0B").c_str())*signalSigma << " && B0MassArb < "
 	       << Utility->B0Mass+(atof(Utility->GetGenericParam("NSigmaB0B").c_str())+atof(Utility->GetGenericParam("NSigmaB0S").c_str()))*signalSigma << ") || ";
       myString << "(B0MassArb < " << Utility->B0Mass-atof(Utility->GetGenericParam("NSigmaB0B").c_str())*signalSigma << " && B0MassArb > "
@@ -2196,13 +2165,11 @@ void PlotMuMu (string fileName, bool bkgSub)
     }
   else
     {
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(B0MassArb > " << Utility->B0Mass - atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()) << " && B0MassArb < " << Utility->B0Mass + atof(Utility->GetGenericParam("B0MassIntervalRight").c_str()) << ")";
       sigMassQuery = myString.str();
 
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(B0MassArb > " << Utility->B0Mass - atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()) << " && B0MassArb < " << Utility->B0Mass + atof(Utility->GetGenericParam("B0MassIntervalRight").c_str()) << ")";
       bkgMassQuery = myString.str(); 
     }
@@ -2258,13 +2225,11 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
 
   if (bkgSub == true)
     {
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(abs(B0MassArb - " << Utility->B0Mass << ") < " << atof(Utility->GetGenericParam("NSigmaB0S").c_str())*signalSigma << ")";
       sigMassQuery = myString.str();
       
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "((B0MassArb > " << Utility->B0Mass+atof(Utility->GetGenericParam("NSigmaB0B").c_str())*signalSigma << " && B0MassArb < "
 	       << Utility->B0Mass+(atof(Utility->GetGenericParam("NSigmaB0B").c_str())+atof(Utility->GetGenericParam("NSigmaB0S").c_str()))*signalSigma << ") || ";
       myString << "(B0MassArb < " << Utility->B0Mass-atof(Utility->GetGenericParam("NSigmaB0B").c_str())*signalSigma << " && B0MassArb > "
@@ -2273,13 +2238,11 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
     }
   else
     {
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(B0MassArb > " << Utility->B0Mass - atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()) << " && B0MassArb < " << Utility->B0Mass + atof(Utility->GetGenericParam("B0MassIntervalRight").c_str()) << ")";
       sigMassQuery = myString.str();
 
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << "(B0MassArb > " << Utility->B0Mass - atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()) << " && B0MassArb < " << Utility->B0Mass + atof(Utility->GetGenericParam("B0MassIntervalRight").c_str()) << ")";
       bkgMassQuery = myString.str(); 
     }
@@ -2815,8 +2778,7 @@ void MakePvaluePlot (string fileName, int specBin)
 
       val = Utility->GetNLLval(&vecNLL,"BF",i);
 
-      myString.clear();
-      myString.str("");
+      myString.clear(); myString.str("");
       myString << i << ".root";
       fileName.replace(fileName.find(".root")-1,6,myString.str());
       cout << "\nReading NLL distribution from file: " << fileName.c_str() << endl;
