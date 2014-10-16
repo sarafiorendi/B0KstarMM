@@ -1116,6 +1116,7 @@ void ReduceTree (string fileNameIn, string fileNameOut, bool isSingleNotMultyCan
   else
     {
       theTreeIn->SetBranchStatus("B0MassArb",1);
+      theTreeIn->SetBranchStatus("kstMassArb",1);
 
       theTreeIn->SetBranchStatus("mumuMass",1);
       theTreeIn->SetBranchStatus("mumuMassE",1);

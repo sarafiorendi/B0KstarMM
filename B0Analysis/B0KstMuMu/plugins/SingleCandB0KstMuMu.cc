@@ -256,6 +256,7 @@ void SelectBestCand (int SignalType)
 		}
 
 	      NTupleOut->B0MassArb          = NTupleIn->bMass->at(BestCandIndx);
+	      NTupleOut->kstMassArb         = NTupleIn->kstMass->at(BestCandIndx);
 	      NTupleOut->CosThetaMuArb      = cosThetaMup;
 	      NTupleOut->CosThetaKArb       = cosThetaK;
 	      NTupleOut->PhiKstMuMuPlaneArb = phiKstMuMuPlane;
@@ -431,6 +432,7 @@ void SelectBestCand (int SignalType)
  		}
 
 	      NTupleOut->B0MassArb          = NTupleIn->bBarMass->at(BestCandIndx);
+	      NTupleOut->kstMassArb         = NTupleIn->kstBarMass->at(BestCandIndx);
 	      NTupleOut->CosThetaMuArb      = cosThetaMum;
 	      NTupleOut->CosThetaKArb       = cosThetaK;
 	      NTupleOut->PhiKstMuMuPlaneArb = phiKstMuMuPlane;

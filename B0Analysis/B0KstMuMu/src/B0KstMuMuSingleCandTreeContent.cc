@@ -10,6 +10,7 @@ B0KstMuMuSingleCandTreeContent::B0KstMuMuSingleCandTreeContent ()
   B0Eta          = 0;
   B0Phi          = 0;
   B0notB0bar     = true;
+  kstMassArb     = 0;
   rightFlavorTag = true;
 
   // ### Trigger category ###
@@ -36,6 +37,7 @@ void B0KstMuMuSingleCandTreeContent::ClearNTuple ()
   B0Eta          = 0;
   B0Phi          = 0;
   B0notB0bar     = true;
+  kstMassArb     = 0;
   rightFlavorTag = true;
 
   // ### Trigger category ###
@@ -57,6 +59,7 @@ void B0KstMuMuSingleCandTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("B0Eta",          &B0Eta,          "B0Eta/D");
   theTree->Branch("B0Phi",          &B0Phi,          "B0Phi/D");
   theTree->Branch("B0notB0bar",     &B0notB0bar,     "B0notB0bar/O");
+  theTree->Branch("kstMassArb",     &kstMassArb,     "kstMassArb/D");
   theTree->Branch("rightFlavorTag", &rightFlavorTag, "rightFlavorTag/O");
 
   // ### Trigger category ###
@@ -78,6 +81,7 @@ void B0KstMuMuSingleCandTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("B0Eta",          &B0Eta);
   theTree->SetBranchAddress("B0Phi",          &B0Phi);
   theTree->SetBranchAddress("B0notB0bar",     &B0notB0bar);
+  theTree->SetBranchAddress("kstMassArb",     &kstMassArb);
   theTree->SetBranchAddress("rightFlavorTag", &rightFlavorTag);
 
   // ### Trigger category ###
@@ -109,6 +113,7 @@ void B0KstMuMuSingleCandTreeContent::CopyScalars (B0KstMuMuSingleCandTreeContent
   B0Eta          = NTupleIn->B0Eta;
   B0Phi          = NTupleIn->B0Phi;
   B0notB0bar     = NTupleIn->B0notB0bar;
+  kstMassArb     = NTupleIn->kstMassArb;
   rightFlavorTag = NTupleIn->rightFlavorTag;
 
   // ### Trigger category ###

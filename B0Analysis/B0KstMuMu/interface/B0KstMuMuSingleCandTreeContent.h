@@ -25,6 +25,7 @@ class B0KstMuMuSingleCandTreeContent : public B0KstMuMuTreeContent
   double B0MassArb;
   double B0pT, B0Eta, B0Phi;
   bool   B0notB0bar;
+  double kstMassArb;
   bool   rightFlavorTag;
 
   // ################################
