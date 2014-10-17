@@ -214,7 +214,8 @@ void MakeComparisonDataMC (unsigned int plotType)
   TLegend* leg;
   vector<TFile*> Vfiles;
   vector<TTree*> TreeMC;
-  vector<TH1D*> h1DVec;
+  vector<TH1D*> h1DVecSig;
+  vector<TH1D*> h1DVecBkg;
   vector<string> queryMC;
   string weightVar = "evWeight";
   string fileName;
@@ -645,11 +646,21 @@ void MakeComparisonDataMC (unsigned int plotType)
   for (unsigned int i = 0; i < NHisto; i++)
     {
       myString.clear(); myString.str("");
-      myString << "h1D" << i;
-      h1DVec.push_back(new TH1D(myString.str().c_str(),myString.str().c_str(),nBinsX,minX,maxX));
-      h1DVec.back()->Sumw2();
-      h1DVec.back()->SetXTitle(Xtitle.c_str());
-      h1DVec.back()->SetYTitle("Norm. entries");
+      myString << "h1Dsig" << i;
+      h1DVecSig.push_back(new TH1D(myString.str().c_str(),myString.str().c_str(),nBinsX,minX,maxX));
+      h1DVecSig.back()->Sumw2();
+      h1DVecSig.back()->SetXTitle(Xtitle.c_str());
+      h1DVecSig.back()->SetYTitle("Norm. entries");
+    }
+
+  for (unsigned int i = 0; i < NHisto; i++)
+    {
+      myString.clear(); myString.str("");
+      myString << "h1Dbkg" << i;
+      h1DVecBkg.push_back(new TH1D(myString.str().c_str(),myString.str().c_str(),nBinsX,minX,maxX));
+      h1DVecBkg.back()->Sumw2();
+      h1DVecBkg.back()->SetXTitle(Xtitle.c_str());
+      h1DVecBkg.back()->SetYTitle("Norm. entries");
     }
 
   TH1D* hDsig1D = new TH1D("hDsig1D","hDsig1D",nBinsX,minX,maxX);
@@ -902,13 +913,14 @@ void MakeComparisonDataMC (unsigned int plotType)
 	{
 	  TH1D* hTmp = new TH1D("hTmp","hTmp",nBinsX,minX,maxX);
 
+
 	  tmpstring = weightVar + "*(" + selection + " && " + aVar + " > 0 && " + sigMassQuery + ")";
 	  myString.clear(); myString.str("");
 	  myString << query + ">>hTmp";
 	  cout << "\nPlot: " << myString.str().c_str() << endl;
 	  cout << "Selection: " << tmpstring.c_str() << endl;
 	  TreeMC[i]->Draw(myString.str().c_str(),tmpstring.c_str());
-	  h1DVec[i]->Add(hTmp);
+	  h1DVecSig[i]->Add(hTmp);
 
 	  tmpstring = weightVar + "*(" + selection + " && " + aVar + " < 0 && " + bVar + " < 0 && " + sigMassQuery + ")";
 	  myString.clear(); myString.str("");
@@ -916,7 +928,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 	  cout << "\nPlot: " << myString.str().c_str() << endl;
 	  cout << "Selection: " << tmpstring.c_str() << endl;
 	  TreeMC[i]->Draw(myString.str().c_str(),tmpstring.c_str());
-	  h1DVec[i]->Add(hTmp);
+	  h1DVecSig[i]->Add(hTmp);
 
 	  tmpstring = weightVar + "*(" + selection + " && " + aVar + " < 0 && " + bVar + " > 0 && " + sigMassQuery + ")";
 	  myString.clear(); myString.str("");
@@ -924,19 +936,58 @@ void MakeComparisonDataMC (unsigned int plotType)
 	  cout << "\nPlot: " << myString.str().c_str() << endl;
 	  cout << "Selection: " << tmpstring.c_str() << endl;
 	  TreeMC[i]->Draw(myString.str().c_str(),tmpstring.c_str());
-	  h1DVec[i]->Add(hTmp);
+	  h1DVecSig[i]->Add(hTmp);
 
+
+	  tmpstring = weightVar + "*(" + selection + " && " + aVar + " > 0 && " + bkgMassQuery + ")";
+	  myString.clear(); myString.str("");
+	  myString << query + ">>hTmp";
+	  cout << "\nPlot: " << myString.str().c_str() << endl;
+	  cout << "Selection: " << tmpstring.c_str() << endl;
+	  TreeMC[i]->Draw(myString.str().c_str(),tmpstring.c_str());
+	  h1DVecBkg[i]->Add(hTmp);
+
+	  tmpstring = weightVar + "*(" + selection + " && " + aVar + " < 0 && " + bVar + " < 0 && " + bkgMassQuery + ")";
+	  myString.clear(); myString.str("");
+	  myString << query + "-TMath::Pi()>>hTmp";
+	  cout << "\nPlot: " << myString.str().c_str() << endl;
+	  cout << "Selection: " << tmpstring.c_str() << endl;
+	  TreeMC[i]->Draw(myString.str().c_str(),tmpstring.c_str());
+	  h1DVecBkg[i]->Add(hTmp);
+
+	  tmpstring = weightVar + "*(" + selection + " && " + aVar + " < 0 && " + bVar + " > 0 && " + bkgMassQuery + ")";
+	  myString.clear(); myString.str("");
+	  myString << query + "+TMath::Pi()>>hTmp";
+	  cout << "\nPlot: " << myString.str().c_str() << endl;
+	  cout << "Selection: " << tmpstring.c_str() << endl;
+	  TreeMC[i]->Draw(myString.str().c_str(),tmpstring.c_str());
+	  h1DVecBkg[i]->Add(hTmp);
+
+
+	  h1DVecSig[i]->Add(h1DVecBkg[i], -1.0);
 	  delete hTmp;
 	}
       else
 	{
 	  tmpstring = weightVar + "*(" + sigMassQuery + ")";
 	  myString.clear(); myString.str("");
-	  myString << "h1D" << i;
+	  myString << "h1Dsig" << i;
 	  queryMC.push_back(query + ">>" + myString.str().c_str());
 	  cout << "\nPlot: " << queryMC.back().c_str() << endl;
-	  cout << "Selection: " << sigMassQuery.c_str() << endl;
+	  cout << "Selection: " << tmpstring.c_str() << endl;
 	  TreeMC[i]->Draw(queryMC.back().c_str(),tmpstring.c_str());
+
+
+	  tmpstring = weightVar + "*(" + bkgMassQuery + ")";
+	  myString.clear(); myString.str("");
+	  myString << "h1Dbkg" << i;
+	  queryMC.push_back(query + ">>" + myString.str().c_str());
+	  cout << "\nPlot: " << queryMC.back().c_str() << endl;
+	  cout << "Selection: " << tmpstring.c_str() << endl;
+	  TreeMC[i]->Draw(queryMC.back().c_str(),tmpstring.c_str());
+
+
+	  h1DVecSig[i]->Add(h1DVecBkg[i], -1.0);
 	}
     }
   
@@ -1026,17 +1077,17 @@ void MakeComparisonDataMC (unsigned int plotType)
   // # Rescale MCs by the Branching Fraction #
   // #########################################
   // # B0 --> K* J/psi #
-  h1DVec[0]->Scale(1./h1DVec[0]->Integral() * Utility->JPsiKpiBF);
+  h1DVecSig[0]->Scale(1./h1DVecSig[0]->Integral() * Utility->JPsiKpiBF);
   // # B0 --> K* psi(2S) #
-  h1DVec[1]->Scale(1./h1DVec[1]->Integral() * Utility->PsiPKpiBF);
+  h1DVecSig[1]->Scale(1./h1DVecSig[1]->Integral() * Utility->PsiPKpiBF);
 
-  hM1D = (TH1D*)h1DVec[0]->Clone("hM1D");
+  hM1D = (TH1D*)h1DVecSig[0]->Clone("hM1D");
   hM1D->SetXTitle(Xtitle.c_str());
   hM1D->SetYTitle("Norm. entries");
   hM1D->SetLineColor(kBlack);
   hM1D->SetFillColor(kAzure+6);
 
-  for (unsigned int i = 1; i < NHisto; i++) hM1D->Add(h1DVec[i]);
+  for (unsigned int i = 1; i < NHisto; i++) hM1D->Add(h1DVecSig[i]);
       
   hM1D->Scale(1./hM1D->Integral());
   hDsig1D->Scale(1./hDsig1D->Integral());
@@ -1150,7 +1201,8 @@ void MakeComparisonDataMC (unsigned int plotType)
 
 
   TreeMC.clear();
-  h1DVec.clear();
+  h1DVecSig.clear();
+  h1DVecBkg.clear();
   queryMC.clear();
 }
 
