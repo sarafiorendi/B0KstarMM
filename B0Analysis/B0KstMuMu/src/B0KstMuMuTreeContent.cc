@@ -613,12 +613,14 @@ void B0KstMuMuTreeContent::ClearScalarsMonteCarlo ()
 
   // ### Generated K*0 track- ###
   genKstTrkmMother = 0;
+  genKstTrkmID     = 0;
   genKstTrkmPx     = 0;
   genKstTrkmPy     = 0;
   genKstTrkmPz     = 0;
 
   // ### Generated K*0 track+ ###
   genKstTrkpMother = 0;
+  genKstTrkpID     = 0;
   genKstTrkpPx     = 0;
   genKstTrkpPy     = 0;
   genKstTrkpPz     = 0;
@@ -1061,12 +1063,14 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
 
   // ### Generated K*0 track- ###
   theTree->Branch("genKstTrkmMother", &genKstTrkmMother, "genKstTrkmMother/I");
+  theTree->Branch("genKstTrkmID",     &genKstTrkmID,     "genKstTrkmID/I");
   theTree->Branch("genKstTrkmPx",     &genKstTrkmPx,     "genKstTrkmPx/D");
   theTree->Branch("genKstTrkmPy",     &genKstTrkmPy,     "genKstTrkmPy/D");
   theTree->Branch("genKstTrkmPz",     &genKstTrkmPz,     "genKstTrkmPz/D");
 
   // ### Generated K*0 track+ ###
   theTree->Branch("genKstTrkpMother", &genKstTrkpMother, "genKstTrkpMother/I");
+  theTree->Branch("genKstTrkpID",     &genKstTrkpID,     "genKstTrkpID/I");
   theTree->Branch("genKstTrkpPx",     &genKstTrkpPx,     "genKstTrkpPx/D");
   theTree->Branch("genKstTrkpPy",     &genKstTrkpPy,     "genKstTrkpPy/D");
   theTree->Branch("genKstTrkpPz",     &genKstTrkpPz,     "genKstTrkpPz/D");
@@ -1324,12 +1328,14 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
 
   // ### Generated K*0 track- ###
   theTree->SetBranchAddress("genKstTrkmMother", &genKstTrkmMother);
+  theTree->SetBranchAddress("genKstTrkmID",     &genKstTrkmID);
   theTree->SetBranchAddress("genKstTrkmPx",     &genKstTrkmPx);
   theTree->SetBranchAddress("genKstTrkmPy",     &genKstTrkmPy);
   theTree->SetBranchAddress("genKstTrkmPz",     &genKstTrkmPz);
 
   // ### Generated K*0 track+ ###
   theTree->SetBranchAddress("genKstTrkpMother", &genKstTrkpMother);
+  theTree->SetBranchAddress("genKstTrkpID",     &genKstTrkpID);
   theTree->SetBranchAddress("genKstTrkpPx",     &genKstTrkpPx);
   theTree->SetBranchAddress("genKstTrkpPy",     &genKstTrkpPy);
   theTree->SetBranchAddress("genKstTrkpPz",     &genKstTrkpPz);
@@ -1450,12 +1456,14 @@ void B0KstMuMuTreeContent::CopyScalars (B0KstMuMuTreeContent* NTupleIn)
 
   // ### Generated K*0 track- ###
   genKstTrkmMother = NTupleIn->genKstTrkmMother;
+  genKstTrkmID     = NTupleIn->genKstTrkmID;
   genKstTrkmPx     = NTupleIn->genKstTrkmPx;
   genKstTrkmPy     = NTupleIn->genKstTrkmPy;
   genKstTrkmPz     = NTupleIn->genKstTrkmPz;
 
   // ### Generated K*0 track+ ###
   genKstTrkpMother = NTupleIn->genKstTrkpMother;
+  genKstTrkpID     = NTupleIn->genKstTrkpID;
   genKstTrkpPx     = NTupleIn->genKstTrkpPx;
   genKstTrkpPy     = NTupleIn->genKstTrkpPy;
   genKstTrkpPz     = NTupleIn->genKstTrkpPz;

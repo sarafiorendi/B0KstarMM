@@ -1939,6 +1939,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  if ((NTuple->genSignal != 0) || (NTuple->genMuMuBGnTrksm != 0))
 		    {
 		      NTuple->genKstTrkmMother = genKst_trkm->mother()->pdgId();
+		      NTuple->genKstTrkmID = genKst_trkm->pdgId();
 		      NTuple->genKstTrkmPx = genKst_trkm->px();
 		      NTuple->genKstTrkmPy = genKst_trkm->py();
 		      NTuple->genKstTrkmPz = genKst_trkm->pz();
@@ -1951,6 +1952,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  if ((NTuple->genSignal != 0) || (NTuple->genMuMuBGnTrksp != 0))
 		    {
 		      NTuple->genKstTrkpMother = genKst_trkp->mother()->pdgId();
+		      NTuple->genKstTrkpID = genKst_trkp->pdgId();
 		      NTuple->genKstTrkpPx = genKst_trkp->px();
 		      NTuple->genKstTrkpPy = genKst_trkp->py();
 		      NTuple->genKstTrkpPz = genKst_trkp->pz();

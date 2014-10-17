@@ -213,13 +213,13 @@ class B0KstMuMuTreeContent
   // ########################
   // # Generated K*0 track- #
   // ########################
-  int                       genKstTrkmMother;
+  int                       genKstTrkmMother, genKstTrkmID;
   double                    genKstTrkmPx, genKstTrkmPy, genKstTrkmPz;
 
   // ########################
   // # Generated K*0 track+ #
   // ########################
-  int                       genKstTrkpMother;
+  int                       genKstTrkpMother, genKstTrkpID;
   double                    genKstTrkpPx, genKstTrkpPy, genKstTrkpPz;
 
   // ################################################
