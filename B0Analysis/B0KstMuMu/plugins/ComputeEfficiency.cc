@@ -233,8 +233,8 @@ void ComputeEfficiency (TTree* theTree, B0KstMuMuSingleCandTreeContent* NTuple, 
 	    (NTuple->B0MassArb < Utility->B0Mass + atof(Utility->GetGenericParam("B0MassIntervalRight").c_str()))           &&
 
 	    ((((SignalType == Utility->B0ToKstMuMu)  || (SignalType == Utility->B0ToKstMuMu+1))  && (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"rejectPsi",true) == true)) ||
-	     (((SignalType == Utility->B0ToJPsiKst)  || (SignalType == Utility->B0ToJPsiKst+1))  && (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepJpsi",false) == true)) ||
-	     (((SignalType == Utility->B0ToPsi2SKst) || (SignalType == Utility->B0ToPsi2SKst+1)) && (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepPsiP",false) == true))))))
+	     (((SignalType == Utility->B0ToJPsiKst)  || (SignalType == Utility->B0ToJPsiKst+1))  && (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepJpsi")       == true)) ||
+	     (((SignalType == Utility->B0ToPsi2SKst) || (SignalType == Utility->B0ToPsi2SKst+1)) && (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"keepPsiP")       == true))))))
 	{
 	  mumuq2 = NTuple->mumuMass->at(0)*NTuple->mumuMass->at(0);
 

@@ -456,10 +456,10 @@ void SelectBestCand (int SignalType)
 
 
 void BestCandPerformance (int SignalType)
+// ##############################################################
+// # Compute efficiency, purity and B-flavor tagging efficiency #
+// ##############################################################
 {
-  // ##############################################################
-  // # Compute efficiency, purity and B-flavor tagging efficiency #
-  // ##############################################################
   unsigned int coutGoodEv          = 0;
   unsigned int countSeleEv         = 0;
   unsigned int countGoodBTag       = 0;
@@ -506,10 +506,10 @@ void BestCandPerformance (int SignalType)
 	  countSeleEv++;
 
 	  if ((NTupleIn->genSignal == SignalType) && (NTupleIn->truthMatchSignal->at(BestCandIndx) == true) && (B0notB0bar == true)) countGoodBTag++;
-	  if ((NTupleIn->genSignal == SignalType) && (NTupleIn->truthMatchSignal->at(BestCandIndx) == true)) countGoodBSeleEv++;
+	  if ((NTupleIn->genSignal == SignalType) && (NTupleIn->truthMatchSignal->at(BestCandIndx) == true))                         countGoodBSeleEv++;
 
 	  if ((NTupleIn->genSignal == SignalType+1) && (NTupleIn->truthMatchSignal->at(BestCandIndx) == true) && (B0notB0bar == false)) countGoodBbarTag++;
-	  if ((NTupleIn->genSignal == SignalType+1) && (NTupleIn->truthMatchSignal->at(BestCandIndx) == true)) countGoodBbarSeleEv++;
+	  if ((NTupleIn->genSignal == SignalType+1) && (NTupleIn->truthMatchSignal->at(BestCandIndx) == true))                          countGoodBbarSeleEv++;
 
 	  if (((NTupleIn->genSignal == SignalType) || (NTupleIn->genSignal == SignalType+1)) && (NTupleIn->truthMatchSignal->at(BestCandIndx) == true)) countGoodSeleEv++;
 	}
