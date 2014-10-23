@@ -2787,6 +2787,15 @@ void MakeFitResPlots (string fileName, string plotType, int specBin, string varN
 
   c0->Modified();
   c0->Update();
+
+  TPaveStats* st = (TPaveStats*)histo->FindObject("stats");
+  st->SetX1NDC(0.15);
+  st->SetX2NDC(0.35);
+  st->SetY1NDC(0.85);
+  st->SetY2NDC(0.55);
+
+  c0->Modified();
+  c0->Update();
 }
 
 
@@ -2833,7 +2842,7 @@ void MakePvaluePlot (string fileName, int specBin)
     {
       if ((i == Utility->GetJPsiBin(&q2Bins)) || (i == Utility->GetPsiPBin(&q2Bins))) continue;
 
-      val = Utility->GetNLLval(&vecNLL,"BF",i);
+      val = Utility->GetNLLval(&vecNLL,"Afb",i);
 
       myString.clear(); myString.str("");
       myString << i << ".root";
@@ -2849,7 +2858,7 @@ void MakePvaluePlot (string fileName, int specBin)
 	  myString << "nll > " << val;
 	  int integral = theTree->Draw("nll",myString.str().c_str(),"goff");
 
-	  pval->SetBinContent(i+1,integral / nEvents);
+	  pval->SetBinContent(i+1,static_cast<double>(integral) / static_cast<double>(nEvents));
 	  pval->SetBinError(i+1,pval->GetBinContent(i+1)*1e-3);
 	  cout << "p-value for q^2 bin #" << i << " --> " << pval->GetBinContent(i+1) << endl;
 
@@ -2919,8 +2928,8 @@ int main (int argc, char** argv)
 	  cout << "            [Phy: 0-2||10-12]" << endl;
 	  cout << "            [GenMultyRun: fileName q^2_bin_index]" << endl;
 	  cout << "            [DataMC: 0-27]" << endl;
-	  cout << "            [Pval: fileName q^2_bin_index]" << endl;
-	  cout << "            [FitRes: fileName plotType q^2_bin_index varName lowBound highBound]" << endl;
+	  cout << "            [Pval: toyFileName q^2_bin_index]" << endl;
+	  cout << "            [FitRes: toyFileName plotType q^2_bin_index varName lowBound highBound]" << endl;
 	  cout << "            [MuMuMass OR KstMass: dataFileName bkgSub]" << endl;
 	  cout << "            [KKMass: dataFileName bkgSub RECOorGEN]" << endl;
 	  cout << "            [MuHadMass: dataFileName]" << endl;
@@ -2990,8 +2999,8 @@ int main (int argc, char** argv)
       cout << "            [Phy: 0-2||10-12]" << endl;
       cout << "            [GenMultyRun: fileName q^2_bin_index]" << endl;
       cout << "            [DataMC: 0-27]" << endl;
-      cout << "            [Pval: fileName q^2_bin_index]" << endl;
-      cout << "            [FitRes: fileName plotType q^2_bin_index varName lowBound highBound]" << endl;
+      cout << "            [Pval: toyFileName q^2_bin_index]" << endl;
+      cout << "            [FitRes: toyFileName plotType q^2_bin_index varName lowBound highBound]" << endl;
       cout << "            [MuMuMass OR KstMass: dataFileName bkgSub]" << endl;
       cout << "            [KKMass: dataFileName bkgSub RECOorGEN]" << endl;
       cout << "            [MuHadMass: dataFileName]" << endl;
