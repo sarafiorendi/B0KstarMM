@@ -2606,16 +2606,29 @@ void Utils::MakeGraphVar (std::string fileName, TGraphAsymmErrors** graph, std::
       else if (varName == "P2")  rawString << vecParam[GetFitParamIndx("P2S")]->operator[](i);
       else { std::cout << "[Utils::MakeGraphVar]\tVariable name unknown: " << varName << std::endl; exit (EXIT_FAILURE); }
 
-      vxs.push_back((q2Bins[i+1] + q2Bins[i]) / 2. + offset);
-      vxeh.push_back(q2Bins[i+1] - vxs.back() - offset);
-      vxel.push_back(vxs.back() - q2Bins[i] + offset);
+      if (ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false)
+	{
+	  vxs.push_back((q2Bins[i+1] + q2Bins[i]) / 2. + offset);
+	  vxeh.push_back(q2Bins[i+1] - vxs.back() - offset);
+	  vxel.push_back(vxs.back() - q2Bins[i] + offset);
  
-      rawString >> tmpVar;
-      vys.push_back(tmpVar);
-      rawString >> tmpVar;
-      vyel.push_back(fabs(tmpVar));
-      rawString >> tmpVar;
-      vyeh.push_back(fabs(tmpVar));
+	  rawString >> tmpVar;
+	  vys.push_back(tmpVar);
+	  rawString >> tmpVar;
+	  vyel.push_back(fabs(tmpVar));
+	  rawString >> tmpVar;
+	  vyeh.push_back(fabs(tmpVar));
+	}
+      else
+	{
+	  vxs.push_back((q2Bins[i+1] + q2Bins[i]) / 2.);
+	  vxeh.push_back(0.0);
+	  vxel.push_back(0.0);
+
+	  vys.push_back(YvalueOutsideLimits);
+	  vyeh.push_back(0.0);
+	  vyel.push_back(0.0);
+	}
     }
   *graph = new TGraphAsymmErrors(vxs.size(), &vxs[0], &vys[0], &vxel[0], &vxeh[0], &vyel[0], &vyeh[0]);
 

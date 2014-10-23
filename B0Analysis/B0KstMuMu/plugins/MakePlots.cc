@@ -1339,21 +1339,18 @@ void CheckPhysicsRegion ()
 
   for (int i = 0; i < geTMP->GetN(); i++)
     {
-      if (Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false)
-	{
-	  ge->SetPoint(i,geTMP->GetY()[i],ge->GetY()[i]);
-	  ge->SetPointEXhigh(i,geTMP->GetErrorYhigh(i));
-	  ge->SetPointEXlow(i,geTMP->GetErrorYlow(i));
+      ge->SetPoint(i,geTMP->GetY()[i],ge->GetY()[i]);
+      ge->SetPointEXhigh(i,geTMP->GetErrorYhigh(i));
+      ge->SetPointEXlow(i,geTMP->GetErrorYlow(i));
 
-	  myString.clear(); myString.str("");
-	  myString << i;
-	  binIndx = new TLatex(0.5,0.5,myString.str().c_str());
-	  binIndx->SetTextFont(61);
-	  binIndx->SetTextSize(0.04);
-	  binIndx->SetTextColor(kBlue);
-	  binIndx->SetNDC(false);
-	binIndx->DrawLatex(geTMP->GetY()[i] + offset,ge->GetY()[i] + offset,myString.str().c_str());
-	}
+      myString.clear(); myString.str("");
+      myString << i;
+      binIndx = new TLatex(0.5,0.5,myString.str().c_str());
+      binIndx->SetTextFont(61);
+      binIndx->SetTextSize(0.04);
+      binIndx->SetTextColor(kBlue);
+      binIndx->SetNDC(false);
+      binIndx->DrawLatex(geTMP->GetY()[i] + offset,ge->GetY()[i] + offset,myString.str().c_str());
     }
 
 
