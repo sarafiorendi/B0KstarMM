@@ -31,7 +31,7 @@ for ($count = 0; $count < $nfiles; $count++)
 {
 #    $cmd = "./ExtractYield 881 " . "singleCand_B0ToJPsiKst_MC_NTuple_reduced.root" . " noEffCorr " . $q2bin . " " . $count . " " . "singleCand_B0ToJPsiKst_MC_NTuple_reduced_" . $q2bin . "_" . $count . ".root" ;
 
-#    $cmd = "hadd singleCand_B0ToJPsiKst_MC_NTuple_reduced_" . $count . "root singleCand_B0ToJPsiKst_MC_NTuple_reduced_3_" . $count . ".root singleCand_B0ToJPsiKst_MC_NTuple_reduced_5_" . $count . ".root" ;
+#    $cmd = "hadd singleCand_B0ToJPsiKst_MC_NTuple_reduced_" . $count . ".root singleCand_B0ToJPsiKst_MC_NTuple_reduced_3_" . $count . ".root singleCand_B0ToJPsiKst_MC_NTuple_reduced_5_" . $count . ".root" ;
 
 #    $cmd = "./ExtractYield 86 CombBkgToyBin" . $q2bin . "_" . $count . ".root yesEffCorr " . $q2bin . " " . $count ;
 
