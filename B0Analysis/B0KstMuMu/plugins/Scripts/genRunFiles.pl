@@ -42,7 +42,8 @@ for ($count = 0; $count < $nfiles; $count++)
 
     $cmd = "Qsub -l lnxfarm -e -o cocktailMC_" . $q2bin . "_" . $count . ".log -N COCK" . $q2bin . $count . " ./ExtractYield 6 ../TestMultySamples/MCcocktail_1xData_All_" . $count . ".root yesEffCorr " . $q2bin . " " . $count ;
 
-#    $cmd = "mv " . $dirName . "_" . $count . "_" . $q2bin . " " . $toyDir ;
+#    $tmp = $count + "1" ;
+#    $cmd = "mv " . $dirName . "_" . $tmp . "_" . $q2bin . " " . $toyDir ;
 
 
     if ($count == 0)
