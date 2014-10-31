@@ -10,6 +10,7 @@
 $q2bin   = @ARGV[0] ;
 $dirName = @ARGV[1] ;
 $nfiles  = 400 ;
+$toyDir  = "Toys_fromMCsig" ;
 
 
 $fileOut = "myRun_bin" . $q2bin . ".sh" ;
@@ -40,6 +41,8 @@ for ($count = 0; $count < $nfiles; $count++)
 #    $cmd = "hadd MCcocktail_1xData_All_" . $count . ".root singleCand_B0ToKstMuMu_MC_NTuple_" . $count . ".root CombBkgToy_" . $count . ".root singleCand_B0ToJPsiKst_MC_NTuple_reduced_" . $count . ".root singleCand_B0ToPsi2SKst_MC_NTuple_reduced_" . $count . ".root" ;
 
     $cmd = "Qsub -l lnxfarm -e -o cocktailMC_" . $q2bin . "_" . $count . ".log -N COCK" . $q2bin . $count . " ./ExtractYield 6 ../TestMultySamples/MCcocktail_1xData_All_" . $count . ".root yesEffCorr " . $q2bin . " " . $count ;
+
+#    $cmd = "mv " . $dirName . "_" . $count . "_" . $q2bin . " " . $toyDir ;
 
 
     if ($count == 0)
