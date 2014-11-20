@@ -1270,17 +1270,17 @@ double StoreFitResultsInFile (RooAbsPdf* pdf, RooFitResult* fitResult, RooDataSe
   
       if (GetVar(pdf,"meanS") != NULL)
 	{
-	  fileFitResults << "Mean: " << GetVar(pdf,"meanS")->getVal() << " +/- " << GetVar(pdf,"meanS")->getError();
+	  fileFitResults << "Signal right-tag mean: " << GetVar(pdf,"meanS")->getVal() << " +/- " << GetVar(pdf,"meanS")->getError();
 	  fileFitResults << " (" << GetVar(pdf,"meanS")->getErrorHi() << "/" << GetVar(pdf,"meanS")->getErrorLo() << ")" << endl;
 	}
       if (GetVar(pdf,"sigmaS1") != NULL)
 	{
-	  fileFitResults << "Sigma-1: " << GetVar(pdf,"sigmaS1")->getVal() << " +/- " << GetVar(pdf,"sigmaS1")->getError();
+	  fileFitResults << "Signal right-tag sigma-1: " << GetVar(pdf,"sigmaS1")->getVal() << " +/- " << GetVar(pdf,"sigmaS1")->getError();
 	  fileFitResults << " (" << GetVar(pdf,"sigmaS1")->getErrorHi() << "/" << GetVar(pdf,"sigmaS1")->getErrorLo() << ")" << endl;
 	}
       if (GetVar(pdf,"sigmaS2") != NULL)
 	{
-	  fileFitResults << "Sigma-2: " << GetVar(pdf,"sigmaS2")->getVal() << " +/- " << GetVar(pdf,"sigmaS2")->getError();
+	  fileFitResults << "Signal right-tag sigma-2: " << GetVar(pdf,"sigmaS2")->getVal() << " +/- " << GetVar(pdf,"sigmaS2")->getError();
 	  fileFitResults << " (" << GetVar(pdf,"sigmaS2")->getErrorHi() << "/" << GetVar(pdf,"sigmaS2")->getErrorLo() << ")" << endl;
 	  fileFitResults << "Fraction: " << GetVar(pdf,"fracMassS")->getVal() << " +/- " << GetVar(pdf,"fracMassS")->getError();
 	  fileFitResults << " (" << GetVar(pdf,"fracMassS")->getErrorHi() << "/" << GetVar(pdf,"fracMassS")->getErrorLo() << ")" << endl;
@@ -1309,15 +1309,15 @@ double StoreFitResultsInFile (RooAbsPdf* pdf, RooFitResult* fitResult, RooDataSe
 	  signalSigmaMisTE = GetVar(pdf,"sigmaMisTag1")->getError();
 	}
 
-      if (GetVar(pdf,"nMisTagFrac") != NULL) fileFitResults << "Background mistag mean: equal to signal mean" << endl;
+      if (GetVar(pdf,"nMisTagFrac") != NULL) fileFitResults << "Signal mis-tag mean: equal to signal right-tag mean" << endl;
       if (GetVar(pdf,"sigmaMisTag1") != NULL)
 	{
-	  fileFitResults << "Background mistag sigma-1: " << GetVar(pdf,"sigmaMisTag1")->getVal() << " +/- " << GetVar(pdf,"sigmaMisTag1")->getError();
+	  fileFitResults << "Signal mis-tag sigma-1: " << GetVar(pdf,"sigmaMisTag1")->getVal() << " +/- " << GetVar(pdf,"sigmaMisTag1")->getError();
 	  fileFitResults << " (" << GetVar(pdf,"sigmaMisTag1")->getErrorHi() << "/" << GetVar(pdf,"sigmaMisTag1")->getErrorLo() << ")" << endl;
 	}
       if (GetVar(pdf,"sigmaMisTag2") != NULL)
 	{
-	  fileFitResults << "Background mistag sigma-2: " << GetVar(pdf,"sigmaMisTag2")->getVal() << " +/- " << GetVar(pdf,"sigmaMisTag2")->getError();
+	  fileFitResults << "Signal mis-tag sigma-2: " << GetVar(pdf,"sigmaMisTag2")->getVal() << " +/- " << GetVar(pdf,"sigmaMisTag2")->getError();
 	  fileFitResults << " (" << GetVar(pdf,"sigmaMisTag2")->getErrorHi() << "/" << GetVar(pdf,"sigmaMisTag2")->getErrorLo() << ")" << endl;
 	  fileFitResults << "Fraction: " << GetVar(pdf,"fracMisTag")->getVal() << " +/- " << GetVar(pdf,"fracMisTag")->getError();
 	  fileFitResults << " (" << GetVar(pdf,"fracMisTag")->getErrorHi() << "/" << GetVar(pdf,"fracMisTag")->getErrorLo() << ")" << endl;
@@ -1325,7 +1325,7 @@ double StoreFitResultsInFile (RooAbsPdf* pdf, RooFitResult* fitResult, RooDataSe
       if (GetVar(pdf,"sigmaMisTag1") != NULL) fileFitResults << "< Sigma >: " << signalSigmaMisT << " +/- " << signalSigmaMisTE << endl;
       if (GetVar(pdf,"nMisTagFrac") != NULL)
 	{
-	  fileFitResults << "Mistag fraction: " << GetVar(pdf,"nMisTagFrac")->getVal() << " +/- " << GetVar(pdf,"nMisTagFrac")->getError();
+	  fileFitResults << "Mis-tag fraction: " << GetVar(pdf,"nMisTagFrac")->getVal() << " +/- " << GetVar(pdf,"nMisTagFrac")->getError();
 	  fileFitResults << " (" << GetVar(pdf,"nMisTagFrac")->getErrorHi() << "/" << GetVar(pdf,"nMisTagFrac")->getErrorLo() << ")" << endl;
 	}
 
@@ -2612,9 +2612,11 @@ void GenerateDatasetFromPDF (RooAbsPdf* pdf, unsigned int fileIndx, vector<doubl
   // # Apply constraints #
   // #####################
   ClearVars(vecConstr);
+
   BuildMassConstraints(vecConstr,pdf,"sign");
   BuildMassConstraints(vecConstr,pdf,"peak");
   BuildMassConstraints(vecConstr,pdf,"mistag");
+
   BuildAngularConstraints(vecConstr,pdf,"peak");
   if ((q2BinIndx != Utility->GetJPsiBin(q2Bins)) && (q2BinIndx != Utility->GetPsiPBin(q2Bins))) BuildAngularConstraints(vecConstr,pdf,"sign",fitParam,q2Bins);
 
@@ -6151,11 +6153,13 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // # Apply constraints #
       // #####################
       ClearVars(vecConstr);
+
       if ((FitType != 36) && (FitType != 56) && (FitType != 76))
       	{
-      	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"sign");
+	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"sign");
       	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
 	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
+
 	  BuildAngularConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
 	  if ((FitType != 46) && (FitType != 66)) BuildAngularConstraints(vecConstr,TotalPDFq2Bins[i],"sign",fitParam,q2Bins);
       	}
@@ -6343,9 +6347,11 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   // # Apply constraints #
   // #####################
   ClearVars(vecConstr);
+
   BuildMassConstraints(vecConstr,TotalPDF,"sign");
   BuildMassConstraints(vecConstr,TotalPDF,"peak");
   BuildMassConstraints(vecConstr,TotalPDF,"mistag");
+
   BuildAngularConstraints(vecConstr,TotalPDF,"peak");
   if ((specBin != Utility->GetJPsiBin(q2Bins)) && (specBin != Utility->GetPsiPBin(q2Bins))) BuildAngularConstraints(vecConstr,TotalPDF,"sign",fitParam,q2Bins);
 
