@@ -1577,7 +1577,7 @@ void showData (int dataType, double offset, bool noHbar)
   stringstream myString;
 
   myString.clear(); myString.str("");
-  myString << DIRSMCOMP << "BinningFile.root";
+  myString << DIRSMCOMP << "BFvsq2Template.root";
   TFile* binningFile = TFile::Open(myString.str().c_str(),"READ");
   TList* myList = binningFile->GetListOfKeys();
   TCanvas* myCanv = (TCanvas*)((dynamic_cast<TKey*>(myList->At(0)))->ReadObj());

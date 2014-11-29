@@ -3460,22 +3460,22 @@ std::string Utils::Transformer (std::string varName, double& varValOut, double& 
       varValOutELo = - sqrt( pow(3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1ELo,2.) + pow(varValOutELo,2.) +
 
 			     (varValIn1->getErrorLo() != 0.0 && varValIn2->getErrorLo() != 0.0 ?
-			     2. *
-			     (3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1ELo) / varValIn1->getErrorLo() *
-			     varValOutELo / varValIn2->getErrorLo() *
-			     (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("AfbS") != -1 ?
-			      (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AfbS")) : 0.) : 0.));
+			      2. *
+			      (3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1ELo) / varValIn1->getErrorLo() *
+			      varValOutELo / varValIn2->getErrorLo() *
+			      (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("AfbS") != -1 ?
+			       (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AfbS")) : 0.) : 0.));
 
 
       varValOutEHi = val2 * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorHi()) / TMath::Pi() - varValOut;
       varValOutEHi = + sqrt( pow(3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1EHi,2.) + pow(varValOutEHi,2.) +
 
 			     (varValIn1->getErrorHi() != 0.0 && varValIn2->getErrorHi() != 0.0 ?
-			     2. *
-			     (3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1EHi)  / varValIn1->getErrorHi() *
-			     varValOutEHi / varValIn2->getErrorHi() *
-			     (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("AfbS") != -1 ?
-			      (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AfbS")) : 0.) : 0.));
+			      2. *
+			      (3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1EHi)  / varValIn1->getErrorHi() *
+			      varValOutEHi / varValIn2->getErrorHi() *
+			      (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("AfbS") != -1 ?
+			       (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AfbS")) : 0.) : 0.));
     }
   else if ((varName == "FsS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
@@ -3488,22 +3488,22 @@ std::string Utils::Transformer (std::string varName, double& varValOut, double& 
       varValOutELo = - sqrt( pow((3. * (1. - (val1+val1ELo)) / (7. - 3. * (val1+val1ELo)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()),2.) + pow(varValOutELo,2.) +
 
 			     (varValIn1->getErrorLo() != 0.0 && varValIn2->getErrorLo() != 0.0 ?
-			     2. *
-			     (3. * (1. - (val1+val1ELo)) / (7. - 3. * (val1+val1ELo)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) / varValIn1->getErrorLo() *
-			     varValOutELo / varValIn2->getErrorLo() *
-			     (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("FsS") != -1 ?
-			      (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) : 0.));
+			      2. *
+			      (3. * (1. - (val1+val1ELo)) / (7. - 3. * (val1+val1ELo)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) / varValIn1->getErrorLo() *
+			      varValOutELo / varValIn2->getErrorLo() *
+			      (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("FsS") != -1 ?
+			       (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) : 0.));
 
 
       varValOutEHi = val2 * (1./2. + TMath::ATan(varValIn2->getVal() + varValIn2->getErrorHi()) / TMath::Pi()) - varValOut;
       varValOutEHi = + sqrt( pow((3. * (1. - (val1+val1EHi)) / (7. - 3. * (val1+val1EHi)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()),2.) + pow(varValOutEHi,2.) +
 
 			     (varValIn1->getErrorHi() != 0.0 && varValIn2->getErrorHi() != 0.0 ?
-			     2. *
-			     (3. * (1. - (val1+val1EHi)) / (7. - 3. * (val1+val1EHi)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) / varValIn1->getErrorHi() *
-			     varValOutEHi / varValIn2->getErrorHi() *
-			     (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("FsS") != -1 ?
-			      (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) : 0.));
+			      2. *
+			      (3. * (1. - (val1+val1EHi)) / (7. - 3. * (val1+val1EHi)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) / varValIn1->getErrorHi() *
+			      varValOutEHi / varValIn2->getErrorHi() *
+			      (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("FsS") != -1 ?
+			       (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) : 0.));
 
       // @TMP@ : to be eliminated when able to fit for Fs and As
       varValOut    = varValIn2->getVal();
@@ -3525,25 +3525,25 @@ std::string Utils::Transformer (std::string varName, double& varValOut, double& 
 			     pow(varValOutELo,2.) +
 
 			     (varValIn1->getErrorLo() != 0.0 && varValIn2->getErrorLo() != 0.0 ?
-			     2. *
-			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1ELo / varValIn1->getErrorLo() *
-			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2ELo / varValIn2->getErrorLo() *
-			     (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("FsS") != -1 ?
-			      (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) : 0.) +
+			      2. *
+			      3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1ELo / varValIn1->getErrorLo() *
+			      1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2ELo / varValIn2->getErrorLo() *
+			      (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("FsS") != -1 ?
+			       (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) : 0.) +
 
 			     (varValIn1->getErrorLo() != 0.0 && varValIn3->getErrorLo() != 0.0 ?
-			     2. *
-			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1ELo / varValIn1->getErrorLo() *
-			     varValOutELo / varValIn3->getErrorLo() *
-			     (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("AsS") != -1 ?
-			      (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AsS")) : 0.) : 0.) +
+			      2. *
+			      3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1ELo / varValIn1->getErrorLo() *
+			      varValOutELo / varValIn3->getErrorLo() *
+			      (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("AsS") != -1 ?
+			       (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AsS")) : 0.) : 0.) +
 
 			     (varValIn2->getErrorLo() != 0.0 && varValIn3->getErrorLo() != 0.0 ?
-			     2. *
-			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2ELo / varValIn2->getErrorLo() *
-			     varValOutELo / varValIn3->getErrorLo() *
-			     (CovM != NULL && fitResult->floatParsFinal().index("FsS") != -1 && fitResult->floatParsFinal().index("AsS") != -1 ?
-			      (*CovM)(fitResult->floatParsFinal().index("FsS"),fitResult->floatParsFinal().index("AsS")) : 0.) : 0.));
+			      2. *
+			      1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2ELo / varValIn2->getErrorLo() *
+			      varValOutELo / varValIn3->getErrorLo() *
+			      (CovM != NULL && fitResult->floatParsFinal().index("FsS") != -1 && fitResult->floatParsFinal().index("AsS") != -1 ?
+			       (*CovM)(fitResult->floatParsFinal().index("FsS"),fitResult->floatParsFinal().index("AsS")) : 0.) : 0.));
 
       varValOutEHi = val3 * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorHi()) / TMath::Pi() - varValOut;
       varValOutEHi = + sqrt( pow(3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi,2.) +
@@ -3551,25 +3551,25 @@ std::string Utils::Transformer (std::string varName, double& varValOut, double& 
 			     pow(varValOutEHi,2.) +
 
 			     (varValIn1->getErrorHi() != 0.0 && varValIn2->getErrorHi() != 0.0 ?
-			     2. *
-			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi / varValIn1->getErrorHi() *
-			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2EHi / varValIn2->getErrorHi() *
-			     (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("FsS") != -1 ?
-			      (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) : 0.) +
+			      2. *
+			      3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi / varValIn1->getErrorHi() *
+			      1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2EHi / varValIn2->getErrorHi() *
+			      (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("FsS") != -1 ?
+			       (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) : 0.) +
 
 			     (varValIn1->getErrorHi() != 0.0 && varValIn3->getErrorHi() != 0.0 ?
-			     2. *
-			     3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi / varValIn1->getErrorHi() *
-			     varValOutEHi / varValIn3->getErrorHi() *
-			     (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("AsS") != -1 ?
-			      (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AsS")) : 0.) : 0.) +
+			      2. *
+			      3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi / varValIn1->getErrorHi() *
+			      varValOutEHi / varValIn3->getErrorHi() *
+			      (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("AsS") != -1 ?
+			       (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AsS")) : 0.) : 0.) +
 
 			     (varValIn2->getErrorHi() != 0.0 && varValIn3->getErrorHi() != 0.0 ?
-			     2. *
-			     1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2EHi / varValIn2->getErrorHi() *
-			     varValOutEHi / varValIn3->getErrorHi() *
-			     (CovM != NULL && fitResult->floatParsFinal().index("FsS") != -1 && fitResult->floatParsFinal().index("AsS") != -1 ?
-			      (*CovM)(fitResult->floatParsFinal().index("FsS"),fitResult->floatParsFinal().index("AsS")) : 0.) : 0.));
+			      2. *
+			      1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2EHi / varValIn2->getErrorHi() *
+			      varValOutEHi / varValIn3->getErrorHi() *
+			      (CovM != NULL && fitResult->floatParsFinal().index("FsS") != -1 && fitResult->floatParsFinal().index("AsS") != -1 ?
+			       (*CovM)(fitResult->floatParsFinal().index("FsS"),fitResult->floatParsFinal().index("AsS")) : 0.) : 0.));
 
       // @TMP@ : to be eliminated when able to fit for Fs and As
       varValOut    = varValIn3->getVal();

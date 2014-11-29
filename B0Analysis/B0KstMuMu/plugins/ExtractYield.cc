@@ -4005,6 +4005,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // # Apply constraints #
       // #####################
       ClearVars(vecConstr);
+
       BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"sign");
       BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
       BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
@@ -4141,6 +4142,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   // # Apply constraints #
   // #####################
   ClearVars(vecConstr);
+
   BuildMassConstraints(vecConstr,TotalPDF,"sign");
   BuildMassConstraints(vecConstr,TotalPDF,"peak");
   BuildMassConstraints(vecConstr,TotalPDF,"mistag");
