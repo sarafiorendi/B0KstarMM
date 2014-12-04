@@ -26,10 +26,10 @@
 
 #include <cmath>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <vector>
 
-#include "ReadParameters.h"
 #include "Utils.h"
 #include "B0KstMuMuSingleCandTreeContent.h"
 
@@ -38,6 +38,7 @@ using std::endl;
 using std::string;
 using std::stringstream;
 using std::vector;
+using std::ios_base;
 using std::make_pair;
 
 
@@ -1077,7 +1078,7 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
 	{
 	  myString1.clear(); myString1.str("");
 	  myString1 << tmpString << "_" << itF+1 << ".txt";
-	  
+
  	  if (isAnalyEff == false) Utility->ReadEfficiency(myString1.str().c_str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,myEff);
 	  else if (EffIs2Dnot3D == true)
 	    {	  
