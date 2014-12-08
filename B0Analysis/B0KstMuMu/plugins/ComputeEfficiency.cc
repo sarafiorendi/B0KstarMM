@@ -85,7 +85,7 @@ using std::make_pair;
 #define NFILES          100
 #define GENEFF          "/efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
 // "/efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt" OR "/efficiency/EffRndGenBinFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
-#define SETBATCH        true // Set batch mode when making binned efficiency
+#define SETBATCH        false
 #define PARAMETERFILEIN "/python/ParameterFile.txt"
 #define ordinateRange   1e-2
 
@@ -2646,6 +2646,7 @@ int main (int argc, char** argv)
 	  string fileNameOutput                = argv[5];
 	  string SignalType                    = argv[6];
 
+	  
 	  if (SETBATCH == true)
 	    {
 	      cout << "\n[ComputeEfficiency::main]\t@@@ Setting batch mode @@@" << endl;
@@ -2709,6 +2710,7 @@ int main (int argc, char** argv)
 	  int specBin = -1;
 	  if (argc == 5) specBin = atoi(argv[4]);
 
+	  
 	  if (SETBATCH == true)
 	    {
 	      cout << "\n[ComputeEfficiency::main]\t@@@ Setting batch mode @@@" << endl;
@@ -2734,6 +2736,12 @@ int main (int argc, char** argv)
 	  int specBin = -1;
 	  if (argc == 4) specBin = atoi(argv[3]);
 
+	  
+	  if (SETBATCH == true)
+	    {
+	      cout << "\n[ComputeEfficiency::main]\t@@@ Setting batch mode @@@" << endl;
+	      gROOT->SetBatch(true);
+	    }
 	  TApplication theApp ("Applications", &argc, argv);
 
 
@@ -2745,7 +2753,7 @@ int main (int argc, char** argv)
 
 
 	  delete Utility;
-	  theApp.Run (); // Eventloop on air
+	  if (SETBATCH == false) theApp.Run (); // Eventloop on air
 	  return EXIT_SUCCESS;
 	}
       else if ((option == "GenBin") && (argc = 3))
@@ -2770,6 +2778,12 @@ int main (int argc, char** argv)
 	  string whichVar2Fit    = "";
 	  if (option == "Fit1DEff") whichVar2Fit = argv[5];
 
+	  
+	  if (SETBATCH == true)
+	    {
+	      cout << "\n[ComputeEfficiency::main]\t@@@ Setting batch mode @@@" << endl;
+	      gROOT->SetBatch(true);
+	    }
 	  TApplication theApp ("Applications", &argc, argv);
 
 
@@ -2784,7 +2798,7 @@ int main (int argc, char** argv)
 
 
 	  delete Utility;
-	  theApp.Run (); // Eventloop on air
+	  if (SETBATCH == false) theApp.Run (); // Eventloop on air
 	  return EXIT_SUCCESS;
 	}
       else if (((option == "Test2DEff") || (option == "Test3DEff")) && (argc == 6))
@@ -2794,6 +2808,12 @@ int main (int argc, char** argv)
 	  string analyORbin      = argv[4];
 	  unsigned int q2BinIndx = atoi(argv[5]);
 
+	  
+	  if (SETBATCH == true)
+	    {
+	      cout << "\n[ComputeEfficiency::main]\t@@@ Setting batch mode @@@" << endl;
+	      gROOT->SetBatch(true);
+	    }
 	  TApplication theApp ("Applications", &argc, argv);
 
 
@@ -2807,7 +2827,7 @@ int main (int argc, char** argv)
 
 
 	  delete Utility;
-	  theApp.Run (); // Eventloop on air
+	  if (SETBATCH == false) theApp.Run (); // Eventloop on air
 	  return EXIT_SUCCESS;
 	}
       else
