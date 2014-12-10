@@ -80,11 +80,13 @@ using std::make_pair;
 
 #define RIGHTtag        true
 #define SAVEPLOT        false
-#define CHECKnegEFF     true
+#define CHECKnegEFF     false
 #define EFFis2Dnot3D    true
 #define NFILES          100
 #define GENEFF          "/efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
-// "/efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt" OR "/efficiency/EffRndGenBinFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
+// "/efficiency/EffRndGenAnalyFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
+// # OR #
+// "/efficiency/EffRndGenBinFilesSign_JPsi_Psi2S/Efficiency_RndGen.txt"
 #define SETBATCH        false
 #define PARAMETERFILEIN "/python/ParameterFile.txt"
 #define ordinateRange   1e-2
@@ -991,8 +993,8 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
   stringstream myString1;
   stringstream myString2;
   // ###################
-  unsigned int nBins = 50;
-  double Xaxes       = 0.2e-3;
+  unsigned int nBins = 100;
+  double Xaxes       = 0.1e-3;
   // ###################
 
 
@@ -1082,18 +1084,18 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
  	  if (isAnalyEff == false) Utility->ReadEfficiency(myString1.str().c_str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,myEff);
 	  else if (EffIs2Dnot3D == true)
 	    {	  
-	      myString2.clear(); myString1.str("");
+	      myString2.clear(); myString2.str("");
 	      myString2 << "effFuncs2D_" << itF;
 	      Utility->ReadAnalyticalEff(myString1.str().c_str(),q2Bins,cosThetaKBins,cosThetaLBins,&effFuncs2D,myString2.str().c_str(),1);
 	    }
 	  else 
 	    {
-	      myString2.clear(); myString1.str("");
+	      myString2.clear(); myString2.str("");
 	      myString2 << "effFuncs3D_" << itF;
 	      Utility->ReadAnalyticalEff(myString1.str().c_str(),q2Bins,cosThetaKBins,cosThetaLBins,phiBins,&effFuncs3D,myString2.str().c_str(),1);
 	    }
 
-	  cout << "[ComputeEfficiency::ReadEfficiencies]\tRead randomly generated effiiency n." << itF+1 << endl;
+	  cout << "[ComputeEfficiency::ReadEfficiencies]\tRead randomly generated efficiency n." << itF+1 << endl;
 	}
 
 
@@ -1200,8 +1202,8 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
 		     (phiBins->operator[](phiBins->size()-1)-phiBins->operator[](0)));
       	    }
 
-      	  HcosThetaK[itF]->SetBinContent(j+1,Eff);
-      	  HcosThetaK[itF]->SetBinError(j+1,EffErr);
+      	  HcosThetaK[itF]->SetBinContent(j+1,Eff / (q2Bins->operator[](specBin == -1 ? q2Bins->size()-1 : specBin+1)-q2Bins->operator[](specBin == -1 ? 0 : specBin)));
+      	  HcosThetaK[itF]->SetBinError(j+1,EffErr / (q2Bins->operator[](specBin == -1 ? q2Bins->size()-1 : specBin+1)-q2Bins->operator[](specBin == -1 ? 0 : specBin)));
       	}
 
       for (unsigned int k = 0; k < cosThetaLBins->size()-1; k++)
@@ -1230,8 +1232,8 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
 		     (phiBins->operator[](phiBins->size()-1)-phiBins->operator[](0)));	      
       	    }
 
-      	  HcosThetaL[itF]->SetBinContent(k+1,Eff);
-      	  HcosThetaL[itF]->SetBinError(k+1,EffErr);
+      	  HcosThetaL[itF]->SetBinContent(k+1,Eff / (q2Bins->operator[](specBin == -1 ? q2Bins->size()-1 : specBin+1)-q2Bins->operator[](specBin == -1 ? 0 : specBin)));
+      	  HcosThetaL[itF]->SetBinError(k+1,EffErr / (q2Bins->operator[](specBin == -1 ? q2Bins->size()-1 : specBin+1)-q2Bins->operator[](specBin == -1 ? 0 : specBin)));
       	}
 
       for (unsigned int l = 0; l < phiBins->size()-1; l++)
@@ -1255,8 +1257,8 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
 		   (phiBins->operator[](l+1)-phiBins->operator[](l)));	      
 	    }
 
-	  Hphi[itF]->SetBinContent(l+1,Eff);
-	  Hphi[itF]->SetBinError(l+1,EffErr);
+	  Hphi[itF]->SetBinContent(l+1,Eff / (q2Bins->operator[](specBin == -1 ? q2Bins->size()-1 : specBin+1)-q2Bins->operator[](specBin == -1 ? 0 : specBin)));
+	  Hphi[itF]->SetBinError(l+1,EffErr / (q2Bins->operator[](specBin == -1 ? q2Bins->size()-1 : specBin+1)-q2Bins->operator[](specBin == -1 ? 0 : specBin)));
 	}
       
       
@@ -1397,6 +1399,8 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
   	  HstatK[i]->SetFillColor(kAzure+6);
   	  HstatK[i]->Draw();
   	}
+      cStatK->Modified();
+      cStatK->Update();
 
 
       for (unsigned int i = 0; i < cosThetaLBins->size()-1; i++)
@@ -1408,6 +1412,8 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
   	  HstatL[i]->SetFillColor(kAzure+6);
   	  HstatL[i]->Draw();
   	}
+      cStatL->Modified();
+      cStatL->Update();
 
 
       for (unsigned int i = 0; i < phiBins->size()-1; i++)
@@ -1419,12 +1425,6 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
   	  HstatPhi[i]->SetFillColor(kAzure+6);
   	  HstatPhi[i]->Draw();
   	}
-
-
-      cStatK->Modified();
-      cStatK->Update();
-      cStatL->Modified();
-      cStatL->Update();
       cStatPhi->Modified();
       cStatPhi->Update();
     }
@@ -1434,6 +1434,7 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
   Utility->IntegrateEffButPsi(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,*myEff,&totalEffSignal,&EffErr);
   Utility->IntegrateEffInJPsi(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,*myEff,&totalEffJPsi,&EffErr);
   Utility->IntegrateEffInPsiP(q2Bins,cosThetaKBins,cosThetaLBins,phiBins,*myEff,&totalEffPsiP,&EffErr);
+
   cout << "\nTotal efficiency: " << totalEffAll <<  "\tTotal signal efficiency: " << totalEffSignal;
   cout << "\tTotal J/psi efficiency: " << totalEffJPsi << "\tTotal psi(2S) efficiency: " << totalEffPsiP << endl;
 
