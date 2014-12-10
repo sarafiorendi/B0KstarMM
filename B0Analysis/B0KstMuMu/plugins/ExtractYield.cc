@@ -7,7 +7,7 @@
 // # TO DO:                                                                       #
 // # - implement 4D fits (B0 mass and three decay angles)                         #
 // # - implement 5D fits (K-pi mass, B0 mass and three decay angles) to           #
-// #   disentable S and P-waves                                                   #
+// #   disentangle S and P-waves                                                  #
 // ################################################################################
 
 #include <TROOT.h>
