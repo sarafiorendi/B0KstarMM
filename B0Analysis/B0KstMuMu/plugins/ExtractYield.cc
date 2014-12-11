@@ -89,6 +89,7 @@ using namespace RooFit;
 #define FULLTOYS      false // Compute generation-and-fit toys
 #define FUNCERRBAND   false // Show the p.d.f. error band
 #define MINIMIZER     "Minuit2" // Minimizer type for 3D MODEL actual fit ["Minuit"; "Minuit2"]
+#define GENPARAMS     "All" // Option to generate parameters for parameter file: "All" "misTagFrac" "FlAfb" "combBkgAng"
 
 // ##################
 // # External files #
@@ -2431,7 +2432,7 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
   cout << "\n[ExtractYield::GenerateFitParameters]\t@@@ Random seed for parameter file generation set to : " << RooRandom::randomGenerator()->GetSeed() << " @@@" << endl;
 
 
-  if ((option == "All") || (option == "misTag"))
+  if ((option == "All") || (option == "misTagFrac"))
     {
       if ((atoi(Utility->GetGenericParam("CtrlMisTagWrkFlow").c_str()) == 0) && (GetVar(pdf,"nMisTagFrac") != NULL))
 	{
@@ -7123,7 +7124,8 @@ int main(int argc, char** argv)
 	  cout << "FULLTOYS = "        << FULLTOYS << endl;
 	  cout << "FUNCERRBAND = "     << FUNCERRBAND << endl;
 	  cout << "MINIMIZER = "       << MINIMIZER << endl;
-
+	  cout << "GENPARAMS = "       << GENPARAMS << endl;
+  
 	  cout << "\nPARAMETERFILEIN = " << PARAMETERFILEIN << endl;
 	  cout << "PARAMETERFILEOUT = "  << PARAMETERFILEOUT << endl;
 
@@ -7673,7 +7675,7 @@ int main(int argc, char** argv)
 
 	      for (unsigned int i = 0; i < q2Bins.size()-1; i++)
 		{
-		  if (i == static_cast<unsigned int>(specBin)) GenerateFitParameters(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,i,"All"); // @TMP@ : "All" "misTagFrac" "FlAfb" "combBkgAng"
+		  if (i == static_cast<unsigned int>(specBin)) GenerateFitParameters(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,i,GENPARAMS);
 
 		  vecParStr = SaveFitResults(i,&fitParam,&configParam,&vecConstr);
 		  Utility->SaveFitValues(fileName,vecParStr,i);
