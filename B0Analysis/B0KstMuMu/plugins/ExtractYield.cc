@@ -845,7 +845,7 @@ void BuildAngularConstraints (RooArgSet* vecConstr, RooAbsPdf* pdf, string varNa
 	  
 	  if (GetVar(pdf,"AsS") != NULL) GetVar(pdf,"AsS")->setConstant(true);
 	}
-      else
+      else if ((varName != "sign") && (varName == "comb") && (varName == "peak"))
 	{
 	  cout << "[ExtractYield::BuildAngularConstraints]\tWrong parameter: " << varName << endl;
 	  exit (EXIT_FAILURE);
@@ -2122,8 +2122,8 @@ unsigned int CopyFitResults (RooAbsPdf* pdf, unsigned int q2BinIndx, vector<vect
       myString.clear(); myString.str("");
       myString << fitParam->operator[](Utility->GetFitParamIndx("meanR2"))->operator[](q2BinIndx).c_str();
       SetValueAndErrors(pdf,"meanR2",1.0,&myString,&value,&errLo,&errHi);
-      if ((errLo == 0.0) && (errHi == 0.0)) GetVar(pdf,"meandR2")->setConstant(true);
-      else                                  GetVar(pdf,"meandR2")->setConstant(false);
+      if ((errLo == 0.0) && (errHi == 0.0)) GetVar(pdf,"meanR2")->setConstant(true);
+      else                                  GetVar(pdf,"meanR2")->setConstant(false);
     }
   if (GetVar(pdf,"sigmaR2") != NULL)
     {
@@ -5917,7 +5917,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       if (GetVar(*TotalPDF,"nBkgComb") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)));
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)));
 
-
+      
       TPaveText* paveTextHighSideBZ = new TPaveText(0.12,0.75,0.4,0.88,"NDC");
       paveTextHighSideBZ->AddText("High sideband");
       paveTextHighSideBZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameHighSideBZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
