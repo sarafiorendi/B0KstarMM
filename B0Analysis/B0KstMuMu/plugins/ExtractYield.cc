@@ -4,11 +4,6 @@
 // ################################################################################
 // # Search for @TMP@ to look for temporary code options                          #
 // ################################################################################
-// # TO DO:                                                                       #
-// # - implement 4D fits (B0 mass and three decay angles)                         #
-// # - implement 5D fits (K-pi mass, B0 mass and three decay angles) to           #
-// #   disentangle S and P-waves                                                  #
-// ################################################################################
 
 #include <TROOT.h>
 #include <TApplication.h>
@@ -792,16 +787,21 @@ void BuildAngularConstraints (RooArgSet* vecConstr, RooAbsPdf* pdf, string varNa
 
 	  for (unsigned int i = 0; i < NCOEFFPOLYBKG; i++)
 	    {
+	      // @TMP@
+
 	      myString.clear(); myString.str("");
 	      myString << polyType.c_str() << "1Poly" << i;
+	      // if (GetVar(pdf,myString.str().c_str()) != NULL) GetVar(pdf,myString.str().c_str())->setConstant(true);
 	      if (GetVar(pdf,myString.str().c_str()) != NULL) AddGaussConstraint(vecConstr, pdf, myString.str().c_str());
 
 	      myString.clear(); myString.str("");
 	      myString << polyType.c_str() << "2Poly" << i;
+	      // if (GetVar(pdf,myString.str().c_str()) != NULL) GetVar(pdf,myString.str().c_str())->setConstant(true);
 	      if (GetVar(pdf,myString.str().c_str()) != NULL) AddGaussConstraint(vecConstr, pdf, myString.str().c_str());
 
 	      myString.clear(); myString.str("");
 	      myString << polyType.c_str() << "3Poly" << i;
+	      // if (GetVar(pdf,myString.str().c_str()) != NULL) GetVar(pdf,myString.str().c_str())->setConstant(true);
 	      if (GetVar(pdf,myString.str().c_str()) != NULL) AddGaussConstraint(vecConstr, pdf, myString.str().c_str());
 	    }
 	}

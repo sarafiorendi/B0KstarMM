@@ -1585,9 +1585,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # Bkg mean right-peak-1 [GeV/c2]
-0.0
+5.21705   -0.0124312   0.0124312
 # Bkg sigma right-peak-1 [GeV/c2]
-0.0
+0.0543735   -0.00943549   0.00943549
 # Bkg mean right-peak-2 [GeV/c2]
 0.0
 # Bkg sigma right-peak-2 [GeV/c2]
@@ -1595,9 +1595,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.0
 # Bkg mean left-peak-1 [GeV/c2]
-0.0
+5.03112   -0.0137882   0.0137882
 # Bkg sigma left-peak-1 [GeV/c2]
-0.0
+0.0406805   -0.0124491   0.0124491
 # Bkg mean left-peak-2 [GeV/c2]
 0.0
 # Bkg sigma left-peak-2 [GeV/c2]
@@ -1605,25 +1605,25 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Fraction
 0.0
 # Fraction of right-peak
-0.0
+0.409217   -0.0622161   0.0622161
 ###################################################################
 # Combinatorial bkg yield
 0.0
 # Mistag fraction
 0.0
 # Peaking bkg yield
-0.0
+86.9522   -9.32226   9.32226
 # Signal yield
 0.0
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
-5
+3
 # Bkg angle1 poly coeff. p0
-0.0
+-0.961322   -0.768629   0.768629
 # Bkg angle1 poly coeff. p1
-0.0
+1.90032   -0.935035   0.935035
 # Bkg angle1 poly coeff. p2
-0.0
+2.1678   -1.31087   1.31087
 # Bkg angle1 poly coeff. p3
 0.0
 # Bkg angle1 poly coeff. p4
@@ -1641,15 +1641,15 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle1 poly coeff. c4
 0.0
 ### Number of coefficients of the peak.bkg angle2 poly ###
-5
+4
 # Bkg angle2 poly coeff. p0
-0.0
+0.252915   -0.313075   0.313075
 # Bkg angle2 poly coeff. p1
-0.0
+-2.4902   -0.590532   0.590532
 # Bkg angle2 poly coeff. p2
-0.0
+-0.997156   -0.517385   0.517385
 # Bkg angle2 poly coeff. p3
-0.0
+2.7234   -0.768361   0.768361
 # Bkg angle2 poly coeff. p4
 0.0
 ### Number of coefficients of the comb.bkg angle2 poly ###
@@ -1703,9 +1703,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0   0.0
 ###################################################################
 # Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
-1
-# Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians
 0
+# Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians
+11
 # Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials; 3 = erfc
 0
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
@@ -1889,9 +1889,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # Bkg mean right-peak-1 [GeV/c2]
-0.0
+5.39008   -0.032074   0.032074
 # Bkg sigma right-peak-1 [GeV/c2]
-0.0
+0.0866173   -0.0251708   0.0251708
 # Bkg mean right-peak-2 [GeV/c2]
 0.0
 # Bkg sigma right-peak-2 [GeV/c2]
@@ -1916,16 +1916,16 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Mistag fraction
 0.0
 # Peaking bkg yield
-0.0
+9.04204   -3.01401   3.01401
 # Signal yield
 0.0
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
-5
+2
 # Bkg angle1 poly coeff. p0
-0.0
+1.16953   -1.51034   1.51034
 # Bkg angle1 poly coeff. p1
-0.0
+2.88597   -6.68469   6.68469
 # Bkg angle1 poly coeff. p2
 0.0
 # Bkg angle1 poly coeff. p3
@@ -1945,11 +1945,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle1 poly coeff. c4
 0.0
 ### Number of coefficients of the peak.bkg angle2 poly ###
-5
+2
 # Bkg angle2 poly coeff. p0
-0.0
+-0.465311   -0.45725   0.45725
 # Bkg angle2 poly coeff. p1
-0.0
+-0.534609   -0.973132   0.973132
 # Bkg angle2 poly coeff. p2
 0.0
 # Bkg angle2 poly coeff. p3
@@ -2007,9 +2007,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0   0.0
 ###################################################################
 # Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
-1
-# Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians
 0
+# Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians
+1
 # Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials; 3 = erfc
 0
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
