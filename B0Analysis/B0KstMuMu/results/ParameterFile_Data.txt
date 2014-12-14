@@ -2340,7 +2340,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # FL
 0.044   0.044
 # AFB
-0.040   0.040
+0.036   0.036
 # P1
 0.0   0.0
 # P2
