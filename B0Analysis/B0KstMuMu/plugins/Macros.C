@@ -79,7 +79,6 @@ void SetStyle               ();
 void PlotHistoEff           (string fileName, unsigned int smothDegree, string effDimension, bool RIGHTflavorTAG, double cosThetaKRange_lo = -1.0, double cosThetaKRange_hi = 1.0, double cosThetaLRange_lo = -1.0, double cosThetaLRange_hi = 1.0, double phiRange_lo = -3.15, double phiRange_hi = 3.15);
 void TruthMatching          (string fileName, bool truthMatch);
 void dBFfromGEN             (string fileName);
-void CompareCosMassGENRECO  (string fileNameRECO, string fileNameGEN);
 void ComputePileUp          (string fileName);
 void PlotVtxWithPileUpW     (string fileNameMC, string fileNameData, unsigned int TrigCat, bool withWeights);
 void PlotCutScans           (string fileName, string type);
@@ -697,114 +696,6 @@ void dBFfromGEN (string fileName)
   h0->Draw();
   c1->Modified();
   c1->Update();
-}
-
-
-// #######################################################################################
-// # Sub-program to compare cos(theta_l), cos(theta_l) and mumuMass between GEN and RECO #
-// #######################################################################################
-void CompareCosMassGENRECO (string fileNameRECO, string fileNameGEN)
-{
-  // ##########################
-  // # Set histo layout style #
-  // ##########################
-  SetStyle();
-  gStyle->SetPalette(1);
-
-
-  TFile* NtplFileIn1 = TFile::Open(fileNameRECO.c_str(),"READ");
-  TTree* theTreeIn1 = (TTree*)NtplFileIn1->Get("B0KstMuMu/B0KstMuMuNTuple");
-
-  TFile* NtplFileIn2 = TFile::Open(fileNameGEN.c_str(),"READ");
-  TTree* theTreeIn2 = (TTree*)NtplFileIn2->Get("B0KstMuMu/B0KstMuMuNTuple");
-
-  cout << "n entry: " << theTreeIn1->GetEntries() << endl;
-  cout << "n entry: " << theTreeIn2->GetEntries() << endl;
-
-  TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
-  TCanvas* c1 = new TCanvas("c1","c1",10,10,700,500);
-  TCanvas* c2 = new TCanvas("c2","c2",10,10,700,500);
-
-  TH1D* h0 = new TH1D("h0","h0",400,-0.5,0.5);
-  TH1D* h1 = new TH1D("h1","h1",400,-0.5,0.5);
-  TH1D* h2 = new TH1D("h2","h2",400,-0.5,0.5);
-  h0->SetXTitle("RECO-GEN");
-  h0->SetYTitle("Entries");
-  h0->SetFillColor(kAzure+6);
-  h1->SetXTitle("RECO-GEN");
-  h1->SetYTitle("Entries");
-  h1->SetFillColor(kAzure+6);
-  h2->SetXTitle("RECO-GEN");
-  h2->SetYTitle("Entries");
-  h2->SetFillColor(kAzure+6);
-
-  vector<double>* vec1 = new vector<double>;
-  vector<double>* vec2 = new vector<double>;
-
-  int nEntries = theTreeIn1->GetEntries();
-
-  for (int entry = 0; entry < nEntries; entry++)
-    {
-      theTreeIn1->SetBranchAddress("mumuMass", &vec1);
-      theTreeIn2->SetBranchAddress("mumuMass", &vec2);
-
-      theTreeIn1->GetEntry(entry);
-      theTreeIn2->GetEntry(entry);
-
-      TLeaf* leafK1 = theTreeIn1->GetLeaf("CosThetaKArb");
-      TLeaf* leafK2 = theTreeIn2->GetLeaf("CosThetaKArb");
-      h0->Fill(leafK1->GetValue()-leafK2->GetValue());
-
-      TLeaf* leafMu1 = theTreeIn1->GetLeaf("CosThetaMuArb");
-      TLeaf* leafMu2 = theTreeIn2->GetLeaf("CosThetaMuArb");
-      h1->Fill(leafMu1->GetValue()-leafMu2->GetValue());
-
-      h2->Fill((*vec1)[0]-(*vec2)[0]);
-
-      vec1->clear();
-      vec2->clear();
-    }
-
-  TF1* f0 = new TF1("f0","[3]*TMath::Gaus(x,[0],[1])+[4]*TMath::Gaus(x,[0],[2])",-1,1);
-
-  f0->SetParName(0,"Mean");
-  f0->SetParName(1,"Sigma1");
-  f0->SetParName(2,"Sigma2");
-  f0->SetParName(3,"Ampli1");
-  f0->SetParName(4,"Ampli2");
-
-  f0->SetParameter(0,0.0);
-  f0->SetParameter(1,0.02);
-  f0->SetParameter(2,0.04);
-  f0->SetParameter(3,600.0);
-  f0->SetParameter(4,300.0);
-
-  c0->cd();
-  h0->Draw();
-  h0->Fit("f0");
-  c0->Modified();
-  c0->Update();
-  cout << "Sigma cos(theta_K): " << sqrt((f0->GetParameter(3)*f0->GetParameter(1)*f0->GetParameter(1) + f0->GetParameter(4)*f0->GetParameter(2)*f0->GetParameter(2))/(f0->GetParameter(3)+f0->GetParameter(4))) << endl;
-
-  c1->cd();
-  h1->Draw();
-  h1->Fit("f0");
-  c1->Modified();
-  c1->Update();
-  cout << "Sigma cos(theta_l): " << sqrt((f0->GetParameter(3)*f0->GetParameter(1)*f0->GetParameter(1) + f0->GetParameter(4)*f0->GetParameter(2)*f0->GetParameter(2))/(f0->GetParameter(3)+f0->GetParameter(4))) << endl;
-
-  f0->SetParameter(0,0.0);
-  f0->SetParameter(1,0.01);
-  f0->SetParameter(2,0.05);
-  f0->SetParameter(3,12000.0);
-  f0->SetParameter(4,5000.0);
-
-  c2->cd();
-  h2->Draw();
-  h2->Fit("f0");
-  c2->Modified();
-  c2->Update();
-  cout << "Sigma mumuMass^2: " << sqrt((f0->GetParameter(3)*f0->GetParameter(1)*f0->GetParameter(1) + f0->GetParameter(4)*f0->GetParameter(2)*f0->GetParameter(2))/(f0->GetParameter(3)+f0->GetParameter(4))) << endl;
 }
 
 

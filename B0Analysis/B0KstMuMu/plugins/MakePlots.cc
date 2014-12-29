@@ -2525,13 +2525,13 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
   hKstSig->SetMarkerStyle(20);
 
   TH2D* hDalitzSig = new TH2D("hDalitzSig","hDalitzSig",nBins,DalitzminX,DalitzmaxX,nBins,DalitzminY,DalitzmaxY);
-  hDalitzSig->SetXTitle("M#lower[0.4]{^{2}}(K #pi) (GeV#lower[0.4]{^{2}})");
-  hDalitzSig->SetYTitle("M#lower[0.4]{^{2}}(J/#psi K) (GeV#lower[0.4]{^{2}})");
+  hDalitzSig->SetXTitle("m#lower[0.4]{^{2}}(K #pi) (GeV#lower[0.4]{^{2}})");
+  hDalitzSig->SetYTitle("m#lower[0.4]{^{2}}(J/#psi K) (GeV#lower[0.4]{^{2}})");
   hDalitzSig->SetZTitle("Entries / (0.03x0.125 (GeV#lower[0.4]{^{4}}))");
 
   TH2D* hDalitzBkg = new TH2D("hDalitzBkg","hDalitzBkg",nBins,DalitzminX,DalitzmaxX,nBins,DalitzminY,DalitzmaxY);
-  hDalitzBkg->SetXTitle("M#lower[0.4]{^{2}}(K #pi) (GeV#lower[0.4]{^{2}})");
-  hDalitzBkg->SetYTitle("M#lower[0.4]{^{2}}(J/#psi K) (GeV#lower[0.4]{^{2}})");
+  hDalitzBkg->SetXTitle("m#lower[0.4]{^{2}}(K #pi) (GeV#lower[0.4]{^{2}})");
+  hDalitzBkg->SetYTitle("m#lower[0.4]{^{2}}(J/#psi K) (GeV#lower[0.4]{^{2}})");
   hDalitzBkg->SetZTitle("Entries / (0.03x0.125 (GeV#lower[0.4]{^{4}}))");
 
 
