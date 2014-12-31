@@ -2846,16 +2846,14 @@ string GeneratePolynomial (RooRealVar* var, unsigned int nCoef, string sCoef)
 void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x, TCanvas* Canv, bool justPlotMuMuMass, bool justKeepPsi, string plotName, vector<double>* q2Bins)
 {
   stringstream myString;
+
   double sigmaJPsi, sigmaJPsiE;
   double sigmaPsiP, sigmaPsiPE;
   unsigned int NBins;
-  int nElements = 4;
-  if (justKeepPsi == true) nElements = 3;
+
+  unsigned int nElements;
+  unsigned int it = 0;
   TString legNamesPsi[4];
-  legNamesPsi[0] = "Data";
-  legNamesPsi[1] = "Total fit";
-  legNamesPsi[2] = "Signal";
-  legNamesPsi[3] = "Comb. bkg";
 
 
   if (justPlotMuMuMass == true)
@@ -2885,6 +2883,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
 
 
       // ### J/psi ###
+      nElements = 0;
 
       // #####################################################
       // # Define dimuon invariant mass sub-region for J/psi #
@@ -2966,11 +2965,23 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // ################
       Canv->cd(1);
       RooPlot* myFrameJPsi = x->frame(Range("subRangeJPsi"),Bins(NBins));
+
       dataSetJPsi->plotOn(myFrameJPsi, Name(dataSetJPsi->GetName()));
+      legNamesPsi[nElements++] = "Data";
+      
       (*TotalPDFJPsi)->plotOn(myFrameJPsi, Name((*TotalPDFJPsi)->getPlotLabel()), LineColor(kBlack));
+      legNamesPsi[nElements++] = "Total p.d.f.";
+      
       (*TotalPDFJPsi)->plotOn(myFrameJPsi, Components(*JPsi), FillStyle(3345), FillColor(kBlue), DrawOption("F"));
       (*TotalPDFJPsi)->plotOn(myFrameJPsi, Components(*JPsi), LineStyle(7),    LineColor(kBlue), DrawOption("L"));
-      if (justKeepPsi != true) (*TotalPDFJPsi)->plotOn(myFrameJPsi, Components(*BkgmumuMassJPsi), LineStyle(4), LineColor(kRed));
+      legNamesPsi[nElements++] = "Signal";
+      
+      if (justKeepPsi != true)
+	{
+	  (*TotalPDFJPsi)->plotOn(myFrameJPsi, Components(*BkgmumuMassJPsi), LineStyle(4), LineColor(kRed));
+	  legNamesPsi[nElements++] = "Comb. bkg";
+	}
+      
       (*TotalPDFJPsi)->paramOn(myFrameJPsi,Format("NEU",AutoPrecision(1)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nJPsiMass,*nBkgMassJPsi)));
 
       myString.clear(); myString.str("");
@@ -2988,12 +2999,13 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       myFrameJPsi->Draw();
 
       TLegend* legJPsi = new TLegend(0.75, 0.65, 0.97, 0.88, "");
-      for (int i = 0; i < nElements; i++)
+      it = 0;
+      for (unsigned int i = 0; i < 2*nElements; i++)
       	{
       	  TString objName = myFrameJPsi->nameOf(i);
-      	  if (objName == "") continue;
-      	  TObject* obj = myFrameJPsi->findObject(objName.Data());
-      	  legJPsi->AddEntry(obj,legNamesPsi[i],"LP");
+	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameJPsi->nameOf(i-1)))) continue;
+	  TObject* obj = myFrameJPsi->findObject(objName.Data());
+      	  legJPsi->AddEntry(obj,legNamesPsi[it++],"PL");
 	  legJPsi->SetTextFont(42);
       	}
       legJPsi->SetFillStyle(0);
@@ -3024,6 +3036,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
 
 
       // ### psi(2S) ###
+      nElements = 0;
 
       // #######################################################
       // # Define dimuon invariant mass sub-region for psi(2S) #
@@ -3105,11 +3118,23 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // ################
       Canv->cd(2);
       RooPlot* myFramePsiP = x->frame(Range("subRangePsiP"),Bins(NBins));
+
       dataSetPsiP->plotOn(myFramePsiP, Name(dataSetPsiP->GetName()));
+      legNamesPsi[nElements++] = "Data";
+
       (*TotalPDFPsiP)->plotOn(myFramePsiP, Name((*TotalPDFPsiP)->getPlotLabel()), LineColor(kBlack));
+      legNamesPsi[nElements++] = "Total p.d.f.";
+
       (*TotalPDFPsiP)->plotOn(myFramePsiP, Components(*PsiP), FillStyle(3345), FillColor(kBlue), DrawOption("F"));
       (*TotalPDFPsiP)->plotOn(myFramePsiP, Components(*PsiP), LineStyle(7),    LineColor(kBlue), DrawOption("L"));
-      if (justKeepPsi != true) (*TotalPDFPsiP)->plotOn(myFramePsiP, Components(*BkgmumuMassPsiP), LineStyle(4), LineColor(kRed));
+      legNamesPsi[nElements++] = "Signal";
+
+      if (justKeepPsi != true)
+	{
+	  (*TotalPDFPsiP)->plotOn(myFramePsiP, Components(*BkgmumuMassPsiP), LineStyle(4), LineColor(kRed));
+	  legNamesPsi[nElements++] = "Comb. bkg";
+	}
+      
       (*TotalPDFPsiP)->paramOn(myFramePsiP,Format("NEU",AutoPrecision(1)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nPsiPMass,*nBkgMassPsiP)));
 
       myString.clear(); myString.str("");
@@ -3127,12 +3152,13 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       myFramePsiP->Draw();
 
       TLegend* legPsiP = new TLegend(0.75, 0.65, 0.97, 0.88, "");
-      for (int i = 0; i < nElements; i++)
+      it = 0;
+      for (unsigned int i = 0; i < 2*nElements; i++)
 	{
 	  TString objName = myFramePsiP->nameOf(i);
-	  if (objName == "") continue;
+	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFramePsiP->nameOf(i-1)))) continue;
 	  TObject* obj = myFramePsiP->findObject(objName.Data());
-	  legPsiP->AddEntry(obj,legNamesPsi[i],"LP");
+	  legPsiP->AddEntry(obj,legNamesPsi[it++],"PL");
 	  legPsiP->SetTextFont(42);
 	}
       legPsiP->SetFillStyle(0);
@@ -4970,7 +4996,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  TString objName = myFrameY->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameY->nameOf(i-1)))) continue;
 	  TObject* obj = myFrameY->findObject(objName.Data());
-	  legY->AddEntry(obj,legNames[it++],"LP");
+	  legY->AddEntry(obj,legNames[it++],"PL");
 	  legY->SetTextFont(42);
 	}
       legY->SetFillStyle(0);
@@ -5009,7 +5035,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  TString objName = myFrameZ->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameY->nameOf(i-1)))) continue;
 	  TObject* obj = myFrameZ->findObject(objName.Data());
-	  legZ->AddEntry(obj,legNames[it++],"LP");
+	  legZ->AddEntry(obj,legNames[it++],"PL");
 	  legZ->SetTextFont(42);
 	}
       legZ->SetFillStyle(0);
@@ -5283,7 +5309,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
   	  TString objName = myFrameX->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameX->nameOf(i-1)))) continue;
   	  TObject* obj = myFrameX->findObject(objName.Data());
-	  legX->AddEntry(obj,legNames[it++],"LP");
+	  legX->AddEntry(obj,legNames[it++],"PL");
 	  legX->SetTextFont(42);
   	}
       legX->SetFillStyle(0);
@@ -5344,7 +5370,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	  TString objName = myFrameY->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameY->nameOf(i-1)))) continue;
       	  TObject* obj = myFrameY->findObject(objName.Data());
-      	  legY->AddEntry(obj,legNames[it++],"LP");
+      	  legY->AddEntry(obj,legNames[it++],"PL");
 	  legY->SetTextFont(42);
       	}
       legY->SetFillStyle(0);
@@ -5414,7 +5440,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	  TString objName = myFrameZ->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameZ->nameOf(i-1)))) continue;
       	  TObject* obj = myFrameZ->findObject(objName.Data());
-      	  legZ->AddEntry(obj,legNames[it++],"LP");
+      	  legZ->AddEntry(obj,legNames[it++],"PL");
 	  legZ->SetTextFont(42);
       	}
       legZ->SetFillStyle(0);
@@ -5632,7 +5658,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  TString objName = myFrameLowSideBY->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameLowSideBY->nameOf(i-1)))) continue;
 	  TObject* obj = myFrameLowSideBY->findObject(objName.Data());
-	  legLowSideBY->AddEntry(obj,legNames[it++],"LP");
+	  legLowSideBY->AddEntry(obj,legNames[it++],"PL");
 	  legLowSideBY->SetTextFont(42);
 	}
       legLowSideBY->SetFillStyle(0);
@@ -5692,7 +5718,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  TString objName = myFrameSignalRegionY->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameSignalRegionY->nameOf(i-1)))) continue;
 	  TObject* obj = myFrameSignalRegionY->findObject(objName.Data());
-	  legSignalRegionY->AddEntry(obj,legNames[it++],"LP");
+	  legSignalRegionY->AddEntry(obj,legNames[it++],"PL");
 	  legSignalRegionY->SetTextFont(42);
 	}
       legSignalRegionY->SetFillStyle(0);
@@ -5752,7 +5778,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  TString objName = myFrameHighSideBY->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameHighSideBY->nameOf(i-1)))) continue;
 	  TObject* obj = myFrameHighSideBY->findObject(objName.Data());
-	  legHighSideBY->AddEntry(obj,legNames[it++],"LP");
+	  legHighSideBY->AddEntry(obj,legNames[it++],"PL");
 	  legHighSideBY->SetTextFont(42);
 	}
       legHighSideBY->SetFillStyle(0);
@@ -5817,7 +5843,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  TString objName = myFrameLowSideBZ->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameLowSideBZ->nameOf(i-1)))) continue;
 	  TObject* obj = myFrameLowSideBZ->findObject(objName.Data());
-	  legLowSideBZ->AddEntry(obj,legNames[it++],"LP");
+	  legLowSideBZ->AddEntry(obj,legNames[it++],"PL");
 	  legLowSideBZ->SetTextFont(42);
 	}
       legLowSideBZ->SetFillStyle(0);
@@ -5877,7 +5903,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  TString objName = myFrameSignalRegionZ->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameSignalRegionZ->nameOf(i-1)))) continue;
 	  TObject* obj = myFrameSignalRegionZ->findObject(objName.Data());
-	  legSignalRegionZ->AddEntry(obj,legNames[it++],"LP");
+	  legSignalRegionZ->AddEntry(obj,legNames[it++],"PL");
 	  legSignalRegionZ->SetTextFont(42);
 	}
       legSignalRegionZ->SetFillStyle(0);
@@ -5937,7 +5963,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  TString objName = myFrameHighSideBZ->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameHighSideBZ->nameOf(i-1)))) continue;
 	  TObject* obj = myFrameHighSideBZ->findObject(objName.Data());
-	  legHighSideBZ->AddEntry(obj,legNames[it++],"LP");
+	  legHighSideBZ->AddEntry(obj,legNames[it++],"PL");
 	  legHighSideBZ->SetTextFont(42);
 	}
       legHighSideBZ->SetFillStyle(0);
