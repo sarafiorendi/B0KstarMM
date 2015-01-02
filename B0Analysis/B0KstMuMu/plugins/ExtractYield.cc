@@ -2846,11 +2846,7 @@ string GeneratePolynomial (RooRealVar* var, unsigned int nCoef, string sCoef)
 void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf** TotalPDFPsiP, RooRealVar* x, TCanvas* Canv, bool justPlotMuMuMass, bool justKeepPsi, string plotName, vector<double>* q2Bins)
 {
   stringstream myString;
-
-  double sigmaJPsi, sigmaJPsiE;
-  double sigmaPsiP, sigmaPsiPE;
   unsigned int NBins;
-
   unsigned int nElements;
   unsigned int it = 0;
   TString legNamesPsi[4];
@@ -2953,17 +2949,13 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // ###################################################
       if (GetVar(*TotalPDFJPsi,x->getPlotLabel()) != NULL) (*TotalPDFJPsi)->getVariables()->setRealValue(x->getPlotLabel(),Utility->B0Mass);
       if (JPsiFitResult != NULL) JPsiFitResult->Print("v");
-      ((RooAddPdf*)(*TotalPDFJPsi))->fixCoefRange("subRangeJPsi");
-      sigmaJPsi = sqrt(GetVar(*TotalPDFJPsi,"fracMassJPsi")->getVal() * pow(GetVar(*TotalPDFJPsi,"sigmaJPsi1")->getVal(),2.) + (1. - GetVar(*TotalPDFJPsi,"fracMassJPsi")->getVal()) * pow(GetVar(*TotalPDFJPsi,"sigmaJPsi2")->getVal(),2.));
-      sigmaJPsiE = 1./(2.*sigmaJPsi) * sqrt( pow((pow(GetVar(*TotalPDFJPsi,"sigmaJPsi1")->getVal(),2.) - pow(GetVar(*TotalPDFJPsi,"sigmaJPsi2")->getVal(),2.)) * GetVar(*TotalPDFJPsi,"fracMassJPsi")->getError(),2.) +
-					     pow(2. * GetVar(*TotalPDFJPsi,"fracMassJPsi")->getVal()        * GetVar(*TotalPDFJPsi,"sigmaJPsi1")->getVal() * GetVar(*TotalPDFJPsi,"sigmaJPsi1")->getError(),2.) +
-					     pow(2. * (1. - GetVar(*TotalPDFJPsi,"fracMassJPsi")->getVal()) * GetVar(*TotalPDFJPsi,"sigmaJPsi2")->getVal() * GetVar(*TotalPDFJPsi,"sigmaJPsi2")->getError(),2.) );
       
 
       // ################
       // # Plot results #
       // ################
       Canv->cd(1);
+      ((RooAddPdf*)(*TotalPDFJPsi))->fixCoefRange("subRangeJPsi");
       RooPlot* myFrameJPsi = x->frame(Range("subRangeJPsi"),Bins(NBins));
 
       dataSetJPsi->plotOn(myFrameJPsi, Name(dataSetJPsi->GetName()));
@@ -2989,7 +2981,9 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       TPaveText* paveTextJPsi = (TPaveText*)myFrameJPsi->findObject(myString.str().c_str());
       paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","#mu#kern[-0.4]{#lower[-0.3]{_{1}}} = ",GetVar(*TotalPDFJPsi,"meanJPsi1")->getVal(),GetVar(*TotalPDFJPsi,"meanJPsi1")->getError()));
       paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","#mu#kern[-0.4]{#lower[-0.3]{_{2}}} = ",GetVar(*TotalPDFJPsi,"meanJPsi2")->getVal(),GetVar(*TotalPDFJPsi,"meanJPsi2")->getError()));
-      paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","< #sigma > = ",sigmaJPsi,sigmaJPsiE));
+      paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","#sigma#kern[0.8]{#lower[-0.3]{_{1}}} = ",GetVar(*TotalPDFJPsi,"sigmaJPsi1")->getVal(),GetVar(*TotalPDFJPsi,"sigmaJPsi1")->getError()));
+      paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","#sigma#kern[0.8]{#lower[-0.3]{_{2}}} = ",GetVar(*TotalPDFJPsi,"sigmaJPsi2")->getVal(),GetVar(*TotalPDFJPsi,"sigmaJPsi2")->getError()));
+      paveTextJPsi->AddText(Form("%s%.3f#pm%.3f","f = ",GetVar(*TotalPDFJPsi,"fracMassJPsi")->getVal(),GetVar(*TotalPDFJPsi,"fracMassJPsi")->getError()));
       paveTextJPsi->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameJPsi->chiSquare((*TotalPDFJPsi)->getPlotLabel(),dataSetJPsi->GetName())));
       CheckGoodFit(JPsiFitResult,paveTextJPsi);
       paveTextJPsi->SetBorderSize(0.0);
@@ -3106,17 +3100,13 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // ###################################################
       if (GetVar(*TotalPDFPsiP,x->getPlotLabel()) != NULL) (*TotalPDFPsiP)->getVariables()->setRealValue(x->getPlotLabel(),Utility->B0Mass);
       if (PsiPFitResult != NULL) PsiPFitResult->Print("v");
-      ((RooAddPdf*)(*TotalPDFPsiP))->fixCoefRange("subRangePsiP");
-      sigmaPsiP = sqrt(GetVar(*TotalPDFPsiP,"fracMassPsiP")->getVal() * pow(GetVar(*TotalPDFPsiP,"sigmaPsiP1")->getVal(),2.) + (1. - GetVar(*TotalPDFPsiP,"fracMassPsiP")->getVal()) * pow(GetVar(*TotalPDFPsiP,"sigmaPsiP2")->getVal(),2.));
-      sigmaPsiPE = 1./(2.*sigmaPsiP) * sqrt( pow((pow(GetVar(*TotalPDFPsiP,"sigmaPsiP1")->getVal(),2.) - pow(GetVar(*TotalPDFPsiP,"sigmaPsiP2")->getVal(),2.)) * GetVar(*TotalPDFPsiP,"fracMassPsiP")->getError(),2.) +
-					     pow(2. * GetVar(*TotalPDFPsiP,"fracMassPsiP")->getVal()        * GetVar(*TotalPDFPsiP,"sigmaPsiP1")->getVal() * GetVar(*TotalPDFPsiP,"sigmaPsiP1")->getError(),2.) +
-					     pow(2. * (1. - GetVar(*TotalPDFPsiP,"fracMassPsiP")->getVal()) * GetVar(*TotalPDFPsiP,"sigmaPsiP2")->getVal() * GetVar(*TotalPDFPsiP,"sigmaPsiP2")->getError(),2.) );
 
 
       // ################
       // # Plot results #
       // ################
       Canv->cd(2);
+      ((RooAddPdf*)(*TotalPDFPsiP))->fixCoefRange("subRangePsiP");
       RooPlot* myFramePsiP = x->frame(Range("subRangePsiP"),Bins(NBins));
 
       dataSetPsiP->plotOn(myFramePsiP, Name(dataSetPsiP->GetName()));
@@ -3142,7 +3132,9 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       TPaveText* paveTextPsiP = (TPaveText*)myFramePsiP->findObject(myString.str().c_str());
       paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","#mu#kern[-0.4]{#lower[-0.3]{_{1}}} = ",GetVar(*TotalPDFPsiP,"meanPsiP1")->getVal(),GetVar(*TotalPDFPsiP,"meanPsiP1")->getError()));
       paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","#mu#kern[-0.4]{#lower[-0.3]{_{2}}} = ",GetVar(*TotalPDFPsiP,"meanPsiP2")->getVal(),GetVar(*TotalPDFPsiP,"meanPsiP2")->getError()));
-      paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","< #sigma > = ",sigmaPsiP,sigmaPsiPE));
+      paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","#sigma#kern[0.8]{#lower[-0.3]{_{1}}} = ",GetVar(*TotalPDFPsiP,"sigmaPsiP1")->getVal(),GetVar(*TotalPDFPsiP,"sigmaPsiP1")->getError()));
+      paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","#sigma#kern[0.8]{#lower[-0.3]{_{2}}} = ",GetVar(*TotalPDFPsiP,"sigmaPsiP2")->getVal(),GetVar(*TotalPDFPsiP,"sigmaPsiP2")->getError()));
+      paveTextPsiP->AddText(Form("%s%.3f#pm%.3f","f = ",GetVar(*TotalPDFPsiP,"fracMassPsiP")->getVal(),GetVar(*TotalPDFPsiP,"fracMassPsiP")->getError()));
       paveTextPsiP->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFramePsiP->chiSquare((*TotalPDFPsiP)->getPlotLabel(),dataSetPsiP->GetName())));
       CheckGoodFit(PsiPFitResult,paveTextPsiP);
       paveTextPsiP->SetBorderSize(0.0);
@@ -3219,7 +3211,6 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       fileFitResults << " (" << GetVar(*TotalPDFJPsi,"sigmaJPsi1")->getErrorHi() << "/" << GetVar(*TotalPDFJPsi,"sigmaJPsi1")->getErrorLo() << ")" << endl;
       fileFitResults << "Sigma-2: " << GetVar(*TotalPDFJPsi,"sigmaJPsi2")->getVal() << " +/- " << GetVar(*TotalPDFJPsi,"sigmaJPsi2")->getError();
       fileFitResults << " (" << GetVar(*TotalPDFJPsi,"sigmaJPsi2")->getErrorHi() << "/" << GetVar(*TotalPDFJPsi,"sigmaJPsi2")->getErrorLo() << ")" << endl;
-      fileFitResults << "< Sigma >: " << sigmaJPsi << endl;
       fileFitResults << "Fraction: " << GetVar(*TotalPDFJPsi,"fracMassJPsi")->getVal() << " +/- " << GetVar(*TotalPDFJPsi,"fracMassJPsi")->getError();
       fileFitResults << " (" << GetVar(*TotalPDFJPsi,"fracMassJPsi")->getErrorHi() << "/" << GetVar(*TotalPDFJPsi,"fracMassJPsi")->getErrorLo() << ")" << endl;
       fileFitResults << "Signal yield: " << GetVar(*TotalPDFJPsi,"nJPsiMass")->getVal() << " +/- " << GetVar(*TotalPDFJPsi,"nJPsiMass")->getError();
@@ -3245,7 +3236,6 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       fileFitResults << " (" << GetVar(*TotalPDFPsiP,"sigmaPsiP1")->getErrorHi() << "/" << GetVar(*TotalPDFPsiP,"sigmaPsiP1")->getErrorLo() << ")" << endl;
       fileFitResults << "Sigma-2: " << GetVar(*TotalPDFPsiP,"sigmaPsiP2")->getVal() << " +/- " << GetVar(*TotalPDFPsiP,"sigmaPsiP2")->getError();
       fileFitResults << " (" << GetVar(*TotalPDFPsiP,"sigmaPsiP2")->getErrorHi() << "/" << GetVar(*TotalPDFPsiP,"sigmaPsiP2")->getErrorLo() << ")" << endl;
-      fileFitResults << "< Sigma >: " << sigmaPsiP << endl;
       fileFitResults << "Fraction: " << GetVar(*TotalPDFPsiP,"fracMassPsiP")->getVal() << " +/- " << GetVar(*TotalPDFPsiP,"fracMassPsiP")->getError();
       fileFitResults << " (" << GetVar(*TotalPDFPsiP,"fracMassPsiP")->getErrorHi() << "/" << GetVar(*TotalPDFPsiP,"fracMassPsiP")->getErrorLo() << ")" << endl;
       fileFitResults << "Signal yield: " << GetVar(*TotalPDFPsiP,"nPsiPMass")->getVal() << " +/- " << GetVar(*TotalPDFPsiP,"nPsiPMass")->getError();
