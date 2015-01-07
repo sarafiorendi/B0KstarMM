@@ -1477,7 +1477,7 @@ void PlotKKMass (string fileNameData, string fileNameMC)
 
 
   TF1* func = new TF1("func","[0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2]))",1,cutVal);
-  func->SetLineColor(kRed);
+  func->SetLineColor(kViolet);
   func->SetLineWidth(2);
   func->SetParName(0,"Ampli");
   func->SetParName(1,"#mu");
