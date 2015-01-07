@@ -15,6 +15,7 @@
 #include <TH3D.h>
 #include <TF1.h>
 #include <TLegend.h>
+#include <TPaveStats.h>
 #include <TLeaf.h>
 #include <TObject.h>
 #include <TRandom3.h>
@@ -88,6 +89,7 @@ void DivideNTuple           (string fileNameIn, string fileNameOut, unsigned int
 void SampleNTuple           (string fileNameIn, string fileNameOut, double fraction);
 void ComputeMCfilterEff     (string fileName);
 void ZeroCrossing           (string fileName, const double minq2 = 1.2, const double maxq2 = 7.0, const unsigned int nBins = 100);
+void PlotKKMass             (string fileNameData, string fileNameMC);
 // ####################
 // # Plot the results #
 // ####################
@@ -1426,6 +1428,77 @@ void ZeroCrossing (string fileName, const double minq2, const double maxq2, cons
 
   c2->Modified();
   c2->Update();
+}
+
+
+// #######################################################################
+// # Overlap m(KK) plots from Data and MC and fit for the phi(1020) peak #
+// #######################################################################
+void PlotKKMass (string fileNameData, string fileNameMC)
+{
+  // ##########################
+  // # Set histo layout style #
+  // ##########################
+  SetStyle();
+  gStyle->SetPalette(1);
+
+
+  double cutVal = 1.035;
+  double yRange = 0.034;
+  cout << "\nCut value: " << cutVal << endl;
+  cout << "Y high bound: " << yRange << "\n" << endl;
+
+
+  TFile* fileData = TFile::Open(fileNameData.c_str(),"READ");
+  TCanvas* cData = (TCanvas*)fileData->Get("c0");
+  TH1D* hData = (TH1D*)cData->GetPrimitive("hKKSig");
+  hData->Sumw2();
+  hData->Scale(1. / hData->Integral());
+  hData->GetYaxis()->SetRangeUser(0.0,yRange);
+  hData->SetMarkerStyle(20);
+  hData->SetXTitle("m(K^{+}K^{-}) (GeV)");
+  hData->SetYTitle("Entries / (0.005 GeV)");
+
+  TFile* fileMC = TFile::Open(fileNameMC.c_str(),"READ");
+  TCanvas* cMC = (TCanvas*)fileMC->Get("c0");
+  TH1D* hMC = (TH1D*)cMC->GetPrimitive("hKKSig");
+  hMC->Sumw2();
+  hMC->Scale(1. / hMC->Integral());
+  hMC->GetYaxis()->SetRangeUser(0.0,yRange);
+  hMC->SetFillColor(kAzure+6);
+  hMC->SetXTitle("m(K^{+}K^{-}) (GeV)");
+  hMC->SetYTitle("Entries / (0.005 GeV)");
+
+
+  TCanvas * c0 = new TCanvas("c0","c0",10,10,900,500);
+  c0->cd();
+  hMC->Draw("hist");
+  hData->Draw("same e1");
+
+
+  TF1* func = new TF1("func","[0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2]))",1,cutVal);
+  func->SetLineColor(kRed);
+  func->SetLineWidth(2);
+  func->SetParName(0,"Ampli");
+  func->SetParName(1,"#mu");
+  func->SetParName(2,"#sigma");
+
+  func->SetParameter(0,0.022);
+  func->SetParameter(1,1.02);
+  func->SetParameter(2,0.005);
+
+  hData->Fit("func","R");
+  TPaveStats* st = (TPaveStats*)hData->FindObject("stats");
+  st->Draw("same");
+
+  TLine* myLine = new TLine(cutVal,0.0,cutVal,yRange - 0.0005);
+  myLine->SetLineColor(kRed);
+  myLine->SetLineWidth(3);
+  myLine->SetLineStyle(2);
+  myLine->Draw("same");
+
+  c0->Modified();
+  c0->Update();
 }
 
 
