@@ -787,7 +787,7 @@ void BuildAngularConstraints (RooArgSet* vecConstr, RooAbsPdf* pdf, string varNa
 
 	  for (unsigned int i = 0; i < NCOEFFPOLYBKG; i++)
 	    {
-	      // @TMP@
+	      // @TMP@ : choose between fixed or constrained angular bkg shape
 
 	      myString.clear(); myString.str("");
 	      myString << polyType.c_str() << "1Poly" << i;
