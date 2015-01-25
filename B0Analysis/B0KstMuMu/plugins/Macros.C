@@ -897,12 +897,11 @@ void PlotCutScans (string fileName, string type)
   tmp0->ResetAttFill();
   tmp0->Draw("C same");
 
-  TLine* myLine0 = new TLine(h1->GetXaxis()->GetBinLowEdge(h1->GetMaximumBin()),h0->GetMaximum()*1.05,h1->GetXaxis()->GetBinLowEdge(h1->GetMaximumBin()),h0->GetMinimum()*0.95);
+  TLine* myLine0 = new TLine(h1->GetXaxis()->GetBinLowEdge(h1->GetMaximumBin()),h0->GetMaximum()*1.07,h1->GetXaxis()->GetBinLowEdge(h1->GetMaximumBin()),h0->GetMinimum()*0.86);
   myLine0->SetLineColor(kRed);
-  myLine0->SetLineWidth(2);
+  myLine0->SetLineWidth(3);
   myLine0->SetLineStyle(2);
   myLine0->Draw("same");
-
 
   c1->cd(2);
   h1->Draw("CE5");
@@ -910,9 +909,9 @@ void PlotCutScans (string fileName, string type)
   tmp1->ResetAttFill();
   tmp1->Draw("C same");
 
-  TLine* myLine1 = new TLine(h1->GetXaxis()->GetBinLowEdge(h1->GetMaximumBin()),h1->GetMaximum()*1.05,h1->GetXaxis()->GetBinLowEdge(h1->GetMaximumBin()),h1->GetMinimum()*0.95);
+  TLine* myLine1 = new TLine(h1->GetXaxis()->GetBinLowEdge(h1->GetMaximumBin()),h1->GetMaximum()*1.07,h1->GetXaxis()->GetBinLowEdge(h1->GetMaximumBin()),h1->GetMinimum()*0.86);
   myLine1->SetLineColor(kRed);
-  myLine1->SetLineWidth(2);
+  myLine1->SetLineWidth(3);
   myLine1->SetLineStyle(2);
   myLine1->Draw("same");
 
