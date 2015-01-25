@@ -871,12 +871,14 @@ void PlotCutScans (string fileName, string type)
   myString << "c0_" << type << "_1";
   TPad* p0 = (TPad*)c0->GetPrimitive(myString.str().c_str());
   TH1D* h0 = (TH1D*)p0->GetPrimitive("histoR1");
+  h0->SetLineWidth(2);
 
   myString.clear(); myString.str("");
   myString << "c0_" << type << "_4";
   TPad* p1 = (TPad*)c0->GetPrimitive(myString.str().c_str());
   TH1D* h1 = (TH1D*)p1->GetPrimitive("histoR4");
   h1->SetYTitle("S / sqrt(S+B)");
+  h1->SetLineWidth(2);
 
 
   // ##########################
@@ -890,11 +892,31 @@ void PlotCutScans (string fileName, string type)
   TCanvas* c1 = new TCanvas("c1","c1",10,10,900,500);
   c1->Divide(2,1);
   c1->cd(1);
-  h0->Draw();
+  h0->Draw("CE5");
+  TH1D* tmp0 = (TH1D*)h0->Clone();
+  tmp0->ResetAttFill();
+  tmp0->Draw("C same");
+
+  TLine* myLine0 = new TLine(h1->GetXaxis()->GetBinLowEdge(h1->GetMaximumBin()),h0->GetMaximum()*1.05,h1->GetXaxis()->GetBinLowEdge(h1->GetMaximumBin()),h0->GetMinimum()*0.95);
+  myLine0->SetLineColor(kRed);
+  myLine0->SetLineWidth(2);
+  myLine0->SetLineStyle(2);
+  myLine0->Draw("same");
+
 
   c1->cd(2);
-  h1->Draw();
+  h1->Draw("CE5");
+  TH1D* tmp1 = (TH1D*)h1->Clone();
+  tmp1->ResetAttFill();
+  tmp1->Draw("C same");
 
+  TLine* myLine1 = new TLine(h1->GetXaxis()->GetBinLowEdge(h1->GetMaximumBin()),h1->GetMaximum()*1.05,h1->GetXaxis()->GetBinLowEdge(h1->GetMaximumBin()),h1->GetMinimum()*0.95);
+  myLine1->SetLineColor(kRed);
+  myLine1->SetLineWidth(2);
+  myLine1->SetLineStyle(2);
+  myLine1->Draw("same");
+
+  
   c1->Modified();
   c1->Update();
 }

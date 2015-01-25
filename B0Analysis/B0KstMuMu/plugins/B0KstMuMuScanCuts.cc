@@ -395,10 +395,18 @@ void CutOptimization (unsigned int scanType, unsigned int q2Region, string MCFil
   for (unsigned int i = 0; i < nBins; i++)
     {
       histoR1->SetBinContent(i+1,MCtoDataRescale*countS[i]);
+      histoR1->SetBinError(i+1,MCtoDataRescale*sqrt(countS[i]));
+
       histoR2->SetBinContent(i+1,countB[i]);
+      histoR2->SetBinError(i+1,sqrt(countB[i]));
+
       histoR3->SetBinContent(i+1,countB[i] > 0 ? MCtoDataRescale*countS[i] / sqrt(countB[i]) : 0);
+      histoR3->SetBinError(i+1,countB[i] > 0 ? sqrt(MCtoDataRescale*MCtoDataRescale*countS[i] / countB[i] + pow(MCtoDataRescale*countS[i] / (2.*countB[i]),2.)) : 0);
+
       histoR4->SetBinContent(i+1,(countS[i]+countB[i]) > 0 ? MCtoDataRescale*countS[i] / sqrt(MCtoDataRescale*countS[i] + countB[i]) : 0);
-      
+      histoR4->SetBinError(i+1,(countS[i]+countB[i]) > 0 ? sqrt(pow((3.*MCtoDataRescale*MCtoDataRescale*countS[i] + 2.*MCtoDataRescale*countB[i]) / (2.*pow(MCtoDataRescale*countS[i] + countB[i],3./2.)) * sqrt(countS[i]),2.) +
+								pow(MCtoDataRescale*countS[i] / (2.*pow(MCtoDataRescale*countS[i] + countB[i],3./2.)) * sqrt(countB[i]),2.)): 0);
+
       cout << "Signal: " << countS[i] << "\tSignal (rescaled = k): " << histoR1->GetBinContent(i+1) << "\tBackground: " << histoR2->GetBinContent(i+1);
       cout << "\tk*S / sqrt(B): " << histoR3->GetBinContent(i+1) << "\tk*S / sqrt(k*S + B): " << histoR4->GetBinContent(i+1) << endl;
     }
