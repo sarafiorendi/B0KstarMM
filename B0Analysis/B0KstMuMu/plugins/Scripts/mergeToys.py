@@ -12,17 +12,18 @@ if len(sys.argv) < 4:
     print "Synopsis: python MergeToys.py [q2bin nJobs dirName(without \"_nJobs_q2bin\")]"
     sys.exit("ERROR !")
 
-q2bin   = sys.argv[1]
-nJobs   = int(sys.argv[2])
-dirName = sys.argv[3]
+q2bin      = sys.argv[1]
+nJobs      = int(sys.argv[2])
+dirName    = sys.argv[3]
+postFixDir = ""
 
 print "\n@@@ Input parameters : ", q2bin, nJobs, dirName, " @@@"
-
+print "Postfix directory name : ", postFixDir
 
 #################################
 # Read the number of root files #
 #################################
-newDir = dirName + "_1_" + q2bin
+newDir = dirName + "_1_" + q2bin + postFixDir
 chdir(newDir)
 nFiles = len(glob.glob("*.root"))
 chdir("..")
@@ -34,7 +35,7 @@ fileList = [["" for x in xrange(nFiles)] for x in xrange(nJobs)]
 # Load all the root file names #
 ################################
 for j in range(0, nJobs):
-    newDir = dirName + "_" + str(j+1) + "_" + q2bin
+    newDir = dirName + "_" + str(j+1) + "_" + q2bin + postFixDir
     chdir(newDir)
     fileList[j] = glob.glob("*.root")
     chdir("..")
@@ -46,9 +47,10 @@ for j in range(0, nJobs):
 for i in range(0, nFiles):
     outputFile = fileList[0][i]
     outputFile = outputFile.replace("_1_","_",1)
+    outputFile = outputFile.replace(".root",postFixDir+".root")
     cmd = "hadd " + outputFile + " "
 
     for j in range(0, nJobs):
-        cmd += dirName + "_" + str(j+1) + "_" + q2bin + "/" + fileList[j][i] + " "
+        cmd += dirName + "_" + str(j+1) + "_" + q2bin + postFixDir + "/" + fileList[j][i] + " "
     print cmd
     system(cmd)
