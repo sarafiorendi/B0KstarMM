@@ -336,7 +336,7 @@ void AddGaussConstraint         (RooArgSet* vecConstr, RooAbsPdf* pdf, string va
 void BuildMassConstraints       (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName);
 void BuildAngularConstraints    (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName, vector<vector<string>*>* fitParam = NULL, unsigned int q2BinIndx = 0);
 
-RooAbsPdf* MakeAngWithEffPDF    (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, vector<double>* q2Bins, int q2BinIndx);
+RooAbsPdf* MakeAngWithEffPDF    (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, vector<double>* q2Bins, int q2BinIndx, bool doTransf);
 void DeleteFit                  (RooAbsPdf* pdf, string DeleteType);
 void ResetCombPolyParam         (vector<vector<string>*>* fitParam = NULL, RooAbsPdf* pdf = NULL);
 void ResetAngularParam          (vector<vector<string>*>* fitParam);
@@ -808,18 +808,11 @@ void BuildAngularConstraints (RooArgSet* vecConstr, RooAbsPdf* pdf, string varNa
       else if (varName == "sign")
 	{
 	  double value, errLo, errHi;
-
-	  RooRealVar tmpVar1("tmpVar1","tmpVar1",0.0);
-	  tmpVar1.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](q2BinIndx).c_str()));
-
-	  RooRealVar tmpVar2("tmpVar2","tmpVar2",0.0);
-	  tmpVar2.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](q2BinIndx).c_str()));
-
-	  RooRealVar tmpVar3("tmpVar3","tmpVar3",0.0);
-	  tmpVar3.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](q2BinIndx).c_str()));
+	  RooRealVar tmpVar("tmpVar","tmpVar",0.0);
 
 
-	  Utility->AntiTransformer("FsS",value,errLo,errHi,&tmpVar1,&tmpVar2);
+	  tmpVar.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](q2BinIndx).c_str()));
+	  Utility->AntiTransformer("FsS",atoi(Utility->GetGenericParam("doTransf").c_str()),value,errLo,errHi,&tmpVar);
 	  myString.clear(); myString.str("");
 	  myString << value << "   " << errLo << "   " << errHi;
 	  SetValueAndErrors(pdf,"FsS",1.0,&myString,&value,&errLo,&errHi);
@@ -827,7 +820,8 @@ void BuildAngularConstraints (RooArgSet* vecConstr, RooAbsPdf* pdf, string varNa
 	  if (GetVar(pdf,"FsS") != NULL) GetVar(pdf,"FsS")->setConstant(true);
 
 
-	  Utility->AntiTransformer("AsS",value,errLo,errHi,&tmpVar1,&tmpVar2,&tmpVar3);
+	  tmpVar.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](q2BinIndx).c_str()));
+	  Utility->AntiTransformer("AsS",atoi(Utility->GetGenericParam("doTransf").c_str()),value,errLo,errHi,&tmpVar);
 	  myString.clear(); myString.str("");
 	  myString << value << "   " << errLo << "   " << errHi;
 	  SetValueAndErrors(pdf,"AsS",1.0,&myString,&value,&errLo,&errHi);
@@ -843,7 +837,7 @@ void BuildAngularConstraints (RooArgSet* vecConstr, RooAbsPdf* pdf, string varNa
 }
 
 
-RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, vector<double>* q2Bins, int q2BinIndx)
+RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, vector<double>* q2Bins, int q2BinIndx, bool doTransf)
 // ###################
 // # y: cos(theta_l) #
 // # z: cos(theta_K) #
@@ -873,8 +867,16 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
       // # Make 2D signal*efficiency p.d.f.: integral over phi #
       // # For correctly tagged events                         #
       // #######################################################
-      FlS  = new RooRealVar("FlS","F_{L}",0.0);
-      AfbS = new RooRealVar("AfbS","A_{FB}",0.0);
+      if (doTransf == true)
+	{
+	  FlS  = new RooRealVar("FlS","F_{L}",0.0);
+	  AfbS = new RooRealVar("AfbS","A_{FB}",0.0);
+	}
+      else
+	{
+	  FlS  = new RooRealVar("FlS","F_{L}",0.0,0.0,1.0);
+	  AfbS = new RooRealVar("AfbS","A_{FB}",0.0,-2./3.,2./3.);
+	}
       VarsAng->add(*FlS);
       VarsAng->add(*AfbS);
       VarsAng->add(*y);
@@ -886,25 +888,25 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
     	  // #####################
     	  // # P-wave decay rate #
     	  // #####################
-	  myString << "(3/4 * (3/2 * " << Utility->Transformer("FlS",a,b,c) << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-          myString << "(3/8 * (1-" << Utility->Transformer("FlS",a,b,c) << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + " << Utility->Transformer("AfbS",a,b,c) << "*" << y->getPlotLabel() << ") * ";
+	  myString << "(3/4 * (3/2 * " << Utility->Transformer("FlS",doTransf,a,b,c) << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+          myString << "(3/8 * (1-" << Utility->Transformer("FlS",doTransf,a,b,c) << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + " << Utility->Transformer("AfbS",doTransf,a,b,c) << "*" << y->getPlotLabel() << ") * ";
           myString << "(1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ")))";
 	}
       else
     	{
-	  FsS = new RooRealVar("FsS","F_{S}",0.0,0.0,1.0); // @TMP@ : to be eliminated when able to fit for Fs and As
-          AsS = new RooRealVar("AsS","A_{S}",0.0);
+	  FsS = new RooRealVar("FsS","F_{S}",0.0,0.0,1.0);
+          AsS = new RooRealVar("AsS","A_{S}",0.0,-1.0,1.0);
     	  VarsAng->add(*FsS);
     	  VarsAng->add(*AsS);
 
     	  // ###########################
     	  // # S and P-wave decay rate #
     	  // ###########################
-          myString << "(9/16 * ((2/3*" << Utility->Transformer("FsS",a,b,c) << " + 4/3*" << Utility->Transformer("AsS",a,b,c) << "*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
-          myString << "(1-" << Utility->Transformer("FsS",a,b,c) << ") * ";
-          myString << "(2*" << Utility->Transformer("FlS",a,b,c) << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
-          myString << "1/2*(1-" << Utility->Transformer("FlS",a,b,c) << ") * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
-          myString << "4/3*" << Utility->Transformer("AfbS",a,b,c) << " * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * " << y->getPlotLabel() << ")))";
+          myString << "(9/16 * ((2/3*" << Utility->Transformer("FsS",doTransf,a,b,c) << " + 4/3*" << Utility->Transformer("AsS",doTransf,a,b,c) << "*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+          myString << "(1-" << Utility->Transformer("FsS",doTransf,a,b,c) << ") * ";
+          myString << "(2*" << Utility->Transformer("FlS",doTransf,a,b,c) << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+          myString << "1/2*(1-" << Utility->Transformer("FlS",doTransf,a,b,c) << ") * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+          myString << "4/3*" << Utility->Transformer("AfbS",doTransf,a,b,c) << " * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * " << y->getPlotLabel() << ")))";
     	}
 
       VarsPoly->removeAll();
@@ -959,8 +961,8 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	  // #####################
 	  // # P-wave decay rate #
 	  // #####################
-          myString << "(3/4 * (3/2 * " << Utility->Transformer("FlS",a,b,c) << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-	  myString << "(3/8 * (1-" << Utility->Transformer("FlS",a,b,c) <<") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - " << Utility->Transformer("AfbS",a,b,c) << "*" << y->getPlotLabel() << ") * ";
+          myString << "(3/4 * (3/2 * " << Utility->Transformer("FlS",doTransf,a,b,c) << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+	  myString << "(3/8 * (1-" << Utility->Transformer("FlS",doTransf,a,b,c) <<") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - " << Utility->Transformer("AfbS",doTransf,a,b,c) << "*" << y->getPlotLabel() << ") * ";
           myString << "(1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ")))";
 	}
       else
@@ -968,11 +970,11 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	  // ###########################
 	  // # S and P-wave decay rate #
 	  // ###########################
-	  myString << "(9/16 * ((2/3*" << Utility->Transformer("FsS",a,b,c) << " - 4/3*" << Utility->Transformer("AsS",a,b,c) << "*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
-          myString << "(1-" << Utility->Transformer("FsS",a,b,c) << ") * ";
-          myString << "(2*" << Utility->Transformer("FlS",a,b,c) << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
-          myString << "1/2*(1-" << Utility->Transformer("FlS",a,b,c) << ") * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - ";
-          myString << "4/3*" << Utility->Transformer("AfbS",a,b,c) << " * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * " << y->getPlotLabel() << ")))";
+	  myString << "(9/16 * ((2/3*" << Utility->Transformer("FsS",doTransf,a,b,c) << " - 4/3*" << Utility->Transformer("AsS",doTransf,a,b,c) << "*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+          myString << "(1-" << Utility->Transformer("FsS",doTransf,a,b,c) << ") * ";
+          myString << "(2*" << Utility->Transformer("FlS",doTransf,a,b,c) << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+          myString << "1/2*(1-" << Utility->Transformer("FlS",doTransf,a,b,c) << ") * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - ";
+          myString << "4/3*" << Utility->Transformer("AfbS",doTransf,a,b,c) << " * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * " << y->getPlotLabel() << ")))";
  	}
 
       cout << "\n[ExtractYield::MakeAngWithEffPDF]\t@@@ 2D angular p.d.f. @@@" << endl;
@@ -1415,12 +1417,12 @@ double StoreFitResultsInFile (RooAbsPdf* pdf, RooFitResult* fitResult, RooDataSe
       // #######################
       if (GetVar(pdf,"FlS") != NULL)
 	{
-	  Utility->Transformer("FlS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"));
+	  Utility->Transformer("FlS",atoi(Utility->GetGenericParam("doTransf").c_str()),varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"));
 	  fileFitResults << "Fl: " << varVal << " +/- " << (varValEHi - varValELo) / 2. << " (" << varValEHi << "/" << varValELo << ")" << endl;
 	}
       if (GetVar(pdf,"AfbS") != NULL)
 	{
-	  Utility->Transformer("AfbS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"AfbS"));
+	  Utility->Transformer("AfbS",atoi(Utility->GetGenericParam("doTransf").c_str()),varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"AfbS"));
 	  fileFitResults << "Afb: " << varVal << " +/- " << (varValEHi - varValELo) / 2. << " (" << varValEHi << "/" << varValELo << ")" << endl;
 	}
       if (GetVar(pdf,"P1S") != NULL)
@@ -1435,12 +1437,12 @@ double StoreFitResultsInFile (RooAbsPdf* pdf, RooFitResult* fitResult, RooDataSe
 	}
       if (GetVar(pdf,"FsS") != NULL)
         {
-	  Utility->Transformer("FsS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"FsS"));
+	  Utility->Transformer("FsS",atoi(Utility->GetGenericParam("doTransf").c_str()),varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FsS"));
 	  fileFitResults << "Fs: " << varVal << " +/- " << (varValEHi - varValELo) / 2. << " (" << varValEHi << "/" << varValELo << ")" << endl;
         }
       if (GetVar(pdf,"AsS") != NULL)
         {
-	  Utility->Transformer("AsS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"FsS"),GetVar(pdf,"AsS"));
+	  Utility->Transformer("AsS",atoi(Utility->GetGenericParam("doTransf").c_str()),varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"AsS"));
 	  fileFitResults << "As: " << varVal << " +/- " << (varValEHi - varValELo) / 2. << " (" << varValEHi << "/" << varValELo << ")" << endl;
         }
     }
@@ -1909,7 +1911,7 @@ vector<string>* SaveFitResults (unsigned int q2BinIndx, vector<vector<string>*>*
   vecParStr->push_back("# FL +/- err");
   if ((pdf != NULL) && (GetVar(pdf,"FlS") != NULL) && (vecConstr->find(string(string("FlS") + string("_constr")).c_str()) == NULL))
     {
-      Utility->Transformer("FlS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"));
+      Utility->Transformer("FlS",atoi(Utility->GetGenericParam("doTransf").c_str()),varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"));
       myString.clear(); myString.str("");
       myString << varVal << "   " << varValELo << "   " << varValEHi;
       vecParStr->push_back(myString.str());
@@ -1918,7 +1920,7 @@ vector<string>* SaveFitResults (unsigned int q2BinIndx, vector<vector<string>*>*
   vecParStr->push_back("# AFB +/- err");
   if ((pdf != NULL) && (GetVar(pdf,"AfbS") != NULL) && (vecConstr->find(string(string("AfbS") + string("_constr")).c_str()) == NULL))
     {
-      Utility->Transformer("AfbS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"AfbS"));
+      Utility->Transformer("AfbS",atoi(Utility->GetGenericParam("doTransf").c_str()),varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"AfbS"));
       myString.clear(); myString.str("");
       myString << varVal << "   " << varValELo << "   " << varValEHi;
       vecParStr->push_back(myString.str());
@@ -1943,7 +1945,7 @@ vector<string>* SaveFitResults (unsigned int q2BinIndx, vector<vector<string>*>*
   vecParStr->push_back("# FS +/- err");
   if ((pdf != NULL) && (GetVar(pdf,"FsS") != NULL) && (fitResult->floatParsFinal().index("FsS") >= 0))
     {
-      Utility->Transformer("FsS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"FsS"));
+      Utility->Transformer("FsS",atoi(Utility->GetGenericParam("doTransf").c_str()),varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FsS"));
       myString.clear(); myString.str("");
       myString << varVal << "   " << varValELo << "   " << varValEHi;
       vecParStr->push_back(myString.str());
@@ -1952,7 +1954,7 @@ vector<string>* SaveFitResults (unsigned int q2BinIndx, vector<vector<string>*>*
   vecParStr->push_back("# AS +/- err");
   if ((pdf != NULL) && (GetVar(pdf,"AsS") != NULL) && (fitResult->floatParsFinal().index("AsS") >= 0))
     {
-      Utility->Transformer("AsS",varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"FsS"),GetVar(pdf,"AsS"));
+      Utility->Transformer("AsS",atoi(Utility->GetGenericParam("doTransf").c_str()),varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"AsS"));
       myString.clear(); myString.str("");
       myString << varVal << "   " << varValELo << "   " << varValEHi;
       vecParStr->push_back(myString.str());
@@ -2328,10 +2330,10 @@ unsigned int CopyFitResults (RooAbsPdf* pdf, unsigned int q2BinIndx, vector<vect
       if ((errLo == 0.0) && (errHi == 0.0)) GetVar(pdf,"FlS")->setConstant(true);
       else                                  GetVar(pdf,"FlS")->setConstant(false);
 
-      RooRealVar tmpVar1("tmpVar1","tmpVar1",0.0);
-      tmpVar1.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](q2BinIndx).c_str()));
+      RooRealVar tmpVar("tmpVar","tmpVar",0.0);
+      tmpVar.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](q2BinIndx).c_str()));
 
-      Utility->AntiTransformer("FlS",value,errLo,errHi,&tmpVar1);
+      Utility->AntiTransformer("FlS",atoi(Utility->GetGenericParam("doTransf").c_str()),value,errLo,errHi,&tmpVar);
       myString.clear(); myString.str("");
       myString << value << "   " << errLo << "   " << errHi;
       SetValueAndErrors(pdf,"FlS",1.0,&myString,&value,&errLo,&errHi);
@@ -2350,7 +2352,7 @@ unsigned int CopyFitResults (RooAbsPdf* pdf, unsigned int q2BinIndx, vector<vect
       RooRealVar tmpVar2("tmpVar2","tmpVar2",0.0);
       tmpVar2.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](q2BinIndx).c_str()));
 
-      Utility->AntiTransformer("AfbS",value,errLo,errHi,&tmpVar1,&tmpVar2);
+      Utility->AntiTransformer("AfbS",atoi(Utility->GetGenericParam("doTransf").c_str()),value,errLo,errHi,&tmpVar1,&tmpVar2);
       myString.clear(); myString.str("");
       myString << value << "   " << errLo << "   " << errHi;
       SetValueAndErrors(pdf,"AfbS",1.0,&myString,&value,&errLo,&errHi);
@@ -2379,13 +2381,10 @@ unsigned int CopyFitResults (RooAbsPdf* pdf, unsigned int q2BinIndx, vector<vect
       if ((errLo == 0.0) && (errHi == 0.0)) GetVar(pdf,"FsS")->setConstant(true);
       else                                  GetVar(pdf,"FsS")->setConstant(false);
 
-      RooRealVar tmpVar1("tmpVar1","tmpVar1",0.0);
-      tmpVar1.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](q2BinIndx).c_str()));
-      
-      RooRealVar tmpVar2("tmpVar2","tmpVar2",0.0);
-      tmpVar2.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](q2BinIndx).c_str()));
+      RooRealVar tmpVar("tmpVar","tmpVar",0.0);
+      tmpVar.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](q2BinIndx).c_str()));
 
-      Utility->AntiTransformer("FsS",value,errLo,errHi,&tmpVar1,&tmpVar2);
+      Utility->AntiTransformer("FsS",atoi(Utility->GetGenericParam("doTransf").c_str()),value,errLo,errHi,&tmpVar);
       myString.clear(); myString.str("");
       myString << value << "   " << errLo << "   " << errHi;
       SetValueAndErrors(pdf,"FsS",1.0,&myString,&value,&errLo,&errHi);
@@ -2398,16 +2397,10 @@ unsigned int CopyFitResults (RooAbsPdf* pdf, unsigned int q2BinIndx, vector<vect
       if ((errLo == 0.0) && (errHi == 0.0)) GetVar(pdf,"AsS")->setConstant(true);
       else                                  GetVar(pdf,"AsS")->setConstant(false);
       
-      RooRealVar tmpVar1("tmpVar1","tmpVar1",0.0);
-      tmpVar1.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](q2BinIndx).c_str()));
+      RooRealVar tmpVar("tmpVar","tmpVar",0.0);
+      tmpVar.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](q2BinIndx).c_str()));
 
-      RooRealVar tmpVar2("tmpVar2","tmpVar2",0.0);
-      tmpVar2.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](q2BinIndx).c_str()));
-
-      RooRealVar tmpVar3("tmpVar3","tmpVar3",0.0);
-      tmpVar3.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](q2BinIndx).c_str()));
-
-      Utility->AntiTransformer("AsS",value,errLo,errHi,&tmpVar1,&tmpVar2,&tmpVar3);
+      Utility->AntiTransformer("AsS",atoi(Utility->GetGenericParam("doTransf").c_str()),value,errLo,errHi,&tmpVar);
       myString.clear(); myString.str("");
       myString << value << "   " << errLo << "   " << errHi;
       SetValueAndErrors(pdf,"AsS",1.0,&myString,&value,&errLo,&errHi);
@@ -4700,7 +4693,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // # Define angle fit variables and pdf for correctly tagged signal #
   // ##################################################################
   RooArgSet* VarsPolyGT = new RooArgSet("VarsPolyGT");
-  AngleS = MakeAngWithEffPDF(effFunc.first,y,z,FitType,useEffPDF,VarsAng,VarsPolyGT,q2Bins,actualq2BinIndx);
+  AngleS = MakeAngWithEffPDF(effFunc.first,y,z,FitType,useEffPDF,VarsAng,VarsPolyGT,q2Bins,actualq2BinIndx,atoi(Utility->GetGenericParam("doTransf").c_str()));
 
   Signal = new RooProdPdf("Signal","Signal Mass*Angle",RooArgSet(*MassSignal,*AngleS));
 
@@ -4779,7 +4772,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   // # Define angle fit variables and pdf for mis-tagged signal #
   // ############################################################
   RooArgSet* VarsPolyMT = new RooArgSet("VarsPolyMT");
-  AngleMisTag = MakeAngWithEffPDF(effFunc.second,y,z,FitType*10,useEffPDF,VarsAng,VarsPolyMT,q2Bins,actualq2BinIndx);
+  AngleMisTag = MakeAngWithEffPDF(effFunc.second,y,z,FitType*10,useEffPDF,VarsAng,VarsPolyMT,q2Bins,actualq2BinIndx,atoi(Utility->GetGenericParam("doTransf").c_str()));
 
   MassAngleMisTag = new RooProdPdf("MassAngleMisTag","Mistag bkg Mass*Angle",RooArgSet(*MassMisTag,*AngleMisTag));
 
@@ -6215,8 +6208,8 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // ##############################################
       // # Save fit results back into prarameter file #
       // ##############################################
-      Utility->Transformer("FlS", varVal1,varVal1ELo,varVal1EHi,fitResult,GetVar(TotalPDFq2Bins[i],"FlS"));
-      Utility->Transformer("AfbS",varVal2,varVal2ELo,varVal2EHi,fitResult,GetVar(TotalPDFq2Bins[i],"FlS"),GetVar(TotalPDFq2Bins[i],"AfbS"));
+      Utility->Transformer("FlS", atoi(Utility->GetGenericParam("doTransf").c_str()),varVal1,varVal1ELo,varVal1EHi,fitResult,GetVar(TotalPDFq2Bins[i],"FlS"));
+      Utility->Transformer("AfbS",atoi(Utility->GetGenericParam("doTransf").c_str()),varVal2,varVal2ELo,varVal2EHi,fitResult,GetVar(TotalPDFq2Bins[i],"FlS"),GetVar(TotalPDFq2Bins[i],"AfbS"));
 
       vecParStr = SaveFitResults(i,fitParam,configParam,vecConstr,TotalPDFq2Bins[i],fitResult);
       Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,i);
@@ -6967,7 +6960,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 
 	  varName = "FlS";
 	  pdf_Fl = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
-	  Utility->Transformer(varName,fit_Fl,varValELo,varValEHi,fitResult,GetVar(TotalPDF,varName.c_str()));
+	  Utility->Transformer(varName,atoi(Utility->GetGenericParam("doTransf").c_str()),fit_Fl,varValELo,varValEHi,fitResult,GetVar(TotalPDF,varName.c_str()));
 	  errorLo_Fl = varValELo;
 	  errorHi_Fl = varValEHi;
 
@@ -6977,12 +6970,12 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 
 	  pdf_Fl = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
 	  tmpVar1.setVal(pdf_Fl);
-          Utility->AntiTransformer(varName.c_str(),pdfOrg_Fl,varValELo,varValEHi,&tmpVar1);
+          Utility->AntiTransformer(varName,atoi(Utility->GetGenericParam("doTransf").c_str()),pdfOrg_Fl,varValELo,varValEHi,&tmpVar1);
 
 
 	  varName = "AfbS";
 	  pdf_Afb = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
-	  Utility->Transformer(varName,fit_Afb,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,varName.c_str()));
+	  Utility->Transformer(varName,atoi(Utility->GetGenericParam("doTransf").c_str()),fit_Afb,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,varName.c_str()));
 	  errorLo_Afb = varValELo;
 	  errorHi_Afb = varValEHi;
 
@@ -6992,7 +6985,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 
 	  pdf_Afb = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
 	  tmpVar2.setVal(pdf_Afb);
-          Utility->AntiTransformer(varName.c_str(),pdfOrg_Afb,varValELo,varValEHi,&tmpVar1,&tmpVar2);
+          Utility->AntiTransformer(varName,atoi(Utility->GetGenericParam("doTransf").c_str()),pdfOrg_Afb,varValELo,varValEHi,&tmpVar1,&tmpVar2);
 
 
 	  nll = NLLvalue;
@@ -7207,12 +7200,15 @@ int main(int argc, char** argv)
 
 	  fileFitResults << "Normalize to J/psi and not psi(2S): " << Utility->GetGenericParam("NormJPSInotPSIP").c_str() << " (0 = false; 1 = true)" << endl;
 	  fileFitResults << "Poly. degree efficiency interp.: "    << Utility->GetGenericParam("DegreeInterp").c_str() << endl;
+	  fileFitResults << "Tolerance to boundaries: "            << Utility->GetGenericParam("TransfTolerance").c_str() << endl;
 	  fileFitResults << "Use MINOS: "                          << Utility->GetGenericParam("UseMINOS").c_str() << " (0 = false; 1 = true)" << endl;
 	  fileFitResults << "Apply constraints: "                  << Utility->GetGenericParam("ApplyConstr").c_str() << " (0 = false; 1 = true)" << endl;
 	  fileFitResults << "Control fit workflow: "               << CTRLfitWRKflow.c_str() << endl;
 	  fileFitResults << "Control mis-tag fraction workflow: "  << Utility->GetGenericParam("CtrlMisTagWrkFlow").c_str() << endl;
 	  fileFitResults << "Save mis-tag fraction: "              << Utility->GetGenericParam("SaveMisTagFrac").c_str() << " (0 = false; 1 = true)" << endl;
-	  
+	  fileFitResults << "Use SP-wave: "                        << Utility->GetGenericParam("UseSPwave").c_str() << " (0 = false; 1 = true)" << endl;
+	  fileFitResults << "Do variable transformation: "         << Utility->GetGenericParam("doTransf").c_str() << " (0 = false; 1 = true)" << endl;
+
 
 	  // ################################################
 	  // # Read ctr. chn. yield from global-fit results #

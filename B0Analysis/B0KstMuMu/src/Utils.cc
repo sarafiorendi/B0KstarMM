@@ -3384,16 +3384,15 @@ void Utils::SaveFitValues (std::string fileName, std::vector<std::string>* vecPa
 
 
 #if ROOFIT
-std::string Utils::Transformer (std::string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooFitResult* fitResult, RooRealVar* varValIn1, RooRealVar* varValIn2, RooRealVar* varValIn3)
-// ######################
-// # varValIn1 = Fl,Fs  #
-// # varValIn2 = Afb,Fl #
-// # varValIn3 = As     #
-// ######################
+std::string Utils::Transformer (std::string varName, bool doIt, double& varValOut, double& varValOutELo, double& varValOutEHi, RooFitResult* fitResult, RooRealVar* varValIn1, RooRealVar* varValIn2)
+// ##########################
+// # varValIn1 = Fl, Fs, As #
+// # varValIn2 = Afb        #
+// ##########################
 {
   const TMatrixTSym<double>* CovM = (fitResult != NULL ? &fitResult->covarianceMatrix() : NULL);
-  double val1,val2,val3,val1ELo,val1EHi,val2ELo,val2EHi;
-  std::string sVal1,sVal2;
+  double val1,val2,val1ELo,val1EHi;
+  std::string sVal;
   std::stringstream myString;
   myString.clear(); myString.str("");
 
@@ -3402,36 +3401,28 @@ std::string Utils::Transformer (std::string varName, double& varValOut, double& 
     {
       if (varName == "FlS")
 	{
- 	  myString << "(1/2 + TMath::ATan(" << varName << ")/TMath::Pi())";
+	  if (doIt == true) myString << "(1/2 + TMath::ATan(" << varName << ")/TMath::Pi())";
+	  else              myString << "(" << varName << ")";
 	  std::cout << "[Utils::Transformer]\tTransformer function: " << myString.str().c_str() << std::endl;
 	  return myString.str();
 	}
       else if (varName == "AfbS")
 	{
-	  sVal1 = Transformer("FlS",val1,val1ELo,val1EHi);
+	  sVal = Transformer("FlS",doIt,val1,val1ELo,val1EHi);
 
-	  myString << "(3/4*(1 - " << sVal1 << ") * 2*TMath::ATan(" << varName << ")/TMath::Pi())";
+	  if (doIt == true) myString << "(3/4*(1 - " << sVal << ") * 2*TMath::ATan(" << varName << ")/TMath::Pi())";
+	  else              myString << "(" << varName << ")";
 	  std::cout << "[Utils::Transformer]\tTransformer function: " << myString.str().c_str() << std::endl;
 	  return myString.str();
 	}
       else if (varName == "FsS")
 	{
-	  sVal1 = Transformer("FlS",val1,val1ELo,val1EHi);
-
-	  // @TMP@ : to be eliminated when able to fit for Fs and As
-	  // myString << "(3*(1-" << sVal1 << ")/(7-3*" << sVal1 << ") * (1/2 + TMath::ATan(" << varName << ")/TMath::Pi()))";
 	  myString << "(" << varName << ")";
 	  std::cout << "[Utils::Transformer]\tTransformer function: " << myString.str().c_str() << std::endl;
 	  return myString.str();
 	}
       else if (varName == "AsS")
 	{
-	  sVal1 = Transformer("FlS",val1,val1ELo,val1EHi);
-	  sVal2 = Transformer("FsS",val1,val1ELo,val1EHi);
-
-	  // @TMP@ : to be eliminated when able to fit for Fs and As
-	  // myString << "((1/2*(" << sVal2 << " + 3*" << sVal1 << "*(1 - " << sVal2 << ")) < 1 ? 1/2*(" << sVal2 << " + 3*" << sVal1 << "*(1 - " << sVal2 << ")) : 1) ";
-	  // myString << "* 2*TMath::ATan(" << varName << ")/TMath::Pi())";
 	  myString << "(" << varName << ")";
 	  std::cout << "[Utils::Transformer]\tTransformer function: " << myString.str().c_str() << std::endl;
 	  return myString.str();
@@ -3448,133 +3439,60 @@ std::string Utils::Transformer (std::string varName, double& varValOut, double& 
 
       varValOutELo = 1./2. + TMath::ATan(varValIn1->getVal() + varValIn1->getErrorLo()) / TMath::Pi() - varValOut;
       varValOutEHi = 1./2. + TMath::ATan(varValIn1->getVal() + varValIn1->getErrorHi()) / TMath::Pi() - varValOut;
+
+      if (doIt == false)
+	{
+	  varValOut    = varValIn1->getVal();
+	  varValOutELo = varValIn1->getErrorLo();
+	  varValOutEHi = varValIn1->getErrorHi();
+	}
     }
   else if ((varName == "AfbS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
-      Transformer("FlS",val1,val1ELo,val1EHi,fitResult,varValIn1);
+      Transformer("FlS",doIt,val1,val1ELo,val1EHi,fitResult,varValIn1);
       val2 = 3./4. * (1. - val1);
 
       varValOut    = val2 * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi();
 
       varValOutELo = val2 * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorLo()) / TMath::Pi() - varValOut;
+      varValOutEHi = val2 * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorHi()) / TMath::Pi() - varValOut;
+
       varValOutELo = - sqrt( pow(3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1ELo,2.) + pow(varValOutELo,2.) +
 
-			     (varValIn1->getErrorLo() != 0.0 && varValIn2->getErrorLo() != 0.0 ?
-			      2. *
-			      (3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1ELo) / varValIn1->getErrorLo() *
-			      varValOutELo / varValIn2->getErrorLo() *
-			      (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("AfbS") != -1 ?
-			       (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AfbS")) : 0.) : 0.));
+      			     (varValIn1->getErrorLo() != 0.0 && varValIn2->getErrorLo() != 0.0 ?
+      			      2. *
+      			      (3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1ELo) / varValIn1->getErrorLo() *
+      			      varValOutELo / varValIn2->getErrorLo() *
+      			      (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("AfbS") != -1 ?
+      			       (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AfbS")) : 0.) : 0.));
 
-
-      varValOutEHi = val2 * 2.*TMath::ATan(varValIn2->getVal() + varValIn2->getErrorHi()) / TMath::Pi() - varValOut;
       varValOutEHi = + sqrt( pow(3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1EHi,2.) + pow(varValOutEHi,2.) +
 
-			     (varValIn1->getErrorHi() != 0.0 && varValIn2->getErrorHi() != 0.0 ?
-			      2. *
-			      (3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1EHi)  / varValIn1->getErrorHi() *
-			      varValOutEHi / varValIn2->getErrorHi() *
-			      (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("AfbS") != -1 ?
-			       (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AfbS")) : 0.) : 0.));
+      			     (varValIn1->getErrorHi() != 0.0 && varValIn2->getErrorHi() != 0.0 ?
+      			      2. *
+      			      (3./4. * 2.*TMath::ATan(varValIn2->getVal()) / TMath::Pi() * val1EHi)  / varValIn1->getErrorHi() *
+      			      varValOutEHi / varValIn2->getErrorHi() *
+      			      (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("AfbS") != -1 ?
+      			       (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AfbS")) : 0.) : 0.));
+
+      if (doIt == false)
+	{
+	  varValOut    = varValIn2->getVal();
+	  varValOutELo = varValIn2->getErrorLo();
+	  varValOutEHi = varValIn2->getErrorHi();
+	}
     }
-  else if ((varName == "FsS") && (varValIn1 != NULL) && (varValIn2 != NULL))
+  else if ((varName == "FsS") && (varValIn1 != NULL))
     {
-      Transformer("FlS",val1,val1ELo,val1EHi,fitResult,varValIn1);
-      val2 = 3. * (1. - val1) / (7. - 3. * val1);
-
-      varValOut    = val2 * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi());
-
-      varValOutELo = val2 * (1./2. + TMath::ATan(varValIn2->getVal() + varValIn2->getErrorLo()) / TMath::Pi()) - varValOut;
-      varValOutELo = - sqrt( pow((3. * (1. - (val1+val1ELo)) / (7. - 3. * (val1+val1ELo)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()),2.) + pow(varValOutELo,2.) +
-
-			     (varValIn1->getErrorLo() != 0.0 && varValIn2->getErrorLo() != 0.0 ?
-			      2. *
-			      (3. * (1. - (val1+val1ELo)) / (7. - 3. * (val1+val1ELo)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) / varValIn1->getErrorLo() *
-			      varValOutELo / varValIn2->getErrorLo() *
-			      (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("FsS") != -1 ?
-			       (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) : 0.));
-
-
-      varValOutEHi = val2 * (1./2. + TMath::ATan(varValIn2->getVal() + varValIn2->getErrorHi()) / TMath::Pi()) - varValOut;
-      varValOutEHi = + sqrt( pow((3. * (1. - (val1+val1EHi)) / (7. - 3. * (val1+val1EHi)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()),2.) + pow(varValOutEHi,2.) +
-
-			     (varValIn1->getErrorHi() != 0.0 && varValIn2->getErrorHi() != 0.0 ?
-			      2. *
-			      (3. * (1. - (val1+val1EHi)) / (7. - 3. * (val1+val1EHi)) - val2) * (1./2. + TMath::ATan(varValIn2->getVal()) / TMath::Pi()) / varValIn1->getErrorHi() *
-			      varValOutEHi / varValIn2->getErrorHi() *
-			      (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("FsS") != -1 ?
-			       (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) : 0.));
-
-      // @TMP@ : to be eliminated when able to fit for Fs and As
-      varValOut    = varValIn2->getVal();
-      varValOutELo = varValIn2->getErrorLo();
-      varValOutEHi = varValIn2->getErrorHi();
+      varValOut    = varValIn1->getVal();
+      varValOutELo = varValIn1->getErrorLo();
+      varValOutEHi = varValIn1->getErrorHi();
     }
-  else if ((varName == "AsS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (varValIn3 != NULL))
+  else if ((varName == "AsS") && (varValIn1 != NULL))
     {
-      Transformer("FlS",val1,val1ELo,val1EHi,fitResult,varValIn1);
-      Transformer("FsS",val2,val2ELo,val2EHi,fitResult,varValIn1,varValIn2);
-      val3 = 1./2. * (val2 + 3. * val1 * (1. - val2));
-      if (val3 > 1.) val3 = 1.;
-
-      varValOut    = val3 * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi();
-
-      varValOutELo = val3 * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorLo()) / TMath::Pi() - varValOut;
-      varValOutELo = - sqrt( pow(3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1ELo,2.) +
-			     pow(1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2ELo,2.) +
-			     pow(varValOutELo,2.) +
-
-			     (varValIn1->getErrorLo() != 0.0 && varValIn2->getErrorLo() != 0.0 ?
-			      2. *
-			      3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1ELo / varValIn1->getErrorLo() *
-			      1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2ELo / varValIn2->getErrorLo() *
-			      (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("FsS") != -1 ?
-			       (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) : 0.) +
-
-			     (varValIn1->getErrorLo() != 0.0 && varValIn3->getErrorLo() != 0.0 ?
-			      2. *
-			      3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1ELo / varValIn1->getErrorLo() *
-			      varValOutELo / varValIn3->getErrorLo() *
-			      (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("AsS") != -1 ?
-			       (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AsS")) : 0.) : 0.) +
-
-			     (varValIn2->getErrorLo() != 0.0 && varValIn3->getErrorLo() != 0.0 ?
-			      2. *
-			      1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2ELo / varValIn2->getErrorLo() *
-			      varValOutELo / varValIn3->getErrorLo() *
-			      (CovM != NULL && fitResult->floatParsFinal().index("FsS") != -1 && fitResult->floatParsFinal().index("AsS") != -1 ?
-			       (*CovM)(fitResult->floatParsFinal().index("FsS"),fitResult->floatParsFinal().index("AsS")) : 0.) : 0.));
-
-      varValOutEHi = val3 * 2.*TMath::ATan(varValIn3->getVal() + varValIn3->getErrorHi()) / TMath::Pi() - varValOut;
-      varValOutEHi = + sqrt( pow(3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi,2.) +
-			     pow(1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2EHi,2.) +
-			     pow(varValOutEHi,2.) +
-
-			     (varValIn1->getErrorHi() != 0.0 && varValIn2->getErrorHi() != 0.0 ?
-			      2. *
-			      3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi / varValIn1->getErrorHi() *
-			      1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2EHi / varValIn2->getErrorHi() *
-			      (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("FsS") != -1 ?
-			       (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("FsS")) : 0.) : 0.) +
-
-			     (varValIn1->getErrorHi() != 0.0 && varValIn3->getErrorHi() != 0.0 ?
-			      2. *
-			      3./2.*(1. - val2)    * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val1EHi / varValIn1->getErrorHi() *
-			      varValOutEHi / varValIn3->getErrorHi() *
-			      (CovM != NULL && fitResult->floatParsFinal().index("FlS") != -1 && fitResult->floatParsFinal().index("AsS") != -1 ?
-			       (*CovM)(fitResult->floatParsFinal().index("FlS"),fitResult->floatParsFinal().index("AsS")) : 0.) : 0.) +
-
-			     (varValIn2->getErrorHi() != 0.0 && varValIn3->getErrorHi() != 0.0 ?
-			      2. *
-			      1./2.*(1. - 3.*val1) * 2.*TMath::ATan(varValIn3->getVal()) / TMath::Pi() * val2EHi / varValIn2->getErrorHi() *
-			      varValOutEHi / varValIn3->getErrorHi() *
-			      (CovM != NULL && fitResult->floatParsFinal().index("FsS") != -1 && fitResult->floatParsFinal().index("AsS") != -1 ?
-			       (*CovM)(fitResult->floatParsFinal().index("FsS"),fitResult->floatParsFinal().index("AsS")) : 0.) : 0.));
-
-      // @TMP@ : to be eliminated when able to fit for Fs and As
-      varValOut    = varValIn3->getVal();
-      varValOutELo = varValIn3->getErrorLo();
-      varValOutEHi = varValIn3->getErrorHi();
+      varValOut    = varValIn1->getVal();
+      varValOutELo = varValIn1->getErrorLo();
+      varValOutEHi = varValIn1->getErrorHi();
     }
   else
     {
@@ -3587,12 +3505,11 @@ std::string Utils::Transformer (std::string varName, double& varValOut, double& 
 }
 
 
-void Utils::AntiTransformer (std::string varName, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1, RooRealVar* varValIn2, RooRealVar* varValIn3)
-// ######################
-// # varValIn1 = Fl,Fs  #
-// # varValIn2 = Afb,Fs #
-// # varValIn2 = As     #
-// ######################
+void Utils::AntiTransformer (std::string varName, bool doIt, double& varValOut, double& varValOutELo, double& varValOutEHi, RooRealVar* varValIn1, RooRealVar* varValIn2)
+// ##########################
+// # varValIn1 = Fl, Fs, As #
+// # varValIn2 = Afb        #
+// ##########################
 {
   double tmpVal,limit;
   double tolerance = atof(GetGenericParam("TransfTolerance").c_str());
@@ -3617,6 +3534,13 @@ void Utils::AntiTransformer (std::string varName, double& varValOut, double& var
 	  else                                                       tmpVal = varValIn1->getVal() + varValIn1->getErrorHi();
 	  varValOutEHi = TMath::Tan((tmpVal - 1./2.) * TMath::Pi()) - varValOut;
 	}
+
+      if (doIt == false)
+	{
+	  varValOut    = varValIn1->getVal();
+	  varValOutELo = varValIn1->getErrorLo();
+	  varValOutEHi = varValIn1->getErrorHi();
+	}
     }
   else if ((varName == "AfbS") && (varValIn1 != NULL) && (varValIn2 != NULL))
     {
@@ -3639,61 +3563,25 @@ void Utils::AntiTransformer (std::string varName, double& varValOut, double& var
 	  else                                                          tmpVal = varValIn2->getVal() + varValIn2->getErrorHi();
 	  varValOutEHi = TMath::Tan(tmpVal / limit / 2. * TMath::Pi()) - varValOut;
 	}
+
+      if (doIt == false)
+	{
+	  varValOut    = varValIn2->getVal();
+	  varValOutELo = varValIn2->getErrorLo();
+	  varValOutEHi = varValIn2->getErrorHi();
+	}
     }
-  else if ((varName == "FsS") && (varValIn1 != NULL) && (varValIn2 != NULL))
+  else if ((varName == "FsS") && (varValIn1 != NULL))
     {
-      limit = 3. * (1. - varValIn1->getVal()) / (7. - 3.*varValIn1->getVal());
-
-      varValOut = TMath::Tan((varValIn2->getVal() / limit - 1./2.) * TMath::Pi());
-
-      if (varValIn2->getErrorLo() == -1.0) varValOutELo = varValIn2->getErrorLo();
-      else
-	{
-	  if ((varValIn2->getVal() + varValIn2->getErrorLo()) <= 0.) tmpVal = tolerance;
-	  else                                                       tmpVal = varValIn2->getVal() + varValIn2->getErrorLo();
-	  varValOutELo = TMath::Tan((tmpVal / limit - 1./2.) * TMath::Pi()) - varValOut;
-	}
-
-      if (varValIn2->getErrorHi() == 1.0) varValOutEHi = varValIn2->getErrorHi();
-      else
-	{
-	  if ((varValIn2->getVal() + varValIn2->getErrorHi()) >= 1.) tmpVal = 1. - tolerance;
-	  else                                                       tmpVal = varValIn2->getVal() + varValIn2->getErrorHi();
-	  varValOutEHi = TMath::Tan((tmpVal / limit - 1./2.) * TMath::Pi()) - varValOut;
-	}
-
-      // @TMP@ : to be eliminated when able to fit for Fs and As
-      varValOut    = varValIn2->getVal();
-      varValOutELo = varValIn2->getErrorLo();
-      varValOutEHi = varValIn2->getErrorHi();
+      varValOut    = varValIn1->getVal();
+      varValOutELo = varValIn1->getErrorLo();
+      varValOutEHi = varValIn1->getErrorHi();
     }
-  else if ((varName == "AsS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (varValIn3 != NULL))
+  else if ((varName == "AsS") && (varValIn1 != NULL))
     {
-      limit = 1./2. * (varValIn2->getVal() + 3. * varValIn1->getVal() * (1. - varValIn2->getVal()));
-      if (limit > 1.) limit = 1.;
-
-      varValOut = TMath::Tan(varValIn3->getVal() / limit / 2. * TMath::Pi());
-
-      if (varValIn3->getErrorLo() == -1.0) varValOutELo = varValIn3->getErrorLo();
-      else
-	{
-	  if ((varValIn3->getVal() + varValIn3->getErrorLo()) <= -limit) tmpVal = (limit >= 2.*tolerance ? -limit + tolerance : -limit + tolerance*limit);
-	  else                                                           tmpVal = varValIn3->getVal() + varValIn3->getErrorLo();
-	  varValOutELo = TMath::Tan(tmpVal / limit / 2. * TMath::Pi()) - varValOut;
-	}
-
-      if (varValIn3->getErrorHi() == 1.0) varValOutEHi = varValIn3->getErrorHi();
-      else
-	{
-	  if ((varValIn3->getVal() + varValIn3->getErrorHi()) >= limit) tmpVal = (limit >= 2.*tolerance ? limit - tolerance : limit - tolerance*limit);
-	  else                                                          tmpVal = varValIn3->getVal() + varValIn3->getErrorHi();
-	  varValOutEHi = TMath::Tan(tmpVal / limit / 2. * TMath::Pi()) - varValOut;
-	}
-
-      // @TMP@ : to be eliminated when able to fit for Fs and As
-      varValOut    = varValIn3->getVal();
-      varValOutELo = varValIn3->getErrorLo();
-      varValOutEHi = varValIn3->getErrorHi();
+      varValOut    = varValIn1->getVal();
+      varValOutELo = varValIn1->getErrorLo();
+      varValOutEHi = varValIn1->getErrorHi();
     }
   else
     {
@@ -4323,19 +4211,20 @@ void Utils::ReadGenericParam (std::string fileName)
 // # CtrlMisTagWrkFlow   = GenericPars[6]  #
 // # SaveMisTagFrac      = GenericPars[7]  #
 // # UseSPwave           = GenericPars[8]  #
-// # B0MassIntervalLeft  = GenericPars[9]  #
-// # B0MassIntervalRight = GenericPars[10] #
-// # NSigmaB0            = GenericPars[11] #
-// # NSigmaB0S           = GenericPars[12] #
-// # NSigmaB0B           = GenericPars[13] #
-// # NSigmaPsi           = GenericPars[14] #
-// # B&psiMassJpsiLo     = GenericPars[15] #
-// # B&psiMassJpsiHi     = GenericPars[16] #
-// # B&psiMassPsiPLo     = GenericPars[17] #
-// # B&psiMassPsiPHi     = GenericPars[18] #
-// # SIGMAS1             = GenericPars[19] #
-// # SIGMAS2             = GenericPars[20] #
-// # FRACMASSS           = GenericPars[21] #
+// # doTransf            = GenericPars[9]  #
+// # B0MassIntervalLeft  = GenericPars[10] #
+// # B0MassIntervalRight = GenericPars[11] #
+// # NSigmaB0            = GenericPars[12] #
+// # NSigmaB0S           = GenericPars[13] #
+// # NSigmaB0B           = GenericPars[14] #
+// # NSigmaPsi           = GenericPars[15] #
+// # B&psiMassJpsiLo     = GenericPars[16] #
+// # B&psiMassJpsiHi     = GenericPars[17] #
+// # B&psiMassPsiPLo     = GenericPars[18] #
+// # B&psiMassPsiPHi     = GenericPars[19] #
+// # SIGMAS1             = GenericPars[20] #
+// # SIGMAS2             = GenericPars[21] #
+// # FRACMASSS           = GenericPars[22] #
 // #########################################
 {
   std::vector<std::string> ParVector;
@@ -4370,19 +4259,20 @@ bool Utils::SetGenericParam (std::string parName, std::string val)
   else if (parName == "CtrlMisTagWrkFlow")   GenericPars[6]  = val;
   else if (parName == "SaveMisTagFrac")      GenericPars[7]  = val;
   else if (parName == "UseSPwave")           GenericPars[8]  = val;
-  else if (parName == "B0MassIntervalLeft")  GenericPars[9]  = val;
-  else if (parName == "B0MassIntervalRight") GenericPars[10] = val;
-  else if (parName == "NSigmaB0")            GenericPars[11] = val;
-  else if (parName == "NSigmaB0S")           GenericPars[12] = val;
-  else if (parName == "NSigmaB0B")           GenericPars[13] = val;
-  else if (parName == "NSigmaPsi")           GenericPars[14] = val;
-  else if (parName == "B&psiMassJpsiLo")     GenericPars[15] = val;
-  else if (parName == "B&psiMassJpsiHi")     GenericPars[16] = val;
-  else if (parName == "B&psiMassPsiPLo")     GenericPars[17] = val;
-  else if (parName == "B&psiMassPsiPHi")     GenericPars[18] = val;
-  else if (parName == "SIGMAS1")             GenericPars[19] = val;
-  else if (parName == "SIGMAS2")             GenericPars[20] = val;
-  else if (parName == "FRACMASSS")           GenericPars[21] = val;
+  else if (parName == "doTransf")            GenericPars[9]  = val;
+  else if (parName == "B0MassIntervalLeft")  GenericPars[10] = val;
+  else if (parName == "B0MassIntervalRight") GenericPars[11] = val;
+  else if (parName == "NSigmaB0")            GenericPars[12] = val;
+  else if (parName == "NSigmaB0S")           GenericPars[13] = val;
+  else if (parName == "NSigmaB0B")           GenericPars[14] = val;
+  else if (parName == "NSigmaPsi")           GenericPars[15] = val;
+  else if (parName == "B&psiMassJpsiLo")     GenericPars[16] = val;
+  else if (parName == "B&psiMassJpsiHi")     GenericPars[17] = val;
+  else if (parName == "B&psiMassPsiPLo")     GenericPars[18] = val;
+  else if (parName == "B&psiMassPsiPHi")     GenericPars[19] = val;
+  else if (parName == "SIGMAS1")             GenericPars[20] = val;
+  else if (parName == "SIGMAS2")             GenericPars[21] = val;
+  else if (parName == "FRACMASSS")           GenericPars[22] = val;
   else return false;
 
   return true;
@@ -4399,19 +4289,20 @@ std::string Utils::GetGenericParam (std::string parName)
   else if (parName == "CtrlMisTagWrkFlow")   return GenericPars[6];
   else if (parName == "SaveMisTagFrac")      return GenericPars[7];
   else if (parName == "UseSPwave")           return GenericPars[8];
-  else if (parName == "B0MassIntervalLeft")  return GenericPars[9];
-  else if (parName == "B0MassIntervalRight") return GenericPars[10];
-  else if (parName == "NSigmaB0")            return GenericPars[11];
-  else if (parName == "NSigmaB0S")           return GenericPars[12];
-  else if (parName == "NSigmaB0B")           return GenericPars[13];
-  else if (parName == "NSigmaPsi")           return GenericPars[14];
-  else if (parName == "B&psiMassJpsiLo")     return GenericPars[15];
-  else if (parName == "B&psiMassJpsiHi")     return GenericPars[16];
-  else if (parName == "B&psiMassPsiPLo")     return GenericPars[17];
-  else if (parName == "B&psiMassPsiPHi")     return GenericPars[18];
-  else if (parName == "SIGMAS1")             return GenericPars[19];
-  else if (parName == "SIGMAS2")             return GenericPars[20];
-  else if (parName == "FRACMASSS")           return GenericPars[21];
+  else if (parName == "doTransf")            return GenericPars[9];
+  else if (parName == "B0MassIntervalLeft")  return GenericPars[10];
+  else if (parName == "B0MassIntervalRight") return GenericPars[11];
+  else if (parName == "NSigmaB0")            return GenericPars[12];
+  else if (parName == "NSigmaB0S")           return GenericPars[13];
+  else if (parName == "NSigmaB0B")           return GenericPars[14];
+  else if (parName == "NSigmaPsi")           return GenericPars[15];
+  else if (parName == "B&psiMassJpsiLo")     return GenericPars[16];
+  else if (parName == "B&psiMassJpsiHi")     return GenericPars[17];
+  else if (parName == "B&psiMassPsiPLo")     return GenericPars[18];
+  else if (parName == "B&psiMassPsiPHi")     return GenericPars[19];
+  else if (parName == "SIGMAS1")             return GenericPars[20];
+  else if (parName == "SIGMAS2")             return GenericPars[21];
+  else if (parName == "FRACMASSS")           return GenericPars[22];
   else
     {
       std::cout << "[Utils::GetGenericParam]\tGeneric parameter not valid : " << parName << std::endl;

@@ -2628,7 +2628,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # 21st block of parameters #
 ############################
 # Number of generic parameters
-22
+23
 
 # [1 = normalize yields to compute dBF/dq^2 with respect to J/psi; 0 = use psi(2S) instead]
 1
@@ -2660,6 +2660,9 @@ trueAll
 
 # Use SP-wave [0 = false; 1 = true]
 0
+
+# Implement the angular variable transformation : "physical domain" <--> "infinite domain" [0 = false; 1 = true]
+1
 
 # B0 mass interval left [0.28 GeV/c2]
 0.28
