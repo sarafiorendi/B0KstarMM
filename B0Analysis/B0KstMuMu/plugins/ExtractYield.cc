@@ -401,7 +401,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 				    pair< vector<TF2*>*,vector<TF2*>* > effFuncs,
 				    RooArgSet* vecConstr,
 				    unsigned int ID = 0);
-void MakeMass2AnglesToy            (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooRealVar* z, TCanvas* Canv, unsigned int FitType, unsigned int nToy, int specBin, vector<vector<string>*>* fitParam, RooArgSet* vecConstr, string fileName, vector<double>* q2Bins);
+void MakeMass2AnglesToy            (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooRealVar* z, TCanvas* Canv, unsigned int FitType, unsigned int nToy, int specBin, vector<vector<string>*>* fitParam, RooArgSet* vecConstr, string fileName);
 
 
 // ###########################
@@ -2625,7 +2625,6 @@ void GenerateDatasetFromPDF (RooAbsPdf* pdf, unsigned int fileIndx, vector<doubl
   BuildMassConstraints(vecConstr,pdf,"mistag");
 
   BuildAngularConstraints(vecConstr,pdf,"peak");
-  if ((q2BinIndx != Utility->GetJPsiBin(q2Bins)) && (q2BinIndx != Utility->GetPsiPBin(q2Bins))) BuildAngularConstraints(vecConstr,pdf,"sign",fitParam,q2BinIndx);
 
 
   // ###################################
@@ -6186,7 +6185,6 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 	  BuildMassConstraints(vecConstr,TotalPDFq2Bins[i],"mistag");
 
 	  BuildAngularConstraints(vecConstr,TotalPDFq2Bins[i],"peak");
-	  if ((FitType != 46) && (FitType != 66)) BuildAngularConstraints(vecConstr,TotalPDFq2Bins[i],"sign",fitParam,i);
       	}
 
 
@@ -6334,7 +6332,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 }
 
 
-void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooRealVar* z, TCanvas* Canv, unsigned int FitType, unsigned int nToy, int specBin, vector<vector<string>*>* fitParam, RooArgSet* vecConstr, string fileName, vector<double>* q2Bins)
+void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooRealVar* z, TCanvas* Canv, unsigned int FitType, unsigned int nToy, int specBin, vector<vector<string>*>* fitParam, RooArgSet* vecConstr, string fileName)
 {
   // ###################
   // # Local variables #
@@ -6378,7 +6376,6 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   BuildMassConstraints(vecConstr,TotalPDF,"mistag");
 
   BuildAngularConstraints(vecConstr,TotalPDF,"peak");
-  if ((specBin != Utility->GetJPsiBin(q2Bins)) && (specBin != Utility->GetPsiPBin(q2Bins))) BuildAngularConstraints(vecConstr,TotalPDF,"sign",fitParam,specBin);
 
 
   // ###################################
@@ -6927,12 +6924,6 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 
       toySample = (RooDataSet*)MyToy->genData(i);
       CopyFitResults(TotalPDF,specBin,fitParam);
-
-
-      // #####################
-      // # Apply constraints #
-      // #####################
-      if ((specBin != Utility->GetJPsiBin(q2Bins)) && (specBin != Utility->GetPsiPBin(q2Bins))) BuildAngularConstraints(vecConstr,TotalPDF,"sign",fitParam,specBin);
 
 
       // ###########################
@@ -7619,7 +7610,7 @@ int main(int argc, char** argv)
 		  TCanvas* cToyMC = new TCanvas("cToyMC","cToyMC",10,10,1800,1200);
 
 		  InstantiateMass2AnglesFit(&TotalPDFRejectPsi,useEffPDF,B0MassArb,CosThetaMuArb,CosThetaKArb,"TotalPDFRejectPsi",FitType,&configParam,&fitParam,&q2Bins,specBin,specBin,make_pair(effFuncs.first->operator[](specBin),effFuncs.second->operator[](specBin)));
-		  MakeMass2AnglesToy(TotalPDFRejectPsi,B0MassArb,CosThetaMuArb,CosThetaKArb,cToyMC,FitType,nToy,specBin,&fitParam,&vecConstr,fileName,&q2Bins);
+		  MakeMass2AnglesToy(TotalPDFRejectPsi,B0MassArb,CosThetaMuArb,CosThetaKArb,cToyMC,FitType,nToy,specBin,&fitParam,&vecConstr,fileName);
 		}
 	    }
 	  else if ((FitType >= 81) && (FitType <= 86))
