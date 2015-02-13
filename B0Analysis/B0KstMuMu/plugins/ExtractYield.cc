@@ -81,10 +81,10 @@ using namespace RooFit;
 #define SAVEPLOT      false
 #define RESETsigANG   false // Reset signal angular parameters before starting the fit
 #define RESETcomANG   false // Reset combinatorial bkg angular parameters before starting the fit
-#define FULLTOYS      false // Compute generation-and-fit toys
+#define FULLTOYS      false // Run generation-and-fit toys
 #define FUNCERRBAND   false // Show the p.d.f. error band
 #define MINIMIZER     "Minuit2" // Minimizer type for 3D MODEL actual fit ["Minuit"; "Minuit2"]
-#define GENPARAMS     "All" // Option to generate parameters for parameter file: "All" "misTagFrac" "FlAfb" "combBkgAng"
+#define GENPARAMS     "All" // Option to generate parameters for parameter file: "All" "misTagFrac" "FlAfbFsAs" "combBkgAng"
 
 // ##################
 // # External files #
@@ -2421,7 +2421,7 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
 // #########################
 // # option = "All"        #
 // # option = "misTagFrac" #
-// # option = "FlAfb"      #
+// # option = "FlAfbFsAs"  #
 // # option = "combBkgAng" #
 // #########################
 {
@@ -2478,7 +2478,7 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
     }
 
 
-  if ((option == "All") || (option == "FlAfb"))
+  if ((option == "All") || (option == "FlAfbFsAs"))
     {
       if (GetVar(pdf,"FlS") != NULL)
 	{
@@ -2495,26 +2495,6 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
 	  myString << RooRandom::uniform() * 2. - 1.;
 	  fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](q2BinIndx) = myString.str();
 	}
-    }
-
-
-  if (option == "All")
-    {
-      if (GetVar(pdf,"P1S") != NULL)
-	{
-	  cout << "P1 generation : uniform lower bound = " << GetVar(pdf,"P1S")->getMin() << "\thigher bound = " << GetVar(pdf,"P1S")->getMax() << endl;
-	  myString.clear(); myString.str("");
-	  myString << RooRandom::uniform() * (GetVar(pdf,"P1S")->getMax() - GetVar(pdf,"P1S")->getMin()) + GetVar(pdf,"P1S")->getMin();
-	  fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](q2BinIndx) = myString.str();
-	}
-
-      if (GetVar(pdf,"P2S") != NULL)
-	{
-	  cout << "P2 generation : uniform lower bound = " << GetVar(pdf,"P2S")->getMin() << "\thigher bound = " << GetVar(pdf,"P2S")->getMax() << endl;
-	  myString.clear(); myString.str("");
-	  myString << RooRandom::uniform() * (GetVar(pdf,"P2S")->getMax() - GetVar(pdf,"P2S")->getMin()) + GetVar(pdf,"P2S")->getMin();
-	  fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](q2BinIndx) = myString.str();
-	}
 
       if (GetVar(pdf,"FsS") != NULL)
 	{
@@ -2530,6 +2510,26 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform() * 2. - 1.;
 	  fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](q2BinIndx) = myString.str();
+	}
+    }
+
+
+  if (option == "All")
+    {
+      if (GetVar(pdf,"P1S") != NULL)
+	{
+	  cout << "P1 generation : uniform lower bound = " << GetVar(pdf,"P1S")->getMin() << "\thigher bound = " << GetVar(pdf,"P1S")->getMax() << endl;
+	  myString.clear(); myString.str("");
+	  myString << RooRandom::uniform() * (GetVar(pdf,"P1S")->getMax() - GetVar(pdf,"P1S")->getMin()) + GetVar(pdf,"P1S")->getMin();
+	  fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](q2BinIndx) = myString.str();
+	}
+      
+      if (GetVar(pdf,"P2S") != NULL)
+	{
+	  cout << "P2 generation : uniform lower bound = " << GetVar(pdf,"P2S")->getMin() << "\thigher bound = " << GetVar(pdf,"P2S")->getMax() << endl;
+	  myString.clear(); myString.str("");
+	  myString << RooRandom::uniform() * (GetVar(pdf,"P2S")->getMax() - GetVar(pdf,"P2S")->getMin()) + GetVar(pdf,"P2S")->getMin();
+	  fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](q2BinIndx) = myString.str();
 	}
     }
 
