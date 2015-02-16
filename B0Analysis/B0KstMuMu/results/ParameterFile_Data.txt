@@ -2393,51 +2393,51 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 # q^2 bin 0
 # FL
--734.16
+-734.805
 # AFB
--734.16
+-734.805
 # P1
 0.0
 # P2
 0.0
 # Branching-Fraction
--734.16
+-734.805
 
 # q^2 bin 1
 # FL
--2087.89
+-2087.98
 # AFB
--2087.89
+-2087.98
 # P1
 0.0
 # P2
 0.0
 # Branching-Fraction
--2087.89
+-2087.98
 
 # q^2 bin 2
 # FL
--1497.28
+-1497.31
 # AFB
--1497.28
+-1497.31
 # P1
 0.0
 # P2
 0.0
 # Branching-Fraction
--1497.28
+-1497.31
 
 # q^2 bin 3
 # FL
--2958.76
+-2959.59
 # AFB
--2958.76
+-2959.59
 # P1
 0.0
 # P1
 0.0
 # Branching-Fraction
--2958.76
+-2959.59
 
 # q^2 bin 4
 # FL
@@ -2453,15 +2453,15 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 # q^2 bin 5
 # FL
--5013.37
+-5014.36
 # AFB
--5013.37
+-5014.36
 # P1
 0.0
 # P2
 0.0
 # Branching-Fraction
--5013.37
+-5014.36
 
 # q^2 bin 6
 # FL
@@ -2477,15 +2477,15 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 # q^2 bin 7
 # FL
--1905.67
+-1909.33
 # AFB
--1905.67
+-1909.33
 # P1
 0.0
 # P2
 0.0
 # Branching-Fraction
--1905.67
+-1909.33
 
 # q^2 bin 8
 # FL

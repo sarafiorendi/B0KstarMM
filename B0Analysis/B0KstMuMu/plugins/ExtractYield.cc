@@ -339,7 +339,7 @@ void BuildAngularConstraints    (RooArgSet* vecConstr, RooAbsPdf* pdf, string va
 RooAbsPdf* MakeAngWithEffPDF    (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, vector<double>* q2Bins, int q2BinIndx, bool doTransf);
 void DeleteFit                  (RooAbsPdf* pdf, string DeleteType);
 void ResetCombPolyParam         (vector<vector<string>*>* fitParam = NULL, RooAbsPdf* pdf = NULL);
-void ResetAngularParam          (vector<vector<string>*>* fitParam);
+void ResetAngularParam          (vector<vector<string>*>* fitParam = NULL, RooAbsPdf* pdf = NULL);
 double StoreFitResultsInFile    (RooAbsPdf* pdf, RooFitResult* fitResult, RooDataSet* dataSet, RooArgSet* vecConstr);
 void StorePolyResultsInFile     (RooAbsPdf* pdf);
 vector<string>* SaveFitResults  (unsigned int q2BinIndx, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr, RooAbsPdf* pdf = NULL, RooFitResult* fitResult = NULL);
@@ -1195,26 +1195,52 @@ void ResetCombPolyParam (vector<vector<string>*>* fitParam, RooAbsPdf* pdf)
 }
 
 
-void ResetAngularParam (vector<vector<string>*>* fitParam)
+void ResetAngularParam (vector<vector<string>*>* fitParam, RooAbsPdf* pdf)
 {
-  for (unsigned int j = 0; j < fitParam->operator[](0)->size(); j++)
+  stringstream myString;
+  stringstream myCoeff;
+  double value, errLo, errHi;
+
+  
+  if (fitParam != NULL)
+    {      
+      for (unsigned int j = 0; j < fitParam->operator[](0)->size(); j++)
+	{
+	  cout << "\n[ExtractYield::ResetAngularParam]\t@@@ Resetting the angular parameters for q^2 bin #" << j << " @@@" << endl;
+
+	  fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](j)  = "0.5";
+	  fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](j) = "0.0";
+	  fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](j)  = "0.0";
+	  fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](j)  = "0.0";
+	  fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](j)  = "0.25";
+	  fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](j)  = "0.0";
+
+	  cout << "FL: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](j).c_str()  << endl;
+	  cout << "AFB: " << "\t" << fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](j).c_str() << endl;
+	  cout << "P1: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](j).c_str()  << endl;
+	  cout << "P2: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](j).c_str()  << endl;
+	  cout << "FS: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](j).c_str()  << endl;
+	  cout << "AS: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](j).c_str()  << endl;
+	}
+    }
+  else if (pdf != NULL)
     {
-      cout << "\n[ExtractYield::ResetAngularParam]\t@@@ Resetting the angular parameters for q^2 bin #" << j << " @@@" << endl;
+      cout << "\n[ExtractYield::ResetAngularParam]\t@@@ Resetting the angular parameters in the p.d.f. @@@" << endl;
 
-      fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](j)  = "0.5";
-      fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](j) = "0.0";
-      fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](j)  = "0.0";
-      fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](j)  = "0.0";
-      fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](j)  = "0.25";
-      fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](j)  = "0.0";
+      myString.clear(); myString.str("");
+      if (atoi(Utility->GetGenericParam("doTransf").c_str()) == true) myString << "0.0";
+      else                                                            myString << "0.5";
+      SetValueAndErrors(pdf,"FlS",1.0,&myString,&value,&errLo,&errHi);
 
-      cout << "FL: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](j).c_str()  << endl;
-      cout << "AFB: " << "\t" << fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](j).c_str() << endl;
-      cout << "P1: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](j).c_str()  << endl;
-      cout << "P2: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](j).c_str()  << endl;
-      cout << "FS: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](j).c_str()  << endl;
-      cout << "AS: "  << "\t" << fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](j).c_str()  << endl;
-    }   
+      myString.clear(); myString.str("");
+      myString << "0.0";
+      SetValueAndErrors(pdf,"AfbS",1.0,&myString,&value,&errLo,&errHi);
+    }
+  else
+    {
+      cout << "[ExtractYield::ResetAngularParam]\tIncorrect parameter : one, and only one, shuld be non NULL" << endl;
+      exit (EXIT_FAILURE);
+    }
 }
 
 
@@ -6930,6 +6956,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       // # Reset parameters in pdf #
       // ###########################
       ResetCombPolyParam(NULL,TotalPDF);
+      ResetAngularParam(NULL,TotalPDF);
 
 
       fitResult = MakeMass2AnglesFit(toySample,&TotalPDF,x,y,z,cB0Toy,FitType,vecConstr,&NLLvalue,NULL,i);
