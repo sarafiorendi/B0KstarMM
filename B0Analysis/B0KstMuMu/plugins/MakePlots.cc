@@ -2746,6 +2746,7 @@ void MakeFitResPlots (string fileName, string plotType, int specBin, string varN
   // # Set histo layout style #
   // ##########################
   SetStyle();
+  gStyle->SetPadRightMargin(0.08);
 
 
   vector<vector<double>*> vecNLL;
@@ -2758,7 +2759,7 @@ void MakeFitResPlots (string fileName, string plotType, int specBin, string varN
   TTree* theTree = (TTree*)fileID->Get("FitResults");
   TH1D* histo = new TH1D("histo","histo",100,lowBound,highBound);
   histo->SetXTitle(varName.c_str());
-  histo->SetYTitle("Enstries (#)");
+  histo->SetYTitle("Enstries [#]");
   histo->SetFillColor(kGreen-7);
 
 
