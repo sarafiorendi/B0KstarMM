@@ -21,6 +21,7 @@
 #include <TExec.h>
 #include <TGraphBentErrors.h>
 #include <TKey.h>
+#include <TFitResult.h>
 
 #include <RooRealVar.h>
 
@@ -1827,7 +1828,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   // # Extract AFB zero crossing point #
   // ###################################
   if ((PlotType == 1) || (PlotType == 11))
-    {
+    {      
       TF1* ZeroCrox = new TF1("ZeroCrox","[0]*x + [1]",q2Bins[0],q2Bins[JPsibin]);
       ZeroCrox->SetLineColor(kBlack);
       ZeroCrox->SetLineWidth(2);
@@ -1835,11 +1836,12 @@ void MakePhysicsPlots (unsigned int PlotType)
       ZeroCrox->SetParameter(0,4.0);
       ZeroCrox->SetParameter(1,-0.3);
 
-      ge0->Fit("ZeroCrox","V E MR0");
+      TFitResultPtr fitResults = ge0->Fit("ZeroCrox","S V E MR0");
+      TMatrixTSym<double> covMatrix(fitResults->GetCovarianceMatrix());
       ZeroCrox->Draw("same");
 
       double q0  = -ZeroCrox->GetParameter(1) / ZeroCrox->GetParameter(0);
-      double q0E = q0 * sqrt(pow(ZeroCrox->GetParError(0) / ZeroCrox->GetParameter(0),2.) + pow(ZeroCrox->GetParError(1) / ZeroCrox->GetParameter(1),2.));
+      double q0E = q0 * sqrt(pow(ZeroCrox->GetParError(0) / ZeroCrox->GetParameter(0),2.) + pow(ZeroCrox->GetParError(1) / ZeroCrox->GetParameter(1),2.) - 2./(ZeroCrox->GetParameter(0) * ZeroCrox->GetParameter(1)) * covMatrix(0,1));
       cout << "\n@@@ Zero crossing point: " << q0 << " +/- " << q0E << " @@@" << endl;
       cout << "@@@ p-value (for SM compatibility): " << TMath::Erfc(fabs(q0 - q0SM) / sqrt(q0E*q0E + q0SME*q0SME)) << " @@@" << endl;
 
