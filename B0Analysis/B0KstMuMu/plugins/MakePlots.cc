@@ -1830,6 +1830,8 @@ void MakePhysicsPlots (unsigned int PlotType)
   if ((PlotType == 1) || (PlotType == 11))
     {      
       TF1* ZeroCrox = new TF1("ZeroCrox","[0]*x + [1]",q2Bins[0],q2Bins[JPsibin]);
+      ZeroCrox->SetParName(0,"a");
+      ZeroCrox->SetParName(1,"b");
       ZeroCrox->SetLineColor(kBlack);
       ZeroCrox->SetLineWidth(2);
 

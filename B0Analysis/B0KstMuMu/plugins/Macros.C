@@ -26,6 +26,7 @@
 #include <TCutG.h>
 #include <TKey.h>
 #include <TMath.h>
+#include <TFitResult.h>
 
 #include <RooRealVar.h>
 #include <RooPlot.h>
@@ -1351,6 +1352,8 @@ void ZeroCrossing (string fileName, const double minq2, const double maxq2, cons
   h2m->GetYaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
 
   TF1* ZeroCrox = new TF1("ZeroCrox","[0]*x + [1]",minq2,maxq2);
+  ZeroCrox->SetParName(0,"a");
+  ZeroCrox->SetParName(1,"b");
   ZeroCrox->SetLineColor(kRed);
   ZeroCrox->SetLineWidth(2);
 
@@ -1358,8 +1361,8 @@ void ZeroCrossing (string fileName, const double minq2, const double maxq2, cons
   // ####################
   // # Quering the tree #
   // ####################
-  B0KstMuMuNTuple->Draw("CosThetaMuArb:mumuMass*mumuMass>>h2p","B0MassArb > 5.2 && B0MassArb < 5.34 && mumuMass*mumuMass > 1.0 && mumuMass*mumuMass < 8.5 && CosThetaMuArb > 0","goff");
-  B0KstMuMuNTuple->Draw("CosThetaMuArb:mumuMass*mumuMass>>h2m","B0MassArb > 5.2 && B0MassArb < 5.34 && mumuMass*mumuMass > 1.0 && mumuMass*mumuMass < 8.5 && CosThetaMuArb < 0","goff");
+  B0KstMuMuNTuple->Draw("CosThetaMuArb:mumuMass*mumuMass>>h2p","mumuMass*mumuMass > 1.0 && mumuMass*mumuMass < 8.5 && CosThetaMuArb > 0","goff");
+  B0KstMuMuNTuple->Draw("CosThetaMuArb:mumuMass*mumuMass>>h2m","mumuMass*mumuMass > 1.0 && mumuMass*mumuMass < 8.5 && CosThetaMuArb < 0","goff");
 
 
   TCanvas* c0 = new TCanvas("c0","c0",10,10,900,500);
@@ -1433,7 +1436,8 @@ void ZeroCrossing (string fileName, const double minq2, const double maxq2, cons
   // ###########
   hAFB->GetXaxis()->SetRangeUser(minq2,maxq2);
   hAFB->Draw("e1p");
-  hAFB->Fit("ZeroCrox","R0");
+  TFitResultPtr fitResults = hAFB->Fit("ZeroCrox","S R0");
+  TMatrixTSym<double> covMatrix(fitResults->GetCovarianceMatrix());
   ZeroCrox->Draw("same");
 
 
@@ -1441,7 +1445,7 @@ void ZeroCrossing (string fileName, const double minq2, const double maxq2, cons
   // # Compute zero crossing porint #
   // ################################
   double q0  = -ZeroCrox->GetParameter(1) / ZeroCrox->GetParameter(0);
-  double q0E = q0 * sqrt(pow(ZeroCrox->GetParError(0) / ZeroCrox->GetParameter(0),2.) + pow(ZeroCrox->GetParError(1) / ZeroCrox->GetParameter(1),2.));
+  double q0E = q0 * sqrt(pow(ZeroCrox->GetParError(0) / ZeroCrox->GetParameter(0),2.) + pow(ZeroCrox->GetParError(1) / ZeroCrox->GetParameter(1),2.) - 2./(ZeroCrox->GetParameter(0) * ZeroCrox->GetParameter(1)) * covMatrix(0,1));
   cout << "\n@@@ Zero crossing point: " << q0 << " +/- " << q0E << " @@@" << endl;
   cout << "Fit range: [" << minq2 << "-" << maxq2 << "]" << endl;
   cout << "Number of bins: " << nBins << endl;
