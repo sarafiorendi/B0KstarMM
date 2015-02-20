@@ -2655,13 +2655,13 @@ allEvts
 # Control mistag fraction workflow [0 = fixed; 1 = free with constraint; 2 = free; 3 = dynamic]
 0
 
-# Save mistag fraction [0 = false; 1 = true]
+# Save mistag fraction [0 = no; 1 = yes]
 0
 
-# Use SP-wave [0 = false; 1 = true]
+# Use SP-wave [0 = no; 1 = yes]
 1
 
-# Implement the angular variable transformation : "physical domain" <--> "infinite domain" [0 = false; 1 = true]
+# Implement the angular variable transformation : "physical domain" <--> "infinite domain" [0 = no; 1 = yes]
 0
 
 # B0 mass interval left [0.28 GeV/c2]

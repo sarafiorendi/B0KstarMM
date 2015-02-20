@@ -69,6 +69,7 @@ using std::vector;
 // ######################
 // # Data/MC comparison #
 // ######################
+#define SingleCand_MCkstMuMu  "Data2012B0KstMuMuResults/MonteCarlo2012/SingleCand/singleCand_B0ToKstMuMu_MC_NTuple.root"
 #define SingleCand_MCkstJPsi  "Data2012B0KstMuMuResults/MonteCarlo2012/SingleCand/singleCand_B0ToJPsiKst_MC_NTuple.root"
 #define SingleCand_MCkstPsi2S "Data2012B0KstMuMuResults/MonteCarlo2012/SingleCand/singleCand_B0ToPsi2SKst_MC_NTuple.root"
 #define SingleCand_Data       "Data2012B0KstMuMuResults/Data2012/SingleCand/singleCand_B0ToKstMuMu_Data2012ABCD_NTuples.root"
@@ -211,8 +212,14 @@ void MakeComparisonDataMC (unsigned int plotType)
 // # plotType = 33 --> phi                     #
 // #############################################
 {
+  // ##########################
+  // # Set histo layout style #
+  // ##########################
+  SetStyle();
+
+  
   stringstream myString;
-  const unsigned int NHisto = 2;
+  const unsigned int NHisto = 3;
   TLegend* leg;
   vector<TFile*> Vfiles;
   vector<TTree*> TreeMC;
@@ -226,6 +233,9 @@ void MakeComparisonDataMC (unsigned int plotType)
   // ##################
   // # Read the trees #
   // ##################
+  Vfiles.push_back(TFile::Open(SingleCand_MCkstMuMu,"READ"));
+  TreeMC.push_back((TTree*)Vfiles.back()->Get("B0KstMuMu/B0KstMuMuNTuple"));
+
   Vfiles.push_back(TFile::Open(SingleCand_MCkstJPsi,"READ"));
   TreeMC.push_back((TTree*)Vfiles.back()->Get("B0KstMuMu/B0KstMuMuNTuple"));
 
@@ -1078,10 +1088,12 @@ void MakeComparisonDataMC (unsigned int plotType)
   // #########################################
   // # Rescale MCs by the Branching Fraction #
   // #########################################
+  // # B0 --> K* mu mu #
+  h1DVecSig[0]->Scale(1./h1DVecSig[0]->Integral() * Utility->KstKpiMuMuBF);
   // # B0 --> K* J/psi #
-  h1DVecSig[0]->Scale(1./h1DVecSig[0]->Integral() * Utility->JPsiKpiBF);
+  h1DVecSig[1]->Scale(1./h1DVecSig[1]->Integral() * Utility->JPsiKpiBF);
   // # B0 --> K* psi(2S) #
-  h1DVecSig[1]->Scale(1./h1DVecSig[1]->Integral() * Utility->PsiPKpiBF);
+  h1DVecSig[2]->Scale(1./h1DVecSig[2]->Integral() * Utility->PsiPKpiBF);
 
   hM1D = (TH1D*)h1DVecSig[0]->Clone("hM1D");
   hM1D->SetXTitle(Xtitle.c_str());
@@ -1142,6 +1154,9 @@ void MakeComparisonDataMC (unsigned int plotType)
     {
       stD->SetX1NDC(0.55);
       stD->SetX2NDC(0.75);
+      stD->SetY2NDC(0.89);
+
+      stM->SetY2NDC(0.89);
     }
   else if ((plotType == 1)  ||
 	   (plotType == 7)  ||
@@ -1151,14 +1166,18 @@ void MakeComparisonDataMC (unsigned int plotType)
     {
       stD->SetY1NDC(0.3);
       stD->SetY2NDC(0.6);
+
+      stM->SetY2NDC(0.89);
     }
   else if ((plotType == 2) || (plotType == 4))
     {
       stD->SetX1NDC(0.15);
       stD->SetX2NDC(0.35);
+      stD->SetY2NDC(0.89);
 
       stM->SetX1NDC(0.4);
       stM->SetX2NDC(0.6);
+      stM->SetY2NDC(0.89);
     }
   else
     {
@@ -1315,6 +1334,12 @@ TGraphAsymmErrors* ReadFromASCII (string fileName, unsigned int PlotType, vector
 
 void CheckPhysicsRegion ()
 {
+  // ##########################
+  // # Set histo layout style #
+  // ##########################
+  SetStyle();
+
+  
   stringstream myString;
   double offset = 0.02;
   TCanvas* canv0 = new TCanvas("canv0","canv0",10,10,1200,600);
@@ -2183,6 +2208,12 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
 
 void PlotMuMu (string fileName, bool bkgSub)
 {
+  // ##########################
+  // # Set histo layout style #
+  // ##########################
+  SetStyle();
+
+  
   int nEntries;
   double minX = 0.8;
   double maxX = 5.0;
@@ -2254,6 +2285,12 @@ void PlotMuMu (string fileName, bool bkgSub)
 
 void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
 {
+  // ##########################
+  // # Set histo layout style #
+  // ##########################
+  SetStyle();
+
+  
   int nEntries;
   double minX  = 0.81;
   double maxX  = 0.98;
@@ -2471,6 +2508,13 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
 
 void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
 {
+  // ##########################
+  // # Set histo layout style #
+  // ##########################
+  SetStyle();
+  gStyle->SetPadRightMargin(0.14);
+
+
   int nEntries;
 
   double KKminX      = 0.95;
@@ -2652,6 +2696,12 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
 
 void PlotMuHadMass (string fileName)
 {
+  // ##########################
+  // # Set histo layout style #
+  // ##########################
+  SetStyle();
+
+  
   double minX = 0.0;
   double maxX = 5.0;
   double MuHadMass;
@@ -2742,16 +2792,15 @@ void MakeFitResPlots (string fileName, string plotType, int specBin, string varN
 // # plotType = "BF"                #
 // ##################################
 {
-  stringstream myString;
-  double val;
-
-
   // ##########################
   // # Set histo layout style #
   // ##########################
   SetStyle();
   gStyle->SetPadRightMargin(0.08);
 
+
+  stringstream myString;
+  double val;
 
   vector<vector<double>*> vecNLL;
   Utility->ReadNLLval(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&vecNLL);
@@ -2796,18 +2845,17 @@ void MakePvaluePlot (string fileName, int specBin)
 // # If specBin == -1 then loop over all q^2 bins  #
 // #################################################
 {
-  stringstream myString;
-  double val;
-  TFile* fileID;
-
-
   // ##########################
   // # Set histo layout style #
   // ##########################
   SetStyle();
   gStyle->SetOptFit(0);
   gStyle->SetOptStat(0);
+  
 
+  stringstream myString;
+  double val;
+  TFile* fileID;
 
   vector<double> q2Bins;
   Utility->Readq2Bins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&q2Bins);
@@ -2954,13 +3002,6 @@ int main (int argc, char** argv)
 
       if (option == "GenMultyRun") gROOT->SetBatch(true);
       TApplication theApp ("Applications", &argc, argv);
-
-
-      // ##########################
-      // # Set histo layout style #
-      // ##########################
-      SetStyle();
-
 
       Utility = new Utils();
       Utility->ReadGenericParam(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str());
