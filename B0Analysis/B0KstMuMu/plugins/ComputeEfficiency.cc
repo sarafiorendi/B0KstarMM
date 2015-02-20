@@ -1124,7 +1124,7 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
 	      
 	      myString2.clear(); myString2.str("");
 	      myString2 << myString1.str() << "_H2Deff_q2Bin_" << q2BinIndx << ".txt";
-	      Utility->Put2DEffHitoq2Bin(myString2.str().c_str(),hisFunc2D);
+	      Utility->Put2DEffHistoq2Bin(myString2.str().c_str(),hisFunc2D);
 	      
 	      
 	      myString2.clear(); myString2.str("");
@@ -1133,7 +1133,7 @@ void ReadEfficiencies (bool isSingleEff, vector<double>* q2Bins, vector<double>*
 	      
 	      myString2.clear(); myString2.str("");
 	      myString2 << myString1.str() << "_H3Deff_q2Bin_" << q2BinIndx << ".txt";
-	      Utility->Put3DEffHitoq2Bin(myString2.str().c_str(),hisFunc3D);
+	      Utility->Put3DEffHistoq2Bin(myString2.str().c_str(),hisFunc3D);
 	    }
 	}
 

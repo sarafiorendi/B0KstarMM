@@ -948,7 +948,7 @@ TH3D* Utils::Get3DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector
     }
 }
 
-void Utils::Put2DEffHitoq2Bin (std::string fileName, TH2D* histo)
+void Utils::Put2DEffHistoq2Bin (std::string fileName, TH2D* histo)
 {
   std::ofstream outputFile;
   TAxis* XAxis = histo->GetXaxis();
@@ -958,7 +958,7 @@ void Utils::Put2DEffHitoq2Bin (std::string fileName, TH2D* histo)
   outputFile.open(fileName.c_str(), std::ofstream::out);
   if (outputFile.good() == false)
     {
-      std::cout << "[Utils::Put2DEffHitoq2Bin]\tError opening file : " << fileName.c_str() << std::endl;
+      std::cout << "[Utils::Put2DEffHistoq2Bin]\tError opening file : " << fileName.c_str() << std::endl;
       exit (EXIT_FAILURE);
     }
   
@@ -974,7 +974,7 @@ void Utils::Put2DEffHitoq2Bin (std::string fileName, TH2D* histo)
   outputFile.close();
 }
 
-void Utils::Put3DEffHitoq2Bin (std::string fileName, TH3D* histo)
+void Utils::Put3DEffHistoq2Bin (std::string fileName, TH3D* histo)
 {
   std::ofstream outputFile;
   TAxis* XAxis = histo->GetXaxis();
@@ -985,7 +985,7 @@ void Utils::Put3DEffHitoq2Bin (std::string fileName, TH3D* histo)
   outputFile.open(fileName.c_str(), std::ofstream::out);
   if (outputFile.good() == false)
     {
-      std::cout << "[Utils::Put3DEffHitoq2Bin]\tError opening file : " << fileName.c_str() << std::endl;
+      std::cout << "[Utils::Put3DEffHistoq2Bin]\tError opening file : " << fileName.c_str() << std::endl;
       exit (EXIT_FAILURE);
     }
   

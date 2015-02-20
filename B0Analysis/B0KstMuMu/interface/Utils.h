@@ -157,8 +157,8 @@ class Utils
 			    std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange);
   TH3D* Get3DEffHistoq2Bin (std::vector<double>* cosThetaKBins, std::vector<double>* cosThetaLBins, std::vector<double>* phiBins, unsigned int q2Indx, int SignalType, bool giveMeOriginal,
 			    std::pair <double,double> cosThetaKRange, std::pair <double,double> cosThetaLRange, std::pair <double,double> phiRange);
-  void Put2DEffHitoq2Bin   (std::string fileName, TH2D* histo);
-  void Put3DEffHitoq2Bin   (std::string fileName, TH3D* histo);
+  void Put2DEffHistoq2Bin   (std::string fileName, TH2D* histo);
+  void Put3DEffHistoq2Bin   (std::string fileName, TH3D* histo);
   void DeleteEfficiency    (effStruct myEff);
 
   int SearchBin  (double val2Search, std::vector<double>* bins);
