@@ -1001,6 +1001,8 @@ void MakeComparisonDataMC (unsigned int plotType)
 
 	  h1DVecSig[i]->Add(h1DVecBkg[i], -1.0);
 	}
+
+      cout << "\nSelected signal events: " << h1DVecSig[i]->GetEntries() << "\tSelected background events: " << h1DVecBkg[i]->GetEntries() << endl;
     }
   
   
@@ -1083,15 +1085,20 @@ void MakeComparisonDataMC (unsigned int plotType)
 
       hDsig1D->Add(hDbkg1D, -1.0);
     }
-
-
+  
+  cout << "\nSelected signal events: " << hDsig1D->GetEntries() << "\tSelected background events: " << hDbkg1D->GetEntries() << endl;
+  
+  
   // #########################################
   // # Rescale MCs by the Branching Fraction #
   // #########################################
+
   // # B0 --> K* mu mu #
   h1DVecSig[0]->Scale(1./h1DVecSig[0]->Integral() * Utility->KstKpiMuMuBF);
+
   // # B0 --> K* J/psi #
   h1DVecSig[1]->Scale(1./h1DVecSig[1]->Integral() * Utility->JPsiKpiBF);
+
   // # B0 --> K* psi(2S) #
   h1DVecSig[2]->Scale(1./h1DVecSig[2]->Integral() * Utility->PsiPKpiBF);
 
