@@ -1421,6 +1421,8 @@ void MakePhysicsPlots (unsigned int PlotType)
 // # 10 = DATA-FL     #
 // # 11 = DATA-AFB    #
 // # 12 = DATA-BF     #
+// # 13 = DATA-FS     #
+// # 14 = DATA-AS     #
 // ####################
 {
   // ##########################
@@ -1582,6 +1584,30 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->GetYaxis()->SetRangeUser(0.0,1.2);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
     }
+  else if (PlotType == 13) // Fs
+    {
+      Utility->MakeGraphVar(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&ge0,"FS");
+      ge0->SetMarkerColor(kBlack);
+      ge0->SetMarkerStyle(20);
+      ge0->SetMarkerSize(1.2);
+      ge0->SetLineColor(kBlack);
+      ge0->SetLineWidth(2);
+      ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
+      ge0->GetYaxis()->SetRangeUser(-0.02,1.0);
+      ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{S}");
+    }
+  else if (PlotType == 14) // As
+    {
+      Utility->MakeGraphVar(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&ge0,"AS");
+      ge0->SetMarkerColor(kBlack);
+      ge0->SetMarkerStyle(20);
+      ge0->SetMarkerSize(1.2);
+      ge0->SetLineColor(kBlack);
+      ge0->SetLineWidth(2);
+      ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
+      ge0->GetYaxis()->SetRangeUser(-1.04,1.0);
+      ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{S}");
+    }
   else
     {
       cout << "[MakePlots::MakePhysicsPlots]\tWrong option number" << endl;
@@ -1593,16 +1619,17 @@ void MakePhysicsPlots (unsigned int PlotType)
   // # Average theory over q^2 bins from ASCII file #
   // ################################################
   TGraphAsymmErrors* geStepTh = NULL;
-  if      ((PlotType == 0) || (PlotType == 10)) geStepTh = ReadFromASCII(SMBINFL,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Fl
-  else if ((PlotType == 1) || (PlotType == 11)) geStepTh = ReadFromASCII(SMBINAFB,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh); // Afb
-  else if ((PlotType == 2) || (PlotType == 12)) geStepTh = ReadFromASCII(SMBINBF,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Branching fraction
+  if      ((PlotType == 0)  || (PlotType == 10)) geStepTh = ReadFromASCII(SMBINFL,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Fl
+  else if ((PlotType == 1)  || (PlotType == 11)) geStepTh = ReadFromASCII(SMBINAFB,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh); // Afb
+  else if ((PlotType == 2)  || (PlotType == 12)) geStepTh = ReadFromASCII(SMBINBF,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Branching fraction
+  else if ((PlotType == 13) || (PlotType == 14)) geStepTh = ReadFromASCII(SMBINBF,12,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);        // Fs OR As
   geStepTh->SetMarkerColor(kBlack);
   geStepTh->SetMarkerStyle(1);
   geStepTh->SetFillColor(kBlue);
   geStepTh->SetFillStyle(3001);
   geStepTh->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
 
-
+  
   // ############################
   // # Adding systematic errors #
   // ############################
@@ -1785,7 +1812,41 @@ void MakePhysicsPlots (unsigned int PlotType)
       geStepTh->GetYaxis()->SetRangeUser(0.0,1.2);
       geStepTh->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
     }
-
+  else if (PlotType == 13) // Fs
+    {
+      // ############################################
+      // # Graph containing only statistical errors #
+      // ############################################
+      ge00 = new TGraphAsymmErrors(*ge0);
+      ge00->SetMarkerColor(kBlack);
+      ge00->SetMarkerStyle(20);
+      ge00->SetMarkerSize(1.2);
+      ge00->SetLineColor(kBlack);
+      ge00->SetLineWidth(2);
+      
+      
+      for (unsigned int i = 0; i < q2Bins.size()-1; i++) geStepTh->SetPoint(i,geStepTh->GetX()[i],YvalueOutsideLimits);
+      geStepTh->GetYaxis()->SetRangeUser(-0.02,1.0);
+      geStepTh->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{S}");
+    }
+  else if (PlotType == 14) // As
+    {
+      // ############################################
+      // # Graph containing only statistical errors #
+      // ############################################
+      ge00 = new TGraphAsymmErrors(*ge0);
+      ge00->SetMarkerColor(kBlack);
+      ge00->SetMarkerStyle(20);
+      ge00->SetMarkerSize(1.2);
+      ge00->SetLineColor(kBlack);
+      ge00->SetLineWidth(2);
+      
+      
+      for (unsigned int i = 0; i < q2Bins.size()-1; i++) geStepTh->SetPoint(i,geStepTh->GetX()[i],YvalueOutsideLimits);
+      geStepTh->GetYaxis()->SetRangeUser(-1.04,1.0);
+      geStepTh->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{S}");
+    }
+  
 
   // ################################
   // # Pad for the actual histogram #
@@ -1849,6 +1910,13 @@ void MakePhysicsPlots (unsigned int PlotType)
 
       leg->AddEntry(ge00,"Data","EPL");
       leg->AddEntry(geStepTh,"<SM>","F");
+    }
+  else if ((PlotType == 13) || (PlotType == 14)) // Fs OR As
+    {
+      geStepTh->Draw("ae2");
+      ge00->Draw("same pe1");
+
+      leg->AddEntry(ge00,"Data","EPL");
     }
   leg->SetFillStyle(0);
   leg->SetFillColor(0);
@@ -2052,7 +2120,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   // #################################
   // # Draw horizontal line at y = 0 #
   // #################################
-  if ((PlotType == 1) ||(PlotType == 11)) // Afb
+  if ((PlotType == 1) || (PlotType == 11) || (PlotType == 14)) // Afb OR As
     {
       line = new TLine(q2Bins[0],0.0,q2Bins[q2Bins.size()-1],0.0);
       line->SetLineStyle(kDashed);

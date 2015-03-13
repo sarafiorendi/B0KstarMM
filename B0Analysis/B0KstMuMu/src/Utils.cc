@@ -2005,13 +2005,13 @@ void Utils::ReadNLLval (std::string fileName, std::vector<std::vector<double>*>*
 }
 
 double Utils::GetNLLval (std::vector<std::vector<double>*>* NLLvals, std::string varName, unsigned int q2Indx)
-// ####################
-// # varName = "Fl"   #
-// # varName = "Afb"  #
-// # varName = "P1"   #
-// # varName = "P2"   #
-// # varName = "BF"   #
-// ####################
+// ###################
+// # varName = "Fl"  #
+// # varName = "Afb" #
+// # varName = "P1"  #
+// # varName = "P2"  #
+// # varName = "BF"  #
+// ###################
 {
   if      (varName == "Fl")  return (*NLLvals)[0]->operator[](q2Indx);
   else if (varName == "Afb") return (*NLLvals)[1]->operator[](q2Indx);
@@ -2571,6 +2571,8 @@ void Utils::MakeGraphVar (std::string fileName, TGraphAsymmErrors** graph, std::
 // # varName = "Afb" #
 // # varName = "P1"  #
 // # varName = "P2"  #
+// # varName = "FS"  #
+// # varName = "AS"  #
 // # varName = "BF"  #
 // ###################
 {
@@ -2604,7 +2606,10 @@ void Utils::MakeGraphVar (std::string fileName, TGraphAsymmErrors** graph, std::
       else if (varName == "Afb") rawString << vecParam[GetFitParamIndx("AfbS")]->operator[](i);
       else if (varName == "P1")  rawString << vecParam[GetFitParamIndx("P1S")]->operator[](i);
       else if (varName == "P2")  rawString << vecParam[GetFitParamIndx("P2S")]->operator[](i);
+      else if (varName == "FS")  rawString << vecParam[GetFitParamIndx("FsS")]->operator[](i);
+      else if (varName == "AS")  rawString << vecParam[GetFitParamIndx("AsS")]->operator[](i);
       else { std::cout << "[Utils::MakeGraphVar]\tVariable name unknown: " << varName << std::endl; exit (EXIT_FAILURE); }
+      std::cout << "[Utils::MakeGraphVar]\tI've read the raw value: " << rawString.str().c_str() << std::endl;
 
       if (ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false)
 	{
