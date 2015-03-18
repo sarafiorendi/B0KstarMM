@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[     14373,        412]
-NotebookOptionsPosition[     14043,        395]
-NotebookOutlinePosition[     14398,        411]
-CellTagsIndexPosition[     14355,        408]
+NotebookDataLength[     29633,        873]
+NotebookOptionsPosition[     29187,        852]
+NotebookOutlinePosition[     29542,        868]
+CellTagsIndexPosition[     29499,        865]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -25,18 +25,14 @@ Cell[BoxData[
   RowBox[{"Integrate", "[", 
    RowBox[{
     RowBox[{
-     RowBox[{"9", "/", 
-      RowBox[{"(", 
-       RowBox[{"16", "*", "Pi"}], ")"}]}], "*", 
+     RowBox[{"9", "/", "16"}], "*", 
      RowBox[{"(", 
       RowBox[{
        RowBox[{
+        RowBox[{"2", "/", "3"}], "*", 
         RowBox[{"(", 
-         RowBox[{
-          RowBox[{
-           RowBox[{"2", "/", "3"}], "*", "FsS"}], "+", 
-          RowBox[{
-           RowBox[{"4", "/", "3"}], "*", "AsS", "*", "x"}]}], ")"}], "*", 
+         RowBox[{"FsS", "+", 
+          RowBox[{"AsS", "*", "x"}]}], ")"}], "*", 
         RowBox[{"(", 
          RowBox[{"1", "-", 
           RowBox[{"y", "^", "2"}]}], ")"}]}], "+", 
@@ -129,21 +125,19 @@ Cell[BoxData[
    3.563895139960826*^9, 3.563895140097866*^9}, {3.563895483675666*^9, 
    3.563895484793511*^9}, {3.563895560062755*^9, 3.563895560431658*^9}, {
    3.563895622409932*^9, 3.563895624118259*^9}, {3.563895719059285*^9, 
-   3.5638957603230247`*^9}, {3.616062140805469*^9, 3.616062141485992*^9}}],
+   3.5638957603230247`*^9}, {3.616062140805469*^9, 3.616062141485992*^9}, {
+   3.6356780180915947`*^9, 3.635678025878325*^9}, {3.635678094606003*^9, 
+   3.6356780961660957`*^9}}],
 
 Cell[BoxData[
  RowBox[{
-  FractionBox["1", 
-   RowBox[{"40", " ", "\[Pi]"}]], 
+  FractionBox["1", "40"], " ", 
   RowBox[{"(", 
    RowBox[{
+    RowBox[{"10", " ", "AsS", " ", "P1"}], "+", 
     RowBox[{"3", " ", "P2"}], "+", 
     RowBox[{"7", " ", "FsS", " ", "P2"}], "+", 
-    RowBox[{"4", " ", "AsS", " ", 
-     RowBox[{"(", 
-      RowBox[{
-       RowBox[{"5", " ", "P1"}], "+", 
-       RowBox[{"3", " ", "P3"}]}], ")"}]}], "-", 
+    RowBox[{"6", " ", "AsS", " ", "P3"}], "-", 
     RowBox[{"8", " ", "AfbS", " ", 
      RowBox[{"(", 
       RowBox[{
@@ -161,13 +155,14 @@ Cell[BoxData[
        RowBox[{
         RowBox[{"(", 
          RowBox[{"3", "+", 
-          RowBox[{"7", " ", "FsS"}]}], ")"}], " ", "P6"}], "-", 
-       RowBox[{"4", " ", "AsS", " ", 
+          RowBox[{"7", " ", "FsS"}]}], ")"}], " ", "P6"}], "+", 
+       RowBox[{"2", " ", "AsS", " ", 
         RowBox[{"(", 
          RowBox[{
-          RowBox[{"5", " ", "P1"}], "+", 
-          RowBox[{"3", " ", "P3"}], "-", 
-          RowBox[{"5", " ", "P5"}], "-", 
+          RowBox[{
+           RowBox[{"-", "5"}], " ", "P1"}], "-", 
+          RowBox[{"3", " ", "P3"}], "+", 
+          RowBox[{"5", " ", "P5"}], "+", 
           RowBox[{"3", " ", "P7"}]}], ")"}]}]}], ")"}], " ", 
      SuperscriptBox["y", "2"]}], "+", 
     RowBox[{
@@ -187,7 +182,7 @@ Cell[BoxData[
        RowBox[{"15", " ", 
         RowBox[{"(", 
          RowBox[{"1", "+", "FsS"}], ")"}], " ", "P8"}], "+", 
-       RowBox[{"4", " ", "AsS", " ", 
+       RowBox[{"2", " ", "AsS", " ", 
         RowBox[{"(", 
          RowBox[{
           RowBox[{"3", " ", "P11"}], "+", 
@@ -209,7 +204,7 @@ Cell[BoxData[
         RowBox[{"(", 
          RowBox[{"P14", "+", 
           RowBox[{"5", " ", "P4"}], "+", "P6"}], ")"}]}], "+", 
-       RowBox[{"4", " ", "AsS", " ", 
+       RowBox[{"2", " ", "AsS", " ", 
         RowBox[{"(", 
          RowBox[{
           RowBox[{"5", " ", "P13"}], "+", 
@@ -244,7 +239,7 @@ Cell[BoxData[
          RowBox[{
           RowBox[{"-", "1"}], "+", 
           RowBox[{"3", " ", "FsS"}]}], ")"}], " ", "P8"}], "+", 
-       RowBox[{"4", " ", "AsS", " ", 
+       RowBox[{"2", " ", "AsS", " ", 
         RowBox[{"(", 
          RowBox[{
           RowBox[{"3", " ", "P11"}], "+", 
@@ -267,13 +262,14 @@ Cell[BoxData[
        RowBox[{
         RowBox[{"(", 
          RowBox[{"3", "+", 
-          RowBox[{"7", " ", "FsS"}]}], ")"}], " ", "P18"}], "-", 
-       RowBox[{"4", " ", "AsS", " ", 
+          RowBox[{"7", " ", "FsS"}]}], ")"}], " ", "P18"}], "+", 
+       RowBox[{"2", " ", "AsS", " ", 
         RowBox[{"(", 
          RowBox[{
-          RowBox[{"5", " ", "P13"}], "+", 
-          RowBox[{"3", " ", "P15"}], "-", 
-          RowBox[{"5", " ", "P17"}], "-", 
+          RowBox[{
+           RowBox[{"-", "5"}], " ", "P13"}], "-", 
+          RowBox[{"3", " ", "P15"}], "+", 
+          RowBox[{"5", " ", "P17"}], "+", 
           RowBox[{"3", " ", "P19"}]}], ")"}]}]}], ")"}], " ", 
      SuperscriptBox["y", "6"]}], "-", 
     RowBox[{"8", " ", "AfbS", " ", 
@@ -292,16 +288,10 @@ Cell[BoxData[
          RowBox[{
           RowBox[{"-", "1"}], "+", 
           RowBox[{"3", " ", "FsS"}]}], ")"}], " ", "P16"}], "+", 
-       RowBox[{
-        RowBox[{"(", 
-         RowBox[{
-          RowBox[{"-", "3"}], "+", 
-          RowBox[{"13", " ", "FsS"}]}], ")"}], " ", "P18"}], "+", 
-       RowBox[{"4", " ", "AsS", " ", 
-        RowBox[{"(", 
-         RowBox[{
-          RowBox[{"5", " ", "P17"}], "+", 
-          RowBox[{"3", " ", "P19"}]}], ")"}]}]}], ")"}], " ", 
+       RowBox[{"10", " ", "AsS", " ", "P17"}], "-", 
+       RowBox[{"3", " ", "P18"}], "+", 
+       RowBox[{"13", " ", "FsS", " ", "P18"}], "+", 
+       RowBox[{"6", " ", "AsS", " ", "P19"}]}], ")"}], " ", 
      SuperscriptBox["y", "8"]}], "+", 
     RowBox[{"5", " ", "P0", " ", 
      RowBox[{"(", 
@@ -390,7 +380,474 @@ Cell[BoxData[
    3.563883144366631*^9, 3.563883152695767*^9}, 3.5638834200596733`*^9, 
    3.5638951510184526`*^9, 3.563895501325808*^9, {3.563895577347272*^9, 
    3.5638955982138033`*^9}, 3.5638956381181383`*^9, 3.563895725770343*^9, 
-   3.5638957698295097`*^9}]
+   3.5638957698295097`*^9, 3.635678071148979*^9, 3.635678124297761*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Expand", "[", "%3", "]"}]], "Input",
+ NumberMarks->False],
+
+Cell[BoxData[
+ RowBox[{
+  FractionBox[
+   RowBox[{"3", " ", "P0"}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "P0"}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "FsS", " ", "P0"}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "FsS", " ", "P0"}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"AsS", " ", "P1"}], 
+   RowBox[{"4", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "P2"}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "P2"}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"7", " ", "FsS", " ", "P2"}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "FsS", " ", "P2"}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "AsS", " ", "P3"}], 
+   RowBox[{"20", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "P0", " ", "y"}], "\[Pi]"], "-", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "FsS", " ", "P0", " ", "y"}], "\[Pi]"], "+", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "P2", " ", "y"}], 
+   RowBox[{"5", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "FsS", " ", "P2", " ", "y"}], 
+   RowBox[{"5", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "P0", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"9", " ", "FlS", " ", "P0", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"9", " ", "FsS", " ", "P0", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"9", " ", "FlS", " ", "FsS", " ", "P0", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"AsS", " ", "P1", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"4", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "P2", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"21", " ", "FlS", " ", "P2", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"13", " ", "FsS", " ", "P2", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"21", " ", "FlS", " ", "FsS", " ", "P2", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"3", " ", "AsS", " ", "P3", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"20", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "P4", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "P4", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "FsS", " ", "P4", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "FsS", " ", "P4", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"AsS", " ", "P5", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"4", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "P6", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "P6", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"7", " ", "FsS", " ", "P6", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "FsS", " ", "P6", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "AsS", " ", "P7", " ", 
+    SuperscriptBox["y", "2"]}], 
+   RowBox[{"20", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "P10", " ", 
+    SuperscriptBox["y", "3"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "P10", " ", 
+    SuperscriptBox["y", "3"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"7", " ", "FsS", " ", "P10", " ", 
+    SuperscriptBox["y", "3"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "FsS", " ", "P10", " ", 
+    SuperscriptBox["y", "3"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "AsS", " ", "P11", " ", 
+    SuperscriptBox["y", "3"]}], 
+   RowBox[{"20", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "P4", " ", 
+    SuperscriptBox["y", "3"]}], "\[Pi]"], "-", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "FsS", " ", "P4", " ", 
+    SuperscriptBox["y", "3"]}], "\[Pi]"], "+", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "P6", " ", 
+    SuperscriptBox["y", "3"]}], 
+   RowBox[{"5", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "FsS", " ", "P6", " ", 
+    SuperscriptBox["y", "3"]}], 
+   RowBox[{"5", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "P8", " ", 
+    SuperscriptBox["y", "3"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "P8", " ", 
+    SuperscriptBox["y", "3"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "FsS", " ", "P8", " ", 
+    SuperscriptBox["y", "3"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "FsS", " ", "P8", " ", 
+    SuperscriptBox["y", "3"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"AsS", " ", "P9", " ", 
+    SuperscriptBox["y", "3"]}], 
+   RowBox[{"4", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "P10", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"5", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "FsS", " ", "P10", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"5", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "P12", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "P12", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "FsS", " ", "P12", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "FsS", " ", "P12", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"AsS", " ", "P13", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"4", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "P14", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "P14", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"7", " ", "FsS", " ", "P14", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "FsS", " ", "P14", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "AsS", " ", "P15", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"20", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "P4", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"9", " ", "FlS", " ", "P4", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"9", " ", "FsS", " ", "P4", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"9", " ", "FlS", " ", "FsS", " ", "P4", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"AsS", " ", "P5", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"4", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "P6", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"21", " ", "FlS", " ", "P6", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"13", " ", "FsS", " ", "P6", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"21", " ", "FlS", " ", "FsS", " ", "P6", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"3", " ", "AsS", " ", "P7", " ", 
+    SuperscriptBox["y", "4"]}], 
+   RowBox[{"20", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "P8", " ", 
+    SuperscriptBox["y", "4"]}], "\[Pi]"], "-", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "FsS", " ", "P8", " ", 
+    SuperscriptBox["y", "4"]}], "\[Pi]"], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "P10", " ", 
+    SuperscriptBox["y", "5"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"21", " ", "FlS", " ", "P10", " ", 
+    SuperscriptBox["y", "5"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"13", " ", "FsS", " ", "P10", " ", 
+    SuperscriptBox["y", "5"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"21", " ", "FlS", " ", "FsS", " ", "P10", " ", 
+    SuperscriptBox["y", "5"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"3", " ", "AsS", " ", "P11", " ", 
+    SuperscriptBox["y", "5"]}], 
+   RowBox[{"20", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "P12", " ", 
+    SuperscriptBox["y", "5"]}], "\[Pi]"], "-", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "FsS", " ", "P12", " ", 
+    SuperscriptBox["y", "5"]}], "\[Pi]"], "+", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "P14", " ", 
+    SuperscriptBox["y", "5"]}], 
+   RowBox[{"5", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "FsS", " ", "P14", " ", 
+    SuperscriptBox["y", "5"]}], 
+   RowBox[{"5", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "P8", " ", 
+    SuperscriptBox["y", "5"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"9", " ", "FlS", " ", "P8", " ", 
+    SuperscriptBox["y", "5"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"9", " ", "FsS", " ", "P8", " ", 
+    SuperscriptBox["y", "5"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"9", " ", "FlS", " ", "FsS", " ", "P8", " ", 
+    SuperscriptBox["y", "5"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"AsS", " ", "P9", " ", 
+    SuperscriptBox["y", "5"]}], 
+   RowBox[{"4", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "P12", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"9", " ", "FlS", " ", "P12", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"9", " ", "FsS", " ", "P12", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"9", " ", "FlS", " ", "FsS", " ", "P12", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"AsS", " ", "P13", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"4", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "P14", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"21", " ", "FlS", " ", "P14", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"13", " ", "FsS", " ", "P14", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"21", " ", "FlS", " ", "FsS", " ", "P14", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"3", " ", "AsS", " ", "P15", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"20", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "P16", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "P16", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "FsS", " ", "P16", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "FsS", " ", "P16", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"AsS", " ", "P17", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"4", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "P18", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "P18", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"7", " ", "FsS", " ", "P18", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"3", " ", "FlS", " ", "FsS", " ", "P18", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "AsS", " ", "P19", " ", 
+    SuperscriptBox["y", "6"]}], 
+   RowBox[{"20", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "P16", " ", 
+    SuperscriptBox["y", "7"]}], "\[Pi]"], "-", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "FsS", " ", "P16", " ", 
+    SuperscriptBox["y", "7"]}], "\[Pi]"], "+", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "P18", " ", 
+    SuperscriptBox["y", "7"]}], 
+   RowBox[{"5", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"AfbS", " ", "FsS", " ", "P18", " ", 
+    SuperscriptBox["y", "7"]}], 
+   RowBox[{"5", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "P16", " ", 
+    SuperscriptBox["y", "8"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"9", " ", "FlS", " ", "P16", " ", 
+    SuperscriptBox["y", "8"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"9", " ", "FsS", " ", "P16", " ", 
+    SuperscriptBox["y", "8"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"9", " ", "FlS", " ", "FsS", " ", "P16", " ", 
+    SuperscriptBox["y", "8"]}], 
+   RowBox[{"8", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"AsS", " ", "P17", " ", 
+    SuperscriptBox["y", "8"]}], 
+   RowBox[{"4", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"3", " ", "P18", " ", 
+    SuperscriptBox["y", "8"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"21", " ", "FlS", " ", "P18", " ", 
+    SuperscriptBox["y", "8"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"13", " ", "FsS", " ", "P18", " ", 
+    SuperscriptBox["y", "8"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "+", 
+  FractionBox[
+   RowBox[{"21", " ", "FlS", " ", "FsS", " ", "P18", " ", 
+    SuperscriptBox["y", "8"]}], 
+   RowBox[{"40", " ", "\[Pi]"}]], "-", 
+  FractionBox[
+   RowBox[{"3", " ", "AsS", " ", "P19", " ", 
+    SuperscriptBox["y", "8"]}], 
+   RowBox[{"20", " ", "\[Pi]"}]]}]], "Output",
+ CellChangeTimes->{3.635678080846113*^9}]
 }, Open  ]]
 },
 WindowSize->{1579, 446},
@@ -411,8 +868,12 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[579, 22, 4441, 109, 63, "Input"],
-Cell[5023, 133, 9004, 259, 152, "Output"]
+Cell[579, 22, 4423, 107, 63, "Input"],
+Cell[5005, 131, 8882, 251, 186, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[13924, 387, 81, 2, 28, "Input"],
+Cell[14008, 391, 15163, 458, 378, "Output"]
 }, Open  ]]
 }
 ]
