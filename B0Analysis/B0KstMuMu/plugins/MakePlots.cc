@@ -51,7 +51,7 @@ using std::vector;
 #define ParameterFILE_MCRECO "/results/ParameterFile_Sig_MCRECO.txt"
 
 #define YvalueOutsideLimits 10.0 // Value given to bins with zero error in order not to show them
-#define FORPAPER false           // "true" = make special layout for publication in "MakePhysicsPlots" member function
+#define FORPAPER true            // "true" = make special layout for publication in "MakePhysicsPlots" member function
 #define q0SM  4.0                // Standard Model value of AFB zero crossing point
 #define q0SME 0.2                // Error on q0SM
 
@@ -2913,6 +2913,125 @@ void MakeFitResPlots (string fileName, string plotType, int specBin, string varN
 }
 
 
+void ScatterPlotB0MuMu (string fileName, unsigned int cutType)
+// ##############################################################  
+// # cutType = 0 --> no psi rejection                           #
+// # cutType = 1 --> psi rejection                              #
+// # cutType = 2 --> "1" + B0&psi cut for J/psi                 #
+// # cutType = 3 --> "1" + B0&psi cut for psi(2S)               #
+// # cutType = 4 --> "1" + B0&psi cut between J/psi and psi(2S) #
+// # cutType = 5 --> "1" + "2" + "3" + "4"                      #
+// ##############################################################  
+{
+  // ##########################
+  // # Set histo layout style #
+  // ##########################
+  SetStyle();
+  gStyle->SetOptStat(0);
+
+  
+  stringstream myString;
+  double lowB0Mass  = Utility->B0Mass - atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str());
+  double highB0Mass = Utility->B0Mass + atof(Utility->GetGenericParam("B0MassIntervalRight").c_str());
+  vector<double> q2Bins;
+  Utility->Readq2Bins(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str(),&q2Bins);
+
+  TFile* fileID = TFile::Open(fileName.c_str(),"READ");
+  TTree* B0KstMuMuNTuple = (TTree*)fileID->Get("B0KstMuMu/B0KstMuMuNTuple");
+
+  
+  TCanvas* c0 = new TCanvas("c0","c0",1200,800);
+  c0->cd();
+  TH2D* hs = new TH2D("hs","hs",200,sqrt(q2Bins[0]),sqrt(q2Bins[q2Bins.size()-1]),200,lowB0Mass,highB0Mass);
+  hs->SetXTitle("m(#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
+  hs->SetYTitle("m(K#pi#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
+  hs->SetZTitle("Entries [#]");
+
+  
+  myString.clear(); myString.str("");
+  if (cutType == 0) myString << "(B0MassArb > " << lowB0Mass << ") && (B0MassArb < " << highB0Mass << ")";
+  else if (cutType == 1)
+    {
+      myString << "(B0MassArb > " << lowB0Mass << ") && (B0MassArb < " << highB0Mass << ")";
+      myString << " && ";
+      myString << "(abs(mumuMass-" << Utility->JPsiMass << ") > " << atof(Utility->GetGenericParam("NSigmaPsi").c_str()) << "*mumuMassE) && (abs(mumuMass-" << Utility->PsiPMass << ") > " << atof(Utility->GetGenericParam("NSigmaPsi").c_str()) << "*mumuMassE)";
+    }
+  else if (cutType == 2)
+    {
+      myString << "(B0MassArb > " << lowB0Mass << ") && (B0MassArb < " << highB0Mass << ")";
+      myString << " && ";
+      myString << "(abs(mumuMass-" << Utility->JPsiMass << ") > " << atof(Utility->GetGenericParam("NSigmaPsi").c_str()) << "*mumuMassE) && (abs(mumuMass-" << Utility->PsiPMass << ") > " << atof(Utility->GetGenericParam("NSigmaPsi").c_str()) << "*mumuMassE)";
+      myString << " && ";
+      myString << "((mumuMass < " << Utility->JPsiMass << ") && !((abs((B0MassArb - " << Utility->B0Mass << ") - (mumuMass - " << Utility->JPsiMass << ")) < " << atof(Utility->GetGenericParam("B&psiMassJpsiLo").c_str()) << ") || (abs((B0MassArb - " << Utility->B0Mass << ") - (mumuMass - " << Utility->PsiPMass << ")) < " << atof(Utility->GetGenericParam("B&psiMassPsiPLo").c_str()) << ")))";
+    }
+  else if (cutType == 3)
+    {
+      myString << "(B0MassArb > " << lowB0Mass << ") && (B0MassArb < " << highB0Mass << ")";
+      myString << " && ";
+      myString << "(abs(mumuMass-" << Utility->JPsiMass << ") > " << atof(Utility->GetGenericParam("NSigmaPsi").c_str()) << "*mumuMassE) && (abs(mumuMass-" << Utility->PsiPMass << ") > " << atof(Utility->GetGenericParam("NSigmaPsi").c_str()) << "*mumuMassE)";
+      myString << " && ";
+      myString << "((mumuMass > " << Utility->PsiPMass << ") && !((abs((B0MassArb - " << Utility->B0Mass << ") - (mumuMass - " << Utility->PsiPMass << ")) < " << atof(Utility->GetGenericParam("B&psiMassPsiPHi").c_str()) << ") || (abs((B0MassArb - " << Utility->B0Mass << ") - (mumuMass - " << Utility->JPsiMass << ")) < " << atof(Utility->GetGenericParam("B&psiMassJpsiHi").c_str()) << ")))";
+    }
+  else if (cutType == 4)
+    {
+      myString << "(B0MassArb > " << lowB0Mass << ") && (B0MassArb < " << highB0Mass << ")";
+      myString << " && ";
+      myString << "(abs(mumuMass-" << Utility->JPsiMass << ") > " << atof(Utility->GetGenericParam("NSigmaPsi").c_str()) << "*mumuMassE) && (abs(mumuMass-" << Utility->PsiPMass << ") > " << atof(Utility->GetGenericParam("NSigmaPsi").c_str()) << "*mumuMassE)";
+      myString << " && ";
+      myString << "((mumuMass > " << Utility->JPsiMass << ") && (mumuMass < " << Utility->PsiPMass << ") && !((abs((B0MassArb - " << Utility->B0Mass << ") - (mumuMass - " << Utility->JPsiMass << ")) < " << atof(Utility->GetGenericParam("B&psiMassJpsiHi").c_str()) << ") || (abs((B0MassArb - " << Utility->B0Mass << ") - (mumuMass - " << Utility->PsiPMass << ")) < " << atof(Utility->GetGenericParam("B&psiMassPsiPLo").c_str()) << ")))";
+    }
+  else if (cutType == 5)
+    {
+      myString << "(B0MassArb > " << lowB0Mass << ") && (B0MassArb < " << highB0Mass << ")";
+      myString << " && ";
+      myString << "(abs(mumuMass-" << Utility->JPsiMass << ") > " << atof(Utility->GetGenericParam("NSigmaPsi").c_str()) << "*mumuMassE) && (abs(mumuMass-" << Utility->PsiPMass << ") > " << atof(Utility->GetGenericParam("NSigmaPsi").c_str()) << "*mumuMassE)";
+      myString << " && (";
+      myString << "((mumuMass < " << Utility->JPsiMass << ") && !((abs((B0MassArb - " << Utility->B0Mass << ") - (mumuMass - " << Utility->JPsiMass << ")) < " << atof(Utility->GetGenericParam("B&psiMassJpsiLo").c_str()) << ") || (abs((B0MassArb - " << Utility->B0Mass << ") - (mumuMass - " << Utility->PsiPMass << ")) < " << atof(Utility->GetGenericParam("B&psiMassPsiPLo").c_str()) << ")))";
+      myString << " || ";
+      myString << "((mumuMass > " << Utility->PsiPMass << ") && !((abs((B0MassArb - " << Utility->B0Mass << ") - (mumuMass - " << Utility->PsiPMass << ")) < " << atof(Utility->GetGenericParam("B&psiMassPsiPHi").c_str()) << ") || (abs((B0MassArb - " << Utility->B0Mass << ") - (mumuMass - " << Utility->JPsiMass << ")) < " << atof(Utility->GetGenericParam("B&psiMassJpsiHi").c_str()) << ")))";
+      myString << " || ";
+      myString << "((mumuMass > " << Utility->JPsiMass << ") && (mumuMass < " << Utility->PsiPMass << ") && !((abs((B0MassArb - " << Utility->B0Mass << ") - (mumuMass - " << Utility->JPsiMass << ")) < " << atof(Utility->GetGenericParam("B&psiMassJpsiHi").c_str()) << ") || (abs((B0MassArb - " << Utility->B0Mass << ") - (mumuMass - " << Utility->PsiPMass << ")) < " << atof(Utility->GetGenericParam("B&psiMassPsiPLo").c_str()) << ")))";
+      myString << ")";
+    }
+  cout << "Query string : " << myString.str().c_str() << endl;
+  B0KstMuMuNTuple->Draw("B0MassArb:mumuMass>>hs",myString.str().c_str(),"goff");
+
+  hs->Draw();
+
+  
+  // ######################
+  // # Draw signal region #
+  // ######################
+  TCutG* rejectJPsi = new TCutG("rejectJPsi",5);
+  rejectJPsi->SetVarX("");
+  rejectJPsi->SetVarY("");
+  rejectJPsi->SetPoint(0,sqrt(q2Bins[Utility->GetJPsiBin(&q2Bins)]),lowB0Mass);
+  rejectJPsi->SetPoint(1,sqrt(q2Bins[Utility->GetJPsiBin(&q2Bins)+1]),lowB0Mass);
+  rejectJPsi->SetPoint(2,sqrt(q2Bins[Utility->GetJPsiBin(&q2Bins)+1]),highB0Mass);
+  rejectJPsi->SetPoint(3,sqrt(q2Bins[Utility->GetJPsiBin(&q2Bins)]),highB0Mass);
+  rejectJPsi->SetPoint(4,sqrt(q2Bins[Utility->GetJPsiBin(&q2Bins)]),lowB0Mass);
+  rejectJPsi->SetFillColor(kRed);
+  rejectJPsi->SetFillStyle(3002);
+  rejectJPsi->Draw("F");
+
+  TCutG* rejectPsiP = new TCutG("rejectPsiP",5);
+  rejectPsiP->SetVarX("");
+  rejectPsiP->SetVarY("");
+  rejectPsiP->SetPoint(0,sqrt(q2Bins[Utility->GetPsiPBin(&q2Bins)]),lowB0Mass);
+  rejectPsiP->SetPoint(1,sqrt(q2Bins[Utility->GetPsiPBin(&q2Bins)+1]),lowB0Mass);
+  rejectPsiP->SetPoint(2,sqrt(q2Bins[Utility->GetPsiPBin(&q2Bins)+1]),highB0Mass);
+  rejectPsiP->SetPoint(3,sqrt(q2Bins[Utility->GetPsiPBin(&q2Bins)]),highB0Mass);
+  rejectPsiP->SetPoint(4,sqrt(q2Bins[Utility->GetPsiPBin(&q2Bins)]),lowB0Mass);
+  rejectPsiP->SetFillColor(kRed);
+  rejectPsiP->SetFillStyle(3002);
+  rejectPsiP->Draw("F");
+
+
+  c0->Modified();
+  c0->Update();
+}
+
+
 void MakePvaluePlot (string fileName, int specBin)
 // #################################################
 // # fileName must of be of the form: *_q2bin.root #
@@ -3035,9 +3154,14 @@ int main (int argc, char** argv)
 	  tmpStr1  = argv[4];
 	}
       else if ((option == "MuHadMass") && (argc == 3)) fileName = argv[2];
+      else if ((option == "ScatB0MuMu") && (argc == 4))
+	{
+	  fileName = argv[2];
+	  intVal   = atoi(argv[3]);
+	}
       else if (option != "PhyRegion")
 	{
-	  cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass]" << endl;
+	  cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass ScatB0MuMu]" << endl;
 	  cout << "            [Phy: 0-2||10-12]" << endl;
 	  cout << "            [GenMultyRun: fileName q^2_bin_index]" << endl;
 	  cout << "            [DataMC: 0-27]" << endl;
@@ -3046,6 +3170,7 @@ int main (int argc, char** argv)
 	  cout << "            [MuMuMass OR KstMass: dataFileName bkgSub]" << endl;
 	  cout << "            [KKMass: dataFileName bkgSub RECOorGEN]" << endl;
 	  cout << "            [MuHadMass: dataFileName]" << endl;
+	  cout << "            [ScatB0MuMu: dataFileName option]" << endl;
 
 	  return EXIT_FAILURE;
 	}
@@ -3091,14 +3216,15 @@ int main (int argc, char** argv)
       else if (option == "KKMass")      PlotKK(fileName,intVal,tmpStr1);
       else if (option == "KstMass")     PlotKst(fileName,intVal,true);
       else if (option == "MuHadMass")   PlotMuHadMass(fileName);
-
+      else if (option == "ScatB0MuMu")  ScatterPlotB0MuMu(fileName,intVal);
+  
       delete Utility;
       if (option != "GenMultyRun") theApp.Run (); // Eventloop on air
       return EXIT_SUCCESS;
     }
   else
     {
-      cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass]" << endl;
+      cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass ScatB0MuMu]" << endl;
       cout << "            [Phy: 0-2||10-12]" << endl;
       cout << "            [GenMultyRun: fileName q^2_bin_index]" << endl;
       cout << "            [DataMC: 0-27]" << endl;
@@ -3107,7 +3233,8 @@ int main (int argc, char** argv)
       cout << "            [MuMuMass OR KstMass: dataFileName bkgSub]" << endl;
       cout << "            [KKMass: dataFileName bkgSub RECOorGEN]" << endl;
       cout << "            [MuHadMass: dataFileName]" << endl;
-      
+      cout << "            [ScatB0MuMu: dataFileName cutType]" << endl;
+
       cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "For [MuMuMass KKMass KstMass]:" << endl;
       cout << "bkgSub = 0 (do not subtract background)" << endl;
@@ -3126,6 +3253,8 @@ int main (int argc, char** argv)
       cout << "10 = Fl Data vs Theory" << endl;
       cout << "11 = Afb Data vs Theory" << endl;
       cout << "12 = BF Data vs Theory" << endl;
+      cout << "13 = Fs Data" << endl;
+      cout << "14 = As Data" << endl;
 
       cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "For [FitRes] :" << endl;
@@ -3135,6 +3264,15 @@ int main (int argc, char** argv)
       cout << "P2" << endl;
       cout << "BF" << endl;
 
+      cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
+      cout << "For [ScatB0MuMu] :" << endl;
+      cout << "cutType = 0 --> no psi rejection" << endl;
+      cout << "cutType = 1 --> psi rejection" << endl;
+      cout << "cutType = 2 --> 1 + B0&psi cut for J/psi" << endl;
+      cout << "cutType = 3 --> 1 + B0&psi cut for psi(2S)";
+      cout << "cutType = 4 --> 1 + B0&psi cut between J/psi and psi(2S)" << endl;
+      cout << "cutType = 5 --> 1 + 2 + 3 + 4" << endl;
+      
       cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "For [DataMC]:" << endl;
       cout << "0 = B0 pT" << endl;

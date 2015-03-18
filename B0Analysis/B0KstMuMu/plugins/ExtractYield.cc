@@ -902,7 +902,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
     	  // ###########################
     	  // # S and P-wave decay rate #
     	  // ###########################
-          myString << "(9/16 * ((2/3*" << Utility->Transformer("FsS",doTransf,a,b,c) << " + 4/3*" << Utility->Transformer("AsS",doTransf,a,b,c) << "*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+          myString << "(9/16 * (2/3*(" << Utility->Transformer("FsS",doTransf,a,b,c) << " + " << Utility->Transformer("AsS",doTransf,a,b,c) << "*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
           myString << "(1-" << Utility->Transformer("FsS",doTransf,a,b,c) << ") * ";
           myString << "(2*" << Utility->Transformer("FlS",doTransf,a,b,c) << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
           myString << "1/2*(1-" << Utility->Transformer("FlS",doTransf,a,b,c) << ") * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
@@ -970,7 +970,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	  // ###########################
 	  // # S and P-wave decay rate #
 	  // ###########################
-	  myString << "(9/16 * ((2/3*" << Utility->Transformer("FsS",doTransf,a,b,c) << " - 4/3*" << Utility->Transformer("AsS",doTransf,a,b,c) << "*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+	  myString << "(9/16 * (2/3*(" << Utility->Transformer("FsS",doTransf,a,b,c) << " - " << Utility->Transformer("AsS",doTransf,a,b,c) << "*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
           myString << "(1-" << Utility->Transformer("FsS",doTransf,a,b,c) << ") * ";
           myString << "(2*" << Utility->Transformer("FlS",doTransf,a,b,c) << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
           myString << "1/2*(1-" << Utility->Transformer("FlS",doTransf,a,b,c) << ") * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - ";

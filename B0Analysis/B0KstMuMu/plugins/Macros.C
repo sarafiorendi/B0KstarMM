@@ -53,54 +53,33 @@ using namespace RooFit;
 // ####################
 #define DIRSMCOMP "Data2012B0KstMuMuResults/PredictionSM/"
 
-#define ordinateRange 1e-2
-
-#define B0MassIntervalLeft  0.28 // [GeV/c2]
-#define B0MassIntervalRight 0.28 // [GeV/c2]
-#define B0Mass 5.27953           // [GeV/c2]
-
-// ###########################
-// # From B0 --> J/psi K* MC #
-// ###########################
-#define SIGMAS1JPSI 0.0296956 // [GeV/c2]
-#define SIGMAS2JPSI 0.0633595 // [GeV/c2]
-#define FRACJPSI    0.800596
-
-// #############################
-// # From B0 --> psi(2S) K* MC #
-// #############################
-#define SIGMAS1PSIP 0.0297487 // [GeV/c2]
-#define SIGMAS2PSIP 0.0575799 // [GeV/c2]
-#define FRACPSIP    0.751143
-
 
 // #######################
 // # Function Definition #
 // #######################
-void SetStyle                ();
-void ScatterPlotPsiRejection (string fileName, unsigned int cutType);
-void PlotHistoEff            (string fileName, unsigned int smothDegree, string effDimension, bool RIGHTflavorTAG, double cosThetaKRange_lo = -1.0, double cosThetaKRange_hi = 1.0, double cosThetaLRange_lo = -1.0, double cosThetaLRange_hi = 1.0, double phiRange_lo = -3.15, double phiRange_hi = 3.15);
-void TruthMatching           (string fileName, bool truthMatch);
-void dBFfromGEN              (string fileName);
-void ComputePileUp           (string fileName);
-void PlotVtxWithPileUpW      (string fileNameMC, string fileNameData, unsigned int TrigCat, bool withWeights);
-void PlotCutScans            (string fileName, string type);
-void ReduceTree              (string fileNameIn, string fileNameOut, bool isSingleNotMultyCand);
-void SampleMCforPileup       (string fileNameIn, string fileNameOut);
-void DivideNTuple            (string fileNameIn, string fileNameOut, unsigned int n);
-void SampleNTuple            (string fileNameIn, string fileNameOut, double fraction);
-void ComputeMCfilterEff      (string fileName);
-void ZeroCrossing            (string fileName, const double minq2 = 1.2, const double maxq2 = 7.0, const unsigned int nBins = 100);
-void PlotKKMass              (string fileNameData, string fileNameMC);
+void SetStyle               ();
+void PlotHistoEff           (string fileName, unsigned int smothDegree, string effDimension, bool RIGHTflavorTAG, double cosThetaKRange_lo = -1.0, double cosThetaKRange_hi = 1.0, double cosThetaLRange_lo = -1.0, double cosThetaLRange_hi = 1.0, double phiRange_lo = -3.15, double phiRange_hi = 3.15);
+void TruthMatching          (string fileName, bool truthMatch);
+void dBFfromGEN             (string fileName);
+void ComputePileUp          (string fileName);
+void PlotVtxWithPileUpW     (string fileNameMC, string fileNameData, unsigned int TrigCat, bool withWeights);
+void PlotCutScans           (string fileName, string type);
+void ReduceTree             (string fileNameIn, string fileNameOut, bool isSingleNotMultyCand);
+void SampleMCforPileup      (string fileNameIn, string fileNameOut);
+void DivideNTuple           (string fileNameIn, string fileNameOut, unsigned int n);
+void SampleNTuple           (string fileNameIn, string fileNameOut, double fraction);
+void ComputeMCfilterEff     (string fileName);
+void ZeroCrossing           (string fileName, const double minq2 = 1.2, const double maxq2 = 7.0, const unsigned int nBins = 100);
+void PlotKKMass             (string fileNameData, string fileNameMC);
 // ####################
 // # Plot the results #
 // ####################
-void DrawString              (double Lumi);
-TCutG* DrawExclusion         (double Xlow, double Xhigh, double Ylow, double Yhigh, string cutName, unsigned int fillStyle, unsigned int color);
-void printData               (TVectorD V1, TVectorD V2, TVectorD V3, TVectorD V4, TVectorD V5, TVectorD V6);
-void offsetData              (TVectorD* V1, TVectorD* V2, TVectorD* V3, double offset);
-TGraphAsymmErrors* readData  (TString fileName, int dataType, int nBins, int color, int markerType, bool doFill, int fillStyle, bool noHbar, double offset);
-void showData                (int dataType, double offset, bool noHbar);
+void DrawString             (double Lumi);
+TCutG* DrawExclusion        (double Xlow, double Xhigh, double Ylow, double Yhigh, string cutName, unsigned int fillStyle, unsigned int color);
+void printData              (TVectorD V1, TVectorD V2, TVectorD V3, TVectorD V4, TVectorD V5, TVectorD V6);
+void offsetData             (TVectorD* V1, TVectorD* V2, TVectorD* V3, double offset);
+TGraphAsymmErrors* readData (TString fileName, int dataType, int nBins, int color, int markerType, bool doFill, int fillStyle, bool noHbar, double offset);
+void showData               (int dataType, double offset, bool noHbar);
 
 
 // ###########################
@@ -139,80 +118,6 @@ void SetStyle ()
 
   TGaxis::SetMaxDigits(3);
   gStyle->SetStatY(0.9);
-}
-
-
-// #########################################################################################
-// # Sub-program to scatterplot m(K pi mu mu) vs m(mu mu) for different psi rejection cuts #
-// #########################################################################################
-void ScatterPlotPsiRejection (string fileName, unsigned int cutType)
-// ##############################################################  
-// # cutType = 0 --> no psi rejection                           #
-// # cutType = 1 --> psi rejection                              #
-// # cutType = 2 --> "1" + B0&psi cut for J/psi                 #
-// # cutType = 3 --> "1" + B0&psi cut for psi(2S)               #
-// # cutType = 4 --> "1" + B0&psi cut between J/psi and psi(2S) #
-// # cutType = 5 --> "1" + "2" + "3" + "4"                      #
-// ##############################################################  
-{
-  // ##########################
-  // # Set histo layout style #
-  // ##########################
-  SetStyle();
-  gStyle->SetPalette(1);
-  gStyle->SetOptStat(0);
-
-
-  TFile *_file0 = TFile::Open(fileName.c_str(),"READ");
-  TTree* B0KstMuMuNTuple = (TTree*)_file0->Get("B0KstMuMu/B0KstMuMuNTuple");
-
-  TCanvas* c0 = new TCanvas("c0","c0",1200,800);
-  c0->cd();
-  TH2D* hs = new TH2D("hs","hs",200,1.0,4.6,200,5.0,5.56);
-  hs->SetXTitle("m(#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
-  hs->SetYTitle("m(K#pi#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
-  hs->SetZTitle("Entries [#]");
-
-  if (cutType == 0)      B0KstMuMuNTuple->Draw("B0MassArb:mumuMass>>hs","(B0MassArb > 5) && (B0MassArb < 5.56)","goff");
-  else if (cutType == 1) B0KstMuMuNTuple->Draw("B0MassArb:mumuMass>>hs","(B0MassArb > 5) && (B0MassArb < 5.56) && (abs(mumuMass-3.096916) > 3*mumuMassE) && (abs(mumuMass-3.686109) > 3*mumuMassE)","goff");
-  else if (cutType == 2) B0KstMuMuNTuple->Draw("B0MassArb:mumuMass>>hs","(B0MassArb > 5) && (B0MassArb < 5.56) && (abs(mumuMass-3.096916) > 3*mumuMassE) && (abs(mumuMass-3.686109) > 3*mumuMassE) && ((mumuMass < 3.096916) && !((abs((B0MassArb - 5.27958) - (mumuMass - 3.096916)) < 0.16) || (abs((B0MassArb - 5.27958) - (mumuMass - 3.686109)) < 0.06)))","goff");
-  else if (cutType == 3) B0KstMuMuNTuple->Draw("B0MassArb:mumuMass>>hs","(B0MassArb > 5) && (B0MassArb < 5.56) && (abs(mumuMass-3.096916) > 3*mumuMassE) && (abs(mumuMass-3.686109) > 3*mumuMassE) && ((mumuMass > 3.686109) && !((abs((B0MassArb - 5.27958) - (mumuMass - 3.686109)) < 0.03) || (abs((B0MassArb - 5.27958) - (mumuMass - 3.096916)) < 0.06)))","goff");
-  else if (cutType == 4) B0KstMuMuNTuple->Draw("B0MassArb:mumuMass>>hs","(B0MassArb > 5) && (B0MassArb < 5.56) && (abs(mumuMass-3.096916) > 3*mumuMassE) && (abs(mumuMass-3.686109) > 3*mumuMassE) && ((mumuMass > 3.096916) && (mumuMass < 3.686109) && !((abs((B0MassArb - 5.27958) - (mumuMass - 3.096916)) < 0.06) || (abs((B0MassArb - 5.27958) - (mumuMass - 3.686109)) < 0.06)))","goff");
-  else if (cutType == 5) B0KstMuMuNTuple->Draw("B0MassArb:mumuMass>>hs","(B0MassArb > 5) && (B0MassArb < 5.56) && (abs(mumuMass-3.096916) > 3*mumuMassE) && (abs(mumuMass-3.686109) > 3*mumuMassE) && (((mumuMass < 3.096916) && !((abs((B0MassArb - 5.27958) - (mumuMass - 3.096916)) < 0.16) || (abs((B0MassArb - 5.27958) - (mumuMass - 3.686109)) < 0.06))) || ((mumuMass > 3.686109) && !((abs((B0MassArb - 5.27958) - (mumuMass - 3.686109)) < 0.03) || (abs((B0MassArb - 5.27958) - (mumuMass - 3.096916)) < 0.06))) || ((mumuMass > 3.096916) && (mumuMass < 3.686109) && !((abs((B0MassArb - 5.27958) - (mumuMass - 3.096916)) < 0.06) || (abs((B0MassArb - 5.27958) - (mumuMass - 3.686109)) < 0.06))))","goff");
-
-  hs->Draw();
-
-  
-  // ######################
-  // # Draw signal region #
-  // ######################
-  TCutG* rejectJPsi = new TCutG("rejectJPsi",5);
-  rejectJPsi->SetVarX("");
-  rejectJPsi->SetVarY("");
-  rejectJPsi->SetPoint(0,sqrt(8.68),5.0);
-  rejectJPsi->SetPoint(1,sqrt(10.06),5.0);
-  rejectJPsi->SetPoint(2,sqrt(10.06),5.56);
-  rejectJPsi->SetPoint(3,sqrt(8.68),5.56);
-  rejectJPsi->SetPoint(4,sqrt(8.68),5.0);
-  rejectJPsi->SetFillColor(kGray);
-  rejectJPsi->SetFillStyle(3001);
-  rejectJPsi->Draw("F");
-
-  TCutG* rejectPsiP = new TCutG("rejectPsiP",5);
-  rejectPsiP->SetVarX("");
-  rejectPsiP->SetVarY("");
-  rejectPsiP->SetPoint(0,sqrt(12.86),5.0);
-  rejectPsiP->SetPoint(1,sqrt(14.18),5.0);
-  rejectPsiP->SetPoint(2,sqrt(14.18),5.56);
-  rejectPsiP->SetPoint(3,sqrt(12.86),5.56);
-  rejectPsiP->SetPoint(4,sqrt(12.86),5.0);
-  rejectPsiP->SetFillColor(kGray);
-  rejectPsiP->SetFillStyle(3001);
-  rejectPsiP->Draw("F");
-
-
-  c0->Modified();
-  c0->Update();
 }
 
 
