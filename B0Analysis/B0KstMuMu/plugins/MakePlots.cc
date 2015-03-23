@@ -459,12 +459,16 @@ void MakeComparisonDataMC (unsigned int plotType)
       Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} p_{T} (GeV)";
       maxX = 20.0;
 
+      nBinsX = 16;
+
       fileName = "KstTrkppT.pdf";
     }
   else if (plotType == 18)
     {
       Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{\55} p_{T} (GeV)";
       maxX = 20.0;
+
+      nBinsX = 16;
 
       fileName = "KstTrkmpT.pdf";
     }
@@ -655,11 +659,36 @@ void MakeComparisonDataMC (unsigned int plotType)
   // #################
   // # 1D histograms #
   // #################
+  double* binning = new double[nBinsX+1];
+  if ((plotType == 17) || (plotType == 18))
+    {
+      unsigned int it = 0;
+      
+      binning[it++] =  0.0;
+      binning[it++] =  0.5;
+      binning[it++] =  1.0;
+      binning[it++] =  1.5;
+      binning[it++] =  2.0;
+      binning[it++] =  2.5;
+      binning[it++] =  3.0;
+      binning[it++] =  3.5;
+      binning[it++] =  4.0;
+      binning[it++] =  5.0;
+      binning[it++] =  6.0;
+      binning[it++] =  7.0;
+      binning[it++] =  8.0;
+      binning[it++] = 10.0;
+      binning[it++] = 12.0;
+      binning[it++] = 16.0;
+      binning[it++] = 20.0;
+    }
+  else for (unsigned int it = 0; it < nBinsX+1; it++) binning[it] = minX + (maxX-minX) / static_cast<double>(nBinsX) * static_cast<double>(it);
+
   for (unsigned int i = 0; i < NHisto; i++)
     {
       myString.clear(); myString.str("");
       myString << "h1Dsig" << i;
-      h1DVecSig.push_back(new TH1D(myString.str().c_str(),myString.str().c_str(),nBinsX,minX,maxX));
+      h1DVecSig.push_back(new TH1D(myString.str().c_str(),myString.str().c_str(),nBinsX,binning));
       h1DVecSig.back()->Sumw2();
       h1DVecSig.back()->SetXTitle(Xtitle.c_str());
       h1DVecSig.back()->SetYTitle("Norm. entries");
@@ -669,19 +698,19 @@ void MakeComparisonDataMC (unsigned int plotType)
     {
       myString.clear(); myString.str("");
       myString << "h1Dbkg" << i;
-      h1DVecBkg.push_back(new TH1D(myString.str().c_str(),myString.str().c_str(),nBinsX,minX,maxX));
+      h1DVecBkg.push_back(new TH1D(myString.str().c_str(),myString.str().c_str(),nBinsX,binning));
       h1DVecBkg.back()->Sumw2();
       h1DVecBkg.back()->SetXTitle(Xtitle.c_str());
       h1DVecBkg.back()->SetYTitle("Norm. entries");
     }
 
-  TH1D* hDsig1D = new TH1D("hDsig1D","hDsig1D",nBinsX,minX,maxX);
+  TH1D* hDsig1D = new TH1D("hDsig1D","hDsig1D",nBinsX,binning);
   hDsig1D->Sumw2();
   hDsig1D->SetXTitle(Xtitle.c_str());
   hDsig1D->SetYTitle("Norm. entries");
   hDsig1D->SetMarkerStyle(20);
 
-  TH1D* hDbkg1D = new TH1D("hDbkg1D","hDbkg1D",nBinsX,minX,maxX);
+  TH1D* hDbkg1D = new TH1D("hDbkg1D","hDbkg1D",nBinsX,binning);
   hDbkg1D->Sumw2();
   hDbkg1D->SetXTitle(Xtitle.c_str());
   hDbkg1D->SetYTitle("Norm. entries");
@@ -1002,7 +1031,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 	  h1DVecSig[i]->Add(h1DVecBkg[i], -1.0);
 	}
 
-      cout << "\nSelected signal events: " << h1DVecSig[i]->GetEntries() << "\tSelected background events: " << h1DVecBkg[i]->GetEntries() << endl;
+      cout << "\nSelected signal events: " << h1DVecSig[i]->Integral() << "\tSelected background events: " << h1DVecBkg[i]->Integral() << endl;
     }
   
   
@@ -1086,7 +1115,7 @@ void MakeComparisonDataMC (unsigned int plotType)
       hDsig1D->Add(hDbkg1D, -1.0);
     }
   
-  cout << "\nSelected signal events: " << hDsig1D->GetEntries() << "\tSelected background events: " << hDbkg1D->GetEntries() << endl;
+  cout << "\nSelected signal events: " << hDsig1D->Integral() << "\tSelected background events: " << hDbkg1D->Integral() << endl;
   
   
   // #########################################
@@ -1112,9 +1141,17 @@ void MakeComparisonDataMC (unsigned int plotType)
       
   hM1D->Scale(1./hM1D->Integral());
   hDsig1D->Scale(1./hDsig1D->Integral());
+  for (unsigned int it = 0; it < nBinsX; it++)
+    {
+      hM1D->SetBinContent(it+1,hM1D->GetBinContent(it+1) / hM1D->GetBinWidth(it+1));
+      hM1D->SetBinError(it+1,hM1D->GetBinError(it+1) / hM1D->GetBinWidth(it+1));
+      
+      hDsig1D->SetBinContent(it+1,hDsig1D->GetBinContent(it+1) / hDsig1D->GetBinWidth(it+1));
+      hDsig1D->SetBinError(it+1,hDsig1D->GetBinError(it+1) / hDsig1D->GetBinWidth(it+1));
+    }
 
   c0->cd();
-  hM1D->Draw("e3");
+  hM1D->Draw("e2");
   hDsig1D->Draw("e1p sames");
   hM1D->GetYaxis()->SetRangeUser(0.0,(hM1D->GetBinContent(hM1D->GetMaximumBin()) > hDsig1D->GetBinContent(hDsig1D->GetMaximumBin()) ?
   				      hM1D->GetBinContent(hM1D->GetMaximumBin()) : hDsig1D->GetBinContent(hDsig1D->GetMaximumBin()))*1.1);
@@ -1171,9 +1208,11 @@ void MakeComparisonDataMC (unsigned int plotType)
 	   (plotType == 19) ||
 	   (plotType == 20))
     {
+      stD->SetX1NDC(0.83);
       stD->SetY1NDC(0.3);
       stD->SetY2NDC(0.6);
 
+      stM->SetX1NDC(0.83);
       stM->SetY2NDC(0.89);
     }
   else if ((plotType == 2) || (plotType == 4))
