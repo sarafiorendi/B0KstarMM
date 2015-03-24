@@ -51,9 +51,13 @@ using std::vector;
 #define ParameterFILE_MCRECO "/results/ParameterFile_Sig_MCRECO.txt"
 
 #define YvalueOutsideLimits 10.0 // Value given to bins with zero error in order not to show them
-#define FORPAPER true            // "true" = make special layout for publication in "MakePhysicsPlots" member function
+#define FORPAPER false           // "true" = make special layout for publication in "MakePhysicsPlots" member function
 #define q0SM  4.0                // Standard Model value of AFB zero crossing point
 #define q0SME 0.2                // Error on q0SM
+#define SIGNLUMI 5951.1
+#define JPSILUMI   52.5
+#define PSIPLUMI   58.5
+#define DATALUMI   20.5
 
 // ##################
 // # SM predictions #
@@ -682,7 +686,8 @@ void MakeComparisonDataMC (unsigned int plotType)
       binning[it++] = 16.0;
       binning[it++] = 20.0;
     }
-  else for (unsigned int it = 0; it < nBinsX+1; it++) binning[it] = minX + (maxX-minX) / static_cast<double>(nBinsX) * static_cast<double>(it);
+  else
+    for (unsigned int it = 0; it < nBinsX+1; it++) binning[it] = minX + (maxX-minX) / static_cast<double>(nBinsX) * static_cast<double>(it);
 
   for (unsigned int i = 0; i < NHisto; i++)
     {
@@ -1123,13 +1128,13 @@ void MakeComparisonDataMC (unsigned int plotType)
   // #########################################
 
   // # B0 --> K* mu mu #
-  h1DVecSig[0]->Scale(1./h1DVecSig[0]->Integral() * Utility->KstKpiMuMuBF);
+  h1DVecSig[0]->Scale(1. / SIGNLUMI * DATALUMI);
 
   // # B0 --> K* J/psi #
-  h1DVecSig[1]->Scale(1./h1DVecSig[1]->Integral() * Utility->JPsiKpiBF);
+  h1DVecSig[1]->Scale(1. / JPSILUMI * DATALUMI);
 
   // # B0 --> K* psi(2S) #
-  h1DVecSig[2]->Scale(1./h1DVecSig[2]->Integral() * Utility->PsiPKpiBF);
+  h1DVecSig[2]->Scale(1. / PSIPLUMI * DATALUMI);
 
   hM1D = (TH1D*)h1DVecSig[0]->Clone("hM1D");
   hM1D->SetXTitle(Xtitle.c_str());
@@ -1151,7 +1156,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
 
   c0->cd();
-  hM1D->Draw("e2");
+  hM1D->Draw("e3");
   hDsig1D->Draw("e1p sames");
   hM1D->GetYaxis()->SetRangeUser(0.0,(hM1D->GetBinContent(hM1D->GetMaximumBin()) > hDsig1D->GetBinContent(hDsig1D->GetMaximumBin()) ?
   				      hM1D->GetBinContent(hM1D->GetMaximumBin()) : hDsig1D->GetBinContent(hDsig1D->GetMaximumBin()))*1.1);
