@@ -1574,12 +1574,17 @@ void printData (TVectorD V1, TVectorD V2, TVectorD V3, TVectorD V4, TVectorD V5,
 
 
 void offsetData (TVectorD* V1, TVectorD* V2, TVectorD* V3, double offset)
+// offset = percentage of half of the the bin width [0,1]
 {
+  double shift;
+
   for (int i = 0; i < V1->GetNoElements(); i++)
     {
-      (*V1)[i] = (*V1)[i] + offset;
-      if ((*V2)[i] != 0.0) (*V2)[i] = (*V2)[i] + offset;
-      if ((*V3)[i] != 0.0) (*V3)[i] = (*V3)[i] - offset;
+      shift = (fabs((*V2)[i]) + fabs((*V3)[i])) / 2. * offset;
+
+      (*V1)[i] = (*V1)[i] + shift;
+      if ((*V2)[i] != 0.0) (*V2)[i] = (*V2)[i] + shift;
+      if ((*V3)[i] != 0.0) (*V3)[i] = (*V3)[i] - shift;
     }
 }
 
@@ -1723,7 +1728,11 @@ void showData (int dataType, double offset, bool noHbar)
   vector<TGraphAsymmErrors*> dVar;
 
   myString.clear(); myString.str("");
-  myString << DIRSMCOMP << "CMS.data";
+  myString << DIRSMCOMP << "CMS_7TeV.data";
+  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,24,false,0,noHbar,0.0*offset));
+
+  myString.clear(); myString.str("");
+  myString << DIRSMCOMP << "CMS_8TeV.data";
   dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,20,false,0,noHbar,0.0*offset));
 
   myString.clear(); myString.str("");
@@ -1732,15 +1741,15 @@ void showData (int dataType, double offset, bool noHbar)
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "Atlas.data";
-  if (dataType != 2) dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-1,6,22,false,0,noHbar,-3.0*offset));
+  if (dataType != 2) dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-1,6,22,false,0,noHbar,-0.3*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "BaBar.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-1,4,23,false,0,noHbar,2.0*offset));
+  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-1,4,23,false,0,noHbar,0.5*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "Belle.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-1,8,28,false,0,noHbar,-2.0*offset));
+  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-1,8,28,false,0,noHbar,-0.5*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "CDF.data";
@@ -1761,7 +1770,8 @@ void showData (int dataType, double offset, bool noHbar)
   TLegend* leg = NULL;
   leg = new TLegend(0.12, 0.6, 0.27, 0.88, "");
   leg->AddEntry(dVar[dVar.size()-1],"<SM>","F");
-  leg->AddEntry(dVar[it++],"CMS","lp");
+  leg->AddEntry(dVar[it++],"CMS (7 TeV)","lp");
+  leg->AddEntry(dVar[it++],"CMS (8 TeV)","lp");
   leg->AddEntry(dVar[it++],"LHCb","lp");
   if (dataType != 2) leg->AddEntry(dVar[it++],"Atlas","lp");
   leg->AddEntry(dVar[it++],"BaBar","lp");

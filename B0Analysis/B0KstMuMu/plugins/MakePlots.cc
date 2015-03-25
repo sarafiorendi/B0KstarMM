@@ -1984,7 +1984,6 @@ void MakePhysicsPlots (unsigned int PlotType)
 
       TFitResultPtr fitResults = ge0->Fit("ZeroCrox","S V E MR0");
       TMatrixTSym<double> covMatrix(fitResults->GetCovarianceMatrix());
-      ZeroCrox->Draw("same");
 
       double q0  = -ZeroCrox->GetParameter(1) / ZeroCrox->GetParameter(0);
       double q0E = q0 * sqrt(pow(ZeroCrox->GetParError(0) / ZeroCrox->GetParameter(0),2.) + pow(ZeroCrox->GetParError(1) / ZeroCrox->GetParameter(1),2.) - 2./(ZeroCrox->GetParameter(0) * ZeroCrox->GetParameter(1)) * covMatrix(0,1));
@@ -1997,6 +1996,8 @@ void MakePhysicsPlots (unsigned int PlotType)
       // #################################
       if (FORPAPER == false)
 	{
+	  ZeroCrox->Draw("same");
+
 	  paveText = new TPaveText(0.12,0.05,0.27,0.18,"NDC");
 	  paveText->SetTextAlign(11);
 	  paveText->SetBorderSize(0.0);
