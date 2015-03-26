@@ -1724,12 +1724,81 @@ void showData (int dataType, double offset, bool noHbar)
   cout << "I've read the templare of the q2 binning" << endl;
 
 
+  
+  // ############################################
+  // # To merge CMS cmeasurements 7 TeV + 8 TeV #
+  // ############################################
+  TGraphAsymmErrors* CMS_7TeV;
+  TGraphAsymmErrors* CMS_8TeV;
+
+  myString.clear(); myString.str("");
+  myString << DIRSMCOMP << "CMS_7TeV.data";
+  CMS_7TeV = readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,24,false,0,noHbar,0.0*offset);
+
+  myString.clear(); myString.str("");
+  myString << DIRSMCOMP << "CMS_8TeV.data";
+  CMS_8TeV = readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,20,false,0,noHbar,0.0*offset);
+
+  TGraphAsymmErrors* CMS            = new TGraphAsymmErrors(*CMS_7TeV);
+  TGraphAsymmErrors* CMS_8TeVto7TeV = new TGraphAsymmErrors(*CMS_7TeV);
+  
+  CMS_8TeVto7TeV->SetPoint(0,CMS_8TeVto7TeV->GetX()[0],CMS_8TeV->GetY()[0]);
+  CMS_8TeVto7TeV->SetPointEYhigh(0,CMS_8TeV->GetErrorYhigh(0));
+  CMS_8TeVto7TeV->SetPointEYlow(0,CMS_8TeV->GetErrorYlow(0));
+
+  CMS_8TeVto7TeV->SetPoint(1,CMS_8TeVto7TeV->GetX()[1],CMS_8TeV->GetY()[1]);
+  CMS_8TeVto7TeV->SetPointEYhigh(1,CMS_8TeV->GetErrorYhigh(1));
+  CMS_8TeVto7TeV->SetPointEYlow(1,CMS_8TeV->GetErrorYlow(1));
+  
+  CMS_8TeVto7TeV->SetPoint(2,CMS_8TeVto7TeV->GetX()[2],
+			   (CMS_8TeV->GetY()[2] /  pow(((CMS_8TeV->GetErrorYlow(2) + CMS_8TeV->GetErrorYhigh(2)) / 2.),2.) +
+			    CMS_8TeV->GetY()[3] /  pow(((CMS_8TeV->GetErrorYlow(3) + CMS_8TeV->GetErrorYhigh(3)) / 2.),2.)) /
+			   (1. /  pow(((CMS_8TeV->GetErrorYlow(2) + CMS_8TeV->GetErrorYhigh(2)) / 2.),2.) +
+			    1. /  pow(((CMS_8TeV->GetErrorYlow(3) + CMS_8TeV->GetErrorYhigh(3)) / 2.),2.)));
+  CMS_8TeVto7TeV->SetPointEYhigh(2,sqrt( 1. / (1. /  pow(((CMS_8TeV->GetErrorYlow(2) + CMS_8TeV->GetErrorYhigh(2)) / 2.),2.) +
+					       1. /  pow(((CMS_8TeV->GetErrorYlow(3) + CMS_8TeV->GetErrorYhigh(3)) / 2.),2.))));
+  CMS_8TeVto7TeV->SetPointEYlow(2,sqrt( 1. / (1. /  pow(((CMS_8TeV->GetErrorYlow(2) + CMS_8TeV->GetErrorYhigh(2)) / 2.),2.) +
+					      1. /  pow(((CMS_8TeV->GetErrorYlow(3) + CMS_8TeV->GetErrorYhigh(3)) / 2.),2.))));
+  
+  CMS_8TeVto7TeV->SetPoint(4,CMS_8TeVto7TeV->GetX()[4],CMS_8TeV->GetY()[5]);
+  CMS_8TeVto7TeV->SetPointEYhigh(4,CMS_8TeV->GetErrorYhigh(5));
+  CMS_8TeVto7TeV->SetPointEYlow(4,CMS_8TeV->GetErrorYlow(5));
+  
+  CMS_8TeVto7TeV->SetPoint(6,CMS_8TeVto7TeV->GetX()[6],CMS_8TeV->GetY()[7]);
+  CMS_8TeVto7TeV->SetPointEYhigh(6,CMS_8TeV->GetErrorYhigh(7));
+  CMS_8TeVto7TeV->SetPointEYlow(6,CMS_8TeV->GetErrorYlow(7));
+  
+  CMS_8TeVto7TeV->SetPoint(7,CMS_8TeVto7TeV->GetX()[7],CMS_8TeV->GetY()[8]);
+  CMS_8TeVto7TeV->SetPointEYhigh(7,CMS_8TeV->GetErrorYhigh(8));
+  CMS_8TeVto7TeV->SetPointEYlow(7,CMS_8TeV->GetErrorYlow(8));
+ 
+  for (int i = 0; i < CMS->GetN(); i++)
+    {
+      CMS->SetPoint(i,CMS->GetX()[i],
+		    (CMS_8TeVto7TeV->GetY()[i] /  pow(((CMS_8TeVto7TeV->GetErrorYlow(i) + CMS_8TeVto7TeV->GetErrorYhigh(i)) / 2.),2.) +
+		     CMS_7TeV->GetY()[i] /  pow(((CMS_7TeV->GetErrorYlow(i) + CMS_7TeV->GetErrorYhigh(i)) / 2.),2.)) /
+		    (1. /  pow(((CMS_8TeVto7TeV->GetErrorYlow(i) + CMS_8TeVto7TeV->GetErrorYhigh(i)) / 2.),2.) +
+		     1. /  pow(((CMS_7TeV->GetErrorYlow(i) + CMS_7TeV->GetErrorYhigh(i)) / 2.),2.)));
+      
+      CMS->SetPointEYhigh(i,sqrt( 1. / (1. /  pow(((CMS_8TeVto7TeV->GetErrorYlow(i) + CMS_8TeVto7TeV->GetErrorYhigh(i)) / 2.),2.) +
+					1. /  pow(((CMS_7TeV->GetErrorYlow(i) + CMS_7TeV->GetErrorYhigh(i)) / 2.),2.))));
+      CMS->SetPointEYlow(i,sqrt( 1. / (1. /  pow(((CMS_8TeVto7TeV->GetErrorYlow(i) + CMS_8TeVto7TeV->GetErrorYhigh(i)) / 2.),2.) +
+				       1. /  pow(((CMS_7TeV->GetErrorYlow(i) + CMS_7TeV->GetErrorYhigh(i)) / 2.),2.))));
+    }
+  // ############################################
+  
+
+  
   TCanvas* cData  = new TCanvas("cData","cData",10,10,700,500);
   vector<TGraphAsymmErrors*> dVar;
 
   myString.clear(); myString.str("");
+  myString << DIRSMCOMP << "Theory.data";
+  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX(),kBlue,20,true,3001,noHbar,0.0*offset));
+  
+  myString.clear(); myString.str("");
   myString << DIRSMCOMP << "CMS_7TeV.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,24,false,0,noHbar,0.0*offset));
+  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,24,false,0,noHbar,1.0*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "CMS_8TeV.data";
@@ -1737,42 +1806,42 @@ void showData (int dataType, double offset, bool noHbar)
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "LHCb_1fb.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-1,2,21,false,0,noHbar,0.0*offset));
+  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,2,21,false,0,noHbar,0.0*offset));
+
+  // myString.clear(); myString.str("");
+  // myString << DIRSMCOMP << "LHCb_3fb.data";
+  // dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-1,2,21,false,0,noHbar,0.0*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "Atlas.data";
-  if (dataType != 2) dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-1,6,22,false,0,noHbar,-0.3*offset));
+  if (dataType != 2) dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,6,22,false,0,noHbar,-0.3*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "BaBar.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-1,4,23,false,0,noHbar,0.5*offset));
+  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,4,23,false,0,noHbar,0.5*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "Belle.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-1,8,28,false,0,noHbar,-0.5*offset));
+  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,8,28,false,0,noHbar,-0.5*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "CDF.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-1,kGray+1,29,false,0,noHbar,-1.0*offset));
-
-  myString.clear(); myString.str("");
-  myString << DIRSMCOMP << "Theory.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX(),kBlue,20,true,3001,noHbar,0.0*offset));
+  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,kGray+1,29,false,0,noHbar,-1.0*offset));
 
 
   cData->cd();
   h0->Draw();
-  dVar[dVar.size()-1]->Draw("same e2");
-  for (unsigned int i = 0; i < dVar.size()-1; i++) dVar[dVar.size()-i-2]->Draw("same p");
+  dVar[0]->Draw("same e2");
+  for (unsigned int i = 1; i < dVar.size(); i++) dVar[i]->Draw("same p");
 
 
   unsigned int it = 0;
   TLegend* leg = NULL;
   leg = new TLegend(0.12, 0.6, 0.27, 0.88, "");
-  leg->AddEntry(dVar[dVar.size()-1],"<SM>","F");
+  leg->AddEntry(dVar[it++],"<SM>","F");
   leg->AddEntry(dVar[it++],"CMS (7 TeV)","lp");
   leg->AddEntry(dVar[it++],"CMS (8 TeV)","lp");
-  leg->AddEntry(dVar[it++],"LHCb","lp");
+  leg->AddEntry(dVar[it++],"LHCb (1 fb^{-1})","lp");
   if (dataType != 2) leg->AddEntry(dVar[it++],"Atlas","lp");
   leg->AddEntry(dVar[it++],"BaBar","lp");
   leg->AddEntry(dVar[it++],"Belle","lp");
