@@ -1725,9 +1725,9 @@ void showData (int dataType, double offset, bool noHbar)
 
 
   
-  // ############################################
-  // # To merge CMS cmeasurements 7 TeV + 8 TeV #
-  // ############################################
+  // ####################################################
+  // # @TMP@ : merge CMS cms measurements 7 TeV + 8 TeV #
+  // ####################################################
   TGraphAsymmErrors* CMS_7TeV;
   TGraphAsymmErrors* CMS_8TeV;
 
@@ -1785,10 +1785,10 @@ void showData (int dataType, double offset, bool noHbar)
       CMS->SetPointEYlow(i,sqrt( 1. / (1. /  pow(((CMS_8TeVto7TeV->GetErrorYlow(i) + CMS_8TeVto7TeV->GetErrorYhigh(i)) / 2.),2.) +
 				       1. /  pow(((CMS_7TeV->GetErrorYlow(i) + CMS_7TeV->GetErrorYhigh(i)) / 2.),2.))));
     }
-  // ############################################
-  
+  // ####################################################
 
-  
+
+
   TCanvas* cData  = new TCanvas("cData","cData",10,10,700,500);
   vector<TGraphAsymmErrors*> dVar;
 
@@ -1804,13 +1804,13 @@ void showData (int dataType, double offset, bool noHbar)
   myString << DIRSMCOMP << "CMS_8TeV.data";
   dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,20,false,0,noHbar,0.0*offset));
 
-  myString.clear(); myString.str("");
-  myString << DIRSMCOMP << "LHCb_1fb.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,2,21,false,0,noHbar,0.0*offset));
-
   // myString.clear(); myString.str("");
-  // myString << DIRSMCOMP << "LHCb_3fb.data";
-  // dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-1,2,21,false,0,noHbar,0.0*offset));
+  // myString << DIRSMCOMP << "LHCb_1fb.data";
+  // dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,2,21,false,0,noHbar,0.0*offset));
+
+  myString.clear(); myString.str("");
+  myString << DIRSMCOMP << "LHCb_3fb.data";
+  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-1,2,21,false,0,noHbar,0.0*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "Atlas.data";
@@ -1841,7 +1841,7 @@ void showData (int dataType, double offset, bool noHbar)
   leg->AddEntry(dVar[it++],"<SM>","F");
   leg->AddEntry(dVar[it++],"CMS (7 TeV)","lp");
   leg->AddEntry(dVar[it++],"CMS (8 TeV)","lp");
-  leg->AddEntry(dVar[it++],"LHCb (1 fb^{-1})","lp");
+  leg->AddEntry(dVar[it++],"LHCb (3 fb^{-1})","lp");
   if (dataType != 2) leg->AddEntry(dVar[it++],"Atlas","lp");
   leg->AddEntry(dVar[it++],"BaBar","lp");
   leg->AddEntry(dVar[it++],"Belle","lp");
