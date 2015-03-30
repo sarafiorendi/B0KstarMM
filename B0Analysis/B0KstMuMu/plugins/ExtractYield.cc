@@ -7196,7 +7196,7 @@ int main(int argc, char** argv)
 	  // # Initialize fit output file #
 	  // ##############################
 	  fileName.replace(fileName.find(".root"),5,".txt");
-	  fileFitResults.open(fileName.c_str(),ios_base::out);
+	  fileFitResults.open(fileName.c_str(),ios_base::app);
 	  if (fileFitResults.good() == false)
 	    {
 	      cout << "[ExtractYield::main]\tError opening file : " << fileName.c_str() << endl;

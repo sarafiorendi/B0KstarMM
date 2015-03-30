@@ -62,13 +62,13 @@ using std::vector;
 // ##################
 // # SM predictions #
 // ##################
-#define SMBINFL  "Data2012B0KstMuMuResults/PredictionSM/FLBinned_noLattice.data"
-#define SMBINAFB "Data2012B0KstMuMuResults/PredictionSM/AFBBinned_noLattice.data"
-#define SMBINBF  "Data2012B0KstMuMuResults/PredictionSM/dBRBinned_noLattice.data"
+#define SMBINFL_nL  "Data2012B0KstMuMuResults/PredictionSM/FLBinned_noLattice.data"
+#define SMBINAFB_nL "Data2012B0KstMuMuResults/PredictionSM/AFBBinned_noLattice.data"
+#define SMBINBF_nL  "Data2012B0KstMuMuResults/PredictionSM/dBRBinned_noLattice.data"
 
-// #define SMBINFL  "Data2012B0KstMuMuResults/PredictionSM/FLBinned_yesLattice.data"
-// #define SMBINAFB "Data2012B0KstMuMuResults/PredictionSM/AFBBinned_yesLattice.data"
-// #define SMBINBF  "Data2012B0KstMuMuResults/PredictionSM/dBRBinned_yesLattice.data"
+#define SMBINFL_yL  "Data2012B0KstMuMuResults/PredictionSM/FLBinned_yesLattice.data"
+#define SMBINAFB_yL "Data2012B0KstMuMuResults/PredictionSM/AFBBinned_yesLattice.data"
+#define SMBINBF_yL  "Data2012B0KstMuMuResults/PredictionSM/dBRBinned_yesLattice.data"
 
 // ######################
 // # Data/MC comparison #
@@ -1662,16 +1662,28 @@ void MakePhysicsPlots (unsigned int PlotType)
   // ################################################
   // # Average theory over q^2 bins from ASCII file #
   // ################################################
-  TGraphAsymmErrors* geStepTh = NULL;
-  if      ((PlotType == 0)  || (PlotType == 10)) geStepTh = ReadFromASCII(SMBINFL,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Fl
-  else if ((PlotType == 1)  || (PlotType == 11)) geStepTh = ReadFromASCII(SMBINAFB,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh); // Afb
-  else if ((PlotType == 2)  || (PlotType == 12)) geStepTh = ReadFromASCII(SMBINBF,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Branching fraction
-  else if ((PlotType == 13) || (PlotType == 14)) geStepTh = ReadFromASCII(SMBINBF,12,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);        // Fs OR As
-  geStepTh->SetMarkerColor(kBlack);
-  geStepTh->SetMarkerStyle(1);
-  geStepTh->SetFillColor(kBlue);
-  geStepTh->SetFillStyle(3001);
-  geStepTh->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
+  TGraphAsymmErrors* geStepTh_nL = NULL;
+  if      ((PlotType == 0)  || (PlotType == 10)) geStepTh_nL = ReadFromASCII(SMBINFL_nL,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Fl
+  else if ((PlotType == 1)  || (PlotType == 11)) geStepTh_nL = ReadFromASCII(SMBINAFB_nL,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh); // Afb
+  else if ((PlotType == 2)  || (PlotType == 12)) geStepTh_nL = ReadFromASCII(SMBINBF_nL,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Branching fraction
+  else if ((PlotType == 13) || (PlotType == 14)) geStepTh_nL = ReadFromASCII(SMBINBF_nL,12,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);        // Fs OR As
+  geStepTh_nL->SetMarkerColor(kBlack);
+  geStepTh_nL->SetMarkerStyle(1);
+  geStepTh_nL->SetFillColor(kBlue);
+  geStepTh_nL->SetFillStyle(3004);
+  geStepTh_nL->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
+
+
+  TGraphAsymmErrors* geStepTh_yL = NULL;
+  if      ((PlotType == 0)  || (PlotType == 10)) geStepTh_yL = ReadFromASCII(SMBINFL_yL,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Fl
+  else if ((PlotType == 1)  || (PlotType == 11)) geStepTh_yL = ReadFromASCII(SMBINAFB_yL,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh); // Afb
+  else if ((PlotType == 2)  || (PlotType == 12)) geStepTh_yL = ReadFromASCII(SMBINBF_yL,PlotType,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);  // Branching fraction
+  else if ((PlotType == 13) || (PlotType == 14)) geStepTh_yL = ReadFromASCII(SMBINBF_yL,12,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);        // Fs OR As
+  geStepTh_yL->SetMarkerColor(kBlack);
+  geStepTh_yL->SetMarkerStyle(1);
+  geStepTh_yL->SetFillColor(kRed);
+  geStepTh_yL->SetFillStyle(3005);
+  geStepTh_yL->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
 
   
   // ############################
@@ -1781,8 +1793,11 @@ void MakePhysicsPlots (unsigned int PlotType)
 	  }
 
 
-      geStepTh->GetYaxis()->SetRangeUser(-0.02,1.0);
-      geStepTh->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{L}");
+      geStepTh_nL->GetYaxis()->SetRangeUser(-0.02,1.0);
+      geStepTh_nL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{L}");
+
+      geStepTh_yL->GetYaxis()->SetRangeUser(-0.02,1.0);
+      geStepTh_yL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{L}");
     }
   else if (PlotType == 11) // Afb
     {
@@ -1811,8 +1826,11 @@ void MakePhysicsPlots (unsigned int PlotType)
 	  }
 
       
-      geStepTh->GetYaxis()->SetRangeUser(-1.04,1.0);
-      geStepTh->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{FB}");
+      geStepTh_nL->GetYaxis()->SetRangeUser(-1.04,1.0);
+      geStepTh_nL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{FB}");
+
+      geStepTh_yL->GetYaxis()->SetRangeUser(-1.04,1.0);
+      geStepTh_yL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{FB}");
     }
   else if (PlotType == 12) // Branching fraction
     {
@@ -1845,16 +1863,29 @@ void MakePhysicsPlots (unsigned int PlotType)
       // # Divide the theoretical branching fraction by the q2 bin width #
       // #################################################################
       for (unsigned int i = 0; i < q2Bins.size()-1; i++)
-        if ((Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false) && (geStepTh->GetErrorYlow(i) != 0.0) && (geStepTh->GetErrorYhigh(i) != 0.0))
+        if ((Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false) && (geStepTh_nL->GetErrorYlow(i) != 0.0) && (geStepTh_nL->GetErrorYhigh(i) != 0.0))
       	  {
-      	    geStepTh->SetPoint(i,geStepTh->GetX()[i],geStepTh->GetY()[i] /  (q2Bins[i+1] - q2Bins[i]));
-      	    geStepTh->SetPointEYlow(i,geStepTh->GetErrorYlow(i) / (q2Bins[i+1] - q2Bins[i]));
-      	    geStepTh->SetPointEYhigh(i,geStepTh->GetErrorYhigh(i) / (q2Bins[i+1] - q2Bins[i]));
-      	  }
+      	    geStepTh_nL->SetPoint(i,geStepTh_nL->GetX()[i],geStepTh_nL->GetY()[i] /  (q2Bins[i+1] - q2Bins[i]));
+      	    geStepTh_nL->SetPointEYlow(i,geStepTh_nL->GetErrorYlow(i) / (q2Bins[i+1] - q2Bins[i]));
+      	    geStepTh_nL->SetPointEYhigh(i,geStepTh_nL->GetErrorYhigh(i) / (q2Bins[i+1] - q2Bins[i]));
+
+	  }
+      
+      geStepTh_nL->GetYaxis()->SetRangeUser(0.0,1.2);
+      geStepTh_nL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
 
 
-      geStepTh->GetYaxis()->SetRangeUser(0.0,1.2);
-      geStepTh->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
+      for (unsigned int i = 0; i < q2Bins.size()-1; i++)
+        if ((Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false) && (geStepTh_yL->GetErrorYlow(i) != 0.0) && (geStepTh_yL->GetErrorYhigh(i) != 0.0))
+      	  {
+	    geStepTh_yL->SetPoint(i,geStepTh_yL->GetX()[i],geStepTh_yL->GetY()[i] /  (q2Bins[i+1] - q2Bins[i]));
+	    geStepTh_yL->SetPointEYlow(i,geStepTh_yL->GetErrorYlow(i) / (q2Bins[i+1] - q2Bins[i]));
+	    geStepTh_yL->SetPointEYhigh(i,geStepTh_yL->GetErrorYhigh(i) / (q2Bins[i+1] - q2Bins[i]));
+	  }
+
+
+      geStepTh_yL->GetYaxis()->SetRangeUser(0.0,1.2);
+      geStepTh_yL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
     }
   else if (PlotType == 13) // Fs
     {
@@ -1869,9 +1900,9 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge00->SetLineWidth(2);
       
       
-      for (unsigned int i = 0; i < q2Bins.size()-1; i++) geStepTh->SetPoint(i,geStepTh->GetX()[i],YvalueOutsideLimits);
-      geStepTh->GetYaxis()->SetRangeUser(-0.02,1.0);
-      geStepTh->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{S}");
+      for (unsigned int i = 0; i < q2Bins.size()-1; i++) geStepTh_nL->SetPoint(i,geStepTh_nL->GetX()[i],YvalueOutsideLimits);
+      geStepTh_nL->GetYaxis()->SetRangeUser(-0.02,1.0);
+      geStepTh_nL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{S}");
     }
   else if (PlotType == 14) // As
     {
@@ -1886,9 +1917,9 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge00->SetLineWidth(2);
       
       
-      for (unsigned int i = 0; i < q2Bins.size()-1; i++) geStepTh->SetPoint(i,geStepTh->GetX()[i],YvalueOutsideLimits);
-      geStepTh->GetYaxis()->SetRangeUser(-1.04,1.0);
-      geStepTh->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{S}");
+      for (unsigned int i = 0; i < q2Bins.size()-1; i++) geStepTh_nL->SetPoint(i,geStepTh_nL->GetX()[i],YvalueOutsideLimits);
+      geStepTh_nL->GetYaxis()->SetRangeUser(-1.04,1.0);
+      geStepTh_nL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{S}");
     }
   
 
@@ -1918,7 +1949,8 @@ void MakePhysicsPlots (unsigned int PlotType)
     }
   else if ((PlotType == 10) || (PlotType == 11) || (PlotType == 12)) // Fl OR Afb OR Branching fraction
     {
-      geStepTh->Draw("ae2");
+      geStepTh_nL->Draw("ae2");
+      geStepTh_yL->Draw("same e2");
       ge00->Draw("same pe1");
       // ###################################
       // # Code to make slanted error bars #
@@ -1953,11 +1985,12 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->Draw("same pez");
 
       leg->AddEntry(ge00,"Data","EPL");
-      leg->AddEntry(geStepTh,"<SM>","F");
+      leg->AddEntry(geStepTh_nL,"#LT SM #GT (LCSR)","F");
+      leg->AddEntry(geStepTh_yL,"#LT SM #GT (Lattice)","F");
     }
   else if ((PlotType == 13) || (PlotType == 14)) // Fs OR As
     {
-      geStepTh->Draw("ae2");
+      geStepTh_nL->Draw("ae2");
       ge00->Draw("same pe1");
 
       leg->AddEntry(ge00,"Data","EPL");
@@ -2058,10 +2091,10 @@ void MakePhysicsPlots (unsigned int PlotType)
       double tmpVar;
       for (int i = 0; i < chi2Histo->GetNbinsX(); i++)
 	{
-	  if ((Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false) && (geStepTh->GetErrorYlow(i) != 0.0) && (geStepTh->GetErrorYhigh(i) != 0.0))
+	  if ((Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false) && (geStepTh_nL->GetErrorYlow(i) != 0.0) && (geStepTh_nL->GetErrorYhigh(i) != 0.0))
 	    {
-	      tmpVar = pow(geStepTh->GetY()[i] - ge0->GetY()[i],2.) /
-		(geStepTh->GetY()[i] > ge0->GetY()[i] ? pow(geStepTh->GetErrorYlow(i),2.) + pow(ge0->GetErrorYhigh(i),2.) : pow(geStepTh->GetErrorYhigh(i),2.) + pow(ge0->GetErrorYlow(i),2.));
+	      tmpVar = pow(geStepTh_nL->GetY()[i] - ge0->GetY()[i],2.) /
+		(geStepTh_nL->GetY()[i] > ge0->GetY()[i] ? pow(geStepTh_nL->GetErrorYlow(i),2.) + pow(ge0->GetErrorYhigh(i),2.) : pow(geStepTh_nL->GetErrorYhigh(i),2.) + pow(ge0->GetErrorYlow(i),2.));
 	      
 	      myGlobalChi2 = myGlobalChi2 + tmpVar;
 	      chi2Histo->SetBinContent(i+1,tmpVar);
@@ -2071,7 +2104,7 @@ void MakePhysicsPlots (unsigned int PlotType)
 	  else chi2Histo->SetBinContent(i+1,0.0);
 	}
       
-      ratioLeg->AddEntry(chi2Histo,"#chi#lower[0.4]{^{2}}(<SM>, Data)");
+      ratioLeg->AddEntry(chi2Histo,"#chi#lower[0.4]{^{2}}(#LT SM #GT, Data)");
     }
   cout << "\n@@@ Global chi2 = " << myGlobalChi2 / static_cast<double>(DoF) << " (" << myGlobalChi2 << "/" << static_cast<double>(DoF) << ") @@@" << endl;
   myGlobalChi2 = myGlobalChi2 / static_cast<double>(DoF);
@@ -2139,7 +2172,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   // ########################
   DrawExclusion(q2Bins[JPsibin],q2Bins[JPsibin+1],1e-3,1.13,"RejectJPsi3",3001,kGray);
   DrawExclusion(q2Bins[PsiPbin],q2Bins[PsiPbin+1],1e-3,1.13,"RejectPsiP3",3001,kGray);
-  DrawExclusion(q2Bins[0],q2Bins[q2Bins.size()-1],1e-3,0.05,"CL95",3001,kRed-9);
+  DrawExclusion(q2Bins[0],q2Bins[q2Bins.size()-1],1e-3,0.05,"CL95",3002,kRed-9);
 
 
   // #################################
@@ -3226,9 +3259,13 @@ int main (int argc, char** argv)
       cout << "ParameterFILE_MCGEN: "  << ParameterFILE_MCGEN << endl;
       cout << "ParameterFILE_MCRECO: " << ParameterFILE_MCRECO << endl;
 
-      cout << "\nSMBINFL: " << SMBINFL << endl;
-      cout << "SMBINAFB: "  << SMBINAFB << endl;
-      cout << "SMBINBF: "   << SMBINBF << endl;
+      cout << "\nSMBINFL_nL: " << SMBINFL_nL << endl;
+      cout << "SMBINAFB_nL: "  << SMBINAFB_nL << endl;
+      cout << "SMBINBF_nL: "   << SMBINBF_nL << endl;
+
+      cout << "\nSMBINFL_yL: " << SMBINFL_yL << endl;
+      cout << "SMBINAFB_yL: "  << SMBINAFB_yL << endl;
+      cout << "SMBINBF_yL: "   << SMBINBF_yL << endl;
 
       cout << "\nSingleCand_MCkstJPsi: " << SingleCand_MCkstJPsi << endl;
       cout << "SingleCand_MCkstPsi2S: "  << SingleCand_MCkstPsi2S << endl;

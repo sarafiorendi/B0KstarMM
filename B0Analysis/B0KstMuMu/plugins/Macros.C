@@ -1804,13 +1804,13 @@ void showData (int dataType, double offset, bool noHbar)
   myString << DIRSMCOMP << "CMS_8TeV.data";
   dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,20,false,0,noHbar,0.0*offset));
 
-  // myString.clear(); myString.str("");
-  // myString << DIRSMCOMP << "LHCb_1fb.data";
-  // dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,2,21,false,0,noHbar,0.0*offset));
-
   myString.clear(); myString.str("");
-  myString << DIRSMCOMP << "LHCb_3fb.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-1,2,21,false,0,noHbar,0.0*offset));
+  myString << DIRSMCOMP << "LHCb_1fb.data";
+  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,2,21,false,0,noHbar,0.0*offset));
+
+  // myString.clear(); myString.str("");
+  // myString << DIRSMCOMP << "LHCb_3fb.data";
+  // dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-1,2,21,false,0,noHbar,0.0*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "Atlas.data";
@@ -1838,10 +1838,10 @@ void showData (int dataType, double offset, bool noHbar)
   unsigned int it = 0;
   TLegend* leg = NULL;
   leg = new TLegend(0.12, 0.6, 0.27, 0.88, "");
-  leg->AddEntry(dVar[it++],"<SM>","F");
+  leg->AddEntry(dVar[it++],"#LT SM #GT","F");
   leg->AddEntry(dVar[it++],"CMS (7 TeV)","lp");
   leg->AddEntry(dVar[it++],"CMS (8 TeV)","lp");
-  leg->AddEntry(dVar[it++],"LHCb (3 fb^{-1})","lp");
+  leg->AddEntry(dVar[it++],"LHCb (1 fb#lower[0.6]{^{#font[122]{\55}1}})","lp");
   if (dataType != 2) leg->AddEntry(dVar[it++],"Atlas","lp");
   leg->AddEntry(dVar[it++],"BaBar","lp");
   leg->AddEntry(dVar[it++],"Belle","lp");
