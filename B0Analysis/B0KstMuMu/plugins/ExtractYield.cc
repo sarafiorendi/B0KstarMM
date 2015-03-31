@@ -260,7 +260,8 @@ RooRealVar* nBkgPeak;
 // #############################################
 // # Total pdf for B0 --> K*0 J/psi OR psi(2S) #
 // #############################################
-RooAbsPdf* TotalPDFPsi;
+RooAbsPdf* TotalPDFJPsi;
+RooAbsPdf* TotalPDFPsiP;
 
 // ##################################
 // # Total pdf for B0 --> K*0 mu mu #
@@ -345,7 +346,7 @@ void StorePolyResultsInFile     (RooAbsPdf* pdf);
 vector<string>* SaveFitResults  (unsigned int q2BinIndx, vector<vector<string>*>* fitParam, vector<vector<unsigned int>*>* configParam, RooArgSet* vecConstr, RooAbsPdf* pdf = NULL, RooFitResult* fitResult = NULL);
 unsigned int CopyFitResults     (RooAbsPdf* pdf, unsigned int q2BinIndx, vector<vector<string>*>* fitParam, unsigned int countMisTag = 0, unsigned int countGoodTag = 0);
 
-void GenerateFitParameters      (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, unsigned int q2BinIndx, string option);
+double GenerateFitParameters    (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, unsigned int q2BinIndx, string option, double rndKernel = 0.0);
 void GenerateDatasetFromPDF     (RooAbsPdf* pdf,      unsigned int fileIndx, vector<double>* q2Bins, int q2BinIndx, RooArgSet setVar, string fileName, vector<vector<string>*>* fitParam, RooArgSet* vecConstr);
 void GenerateDatasetFromDataset (RooDataSet* dataSet, unsigned int fileIndx, vector<double>* q2Bins, int q2BinIndx, RooArgSet setVar, string fileName);
 string GeneratePolynomial       (RooRealVar* var, unsigned int nCoef, string sCoef);
@@ -569,7 +570,8 @@ void CloseAllAndQuit (TApplication* theApp, TFile* NtplFile)
   fileFitResults.close();
   fileFitSystematics.close();
   
-  if (TotalPDFPsi                != NULL) DeleteFit(TotalPDFPsi,"All");
+  if (TotalPDFJPsi               != NULL) DeleteFit(TotalPDFJPsi,"All");
+  if (TotalPDFPsiP               != NULL) DeleteFit(TotalPDFPsiP,"All");
   if (TotalPDFRejectPsi          != NULL) DeleteFit(TotalPDFRejectPsi,"All");
   if (SingleCandNTuple_JPsi      != NULL) delete SingleCandNTuple_JPsi;
   if (SingleCandNTuple_PsiP      != NULL) delete SingleCandNTuple_PsiP;
@@ -2443,7 +2445,7 @@ unsigned int CopyFitResults (RooAbsPdf* pdf, unsigned int q2BinIndx, vector<vect
 }
 
 
-void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, unsigned int q2BinIndx, string option)
+double GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, unsigned int fileIndx, vector<double>* q2Bins, unsigned int q2BinIndx, string option, double rndKernel)
 // #########################
 // # option = "All"        #
 // # option = "misTagFrac" #
@@ -2456,7 +2458,7 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
   unsigned int NCoeffPolyBKGcomb1;
   unsigned int NCoeffPolyBKGcomb2;
   unsigned int NCoeffPolyBKGcomb3;
-
+  double retRnd = 0.0;
 
   CopyFitResults(pdf,q2BinIndx,fitParam);
 
@@ -2469,8 +2471,10 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
       if ((atoi(Utility->GetGenericParam("CtrlMisTagWrkFlow").c_str()) == 0) && (GetVar(pdf,"nMisTagFrac") != NULL))
 	{
 	  cout << "Mis-tag fraction generation : gaussian mean = " << GetVar(pdf,"nMisTagFrac")->getVal() << "\tsigma = " << GetVar(pdf,"nMisTagFrac")->getError() << endl;
+	  if (rndKernel == 0.0) retRnd = RooRandom::gaussian() * GetVar(pdf,"nMisTagFrac")->getError() + GetVar(pdf,"nMisTagFrac")->getVal();
+	  else                  retRnd = rndKernel;
 	  myString.clear(); myString.str("");
-	  myString << RooRandom::gaussian() * GetVar(pdf,"nMisTagFrac")->getError() + GetVar(pdf,"nMisTagFrac")->getVal();
+	  myString << retRnd * GetVar(pdf,"nMisTagFrac")->getVal();
 	  fitParam->operator[](Utility->GetFitParamIndx("nMisTagFrac"))->operator[](q2BinIndx) = myString.str();
 	}
     }
@@ -2603,6 +2607,8 @@ void GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam, u
 	    }
 	}
     }
+
+  return retRnd;
 }
 
 
@@ -3995,7 +4001,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       	  // # Save zeros into prarameter file #
       	  // ###################################
       	  vecParStr = SaveFitResults(i,fitParam,configParam,vecConstr);
-      	  Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,i);
+      	  Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,i,"app");
 	  vecParStr->clear();
       	  delete vecParStr;
 
@@ -4078,7 +4084,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // # Save fit results back into prarameter file #
       // ##############################################
       vecParStr = SaveFitResults(i,fitParam,configParam,vecConstr,TotalPDFq2Bins[i],fitResult);
-      Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,i);
+      Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,i,"app");
       vecParStr->clear();
       delete vecParStr;
       vecParStr = NULL;
@@ -6144,7 +6150,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 	  // # Save zeros into prarameter file #
 	  // ###################################
 	  vecParStr = SaveFitResults(i,fitParam,configParam,vecConstr);
-	  Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,i);
+	  Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,i,"app");
 	  vecParStr->clear();
 	  delete vecParStr;
 	  
@@ -6236,7 +6242,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       Utility->Transformer("AfbS",atoi(Utility->GetGenericParam("doTransf").c_str()),varVal2,varVal2ELo,varVal2EHi,fitResult,GetVar(TotalPDFq2Bins[i],"FlS"),GetVar(TotalPDFq2Bins[i],"AfbS"));
 
       vecParStr = SaveFitResults(i,fitParam,configParam,vecConstr,TotalPDFq2Bins[i],fitResult);
-      Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,i);
+      Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,i,"app");
       vecParStr->clear();
       delete vecParStr;
       vecParStr = NULL;
@@ -7212,7 +7218,8 @@ int main(int argc, char** argv)
  	  // ###################
 	  Utility->ReadGenericParam(ParameterFILE);
 	  Utility->ReadSelectionCuts(ParameterFILE);
-	  Utility->ReadFitStartingValues(ParameterFILE,&fitParam,&configParam,Utility->ParFileBlockN("fitValGlob"));
+	  Utility->ReadFitStartingValues(((correct4Efficiency.find("yesEffCorrGen") == string::npos) && (tmpFileName.size() != 0) ? tmpFileName : ParameterFILE),&fitParam,&configParam,((correct4Efficiency.find("yesEffCorrGen") == string::npos) && (tmpFileName.size() != 0) ? 1 : Utility->ParFileBlockN("fitValGlob")));
+
 
 	  CTRLfitWRKflow = Utility->GetGenericParam("CtrlFitWrkFlow");
 
@@ -7232,12 +7239,12 @@ int main(int argc, char** argv)
 	  // # Read ctr. chn. yield from global-fit results #
 	  // ################################################
 	  myString.clear(); myString.str("");
-	  myString << fitParam[Utility->GetFitParamIndx("nSig")]->operator[]((atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? 1 : 2)).c_str();
+	  myString << fitParam[Utility->GetFitParamIndx("nSig")]->operator[](((atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true) ? ((correct4Efficiency.find("yesEffCorrGen") == string::npos) && (tmpFileName.size() != 0) ? Utility->GetJPsiBin(&q2Bins) : 1) : ((correct4Efficiency.find("yesEffCorrGen") == string::npos) && (tmpFileName.size() != 0) ? Utility->GetPsiPBin(&q2Bins) : 2))).c_str();
 	  SetValueAndErrors(NULL,"",1.0,&myString,&PsiYieldGoodTag,&PsiYieldGoodTagErr,&PsiYieldGoodTagErr);
 	  
 	  double MisTagFrac, MisTagFracErr;
 	  myString.clear(); myString.str("");
-	  myString << fitParam[Utility->GetFitParamIndx("nMisTagFrac")]->operator[]((atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? 1 : 2)).c_str();
+	  myString << fitParam[Utility->GetFitParamIndx("nMisTagFrac")]->operator[](((atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true) ? ((correct4Efficiency.find("yesEffCorrGen") == string::npos) && (tmpFileName.size() != 0) ? Utility->GetJPsiBin(&q2Bins) : 1) : ((correct4Efficiency.find("yesEffCorrGen") == string::npos) && (tmpFileName.size() != 0) ? Utility->GetPsiPBin(&q2Bins) : 2))).c_str();
 	  SetValueAndErrors(NULL,"",1.0,&myString,&MisTagFrac,&MisTagFracErr,&MisTagFracErr);
 
 	  PsiYieldMisTag    = PsiYieldGoodTag    * MisTagFrac / (1. - MisTagFrac);
@@ -7258,12 +7265,12 @@ int main(int argc, char** argv)
 	      delete configParam[i];
 	    }
 	  configParam.clear();
-	  if (FitType == 2)        Utility->ReadFitStartingValues(ParameterFILE,&fitParam,&configParam,Utility->ParFileBlockN("fitValGlob"));
-	  else if (FitType != 881) Utility->ReadFitStartingValues((((correct4Efficiency.find("yesEffCorrGen") == string::npos) && tmpFileName.size() != 0) ? tmpFileName : ParameterFILE),
+	  if (FitType == 2)        Utility->ReadFitStartingValues(((correct4Efficiency.find("yesEffCorrGen") == string::npos) && (tmpFileName.size() != 0) ? tmpFileName : ParameterFILE),&fitParam,&configParam,((correct4Efficiency.find("yesEffCorrGen") == string::npos) && (tmpFileName.size() != 0) ? 1 : Utility->ParFileBlockN("fitValGlob")));
+	  else if (FitType != 881) Utility->ReadFitStartingValues(((correct4Efficiency.find("yesEffCorrGen") == string::npos) && (tmpFileName.size() != 0) ? tmpFileName : ParameterFILE),
 								  &fitParam,&configParam,
-								  (((correct4Efficiency.find("yesEffCorrGen") == string::npos) && tmpFileName.size() != 0) ? 1 : Utility->ParFileBlockN("fitValBins")));
+								  ((correct4Efficiency.find("yesEffCorrGen") == string::npos) && (tmpFileName.size() != 0) ? 1 : Utility->ParFileBlockN("fitValBins")));
 	  else                     Utility->ReadFitStartingValues(ParameterFILE,&fitParam,&configParam,Utility->ParFileBlockN("fitValBins"));
-
+	  
 
 	  // #############################################################
 	  // # Make q^2 bins for histograms and fill efficiency matrices #
@@ -7386,7 +7393,7 @@ int main(int argc, char** argv)
 		      // # Save fit results back into prarameter file #
 		      // ##############################################
 		      vecParStr = SaveFitResults(0,&fitParam,&configParam,&vecConstr,TotalPDFRejectPsi);
-		      Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,-1,"  signal   ");
+		      Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,-1,"app","  signal   ");
 		      vecParStr->clear();
 		      delete vecParStr;
 
@@ -7404,42 +7411,73 @@ int main(int argc, char** argv)
 
 		      cout << "\n[ExtractYield::main]\t@@@ Now fit total invariant mass resonant J/psi channel @@@" << endl;
 		      TCanvas* cB0MassArbJPsi = new TCanvas("cB0MassArbJPsi","cB0MassArbJPsi",10,10,700,500);
-		      InstantiateMassFit(&TotalPDFPsi,B0MassArb,"TotalPDFPsi",&configParam,1);
-		      CopyFitResults(TotalPDFPsi,1,&fitParam);
+		      InstantiateMassFit(&TotalPDFJPsi,B0MassArb,"TotalPDFJPsi",&configParam,((correct4Efficiency.find("yesEffCorrGen") == string::npos) && (tmpFileName.size() != 0) ? Utility->GetJPsiBin(&q2Bins) : 1));
+		      CopyFitResults(TotalPDFJPsi,((correct4Efficiency.find("yesEffCorrGen") == string::npos) && (tmpFileName.size() != 0) ? Utility->GetJPsiBin(&q2Bins) : 1),&fitParam);
 		      ClearVars(&vecConstr);
-		      BuildMassConstraints(&vecConstr,TotalPDFPsi,"sign");
-		      BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
-		      PrintVariables(TotalPDFPsi->getVariables(),"vars");
+		      BuildMassConstraints(&vecConstr,TotalPDFJPsi,"sign");
+		      BuildMassConstraints(&vecConstr,TotalPDFJPsi,"mistag");
+		      PrintVariables(TotalPDFJPsi->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
-		      MakeMassFit(SingleCandNTuple_JPsi,&TotalPDFPsi,B0MassArb,cB0MassArbJPsi,&vecConstr,&NLLvalue,NULL,fileIndx);
+		      MakeMassFit(SingleCandNTuple_JPsi,&TotalPDFJPsi,B0MassArb,cB0MassArbJPsi,&vecConstr,&NLLvalue,NULL,fileIndx);
 
 		      // ##############################################
 		      // # Save fit results back into prarameter file #
 		      // ##############################################
-		      vecParStr = SaveFitResults(1,&fitParam,&configParam,&vecConstr,TotalPDFPsi);
-		      Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,-1,"   J/psi   ");
+		      vecParStr = SaveFitResults(((correct4Efficiency.find("yesEffCorrGen") == string::npos) && (tmpFileName.size() != 0) ? Utility->GetJPsiBin(&q2Bins) : 1),&fitParam,&configParam,&vecConstr,TotalPDFJPsi);
+		      Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,-1,"app","   J/psi   ");
 		      vecParStr->clear();
 		      delete vecParStr;
 
 
 		      cout << "\n[ExtractYield::main]\t@@@ Now fit total invariant mass resonant psi(2S) channel @@@" << endl;
 		      TCanvas* cB0MassArbPsiP = new TCanvas("cB0MassArbPsiP","cB0MassArbPsiP",10,10,700,500);
-		      InstantiateMassFit(&TotalPDFPsi,B0MassArb,"TotalPDFPsi",&configParam,2);
-		      CopyFitResults(TotalPDFPsi,2,&fitParam);
+		      InstantiateMassFit(&TotalPDFPsiP,B0MassArb,"TotalPDFPsiP",&configParam,((correct4Efficiency.find("yesEffCorrGen") == string::npos) && (tmpFileName.size() != 0) ? Utility->GetPsiPBin(&q2Bins) : 2));
+		      CopyFitResults(TotalPDFPsiP,((correct4Efficiency.find("yesEffCorrGen") == string::npos) && (tmpFileName.size() != 0) ? Utility->GetPsiPBin(&q2Bins) : 2),&fitParam);
 		      ClearVars(&vecConstr);
-		      BuildMassConstraints(&vecConstr,TotalPDFPsi,"sign");
-		      BuildMassConstraints(&vecConstr,TotalPDFPsi,"mistag");
-		      PrintVariables(TotalPDFPsi->getVariables(),"vars");
+		      BuildMassConstraints(&vecConstr,TotalPDFPsiP,"sign");
+		      BuildMassConstraints(&vecConstr,TotalPDFPsiP,"mistag");
+		      PrintVariables(TotalPDFPsiP->getVariables(),"vars");
 		      PrintVariables(&vecConstr,"cons");
-		      MakeMassFit(SingleCandNTuple_PsiP,&TotalPDFPsi,B0MassArb,cB0MassArbPsiP,&vecConstr,&NLLvalue,NULL,fileIndx);
+		      MakeMassFit(SingleCandNTuple_PsiP,&TotalPDFPsiP,B0MassArb,cB0MassArbPsiP,&vecConstr,&NLLvalue,NULL,fileIndx);
 
 		      // ##############################################
 		      // # Save fit results back into prarameter file #
 		      // ##############################################
-		      vecParStr = SaveFitResults(2,&fitParam,&configParam,&vecConstr,TotalPDFPsi);
-		      Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,-1,"  psi(2S)  ");
+		      vecParStr = SaveFitResults(((correct4Efficiency.find("yesEffCorrGen") == string::npos) && (tmpFileName.size() != 0) ? Utility->GetPsiPBin(&q2Bins) : 2),&fitParam,&configParam,&vecConstr,TotalPDFPsiP);
+		      Utility->SaveFitValues(PARAMETERFILEOUT,vecParStr,-1,"app","  psi(2S)  ");
 		      vecParStr->clear();
 		      delete vecParStr;
+
+
+		      // ##############################################
+		      // # Save fit results back into prarameter file #
+		      // ##############################################
+		      if ((correct4Efficiency.find("yesEffCorrGen") == string::npos) && (tmpFileName.size() != 0))
+			{
+			  myString.clear(); myString.str("");
+			  myString << (Utility->nFitParam + Utility->nConfigParam) * (q2Bins.size()-1);
+			  vecParStr = new vector<string>;
+			  vecParStr->push_back(myString.str().c_str());
+			  Utility->SaveFitValues(tmpFileName,vecParStr,-2,"out","# Number of fit parameters");
+			  
+			  vecParStr->clear();
+			  delete vecParStr;
+			  
+			  for (unsigned int i = 0; i < q2Bins.size()-1; i++)
+			    {
+			      if ((atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true) && (i == static_cast<unsigned int>(Utility->GetJPsiBin(&q2Bins))))
+				vecParStr = SaveFitResults(i,&fitParam,&configParam,&vecConstr,TotalPDFJPsi);
+			      else if ((atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == false) && (i == static_cast<unsigned int>(Utility->GetPsiPBin(&q2Bins))))
+				vecParStr = SaveFitResults(i,&fitParam,&configParam,&vecConstr,TotalPDFPsiP);
+			      else vecParStr = SaveFitResults(i,&fitParam,&configParam,&vecConstr);
+			      
+			      Utility->SaveFitValues(tmpFileName,vecParStr,i,"app");
+			      
+			      
+			      vecParStr->clear();
+			      delete vecParStr;
+			    }
+			}
 		    }
 		  else
 		    {
@@ -7714,17 +7752,22 @@ int main(int argc, char** argv)
 	      myString << (Utility->nFitParam + Utility->nConfigParam) * (q2Bins.size()-1);
 	      vecParStr = new vector<string>;
 	      vecParStr->push_back(myString.str().c_str());
-	      Utility->SaveFitValues(fileName,vecParStr,-2,"# Number of fit parameters");
+	      Utility->SaveFitValues(fileName,vecParStr,-2,"out","# Number of fit parameters");
 
 	      vecParStr->clear();
 	      delete vecParStr;
 
+	      double rndKernel;
 	      for (unsigned int i = 0; i < q2Bins.size()-1; i++)
 		{
-		  if (i == static_cast<unsigned int>(specBin)) GenerateFitParameters(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,i,GENPARAMS);
+		  if (i == static_cast<unsigned int>(specBin)) rndKernel = GenerateFitParameters(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,i,GENPARAMS);
+		  
+ 		  if (((atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true)  && (i == static_cast<unsigned int>(Utility->GetJPsiBin(&q2Bins)))) ||
+		      ((atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == false) && (i == static_cast<unsigned int>(Utility->GetPsiPBin(&q2Bins)))))
+		    GenerateFitParameters(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,i,GENPARAMS,rndKernel);
 
 		  vecParStr = SaveFitResults(i,&fitParam,&configParam,&vecConstr);
-		  Utility->SaveFitValues(fileName,vecParStr,i);
+		  Utility->SaveFitValues(fileName,vecParStr,i,"app");
 
 		  vecParStr->clear();
 		  delete vecParStr;

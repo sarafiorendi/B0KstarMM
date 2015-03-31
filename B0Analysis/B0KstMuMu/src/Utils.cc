@@ -1979,6 +1979,12 @@ void Utils::ReadNLLval (std::string fileName, std::vector<std::vector<double>*>*
 
 
   // ###################
+  // # Clear vector(s) #
+  // ###################
+  vecParam->clear();
+  
+
+  // ###################
   // # Read NLL values #
   // ###################
   ParameterFile->ReadFromFile(ParFileBlockN("fitNLL"),&ParVector);
@@ -2059,6 +2065,13 @@ void Utils::ReadFitStartingValues (std::string fileName, std::vector<std::vector
   ReadParameters* ParameterFile = new ReadParameters(fileName.c_str());
 
 
+  // ###################
+  // # Clear vector(s) #
+  // ###################
+  vecParam->clear();
+  configParam->clear();
+
+
   // ############################
   // # Read fit-starting values #
   // ############################
@@ -2107,6 +2120,12 @@ void Utils::ReadFitSystematics (std::string fileName, std::vector<std::vector<do
   double val;
   std::vector<std::string> ParVector;
   ReadParameters* ParameterFile = new ReadParameters(fileName.c_str());
+
+
+  // ###################
+  // # Clear vector(s) #
+  // ###################
+  vecParam->clear();
 
 
   // #########################################
@@ -3365,7 +3384,7 @@ int Utils::WhatIsThis (std::string fileName)
   return val;
 }
 
-void Utils::SaveFitValues (std::string fileName, std::vector<std::string>* vecParStr, int indx, std::string str)
+void Utils::SaveFitValues (std::string fileName, std::vector<std::string>* vecParStr, int indx, std::string howOpen, std::string str)
 // #################################################
 // # If indx == -1 then use str within default str #
 // # If indx == -2 then use only str               #
@@ -3382,7 +3401,7 @@ void Utils::SaveFitValues (std::string fileName, std::vector<std::string>* vecPa
   vecParStr->insert(vecParStr->end(),"");
   vecParStr->insert(vecParStr->end(),"");
 
-  ReadParameters* ParameterFile = new ReadParameters(fileName.c_str(),"app");
+  ReadParameters* ParameterFile = new ReadParameters(fileName.c_str(),howOpen.c_str());
   ParameterFile->WriteToFile(vecParStr);
   delete ParameterFile;
 }

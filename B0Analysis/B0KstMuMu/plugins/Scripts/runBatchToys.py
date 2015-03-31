@@ -57,8 +57,10 @@ for i in binList:
 
         chdir(dir)
 
+        system("sleep 2")
         toRun = "Qsub -l lnxfarm -e -o toyMC_" + par + "_" + str(nJobs) + "_" + str(i) + ".log -N T" + str(nJobs) + par + str(i) + " ./ExtractYield " + str(fitType)
         toRun = toRun + " toyMC_" + par + "_" + str(nJobs) + "_" + str(i) + ".root yesEffCorr " + str(i) + " " + str(nToysJob) + " " + str(nJobs) + " ParameterFile.txt"
+
         print toRun
         system(toRun)
 

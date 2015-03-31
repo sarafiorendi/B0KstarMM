@@ -230,7 +230,7 @@ class Utils
 
   int WhatIsThis (std::string fileName);
 
-  void SaveFitValues (std::string fileName, std::vector<std::string>* vecParStr, int indx, std::string str = "");
+  void SaveFitValues (std::string fileName, std::vector<std::string>* vecParStr, int indx, std::string howOpen, std::string str = "");
 
 #if ROOFIT
   std::string Transformer (std::string varName, bool doIt, double& varValOut, double& varValOutELo, double& varValOutEHi, RooFitResult* fitResult = NULL, RooRealVar* varValIn1 = NULL, RooRealVar* varValIn2 = NULL);
