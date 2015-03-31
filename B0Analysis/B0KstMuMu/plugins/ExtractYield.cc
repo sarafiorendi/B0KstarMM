@@ -7757,7 +7757,7 @@ int main(int argc, char** argv)
 	      vecParStr->clear();
 	      delete vecParStr;
 
-	      double rndKernel;
+	      double rndKernel = 0.0;
 	      for (unsigned int i = 0; i < q2Bins.size()-1; i++)
 		{
 		  if (i == static_cast<unsigned int>(specBin)) rndKernel = GenerateFitParameters(TotalPDFRejectPsi,&fitParam,fileIndx,&q2Bins,i,GENPARAMS);
