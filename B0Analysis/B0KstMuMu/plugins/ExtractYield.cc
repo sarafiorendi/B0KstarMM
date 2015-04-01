@@ -2471,7 +2471,7 @@ double GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam,
       if ((atoi(Utility->GetGenericParam("CtrlMisTagWrkFlow").c_str()) == 0) && (GetVar(pdf,"nMisTagFrac") != NULL))
 	{
 	  cout << "Mis-tag fraction generation : gaussian mean = " << GetVar(pdf,"nMisTagFrac")->getVal() << "\tsigma = " << GetVar(pdf,"nMisTagFrac")->getError() << endl;
-	  if (rndKernel == 0.0) retRnd = RooRandom::gaussian() * GetVar(pdf,"nMisTagFrac")->getError() + GetVar(pdf,"nMisTagFrac")->getVal();
+	  if (rndKernel == 0.0) retRnd = (RooRandom::gaussian() * GetVar(pdf,"nMisTagFrac")->getError() + GetVar(pdf,"nMisTagFrac")->getVal()) / GetVar(pdf,"nMisTagFrac")->getVal();
 	  else                  retRnd = rndKernel;
 	  myString.clear(); myString.str("");
 	  myString << retRnd * GetVar(pdf,"nMisTagFrac")->getVal();
