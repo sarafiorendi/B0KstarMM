@@ -1524,7 +1524,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetFillStyle(0);
       ge0->SetLineColor(kBlue);
       ge0->SetLineWidth(2);
-      ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
+      ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-0.02,1.0);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{L}");
 
@@ -1536,7 +1536,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge1->SetFillStyle(3001);
       ge1->SetLineColor(kBlack);
       ge1->SetLineWidth(2);
-      ge1->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
+      ge1->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge1->GetYaxis()->SetRangeUser(-0.02,1.0);
       ge1->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{L}");
      }
@@ -1550,7 +1550,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetFillStyle(0);
       ge0->SetLineColor(kBlue);
       ge0->SetLineWidth(2);
-      ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
+      ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-1.04,1.0);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{FB}");
  
@@ -1562,7 +1562,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge1->SetFillStyle(3001);
       ge1->SetLineColor(kBlack);
       ge1->SetLineWidth(2);
-      ge1->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
+      ge1->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge1->GetYaxis()->SetRangeUser(-1.04,1.0);
       ge1->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{FB}");
     }
@@ -1576,8 +1576,8 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetFillStyle(0);
       ge0->SetLineColor(kBlue);
       ge0->SetLineWidth(2);
-      ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
-      ge0->GetYaxis()->SetRangeUser(0.0,1.2);
+      ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
+      ge0->GetYaxis()->SetRangeUser(-0.04,1.2);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
  
       Utility->MakeGraphVar(Utility->MakeAnalysisPATH(ParameterFILE_MCRECO).c_str(),&ge1,"BF");
@@ -1588,8 +1588,8 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge1->SetFillStyle(3001);
       ge1->SetLineColor(kBlack);
       ge1->SetLineWidth(2);
-      ge1->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
-      ge1->GetYaxis()->SetRangeUser(0.0,1.2);
+      ge1->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
+      ge1->GetYaxis()->SetRangeUser(-0.04,1.2);
       ge1->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
     }
   else if (PlotType == 10) // Fl
@@ -1600,7 +1600,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetMarkerSize(1.2);
       ge0->SetLineColor(kBlack);
       ge0->SetLineWidth(2);
-      ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
+      ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-0.02,1.0);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^2});F_{L}");
     }
@@ -1612,7 +1612,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetMarkerSize(1.2);
       ge0->SetLineColor(kBlack);
       ge0->SetLineWidth(2);
-      ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
+      ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-1.04,1.0);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{FB}");
     }
@@ -1624,8 +1624,8 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetMarkerSize(1.2);
       ge0->SetLineColor(kBlack);
       ge0->SetLineWidth(2);
-      ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
-      ge0->GetYaxis()->SetRangeUser(0.0,1.2);
+      ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
+      ge0->GetYaxis()->SetRangeUser(-0.04,1.2);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
     }
   else if (PlotType == 13) // Fs
@@ -1636,7 +1636,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetMarkerSize(1.2);
       ge0->SetLineColor(kBlack);
       ge0->SetLineWidth(2);
-      ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
+      ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-0.02,1.0);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{S}");
     }
@@ -1648,7 +1648,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetMarkerSize(1.2);
       ge0->SetLineColor(kBlack);
       ge0->SetLineWidth(2);
-      ge0->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
+      ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-1.04,1.0);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{S}");
     }
@@ -1671,7 +1671,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   geStepTh_nL->SetMarkerStyle(1);
   geStepTh_nL->SetFillColor(kBlue);
   geStepTh_nL->SetFillStyle(3004);
-  geStepTh_nL->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
+  geStepTh_nL->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
 
 
   TGraphAsymmErrors* geStepTh_yL = NULL;
@@ -1683,7 +1683,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   geStepTh_yL->SetMarkerStyle(1);
   geStepTh_yL->SetFillColor(kRed);
   geStepTh_yL->SetFillStyle(3005);
-  geStepTh_yL->GetXaxis()->SetRangeUser(q2Bins[0],q2Bins[q2Bins.size()-1]);
+  geStepTh_yL->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
 
   
   // ############################
@@ -1704,6 +1704,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge11->SetFillStyle(3001);
       ge11->SetLineColor(kBlack);
       ge11->SetLineWidth(2);
+      ge11->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
 
 
       // ######################################################
@@ -1729,6 +1730,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge11->SetFillStyle(3001);
       ge11->SetLineColor(kBlack);
       ge11->SetLineWidth(2);
+      ge11->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
 
 
       // ######################################################
@@ -1754,6 +1756,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge11->SetFillStyle(3001);
       ge11->SetLineColor(kBlack);
       ge11->SetLineWidth(2);
+      ge11->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
 
 
       // ######################################################
@@ -1777,6 +1780,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge00->SetMarkerSize(1.2);
       ge00->SetLineColor(kBlack);
       ge00->SetLineWidth(2);
+      ge00->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
 
 
       // ######################################################
@@ -1810,6 +1814,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge00->SetMarkerSize(1.2);
       ge00->SetLineColor(kBlack);
       ge00->SetLineWidth(2);
+      ge00->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
 
 
       // ######################################################
@@ -1843,6 +1848,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge00->SetMarkerSize(1.2);
       ge00->SetLineColor(kBlack);
       ge00->SetLineWidth(2);
+      ge00->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
 
 
       // ######################################################
@@ -1871,10 +1877,14 @@ void MakePhysicsPlots (unsigned int PlotType)
 
 	  }
       
-      geStepTh_nL->GetYaxis()->SetRangeUser(0.0,1.2);
+      geStepTh_nL->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
+      geStepTh_nL->GetYaxis()->SetRangeUser(-0.04,1.2);
       geStepTh_nL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
 
 
+      // #################################################################
+      // # Divide the theoretical branching fraction by the q2 bin width #
+      // #################################################################
       for (unsigned int i = 0; i < q2Bins.size()-1; i++)
         if ((Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false) && (geStepTh_yL->GetErrorYlow(i) != 0.0) && (geStepTh_yL->GetErrorYhigh(i) != 0.0))
       	  {
@@ -1884,7 +1894,8 @@ void MakePhysicsPlots (unsigned int PlotType)
 	  }
 
 
-      geStepTh_yL->GetYaxis()->SetRangeUser(0.0,1.2);
+      geStepTh_yL->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
+      geStepTh_yL->GetYaxis()->SetRangeUser(-0.04,1.2);
       geStepTh_yL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
     }
   else if (PlotType == 13) // Fs
@@ -1898,9 +1909,11 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge00->SetMarkerSize(1.2);
       ge00->SetLineColor(kBlack);
       ge00->SetLineWidth(2);
+      ge00->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       
       
       for (unsigned int i = 0; i < q2Bins.size()-1; i++) geStepTh_nL->SetPoint(i,geStepTh_nL->GetX()[i],YvalueOutsideLimits);
+      geStepTh_nL->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       geStepTh_nL->GetYaxis()->SetRangeUser(-0.02,1.0);
       geStepTh_nL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{S}");
     }
@@ -1915,9 +1928,11 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge00->SetMarkerSize(1.2);
       ge00->SetLineColor(kBlack);
       ge00->SetLineWidth(2);
-      
+      ge00->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
+
       
       for (unsigned int i = 0; i < q2Bins.size()-1; i++) geStepTh_nL->SetPoint(i,geStepTh_nL->GetX()[i],YvalueOutsideLimits);
+      geStepTh_nL->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       geStepTh_nL->GetYaxis()->SetRangeUser(-1.04,1.0);
       geStepTh_nL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{S}");
     }
