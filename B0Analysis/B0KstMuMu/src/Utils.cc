@@ -14,7 +14,7 @@
 // ####################
 // # Global constants #
 // ####################
-#define YvalueOutsideLimits 10.0 // Value given to bins with zero error in order not to show them
+#define YvalueOutsideLimits 20.0 // Value given to bins with zero error in order not to show them
 #define ANALYPATH "ANALYPATH"
 
 Utils::Utils (bool rightFlavorTag)

@@ -4129,7 +4129,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 	  
 	  double num       = (nEvGoodTag / effMuMuGoodTag) + (nEvMisTag / effMuMuMisTag);
 	  double den       = (PsiYieldGoodTag / effPsiGoodTag) + (PsiYieldMisTag / effPsiMisTag);
-	  double dBFdq2    = num / den * (atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7;
+	  double dBFdq2    = num / den * (atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-8;
 	  double dBFdq2Err = dBFdq2 * sqrt( (pow(num / nEvGoodTag      * nEvGoodTagErr,2.)      + pow(nEvGoodTag         / (effMuMuGoodTag*effMuMuGoodTag) * effMuMuGoodTagErr,2.) + pow(nEvMisTag          / (effMuMuMisTag*effMuMuMisTag) * effMuMuMisTagErr,2.)) / (num*num) +
 					    (pow(den / PsiYieldGoodTag * PsiYieldGoodTagErr,2.) + pow(PsiYieldGoodTagErr / (effPsiGoodTag*effPsiGoodTag)   * effPsiGoodTagErr,2.)  + pow(PsiYieldGoodTagErr / (effPsiMisTag*effPsiMisTag)   * effPsiMisTagErr,2.))  / (den*den) );
 
@@ -6307,7 +6307,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 
 	      double num       = (nEvGoodTag / effMuMuGoodTag) + (nEvMisTag / effMuMuMisTag);
 	      double den       = (PsiYieldGoodTag / effPsiGoodTag) + (PsiYieldMisTag / effPsiMisTag);
-	      double dBFdq2    = num / den * (atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-7;
+	      double dBFdq2    = num / den * (atoi(Utility->GetGenericParam("NormJPSInotPSIP").c_str()) == true ? Utility->JPsiBF : Utility->PsiPBF) / (q2Bins->operator[](i+1) - q2Bins->operator[](i)) / 1e-8;
 	      double dBFdq2Err = dBFdq2 * sqrt( (pow(num / nEvGoodTag      * nEvGoodTagErr,2.)      + pow(nEvGoodTag         / (effMuMuGoodTag*effMuMuGoodTag) * effMuMuGoodTagErr,2.) + pow(nEvMisTag          / (effMuMuMisTag*effMuMuMisTag) * effMuMuMisTagErr,2.)) / (num*num) +
 					        (pow(den / PsiYieldGoodTag * PsiYieldGoodTagErr,2.) + pow(PsiYieldGoodTagErr / (effPsiGoodTag*effPsiGoodTag)   * effPsiGoodTagErr,2.)  + pow(PsiYieldGoodTagErr / (effPsiMisTag*effPsiMisTag)   * effPsiMisTagErr,2.))  / (den*den) );
 
@@ -7493,8 +7493,8 @@ int main(int argc, char** argv)
 		      VecHistoMeas.push_back(new TH1D("histoMeas0", "B0 --> K*0(K+ pi-) mu+ mu- / B0 --> K*0(K+ pi-) J/psi(mu+ mu-) Branching Fraction", q2Bins.size()-1, q2BinsHisto));
 		      VecHistoMeas[0]->SetStats(false);
 		      VecHistoMeas[0]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
-		      VecHistoMeas[0]->SetYTitle("dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
-		      VecHistoMeas[0]->GetYaxis()->SetRangeUser(0.0,1.2);
+		      VecHistoMeas[0]->SetYTitle("dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
+		      VecHistoMeas[0]->GetYaxis()->SetRangeUser(0.0,12.);
 
 		      cout << "\n[ExtractYield::main]\t@@@ Now fit invariant mass per mumu q^2 bins @@@" << endl;
 		      if (FitType == 1) IterativeMassFitq2Bins(SingleCandNTuple_RejectPsi,
@@ -7571,8 +7571,8 @@ int main(int argc, char** argv)
 		  VecHistoMeas.push_back(new TH1D("histoMeas2", "B0 --> K*0(K+ pi-) mu+ mu- : dBF/dq2 vs dimuon q2", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas[2]->SetStats(false);
 		  VecHistoMeas[2]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
-		  VecHistoMeas[2]->SetYTitle("dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
-		  VecHistoMeas[2]->GetYaxis()->SetRangeUser(0.0,1.2);
+		  VecHistoMeas[2]->SetYTitle("dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
+		  VecHistoMeas[2]->GetYaxis()->SetRangeUser(0.0,12.);
 
 		  cout << "\n[ExtractYield::main]\t@@@ Now fit invariant mass, cos(theta_K) and cos(theta_l) per mumu q^2 bins @@@" << endl;
 		  if ((FitType == 6) || (FitType == 36)) IterativeMass2AnglesFitq2Bins(SingleCandNTuple_RejectPsi,

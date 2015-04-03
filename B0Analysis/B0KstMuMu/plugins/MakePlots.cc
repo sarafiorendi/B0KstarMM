@@ -50,8 +50,8 @@ using std::vector;
 #define ParameterFILE_MCGEN  "/results/ParameterFile_Sig_Psi_MCGEN.txt"
 #define ParameterFILE_MCRECO "/results/ParameterFile_Sig_MCRECO.txt"
 
-#define YvalueOutsideLimits 10.0 // Value given to bins with zero error in order not to show them
-#define FORPAPER false           // "true" = make special layout for publication in "MakePhysicsPlots" member function
+#define YvalueOutsideLimits 20.0 // Value given to bins with zero error in order not to show them
+#define FORPAPER true            // "true" = make special layout for publication in "MakePhysicsPlots" member function
 #define q0SM  4.0                // Standard Model value of AFB zero crossing point
 #define q0SME 0.2                // Error on q0SM
 #define SIGNLUMI 5951.1
@@ -1577,8 +1577,8 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetLineColor(kBlue);
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
-      ge0->GetYaxis()->SetRangeUser(-0.04,1.2);
-      ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
+      ge0->GetYaxis()->SetRangeUser(-0.3,12.);
+      ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
  
       Utility->MakeGraphVar(Utility->MakeAnalysisPATH(ParameterFILE_MCRECO).c_str(),&ge1,"BF");
       ge1->SetMarkerColor(kBlack);
@@ -1589,8 +1589,8 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge1->SetLineColor(kBlack);
       ge1->SetLineWidth(2);
       ge1->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
-      ge1->GetYaxis()->SetRangeUser(-0.04,1.2);
-      ge1->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
+      ge1->GetYaxis()->SetRangeUser(-0.3,12.);
+      ge1->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
     }
   else if (PlotType == 10) // Fl
     {
@@ -1601,7 +1601,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetLineColor(kBlack);
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
-      ge0->GetYaxis()->SetRangeUser(-0.02,1.0);
+      ge0->GetYaxis()->SetRangeUser(0.0,1.0);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^2});F_{L}");
     }
   else if (PlotType == 11) // Afb
@@ -1613,7 +1613,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetLineColor(kBlack);
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
-      ge0->GetYaxis()->SetRangeUser(-1.04,1.0);
+      ge0->GetYaxis()->SetRangeUser(-1.0,1.0);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{FB}");
     }
   else if (PlotType == 12) // Branching fraction
@@ -1625,8 +1625,8 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetLineColor(kBlack);
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
-      ge0->GetYaxis()->SetRangeUser(-0.04,1.2);
-      ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
+      ge0->GetYaxis()->SetRangeUser(0.0,12.);
+      ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
     }
   else if (PlotType == 13) // Fs
     {
@@ -1637,7 +1637,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetLineColor(kBlack);
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
-      ge0->GetYaxis()->SetRangeUser(-0.02,1.0);
+      ge0->GetYaxis()->SetRangeUser(0.0,1.0);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{S}");
     }
   else if (PlotType == 14) // As
@@ -1649,7 +1649,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetLineColor(kBlack);
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
-      ge0->GetYaxis()->SetRangeUser(-1.04,1.0);
+      ge0->GetYaxis()->SetRangeUser(-1.0,1.0);
       ge0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{S}");
     }
   else
@@ -1797,10 +1797,10 @@ void MakePhysicsPlots (unsigned int PlotType)
 	  }
 
 
-      geStepTh_nL->GetYaxis()->SetRangeUser(-0.02,1.0);
+      geStepTh_nL->GetYaxis()->SetRangeUser(0.0,1.0);
       geStepTh_nL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{L}");
 
-      geStepTh_yL->GetYaxis()->SetRangeUser(-0.02,1.0);
+      geStepTh_yL->GetYaxis()->SetRangeUser(0.0,1.0);
       geStepTh_yL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{L}");
     }
   else if (PlotType == 11) // Afb
@@ -1831,10 +1831,10 @@ void MakePhysicsPlots (unsigned int PlotType)
 	  }
 
       
-      geStepTh_nL->GetYaxis()->SetRangeUser(-1.04,1.0);
+      geStepTh_nL->GetYaxis()->SetRangeUser(-1.0,1.0);
       geStepTh_nL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{FB}");
 
-      geStepTh_yL->GetYaxis()->SetRangeUser(-1.04,1.0);
+      geStepTh_yL->GetYaxis()->SetRangeUser(-1.0,1.0);
       geStepTh_yL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{FB}");
     }
   else if (PlotType == 12) // Branching fraction
@@ -1878,8 +1878,8 @@ void MakePhysicsPlots (unsigned int PlotType)
 	  }
       
       geStepTh_nL->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
-      geStepTh_nL->GetYaxis()->SetRangeUser(-0.04,1.2);
-      geStepTh_nL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
+      geStepTh_nL->GetYaxis()->SetRangeUser(0.0,12.0);
+      geStepTh_nL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
 
 
       // #################################################################
@@ -1895,8 +1895,8 @@ void MakePhysicsPlots (unsigned int PlotType)
 
 
       geStepTh_yL->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
-      geStepTh_yL->GetYaxis()->SetRangeUser(-0.04,1.2);
-      geStepTh_yL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
+      geStepTh_yL->GetYaxis()->SetRangeUser(0.0,12.0);
+      geStepTh_yL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
     }
   else if (PlotType == 13) // Fs
     {
@@ -1914,7 +1914,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       
       for (unsigned int i = 0; i < q2Bins.size()-1; i++) geStepTh_nL->SetPoint(i,geStepTh_nL->GetX()[i],YvalueOutsideLimits);
       geStepTh_nL->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
-      geStepTh_nL->GetYaxis()->SetRangeUser(-0.02,1.0);
+      geStepTh_nL->GetYaxis()->SetRangeUser(0.0,1.0);
       geStepTh_nL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{S}");
     }
   else if (PlotType == 14) // As
@@ -1933,7 +1933,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       
       for (unsigned int i = 0; i < q2Bins.size()-1; i++) geStepTh_nL->SetPoint(i,geStepTh_nL->GetX()[i],YvalueOutsideLimits);
       geStepTh_nL->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
-      geStepTh_nL->GetYaxis()->SetRangeUser(-1.04,1.0);
+      geStepTh_nL->GetYaxis()->SetRangeUser(-1.0,1.0);
       geStepTh_nL->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{S}");
     }
   
@@ -2063,8 +2063,8 @@ void MakePhysicsPlots (unsigned int PlotType)
   // ########################
   // # Draw exclusion zones #
   // ########################
-  DrawExclusion(q2Bins[JPsibin],q2Bins[JPsibin+1],-1.2,1.2,"RejectJPsi1",3001,kGray);
-  DrawExclusion(q2Bins[PsiPbin],q2Bins[PsiPbin+1],-1.2,1.2,"RejectPsiP1",3001,kGray);
+  DrawExclusion(q2Bins[JPsibin],q2Bins[JPsibin+1],-1.2,30.,"RejectJPsi1",3001,kGray);
+  DrawExclusion(q2Bins[PsiPbin],q2Bins[PsiPbin+1],-1.2,30.,"RejectPsiP1",3001,kGray);
 
 
   // ####################

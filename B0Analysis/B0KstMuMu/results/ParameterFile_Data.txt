@@ -2239,35 +2239,35 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 ############################
 # 16th block of parameters #
 ############################
-# Number of dBF/dq2 -/+ err [x 10-7]
+# Number of dBF/dq2 -/+ err [x 10-8]
 9
 
 # q^2 bin 0
-0.470382   -0.0671386   0.0671386
+4.70382   -0.671386   0.671386
 
 # q^2 bin 1
-0.330537   -0.0440983   0.0440983
+3.30537   -0.440983   0.440983
 
 # q^2 bin 2
-0.344873   -0.0470448   0.0470448
+3.44873   -0.470448   0.470448
 
 # q^2 bin 3
-0.470077   -0.0417527   0.0417527
+4.70077   -0.417527   0.417527
 
 # q^2 bin 4
 0.0   0.0   0.0
 
 # q^2 bin 5
-0.620615   -0.0447539   0.0447539
+6.20615   -0.447539   0.447539
 
 # q^2 bin 6
 0.0   0.0   0.0
 
 # q^2 bin 7
-0.654069   -0.0588447   0.0588447
+6.54069   -0.588447   0.588447
 
 # q^2 bin 8
-0.419374   -0.0320517   0.0320517
+4.19374   -0.320517   0.320517
 
 
 ############################
@@ -2285,8 +2285,8 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction [x 10-7]
-0.031   0.031
+# Branching-Fraction [x 10-8]
+0.31   0.31
 
 # q^2 bin 1; +error --- -error
 # FL
@@ -2297,8 +2297,8 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction [x 10-7]
-0.021   0.021
+# Branching-Fraction [x 10-8]
+0.21   0.21
 
 # q^2 bin 2; +error --- -error
 # FL
@@ -2309,8 +2309,8 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction [x 10-7]
-0.028   0.028
+# Branching-Fraction [x 10-8]
+0.28   0.28
 
 # q^2 bin 3; +error --- -error
 # FL
@@ -2321,8 +2321,8 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction [x 10-7]
-0.032   0.032
+# Branching-Fraction [x 10-8]
+0.32   0.32
 
 # q^2 bin 4; +error --- -error
 # FL
@@ -2333,7 +2333,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction [x 10-7]
+# Branching-Fraction [x 10-8]
 0.0   0.0
 
 # q^2 bin 5; +error --- -error
@@ -2345,8 +2345,8 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction [x 10-7]
-0.053   0.053
+# Branching-Fraction [x 10-8]
+0.53   0.53
 
 # q^2 bin 6; +error --- -error
 # FL
@@ -2357,7 +2357,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction [x 10-7]
+# Branching-Fraction [x 10-8]
 0.0   0.0
 
 # q^2 bin 7; +error --- -error
@@ -2369,8 +2369,8 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction [x 10-7]
-0.046   0.046
+# Branching-Fraction [x 10-8]
+0.46   0.46
 
 # q^2 bin 8; +error --- -error
 # FL
@@ -2381,8 +2381,8 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction [x 10-7]
-0.029   0.029
+# Branching-Fraction [x 10-8]
+0.29   0.29
 
 
 ############################

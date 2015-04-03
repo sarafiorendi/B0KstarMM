@@ -1597,7 +1597,7 @@ TGraphAsymmErrors* readData (TString fileName, int dataType, int nBins, int colo
 // # noHbar: choose horizontal bar #
 // #################################
 {
-  double YvalueOutsideLimits = 10.0; // Value given to bins with zero error in order not to show them
+  double YvalueOutsideLimits = 20.0; // Value given to bins with zero error in order not to show them
 
   TString exmin = "xs-xl";
   TString exmax = "xh-xs";
@@ -1659,7 +1659,7 @@ TGraphAsymmErrors* readData (TString fileName, int dataType, int nBins, int colo
   TGraphAsymmErrors* gra = new TGraphAsymmErrors(V1,V4,V2,V3,V5,V6);
   if      (dataType == 0) gra->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); F_{L}");
   else if (dataType == 1) gra->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); A_{FB}");
-  else if (dataType == 2) gra->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
+  else if (dataType == 2) gra->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
   if (doFill == true)
     {
       gra->SetFillColor(color);
@@ -1717,8 +1717,8 @@ void showData (int dataType, double offset, bool noHbar)
     }
   else if (dataType == 2)
     {
-      h0->GetYaxis()->SetRangeUser(0.0,1.2);
-      h0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}7}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
+      h0->GetYaxis()->SetRangeUser(0.0,12.);
+      h0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
     }
   h0->SetLineStyle(2);
   cout << "I've read the templare of the q2 binning" << endl;
@@ -1793,10 +1793,6 @@ void showData (int dataType, double offset, bool noHbar)
   vector<TGraphAsymmErrors*> dVar;
 
   myString.clear(); myString.str("");
-  myString << DIRSMCOMP << "Theory.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX(),kBlue,20,true,3001,noHbar,0.0*offset));
-  
-  myString.clear(); myString.str("");
   myString << DIRSMCOMP << "CMS_7TeV.data";
   dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,24,false,0,noHbar,0.3*offset));
 
@@ -1831,14 +1827,12 @@ void showData (int dataType, double offset, bool noHbar)
 
   cData->cd();
   h0->Draw();
-  dVar[0]->Draw("same e2");
-  for (unsigned int i = 1; i < dVar.size(); i++) dVar[i]->Draw("same p");
+  for (unsigned int i = 0; i < dVar.size(); i++) dVar[i]->Draw("same p");
 
 
   unsigned int it = 0;
   TLegend* leg = NULL;
   leg = new TLegend(0.12, 0.6, 0.27, 0.88, "");
-  leg->AddEntry(dVar[it++],"#LT SM #GT (LCSR)","F");
   leg->AddEntry(dVar[it++],"CMS (7 TeV)","lp");
   leg->AddEntry(dVar[it++],"CMS (8 TeV)","lp");
   leg->AddEntry(dVar[it++],"LHCb (1 fb#lower[0.6]{^{#font[122]{\55}1}})","lp");
@@ -1859,8 +1853,8 @@ void showData (int dataType, double offset, bool noHbar)
 
   
   DrawString(luminosity);
-  DrawExclusion(08.68,10.09,-1.2,1.2,"RejectJPsi1",3001,kGray);
-  DrawExclusion(12.86,14.18,-1.2,1.2,"RejectPsiP1",3001,kGray);
+  DrawExclusion(08.68,10.09,-1.2,30.,"RejectJPsi1",3001,kGray);
+  DrawExclusion(12.86,14.18,-1.2,30.,"RejectPsiP1",3001,kGray);
 
 
   cData->Modified();
