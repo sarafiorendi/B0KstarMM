@@ -1798,7 +1798,7 @@ void showData (int dataType, double offset, bool noHbar)
   
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "CMS_7TeV.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,24,false,0,noHbar,1.0*offset));
+  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,24,false,0,noHbar,0.3*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "CMS_8TeV.data";
@@ -1814,19 +1814,19 @@ void showData (int dataType, double offset, bool noHbar)
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "Atlas.data";
-  if (dataType != 2) dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,6,22,false,0,noHbar,-0.3*offset));
+  if (dataType != 2) dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,6,22,false,0,noHbar,0.8*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "BaBar.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,4,23,false,0,noHbar,0.5*offset));
+  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,4,23,false,0,noHbar,-0.4*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "Belle.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,8,28,false,0,noHbar,-0.5*offset));
+  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,8,28,false,0,noHbar,-0.6*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "CDF.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,kGray+1,29,false,0,noHbar,-1.0*offset));
+  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,kGray+1,29,false,0,noHbar,-0.8*offset));
 
 
   cData->cd();
