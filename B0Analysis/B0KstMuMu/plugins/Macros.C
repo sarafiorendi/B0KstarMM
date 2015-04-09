@@ -66,6 +66,7 @@ void PlotVtxWithPileUpW     (string fileNameMC, string fileNameData, unsigned in
 void PlotCutScans           (string fileName, string type);
 void ReduceTree             (string fileNameIn, string fileNameOut, bool isSingleNotMultyCand);
 void SampleMCforPileup      (string fileNameIn, string fileNameOut);
+void SampleMCforHadpT       (string fileNameIn, string fileNameOut);
 void DivideNTuple           (string fileNameIn, string fileNameOut, unsigned int n);
 void SampleNTuple           (string fileNameIn, string fileNameOut, double fraction);
 void ComputeMCfilterEff     (string fileName);
@@ -1065,6 +1066,7 @@ void SampleMCforPileup (string fileNameIn, string fileNameOut)
   vector<double>* vec1 = new vector<double>;
   vector<double>* vec2 = new vector<double>;
 
+
   TH1D* pileupW = new TH1D("pileupW","pileupW",50,0,50);
   theTreeIn->Draw("numInteractionsMC>>pileupW","evWeight*(bunchXingMC == 0)","goff");
   pileupW->Scale(1. / pileupW->Integral());
@@ -1089,6 +1091,94 @@ void SampleMCforPileup (string fileNameIn, string fileNameOut)
 
       vec1->clear();
       vec2->clear();
+    }
+
+  nEntries = theTreeOut->GetEntries();
+  cout << "@@@ Total number of events in the output tree: " << nEntries << " @@@" << endl;
+
+
+  theTreeOut->Print();
+  theTreeOut->AutoSave();
+  fileIn->Close();
+  fileOut->Close();
+}
+
+
+// ################################################################################################################
+// # Sub-program to sample the MC in order to obtain a subset that has the same hadron pT distribution as in data #
+// ################################################################################################################
+void SampleMCforHadpT (string fileNameIn, string fileNameOut)
+{
+  TRandom3* myRandom = new TRandom3();
+
+  TFile* fileIn = TFile::Open(fileNameIn.c_str(),"READ");
+  TTree* theTreeIn = (TTree*)fileIn->Get("B0KstMuMu/B0KstMuMuNTuple");
+
+  int nEntries = theTreeIn->GetEntries();
+  cout << "\n@@@ Total number of events in the input tree: " << nEntries << " @@@" << endl;
+
+
+  TFile* fileOut = TFile::Open(fileNameOut.c_str(),"RECREATE");
+  fileOut->mkdir("B0KstMuMu");
+  fileOut->cd("B0KstMuMu");
+  TTree* theTreeOut = theTreeIn->CloneTree(0);
+
+
+  vector<double>* vec1 = new vector<double>;
+  vector<double>* vec2 = new vector<double>;
+  vector<double>* vec3 = new vector<double>;
+  vector<double>* vec4 = new vector<double>;
+
+  
+  TH1D* hadppTW = new TH1D("hadppTW","hadppTW",100,0,20);
+  theTreeIn->Draw("sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy)>>hadppTW","evWeight*(((genSignal == 3) || (genSignal == 4)) && (truthMatchSignal == 1))","goff");
+  hadppTW->Scale(1. / hadppTW->Integral());
+
+  TH1D* hadppTNoW = new TH1D("hadppTNoW","hadppTNoW",100,0,20);
+  theTreeIn->Draw("sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy)>>hadppTNoW","(((genSignal == 3) || (genSignal == 4)) && (truthMatchSignal == 1))","goff");
+  hadppTNoW->Scale(1. / hadppTNoW->Integral());
+
+  TH1D* hadppTRatio = (TH1D*)hadppTW->Clone("hadppTRatio");
+  hadppTRatio->Divide(hadppTNoW);
+  hadppTRatio->Scale(1. / hadppTRatio->GetBinContent(hadppTRatio->GetMaximumBin()));
+
+  
+  TH1D* hadmpTW = new TH1D("hadmpTW","hadmpTW",100,0,20);
+  theTreeIn->Draw("sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy)>>hadmpTW","evWeight*(((genSignal == 3) || (genSignal == 4)) && (truthMatchSignal == 1))","goff");
+  hadmpTW->Scale(1. / hadmpTW->Integral());
+
+  TH1D* hadmpTNoW = new TH1D("hadmpTNoW","hadmpTNoW",100,0,20);
+  theTreeIn->Draw("sqrt(kstTrkpPx*kstTrkpPx + kstTrkpPy*kstTrkpPy)>>hadmpTNoW","(((genSignal == 3) || (genSignal == 4)) && (truthMatchSignal == 1))","goff");
+  hadmpTNoW->Scale(1. / hadmpTNoW->Integral());
+
+  TH1D* hadmpTRatio = (TH1D*)hadmpTW->Clone("hadmpTRatio");
+  hadmpTRatio->Divide(hadmpTNoW);
+  hadmpTRatio->Scale(1. / hadmpTRatio->GetBinContent(hadmpTRatio->GetMaximumBin()));
+
+
+  for (int entry = 0; entry < nEntries; entry++)
+    {
+      theTreeIn->SetBranchAddress("kstTrkpPx", &vec1);
+      theTreeIn->SetBranchAddress("kstTrkpPy", &vec2);
+      
+      theTreeIn->SetBranchAddress("kstTrkmPx", &vec3);
+      theTreeIn->SetBranchAddress("kstTrkmPy", &vec4);
+      
+      theTreeIn->GetEntry(entry);
+
+      for (unsigned int it = 0; it < (*vec1).size(); it++)
+	if (myRandom->Uniform() < 0.5)
+	  {
+	    if  ((myRandom->Uniform() < hadppTRatio->GetBinContent(hadppTRatio->FindBin(sqrt((*vec1)[it]*(*vec1)[it] + (*vec2)[it]*(*vec2)[it]))))) theTreeOut->Fill();
+	  }
+	else if ((myRandom->Uniform() < hadmpTRatio->GetBinContent(hadmpTRatio->FindBin(sqrt((*vec3)[it]*(*vec3)[it] + (*vec4)[it]*(*vec4)[it]))))) theTreeOut->Fill();
+
+
+      vec1->clear();
+      vec2->clear();
+      
+      vec3->clear();      
+      vec4->clear();
     }
 
   nEntries = theTreeOut->GetEntries();

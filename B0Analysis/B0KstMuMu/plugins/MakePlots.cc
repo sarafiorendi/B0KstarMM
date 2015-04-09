@@ -463,7 +463,8 @@ void MakeComparisonDataMC (unsigned int plotType)
       Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} p_{T} (GeV)";
       maxX = 20.0;
 
-      nBinsX = 16;
+      // @TMP@ : special binning for hadron pT
+      // nBinsX = 16;
 
       fileName = "KstTrkppT.pdf";
     }
@@ -472,7 +473,8 @@ void MakeComparisonDataMC (unsigned int plotType)
       Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{\55} p_{T} (GeV)";
       maxX = 20.0;
 
-      nBinsX = 16;
+      // @TMP@ : special binning for hadron pT
+      // nBinsX = 16;
 
       fileName = "KstTrkmpT.pdf";
     }
@@ -664,29 +666,30 @@ void MakeComparisonDataMC (unsigned int plotType)
   // # 1D histograms #
   // #################
   double* binning = new double[nBinsX+1];
-  if ((plotType == 17) || (plotType == 18))
-    {
-      unsigned int it = 0;
-      
-      binning[it++] =  0.0;
-      binning[it++] =  0.5;
-      binning[it++] =  1.0;
-      binning[it++] =  1.5;
-      binning[it++] =  2.0;
-      binning[it++] =  2.5;
-      binning[it++] =  3.0;
-      binning[it++] =  3.5;
-      binning[it++] =  4.0;
-      binning[it++] =  5.0;
-      binning[it++] =  6.0;
-      binning[it++] =  7.0;
-      binning[it++] =  8.0;
-      binning[it++] = 10.0;
-      binning[it++] = 12.0;
-      binning[it++] = 16.0;
-      binning[it++] = 20.0;
-    }
-  else
+  // @TMP@ : special binning for hadron pT
+  // if ((plotType == 17) || (plotType == 18))
+  //   {
+  //     unsigned int it = 0;
+
+  //     binning[it++] =  0.0;
+  //     binning[it++] =  0.5;
+  //     binning[it++] =  1.0;
+  //     binning[it++] =  1.5;
+  //     binning[it++] =  2.0;
+  //     binning[it++] =  2.5;
+  //     binning[it++] =  3.0;
+  //     binning[it++] =  3.5;
+  //     binning[it++] =  4.0;
+  //     binning[it++] =  5.0;
+  //     binning[it++] =  6.0;
+  //     binning[it++] =  7.0;
+  //     binning[it++] =  8.0;
+  //     binning[it++] = 10.0;
+  //     binning[it++] = 12.0;
+  //     binning[it++] = 16.0;
+  //     binning[it++] = 20.0;
+  //   }
+  // else
     for (unsigned int it = 0; it < nBinsX+1; it++) binning[it] = minX + (maxX-minX) / static_cast<double>(nBinsX) * static_cast<double>(it);
 
   for (unsigned int i = 0; i < NHisto; i++)
