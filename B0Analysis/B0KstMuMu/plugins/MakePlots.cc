@@ -963,7 +963,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 	  TH1D* hTmp = new TH1D("hTmp","hTmp",nBinsX,minX,maxX);
 
 
-	  tmpstring = weightVar + "*(" + selection + " && " + aVar + " > 0 && " + sigMassQuery + ")";
+	  tmpstring = (weightVar != "" ? weightVar + "*" : "") + "(" + selection + " && " + aVar + " > 0 && " + sigMassQuery + ")";
 	  myString.clear(); myString.str("");
 	  myString << query + ">>hTmp";
 	  cout << "\nPlot: " << myString.str().c_str() << endl;
@@ -971,7 +971,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 	  TreeMC[i]->Draw(myString.str().c_str(),tmpstring.c_str());
 	  h1DVecSig[i]->Add(hTmp);
 
-	  tmpstring = weightVar + "*(" + selection + " && " + aVar + " < 0 && " + bVar + " < 0 && " + sigMassQuery + ")";
+	  tmpstring = (weightVar != "" ? weightVar + "*" : "") + "(" + selection + " && " + aVar + " < 0 && " + bVar + " < 0 && " + sigMassQuery + ")";
 	  myString.clear(); myString.str("");
 	  myString << query + "-TMath::Pi()>>hTmp";
 	  cout << "\nPlot: " << myString.str().c_str() << endl;
@@ -979,7 +979,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 	  TreeMC[i]->Draw(myString.str().c_str(),tmpstring.c_str());
 	  h1DVecSig[i]->Add(hTmp);
 
-	  tmpstring = weightVar + "*(" + selection + " && " + aVar + " < 0 && " + bVar + " > 0 && " + sigMassQuery + ")";
+	  tmpstring = (weightVar != "" ? weightVar + "*" : "") + "(" + selection + " && " + aVar + " < 0 && " + bVar + " > 0 && " + sigMassQuery + ")";
 	  myString.clear(); myString.str("");
 	  myString << query + "+TMath::Pi()>>hTmp";
 	  cout << "\nPlot: " << myString.str().c_str() << endl;
@@ -988,7 +988,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 	  h1DVecSig[i]->Add(hTmp);
 
 
-	  tmpstring = weightVar + "*(" + selection + " && " + aVar + " > 0 && " + bkgMassQuery + ")";
+	  tmpstring = (weightVar != "" ? weightVar + "*" : "") + "(" + selection + " && " + aVar + " > 0 && " + bkgMassQuery + ")";
 	  myString.clear(); myString.str("");
 	  myString << query + ">>hTmp";
 	  cout << "\nPlot: " << myString.str().c_str() << endl;
@@ -996,7 +996,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 	  TreeMC[i]->Draw(myString.str().c_str(),tmpstring.c_str());
 	  h1DVecBkg[i]->Add(hTmp);
 
-	  tmpstring = weightVar + "*(" + selection + " && " + aVar + " < 0 && " + bVar + " < 0 && " + bkgMassQuery + ")";
+	  tmpstring = (weightVar != "" ? weightVar + "*" : "") + "(" + selection + " && " + aVar + " < 0 && " + bVar + " < 0 && " + bkgMassQuery + ")";
 	  myString.clear(); myString.str("");
 	  myString << query + "-TMath::Pi()>>hTmp";
 	  cout << "\nPlot: " << myString.str().c_str() << endl;
@@ -1004,7 +1004,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 	  TreeMC[i]->Draw(myString.str().c_str(),tmpstring.c_str());
 	  h1DVecBkg[i]->Add(hTmp);
 
-	  tmpstring = weightVar + "*(" + selection + " && " + aVar + " < 0 && " + bVar + " > 0 && " + bkgMassQuery + ")";
+	  tmpstring = (weightVar != "" ? weightVar + "*" : "") + "(" + selection + " && " + aVar + " < 0 && " + bVar + " > 0 && " + bkgMassQuery + ")";
 	  myString.clear(); myString.str("");
 	  myString << query + "+TMath::Pi()>>hTmp";
 	  cout << "\nPlot: " << myString.str().c_str() << endl;
@@ -1018,7 +1018,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 	}
       else
 	{
-	  tmpstring = weightVar + "*(" + sigMassQuery + ")";
+	  tmpstring = (weightVar != "" ? weightVar + "*" : "") + "(" + sigMassQuery + ")";
 	  myString.clear(); myString.str("");
 	  myString << "h1Dsig" << i;
 	  queryMC.push_back(query + ">>" + myString.str().c_str());
@@ -1027,7 +1027,7 @@ void MakeComparisonDataMC (unsigned int plotType)
 	  TreeMC[i]->Draw(queryMC.back().c_str(),tmpstring.c_str());
 
 
-	  tmpstring = weightVar + "*(" + bkgMassQuery + ")";
+	  tmpstring = (weightVar != "" ? weightVar + "*" : "") + "(" + bkgMassQuery + ")";
 	  myString.clear(); myString.str("");
 	  myString << "h1Dbkg" << i;
 	  queryMC.push_back(query + ">>" + myString.str().c_str());
