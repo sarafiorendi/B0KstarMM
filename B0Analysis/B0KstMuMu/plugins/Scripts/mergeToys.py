@@ -9,7 +9,7 @@ import glob
 import string
 
 if len(sys.argv) < 4:
-    print "Synopsis: python MergeToys.py [q2bin nJobs dirName(\"name_nJobs_q2bin\" without \"_nJobs_q2bin\")]"
+    print "Synopsis: python mergeToys.py [q2bin nJobs dirName(\"name_nJobs_q2bin\" without \"_nJobs_q2bin\")]"
     sys.exit("ERROR !")
 
 q2bin   = sys.argv[1]
@@ -36,6 +36,7 @@ for j in range(0, nJobs):
     newDir = dirName + "_" + str(j+1) + "_" + q2bin
     chdir(newDir)
     fileList[j] = glob.glob("*.root")
+    print fileList[j]
     chdir("..")
 
 
@@ -46,8 +47,9 @@ for i in range(0, nFiles):
     outputFile = fileList[0][i]
     outputFile = outputFile.replace("_1_","_",1)
     cmd = "hadd " + outputFile + " "
-
+    
     for j in range(0, nJobs):
-        cmd += dirName + "_" + str(j+1) + "_" + q2bin + "/" + fileList[j][i] + " "
+        if len(fileList[j]) != 0:
+            cmd += dirName + "_" + str(j+1) + "_" + q2bin + "/" + fileList[j][i] + " "
     print cmd
     system(cmd)

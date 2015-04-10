@@ -2991,6 +2991,7 @@ void MakeFitResPlots (string fileName, string plotType, int specBin, string varN
   myString << varName << " >>histo";
   theTree->Draw(myString.str().c_str(),"","goff");
 
+  
   c0->cd();
   histo->Draw();
   DrawExclusion(val,histo->GetBinLowEdge(histo->GetNbinsX())+histo->GetBinWidth(1),0.0,histo->GetMaximum()*1.1,"NLL",3001,kGray);
