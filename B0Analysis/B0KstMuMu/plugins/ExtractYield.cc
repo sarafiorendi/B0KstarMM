@@ -7069,15 +7069,15 @@ int main(int argc, char** argv)
       TFile* NtplFile           = NULL;
 
 
-      if (((((FitType >= 1)  && (FitType <= 6)) || (FitType == 36) || ((FitType >= 41) && (FitType <= 46)) || ((FitType >= 61) && (FitType <= 66))) && (argc >= 4)) ||
+      if (((((FitType >= 1) && (FitType <= 6)) || (FitType == 36) || ((FitType >= 41) && (FitType <= 46)) || ((FitType >= 61) && (FitType <= 66))) && (argc >= 4)) ||
 
-	  (((FitType == 56)  || (FitType == 76)) && (argc == 4)) ||
+	  (((FitType == 56) || (FitType == 76)) && (argc == 4)) ||
 
 	  ((((FitType >= 81) && (FitType <= 86)) || (FitType == 96)) && (argc == 6)) ||
 
 	  ((FitType == 881) && (argc == 7)) ||
 
-	  ((FitType >= 21)  && (FitType <= 26) && (argc == 8)))
+	  ((FitType >= 21) && (FitType <= 26) && (argc == 8)))
 	{
 	  ParameterFILE = Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str();
 
