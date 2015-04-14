@@ -3358,7 +3358,7 @@ int main (int argc, char** argv)
       cout << "14 = As Data" << endl;
 
       cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-      cout << "For [FitRes] :" << endl;
+      cout << "For [FitRes]:" << endl;
       cout << "Fl" << endl;
       cout << "Afb" << endl;
       cout << "P1" << endl;
@@ -3366,7 +3366,7 @@ int main (int argc, char** argv)
       cout << "BF" << endl;
 
       cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-      cout << "For [ScatB0MuMu] :" << endl;
+      cout << "For [ScatB0MuMu]:" << endl;
       cout << "cutType = 0 --> no psi rejection" << endl;
       cout << "cutType = 1 --> psi rejection" << endl;
       cout << "cutType = 2 --> 1 + B0&psi cut for J/psi" << endl;
