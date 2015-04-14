@@ -2477,27 +2477,27 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 # q^2 bin 7
 # FL
--1909.33
+-1909.32
 # AFB
--1909.33
+-1909.32
 # P1
 0.0
 # P2
 0.0
 # Branching-Fraction
--1909.33
+-1909.32
 
 # q^2 bin 8
 # FL
--1511.9
+-1511.49
 # AFB
--1511.9
+-1511.49
 # P1
 0.0
 # P2
 0.0
 # Branching-Fraction
--1511.9
+-1511.49
 
 
 ############################
