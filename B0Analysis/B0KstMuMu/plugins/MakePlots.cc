@@ -51,7 +51,7 @@ using std::vector;
 #define ParameterFILE_MCRECO "/results/ParameterFile_Sig_MCRECO.txt"
 
 #define YvalueOutsideLimits 20.0 // Value given to bins with zero error in order not to show them
-#define FORPAPER true            // "true" = make special layout for publication in "MakePhysicsPlots" member function
+#define FORPAPER false           // "true" = make special layout for publication in "MakePhysicsPlots" member function
 #define q0SM  4.0                // Standard Model value of AFB zero crossing point
 #define q0SME 0.2                // Error on q0SM
 #define SIGNLUMI 5951.1

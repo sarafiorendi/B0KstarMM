@@ -2278,9 +2278,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 # q^2 bin 0; +error --- -error
 # FL
-0.044   0.044
+0.054   0.054
 # AFB
-0.051   0.051
+0.076   0.076
 # P1
 0.0   0.0
 # P2
@@ -2290,9 +2290,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 # q^2 bin 1; +error --- -error
 # FL
-0.045   0.045
+0.043   0.043
 # AFB
-0.049   0.049
+0.059   0.059
 # P1
 0.0   0.0
 # P2
@@ -2302,9 +2302,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 # q^2 bin 2; +error --- -error
 # FL
-0.042   0.042
+0.054   0.054
 # AFB
-0.041   0.041
+0.043   0.043
 # P1
 0.0   0.0
 # P2
@@ -2314,7 +2314,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 # q^2 bin 3; +error --- -error
 # FL
-0.050   0.050
+0.051   0.051
 # AFB
 0.040   0.040
 # P1
@@ -2340,7 +2340,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # FL
 0.036   0.036
 # AFB
-0.036   0.036
+0.035   0.035
 # P1
 0.0   0.0
 # P2
@@ -2362,7 +2362,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 # q^2 bin 7; +error --- -error
 # FL
-0.036   0.036
+0.037   0.037
 # AFB
 0.035   0.035
 # P1
@@ -2374,9 +2374,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 
 # q^2 bin 8; +error --- -error
 # FL
-0.037   0.037
+0.036   0.036
 # AFB
-0.035   0.035
+0.036   0.036
 # P1
 0.0   0.0
 # P2
