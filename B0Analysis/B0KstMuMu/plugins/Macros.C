@@ -1795,6 +1795,7 @@ void showData (int dataType, double offset, bool noHbar)
   TCanvas* c0   = (TCanvas*)_file0->Get("cHistoMeas");
   TPad* p0      = (TPad*)c0->GetPrimitive("cHistoMeas_1");
   TH1D* h0      = (TH1D*)p0->GetPrimitive("histoMeas0");
+  h0->GetXaxis()->SetRangeUser(0.0,19.0);
   if (dataType == 0)
     {
       h0->GetYaxis()->SetRangeUser(0.0,1.0);
@@ -1937,7 +1938,7 @@ void showData (int dataType, double offset, bool noHbar)
   leg->Draw();
 
 
-  TLine* line = new TLine(1.0,0.0,19.0,0.0);
+  TLine* line = new TLine(-1.0,0.0,19.0,0.0);
   line->SetLineStyle(kDashed);
   line->Draw();
 
