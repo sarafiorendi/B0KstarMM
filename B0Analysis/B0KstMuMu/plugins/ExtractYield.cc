@@ -5583,7 +5583,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       DrawString(LUMI,myFrameX);
       if ((extText != NULL) && (SETBATCH == false))
       	{
-      	  if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%1.f#pm%1.f","Signal yield: ",totalYield,totalYieldE));
+      	  if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%1.f #pm%1.f","Signal yield: ",totalYield,totalYieldE));
       	  extText->Paint();
       	  myFrameX->addObject(extText);
       	}

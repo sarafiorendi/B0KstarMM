@@ -51,7 +51,7 @@ using std::vector;
 #define ParameterFILE_MCRECO "/results/ParameterFile_Sig_MCRECO.txt"
 
 #define YvalueOutsideLimits 20.0 // Value given to bins with zero error in order not to show them
-#define FORPAPER false           // "true" = make special layout for publication in "MakePhysicsPlots" member function
+#define FORPAPER true            // "true" = make special layout for publication in "MakePhysicsPlots" member function
 #define q0SM  4.0                // Standard Model value of AFB zero crossing point
 #define q0SME 0.2                // Error on q0SM
 #define SIGNLUMI 5951.1
@@ -1673,7 +1673,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   geStepTh_nL->SetMarkerColor(kBlack);
   geStepTh_nL->SetMarkerStyle(1);
   geStepTh_nL->SetFillColor(kBlue);
-  geStepTh_nL->SetFillStyle(3001);
+  geStepTh_nL->SetFillStyle(3002);
   geStepTh_nL->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
 
 
