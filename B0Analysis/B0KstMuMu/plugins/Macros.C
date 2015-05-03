@@ -1893,7 +1893,7 @@ void showData (int dataType, double offset, bool noHbar)
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "LHCb_1fb.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,2,21,false,0,noHbar,0.0*offset));
+  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,2,21,false,0,noHbar,-0.3*offset));
 
   // myString.clear(); myString.str("");
   // myString << DIRSMCOMP << "LHCb_3fb.data";
