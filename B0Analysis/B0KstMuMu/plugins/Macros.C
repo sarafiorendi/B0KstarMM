@@ -81,6 +81,7 @@ void printData              (TVectorD V1, TVectorD V2, TVectorD V3, TVectorD V4,
 void offsetData             (TVectorD* V1, TVectorD* V2, TVectorD* V3, double offset);
 TGraphAsymmErrors* readData (TString fileName, int dataType, int nBins, int color, int markerType, bool doFill, int fillStyle, bool noHbar, double offset);
 void showData               (int dataType, double offset, bool noHbar);
+void combineMeasurements    ();
 
 
 // ###########################
@@ -1952,3 +1953,68 @@ void showData (int dataType, double offset, bool noHbar)
   cData->Modified();
   cData->Update();
  }
+
+
+void combineMeasurements ()
+{
+  // #############
+  // # Variables #
+  // #############
+  unsigned int nMeas = 2;
+  double scale       = 0.;
+  double combMeas    = 0.;
+  double combMeasVar = 0.;
+
+  TMatrixD Cov(nMeas,nMeas);
+  vector<double> meas(nMeas);
+  vector<double> weights(nMeas);
+
+
+  // ##################
+  // # Initialisation #
+  // ##################
+  meas[0]  = 1.;
+  meas[1]  = 2.;
+
+  Cov(0,0) = 0.5;
+  Cov(0,1) = Cov(1,0) = 0.0;
+  Cov(1,1) = 0.5;
+
+
+  // ###############
+  // # Combination #
+  // ###############
+  TMatrixD invCov = Cov;
+  invCov = invCov.Invert();
+
+  for (unsigned int i = 0; i < nMeas; i++)
+    for (unsigned int j = 0; j < nMeas; j++)
+      scale += invCov(i,j);
+  
+  for (unsigned int i = 0; i < nMeas; i++)
+    {
+      weights[i] = 0;
+      for (unsigned int j = 0; j < nMeas; j++) weights[i] += invCov(i,j);
+      weights[i] = weights[i] / scale;
+
+      combMeas += weights[i] * meas[i];
+    }
+  
+  for (unsigned int i = 0; i < nMeas; i++)
+    for (unsigned int j = 0; j < nMeas; j++)
+      combMeasVar += weights[i] * weights[j] * Cov(i,j);
+
+
+  // ##########
+  // # Output #
+  // ##########
+  cout << "\n@@@ Printing weights @@@" << endl;
+  for (unsigned int i = 0; i < nMeas; i++) cout << "#" << i << "\t" << weights[i] << endl;
+
+  cout << "\n@@@ Printing covariance @@@" << endl;
+  for (unsigned int i = 0; i < nMeas; i++)
+    for (unsigned int j = 0; j < nMeas; j++)
+      cout << "#" << i << "," << j << "\t" << Cov(i,j) << endl;
+  
+  cout << "\nCombined measurement = " << combMeas << " +/- " << sqrt(combMeasVar) << endl;
+}
