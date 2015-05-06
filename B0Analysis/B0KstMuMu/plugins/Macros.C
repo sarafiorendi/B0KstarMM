@@ -1974,26 +1974,28 @@ void combineMeasurements ()
   // # Initialisation #
   // ##################
   // # FL specialBin #
-  meas[0]  = 0.704;
-  meas[1]  = 0.684;
+  // meas[0]  = 0.704;
+  // meas[1]  = 0.684;
 
-  Cov(0,0) = 0.051*0.051 + 0.000271;
-  Cov(0,1) = Cov(1,0) = 0.00137;
-  Cov(1,1) = 0.102*0.102 + 0.000273;
+  // Cov(0,0) = 0.051*0.051 + 0.000271;
+  // Cov(0,1) = Cov(1,0) = 1. * sqrt(0.00137 * 0.000082);  // cov[x,y] = rho * sigmax * sigmay
+  // Cov(1,1) = 0.102*0.102 + 0.000273;
 
   // # AFB specialBin #
   // meas[0]  = -0.150;
   // meas[1]  = -0.068;
+
   // Cov(0,0) = 0.096*0.096 + 0.000802;
-  // Cov(0,1) = Cov(1,0) = 0.000078;
+  // Cov(0,1) = Cov(1,0) = 1. * sqrt(0.000078 * 1e-6); // cov[x,y] = rho * sigmax * sigmay
   // Cov(1,1) = 0.116*0.116 + 0.000183;
 
   // # dBF/dq2 specialBin #
-  // meas[0]  = 3.59;
-  // meas[1]  = 4.39;
-  // Cov(0,0) = 0.29*0.29 + 29.18 * meas[0]*meas[0] / 1e4;
-  // Cov(0,1) = Cov(1,0) = 6.78 * meas[0]*meas[0] / 1e4;
-  // Cov(1,1) = 0.58*0.58 + 26.36 * meas[1]*meas[1] / 1e4;
+  meas[0]  = 3.59;
+  meas[1]  = 4.39;
+
+  Cov(0,0) = 0.29*0.29 + 29.18 * meas[0]*meas[0] / 1e4;
+  Cov(0,1) = Cov(1,0) = 1. * sqrt(6.78 * meas[0]*meas[0] / 1e4 * 14.33 * meas[1]*meas[1] / 1e4);  // cov[x,y] = rho * sigmax * sigmay
+  Cov(1,1) = 0.58*0.58 + 26.36 * meas[1]*meas[1] / 1e4;
 
 
   // ###############
