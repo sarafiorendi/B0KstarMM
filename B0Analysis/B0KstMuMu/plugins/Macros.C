@@ -81,7 +81,7 @@ void printData              (TVectorD V1, TVectorD V2, TVectorD V3, TVectorD V4,
 void offsetData             (TVectorD* V1, TVectorD* V2, TVectorD* V3, double offset);
 TGraphAsymmErrors* readData (TString fileName, int dataType, int nBins, int color, int markerType, bool doFill, int fillStyle, bool noHbar, double offset);
 void showData               (int dataType, double offset, bool noHbar);
-void combineMeasurements    ();
+void combineMeasurements    (string whichVar, int whichBin);
 
 
 // ###########################
@@ -1816,71 +1816,6 @@ void showData (int dataType, double offset, bool noHbar)
   cout << "I've read the templare of the q2 binning" << endl;
 
 
-  
-  // ####################################################
-  // # @TMP@ : merge CMS cms measurements 7 TeV + 8 TeV #
-  // ####################################################
-  TGraphAsymmErrors* CMS_7TeV;
-  TGraphAsymmErrors* CMS_8TeV;
-
-  myString.clear(); myString.str("");
-  myString << DIRSMCOMP << "CMS_7TeV.data";
-  CMS_7TeV = readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,24,false,0,noHbar,0.0*offset);
-
-  myString.clear(); myString.str("");
-  myString << DIRSMCOMP << "CMS_8TeV.data";
-  CMS_8TeV = readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,20,false,0,noHbar,0.0*offset);
-
-  TGraphAsymmErrors* CMS            = new TGraphAsymmErrors(*CMS_7TeV);
-  TGraphAsymmErrors* CMS_8TeVto7TeV = new TGraphAsymmErrors(*CMS_7TeV);
-  
-  CMS_8TeVto7TeV->SetPoint(0,CMS_8TeVto7TeV->GetX()[0],CMS_8TeV->GetY()[0]);
-  CMS_8TeVto7TeV->SetPointEYhigh(0,CMS_8TeV->GetErrorYhigh(0));
-  CMS_8TeVto7TeV->SetPointEYlow(0,CMS_8TeV->GetErrorYlow(0));
-
-  CMS_8TeVto7TeV->SetPoint(1,CMS_8TeVto7TeV->GetX()[1],CMS_8TeV->GetY()[1]);
-  CMS_8TeVto7TeV->SetPointEYhigh(1,CMS_8TeV->GetErrorYhigh(1));
-  CMS_8TeVto7TeV->SetPointEYlow(1,CMS_8TeV->GetErrorYlow(1));
-  
-  CMS_8TeVto7TeV->SetPoint(2,CMS_8TeVto7TeV->GetX()[2],
-			   (CMS_8TeV->GetY()[2] /  pow(((CMS_8TeV->GetErrorYlow(2) + CMS_8TeV->GetErrorYhigh(2)) / 2.),2.) +
-			    CMS_8TeV->GetY()[3] /  pow(((CMS_8TeV->GetErrorYlow(3) + CMS_8TeV->GetErrorYhigh(3)) / 2.),2.)) /
-			   (1. /  pow(((CMS_8TeV->GetErrorYlow(2) + CMS_8TeV->GetErrorYhigh(2)) / 2.),2.) +
-			    1. /  pow(((CMS_8TeV->GetErrorYlow(3) + CMS_8TeV->GetErrorYhigh(3)) / 2.),2.)));
-  CMS_8TeVto7TeV->SetPointEYhigh(2,sqrt( 1. / (1. /  pow(((CMS_8TeV->GetErrorYlow(2) + CMS_8TeV->GetErrorYhigh(2)) / 2.),2.) +
-					       1. /  pow(((CMS_8TeV->GetErrorYlow(3) + CMS_8TeV->GetErrorYhigh(3)) / 2.),2.))));
-  CMS_8TeVto7TeV->SetPointEYlow(2,sqrt( 1. / (1. /  pow(((CMS_8TeV->GetErrorYlow(2) + CMS_8TeV->GetErrorYhigh(2)) / 2.),2.) +
-					      1. /  pow(((CMS_8TeV->GetErrorYlow(3) + CMS_8TeV->GetErrorYhigh(3)) / 2.),2.))));
-  
-  CMS_8TeVto7TeV->SetPoint(4,CMS_8TeVto7TeV->GetX()[4],CMS_8TeV->GetY()[5]);
-  CMS_8TeVto7TeV->SetPointEYhigh(4,CMS_8TeV->GetErrorYhigh(5));
-  CMS_8TeVto7TeV->SetPointEYlow(4,CMS_8TeV->GetErrorYlow(5));
-  
-  CMS_8TeVto7TeV->SetPoint(6,CMS_8TeVto7TeV->GetX()[6],CMS_8TeV->GetY()[7]);
-  CMS_8TeVto7TeV->SetPointEYhigh(6,CMS_8TeV->GetErrorYhigh(7));
-  CMS_8TeVto7TeV->SetPointEYlow(6,CMS_8TeV->GetErrorYlow(7));
-  
-  CMS_8TeVto7TeV->SetPoint(7,CMS_8TeVto7TeV->GetX()[7],CMS_8TeV->GetY()[8]);
-  CMS_8TeVto7TeV->SetPointEYhigh(7,CMS_8TeV->GetErrorYhigh(8));
-  CMS_8TeVto7TeV->SetPointEYlow(7,CMS_8TeV->GetErrorYlow(8));
- 
-  for (int i = 0; i < CMS->GetN(); i++)
-    {
-      CMS->SetPoint(i,CMS->GetX()[i],
-		    (CMS_8TeVto7TeV->GetY()[i] /  pow(((CMS_8TeVto7TeV->GetErrorYlow(i) + CMS_8TeVto7TeV->GetErrorYhigh(i)) / 2.),2.) +
-		     CMS_7TeV->GetY()[i] /  pow(((CMS_7TeV->GetErrorYlow(i) + CMS_7TeV->GetErrorYhigh(i)) / 2.),2.)) /
-		    (1. /  pow(((CMS_8TeVto7TeV->GetErrorYlow(i) + CMS_8TeVto7TeV->GetErrorYhigh(i)) / 2.),2.) +
-		     1. /  pow(((CMS_7TeV->GetErrorYlow(i) + CMS_7TeV->GetErrorYhigh(i)) / 2.),2.)));
-      
-      CMS->SetPointEYhigh(i,sqrt( 1. / (1. /  pow(((CMS_8TeVto7TeV->GetErrorYlow(i) + CMS_8TeVto7TeV->GetErrorYhigh(i)) / 2.),2.) +
-					1. /  pow(((CMS_7TeV->GetErrorYlow(i) + CMS_7TeV->GetErrorYhigh(i)) / 2.),2.))));
-      CMS->SetPointEYlow(i,sqrt( 1. / (1. /  pow(((CMS_8TeVto7TeV->GetErrorYlow(i) + CMS_8TeVto7TeV->GetErrorYhigh(i)) / 2.),2.) +
-				       1. /  pow(((CMS_7TeV->GetErrorYlow(i) + CMS_7TeV->GetErrorYhigh(i)) / 2.),2.))));
-    }
-  // ####################################################
-
-
-
   TCanvas* cData  = new TCanvas("cData","cData",10,10,700,500);
   vector<TGraphAsymmErrors*> dVar;
 
@@ -1955,7 +1890,13 @@ void showData (int dataType, double offset, bool noHbar)
  }
 
 
-void combineMeasurements ()
+void combineMeasurements (string whichVar, int whichBin)
+// ############################
+// # whichVar --> FL          #
+// # whichVar --> AFB         #
+// # whichVar --> BF          #
+// # whichBin --> 0,1,2,4,6,7 #
+// ############################
 {
   // #############
   // # Variables #
@@ -1964,7 +1905,10 @@ void combineMeasurements ()
   double scale       = 0.;
   double combMeas    = 0.;
   double combMeasVar = 0.;
+  stringstream myString;
 
+  TMatrixD CovHi(nMeas,nMeas);
+  TMatrixD CovLo(nMeas,nMeas);
   TMatrixD Cov(nMeas,nMeas);
   vector<double> meas(nMeas);
   vector<double> weights(nMeas);
@@ -1973,47 +1917,325 @@ void combineMeasurements ()
   // ##################
   // # Initialisation #
   // ##################
-  // # FL specialBin #
-  // meas[0]  = 0.704;
-  // meas[1]  = 0.684;
+  if (whichVar == "FL")
+    {
+      if (whichBin == -1)
+	{
+	  // # FL specialBin #
+	  meas[0]  = 0.704;
+	  meas[1]  = 0.684;
 
-  // Cov(0,0) = 0.051*0.051 + 0.000271;
-  // Cov(0,1) = Cov(1,0) = 1. * sqrt(0.00137 * 0.000082);  // cov[x,y] = rho * sigmax * sigmay
-  // Cov(1,1) = 0.102*0.102 + 0.000273;
+	  CovHi(0,0) = 0.051*0.051 + (0.003*0.003+0.001*0.001+0.014*0.014+0.004*0.004+0.007*0.007);
+	  CovHi(1,1) = 0.102*0.102 + (0.002*0.002+0.008*0.008+0.013*0.013+0.006*0.006);
 
-  // # AFB specialBin #
-  // meas[0]  = -0.150;
-  // meas[1]  = -0.068;
+	  CovLo(0,0) = 0.052*0.052 + (0.003*0.003+0.001*0.001+0.014*0.014+0.004*0.004+0.007*0.007);
+	  CovLo(1,1) = 0.102*0.102 + (0.002*0.002+0.008*0.008+0.013*0.013+0.006*0.006);
 
-  // Cov(0,0) = 0.096*0.096 + 0.000802;
-  // Cov(0,1) = Cov(1,0) = 1. * sqrt(0.000078 * 1e-6); // cov[x,y] = rho * sigmax * sigmay
-  // Cov(1,1) = 0.116*0.116 + 0.000183;
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * (0.034*0.034+0.003*0.003+0.003*0.003+0.014*0.014); // cov[x,y] = rho * sigmax * sigmay
+	}
+      else if (whichBin == 0)
+	{
+	  meas[0]  = 0.639;
+	  meas[1]  = 0.600;
 
-  // # dBF/dq2 specialBin #
-  meas[0]  = 3.59;
-  meas[1]  = 4.39;
+	  CovHi(0,0) = 0.087*0.087 + (0.010*0.010+0.011*0.011+0.027*0.027+0.015*0.015+0.006*0.006);
+	  CovHi(1,1) = 0.000*0.000 + (0.007*0.007+0.040*0.040+0.023*0.023+0.179*0.179);
 
-  Cov(0,0) = 0.29*0.29 + 29.18 * meas[0]*meas[0] / 1e4;
-  Cov(0,1) = Cov(1,0) = 1. * sqrt(6.78 * meas[0]*meas[0] / 1e4 * 14.33 * meas[1]*meas[1] / 1e4);  // cov[x,y] = rho * sigmax * sigmay
-  Cov(1,1) = 0.58*0.58 + 26.36 * meas[1]*meas[1] / 1e4;
+	  CovLo(0,0) = 0.094*0.094 + (0.010*0.010+0.011*0.011+0.027*0.027+0.015*0.015+0.006*0.006);
+	  CovLo(1,1) = 0.280*0.280 + (0.007*0.007+0.040*0.040+0.023*0.023+0.179*0.179);
 
+	 CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * (0.034*0.034+0.003*0.003+0.003*0.003+0.023*0.023); // cov[x,y] = rho * sigmax * sigmay
+	}
+      else if (whichBin == 1)
+	{
+	  meas[0]  = 0.793;
+	  meas[1]  = 0.650;
+
+	  CovHi(0,0) = 0.080*0.080 + (0.003*0.003+0.004*0.004+0.003*0.003+0.004*0.004);
+	  CovHi(1,1) = 0.170*0.170 + (0.007*0.007+0.003*0.003+0.019*0.019+0.003*0.003);
+
+	  CovLo(0,0) = 0.085*0.085 + (0.003*0.003+0.004*0.004+0.003*0.003+0.004*0.004);
+	  CovLo(1,1) = 0.170*0.170 + (0.007*0.007+0.003*0.003+0.019*0.019+0.003*0.003);
+
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * (0.034*0.034+0.004*0.004+0.003*0.003+0.024*0.024); // cov[x,y] = rho * sigmax * sigmay
+	}
+      else if (whichBin == 2)
+	{
+	  meas[0]  = (0.486/(0.061*0.061) + 0.613/(0.096*0.096)) / (1./(0.061*0.061) + 1./(0.096*0.096));
+	  meas[1]  = 0.810;
+
+	  CovHi(0,0) = 1. / (1./(0.061*0.061) + 1./(0.096*0.096)) + ((0.005*0.005+0.017*0.017+0.010*0.010+0.006*0.006+0.027*0.027)/pow(0.061,4.) + (0.004*0.004+0.009*0.009+0.034*0.034+0.009*0.009)/pow(0.096,4.)) / pow(1./(0.061*0.061) + 1./(0.096*0.096),2.);
+	  CovHi(1,1) = 0.131*0.131 + (0.007*0.007+0.040*0.040+0.009*0.009+0.013*0.013+0.023*0.023);
+
+	  CovLo(0,0) = 1. / (1./(0.061*0.061) + 1./(0.096*0.096)) + ((0.005*0.005+0.017*0.017+0.010*0.010+0.006*0.006+0.027*0.027)/pow(0.061,4.) + (0.004*0.004+0.009*0.009+0.034*0.034+0.009*0.009)/pow(0.096,4.)) / pow(1./(0.061*0.061) + 1./(0.096*0.096),2.);
+	  CovLo(1,1) = 0.124*0.124 + (0.007*0.007+0.040*0.040+0.009*0.009+0.013*0.013+0.023*0.023);
+
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((0.034*0.034+0.003*0.003+0.003*0.003+0.014*0.014)/pow(0.061,4.) + (0.034*0.034+0.003*0.003+0.003*0.003+0.021*0.021)/pow(0.096,4.)) / pow(1./(0.061*0.061) + 1./(0.096*0.096),2.); // cov[x,y] = rho * sigmax * sigmay
+	}
+      else if (whichBin == 4)
+	{
+	  meas[0]  = 0.392;
+	  meas[1]  = 0.450;
+
+	  CovHi(0,0) = 0.050*0.050 + (0.003*0.003+0.002*0.002+0.004*0.004);
+	  CovHi(1,1) = 0.100*0.100 + (0.005*0.005+0.013*0.013+0.005*0.005+0.026*0.026+0.008*0.008);
+
+	  CovLo(0,0) = 0.051*0.051 + (0.003*0.003+0.002*0.002+0.004*0.004);
+	  CovLo(1,1) = 0.110*0.110 + (0.005*0.005+0.013*0.013+0.005*0.005+0.026*0.026+0.008*0.008);
+
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * (0.034*0.034+0.001*0.001+0.003*0.003+0.008*0.008); // cov[x,y] = rho * sigmax * sigmay
+	}
+      else if (whichBin == 6)
+	{
+	  meas[0]  = 0.464;
+	  meas[1]  = 0.530;
+
+	  CovHi(0,0) = 0.041*0.041 + (0.005*0.005+0.001*0.001+0.001*0.001+0.013*0.013+0.001*0.001);
+	  CovHi(1,1) = 0.120*0.120 + (0.006*0.006+0.023*0.023+0.013*0.013+0.004*0.004);
+
+	  CovLo(0,0) = 0.049*0.049 + (0.005*0.005+0.001*0.001+0.001*0.001+0.013*0.013+0.001*0.001);
+	  CovLo(1,1) = 0.070*0.070 + (0.006*0.006+0.023*0.023+0.013*0.013+0.004*0.004);
+
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * (0.034*0.034+0.001*0.001+0.003*0.003+0.006*0.006); // cov[x,y] = rho * sigmax * sigmay
+	}
+      else if (whichBin == 7)
+	{
+	  meas[0]  = 0.379;
+	  meas[1]  = 0.440;
+
+	  CovHi(0,0) = 0.054*0.054 + (0.005*0.005+0.003*0.003+0.001*0.001+0.008*0.008);
+	  CovHi(1,1) = 0.070*0.070 + (0.005*0.005+0.011*0.011+0.011*0.011+0.021*0.021);
+
+	  CovLo(0,0) = 0.055*0.055 + (0.005*0.005+0.003*0.003+0.001*0.001+0.008*0.008);
+	  CovLo(1,1) = 0.070*0.070 + (0.005*0.005+0.011*0.011+0.011*0.011+0.021*0.021);
+
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * (0.034*0.034+0.004*0.004+0.003*0.003+0.006*0.006); // cov[x,y] = rho * sigmax * sigmay
+	}
+      else { cout << "\nInvalid bin number: " << whichBin << endl; exit(EXIT_FAILURE); }
+    }
+  else if (whichVar == "AFB")
+    {
+      if (whichBin == -1)
+	{
+	  // # AFB specialBin #
+	  meas[0]  = -0.150;
+	  meas[1]  = -0.068;
+
+	  CovHi(0,0) = 0.096*0.096 + (0.004*0.004+0.012*0.012+0.016*0.016+0.019*0.019+0.005*0.005);
+	  CovHi(1,1) = 0.115*0.115 + (0.001*0.001+0.003*0.003+0.013*0.013+0.002*0.002);
+
+	  CovLo(0,0) = 0.090*0.090 + (0.004*0.004+0.012*0.012+0.016*0.016+0.019*0.019+0.005*0.005);
+	  CovLo(1,1) = 0.116*0.116 + (0.001*0.001+0.003*0.003+0.013*0.013+0.002*0.002);
+
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * (0.008*0.008+0.003*0.003+0.001*0.001+0.002*0.002); // cov[x,y] = rho * sigmax * sigmay
+	}
+      else if (whichBin == 0)
+	{
+	  meas[0]  = -0.270;
+	  meas[1]  = -0.290;
+
+	  CovHi(0,0) = 0.170*0.170 + (0.007*0.007+0.037*0.037+0.020*0.020+0.052*0.052+0.004*0.004);
+	  CovHi(1,1) = 0.280*0.280 + (0.004*0.004+0.077*0.077+0.006*0.006+0.161*0.161);
+
+	  CovLo(0,0) = 0.401*0.401 + (0.007*0.007+0.037*0.037+0.020*0.020+0.052*0.052+0.004*0.004);
+	  CovLo(1,1) = 0.000*0.000 + (0.004*0.004+0.077*0.077+0.006*0.006+0.161*0.161);
+
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * (0.008*0.008+0.002*0.002+0.001*0.001+0.005*0.005); // cov[x,y] = rho * sigmax * sigmay
+	}
+      else if (whichBin == 1)
+	{
+	  meas[0]  = -0.123;
+	  meas[1]  = -0.070;
+
+	  CovHi(0,0) = 0.151*0.151 + (0.007*0.007+0.015*0.015+0.032*0.032+0.032*0.032+0.003*0.003);
+	  CovHi(1,1) = 0.200*0.200 + (0.005*0.005+0.014*0.014+0.008*0.008+0.004*0.004);
+
+	  CovLo(0,0) = 0.136*0.136 + (0.007*0.007+0.015*0.015+0.032*0.032+0.032*0.032+0.003*0.003);
+	  CovLo(1,1) = 0.200*0.200 + (0.005*0.005+0.014*0.014+0.008*0.008+0.004*0.004);
+
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * (0.008*0.008+0.003*0.003+0.001*0.001+0.002*0.002); // cov[x,y] = rho * sigmax * sigmay
+	}
+      else if (whichBin == 2)
+	{
+	  meas[0]  = (0.035/(0.096*0.096) + 0.028/(0.152*0.152)) / (1./(0.096*0.096) + 1./(0.152*0.152));
+	  meas[1]  = -0.010;
+
+	  CovHi(0,0) = 1. / (1./(0.096*0.096) + 1./(0.152*0.152)) + ((0.018*0.018+0.008*0.008+0.005*0.005)/pow(0.096,4.) + (0.008*0.008+0.020*0.020+0.013*0.013+0.005*0.005)/pow(0.152,4.)) / pow(1./(0.096*0.096) + 1./(0.152*0.152),2.);
+	  CovHi(1,1) = 0.110*0.110 + (0.005*0.005+0.017*0.017+0.014*0.014+0.002*0.002+0.022*0.022);
+
+	  CovLo(0,0) = 1. / (1./(0.096*0.096) + 1./(0.152*0.152)) + ((0.018*0.018+0.008*0.008+0.005*0.005)/pow(0.096,4.) + (0.008*0.008+0.020*0.020+0.013*0.013+0.005*0.005)/pow(0.152,4.)) / pow(1./(0.096*0.096) + 1./(0.152*0.152),2.);
+	  CovLo(1,1) = 0.110*0.110 + (0.005*0.005+0.017*0.017+0.014*0.014+0.002*0.002+0.022*0.022);
+
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((0.018*0.018+0.008*0.008+0.005*0.005)/pow(0.096,4.) + (0.008*0.008+0.020*0.020+0.013*0.013+0.005*0.005)/pow(0.152,4.)) / pow(1./(0.096*0.096) + 1./(0.152*0.152),2.); // cov[x,y] = rho * sigmax * sigmay
+	}
+      else if (whichBin == 4)
+	{
+	  meas[0]  = 0.157;
+	  meas[1]  = -0.040;
+  
+	  CovHi(0,0) = 0.059*0.059 + (0.005*0.005+0.003*0.003+0.006*0.006+0.003*0.003);
+	  CovHi(1,1) = 0.080*0.080 + (0.004*0.004+0.043*0.043+0.014*0.014+0.008*0.008+0.005*0.005);
+
+	  CovLo(0,0) = 0.060*0.060 + (0.005*0.005+0.003*0.003+0.006*0.006+0.003*0.003);
+	  CovLo(1,1) = 0.080*0.080 + (0.004*0.004+0.043*0.043+0.014*0.014+0.008*0.008+0.005*0.005);
+
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * (0.008*0.008+0.0003*0.0003+0.001*0.001+0.002*0.002); // cov[x,y] = rho * sigmax * sigmay
+	}
+      else if (whichBin == 6)
+	{
+	  meas[0]  = 0.399;
+	  meas[1]  = 0.290;
+  
+	  CovHi(0,0) = 0.029*0.029 + (0.005*0.005+0.002*0.002+0.006*0.006+0.003*0.003);
+	  CovHi(1,1) = 0.090*0.090 + (0.003*0.003+0.014*0.014+0.011*0.011+0.038*0.038+0.017*0.017);
+
+	  CovLo(0,0) = 0.064*0.064 + (0.005*0.005+0.002*0.002+0.006*0.006+0.003*0.003);
+	  CovLo(1,1) = 0.090*0.090 + (0.003*0.003+0.014*0.014+0.011*0.011+0.038*0.038+0.017*0.017);
+
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * (0.008*0.008+0.002*0.002+0.001*0.001+0.001*0.001); // cov[x,y] = rho * sigmax * sigmay
+	}
+      else if (whichBin == 7)
+	{
+	  meas[0]  = 0.351;
+	  meas[1]  = 0.290;
+
+	  CovHi(0,0) = 0.065*0.065 + (0.005*0.005+0.008*0.008+0.003*0.003);
+	  CovHi(1,1) = 0.090*0.090 + (0.004*0.004+0.012*0.012+0.010*0.010+0.016*0.016+0.013*0.013);
+
+	  CovLo(0,0) = 0.066*0.066 + (0.005*0.005+0.008*0.008+0.003*0.003);
+	  CovLo(1,1) = 0.090*0.090 + (0.004*0.004+0.012*0.012+0.010*0.010+0.016*0.016+0.013*0.013);
+
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * (0.008*0.008+0.007*0.007+0.001*0.001); // cov[x,y] = rho * sigmax * sigmay
+	}
+      else { cout << "\nInvalid bin number: " << whichBin << endl; exit(EXIT_FAILURE); }
+    }
+  else if (whichVar == "BF")
+    {
+      if (whichBin == -1)
+	{
+	  // # dBF/dq2 specialBin #
+	  meas[0]  = 3.59;
+	  meas[1]  = 4.39;
+
+	  CovHi(0,0) = 0.29*0.29 + (0.7*0.7+2.3*2.3+1.0*1.0) * meas[0]*meas[0] / 1e4;
+	  CovHi(1,1) = 0.58*0.58 + (0.6*0.6+1.0*1.0+5.0*5.0) * meas[1]*meas[1] / 1e4;
+
+	  CovLo(0,0) = 0.29*0.29 + (0.7*0.7+2.3*2.3+1.0*1.0) * meas[0]*meas[0] / 1e4;
+	  CovLo(1,1) = 0.55*0.55 + (0.6*0.6+1.0*1.0+5.0*5.0) * meas[1]*meas[1] / 1e4;
+
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.2*4.2+0.3*0.3+3.2*3.2+1.1*1.1) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
+	}
+      else if (whichBin == 0)
+	{
+	  meas[0]  = 4.70;
+	  meas[1]  = 4.80;
+
+	  CovHi(0,0) = 0.67*0.67 + (2.0*2.0+2.5*2.5+0.4*0.4) * meas[0]*meas[0] / 1e4;
+	  CovHi(1,1) = 1.40*1.40 + (1.0*1.0+2.1*2.1+3.3*3.3+5.0*5.0) * meas[1]*meas[1] / 1e4;
+
+	  CovLo(0,0) = 0.67*0.67 + (2.0*2.0+2.5*2.5+0.4*0.4) * meas[0]*meas[0] / 1e4;
+	  CovLo(1,1) = 1.20*1.20 + (1.0*1.0+2.1*2.1+3.3*3.3+5.0*5.0) * meas[1]*meas[1] / 1e4;
+
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.5*4.5+0.2*0.2+3.2*3.2+1.5*1.5) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
+	}
+      else if (whichBin == 1)
+	{
+	  meas[0]  = 3.31;
+	  meas[1]  = 3.80;
+
+	  CovHi(0,0) = 0.44*0.44 + (1.1*1.1+1.9*1.9+0.2*0.2) * meas[0]*meas[0] / 1e4;
+	  CovHi(1,1) = 0.70*0.70 + (1.0*1.0+2.7*2.7+5.0*5.0) * meas[1]*meas[1] / 1e4;
+
+	  CovLo(0,0) = 0.44*0.44 + (1.1*1.1+1.9*1.9+0.2*0.2) * meas[0]*meas[0] / 1e4;
+	  CovLo(1,1) = 0.70*0.70 + (1.0*1.0+2.7*2.7+5.0*5.0) * meas[1]*meas[1] / 1e4;
+
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.5*4.5+0.3*0.3+3.2*3.2+2.1*2.1) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
+	}
+      else if (whichBin == 2)
+	{
+	  meas[0]  = (4.70/(0.42*0.42) + 3.45/(0.47*0.47)) / (1./(0.42*0.42) + 1./(0.47*0.47));
+	  meas[1]  = 3.70;
+
+	  CovHi(0,0) = 1. / (1./(0.42*0.42) + 1./(0.47*0.47)) + ((1.0*1.0+3.1*3.1+0.5*0.5+1.9*1.9) * meas[0]*meas[0] / 1e4 / pow(0.42,4.) + (0.8*0.8+5.5*5.5+1.2*1.2) * meas[0]*meas[0] / 1e4 / pow(0.47,4.)) / pow(1./(0.42*0.42) + 1./(0.47*0.47),2.);
+	  CovHi(1,1) = 0.70*0.70 + (1.0*1.0+1.3*1.3+2.9*2.9+3.2*3.2+5.0*5.0) * meas[1]*meas[1] / 1e4;
+
+	  CovLo(0,0) = 1. / (1./(0.42*0.42) + 1./(0.47*0.47)) + ((1.0*1.0+3.1*3.1+0.5*0.5+1.9*1.9) * meas[0]*meas[0] / 1e4 / pow(0.42,4.) + (0.8*0.8+5.5*5.5+1.2*1.2) * meas[0]*meas[0] / 1e4 / pow(0.47,4.)) / pow(1./(0.42*0.42) + 1./(0.47*0.47),2.);
+	  CovLo(1,1) = 0.70*0.70 + (1.0*1.0+1.3*1.3+2.9*2.9+3.2*3.2+5.0*5.0) * meas[1]*meas[1] / 1e4;
+
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.5*4.5+0.2*0.2+3.2*3.2+0.7*0.7) * meas[0]*meas[1] / 1e4 / pow(0.42,4.) + (4.5*4.5+0.1*0.1+3.2*3.2+1.4*1.4) * meas[0]*meas[1] / 1e4 / pow(0.47,4.)) / pow(1./(0.42*0.42) + 1./(0.47*0.47),2.); // cov[x,y] = rho * sigmax * sigmay
+	}
+      else if (whichBin == 4)
+	{
+	  meas[0]  = 6.21;
+	  meas[1]  = 5.40;
+
+	  CovHi(0,0) = 0.45*0.45 + (0.7*0.7+3.5*3.5+4.0*4.0) * meas[0]*meas[0] / 1e4;
+	  CovHi(1,1) = 0.90*0.90 + (1.0*1.0+1.0*1.0+15.2*15.2+5.0*5.0) * meas[1]*meas[1] / 1e4;
+
+	  CovLo(0,0) = 0.45*0.45 + (0.7*0.7+3.5*3.5+4.0*4.0) * meas[0]*meas[0] / 1e4;
+	  CovLo(1,1) = 0.90*0.90 + (1.0*1.0+1.0*1.0+15.2*15.2+5.0*5.0) * meas[1]*meas[1] / 1e4;
+
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.5*4.5+3.7*3.7+3.2*3.2+0.4*0.4) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
+	}
+      else if (whichBin == 6)
+	{
+	  meas[0]  = 6.54;
+	  meas[1]  = 4.60;
+
+	  CovHi(0,0) = 0.59*0.59 + (0.7*0.7+2.0*2.0+0.1*0.1) * meas[0]*meas[0] / 1e4;
+	  CovHi(1,1) = 0.90*0.90 + (1.0*1.0+2.2*2.2+1.0*1.0+7.1*7.1+5.0*5.0) * meas[1]*meas[1] / 1e4;
+
+	  CovLo(0,0) = 0.59*0.59 + (0.7*0.7+2.0*2.0+0.1*0.1) * meas[0]*meas[0] / 1e4;
+	  CovLo(1,1) = 0.80*0.80 + (1.0*1.0+2.2*2.2+1.0*1.0+7.1*7.1+5.0*5.0) * meas[1]*meas[1] / 1e4;
+
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.5*4.5+3.8*3.8+3.2*3.2+0.2*0.2) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
+	}
+      else if (whichBin == 7)
+	{
+	  meas[0]  = 4.19;
+	  meas[1]  = 5.20;
+
+	  CovHi(0,0) = 0.32*0.32 + (0.5*0.5+1.0*1.0+0.3*0.3) * meas[0]*meas[0] / 1e4;
+	  CovHi(1,1) = 0.60*0.60 + (1.0*1.0+5.6*5.6+5.0*5.0) * meas[1]*meas[1] / 1e4;
+
+	  CovLo(0,0) = 0.32*0.32 + (0.5*0.5+1.0*1.0+0.3*0.3) * meas[0]*meas[0] / 1e4;
+	  CovLo(1,1) = 0.60*0.60 + (1.0*1.0+5.6*5.6+5.0*5.0) * meas[1]*meas[1] / 1e4;
+
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.5*4.5+4.1*4.1+3.2*3.2+0.2*0.2) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
+	}
+      else { cout << "\nInvalid bin number: " << whichBin << endl; exit(EXIT_FAILURE); }
+    }
+
+
+  if (meas[0] >  meas[1])
+    {
+      Cov(0,0) = CovLo(0,0);
+      Cov(1,1) = CovHi(1,1);
+    }
+  else
+    {
+      Cov(0,0) = CovHi(0,0);
+      Cov(1,1) = CovLo(1,1);
+    }
+  Cov(0,1) = Cov(1,0) = CovHi(0,1);
+  
 
   // ###############
   // # Combination #
   // ###############
   TMatrixD invCov = Cov;
   invCov = invCov.Invert();
-
+  
   for (unsigned int i = 0; i < nMeas; i++)
     for (unsigned int j = 0; j < nMeas; j++)
       scale += invCov(i,j);
-  
+
   for (unsigned int i = 0; i < nMeas; i++)
     {
       weights[i] = 0;
       for (unsigned int j = 0; j < nMeas; j++) weights[i] += invCov(i,j);
       weights[i] = weights[i] / scale;
-
+      
       combMeas += weights[i] * meas[i];
     }
   
