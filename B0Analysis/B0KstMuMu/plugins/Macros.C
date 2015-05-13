@@ -1835,9 +1835,9 @@ void showData (int dataType, double offset, bool noHbar)
   // myString << DIRSMCOMP << "LHCb_3fb.data";
   // dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-1,2,21,false,0,noHbar,0.0*offset));
 
-  myString.clear(); myString.str("");
-  myString << DIRSMCOMP << "Atlas.data";
-  if (dataType != 2) dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,6,22,false,0,noHbar,0.8*offset));
+  // myString.clear(); myString.str("");
+  // myString << DIRSMCOMP << "Atlas.data";
+  // if (dataType != 2) dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,6,22,false,0,noHbar,0.8*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "BaBar.data";
@@ -1864,7 +1864,7 @@ void showData (int dataType, double offset, bool noHbar)
   leg->AddEntry(dVar[it++],"CMS (8 TeV)","lp");
   leg->AddEntry(dVar[it++],"CMS (7 TeV)","lp");
   leg->AddEntry(dVar[it++],"LHCb","lp");
-  if (dataType != 2) leg->AddEntry(dVar[it++],"Atlas","lp");
+  // if (dataType != 2) leg->AddEntry(dVar[it++],"Atlas","lp");
   leg->AddEntry(dVar[it++],"BaBar","lp");
   leg->AddEntry(dVar[it++],"Belle","lp");
   leg->AddEntry(dVar[it++],"CDF","lp");
