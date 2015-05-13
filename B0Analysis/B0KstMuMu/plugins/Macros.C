@@ -1820,12 +1820,16 @@ void showData (int dataType, double offset, bool noHbar)
   vector<TGraphAsymmErrors*> dVar;
 
   myString.clear(); myString.str("");
-  myString << DIRSMCOMP << "CMS_8TeV.data";
+  myString << DIRSMCOMP << "CMS_7e8TeV.data";
   dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,20,false,0,noHbar,0.0*offset));
 
-  myString.clear(); myString.str("");
-  myString << DIRSMCOMP << "CMS_7TeV.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,24,false,0,noHbar,0.3*offset));
+  // myString.clear(); myString.str("");
+  // myString << DIRSMCOMP << "CMS_8TeV.data";
+  // dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,20,false,0,noHbar,0.0*offset));
+
+  // myString.clear(); myString.str("");
+  // myString << DIRSMCOMP << "CMS_7TeV.data";
+  // dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,24,false,0,noHbar,0.3*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "LHCb_1fb.data";
@@ -1861,8 +1865,9 @@ void showData (int dataType, double offset, bool noHbar)
   unsigned int it = 0;
   TLegend* leg = NULL;
   leg = new TLegend(0.12, 0.6, 0.27, 0.88, "");
-  leg->AddEntry(dVar[it++],"CMS (8 TeV)","lp");
-  leg->AddEntry(dVar[it++],"CMS (7 TeV)","lp");
+  leg->AddEntry(dVar[it++],"CMS (7+8 TeV)","lp");
+  // leg->AddEntry(dVar[it++],"CMS (8 TeV)","lp");
+  // leg->AddEntry(dVar[it++],"CMS (7 TeV)","lp");
   leg->AddEntry(dVar[it++],"LHCb","lp");
   // if (dataType != 2) leg->AddEntry(dVar[it++],"Atlas","lp");
   leg->AddEntry(dVar[it++],"BaBar","lp");
