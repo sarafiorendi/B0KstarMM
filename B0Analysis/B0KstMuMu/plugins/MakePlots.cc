@@ -1687,8 +1687,8 @@ void MakePhysicsPlots (unsigned int PlotType)
   geStepTh_yL->SetFillColor(kBlack);
   geStepTh_yL->SetFillStyle(0);
   geStepTh_yL->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
-  
-  
+
+
   // ############################
   // # Adding systematic errors #
   // ############################
