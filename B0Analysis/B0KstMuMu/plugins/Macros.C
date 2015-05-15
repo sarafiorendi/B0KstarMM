@@ -2090,7 +2090,7 @@ void combineMeasurements (string whichVar, int whichBin)
 
 	  // CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 0.0;
 
-	  meas[0]  = 0.035;
+	  meas[0]  = 0.033;
 	  meas[1]  = -0.010;
 
 	  CovHi(0,0) = 0.083*0.083;
@@ -2130,13 +2130,13 @@ void combineMeasurements (string whichVar, int whichBin)
       else if (whichBin == 7)
 	{
 	  meas[0]  = 0.351;
-	  meas[1]  = 0.290;
+	  meas[1]  = 0.410;
 
 	  CovHi(0,0) = 0.065*0.065 + (0.005*0.005+0.008*0.008+0.003*0.003);
-	  CovHi(1,1) = 0.090*0.090 + (0.004*0.004+0.012*0.012+0.010*0.010+0.016*0.016+0.013*0.013);
+	  CovHi(1,1) = 0.050*0.050 + (0.004*0.004+0.012*0.012+0.010*0.010+0.016*0.016+0.013*0.013);
 
 	  CovLo(0,0) = 0.066*0.066 + (0.005*0.005+0.008*0.008+0.003*0.003);
-	  CovLo(1,1) = 0.090*0.090 + (0.004*0.004+0.012*0.012+0.010*0.010+0.016*0.016+0.013*0.013);
+	  CovLo(1,1) = 0.050*0.050 + (0.004*0.004+0.012*0.012+0.010*0.010+0.016*0.016+0.013*0.013);
 
 	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * (0.008*0.008+0.007*0.007+0.001*0.001); // cov[x,y] = rho * sigmax * sigmay
 	}
@@ -2156,7 +2156,7 @@ void combineMeasurements (string whichVar, int whichBin)
 	  CovLo(0,0) = 0.29*0.29 + (0.7*0.7+2.3*2.3+1.0*1.0) * meas[0]*meas[0] / 1e4;
 	  CovLo(1,1) = 0.55*0.55 + (0.6*0.6+1.0*1.0+5.0*5.0) * meas[1]*meas[1] / 1e4;
 
-	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.2*4.2+0.3*0.3+3.2*3.2+1.1*1.1) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.2*4.2+0.3*0.3+3.2*3.2+1.1*1.1+4.6*4.6) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
 	}
       else if (whichBin == 0)
 	{
@@ -2169,7 +2169,7 @@ void combineMeasurements (string whichVar, int whichBin)
 	  CovLo(0,0) = 0.67*0.67 + (2.0*2.0+2.5*2.5+0.4*0.4) * meas[0]*meas[0] / 1e4;
 	  CovLo(1,1) = 1.20*1.20 + (1.0*1.0+2.1*2.1+3.3*3.3+5.0*5.0) * meas[1]*meas[1] / 1e4;
 
-	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.5*4.5+0.2*0.2+3.2*3.2+1.5*1.5) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.5*4.5+0.2*0.2+3.2*3.2+1.5*1.5+4.6*4.6) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
 	}
       else if (whichBin == 1)
 	{
@@ -2182,7 +2182,7 @@ void combineMeasurements (string whichVar, int whichBin)
 	  CovLo(0,0) = 0.44*0.44 + (1.1*1.1+1.9*1.9+0.2*0.2) * meas[0]*meas[0] / 1e4;
 	  CovLo(1,1) = 0.70*0.70 + (1.0*1.0+2.7*2.7+5.0*5.0) * meas[1]*meas[1] / 1e4;
 
-	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.5*4.5+0.3*0.3+3.2*3.2+2.1*2.1) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.5*4.5+0.3*0.3+3.2*3.2+2.1*2.1+4.6*4.6) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
 	}
       else if (whichBin == 2)
 	{
@@ -2209,7 +2209,7 @@ void combineMeasurements (string whichVar, int whichBin)
 	  CovLo(0,0) = 0.34*0.34;
 	  CovLo(1,1) = 0.70*0.70 + (1.0*1.0+1.3*1.3+2.9*2.9+3.2*3.2+5.0*5.0) * meas[1]*meas[1] / 1e4;
 
-	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.5*4.5+0.2*0.2+3.2*3.2+0.7*0.7) * meas[0]*meas[1] / 1e4 + (4.5*4.5+0.1*0.1+3.2*3.2+1.4*1.4) * meas[0]*meas[1] / 1e4); // cov[x,y] = rho * sigmax * sigmay
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.5*4.5+0.2*0.2+3.2*3.2+0.7*0.7+4.6*4.6) * meas[0]*meas[1] / 1e4 + (4.5*4.5+0.1*0.1+3.2*3.2+1.4*1.4+4.6*4.6) * meas[0]*meas[1] / 1e4); // cov[x,y] = rho * sigmax * sigmay
 	}
       else if (whichBin == 4)
 	{
@@ -2222,7 +2222,7 @@ void combineMeasurements (string whichVar, int whichBin)
 	  CovLo(0,0) = 0.45*0.45 + (0.7*0.7+3.5*3.5+4.0*4.0) * meas[0]*meas[0] / 1e4;
 	  CovLo(1,1) = 0.90*0.90 + (1.0*1.0+1.0*1.0+15.2*15.2+5.0*5.0) * meas[1]*meas[1] / 1e4;
 
-	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.5*4.5+3.7*3.7+3.2*3.2+0.4*0.4) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.5*4.5+3.7*3.7+3.2*3.2+0.4*0.4+4.6*4.6) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
 	}
       else if (whichBin == 6)
 	{
@@ -2235,7 +2235,7 @@ void combineMeasurements (string whichVar, int whichBin)
 	  CovLo(0,0) = 0.59*0.59 + (0.7*0.7+2.0*2.0+0.1*0.1) * meas[0]*meas[0] / 1e4;
 	  CovLo(1,1) = 0.80*0.80 + (1.0*1.0+2.2*2.2+1.0*1.0+7.1*7.1+5.0*5.0) * meas[1]*meas[1] / 1e4;
 
-	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.5*4.5+3.8*3.8+3.2*3.2+0.2*0.2) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.5*4.5+3.8*3.8+3.2*3.2+0.2*0.2+4.6*4.6) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
 	}
       else if (whichBin == 7)
 	{
@@ -2248,7 +2248,7 @@ void combineMeasurements (string whichVar, int whichBin)
 	  CovLo(0,0) = 0.32*0.32 + (0.5*0.5+1.0*1.0+0.3*0.3) * meas[0]*meas[0] / 1e4;
 	  CovLo(1,1) = 0.60*0.60 + (1.0*1.0+5.6*5.6+5.0*5.0) * meas[1]*meas[1] / 1e4;
 
-	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.5*4.5+4.1*4.1+3.2*3.2+0.2*0.2) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
+	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.5*4.5+4.1*4.1+3.2*3.2+0.2*0.2+4.6*4.6) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
 	}
       else { cout << "\nInvalid bin number: " << whichBin << endl; exit(EXIT_FAILURE); }
     }
