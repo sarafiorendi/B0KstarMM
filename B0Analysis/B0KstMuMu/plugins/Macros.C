@@ -1865,7 +1865,7 @@ void showData (int dataType, double offset, bool noHbar)
   unsigned int it = 0;
   TLegend* leg = NULL;
   leg = new TLegend(0.12, 0.6, 0.27, 0.88, "");
-  leg->AddEntry(dVar[it++],"CMS (7+8 TeV)","lp");
+  leg->AddEntry(dVar[it++],"CMS (7 TeV + 8 TeV)","lp");
   // leg->AddEntry(dVar[it++],"CMS (8 TeV)","lp");
   // leg->AddEntry(dVar[it++],"CMS (7 TeV)","lp");
   leg->AddEntry(dVar[it++],"LHCb","lp");
