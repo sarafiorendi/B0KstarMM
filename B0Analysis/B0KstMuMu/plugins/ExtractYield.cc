@@ -6022,14 +6022,11 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       myString << (*TotalPDF)->getPlotLabel() << "_" << ID << ".pdf";
       Canv->Print(myString.str().c_str());
 
-      if (SETBATCH == false)
+      for (unsigned int i = 0; i < nCanv; i++)
 	{
-	  for (unsigned int i = 0; i < nCanv; i++)
-	    {
-	      myString.clear(); myString.str("");
-	      myString << (*TotalPDF)->getPlotLabel() << "_localCanv" << i << "_" << ID << ".pdf";
-	      localCanv[i]->Print(myString.str().c_str());
-	    }
+	  myString.clear(); myString.str("");
+	  myString << (*TotalPDF)->getPlotLabel() << "_localCanv" << i << "_" << ID << ".pdf";
+	  localCanv[i]->Print(myString.str().c_str());
 	}
     }
 
