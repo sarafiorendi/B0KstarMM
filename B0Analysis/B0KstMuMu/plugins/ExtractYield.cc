@@ -2904,8 +2904,13 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
 
       Canv->Modified();
       Canv->Update();
+
       myString.clear(); myString.str("");
       myString << plotName << ".pdf";
+      if (SAVEPLOT == true) Canv->Print(myString.str().c_str());
+      
+      myString.clear(); myString.str("");
+      myString << plotName << ".root";
       if (SAVEPLOT == true) Canv->Print(myString.str().c_str());
     }
   else
@@ -3222,8 +3227,13 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // ##############
       Canv->Modified();
       Canv->Update();
+
       myString.clear(); myString.str("");
       myString << plotName << ".pdf";
+      if (SAVEPLOT == true) Canv->Print(myString.str().c_str());
+
+      myString.clear(); myString.str("");
+      myString << plotName << ".root";
       if (SAVEPLOT == true) Canv->Print(myString.str().c_str());
 
 
@@ -3910,6 +3920,10 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
     {
       myString.clear(); myString.str("");
       myString << (*TotalPDF)->getPlotLabel() << "_" << ID << ".pdf";
+      Canv->Print(myString.str().c_str());
+
+      myString.clear(); myString.str("");
+      myString << (*TotalPDF)->getPlotLabel() << "_" << ID << ".root";
       Canv->Print(myString.str().c_str());
     }
 
@@ -6022,10 +6036,18 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       myString << (*TotalPDF)->getPlotLabel() << "_" << ID << ".pdf";
       Canv->Print(myString.str().c_str());
 
+      myString.clear(); myString.str("");
+      myString << (*TotalPDF)->getPlotLabel() << "_" << ID << ".root";
+      Canv->Print(myString.str().c_str());
+
       for (unsigned int i = 0; i < nCanv; i++)
 	{
 	  myString.clear(); myString.str("");
 	  myString << (*TotalPDF)->getPlotLabel() << "_localCanv" << i << "_" << ID << ".pdf";
+	  localCanv[i]->Print(myString.str().c_str());
+
+	  myString.clear(); myString.str("");
+	  myString << (*TotalPDF)->getPlotLabel() << "_localCanv" << i << "_" << ID << ".root";
 	  localCanv[i]->Print(myString.str().c_str());
 	}
     }
