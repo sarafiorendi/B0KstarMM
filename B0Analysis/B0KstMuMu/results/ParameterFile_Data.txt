@@ -930,8 +930,10 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
+#0.5
 0.639437   -0.0938153   0.0867734
 # AFB +/- err
+#0.0
 -0.270347   -0.400742   0.170329
 # P1 +/- err
 0.0
@@ -1082,8 +1084,10 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
+#0.5
 0.792733   -0.084595   0.0804363
 # AFB +/- err
+#0.0
 -0.122628   -0.135761   0.150697
 # P1 +/- err
 0.0
@@ -1174,7 +1178,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ### Number of coefficients of the comb.bkg angle1 poly ###
 3
-# Bkg angle1 poly coeff. c0
+# Bkg angle1 poly coeff. c0 : set all to 0.0
 -0.371655   -0.302466   0.302466
 # Bkg angle1 poly coeff. c1
 -0.746712   -0.187083   0.187083
@@ -1198,7 +1202,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ### Number of coefficients of the comb.bkg angle2 poly ###
 4
-# Bkg angle2 poly coeff. c0
+# Bkg angle2 poly coeff. c0 : set all to 0.0
 -1.3381   -0.540814   0.540814
 # Bkg angle2 poly coeff. c1
 1.41569   -1.54337   1.54337
@@ -1882,10 +1886,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.938256   -0.0580989   0.0384469
 ###################################################################
 # Sigma-1 mistag [GeV/c2]
+#0.1
 0.1082   -0.00297102   0.00297102
 # Sigma-2 mistag [GeV/c2]
+#0.05
 0.0465634   -0.00176744   0.00176744
 # Fraction
+#0.5
 0.495705   -0.0323271   0.0323271
 ###################################################################
 # Bkg mean right-peak-1 [GeV/c2]
@@ -1934,7 +1941,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ### Number of coefficients of the comb.bkg angle1 poly ###
 4
-# Bkg angle1 poly coeff. c0
+# Bkg angle1 poly coeff. c0 : set all to 0.0
 -0.649348   -0.482112   0.482112
 # Bkg angle1 poly coeff. c1
 1.3881   -1.24489   1.24489
@@ -1958,7 +1965,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ### Number of coefficients of the comb.bkg angle2 poly ###
 2
-# Bkg angle2 poly coeff. c0
+# Bkg angle2 poly coeff. c0 : set all to 0.0
 -0.145155   -0.0980013   0.0980013
 # Bkg angle2 poly coeff. c1
 -0.854784   -0.159817   0.159817
@@ -1994,8 +2001,10 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
+#0.5
 0.464397   -0.049418   0.0413724
 # AFB +/- err
+#0.0
 0.399356   -0.0641833   0.0285231
 # P1 +/- err
 0.0
