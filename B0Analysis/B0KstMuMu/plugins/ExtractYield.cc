@@ -1473,6 +1473,10 @@ double StoreFitResultsInFile (RooAbsPdf* pdf, RooFitResult* fitResult, RooDataSe
 	  Utility->Transformer("AsS",atoi(Utility->GetGenericParam("doTransf").c_str()),varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"AsS"));
 	  fileFitResults << "As: " << varVal << " +/- " << (varValEHi - varValELo) / 2. << " (" << varValEHi << "/" << varValELo << ")" << endl;
         }
+
+
+      if ((GetVar(pdf,"FlS") != NULL) && (GetVar(pdf,"AfbS") != NULL))
+	fileFitResults << "Fl-Afb correlation coef.: " << fitResult->correlation("FlS","AfbS") << endl;
     }
 
 
@@ -6349,6 +6353,9 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 
 	      cout << "\n[ExtractYield::IterativeMass2AnglesFitq2Bins]\t===> dBF/dq^2 <===" << endl;
 	      cout << VecHistoMeas->operator[](2)->GetBinContent(i+1) << "   -" << dBFdq2Err << "   " << dBFdq2Err << endl;
+
+	      cout << "\n[ExtractYield::IterativeMass2AnglesFitq2Bins]\t===> Fl-Afb correlation coefficient <===" << endl;
+	      cout << fitResult->correlation("FlS","AfbS") << endl;
 	    }
 	}
 
