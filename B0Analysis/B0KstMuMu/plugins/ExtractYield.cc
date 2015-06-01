@@ -5217,8 +5217,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // ###################
       // # Make actual fit #
       // ###################
-      if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER,"simplex")); // @TMP@
-      else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER,"simplex")); // @TMP@
+      if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER/*,"simplex"*/)); // @TMP@
+      else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER/*,"simplex"*/)); // @TMP@
 
 
       // ###################################################
