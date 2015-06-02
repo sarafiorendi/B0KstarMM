@@ -946,7 +946,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
     	}
 
       cout << "\n[ExtractYield::MakeAngWithEffPDF]\t@@@ 2D angular*efficiency p.d.f. @@@" << endl;
-      cout << myString.str().c_str() << endl;
+      cout << myString.str() << endl;
 
       AnglesPDF = new RooGenericPdf("AngleS",myString.str().c_str(),RooArgSet(*VarsAng,*VarsPoly));
     }
@@ -981,7 +981,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
  	}
 
       cout << "\n[ExtractYield::MakeAngWithEffPDF]\t@@@ 2D angular p.d.f. @@@" << endl;
-      cout << myString.str().c_str() << endl;
+      cout << myString.str() << endl;
 
       // @TMP@ : for the mis-tag I use the binned efficiency, and NOT the analytical efficiency, due to problems in fitting the binned efficiency
       VarsPoly->removeAll();
@@ -1146,7 +1146,7 @@ void ResetCombPolyParam (vector<vector<string>*>* fitParam, RooAbsPdf* pdf)
 	      myString << "c1Poly" << i;
 	      fitParam->operator[](Utility->GetFitParamIndx(myString.str().c_str()))->operator[](j) = "0.0";
 
-	      cout << myString.str().c_str() << "\t" << fitParam->operator[](Utility->GetFitParamIndx(myString.str().c_str()))->operator[](j).c_str() << endl;
+	      cout << myString.str() << "\t" << fitParam->operator[](Utility->GetFitParamIndx(myString.str().c_str()))->operator[](j).c_str() << endl;
 	    }
 
 	  for (int i = 0; i < atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC2"))->operator[](j).c_str()); i++)
@@ -1155,7 +1155,7 @@ void ResetCombPolyParam (vector<vector<string>*>* fitParam, RooAbsPdf* pdf)
 	      myString << "c2Poly" << i;
 	      fitParam->operator[](Utility->GetFitParamIndx(myString.str().c_str()))->operator[](j) = "0.0";
 
-	      cout << myString.str().c_str() << "\t" << fitParam->operator[](Utility->GetFitParamIndx(myString.str().c_str()))->operator[](j).c_str() << endl;
+	      cout << myString.str() << "\t" << fitParam->operator[](Utility->GetFitParamIndx(myString.str().c_str()))->operator[](j).c_str() << endl;
 	    }
 
 	  for (int i = 0; i < atoi(fitParam->operator[](Utility->GetFitParamIndx("nPolyC3"))->operator[](j).c_str()); i++)
@@ -1164,7 +1164,7 @@ void ResetCombPolyParam (vector<vector<string>*>* fitParam, RooAbsPdf* pdf)
 	      myString << "c3Poly" << i;
 	      fitParam->operator[](Utility->GetFitParamIndx(myString.str().c_str()))->operator[](j) = "0.0";
 
-	      cout << myString.str().c_str() << "\t" << fitParam->operator[](Utility->GetFitParamIndx(myString.str().c_str()))->operator[](j).c_str() << endl;
+	      cout << myString.str() << "\t" << fitParam->operator[](Utility->GetFitParamIndx(myString.str().c_str()))->operator[](j).c_str() << endl;
 	    }
 	}
     }
@@ -2479,7 +2479,7 @@ double GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam,
 	  else                  retRnd = rndKernel;
 	  myString.clear(); myString.str("");
 	  myString << retRnd * GetVar(pdf,"nMisTagFrac")->getVal();
-	  cout << "Mis-tag fraction generation : gaussian mean = " << GetVar(pdf,"nMisTagFrac")->getVal() << "\tsigma = " << GetVar(pdf,"nMisTagFrac")->getError() << "\tvalue = " << myString << endl;
+	  cout << "Mis-tag fraction generation : gaussian mean = " << GetVar(pdf,"nMisTagFrac")->getVal() << "\tsigma = " << GetVar(pdf,"nMisTagFrac")->getError() << "\tvalue = " << myString.str() << endl;
 	  fitParam->operator[](Utility->GetFitParamIndx("nMisTagFrac"))->operator[](q2BinIndx) = myString.str();
 	}
     }
@@ -2491,7 +2491,7 @@ double GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam,
 	{
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform();
-	  cout << "Background var1 generation : uniform lower bound = 0\thigher bound = 1" << "\tvalue = " << myString << endl;
+	  cout << "Background var1 generation : uniform lower bound = 0\thigher bound = 1" << "\tvalue = " << myString.str() << endl;
 	  fitParam->operator[](Utility->GetFitParamIndx("var1"))->operator[](q2BinIndx) = myString.str();
 	}
 
@@ -2499,7 +2499,7 @@ double GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam,
 	{
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform();
-	  cout << "Background var2 generation : uniform lower bound = 0\thigher bound = 1" << "\tvalue = " << myString << endl;
+	  cout << "Background var2 generation : uniform lower bound = 0\thigher bound = 1" << "\tvalue = " << myString.str() << endl;
 	  fitParam->operator[](Utility->GetFitParamIndx("var2"))->operator[](q2BinIndx) = myString.str();
 	}
 
@@ -2507,7 +2507,7 @@ double GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam,
 	{
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform();
-	  cout << "Background fraction uniform generation : " << "\tvalue = " << myString << endl;
+	  cout << "Background fraction uniform generation : " << "\tvalue = " << myString.str() << endl;
 	  fitParam->operator[](Utility->GetFitParamIndx("fracMassBExp"))->operator[](q2BinIndx) = myString.str();
 	}
     }
@@ -2519,7 +2519,7 @@ double GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam,
 	{
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform();
-	  cout << "Fl generation : uniform lower bound = 0\thigher bound = 1" << "\tvalue = " << myString << endl;
+	  cout << "Fl generation : uniform lower bound = 0\thigher bound = 1" << "\tvalue = " << myString.str() << endl;
 	  fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](q2BinIndx) = myString.str();
 	}
       
@@ -2527,7 +2527,7 @@ double GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam,
 	{
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform() * 2. - 1.;
-	  cout << "Afb generation : uniform lower bound = -1\thigher bound = 1" << "\tvalue = " << myString << endl;
+	  cout << "Afb generation : uniform lower bound = -1\thigher bound = 1" << "\tvalue = " << myString.str() << endl;
 	  fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](q2BinIndx) = myString.str();
 	}
 
@@ -2535,7 +2535,7 @@ double GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam,
 	{
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform();
-	  cout << "Fs generation : uniform lower bound = 0\thigher bound = 1" << "\tvalue = " << myString << endl;
+	  cout << "Fs generation : uniform lower bound = 0\thigher bound = 1" << "\tvalue = " << myString.str() << endl;
 	  fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](q2BinIndx) = myString.str();
 	}
 
@@ -2543,7 +2543,7 @@ double GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam,
 	{
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform() * 2. - 1.;
-	  cout << "As generation : uniform lower bound = -1\thigher bound = 1" << "\tvalue = " << myString << endl;
+	  cout << "As generation : uniform lower bound = -1\thigher bound = 1" << "\tvalue = " << myString.str() << endl;
 	  fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](q2BinIndx) = myString.str();
 	}
     }
@@ -2555,7 +2555,7 @@ double GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam,
 	{
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform() * (GetVar(pdf,"P1S")->getMax() - GetVar(pdf,"P1S")->getMin()) + GetVar(pdf,"P1S")->getMin();
-	  cout << "P1 generation : uniform lower bound = " << GetVar(pdf,"P1S")->getMin() << "\thigher bound = " << GetVar(pdf,"P1S")->getMax() << "\tvalue = " << myString << endl;
+	  cout << "P1 generation : uniform lower bound = " << GetVar(pdf,"P1S")->getMin() << "\thigher bound = " << GetVar(pdf,"P1S")->getMax() << "\tvalue = " << myString.str() << endl;
 	  fitParam->operator[](Utility->GetFitParamIndx("P1S"))->operator[](q2BinIndx) = myString.str();
 	}
       
@@ -2563,7 +2563,7 @@ double GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam,
 	{
 	  myString.clear(); myString.str("");
 	  myString << RooRandom::uniform() * (GetVar(pdf,"P2S")->getMax() - GetVar(pdf,"P2S")->getMin()) + GetVar(pdf,"P2S")->getMin();
-	  cout << "P2 generation : uniform lower bound = " << GetVar(pdf,"P2S")->getMin() << "\thigher bound = " << GetVar(pdf,"P2S")->getMax() << "\tvalue = " << myString << endl;
+	  cout << "P2 generation : uniform lower bound = " << GetVar(pdf,"P2S")->getMin() << "\thigher bound = " << GetVar(pdf,"P2S")->getMax() << "\tvalue = " << myString.str() << endl;
 	  fitParam->operator[](Utility->GetFitParamIndx("P2S"))->operator[](q2BinIndx) = myString.str();
 	}
     }
@@ -2579,11 +2579,11 @@ double GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam,
 	{
 	  myCoeff.clear(); myCoeff.str("");
 	  myCoeff << "c1Poly" << i;
-	  if (GetVar(pdf,myString.str().c_str()) != NULL)
+	  if (GetVar(pdf,myCoeff.str().c_str()) != NULL)
 	    {
 	      myString.clear(); myString.str("");
 	      myString << RooRandom::gaussian() * GetVar(pdf,myCoeff.str().c_str())->getError() + GetVar(pdf,myCoeff.str().c_str())->getVal();
-	      cout << myString.str().c_str() << " generation : gaussian mean = " << GetVar(pdf,myCoeff.str().c_str())->getVal() << "\tsigma = " << GetVar(pdf,myCoeff.str().c_str())->getError() << "\tvalue = " << myString << endl;
+	      cout << myCoeff.str() << " generation : gaussian mean = " << GetVar(pdf,myCoeff.str().c_str())->getVal() << "\tsigma = " << GetVar(pdf,myCoeff.str().c_str())->getError() << "\tvalue = " << myString.str() << endl;
 	      fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx) = myString.str();
 	    }
 	}
@@ -2591,11 +2591,11 @@ double GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam,
 	{
 	  myCoeff.clear(); myCoeff.str("");
 	  myCoeff << "c2Poly" << i;
-	  if (GetVar(pdf,myString.str().c_str()) != NULL)
+	  if (GetVar(pdf,myCoeff.str().c_str()) != NULL)
 	    {
 	      myString.clear(); myString.str("");
 	      myString << RooRandom::gaussian() * GetVar(pdf,myCoeff.str().c_str())->getError() + GetVar(pdf,myCoeff.str().c_str())->getVal();
-	      cout << myString.str().c_str() << " generation : gaussian mean = " << GetVar(pdf,myCoeff.str().c_str())->getVal() << "\tsigma = " << GetVar(pdf,myCoeff.str().c_str())->getError() << "\tvalue = " << myString << endl;
+	      cout << myCoeff.str() << " generation : gaussian mean = " << GetVar(pdf,myCoeff.str().c_str())->getVal() << "\tsigma = " << GetVar(pdf,myCoeff.str().c_str())->getError() << "\tvalue = " << myString.str() << endl;
 	      fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx) = myString.str();
 	    }
 	}
@@ -2603,11 +2603,11 @@ double GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam,
 	{
 	  myCoeff.clear(); myCoeff.str("");
 	  myCoeff << "c3Poly" << i;
-	  if (GetVar(pdf,myString.str().c_str()) != NULL)
+	  if (GetVar(pdf,myCoeff.str().c_str()) != NULL)
 	    {
 	      myString.clear(); myString.str("");
 	      myString << RooRandom::gaussian() * GetVar(pdf,myCoeff.str().c_str())->getError() + GetVar(pdf,myCoeff.str().c_str())->getVal();
-	      cout << myString.str().c_str() << " generation : gaussian mean = " << GetVar(pdf,myCoeff.str().c_str())->getVal() << "\tsigma = " << GetVar(pdf,myCoeff.str().c_str())->getError() << "\tvalue = " << myString << endl;
+	      cout << myCoeff.str() << " generation : gaussian mean = " << GetVar(pdf,myCoeff.str().c_str())->getVal() << "\tsigma = " << GetVar(pdf,myCoeff.str().c_str())->getError() << "\tvalue = " << myString.str() << endl;
 	      fitParam->operator[](Utility->GetFitParamIndx(myCoeff.str().c_str()))->operator[](q2BinIndx) = myString.str();
 	    }
 	}
@@ -2879,7 +2879,7 @@ string GeneratePolynomial (RooRealVar* var, unsigned int nCoef, string sCoef)
       for (unsigned int j = 0; j < i+1; j++) myString << var->getPlotLabel() << "*";
       myString << sCoef << i;
     }
-  cout << "[ExtractYield::GeneratePolynomial]\tI've generated the polynomial: " << myString.str().c_str() << endl;
+  cout << "[ExtractYield::GeneratePolynomial]\tI've generated the polynomial: " << myString.str() << endl;
   
   return myString.str();
 }
@@ -2898,7 +2898,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
     {
       myString.clear(); myString.str("");
       myString << "(mumuMass > " << 0.0 << " && mumuMass < " << 4.5 << ")";
-      cout << "[ExtractYield::FitDimuonInvMass]\tCut for dimuon invariant mass : " << myString.str().c_str() << endl;
+      cout << "[ExtractYield::FitDimuonInvMass]\tCut for dimuon invariant mass : " << myString.str() << endl;
       RooDataSet* dataSetJPsi = (RooDataSet*)dataSet->reduce(myString.str().c_str());
       x->setRange("subRangeJPsi",0.0,4.5);
  
@@ -2933,7 +2933,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // #####################################################
       myString.clear(); myString.str("");
       myString << "(mumuMass > " << 2.4 << " && mumuMass < " << 3.5 << ")";
-      cout << "[ExtractYield::FitDimuonInvMass]\tCut for dimuon invariant mass : " << myString.str().c_str() << endl;
+      cout << "[ExtractYield::FitDimuonInvMass]\tCut for dimuon invariant mass : " << myString.str() << endl;
       RooDataSet* dataSetJPsi = (RooDataSet*)dataSet->reduce(myString.str().c_str());
       x->setRange("subRangeJPsi",2.4,3.5);
       NBins = 50;
@@ -3084,7 +3084,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       // #######################################################
       myString.clear(); myString.str("");
       myString << "(mumuMass > " << 3.3 << " && mumuMass < " << 4.1 << ")";
-      cout << "[ExtractYield::FitDimuonInvMass]\tCut for dimuon invariant mass : " << myString.str().c_str() << endl;
+      cout << "[ExtractYield::FitDimuonInvMass]\tCut for dimuon invariant mass : " << myString.str() << endl;
       RooDataSet* dataSetPsiP = (RooDataSet*)dataSet->reduce(myString.str().c_str());
       x->setRange("subRangePsiP",3.3,4.1);
       NBins = 40;
@@ -5171,7 +5171,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	  myString.clear(); myString.str("");
 	  myString << "B0MassArb < " << GetVar(*TotalPDF,"meanS")->getVal() - atof(Utility->GetGenericParam("NSigmaB0").c_str())*Utility->GetB0Width();
 	  myString << " || B0MassArb > " << GetVar(*TotalPDF,"meanS")->getVal() + atof(Utility->GetGenericParam("NSigmaB0").c_str())*Utility->GetB0Width();
-      	  cout << "[ExtractYield::MakeMass2AnglesFit]\tCut for B0 sidebands : " << myString.str().c_str() << endl;
+      	  cout << "[ExtractYield::MakeMass2AnglesFit]\tCut for B0 sidebands : " << myString.str() << endl;
       	  sideBands = (RooDataSet*)dataSet->reduce(myString.str().c_str());
 
 
@@ -7346,7 +7346,7 @@ int main(int argc, char** argv)
 	  fileFitSystematics.open(myString.str().c_str(),ios_base::app);
 	  if (fileFitSystematics.good() == false)
 	    {
-	      cout << "[ExtractYield::main]\tError opening file : " << myString.str().c_str() << endl;
+	      cout << "[ExtractYield::main]\tError opening file : " << myString.str() << endl;
 	      CloseAllAndQuit(theApp,NtplFile);
 	    }
 
