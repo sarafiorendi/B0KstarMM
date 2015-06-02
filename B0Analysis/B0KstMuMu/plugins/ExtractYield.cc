@@ -85,6 +85,7 @@ using namespace RooFit;
 #define FUNCERRBAND   false // Show the p.d.f. error band
 #define MINIMIZER     "Minuit2" // Minimizer type for 3D MODEL actual fit ["Minuit"; "Minuit2"]
 #define GENPARAMS     "All" // Option to generate parameters for parameter file: "All" "misTagFrac" "FlAfbFsAs" "combBkgAng"
+#define TOYMULTYATTEMPTS 1  // Number of attempts if toy fails
 
 // ##################
 // # External files #
@@ -6397,6 +6398,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   // ###################
   unsigned int nEntryToy;
   stringstream myString;
+  unsigned int itTrials;
   unsigned int it = 1;
   RooRealVar* tmpVar;
   RooPlot* myFrame;
@@ -6984,16 +6986,33 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       CopyFitResults(TotalPDF,specBin,fitParam);
 
 
-      // ###########################
-      // # Reset parameters in pdf #
-      // ###########################
-      ResetCombPolyParam(NULL,TotalPDF);
+      // ##########################################
+      // # Reset signal angular parameters in pdf #
+      // ##########################################
       ResetAngularParam(NULL,TotalPDF);
 
 
-      fitResult = MakeMass2AnglesFit(toySample,&TotalPDF,x,y,z,cB0Toy,FitType,vecConstr,&NLLvalue,NULL,i);
-      if (CheckGoodFit(fitResult) == true) cout << "\n[ExtractYield::MakeMass2AnglesToy]\t@@@ Fit converged ! @@@" << endl;
-      else                                 cout << "\n[ExtractYield::MakeMass2AnglesToy]\t@@@ Fit didn't converge ! @@@" << endl;
+      // ##########################################
+      // # If needed try multiple starting values #
+      // ##########################################
+      itTrials = 1;
+      do
+	{
+	  // #######################################
+	  // # Reset bkg angular parameters in pdf #
+	  // #######################################
+	  ResetCombPolyParam(NULL,TotalPDF);
+
+
+	  fitResult = MakeMass2AnglesFit(toySample,&TotalPDF,x,y,z,cB0Toy,FitType,vecConstr,&NLLvalue,NULL,i);
+	  if (CheckGoodFit(fitResult) == true) cout << "\n[ExtractYield::MakeMass2AnglesToy]\t@@@ Fit converged ! @@@" << endl;
+	  else
+	    {
+	      cout << "\n[ExtractYield::MakeMass2AnglesToy]\t@@@ Fit didn't converge ! @@@" << endl;
+	      GenerateFitParameters(TotalPDF,fitParam,0,&q2Bins,specBin,GENPARAMS);
+	      itTrials++;
+	    }
+	} while ((CheckGoodFit(fitResult) == false) && (itTrials < TOYMULTYATTEMPTS));
 
 
       // ######################################################
@@ -7190,17 +7209,18 @@ int main(int argc, char** argv)
 	  cout << "MULTYIELD = "     << MULTYIELD << endl;
 	  cout << "NCOEFFPOLYBKG = " << NCOEFFPOLYBKG << endl;
 
-	  cout << "\nMAKEmumuPLOTS = " << MAKEmumuPLOTS << endl;
-	  cout << "SETBATCH  = "       << SETBATCH << endl;
-	  cout << "SAVEPOLY = "        << SAVEPOLY << endl;
-	  cout << "SAVEPLOT = "        << SAVEPLOT << endl;
-	  cout << "RESETsigANG = "     << RESETsigANG << endl;
-	  cout << "RESETcomANG = "     << RESETcomANG << endl;
-	  cout << "FULLTOYS = "        << FULLTOYS << endl;
-	  cout << "FUNCERRBAND = "     << FUNCERRBAND << endl;
-	  cout << "MINIMIZER = "       << MINIMIZER << endl;
-	  cout << "GENPARAMS = "       << GENPARAMS << endl;
-  
+	  cout << "\nMAKEmumuPLOTS = "  << MAKEmumuPLOTS << endl;
+	  cout << "SETBATCH  = "        << SETBATCH << endl;
+	  cout << "SAVEPOLY = "         << SAVEPOLY << endl;
+	  cout << "SAVEPLOT = "         << SAVEPLOT << endl;
+	  cout << "RESETsigANG = "      << RESETsigANG << endl;
+	  cout << "RESETcomANG = "      << RESETcomANG << endl;
+	  cout << "FULLTOYS = "         << FULLTOYS << endl;
+	  cout << "FUNCERRBAND = "      << FUNCERRBAND << endl;
+	  cout << "MINIMIZER = "        << MINIMIZER << endl;
+	  cout << "GENPARAMS = "        << GENPARAMS << endl;
+	  cout << "TOYMULTYATTEMPTS = " << TOYMULTYATTEMPTS << endl;
+
 	  cout << "\nPARAMETERFILEIN = " << PARAMETERFILEIN << endl;
 	  cout << "PARAMETERFILEOUT = "  << PARAMETERFILEOUT << endl;
 
