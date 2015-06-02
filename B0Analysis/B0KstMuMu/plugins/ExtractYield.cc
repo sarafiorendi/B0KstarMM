@@ -4200,6 +4200,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   // ###################
   unsigned int nEntryToy;
   stringstream myString;
+  unsigned int itTrials;
   unsigned int it = 1;
   RooRealVar* tmpVar;
   RooPlot* myFrame;
@@ -4621,9 +4622,22 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
       CopyFitResults(TotalPDF,specBin,fitParam);
 
 
-      fitResult = MakeMassFit(toySample,&TotalPDF,x,cB0Toy,vecConstr,&NLLvalue,NULL,i);
-      if (CheckGoodFit(fitResult) == true) cout << "\n[ExtractYield::MakeMassToy]\t@@@ Fit converged ! @@@" << endl;
-      else                                 cout << "\n[ExtractYield::MakeMassToy]\t@@@ Fit didn't converge ! @@@" << endl;
+      // ##########################################
+      // # If needed try multiple starting values #
+      // ##########################################
+      itTrials = 1;
+      do
+	{
+	  fitResult = MakeMassFit(toySample,&TotalPDF,x,cB0Toy,vecConstr,&NLLvalue,NULL,i);
+	  if (CheckGoodFit(fitResult) == true) cout << "\n[ExtractYield::MakeMassToy]\t@@@ Fit converged ! @@@" << endl;
+	  else
+	    {
+	      cout << "\n[ExtractYield::MakeMassToy]\t@@@ Fit didn't converge ! @@@" << endl;
+	      cout << "[ExtractYield::MakeMassToy]\tAttempt " << itTrials << "/" << TOYMULTYATTEMPTS << endl;
+	      GenerateFitParameters(TotalPDF,fitParam,itTrials + i*TOYMULTYATTEMPTS,&q2Bins,specBin,GENPARAMS);
+	      itTrials++;
+	    }
+	} while ((CheckGoodFit(fitResult) == false) && (itTrials < TOYMULTYATTEMPTS));
 
 
       // ######################################################
@@ -7009,7 +7023,8 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 	  else
 	    {
 	      cout << "\n[ExtractYield::MakeMass2AnglesToy]\t@@@ Fit didn't converge ! @@@" << endl;
-	      GenerateFitParameters(TotalPDF,fitParam,0,&q2Bins,specBin,GENPARAMS);
+	      cout << "[ExtractYield::MakeMass2AnglesToy]\tAttempt " << itTrials << "/" << TOYMULTYATTEMPTS << endl;
+	      GenerateFitParameters(TotalPDF,fitParam,itTrials + i*TOYMULTYATTEMPTS,&q2Bins,specBin,GENPARAMS);
 	      itTrials++;
 	    }
 	} while ((CheckGoodFit(fitResult) == false) && (itTrials < TOYMULTYATTEMPTS));
