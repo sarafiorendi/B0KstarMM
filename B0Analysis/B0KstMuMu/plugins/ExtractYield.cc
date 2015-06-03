@@ -4621,8 +4621,7 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
 	  if (CheckGoodFit(fitResult) == true) cout << "\n[ExtractYield::MakeMassToy]\t@@@ Fit converged ! @@@" << endl;
 	  else
 	    {
-	      cout << "\n[ExtractYield::MakeMassToy]\t@@@ Fit didn't converge ! @@@" << endl;
-	      cout << "[ExtractYield::MakeMassToy]\tAttempt " << itTrials << "/" << TOYMULTYATTEMPTS << endl;
+	      cout << "\n[ExtractYield::MakeMassToy]\t@@@ Fit didn't converge (attempt " << itTrials << "/" << TOYMULTYATTEMPTS << ") ! @@@" << endl;
 	      GenerateFitParameters(TotalPDF,fitParam,specBin,GENPARAMS);
 	      itTrials++;
 	    }
@@ -7011,8 +7010,7 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 	  if (CheckGoodFit(fitResult) == true) cout << "\n[ExtractYield::MakeMass2AnglesToy]\t@@@ Fit converged ! @@@" << endl;
 	  else
 	    {
-	      cout << "\n[ExtractYield::MakeMass2AnglesToy]\t@@@ Fit didn't converge ! @@@" << endl;
-	      cout << "[ExtractYield::MakeMass2AnglesToy]\tAttempt " << itTrials << "/" << TOYMULTYATTEMPTS << endl;
+	      cout << "\n[ExtractYield::MakeMass2AnglesToy]\t@@@ Fit didn't converge (attempt " << itTrials << "/" << TOYMULTYATTEMPTS << ") ! @@@" << endl;
 	      GenerateFitParameters(TotalPDF,fitParam,specBin,GENPARAMS);
 	      itTrials++;
 	    }
