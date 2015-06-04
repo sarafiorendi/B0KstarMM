@@ -83,7 +83,7 @@ using namespace RooFit;
 #define RESETcomANG   false // Reset combinatorial bkg angular parameters before starting the fit
 #define FULLTOYS      false // Run generation-and-fit toys
 #define FUNCERRBAND   false // Show the p.d.f. error band
-#define MINIMIZER     "Minuit2" // Minimizer type for 3D MODEL actual fit ["Minuit"; "Minuit2"]
+#define MINIMIZER     "Minuit2" // Minimizer type for 3D MODEL actual fit ["Minuit"; "Minuit2"] (or Minimizer(MINIMIZER,"simplex"))
 #define GENPARAMS     "All" // Option to generate parameters for parameter file: "All" "misTagFrac" "FlAfbFsAs" "combBkgAng"
 #define TOYMULTYATTEMPTS 1  // Number of attempts if toy fails
 
@@ -2523,7 +2523,7 @@ double GenerateFitParameters (RooAbsPdf* pdf, vector<vector<string>*>* fitParam,
       if (GetVar(pdf,"AfbS") != NULL)
 	{
 	  myString.clear(); myString.str("");
-	  myString << RooRandom::uniform() * 2. - 1.;
+	  myString << (RooRandom::uniform() * 2. - 1.) * 2./3.*(1. - atof(fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](q2BinIndx).c_str()));
 	  cout << "Afb generation : uniform lower bound = -1\thigher bound = 1" << "\tvalue = " << myString.str() << endl;
 	  fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](q2BinIndx) = myString.str();
 	}
@@ -4611,18 +4611,19 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
       CopyFitResults(TotalPDF,specBin,fitParam);
 
 
-      // ##########################################
-      // # If needed try multiple starting values #
-      // ##########################################
+      // #################################
+      // # Test multiple starting values #
+      // #################################
       itTrials = 1;
       do
 	{
 	  fitResult = MakeMassFit(toySample,&TotalPDF,x,cB0Toy,vecConstr,&NLLvalue,NULL,i);
+	  
 	  if (CheckGoodFit(fitResult) == true) cout << "\n[ExtractYield::MakeMassToy]\t@@@ Fit converged ! @@@" << endl;
 	  else
 	    {
 	      cout << "\n[ExtractYield::MakeMassToy]\t@@@ Fit didn't converge (attempt " << itTrials << "/" << TOYMULTYATTEMPTS << ") ! @@@" << endl;
-	      GenerateFitParameters(TotalPDF,fitParam,specBin,GENPARAMS);
+	      GenerateFitParameters(TotalPDF,fitParam,specBin,"All");
 	      itTrials++;
 	    }
 	} while ((CheckGoodFit(fitResult) == false) && (itTrials < TOYMULTYATTEMPTS));
@@ -5177,11 +5178,11 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	  sideBands = (RooDataSet*)dataSet->reduce(myString.str().c_str());
 
 
-      	  // ###################
-      	  // # Make actual fit #
-      	  // ###################
-      	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebads),Save(true));
-      	  else                                                               fitResult = TmpPDF->fitTo(*sideBands,Save(true));
+	  // ###################
+	  // # Make actual fit #
+	  // ###################
+	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebads),Save(true));
+	  else                                                               fitResult = TmpPDF->fitTo(*sideBands,Save(true));
 	  if (fitResult != NULL) fitResult->Print("v");
 
 
@@ -5220,8 +5221,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // ###################
       // # Make actual fit #
       // ###################
-      if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER/*,"simplex"*/)); // @TMP@
-      else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER/*,"simplex"*/)); // @TMP@
+      if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER));
+      else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER));
 
 
       // ###################################################
@@ -6994,9 +6995,9 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       ResetAngularParam(NULL,TotalPDF);
 
 
-      // ##########################################
-      // # If needed try multiple starting values #
-      // ##########################################
+      // #################################
+      // # Test multiple starting values #
+      // #################################
       itTrials = 1;
       do
 	{
@@ -7007,11 +7008,12 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 
 
 	  fitResult = MakeMass2AnglesFit(toySample,&TotalPDF,x,y,z,cB0Toy,FitType,vecConstr,&NLLvalue,NULL,i);
+
 	  if (CheckGoodFit(fitResult) == true) cout << "\n[ExtractYield::MakeMass2AnglesToy]\t@@@ Fit converged ! @@@" << endl;
 	  else
 	    {
 	      cout << "\n[ExtractYield::MakeMass2AnglesToy]\t@@@ Fit didn't converge (attempt " << itTrials << "/" << TOYMULTYATTEMPTS << ") ! @@@" << endl;
-	      GenerateFitParameters(TotalPDF,fitParam,specBin,GENPARAMS);
+	      GenerateFitParameters(TotalPDF,fitParam,specBin,"FlAfbFsAs");
 	      itTrials++;
 	    }
 	} while ((CheckGoodFit(fitResult) == false) && (itTrials < TOYMULTYATTEMPTS));
