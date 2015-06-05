@@ -6989,12 +6989,6 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       CopyFitResults(TotalPDF,specBin,fitParam);
 
 
-      // ##########################################
-      // # Reset signal angular parameters in pdf #
-      // ##########################################
-      ResetAngularParam(NULL,TotalPDF);
-
-
       // #################################
       // # Test multiple starting values #
       // #################################
