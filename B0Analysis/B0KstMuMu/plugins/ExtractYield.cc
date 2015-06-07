@@ -20,6 +20,7 @@
 #include <TLatex.h>
 #include <TCutG.h>
 #include <Math/Functor.h>
+#include <Math/MinimizerOptions.h>
 
 #include <RooRealVar.h>
 #include <RooGaussian.h>
@@ -5513,7 +5514,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // @TMP@
       // if ((FitType != 26) && (GetVar(*TotalPDF,"FlS") != NULL) && (GetVar(*TotalPDF,"AfbS") != NULL))
       // 	{
-      //         cout << "[ExtractYield::MakeMass2AnglesFit]\t@@@ Making profile likelihood plots @@@" << endl;
+      // 	  cout << "[ExtractYield::MakeMass2AnglesFit]\t@@@ Making profile likelihood plots @@@" << endl;
+      // 	  ROOT::Math::MinimizerOptions::SetDefaultMinimizer(MINIMIZER);
 
 
       // 	  // #############################
