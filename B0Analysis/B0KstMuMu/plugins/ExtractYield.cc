@@ -20,7 +20,6 @@
 #include <TLatex.h>
 #include <TCutG.h>
 #include <Math/Functor.h>
-#include <Math/MinimizerOptions.h>
 
 #include <RooRealVar.h>
 #include <RooGaussian.h>
@@ -32,7 +31,7 @@
 #include <RooFitResult.h>
 #include <RooPolynomial.h>
 #include <RooMCStudy.h>
-#include <RooMinuit.h>
+#include <RooMinimizer.h>
 #include <RooWorkspace.h>
 #include <RooConstVar.h>
 #include <RooRandom.h>
@@ -84,7 +83,7 @@ using namespace RooFit;
 #define RESETcomANG   false // Reset combinatorial bkg angular parameters before starting the fit
 #define FULLTOYS      false // Run generation-and-fit toys
 #define FUNCERRBAND   false // Show the p.d.f. error band
-#define MINIMIZER     "Minuit2" // Minimizer type for 3D MODEL actual fit ["Minuit"; "Minuit2"] (or Minimizer(MINIMIZER,"simplex"))
+#define MINIMIZER     "Minuit2" // Minimizer type for 3D MODEL actual fit ["Minuit"; "Minuit2"; or Minimizer(MINIMIZER,"simplex")]
 #define GENPARAMS     "All" // Option to generate parameters for parameter file: "All" "misTagFrac" "FlAfbFsAs" "combBkgAng"
 #define TOYMULTYATTEMPTS 1  // Number of attempts if toy fails
 
@@ -5515,7 +5514,6 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // if ((FitType != 26) && (GetVar(*TotalPDF,"FlS") != NULL) && (GetVar(*TotalPDF,"AfbS") != NULL))
       // 	{
       // 	  cout << "[ExtractYield::MakeMass2AnglesFit]\t@@@ Making profile likelihood plots @@@" << endl;
-      // 	  ROOT::Math::MinimizerOptions::SetDefaultMinimizer(MINIMIZER);
 
 
       // 	  // #############################
@@ -5531,7 +5529,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
 
       // 	  localCanv[3]->cd();
-      // 	  RooMinuit RooMin(*NLL);
+      // 	  RooMinimizer RooMin(*NLL);
+      // 	  RooMin.setMinimizerType(MINIMIZER);
       // 	  RooPlot* myFrameNLL = RooMin.contour(*GetVar(*TotalPDF,"AfbS"),*GetVar(*TotalPDF,"FlS"),1.0,2.0,3.0);
       // 	  if (myFrameNLL != NULL)
       // 	    {
