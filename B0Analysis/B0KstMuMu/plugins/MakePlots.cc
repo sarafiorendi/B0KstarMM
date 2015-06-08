@@ -1302,7 +1302,7 @@ TCutG* DrawExclusion (double Xlow, double Xhigh, double Ylow, double Yhigh, stri
 
 TGraphAsymmErrors* ReadFromASCII (string fileName, unsigned int PlotType, vector<double>* q2Bins, vector<double>* vxs, vector<double>* vys, vector<double>* vxel, vector<double>* vxeh, vector<double>* vyel, vector<double>* vyeh)
 {
-  ifstream inputFile;
+  std::ifstream inputFile;
 
   // ############################################
   // # Variables to read values from ASCII file #
@@ -1324,7 +1324,7 @@ TGraphAsymmErrors* ReadFromASCII (string fileName, unsigned int PlotType, vector
   vyeh->clear();
 
   
-  inputFile.open(fileName.c_str(), ifstream::in);
+  inputFile.open(fileName.c_str(), std::ifstream::in);
   if (inputFile.good() == false)
     {
       cout << "[MakePlots::ReadFromASCII]\tError opening file : " << fileName.c_str() << endl;
@@ -2232,7 +2232,7 @@ void MakePhysicsPlots (unsigned int PlotType)
 
 void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
 {
-  ifstream inputFile;
+  std::ifstream inputFile;
 
   unsigned int nPar = 18;
 
@@ -2302,7 +2302,7 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
   // # Read values from file #
   // #########################
   cout << "\n[MakePlots::GenNTupleFromMultyRun]\t@@@ Opening systematics file: " << fileName.c_str() << " @@@" << endl;
-  inputFile.open(fileName.c_str(), ifstream::in);
+  inputFile.open(fileName.c_str(), std::ifstream::in);
   if (inputFile.good() == false)
     {
       cout << "[MakePlots::GenNTupleFromMultyRun]\tError opening file : " << fileName.c_str() << endl;

@@ -2174,8 +2174,8 @@ void Utils::ReadParVsq2Bins (std::string fileName, std::string praName, std::vec
 
 void Utils::SaveAnalyticalEff (std::string fileName, TF2* effFunc, double q2Val)
 {
-  ofstream fileOutput;
-  fileOutput.open(fileName.c_str(),ofstream::app);
+  std::ofstream fileOutput;
+  fileOutput.open(fileName.c_str(),std::ofstream::app);
   if (fileOutput.good() == false)
     {
       std::cout << "[Utils::SaveAnalyticalEff]\tError opening file : " << fileName << std::endl;
@@ -2194,8 +2194,8 @@ void Utils::SaveAnalyticalEff (std::string fileName, TF2* effFunc, double q2Val)
 
 void Utils::SaveAnalyticalEff (std::string fileName, TF3* effFunc, double q2Val)
 {
-  ofstream fileOutput;
-  fileOutput.open(fileName.c_str(),ofstream::app);
+  std::ofstream fileOutput;
+  fileOutput.open(fileName.c_str(),std::ofstream::app);
   if (fileOutput.good() == false)
     {
       std::cout << "[Utils::SaveAnalyticalEff]\tError opening file : " << fileName << std::endl;
@@ -2218,8 +2218,8 @@ void Utils::SaveAnalyticalEff (std::string fileName, TF3* effFunc, double q2Val)
 
 void Utils::SaveAnalyticalEffFullCovariance (std::string fileName, TMatrixTSym<double>* covMatrix, double q2Val)
 {
-  ofstream fileOutput;
-  fileOutput.open(fileName.c_str(),ofstream::app);
+  std::ofstream fileOutput;
+  fileOutput.open(fileName.c_str(),std::ofstream::app);
   if (fileOutput.good() == false)
     {
       std::cout << "[Utils::SaveAnalyticalEffFullCovariance]\tError opening file : " << fileName << std::endl;

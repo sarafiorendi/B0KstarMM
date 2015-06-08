@@ -1448,7 +1448,7 @@ void GenerateEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins
   // ###################
   // # Local variables #
   // ###################
-  ofstream fileOutput;
+  std::ofstream fileOutput;
 
   string myString;
   stringstream fileNameOutput;
@@ -1592,8 +1592,8 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   stringstream myString;
   string tmpString;
   double coeff;
-  ofstream fileOutput;
-  ifstream fileInput;
+  std::ofstream fileOutput;
+  std::ifstream fileInput;
   bool nullParameter;
   // ###################
 
@@ -1603,7 +1603,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 
   if (who == "thetaL")
     {
-      fileOutput.open(fileNameOut.replace(fileNameOut.find(".txt"),4,"L.txt").c_str(),ofstream::app);
+      fileOutput.open(fileNameOut.replace(fileNameOut.find(".txt"),4,"L.txt").c_str(),std::ofstream::app);
       if (fileOutput.good() == false)
 	{
 	  cout << "[ComputeEfficiency::Fit1DEfficiencies]\tError opening file : " << fileNameOut.c_str() << endl;
@@ -1679,7 +1679,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
     }
   else if (who == "thetaK")
     {
-      fileOutput.open(fileNameOut.replace(fileNameOut.find(".txt"),4,"K.txt").c_str(),ofstream::app);
+      fileOutput.open(fileNameOut.replace(fileNameOut.find(".txt"),4,"K.txt").c_str(),std::ofstream::app);
       if (fileOutput.good() == false)
 	{
 	  cout << "[ComputeEfficiency::Fit1DEfficiencies]\tError opening file : " << fileNameOut.c_str() << endl;
@@ -1705,7 +1705,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
 	  // ###############################
 	  // # Read coefficients from file #
 	  // ###############################
-	  fileInput.open(INPUT_THETAL,ofstream::in);
+	  fileInput.open(INPUT_THETAL,std::ofstream::in);
 	  if (fileInput.good() == false)
 	    {
 	      cout << "[ComputeEfficiency::Fit1DEfficiencies]\tError opening file : " << INPUT_THETAL << endl;
@@ -1767,7 +1767,7 @@ void Fit1DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
     }
   else if (who == "phi")
     {
-      fileOutput.open(fileNameOut.replace(fileNameOut.find("Theta.txt"),9,"Phi.txt").c_str(),ofstream::app);
+      fileOutput.open(fileNameOut.replace(fileNameOut.find("Theta.txt"),9,"Phi.txt").c_str(),std::ofstream::app);
       if (fileOutput.good() == false)
 	{
 	  cout << "[ComputeEfficiency::Fit1DEfficiencies]\tError opening file : " << fileNameOut.c_str() << endl;
@@ -1966,7 +1966,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   // ###################
   // # Local variables #
   // ###################
-  ifstream fileInput;
+  std::ifstream fileInput;
   TFitResultPtr fitResults;
   stringstream myString;
   string tmpString;
@@ -2025,7 +2025,7 @@ void Fit3DEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins, v
   Utility->InitEffFuncPhi(effFunc1D);
 
   cout << "\n[ComputeEfficiency::Fit3DEfficiencies]\t@@@ Reading coefficients for analytical efficiency for phi from file " << INPUT_PHI << " @@@" << endl;
-  fileInput.open(INPUT_PHI,ofstream::in);
+  fileInput.open(INPUT_PHI,std::ofstream::in);
   if (fileInput.good() == false)
     {
       cout << "[ComputeEfficiency::Fit3DEfficiencies]\tError opening file : " << INPUT_PHI << endl;

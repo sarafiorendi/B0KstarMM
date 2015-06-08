@@ -83,7 +83,7 @@ using namespace RooFit;
 #define RESETcomANG   false // Reset combinatorial bkg angular parameters before starting the fit
 #define FULLTOYS      false // Run generation-and-fit toys
 #define FUNCERRBAND   false // Show the p.d.f. error band
-#define MINIMIZER     "Minuit2" // Minimizer type for 3D MODEL actual fit ["Minuit"; "Minuit2"; or Minimizer(MINIMIZER,"simplex")]
+#define MINIMIZER     "Minuit2" // Minimizer type for 3D MODEL actual fit ["Minuit"; "Minuit2"; or Minimizer(MINIMIZER,"Migrad/Simplex/Combined/Scan/Fumili")]
 #define GENPARAMS     "All" // Option to generate parameters for parameter file: "All" "misTagFrac" "FlAfbFsAs" "combBkgAng"
 #define TOYMULTYATTEMPTS 1  // Number of attempts if toy fails
 
@@ -121,8 +121,8 @@ TTree* theTree;
 Utils* Utility;
 B0KstMuMuSingleCandTreeContent* NTuple;
 
-ofstream fileFitResults;
-ofstream fileFitSystematics;
+std::ofstream fileFitResults;
+std::ofstream fileFitSystematics;
 
 double* q2BinsHisto;
 
@@ -4748,7 +4748,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   RooArgSet* VarsPolyGT = new RooArgSet("VarsPolyGT");
   AngleS = MakeAngWithEffPDF(effFunc.first,y,z,FitType,useEffPDF,VarsAng,VarsPolyGT,q2Bins,actualq2BinIndx,atoi(Utility->GetGenericParam("doTransf").c_str()));
 
-  Signal = new RooProdPdf("Signal","Signal Mass*Angle",RooArgSet(*MassSignal,*AngleS));
+  if ((MassSignal != NULL) && (AngleS != NULL)) Signal = new RooProdPdf("Signal","Signal Mass*Angle",RooArgSet(*MassSignal,*AngleS));
 
 
   // ###################################################################
@@ -4776,7 +4776,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   BkgAngleC2 = new RooGenericPdf("BkgAngleC2",myString.str().c_str(),RooArgSet(*z,VarsC2));
   BkgAnglesC = new RooProdPdf("BkgAnglesC","Background Angle1*Angle2",RooArgSet(*BkgAngleC1,*BkgAngleC2));
 
-
+  
   // ##################################################################
   // # Define mass fit variables and pdf for combinatorial background #
   // ##################################################################
@@ -4800,9 +4800,9 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
       myString << "TMath::Erfc((" << x->getPlotLabel() << " - var1) / sqrt(2*var2*var2))";
       BkgMassComb = new RooGenericPdf("BkgMass",myString.str().c_str(),RooArgSet(*x,*var1,*var2));
     }
-  else                    BkgMassComb = NULL;
+  else BkgMassComb = NULL;
 
-  BkgMassAngleComb = new RooProdPdf("BkgMassAngleComb","Combinatorial bkg Mass*Angle",RooArgSet(*BkgMassComb,*BkgAnglesC));
+  if ((BkgMassComb != NULL) && (BkgAnglesC != NULL)) BkgMassAngleComb = new RooProdPdf("BkgMassAngleComb","Combinatorial bkg Mass*Angle",RooArgSet(*BkgMassComb,*BkgAnglesC));
 
  
   // #######################################################
@@ -4827,7 +4827,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   RooArgSet* VarsPolyMT = new RooArgSet("VarsPolyMT");
   AngleMisTag = MakeAngWithEffPDF(effFunc.second,y,z,FitType*10,useEffPDF,VarsAng,VarsPolyMT,q2Bins,actualq2BinIndx,atoi(Utility->GetGenericParam("doTransf").c_str()));
 
-  MassAngleMisTag = new RooProdPdf("MassAngleMisTag","Mistag bkg Mass*Angle",RooArgSet(*MassMisTag,*AngleMisTag));
+  if ((MassMisTag != NULL) && (AngleMisTag != NULL)) MassAngleMisTag = new RooProdPdf("MassAngleMisTag","Mistag bkg Mass*Angle",RooArgSet(*MassMisTag,*AngleMisTag));
 
 
   // #############################################################
@@ -4889,7 +4889,7 @@ void InstantiateMass2AnglesFit (RooAbsPdf** TotalPDF,
   else if (usePeakB == 12) BkgMassPeak = new RooAddPdf("BkgMassPeak","Peaking bkg mass pdf",RooArgSet(*BkgMassRPeak,*BkgMassLPeak),RooArgSet(*fracMassBPeak));
   else                     BkgMassPeak = NULL;
 
-  BkgMassAnglePeak = new RooProdPdf("BkgMassAnglePeak","Peaking bkg Mass*Angle",RooArgSet(*BkgMassPeak,*BkgAnglesP));
+  if ((BkgMassPeak != NULL) && (BkgAnglesP != NULL)) BkgMassAnglePeak = new RooProdPdf("BkgMassAnglePeak","Peaking bkg Mass*Angle",RooArgSet(*BkgMassPeak,*BkgAnglesP));
 
 
   // ###########################
@@ -5568,14 +5568,14 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // 	  myFrameNLLVar2->Draw();
 
 
-      // 	  delete NLL;
+      	//   delete NLL;
 	  
 	  
-      // 	  // ############################
-      // 	  // # Turn on all the printout #
-      // 	  // ############################
-      // 	  RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
-      // 	}
+      	//   // ############################
+      	//   // # Turn on all the printout #
+      	//   // ############################
+      	//   RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
+      	// }
 
 
       // ####################
