@@ -31,12 +31,12 @@
 #include <RooFitResult.h>
 #include <RooPolynomial.h>
 #include <RooMCStudy.h>
-#include <RooMinimizer.h>
 #include <RooWorkspace.h>
 #include <RooConstVar.h>
 #include <RooRandom.h>
 #include <RooDataHist.h>
 #include <RooHistPdf.h>
+#include <RooMinimizer.h>
 #include <RooFunctorBinding.h>
 #include <RooStats/RooStatsUtils.h>
 
@@ -5530,7 +5530,9 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       //  	  localCanv[3]->cd();
       // 	  RooMinimizer RooMin(*NLL);
-      // 	  RooMin.setMinimizerType(MINIMIZER);
+      // 	  cout << "[ExtractYield::MakeMass2AnglesFit]\t@@@ Starting minimization placeholder @@@" << endl;
+      // 	  RooMin.minimize(MINIMIZER);
+      // 	  cout << "[ExtractYield::MakeMass2AnglesFit]\t@@@ Starting contour scan @@@" << endl;
       // 	  RooPlot* myFrameNLL = RooMin.contour(*GetVar(*TotalPDF,"AfbS"),*GetVar(*TotalPDF,"FlS"),1.0,2.0,3.0);
       // 	  if (myFrameNLL != NULL)
       // 	    {
@@ -5568,14 +5570,14 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // 	  myFrameNLLVar2->Draw();
 
 
-      	//   delete NLL;
+      // 	  delete NLL;
 	  
 	  
-      	//   // ############################
-      	//   // # Turn on all the printout #
-      	//   // ############################
-      	//   RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
-      	// }
+      // 	  // ############################
+      // 	  // # Turn on all the printout #
+      // 	  // ############################
+      // 	  RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
+      // 	}
 
 
       // ####################
