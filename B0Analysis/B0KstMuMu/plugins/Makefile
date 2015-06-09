@@ -50,4 +50,4 @@ ExtractYield: $(SOURCEDIR) $(INCLUDEDIR) ExtractYield.cc
 
 LOCALCC := $(wildcard *.cc)
 clean:
-	$(RM) $(LOCALCC:%.cc=%) Macros_C.*
+	$(RM) $(LOCALCC:%.cc=%) Macros_C*

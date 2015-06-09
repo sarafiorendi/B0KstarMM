@@ -53,6 +53,7 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::stringstream;
+using std::ofstream;
 using std::vector;
 using std::ios_base;
 using std::pair;
@@ -121,8 +122,8 @@ TTree* theTree;
 Utils* Utility;
 B0KstMuMuSingleCandTreeContent* NTuple;
 
-std::ofstream fileFitResults;
-std::ofstream fileFitSystematics;
+ofstream fileFitResults;
+ofstream fileFitSystematics;
 
 double* q2BinsHisto;
 
@@ -4599,7 +4600,6 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
   RooDataSet* toySample;
   RooFitResult* fitResult;
   double NLLvalue;
-  string varName;
 
 
   for (unsigned int i = 0; i < nToy; i++)
@@ -4632,13 +4632,13 @@ void MakeMassToy (RooAbsPdf* TotalPDF, RooRealVar* x, TCanvas* Canv, unsigned in
       // ######################################################
       // # To verify the outcome of the RooFit toy-MC studies #
       // ######################################################
-      if ((CheckGoodFit(fitResult) == true) && (GetVar(TotalPDF,varName.c_str()) != NULL))
+      if ((CheckGoodFit(fitResult) == true) && (GetVar(TotalPDF,"nSig") != NULL))
       	{
-	  varName = "nSig";
-	  fit_BF = GetVar(TotalPDF,varName.c_str())->getVal();
-	  pdf_BF = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
-	  errorLo_BF = GetVar(TotalPDF,varName.c_str())->getErrorLo();
-	  errorHi_BF = GetVar(TotalPDF,varName.c_str())->getErrorHi();
+	  // # Signal yield #
+	  fit_BF = GetVar(TotalPDF,"nSig")->getVal();
+	  pdf_BF = atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str());
+	  errorLo_BF = GetVar(TotalPDF,"nSig")->getErrorLo();
+	  errorHi_BF = GetVar(TotalPDF,"nSig")->getErrorHi();
 
 
 	  nll = NLLvalue;
@@ -5528,7 +5528,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // 	  else                                                               NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
 
 
-      // 	  localCanv[3]->cd();
+      //  	  localCanv[3]->cd();
       // 	  RooMinimizer RooMin(*NLL);
       // 	  RooMin.setMinimizerType(MINIMIZER);
       // 	  RooPlot* myFrameNLL = RooMin.contour(*GetVar(*TotalPDF,"AfbS"),*GetVar(*TotalPDF,"FlS"),1.0,2.0,3.0);
@@ -5568,14 +5568,14 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // 	  myFrameNLLVar2->Draw();
 
 
-      	//   delete NLL;
+      // 	  delete NLL;
 	  
 	  
-      	//   // ############################
-      	//   // # Turn on all the printout #
-      	//   // ############################
-      	//   RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
-      	// }
+      // 	  // ############################
+      // 	  // # Turn on all the printout #
+      // 	  // ############################
+      // 	  RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
+      // 	}
 
 
       // ####################
@@ -6981,7 +6981,6 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   RooRealVar tmpVar2("tmpVar2","tmpVar2",0.0);
   double varValELo, varValEHi;
   double NLLvalue;
-  string varName;
 
 
   for (unsigned int i = 0; i < nToy; i++)
@@ -6991,6 +6990,8 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 
       toySample = (RooDataSet*)MyToy->genData(i);
       CopyFitResults(TotalPDF,specBin,fitParam);
+      pdf_Fl  = atof(fitParam->operator[](Utility->GetFitParamIndx("FlS"))->operator[](specBin).c_str());
+      pdf_Afb = atof(fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](specBin).c_str());
 
 
       // #################################
@@ -7022,41 +7023,37 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
       // ######################################################
       if ((CheckGoodFit(fitResult) == true) && (GetVar(TotalPDF,"FlS") != NULL) && (GetVar(TotalPDF,"AfbS") != NULL))
 	{
-	  varName = "nSig";
-	  fit_BF = GetVar(TotalPDF,varName.c_str())->getVal();
-	  pdf_BF = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
-	  errorLo_BF = GetVar(TotalPDF,varName.c_str())->getErrorLo();
-	  errorHi_BF = GetVar(TotalPDF,varName.c_str())->getErrorHi();
+	  // # Signal yield #
+	  fit_BF = GetVar(TotalPDF,"nSig")->getVal();
+	  pdf_BF = atof(fitParam->operator[](Utility->GetFitParamIndx("nSig"))->operator[](specBin).c_str());
+	  errorLo_BF = GetVar(TotalPDF,"nSig")->getErrorLo();
+	  errorHi_BF = GetVar(TotalPDF,"nSig")->getErrorHi();
 
 
-	  varName = "FlS";
-	  pdf_Fl = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
-	  Utility->Transformer(varName,atoi(Utility->GetGenericParam("doTransf").c_str()),fit_Fl,varValELo,varValEHi,fitResult,GetVar(TotalPDF,varName.c_str()));
+	  // # FL #
+	  Utility->Transformer("FlS",atoi(Utility->GetGenericParam("doTransf").c_str()),fit_Fl,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FlS"));
 	  errorLo_Fl = varValELo;
 	  errorHi_Fl = varValEHi;
 
-	  fitOrg_Fl = GetVar(TotalPDF,varName.c_str())->getVal();
-          errorOrgLo_Fl = GetVar(TotalPDF,varName.c_str())->getErrorLo();
-          errorOrgHi_Fl = GetVar(TotalPDF,varName.c_str())->getErrorHi();
+	  fitOrg_Fl = GetVar(TotalPDF,"FlS")->getVal();
+          errorOrgLo_Fl = GetVar(TotalPDF,"FlS")->getErrorLo();
+          errorOrgHi_Fl = GetVar(TotalPDF,"FlS")->getErrorHi();
 
-	  pdf_Fl = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
 	  tmpVar1.setVal(pdf_Fl);
-          Utility->AntiTransformer(varName,atoi(Utility->GetGenericParam("doTransf").c_str()),pdfOrg_Fl,varValELo,varValEHi,&tmpVar1);
+          Utility->AntiTransformer("FlS",atoi(Utility->GetGenericParam("doTransf").c_str()),pdfOrg_Fl,varValELo,varValEHi,&tmpVar1);
 
 
-	  varName = "AfbS";
-	  pdf_Afb = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
-	  Utility->Transformer(varName,atoi(Utility->GetGenericParam("doTransf").c_str()),fit_Afb,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,varName.c_str()));
+	  // # AFB #
+	  Utility->Transformer("AfbS",atoi(Utility->GetGenericParam("doTransf").c_str()),fit_Afb,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,"AfbS"));
 	  errorLo_Afb = varValELo;
 	  errorHi_Afb = varValEHi;
 
-	  fitOrg_Afb = GetVar(TotalPDF,varName.c_str())->getVal();
-          errorOrgLo_Afb = GetVar(TotalPDF,varName.c_str())->getErrorLo();
-          errorOrgHi_Afb = GetVar(TotalPDF,varName.c_str())->getErrorHi();
+	  fitOrg_Afb = GetVar(TotalPDF,"AfbS")->getVal();
+          errorOrgLo_Afb = GetVar(TotalPDF,"AfbS")->getErrorLo();
+          errorOrgHi_Afb = GetVar(TotalPDF,"AfbS")->getErrorHi();
 
-	  pdf_Afb = atof(fitParam->operator[](Utility->GetFitParamIndx(varName.c_str()))->operator[](specBin).c_str());
 	  tmpVar2.setVal(pdf_Afb);
-          Utility->AntiTransformer(varName,atoi(Utility->GetGenericParam("doTransf").c_str()),pdfOrg_Afb,varValELo,varValEHi,&tmpVar1,&tmpVar2);
+          Utility->AntiTransformer("AfbS",atoi(Utility->GetGenericParam("doTransf").c_str()),pdfOrg_Afb,varValELo,varValEHi,&tmpVar1,&tmpVar2);
 
 
 	  nll = NLLvalue;
