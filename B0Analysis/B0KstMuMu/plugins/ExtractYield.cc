@@ -5149,8 +5149,8 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	  RooAbsPdf* TmpPDF     = NULL;
       	  RooDataSet* sideBands = NULL;
       	  RooRealVar frac("frac","Fraction",0.5,0.0,1.0);
-      	  RooArgSet constrSidebads;
-      	  BuildAngularConstraints(&constrSidebads,*TotalPDF,"peak");
+      	  RooArgSet constrSidebands;
+      	  BuildAngularConstraints(&constrSidebands,*TotalPDF,"peak");
 
 
       	  // ################
@@ -5181,7 +5181,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  // ###################
 	  // # Make actual fit #
 	  // ###################
-	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebads),Save(true));
+	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebands),Save(true));
 	  else                                                               fitResult = TmpPDF->fitTo(*sideBands,Save(true));
 	  if (fitResult != NULL) fitResult->Print("v");
 
@@ -5194,7 +5194,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       	  delete TmpPDF;
       	  delete sideBands;
-      	  ClearVars(&constrSidebads);
+     	  ClearVars(&constrSidebands);
 
 
       	  // ################################
@@ -5568,14 +5568,14 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // 	  myFrameNLLVar2->Draw();
 
 
-      // 	  delete NLL;
+      	//   delete NLL;
 	  
 	  
-      // 	  // ############################
-      // 	  // # Turn on all the printout #
-      // 	  // ############################
-      // 	  RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
-      // 	}
+      	//   // ############################
+      	//   // # Turn on all the printout #
+      	//   // ############################
+      	//   RooMsgService::instance().setGlobalKillBelow(RooFit::WARNING);
+      	// }
 
 
       // ####################
