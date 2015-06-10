@@ -78,15 +78,15 @@ using namespace RooFit;
 // ##########################################
 #define MAKEmumuPLOTS false
 #define SETBATCH      false
-#define SAVEPOLY      false // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
+#define SAVEPOLY      false  // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
 #define SAVEPLOT      false
-#define RESETsigANG   false // Reset signal angular parameters before starting the fit
-#define RESETcomANG   false // Reset combinatorial bkg angular parameters before starting the fit
-#define FULLTOYS      false // Run generation-and-fit toys
-#define FUNCERRBAND   false // Show the p.d.f. error band
+#define RESETsigANG   false  // Reset signal angular parameters before starting the fit
+#define RESETcomANG   false  // Reset combinatorial bkg angular parameters before starting the fit
+#define FULLTOYS      false  // Run generation-and-fit toys
+#define FUNCERRBAND   false  // Show the p.d.f. error band
 #define MINIMIZER     "Minuit2" // Minimizer type for 3D MODEL actual fit ["Minuit"; "Minuit2"; or Minimizer(MINIMIZER,"Migrad/Simplex/Combined/Scan/Fumili")]
-#define GENPARAMS     "All" // Option to generate parameters for parameter file: "All" "misTagFrac" "FlAfbFsAs" "combBkgAng"
-#define TOYMULTYATTEMPTS 1  // Number of attempts if toy fails
+#define GENPARAMS     "All"  // Option to generate parameters for parameter file: "All" "misTagFrac" "FlAfbFsAs" "combBkgAng"
+#define TOYMULTYATTEMPTS 100 // Number of attempts if toy fails
 
 // ##################
 // # External files #
