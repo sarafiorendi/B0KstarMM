@@ -5617,6 +5617,23 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // 	  cout << "[ExtractYield::MakeMass2AnglesFit]\t@@@ Making profile likelihood plots @@@" << endl;
 
 
+      // 	  // ##############################################
+      // 	  // # Make the contout converge for certain bins #
+      // 	  // ##############################################
+      // 	  unsigned int q2BinIndx = 0;
+      // 	  CopyFitResults(*TotalPDF,q2BinIndx,&fitParam);
+      //     for (unsigned int i = 0 ; i < NCOEFFPOLYBKG; i++)
+      //       {
+      //         myString.clear(); myString.str("");
+      //         myString << "c1Poly" << i;
+      //         if (GetVar(*TotalPDF,myString.str().c_str()) != NULL) GetVar(*TotalPDF,myString.str().c_str())->setConstant(true);
+
+      //         myString.clear(); myString.str("");
+      //         myString << "c2Poly" << i;
+      //         if (GetVar(*TotalPDF,myString.str().c_str()) != NULL) GetVar(*TotalPDF,myString.str().c_str())->setConstant(true);
+      //       }
+
+	  
       // 	  // #############################
       // 	  // # Turn off all the printout #
       // 	  // #############################
@@ -5631,10 +5648,11 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       //  	  localCanv[3]->cd();
       // 	  RooMinimizer RooMin(*NLL);
+      // 	  RooMin.setStrategy(0);
       // 	  cout << "[ExtractYield::MakeMass2AnglesFit]\t@@@ Starting minimization placeholder @@@" << endl;
       // 	  RooMin.minimize(MINIMIZER);
       // 	  cout << "[ExtractYield::MakeMass2AnglesFit]\t@@@ Starting contour scan @@@" << endl;
-      // 	  RooPlot* myFrameNLL = RooMin.contour(*GetVar(*TotalPDF,"AfbS"),*GetVar(*TotalPDF,"FlS"),1.0,2.0,3.0);
+      // 	  RooPlot* myFrameNLL = RooMin.contour(*GetVar(*TotalPDF,"AfbS"),*GetVar(*TotalPDF,"FlS"),1.0,0.0,0.0);
       // 	  if (myFrameNLL != NULL)
       // 	    {
       // 	      DrawString(LUMI,myFrameNLL);
