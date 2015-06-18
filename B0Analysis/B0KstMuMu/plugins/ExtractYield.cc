@@ -189,9 +189,9 @@ RooAbsPdf*  BkgMassExp2;
 RooRealVar* fracMassBExp;
 RooAbsPdf*  BkgMassComb;
 
-// #########################
-// # Mistag signal B0 mass #
-// #########################
+// ##########################
+// # Mis-tag signal B0 mass #
+// ##########################
 RooRealVar* sigmaMisTag1;
 RooAbsPdf*  MassMisTag1;
 RooRealVar* sigmaMisTag2;
@@ -3101,7 +3101,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       legNamesPsi[nElements++] = "Data";
       
       (*TotalPDFJPsi)->plotOn(myFrameJPsi, Name((*TotalPDFJPsi)->getPlotLabel()), LineColor(kBlack));
-      legNamesPsi[nElements++] = "Total p.d.f.";
+      legNamesPsi[nElements++] = "Total PDF";
       
       (*TotalPDFJPsi)->plotOn(myFrameJPsi, Components(*JPsi), FillStyle(3345), FillColor(kBlue), DrawOption("F"));
       (*TotalPDFJPsi)->plotOn(myFrameJPsi, Components(*JPsi), LineStyle(7),    LineColor(kBlue), DrawOption("L"));
@@ -3127,11 +3127,11 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       CheckGoodFit(JPsiFitResult,paveTextJPsi);
       paveTextJPsi->SetBorderSize(0.0);
       paveTextJPsi->SetFillStyle(0);
-      paveTextJPsi->SetTextSize(0.03);
+      paveTextJPsi->SetTextSize(0.04);
       DrawString(LUMI,myFrameJPsi);
       myFrameJPsi->Draw();
 
-      TLegend* legJPsi = new TLegend(0.75, 0.65, 0.97, 0.88, "");
+      TLegend* legJPsi = new TLegend(0.74, 0.62, 0.94, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
       	{
@@ -3252,7 +3252,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       legNamesPsi[nElements++] = "Data";
 
       (*TotalPDFPsiP)->plotOn(myFramePsiP, Name((*TotalPDFPsiP)->getPlotLabel()), LineColor(kBlack));
-      legNamesPsi[nElements++] = "Total p.d.f.";
+      legNamesPsi[nElements++] = "Total PDF";
 
       (*TotalPDFPsiP)->plotOn(myFramePsiP, Components(*PsiP), FillStyle(3345), FillColor(kBlue), DrawOption("F"));
       (*TotalPDFPsiP)->plotOn(myFramePsiP, Components(*PsiP), LineStyle(7),    LineColor(kBlue), DrawOption("L"));
@@ -3278,11 +3278,11 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       CheckGoodFit(PsiPFitResult,paveTextPsiP);
       paveTextPsiP->SetBorderSize(0.0);
       paveTextPsiP->SetFillStyle(0);
-      paveTextPsiP->SetTextSize(0.03);
+      paveTextPsiP->SetTextSize(0.04);
       DrawString(LUMI,myFramePsiP);
       myFramePsiP->Draw();
 
-      TLegend* legPsiP = new TLegend(0.75, 0.65, 0.97, 0.88, "");
+      TLegend* legPsiP = new TLegend(0.74, 0.62, 0.94, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
 	{
@@ -3851,13 +3851,13 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
       dataSet->plotOn(myFrameX, Name(MakeName(dataSet,ID).c_str()));
     }
   else (*TotalPDF)->plotOn(myFrameX, Name((*TotalPDF)->getPlotLabel()), LineColor(kBlack));
-  legNames[nElements++] = "Total p.d.f.";
+  legNames[nElements++] = "Total PDF";
 
   if (GetVar(*TotalPDF,"nSig") != NULL)
     {
       (*TotalPDF)->plotOn(myFrameX, Components(*MassSignal), FillStyle(3345), FillColor(kBlue), DrawOption("F"));
       (*TotalPDF)->plotOn(myFrameX, Components(*MassSignal), LineStyle(7),    LineColor(kBlue), DrawOption("L"));
-      legNames[nElements++] = "Right-tag sig";
+      legNames[nElements++] = "Corr. tag sig";
       VarsYield.add(*nSig);
     }
 
@@ -3865,7 +3865,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
     {
       (*TotalPDF)->plotOn(myFrameX, Components(*MassMisTag), FillStyle(3354), FillColor(kGreen+1), DrawOption("F"));
       (*TotalPDF)->plotOn(myFrameX, Components(*MassMisTag), LineStyle(8),    LineColor(kGreen+1), DrawOption("L"));
-      legNames[nElements++] = "Mis-tag sig";
+      legNames[nElements++] = "Mistag sig";
       VarsYield.add(*nMisTagFrac);
     }
 
@@ -3959,7 +3959,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
     }
   paveTextX->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
   
-  legX = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+  legX = new TLegend(0.74, 0.62, 0.94, 0.88, "");
   it = 0;
   for (unsigned int i = 0; i < 2*nElements; i++)
     {
@@ -3971,7 +3971,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
     }
   legX->SetFillStyle(0);
   legX->SetFillColor(0);
-  legX->SetTextSize(0.04);
+  legX->SetTextSize(0.05);
   legX->SetBorderSize(0);
 
 
@@ -4123,12 +4123,12 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // ######################
       // # Make external text #
       // ######################
-      extText[i] = new TPaveText(0.65,0.5,0.97,0.63,"NDC");
+      extText[i] = new TPaveText(0.64,0.48,0.95,0.6,"NDC");
       extText[i]->AddText(Form("%s%.2f%s%.2f%s","q#lower[0.4]{^{2}}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," GeV#lower[0.4]{^{2}}"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
       extText[i]->SetFillStyle(0);
-      extText[i]->SetTextSize(0.04);
+      extText[i]->SetTextSize(0.05);
 
 
       fileFitResults << "\nBin[" << i << "]: " << q2Bins->operator[](i) << " <= q^2 < " << q2Bins->operator[](i+1) << endl;
@@ -5129,7 +5129,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  dataSet->plotOn(myFrameY, Name(MakeName(dataSet,ID).c_str()));
 	}
       else (*TotalPDF)->plotOn(myFrameY, Name((*TotalPDF)->getPlotLabel()), LineColor(kBlue), Project(*z));
-      legNames[nElements++] = "Total p.d.f.";
+      legNames[nElements++] = "Total PDF";
 
       (*TotalPDF)->paramOn(myFrameY,Format("NEU",AutoPrecision(1)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nSig)));
 
@@ -5139,7 +5139,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       TPaveText* paveTextY = (TPaveText*)myFrameY->findObject(myString.str().c_str());
       paveTextY->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameY->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
-      legY = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legY = new TLegend(0.74, 0.62, 0.94, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
 	{
@@ -5151,7 +5151,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       legY->SetFillStyle(0);
       legY->SetFillColor(0);
-      legY->SetTextSize(0.04);
+      legY->SetTextSize(0.05);
       legY->SetBorderSize(0);
  
 
@@ -5178,7 +5178,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       TPaveText* paveTextZ = (TPaveText*)myFrameZ->findObject(myString.str().c_str());
       paveTextZ->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameZ->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
 
-      legZ = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legZ = new TLegend(0.74, 0.62, 0.94, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
 	{
@@ -5190,7 +5190,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       legZ->SetFillStyle(0);
       legZ->SetFillColor(0);
-      legZ->SetTextSize(0.04);
+      legZ->SetTextSize(0.05);
       legZ->SetBorderSize(0);
 
 
@@ -5350,13 +5350,13 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  dataSet->plotOn(myFrameX, Name(MakeName(dataSet,ID).c_str()));
 	}
       else (*TotalPDF)->plotOn(myFrameX, Name((*TotalPDF)->getPlotLabel()), LineColor(kBlack), Project(RooArgSet(*y,*z)));
-      legNames[nElements++] = "Total p.d.f.";
+      legNames[nElements++] = "Total PDF";
 
       if (GetVar(*TotalPDF,"nSig") != NULL)
 	{
 	  (*TotalPDF)->plotOn(myFrameX, Components(*Signal), FillStyle(3345), FillColor(kBlue), Project(RooArgSet(*y,*z)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameX, Components(*Signal), LineStyle(7),    LineColor(kBlue), Project(RooArgSet(*y,*z)), DrawOption("L"));
-	  legNames[nElements++] = "Right-tag sig";
+	  legNames[nElements++] = "Corr. tag sig";
 	  VarsYield.add(*nSig);
 	}
 
@@ -5364,7 +5364,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	{
 	  (*TotalPDF)->plotOn(myFrameX, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), Project(RooArgSet(*y,*z)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameX, Components(*MassAngleMisTag), LineStyle(8),    LineColor(kGreen+1), Project(RooArgSet(*y,*z)), DrawOption("L"));
-	  legNames[nElements++] = "Mis-tag sig";
+	  legNames[nElements++] = "Mistag sig";
 	  VarsYield.add(*nMisTagFrac);
 	}
 
@@ -5452,7 +5452,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       paveTextX->AddText(Form("%s%.2f","#chi#lower[0.4]{^{2}}/DoF = ",myFrameX->chiSquare((*TotalPDF)->getPlotLabel(),MakeName(dataSet,ID).c_str())));
       
-      legX = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legX = new TLegend(0.74, 0.62, 0.94, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
   	{
@@ -5464,7 +5464,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
   	}
       legX->SetFillStyle(0);
       legX->SetFillColor(0);
-      legX->SetTextSize(0.04);
+      legX->SetTextSize(0.05);
       legX->SetBorderSize(0);
 
 
@@ -5502,7 +5502,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       paveTextY->SetTextAlign(11);
       paveTextY->SetBorderSize(0.0);
       paveTextY->SetFillStyle(0);
-      paveTextY->SetTextSize(0.04);
+      paveTextY->SetTextSize(0.03);
       paveTextY->Paint();
       myFrameY->addObject(paveTextY);
       DrawString(LUMI,myFrameY);
@@ -5513,7 +5513,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       myFrameY->Draw();
 
-      legY = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legY = new TLegend(0.74, 0.62, 0.94, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
       	{
@@ -5525,7 +5525,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	}
       legY->SetFillStyle(0);
       legY->SetFillColor(0);
-      legY->SetTextSize(0.04);
+      legY->SetTextSize(0.05);
       legY->SetBorderSize(0);
       legY->Draw("same");
  
@@ -5572,7 +5572,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       paveTextZ->SetTextAlign(11);
       paveTextZ->SetBorderSize(0.0);
       paveTextZ->SetFillStyle(0);
-      paveTextZ->SetTextSize(0.04);
+      paveTextZ->SetTextSize(0.03);
       paveTextZ->Paint();
       myFrameZ->addObject(paveTextZ);
       DrawString(LUMI,myFrameZ);
@@ -5583,7 +5583,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	}
       myFrameZ->Draw();
 
-      legZ = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legZ = new TLegend(0.74, 0.62, 0.94, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
       	{
@@ -5595,7 +5595,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	}
       legZ->SetFillStyle(0);
       legZ->SetFillColor(0);
-      legZ->SetTextSize(0.04);
+      legZ->SetTextSize(0.05);
       legZ->SetBorderSize(0);
       legZ->Draw("same");
 
@@ -5825,7 +5825,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       DrawString(LUMI,myFrameLowSideBY);
       myFrameLowSideBY->Draw();
 
-      legLowSideBY = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legLowSideBY = new TLegend(0.74, 0.62, 0.94, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
 	{
@@ -5837,7 +5837,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       legLowSideBY->SetFillStyle(0);
       legLowSideBY->SetFillColor(0);
-      legLowSideBY->SetTextSize(0.04);
+      legLowSideBY->SetTextSize(0.05);
       legLowSideBY->SetBorderSize(0);
       legLowSideBY->Draw("same");
 
@@ -5885,7 +5885,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       DrawString(LUMI,myFrameSignalRegionY);
       myFrameSignalRegionY->Draw();
 
-      legSignalRegionY = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legSignalRegionY = new TLegend(0.74, 0.62, 0.94, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
 	{
@@ -5897,7 +5897,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       legSignalRegionY->SetFillStyle(0);
       legSignalRegionY->SetFillColor(0);
-      legSignalRegionY->SetTextSize(0.04);
+      legSignalRegionY->SetTextSize(0.05);
       legSignalRegionY->SetBorderSize(0);
       legSignalRegionY->Draw("same");
 
@@ -5945,7 +5945,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       DrawString(LUMI,myFrameHighSideBY);
       myFrameHighSideBY->Draw();
 
-      legHighSideBY = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legHighSideBY = new TLegend(0.74, 0.62, 0.94, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
 	{
@@ -5957,7 +5957,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       legHighSideBY->SetFillStyle(0);
       legHighSideBY->SetFillColor(0);
-      legHighSideBY->SetTextSize(0.04);
+      legHighSideBY->SetTextSize(0.05);
       legHighSideBY->SetBorderSize(0);
       legHighSideBY->Draw("same");
 
@@ -6010,7 +6010,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       DrawString(LUMI,myFrameLowSideBZ);
       myFrameLowSideBZ->Draw();
 
-      legLowSideBZ = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legLowSideBZ = new TLegend(0.74, 0.62, 0.94, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
 	{
@@ -6022,7 +6022,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       legLowSideBZ->SetFillStyle(0);
       legLowSideBZ->SetFillColor(0);
-      legLowSideBZ->SetTextSize(0.04);
+      legLowSideBZ->SetTextSize(0.05);
       legLowSideBZ->SetBorderSize(0);
       legLowSideBZ->Draw("same");
 
@@ -6070,7 +6070,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       DrawString(LUMI,myFrameSignalRegionZ);
       myFrameSignalRegionZ->Draw();
 
-      legSignalRegionZ = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legSignalRegionZ = new TLegend(0.74, 0.62, 0.94, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
 	{
@@ -6082,7 +6082,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       legSignalRegionZ->SetFillStyle(0);
       legSignalRegionZ->SetFillColor(0);
-      legSignalRegionZ->SetTextSize(0.04);
+      legSignalRegionZ->SetTextSize(0.05);
       legSignalRegionZ->SetBorderSize(0);
       legSignalRegionZ->Draw("same");
 
@@ -6130,7 +6130,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       DrawString(LUMI,myFrameHighSideBZ);
       myFrameHighSideBZ->Draw();
 
-      legHighSideBZ = new TLegend(0.78, 0.65, 0.97, 0.88, "");
+      legHighSideBZ = new TLegend(0.74, 0.62, 0.94, 0.88, "");
       it = 0;
       for (unsigned int i = 0; i < 2*nElements; i++)
 	{
@@ -6142,7 +6142,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	}
       legHighSideBZ->SetFillStyle(0);
       legHighSideBZ->SetFillColor(0);
-      legHighSideBZ->SetTextSize(0.04);
+      legHighSideBZ->SetTextSize(0.05);
       legHighSideBZ->SetBorderSize(0);
       legHighSideBZ->Draw("same");
 
@@ -6313,12 +6313,12 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // ######################
       // # Make external text #
       // ######################
-      extText[i] = new TPaveText(0.65,0.5,0.97,0.63,"NDC");
+      extText[i] = new TPaveText(0.64,0.48,0.95,0.6,"NDC");
       extText[i]->AddText(Form("%s%.2f%s%.2f%s","q#lower[0.4]{^{2}}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," GeV#lower[0.4]{^{2}}"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
       extText[i]->SetFillStyle(0);
-      extText[i]->SetTextSize(0.04);
+      extText[i]->SetTextSize(0.05);
 
 
       fileFitResults << "\nBin[" << i << "]: " << q2Bins->operator[](i) << " <= q^2 < " << q2Bins->operator[](i+1) << endl;
