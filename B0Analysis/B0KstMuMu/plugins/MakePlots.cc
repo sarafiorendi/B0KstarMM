@@ -1674,7 +1674,7 @@ void MakePhysicsPlots (unsigned int PlotType)
   geStepTh_nL->SetMarkerColor(kBlack);
   geStepTh_nL->SetMarkerStyle(1);
   geStepTh_nL->SetFillColor(kBlue);
-  geStepTh_nL->SetFillStyle(3002);
+  geStepTh_nL->SetFillStyle(3004);
   geStepTh_nL->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
 
 
@@ -1685,8 +1685,8 @@ void MakePhysicsPlots (unsigned int PlotType)
   else if ((PlotType == 13) || (PlotType == 14)) geStepTh_yL = ReadFromASCII(SMBINBF_yL,12,&q2Bins,&vxs,&vys,&vxel,&vxeh,&vyel,&vyeh);        // Fs OR As
   geStepTh_yL->SetMarkerColor(kBlack);
   geStepTh_yL->SetMarkerStyle(1);
-  geStepTh_yL->SetFillColor(kBlack);
-  geStepTh_yL->SetFillStyle(0);
+  geStepTh_yL->SetFillColor(kRed);
+  geStepTh_yL->SetFillStyle(3005);
   geStepTh_yL->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
 
 
