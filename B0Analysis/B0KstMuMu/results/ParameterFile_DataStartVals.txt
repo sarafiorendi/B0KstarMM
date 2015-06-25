@@ -1875,11 +1875,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.863067   -0.00426259   0.00426259
 ###################################################################
 # Bkg var-1 (tau1 or mean) [GeV/c2]
-0.196689   -0.0283308   0.0365398
+0.2
 # Bkg var-2 (tau2 or width) [GeV/c2]
-0.0104466   -0.00605209   0.0146428
+0.0
 # Fraction
-0.938921   -0.0551419   0.0382786
+0.0
 ###################################################################
 # Sigma-1 mistag [GeV/c2]
 0.1082   -0.00297102   0.00297102
@@ -2011,7 +2011,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Use peaking bkg: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians; 11 = two 1 gaussian; 12 = two 2 gaussians
 0
 # Use combinatorial bkg: 0 = no; 1 = 1 exponential; 2 = 2 exponentials; 3 = erfc
-2
+1
 # Use mistag: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
 

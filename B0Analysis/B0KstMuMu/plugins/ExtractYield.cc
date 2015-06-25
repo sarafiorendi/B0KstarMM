@@ -3110,7 +3110,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       if (justKeepPsi != true)
 	{
 	  (*TotalPDFJPsi)->plotOn(myFrameJPsi, Components(*BkgmumuMassJPsi), LineStyle(4), LineColor(kRed));
-	  legNamesPsi[nElements++] = "Comb. bkg";
+	  legNamesPsi[nElements++] = "Background";
 	}
       
       (*TotalPDFJPsi)->paramOn(myFrameJPsi,Format("NEU",AutoPrecision(1)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nJPsiMass,*nBkgMassJPsi)));
@@ -3261,7 +3261,7 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       if (justKeepPsi != true)
 	{
 	  (*TotalPDFPsiP)->plotOn(myFramePsiP, Components(*BkgmumuMassPsiP), LineStyle(4), LineColor(kRed));
-	  legNamesPsi[nElements++] = "Comb. bkg";
+	  legNamesPsi[nElements++] = "Background";
 	}
       
       (*TotalPDFPsiP)->paramOn(myFramePsiP,Format("NEU",AutoPrecision(1)),Layout(0.11,0.42,0.88),Parameters(RooArgSet(*nPsiPMass,*nBkgMassPsiP)));
@@ -3872,7 +3872,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   if (GetVar(*TotalPDF,"nBkgComb") != NULL)
     {
       (*TotalPDF)->plotOn(myFrameX, Components(*BkgMassComb), LineStyle(4), LineColor(kRed));
-      legNames[nElements++] = "Comb. bkg";
+      legNames[nElements++] = "Background";
       VarsYield.add(*nBkgComb);
     }
 
@@ -4124,7 +4124,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // # Make external text #
       // ######################
       extText[i] = new TPaveText(0.64,0.48,0.95,0.6,"NDC");
-      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q#lower[0.4]{^{2}}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," GeV#lower[0.4]{^{2}}"));
+      extText[i]->AddText(Form("%s%.2f%s%.2f%s","#it{q}#lower[0.4]{^{2}}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," GeV#lower[0.4]{^{2}}"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
       extText[i]->SetFillStyle(0);
@@ -5371,7 +5371,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       if (GetVar(*TotalPDF,"nBkgComb") != NULL)
 	{
 	  (*TotalPDF)->plotOn(myFrameX, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed), Project(RooArgSet(*y,*z)));
-	  legNames[nElements++] = "Comb. bkg";
+	  legNames[nElements++] = "Background";
 	  VarsYield.add(*nBkgComb);
 	}
 
@@ -6314,7 +6314,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // # Make external text #
       // ######################
       extText[i] = new TPaveText(0.64,0.48,0.95,0.6,"NDC");
-      extText[i]->AddText(Form("%s%.2f%s%.2f%s","q#lower[0.4]{^{2}}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," GeV#lower[0.4]{^{2}}"));
+      extText[i]->AddText(Form("%s%.2f%s%.2f%s","#it{q}#lower[0.4]{^{2}}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," GeV#lower[0.4]{^{2}}"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
       extText[i]->SetFillStyle(0);
@@ -7657,8 +7657,8 @@ int main(int argc, char** argv)
 		      cHistoMeas->cd(1);
 		      VecHistoMeas.push_back(new TH1D("histoMeas0", "B0 --> K*0(K+ pi-) mu+ mu- / B0 --> K*0(K+ pi-) J/psi(mu+ mu-) Branching Fraction", q2Bins.size()-1, q2BinsHisto));
 		      VecHistoMeas[0]->SetStats(false);
-		      VecHistoMeas[0]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
-		      VecHistoMeas[0]->SetYTitle("dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
+		      VecHistoMeas[0]->SetXTitle("#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		      VecHistoMeas[0]->SetYTitle("d#it{#Beta} / d#it{q}#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
 		      VecHistoMeas[0]->GetYaxis()->SetRangeUser(0.0,12.);
 
 		      cout << "[ExtractYield::main]\t@@@ Now fit invariant mass per mumu q^2 bins @@@" << endl;
@@ -7721,22 +7721,22 @@ int main(int argc, char** argv)
 		  cHistoMeas->cd(1);
 		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B0 --> K*0(K+ pi-) mu+ mu- : FL vs dimuon q2", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas[0]->SetStats(false);
-		  VecHistoMeas[0]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		  VecHistoMeas[0]->SetXTitle("#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
 		  VecHistoMeas[0]->SetYTitle("F_{L}");
 		  VecHistoMeas[0]->GetYaxis()->SetRangeUser(-0.01,1.01);
 
 		  cHistoMeas->cd(1);
 		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B0 --> K*0(K+ pi-) mu+ mu- : AFB vs dimuon q2", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas[1]->SetStats(false);
-		  VecHistoMeas[1]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		  VecHistoMeas[1]->SetXTitle("#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
 		  VecHistoMeas[1]->SetYTitle("A_{FB}");
 		  VecHistoMeas[1]->GetYaxis()->SetRangeUser(-1.0 - 0.01,1.0 + 0.01);
 
 		  cHistoMeas->cd(2);
 		  VecHistoMeas.push_back(new TH1D("histoMeas2", "B0 --> K*0(K+ pi-) mu+ mu- : dBF/dq2 vs dimuon q2", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas[2]->SetStats(false);
-		  VecHistoMeas[2]->SetXTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
-		  VecHistoMeas[2]->SetYTitle("dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
+		  VecHistoMeas[2]->SetXTitle("#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		  VecHistoMeas[2]->SetYTitle("d#it{#Beta} / d#it{q}#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
 		  VecHistoMeas[2]->GetYaxis()->SetRangeUser(0.0,12.);
 
 		  cout << "[ExtractYield::main]\t@@@ Now fit invariant mass, cos(theta_K) and cos(theta_l) per mumu q^2 bins @@@" << endl;

@@ -1397,29 +1397,29 @@ void ZeroCrossing (string fileName, const double minq2, const double maxq2, cons
   TTree* B0KstMuMuNTuple = (TTree*)_file0->Get("B0KstMuMu/B0KstMuMuNTuple");
 
   TH1D* hAFB = new TH1D("hAFB","hAFB",nBins,0,8.5);
-  hAFB->GetXaxis()->SetTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+  hAFB->GetXaxis()->SetTitle("#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
   hAFB->GetYaxis()->SetTitle("A_{FB}");
   hAFB->SetMarkerStyle(20);
 
   TH1D* h1p = new TH1D("h1p","h1p",nBins,0,8.5);
-  h1p->GetXaxis()->SetTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+  h1p->GetXaxis()->SetTitle("#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
   h1p->GetYaxis()->SetTitle("Entries (#)");
   h1p->SetMarkerStyle(20);
   h1p->SetMarkerColor(kBlack);
   h1p->GetXaxis()->SetRangeUser(minq2,maxq2);
 
   TH1D* h1m = new TH1D("h1m","h1m",nBins,0,8.5);
-  h1m->GetXaxis()->SetTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+  h1m->GetXaxis()->SetTitle("#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
   h1m->GetYaxis()->SetTitle("Entries (#)");
   h1m->SetMarkerStyle(21);
   h1m->SetMarkerColor(kRed);
   h1m->GetXaxis()->SetRangeUser(minq2,maxq2);
 
   TH2D* h2p = new TH2D("h2p","h2p",nBins,0,8.5,nBins,0,1.0);
-  h2p->GetXaxis()->SetTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+  h2p->GetXaxis()->SetTitle("#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
   h2p->GetYaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
   TH2D* h2m = new TH2D("h2m","h2m",nBins,0,8.5,nBins,0,-1.0);
-  h2m->GetXaxis()->SetTitle("q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+  h2m->GetXaxis()->SetTitle("#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
   h2m->GetYaxis()->SetTitle("cos(#theta#lower[-0.4]{_{#font[12]{l}}})");
 
   TF1* ZeroCrox = new TF1("ZeroCrox","[0]*x + [1]",minq2,maxq2);
@@ -1748,9 +1748,9 @@ TGraphAsymmErrors* readData (TString fileName, int dataType, int nBins, int colo
   printData(V1,V2,V3,V4,V5,V6);
 
   TGraphAsymmErrors* gra = new TGraphAsymmErrors(V1,V4,V2,V3,V5,V6);
-  if      (dataType == 0) gra->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); F_{L}");
-  else if (dataType == 1) gra->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); A_{FB}");
-  else if (dataType == 2) gra->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
+  if      (dataType == 0) gra->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); F_{L}");
+  else if (dataType == 1) gra->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); A_{FB}");
+  else if (dataType == 2) gra->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); d#it{#Beta} / d#it{q}#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
   if (doFill == true)
     {
       gra->SetFillColor(color);
@@ -1800,17 +1800,17 @@ void showData (int dataType, double offset, bool noHbar)
   if (dataType == 0)
     {
       h0->GetYaxis()->SetRangeUser(0.0,1.0);
-      h0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); F_{L}");      
+      h0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); F_{L}");      
     }
   else if (dataType == 1)
     {
       h0->GetYaxis()->SetRangeUser(-1.0,1.0);
-      h0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); A_{FB}");
+      h0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); A_{FB}");
     }
   else if (dataType == 2)
     {
       h0->GetYaxis()->SetRangeUser(0.0,12.);
-      h0->SetTitle(";q#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); dBF/dq#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
+      h0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); d#it{#Beta} / d#it{q}#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
     }
   h0->SetLineStyle(2);
   cout << "I've read the templare of the q2 binning" << endl;
@@ -1927,7 +1927,7 @@ void combineMeasurements (string whichVar, int whichBin)
       if (whichBin == -1)
 	{
 	  // # FL specialBin #
-	  meas[0]  = 0.704;
+	  meas[0]  = 0.721;
 	  meas[1]  = 0.684;
 
 	  CovHi(0,0) = 0.051*0.051 + (0.003*0.003+0.001*0.001+0.014*0.014+0.004*0.004+0.007*0.007);
@@ -1940,13 +1940,13 @@ void combineMeasurements (string whichVar, int whichBin)
 	}
       else if (whichBin == 0)
 	{
-	  meas[0]  = 0.639;
+	  meas[0]  = 0.646;
 	  meas[1]  = 0.600;
 
-	  CovHi(0,0) = 0.087*0.087 + (0.010*0.010+0.011*0.011+0.027*0.027+0.015*0.015+0.006*0.006);
+	  CovHi(0,0) = 0.108*0.108 + (0.010*0.010+0.011*0.011+0.027*0.027+0.015*0.015+0.006*0.006);
 	  CovHi(1,1) = 0.000*0.000 + (0.007*0.007+0.040*0.040+0.023*0.023+0.179*0.179);
 
-	  CovLo(0,0) = 0.094*0.094 + (0.010*0.010+0.011*0.011+0.027*0.027+0.015*0.015+0.006*0.006);
+	  CovLo(0,0) = 0.090*0.090 + (0.010*0.010+0.011*0.011+0.027*0.027+0.015*0.015+0.006*0.006);
 	  CovLo(1,1) = 0.280*0.280 + (0.007*0.007+0.040*0.040+0.023*0.023+0.179*0.179);
 
 	 CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * (0.034*0.034+0.003*0.003+0.003*0.003+0.023*0.023); // cov[x,y] = rho * sigmax * sigmay
@@ -2006,13 +2006,13 @@ void combineMeasurements (string whichVar, int whichBin)
 	}
       else if (whichBin == 6)
 	{
-	  meas[0]  = 0.464;
+	  meas[0]  = 0.463;
 	  meas[1]  = 0.530;
 
-	  CovHi(0,0) = 0.041*0.041 + (0.005*0.005+0.001*0.001+0.001*0.001+0.013*0.013+0.001*0.001);
+	  CovHi(0,0) = 0.045*0.045 + (0.005*0.005+0.001*0.001+0.001*0.001+0.013*0.013+0.001*0.001);
 	  CovHi(1,1) = 0.120*0.120 + (0.006*0.006+0.023*0.023+0.013*0.013+0.004*0.004);
 
-	  CovLo(0,0) = 0.049*0.049 + (0.005*0.005+0.001*0.001+0.001*0.001+0.013*0.013+0.001*0.001);
+	  CovLo(0,0) = 0.054*0.054 + (0.005*0.005+0.001*0.001+0.001*0.001+0.013*0.013+0.001*0.001);
 	  CovLo(1,1) = 0.070*0.070 + (0.006*0.006+0.023*0.023+0.013*0.013+0.004*0.004);
 
 	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * (0.034*0.034+0.001*0.001+0.003*0.003+0.006*0.006); // cov[x,y] = rho * sigmax * sigmay
@@ -2037,26 +2037,26 @@ void combineMeasurements (string whichVar, int whichBin)
       if (whichBin == -1)
 	{
 	  // # AFB specialBin #
-	  meas[0]  = -0.150;
+	  meas[0]  = -0.148;
 	  meas[1]  = -0.068;
 
 	  CovHi(0,0) = 0.096*0.096 + (0.004*0.004+0.012*0.012+0.016*0.016+0.019*0.019+0.005*0.005);
 	  CovHi(1,1) = 0.115*0.115 + (0.001*0.001+0.003*0.003+0.013*0.013+0.002*0.002);
 
-	  CovLo(0,0) = 0.090*0.090 + (0.004*0.004+0.012*0.012+0.016*0.016+0.019*0.019+0.005*0.005);
+	  CovLo(0,0) = 0.084*0.084 + (0.004*0.004+0.012*0.012+0.016*0.016+0.019*0.019+0.005*0.005);
 	  CovLo(1,1) = 0.116*0.116 + (0.001*0.001+0.003*0.003+0.013*0.013+0.002*0.002);
 
 	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * (0.008*0.008+0.003*0.003+0.001*0.001+0.002*0.002); // cov[x,y] = rho * sigmax * sigmay
 	}
       else if (whichBin == 0)
 	{
-	  meas[0]  = -0.270;
+	  meas[0]  = -0.265;
 	  meas[1]  = -0.290;
 
-	  CovHi(0,0) = 0.170*0.170 + (0.007*0.007+0.037*0.037+0.020*0.020+0.052*0.052+0.004*0.004);
+	  CovHi(0,0) = 0.174*0.174 + (0.007*0.007+0.037*0.037+0.020*0.020+0.052*0.052+0.004*0.004);
 	  CovHi(1,1) = 0.280*0.280 + (0.004*0.004+0.077*0.077+0.006*0.006+0.161*0.161);
 
-	  CovLo(0,0) = 0.401*0.401 + (0.007*0.007+0.037*0.037+0.020*0.020+0.052*0.052+0.004*0.004);
+	  CovLo(0,0) = 0.400*0.400 + (0.007*0.007+0.037*0.037+0.020*0.020+0.052*0.052+0.004*0.004);
 	  CovLo(1,1) = 0.000*0.000 + (0.004*0.004+0.077*0.077+0.006*0.006+0.161*0.161);
 
 	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * (0.008*0.008+0.002*0.002+0.001*0.001+0.005*0.005); // cov[x,y] = rho * sigmax * sigmay
@@ -2116,13 +2116,13 @@ void combineMeasurements (string whichVar, int whichBin)
 	}
       else if (whichBin == 6)
 	{
-	  meas[0]  = 0.399;
+	  meas[0]  = 0.401;
 	  meas[1]  = 0.290;
   
-	  CovHi(0,0) = 0.029*0.029 + (0.005*0.005+0.002*0.002+0.006*0.006+0.003*0.003);
+	  CovHi(0,0) = 0.040*0.040 + (0.005*0.005+0.002*0.002+0.006*0.006+0.003*0.003);
 	  CovHi(1,1) = 0.090*0.090 + (0.003*0.003+0.014*0.014+0.011*0.011+0.038*0.038+0.017*0.017);
 
-	  CovLo(0,0) = 0.064*0.064 + (0.005*0.005+0.002*0.002+0.006*0.006+0.003*0.003);
+	  CovLo(0,0) = 0.061*0.061 + (0.005*0.005+0.002*0.002+0.006*0.006+0.003*0.003);
 	  CovLo(1,1) = 0.090*0.090 + (0.003*0.003+0.014*0.014+0.011*0.011+0.038*0.038+0.017*0.017);
 
 	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * (0.008*0.008+0.002*0.002+0.001*0.001+0.001*0.001); // cov[x,y] = rho * sigmax * sigmay
@@ -2147,26 +2147,26 @@ void combineMeasurements (string whichVar, int whichBin)
       if (whichBin == -1)
 	{
 	  // # dBF/dq2 specialBin #
-	  meas[0]  = 3.59;
+	  meas[0]  = 3.64;
 	  meas[1]  = 4.39;
 
-	  CovHi(0,0) = 0.29*0.29 + (0.7*0.7+2.3*2.3+1.0*1.0) * meas[0]*meas[0] / 1e4;
+	  CovHi(0,0) = 0.30*0.30 + (0.7*0.7+2.3*2.3+1.0*1.0) * meas[0]*meas[0] / 1e4;
 	  CovHi(1,1) = 0.58*0.58 + (0.6*0.6+1.0*1.0+5.0*5.0) * meas[1]*meas[1] / 1e4;
 
-	  CovLo(0,0) = 0.29*0.29 + (0.7*0.7+2.3*2.3+1.0*1.0) * meas[0]*meas[0] / 1e4;
+	  CovLo(0,0) = 0.30*0.30 + (0.7*0.7+2.3*2.3+1.0*1.0) * meas[0]*meas[0] / 1e4;
 	  CovLo(1,1) = 0.55*0.55 + (0.6*0.6+1.0*1.0+5.0*5.0) * meas[1]*meas[1] / 1e4;
 
 	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.2*4.2+0.3*0.3+3.2*3.2+1.1*1.1+4.6*4.6) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
 	}
       else if (whichBin == 0)
 	{
-	  meas[0]  = 4.70;
+	  meas[0]  = 4.72;
 	  meas[1]  = 4.80;
 
-	  CovHi(0,0) = 0.67*0.67 + (2.0*2.0+2.5*2.5+0.4*0.4) * meas[0]*meas[0] / 1e4;
+	  CovHi(0,0) = 0.72*0.72 + (2.0*2.0+2.5*2.5+0.4*0.4) * meas[0]*meas[0] / 1e4;
 	  CovHi(1,1) = 1.40*1.40 + (1.0*1.0+2.1*2.1+3.3*3.3+5.0*5.0) * meas[1]*meas[1] / 1e4;
 
-	  CovLo(0,0) = 0.67*0.67 + (2.0*2.0+2.5*2.5+0.4*0.4) * meas[0]*meas[0] / 1e4;
+	  CovLo(0,0) = 0.72*0.72 + (2.0*2.0+2.5*2.5+0.4*0.4) * meas[0]*meas[0] / 1e4;
 	  CovLo(1,1) = 1.20*1.20 + (1.0*1.0+2.1*2.1+3.3*3.3+5.0*5.0) * meas[1]*meas[1] / 1e4;
 
 	  CovHi(0,1) = CovHi(1,0) = CovLo(0,1) = CovLo(1,0) = 1. * ((4.5*4.5+0.2*0.2+3.2*3.2+1.5*1.5+4.6*4.6) * meas[0]*meas[1] / 1e4) ; // cov[x,y] = rho * sigmax * sigmay
@@ -2226,7 +2226,7 @@ void combineMeasurements (string whichVar, int whichBin)
 	}
       else if (whichBin == 6)
 	{
-	  meas[0]  = 6.54;
+	  meas[0]  = 6.48;
 	  meas[1]  = 4.60;
 
 	  CovHi(0,0) = 0.59*0.59 + (0.7*0.7+2.0*2.0+0.1*0.1) * meas[0]*meas[0] / 1e4;
