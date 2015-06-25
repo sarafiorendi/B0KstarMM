@@ -1865,6 +1865,7 @@ void showData (int dataType, double offset, bool noHbar)
   unsigned int it = 0;
   TLegend* leg = NULL;
   leg = new TLegend(0.12, 0.6, 0.27, 0.88, "");
+  leg->SetTextSize(0.038);
   leg->AddEntry(dVar[it++],"CMS (7 TeV + 8 TeV)","lp");
   // leg->AddEntry(dVar[it++],"CMS (8 TeV)","lp");
   // leg->AddEntry(dVar[it++],"CMS (7 TeV)","lp");
@@ -1886,8 +1887,8 @@ void showData (int dataType, double offset, bool noHbar)
 
   
   DrawString(luminosity);
-  DrawExclusion(08.68,10.09,-1.2,30.,"RejectJPsi1",3001,kGray);
-  DrawExclusion(12.86,14.18,-1.2,30.,"RejectPsiP1",3001,kGray);
+  DrawExclusion(08.68,10.09,-1.5,30.,"RejectJPsi1",3001,kGray);
+  DrawExclusion(12.86,14.18,-1.5,30.,"RejectPsiP1",3001,kGray);
 
 
   cData->Modified();

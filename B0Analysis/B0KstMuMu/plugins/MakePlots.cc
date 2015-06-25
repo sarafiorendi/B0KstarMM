@@ -1956,7 +1956,8 @@ void MakePhysicsPlots (unsigned int PlotType)
   pad1->cd();
 
 
-  TLegend* leg = new TLegend(0.8, 0.7, 0.97, 0.89, "");
+  TLegend* leg = new TLegend(0.74, 0.7, 0.97, 0.89, "");
+  leg->SetTextSize(0.038);
   if ((PlotType == 0) || (PlotType == 1) || (PlotType == 2)) // Fl OR Afb OR Branching fraction
     {
       ge0->Draw("ape1");
