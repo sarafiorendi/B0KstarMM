@@ -5620,6 +5620,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // 	  // ##############################################
       // 	  // # Make the contout converge for certain bins #
       // 	  // ##############################################
+      // 	  ResetAngularParam(NULL, *TotalPDF);
       // 	  unsigned int q2BinIndx = 0;
       // 	  CopyFitResults(*TotalPDF,q2BinIndx,&fitParam);
       //     for (unsigned int i = 0 ; i < NCOEFFPOLYBKG; i++)
@@ -5648,7 +5649,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       //  	  localCanv[3]->cd();
       // 	  RooMinimizer RooMin(*NLL);
-      // 	  RooMin.setStrategy(0);
+      // 	  RooMin.setStrategy(0); // Values: 0, 1, or 2
       // 	  cout << "[ExtractYield::MakeMass2AnglesFit]\t@@@ Starting minimization placeholder @@@" << endl;
       // 	  RooMin.minimize(MINIMIZER);
       // 	  cout << "[ExtractYield::MakeMass2AnglesFit]\t@@@ Starting contour scan @@@" << endl;
