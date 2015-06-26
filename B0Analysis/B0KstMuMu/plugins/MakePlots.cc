@@ -3261,7 +3261,7 @@ int main (int argc, char** argv)
       else if (option != "PhyRegion")
 	{
 	  cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass ScatB0MuMu]" << endl;
-	  cout << "            [Phy: 0-2||10-12]" << endl;
+	  cout << "            [Phy: 0-2||10-14]" << endl;
 	  cout << "            [GenMultyRun: fileName q^2_bin_index]" << endl;
 	  cout << "            [DataMC: 0-27]" << endl;
 	  cout << "            [Pval: toyFileName q^2_bin_index]" << endl;
@@ -3328,7 +3328,7 @@ int main (int argc, char** argv)
   else
     {
       cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass ScatB0MuMu]" << endl;
-      cout << "            [Phy: 0-2||10-12]" << endl;
+      cout << "            [Phy: 0-2||10-14]" << endl;
       cout << "            [GenMultyRun: fileName q^2_bin_index]" << endl;
       cout << "            [DataMC: 0-27]" << endl;
       cout << "            [Pval: toyFileName q^2_bin_index]" << endl;
