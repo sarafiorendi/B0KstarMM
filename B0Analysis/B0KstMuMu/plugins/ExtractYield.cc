@@ -647,7 +647,7 @@ void DrawString (double Lumi, RooPlot* myFrame)
   myString << "CMS";
   TLatex* LumiTex1 = new TLatex(0.18,0.9,myString.str().c_str());
   LumiTex1->SetTextFont(61);
-  LumiTex1->SetTextSize(0.05);
+  LumiTex1->SetTextSize(0.06);
   LumiTex1->SetTextColor(kBlack);
   LumiTex1->SetNDC(true);
   if (myFrame == NULL) LumiTex1->DrawLatex(0.18,0.9,myString.str().c_str());
@@ -660,12 +660,12 @@ void DrawString (double Lumi, RooPlot* myFrame)
 
   myString.clear(); myString.str("");
   myString << "#it{Preliminary}";
-  TLatex* LumiTex2 = new TLatex(0.265,0.9,myString.str().c_str());
+  TLatex* LumiTex2 = new TLatex(0.28,0.9,myString.str().c_str());
   LumiTex2->SetTextFont(42);
-  LumiTex2->SetTextSize(0.05 * scaleRespect2CMS);
+  LumiTex2->SetTextSize(0.06 * scaleRespect2CMS);
   LumiTex2->SetTextColor(kBlack);
   LumiTex2->SetNDC(true);
-  if (myFrame == NULL) LumiTex2->DrawLatex(0.265,0.9,myString.str().c_str());
+  if (myFrame == NULL) LumiTex2->DrawLatex(0.28,0.9,myString.str().c_str());
   else
     {
       LumiTex2->Paint();
@@ -675,12 +675,12 @@ void DrawString (double Lumi, RooPlot* myFrame)
 
   myString.clear(); myString.str("");
   myString << Lumi <<  " fb#lower[0.4]{^{#font[122]{\55}1}} (8 TeV)";
-  TLatex* LumiTex3 = new TLatex(0.8,0.9,myString.str().c_str());
+  TLatex* LumiTex3 = new TLatex(0.76,0.9,myString.str().c_str());
   LumiTex3->SetTextFont(42);
-  LumiTex3->SetTextSize(0.05 * scaleRespect2CMS);
+  LumiTex3->SetTextSize(0.06 * scaleRespect2CMS);
   LumiTex3->SetTextColor(kBlack);
   LumiTex3->SetNDC(true);
-  if (myFrame == NULL) LumiTex3->DrawLatex(0.8,0.9,myString.str().c_str());
+  if (myFrame == NULL) LumiTex3->DrawLatex(0.76,0.9,myString.str().c_str());
   else
     {
       LumiTex3->Paint();
