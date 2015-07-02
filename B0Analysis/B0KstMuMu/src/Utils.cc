@@ -607,7 +607,7 @@ void Utils::GetEffq2Bin (std::vector<double>* q2Bins, std::vector<double>* cosTh
   myEffVal.Err2WeigDen1 = myEff.Err2WeigDen1[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(q2Bins->size()-1) + q2Indx];
   myEffVal.Err2WeigDen2 = myEff.Err2WeigDen2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaMuIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKIndx*(q2Bins->size()-1) + q2Indx];
 
-  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
+  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && (myEffValOrg.Den1-1) > 0.0 && myEffValOrg.Num2 > 0.0 && (myEffValOrg.Den2-1) > 0.0)
     {
       myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 / pow(myEffVal.Err2PoisNum1 / myEffVal.Num1,2.);
       myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 / pow(myEffVal.Err2PoisNum2 / myEffVal.Num2,2.);
@@ -615,7 +615,8 @@ void Utils::GetEffq2Bin (std::vector<double>* q2Bins, std::vector<double>* cosTh
       myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 / pow(myEffVal.Err2PoisDen2 / myEffVal.Den2,2.);
 
       *Eff    = myEffVal.Num1*myEffVal.Num2 / (myEffVal.Den1*myEffVal.Den2);
-      *EffErr = *Eff * sqrt((1. / myEffValOrg.Num1 - 1. / myEffValOrg.Den1 + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) + (1. / myEffValOrg.Num2 - 1. / myEffValOrg.Den2 + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
+      *EffErr = *Eff * sqrt((myEffValOrg.Den1 / (myEffValOrg.Den1 - 1) * (1./myEffValOrg.Num1 - 1./myEffValOrg.Den1) + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) +
+			    (myEffValOrg.Den2 / (myEffValOrg.Den2 - 1) * (1./myEffValOrg.Num2 - 1./myEffValOrg.Den2) + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
     }
   else
     {
@@ -1094,15 +1095,16 @@ void Utils::IntegrateEffAll (std::vector<double>* q2Bins, std::vector<double>* c
 	    myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	  }
   
-  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
+  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && (myEffValOrg.Den1-1) > 0.0 && myEffValOrg.Num2 > 0.0 && (myEffValOrg.Den2-1) > 0.0)
     {
       myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 / pow(myEffVal.Err2PoisNum1 / myEffVal.Num1,2.);
       myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 / pow(myEffVal.Err2PoisNum2 / myEffVal.Num2,2.);
       myEffVal.Err2WeigDen1 = myEffVal.Err2WeigDen1 / pow(myEffVal.Err2PoisDen1 / myEffVal.Den1,2.);
       myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 / pow(myEffVal.Err2PoisDen2 / myEffVal.Den2,2.);
-
+      
       *Eff    = myEffVal.Num1*myEffVal.Num2 / (myEffVal.Den1*myEffVal.Den2);
-      *EffErr = *Eff * sqrt((1. / myEffValOrg.Num1 - 1. / myEffValOrg.Den1 + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) + (1. / myEffValOrg.Num2 - 1. / myEffValOrg.Den2 + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
+      *EffErr = *Eff * sqrt((myEffValOrg.Den1 / (myEffValOrg.Den1 - 1) * (1./myEffValOrg.Num1 - 1./myEffValOrg.Den1) + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) +
+			    (myEffValOrg.Den2 / (myEffValOrg.Den2 - 1) * (1./myEffValOrg.Num2 - 1./myEffValOrg.Den2) + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
     }
   else
     {
@@ -1158,7 +1160,7 @@ void Utils::IntegrateEffButPsi (std::vector<double>* q2Bins, std::vector<double>
 	      myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	    }
   
-  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
+  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && (myEffValOrg.Den1-1) > 0.0 && myEffValOrg.Num2 > 0.0 && (myEffValOrg.Den2-1) > 0.0)
     {
       myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 / pow(myEffVal.Err2PoisNum1 / myEffVal.Num1,2.);
       myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 / pow(myEffVal.Err2PoisNum2 / myEffVal.Num2,2.);
@@ -1166,7 +1168,8 @@ void Utils::IntegrateEffButPsi (std::vector<double>* q2Bins, std::vector<double>
       myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 / pow(myEffVal.Err2PoisDen2 / myEffVal.Den2,2.);
       
       *Eff    = myEffVal.Num1*myEffVal.Num2 / (myEffVal.Den1*myEffVal.Den2);
-      *EffErr = *Eff * sqrt((1. / myEffValOrg.Num1 - 1. / myEffValOrg.Den1 + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) + (1. / myEffValOrg.Num2 - 1. / myEffValOrg.Den2 + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
+      *EffErr = *Eff * sqrt((myEffValOrg.Den1 / (myEffValOrg.Den1 - 1) * (1./myEffValOrg.Num1 - 1./myEffValOrg.Den1) + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) +
+			    (myEffValOrg.Den2 / (myEffValOrg.Den2 - 1) * (1./myEffValOrg.Num2 - 1./myEffValOrg.Den2) + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
     }
   else
     {
@@ -1221,7 +1224,7 @@ void Utils::IntegrateEffInJPsi (std::vector<double>* q2Bins, std::vector<double>
 	      myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	    }
   
-  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
+  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && (myEffValOrg.Den1-1) > 0.0 && myEffValOrg.Num2 > 0.0 && (myEffValOrg.Den2-1) > 0.0)
     {
       myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 / pow(myEffVal.Err2PoisNum1 / myEffVal.Num1,2.);
       myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 / pow(myEffVal.Err2PoisNum2 / myEffVal.Num2,2.);
@@ -1229,7 +1232,8 @@ void Utils::IntegrateEffInJPsi (std::vector<double>* q2Bins, std::vector<double>
       myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 / pow(myEffVal.Err2PoisDen2 / myEffVal.Den2,2.);
       
       *Eff    = myEffVal.Num1*myEffVal.Num2 / (myEffVal.Den1*myEffVal.Den2);
-      *EffErr = *Eff * sqrt((1. / myEffValOrg.Num1 - 1. / myEffValOrg.Den1 + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) + (1. / myEffValOrg.Num2 - 1. / myEffValOrg.Den2 + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
+      *EffErr = *Eff * sqrt((myEffValOrg.Den1 / (myEffValOrg.Den1 - 1) * (1./myEffValOrg.Num1 - 1./myEffValOrg.Den1) + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) +
+			    (myEffValOrg.Den2 / (myEffValOrg.Den2 - 1) * (1./myEffValOrg.Num2 - 1./myEffValOrg.Den2) + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
     }
   else
     {
@@ -1284,7 +1288,7 @@ void Utils::IntegrateEffInPsiP (std::vector<double>* q2Bins, std::vector<double>
 	      myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	    }
 
-  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
+  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && (myEffValOrg.Den1-1) > 0.0 && myEffValOrg.Num2 > 0.0 && (myEffValOrg.Den2-1) > 0.0)
     {
       myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 / pow(myEffVal.Err2PoisNum1 / myEffVal.Num1,2.);
       myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 / pow(myEffVal.Err2PoisNum2 / myEffVal.Num2,2.);
@@ -1292,7 +1296,8 @@ void Utils::IntegrateEffInPsiP (std::vector<double>* q2Bins, std::vector<double>
       myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 / pow(myEffVal.Err2PoisDen2 / myEffVal.Den2,2.);
       
       *Eff    = myEffVal.Num1*myEffVal.Num2 / (myEffVal.Den1*myEffVal.Den2);
-      *EffErr = *Eff * sqrt((1. / myEffValOrg.Num1 - 1. / myEffValOrg.Den1 + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) + (1. / myEffValOrg.Num2 - 1. / myEffValOrg.Den2 + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
+      *EffErr = *Eff * sqrt((myEffValOrg.Den1 / (myEffValOrg.Den1 - 1) * (1./myEffValOrg.Num1 - 1./myEffValOrg.Den1) + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) +
+			    (myEffValOrg.Den2 / (myEffValOrg.Den2 - 1) * (1./myEffValOrg.Num2 - 1./myEffValOrg.Den2) + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
     }
   else
     {
@@ -1345,7 +1350,7 @@ void Utils::IntegrateEffButq2 (std::vector<double>* q2Bins, std::vector<double>*
 	  myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
 	}
   
-  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
+  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && (myEffValOrg.Den1-1) > 0.0 && myEffValOrg.Num2 > 0.0 && (myEffValOrg.Den2-1) > 0.0)
     {
       myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 / pow(myEffVal.Err2PoisNum1 / myEffVal.Num1,2.);
       myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 / pow(myEffVal.Err2PoisNum2 / myEffVal.Num2,2.);
@@ -1353,7 +1358,8 @@ void Utils::IntegrateEffButq2 (std::vector<double>* q2Bins, std::vector<double>*
       myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 / pow(myEffVal.Err2PoisDen2 / myEffVal.Den2,2.);
       
       *Eff    = myEffVal.Num1*myEffVal.Num2 / (myEffVal.Den1*myEffVal.Den2);
-      *EffErr = *Eff * sqrt((1. / myEffValOrg.Num1 - 1. / myEffValOrg.Den1 + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) + (1. / myEffValOrg.Num2 - 1. / myEffValOrg.Den2 + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
+      *EffErr = *Eff * sqrt((myEffValOrg.Den1 / (myEffValOrg.Den1 - 1) * (1./myEffValOrg.Num1 - 1./myEffValOrg.Den1) + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) +
+			    (myEffValOrg.Den2 / (myEffValOrg.Den2 - 1) * (1./myEffValOrg.Num2 - 1./myEffValOrg.Den2) + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
     }
   else
     {
@@ -1406,7 +1412,7 @@ void Utils::IntegrateEffButCosThetaK (std::vector<double>* q2Bins, std::vector<d
 	  myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + i];
 	}
   
-  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
+  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && (myEffValOrg.Den1-1) > 0.0 && myEffValOrg.Num2 > 0.0 && (myEffValOrg.Den2-1) > 0.0)
     {
       myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 / pow(myEffVal.Err2PoisNum1 / myEffVal.Num1,2.);
       myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 / pow(myEffVal.Err2PoisNum2 / myEffVal.Num2,2.);
@@ -1414,7 +1420,8 @@ void Utils::IntegrateEffButCosThetaK (std::vector<double>* q2Bins, std::vector<d
       myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 / pow(myEffVal.Err2PoisDen2 / myEffVal.Den2,2.);
       
       *Eff    = myEffVal.Num1*myEffVal.Num2 / (myEffVal.Den1*myEffVal.Den2);
-      *EffErr = *Eff * sqrt((1. / myEffValOrg.Num1 - 1. / myEffValOrg.Den1 + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) + (1. / myEffValOrg.Num2 - 1. / myEffValOrg.Den2 + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
+      *EffErr = *Eff * sqrt((myEffValOrg.Den1 / (myEffValOrg.Den1 - 1) * (1./myEffValOrg.Num1 - 1./myEffValOrg.Den1) + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) +
+			    (myEffValOrg.Den2 / (myEffValOrg.Den2 - 1) * (1./myEffValOrg.Num2 - 1./myEffValOrg.Den2) + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
     }
   else
     {
@@ -1467,7 +1474,7 @@ void Utils::IntegrateEffButCosThetaL (std::vector<double>* q2Bins, std::vector<d
 	  myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	}
   
-  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
+  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && (myEffValOrg.Den1-1) > 0.0 && myEffValOrg.Num2 > 0.0 && (myEffValOrg.Den2-1) > 0.0)
     {
       myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 / pow(myEffVal.Err2PoisNum1 / myEffVal.Num1,2.);
       myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 / pow(myEffVal.Err2PoisNum2 / myEffVal.Num2,2.);
@@ -1475,7 +1482,8 @@ void Utils::IntegrateEffButCosThetaL (std::vector<double>* q2Bins, std::vector<d
       myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 / pow(myEffVal.Err2PoisDen2 / myEffVal.Den2,2.);
       
       *Eff    = myEffVal.Num1*myEffVal.Num2 / (myEffVal.Den1*myEffVal.Den2);
-      *EffErr = *Eff * sqrt((1. / myEffValOrg.Num1 - 1. / myEffValOrg.Den1 + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) + (1. / myEffValOrg.Num2 - 1. / myEffValOrg.Den2 + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
+      *EffErr = *Eff * sqrt((myEffValOrg.Den1 / (myEffValOrg.Den1 - 1) * (1./myEffValOrg.Num1 - 1./myEffValOrg.Den1) + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) +
+			    (myEffValOrg.Den2 / (myEffValOrg.Den2 - 1) * (1./myEffValOrg.Num2 - 1./myEffValOrg.Den2) + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
     }
   else
     {
@@ -1528,7 +1536,7 @@ void Utils::IntegrateEffButPhi (std::vector<double>* q2Bins, std::vector<double>
 	  myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + i];
 	}
 
-  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
+  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && (myEffValOrg.Den1-1) > 0.0 && myEffValOrg.Num2 > 0.0 && (myEffValOrg.Den2-1) > 0.0)
     {
       myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 / pow(myEffVal.Err2PoisNum1 / myEffVal.Num1,2.);
       myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 / pow(myEffVal.Err2PoisNum2 / myEffVal.Num2,2.);
@@ -1536,7 +1544,8 @@ void Utils::IntegrateEffButPhi (std::vector<double>* q2Bins, std::vector<double>
       myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 / pow(myEffVal.Err2PoisDen2 / myEffVal.Den2,2.);
       
       *Eff    = myEffVal.Num1*myEffVal.Num2 / (myEffVal.Den1*myEffVal.Den2);
-      *EffErr = *Eff * sqrt((1. / myEffValOrg.Num1 - 1. / myEffValOrg.Den1 + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) + (1. / myEffValOrg.Num2 - 1. / myEffValOrg.Den2 + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
+      *EffErr = *Eff * sqrt((myEffValOrg.Den1 / (myEffValOrg.Den1 - 1) * (1./myEffValOrg.Num1 - 1./myEffValOrg.Den1) + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) +
+			    (myEffValOrg.Den2 / (myEffValOrg.Den2 - 1) * (1./myEffValOrg.Num2 - 1./myEffValOrg.Den2) + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
     }
   else
     {
@@ -1588,7 +1597,7 @@ void Utils::IntegrateEffPhiCosThetaL (std::vector<double>* q2Bins, std::vector<d
 	myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + q2Indx];
       }
 
-  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
+  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && (myEffValOrg.Den1-1) > 0.0 && myEffValOrg.Num2 > 0.0 && (myEffValOrg.Den2-1) > 0.0)
     {
       myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 / pow(myEffVal.Err2PoisNum1 / myEffVal.Num1,2.);
       myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 / pow(myEffVal.Err2PoisNum2 / myEffVal.Num2,2.);
@@ -1596,7 +1605,8 @@ void Utils::IntegrateEffPhiCosThetaL (std::vector<double>* q2Bins, std::vector<d
       myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 / pow(myEffVal.Err2PoisDen2 / myEffVal.Den2,2.);
       
       *Eff    = myEffVal.Num1*myEffVal.Num2 / (myEffVal.Den1*myEffVal.Den2);
-      *EffErr = *Eff * sqrt((1. / myEffValOrg.Num1 - 1. / myEffValOrg.Den1 + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) + (1. / myEffValOrg.Num2 - 1. / myEffValOrg.Den2 + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
+      *EffErr = *Eff * sqrt((myEffValOrg.Den1 / (myEffValOrg.Den1 - 1) * (1./myEffValOrg.Num1 - 1./myEffValOrg.Den1) + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) +
+			    (myEffValOrg.Den2 / (myEffValOrg.Den2 - 1) * (1./myEffValOrg.Num2 - 1./myEffValOrg.Den2) + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
     }
   else
     {
@@ -1648,7 +1658,7 @@ void Utils::IntegrateEffPhiCosThetaK (std::vector<double>* q2Bins, std::vector<d
 	myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
       }
   
-  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
+  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && (myEffValOrg.Den1-1) > 0.0 && myEffValOrg.Num2 > 0.0 && (myEffValOrg.Den2-1) > 0.0)
     {
       myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 / pow(myEffVal.Err2PoisNum1 / myEffVal.Num1,2.);
       myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 / pow(myEffVal.Err2PoisNum2 / myEffVal.Num2,2.);
@@ -1656,7 +1666,8 @@ void Utils::IntegrateEffPhiCosThetaK (std::vector<double>* q2Bins, std::vector<d
       myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 / pow(myEffVal.Err2PoisDen2 / myEffVal.Den2,2.);
       
       *Eff    = myEffVal.Num1*myEffVal.Num2 / (myEffVal.Den1*myEffVal.Den2);
-      *EffErr = *Eff * sqrt((1. / myEffValOrg.Num1 - 1. / myEffValOrg.Den1 + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) + (1. / myEffValOrg.Num2 - 1. / myEffValOrg.Den2 + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
+      *EffErr = *Eff * sqrt((myEffValOrg.Den1 / (myEffValOrg.Den1 - 1) * (1./myEffValOrg.Num1 - 1./myEffValOrg.Den1) + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) +
+			    (myEffValOrg.Den2 / (myEffValOrg.Den2 - 1) * (1./myEffValOrg.Num2 - 1./myEffValOrg.Den2) + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
     }
   else
     {
@@ -1708,7 +1719,7 @@ void Utils::IntegrateEffCosThetaKCosThetaL (std::vector<double>* q2Bins, std::ve
 	myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[phiIndx*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + k*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + j*(q2Bins->size()-1) + q2Indx];
       }
   
-  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
+  if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && (myEffValOrg.Den1-1) > 0.0 && myEffValOrg.Num2 > 0.0 && (myEffValOrg.Den2-1) > 0.0)
     {
       myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 / pow(myEffVal.Err2PoisNum1 / myEffVal.Num1,2.);
       myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 / pow(myEffVal.Err2PoisNum2 / myEffVal.Num2,2.);
@@ -1716,7 +1727,8 @@ void Utils::IntegrateEffCosThetaKCosThetaL (std::vector<double>* q2Bins, std::ve
       myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 / pow(myEffVal.Err2PoisDen2 / myEffVal.Den2,2.);
       
       *Eff    = myEffVal.Num1*myEffVal.Num2 / (myEffVal.Den1*myEffVal.Den2);
-      *EffErr = *Eff * sqrt((1. / myEffValOrg.Num1 - 1. / myEffValOrg.Den1 + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) + (1. / myEffValOrg.Num2 - 1. / myEffValOrg.Den2 + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
+      *EffErr = *Eff * sqrt((myEffValOrg.Den1 / (myEffValOrg.Den1 - 1) * (1./myEffValOrg.Num1 - 1./myEffValOrg.Den1) + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) +
+			    (myEffValOrg.Den2 / (myEffValOrg.Den2 - 1) * (1./myEffValOrg.Num2 - 1./myEffValOrg.Den2) + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
     }
   else
     {
@@ -1841,7 +1853,7 @@ bool Utils::IntegrateEffPhi (std::vector<double>* q2Bins, std::vector<double>* c
 	  myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 + myEff.Err2WeigDen2[l*(cosThetaLBins->size()-1)*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaLBinIndx*(cosThetaKBins->size()-1)*(q2Bins->size()-1) + cosThetaKBinIndx*(q2Bins->size()-1) + mumuq2Indx];
 	}
       
-      if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && myEffValOrg.Den1 > 0.0 && myEffValOrg.Num2 > 0.0 && myEffValOrg.Den2 > 0.0)
+      if (myEffVal.Num1 > 0.0 && myEffVal.Den1 > 0.0 && myEffVal.Num2 > 0.0 && myEffVal.Den2 > 0.0 && myEffValOrg.Num1 > 0.0 && (myEffValOrg.Den1-1) > 0.0 && myEffValOrg.Num2 > 0.0 && (myEffValOrg.Den2-1) > 0.0)
 	{
 	  myEffVal.Err2WeigNum1 = myEffVal.Err2WeigNum1 / pow(myEffVal.Err2PoisNum1 / myEffVal.Num1,2.);
 	  myEffVal.Err2WeigNum2 = myEffVal.Err2WeigNum2 / pow(myEffVal.Err2PoisNum2 / myEffVal.Num2,2.);
@@ -1849,7 +1861,8 @@ bool Utils::IntegrateEffPhi (std::vector<double>* q2Bins, std::vector<double>* c
 	  myEffVal.Err2WeigDen2 = myEffVal.Err2WeigDen2 / pow(myEffVal.Err2PoisDen2 / myEffVal.Den2,2.);
 	  
 	  *Eff    = myEffVal.Num1*myEffVal.Num2 / (myEffVal.Den1*myEffVal.Den2);
-	  *EffErr = *Eff * sqrt((1. / myEffValOrg.Num1 - 1. / myEffValOrg.Den1 + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) + (1. / myEffValOrg.Num2 - 1. / myEffValOrg.Den2 + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
+	  *EffErr = *Eff * sqrt((myEffValOrg.Den1 / (myEffValOrg.Den1 - 1) * (1./myEffValOrg.Num1 - 1./myEffValOrg.Den1) + myEffVal.Err2WeigNum1 + myEffVal.Err2WeigDen1) +
+				(myEffValOrg.Den2 / (myEffValOrg.Den2 - 1) * (1./myEffValOrg.Num2 - 1./myEffValOrg.Den2) + myEffVal.Err2WeigNum2 + myEffVal.Err2WeigDen2));
 	}
       else
 	{

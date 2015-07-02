@@ -1515,9 +1515,9 @@ void GenerateEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins
 		if (orgEffVal.Err2PoisNum1 != 0.)
 		  {
 		    toGenN                 = orgEffVal.Num1 * orgEffVal.Num1 / orgEffVal.Err2PoisNum1;
-		    weight                 = orgEffVal.Err2PoisNum1 / orgEffVal.Num1;
+		    weight                 = orgEffVal.Err2PoisDen1 / orgEffVal.Den1;
 		    newEffVal.Num1         = fabs( rnd->Gaus(newEffVal.Den1/weight * toGenN / toGenD, sqrt (newEffVal.Den1/weight * toGenN / toGenD * (1. - toGenN / toGenD))) );
-		    newEffVal.Err2PoisNum1 = newEffVal.Num1 * weight;
+		    newEffVal.Err2PoisNum1 = newEffVal.Num1 * orgEffVal.Err2PoisNum1 / orgEffVal.Num1;
 		  }
 		else
 		  {
@@ -1541,9 +1541,9 @@ void GenerateEfficiencies (vector<double>* q2Bins, vector<double>* cosThetaKBins
 		if (orgEffVal.Err2PoisNum2 != 0.)
 		  {
 		    toGenN                 = orgEffVal.Num2 * orgEffVal.Num2 / orgEffVal.Err2PoisNum2;
-		    weight                 = orgEffVal.Err2PoisNum2 / orgEffVal.Num2;
+		    weight                 = orgEffVal.Err2PoisDen2 / orgEffVal.Den2;
 		    newEffVal.Num2         = fabs( rnd->Gaus(newEffVal.Den2/weight * toGenN / toGenD, sqrt (newEffVal.Den2/weight * toGenN / toGenD * (1. - toGenN / toGenD))) );
-		    newEffVal.Err2PoisNum2 = newEffVal.Num2 * weight;
+		    newEffVal.Err2PoisNum2 = newEffVal.Num2 * orgEffVal.Err2PoisNum2 / orgEffVal.Num2;
 		  }
 		else
 		  {

@@ -58,7 +58,16 @@ class Utils
     // # SingleCand    <--> N2 #
     // # GenNoFilter   <--> D1 #
     // # AllCandFilter <--> D2 #
-    // #########################
+    // ##################################################################################################
+    // # The error on the efficiency is computed in the following way:                                  #
+    // # Efficiency E = N1 / D1 * N2*nw2 / (D2*dw2) = R1 * R2                                           #
+    // # Error on E = E * sqrt( (dE/dR1 * sigma_R1)^2 + (dE/dR2 * sigma_R2)^2 )                         #
+    // # R2 = (N2 / D2) * (nw2 / dw2)                                                                   #
+    // # Therefore sigma_R2^2 = (dR2 / d(N2/D2) * sigma_N2/D2)^2 + (dR2 / d(nw2/dw2) * sigma_nw2/dw2)^2 #
+    // # To compute the efficiency the the unbiased estimator of the binomial was used:                 #
+    // # Variance estimator = D / (D - 1) * D * N/D * (1 - N/D)                                         #
+    // # Therefore the varianve for the efficiency estimator is: D / (D - 1) * D * N/D * (1 - N/D) / D^2#
+    // ##################################################################################################
   };
   typedef struct _effStruct effStruct;
 
