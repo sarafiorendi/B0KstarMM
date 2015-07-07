@@ -3857,7 +3857,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
     {
       (*TotalPDF)->plotOn(myFrameX, Components(*MassSignal), FillStyle(3345), FillColor(kBlue), DrawOption("F"));
       (*TotalPDF)->plotOn(myFrameX, Components(*MassSignal), LineStyle(7),    LineColor(kBlue), DrawOption("L"));
-      legNames[nElements++] = "Corr. tag sig";
+      legNames[nElements++] = "Corr. tag sig.";
       VarsYield.add(*nSig);
     }
 
@@ -3865,7 +3865,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
     {
       (*TotalPDF)->plotOn(myFrameX, Components(*MassMisTag), FillStyle(3354), FillColor(kGreen+1), DrawOption("F"));
       (*TotalPDF)->plotOn(myFrameX, Components(*MassMisTag), LineStyle(8),    LineColor(kGreen+1), DrawOption("L"));
-      legNames[nElements++] = "Mistag sig";
+      legNames[nElements++] = "Mistag sig.";
       VarsYield.add(*nMisTagFrac);
     }
 
@@ -5356,7 +5356,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	{
 	  (*TotalPDF)->plotOn(myFrameX, Components(*Signal), FillStyle(3345), FillColor(kBlue), Project(RooArgSet(*y,*z)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameX, Components(*Signal), LineStyle(7),    LineColor(kBlue), Project(RooArgSet(*y,*z)), DrawOption("L"));
-	  legNames[nElements++] = "Corr. tag sig";
+	  legNames[nElements++] = "Corr. tag sig.";
 	  VarsYield.add(*nSig);
 	}
 
@@ -5364,7 +5364,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	{
 	  (*TotalPDF)->plotOn(myFrameX, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), Project(RooArgSet(*y,*z)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameX, Components(*MassAngleMisTag), LineStyle(8),    LineColor(kGreen+1), Project(RooArgSet(*y,*z)), DrawOption("L"));
-	  legNames[nElements++] = "Mistag sig";
+	  legNames[nElements++] = "Mistag sig.";
 	  VarsYield.add(*nMisTagFrac);
 	}
 
