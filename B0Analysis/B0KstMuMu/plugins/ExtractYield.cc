@@ -3799,6 +3799,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   // ###################
   // # Local variables #
   // ###################
+  RooAbsReal* NLL         = NULL;
   RooFitResult* fitResult = NULL;
   RooArgSet VarsYield;
   stringstream myString;
@@ -3825,8 +3826,12 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   // ###################
   // # Make actual fit #
   // ###################
-  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())));
-  else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())));
+  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
+  else                                                               NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
+  RooMinimizer RooMin(*NLL);
+  RooMin.minimize(MINIMIZER);
+  if (atoi(Utility->GetGenericParam("UseMINOS").c_str()) == true) RooMin.minos();
+  fitResult = RooMin.lastMinuitFit();
 
 
   // ###################################################
@@ -4027,6 +4032,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   if (SETBATCH == true) delete legX;
 
 
+  delete NLL;
   VarsYield.Clear();
   return fitResult;
 }
@@ -5054,6 +5060,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
   // ###################
   // # Local variables #
   // ###################
+  RooAbsReal* NLL         = NULL;
   RooFitResult* fitResult = NULL;
   RooArgSet VarsYield;
   stringstream myString;
@@ -5101,8 +5108,12 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // ###################
       // # Make actual fit #
       // ###################
-      if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())));
-      else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())));
+      if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
+      else                                                               NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
+      RooMinimizer RooMin(*NLL);
+      RooMin.minimize(MINIMIZER);
+      if (atoi(Utility->GetGenericParam("UseMINOS").c_str()) == true) RooMin.minos();
+      fitResult = RooMin.lastMinuitFit();
 
 
       // ###################################################
@@ -5282,8 +5293,11 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  // ###################
 	  // # Make actual fit #
 	  // ###################
-	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebands),Save(true));
-	  else                                                               fitResult = TmpPDF->fitTo(*sideBands,Save(true));
+	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = TmpPDF->createNLL(*sideBands,ExternalConstraints(constrSidebands));
+	  else                                                               NLL = TmpPDF->createNLL(*sideBands);
+      	  RooMinimizer RooMin(*NLL);
+      	  RooMin.minimize(MINIMIZER);
+	  fitResult = RooMin.lastMinuitFit();
 	  if (fitResult != NULL) fitResult->Print("v");
 
 
@@ -5293,6 +5307,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	  StorePolyResultsInFile(*TotalPDF);
 
 
+	  delete NLL;
       	  delete TmpPDF;
       	  delete sideBands;
      	  ClearVars(&constrSidebands);
@@ -5322,8 +5337,12 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // ###################
       // # Make actual fit #
       // ###################
-      if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER));
-      else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER));
+      if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
+      else                                                               NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
+      RooMinimizer RooMin(*NLL);
+      RooMin.minimize(MINIMIZER);
+      if (atoi(Utility->GetGenericParam("UseMINOS").c_str()) == true) RooMin.minos(RooArgSet(*GetVar(*TotalPDF,"AfbS"),*GetVar(*TotalPDF,"FlS")));
+      fitResult = RooMin.lastMinuitFit();
 
 
       // ###################################################
@@ -5614,44 +5633,17 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // @TMP@
       // if ((FitType != 26) && (GetVar(*TotalPDF,"FlS") != NULL) && (GetVar(*TotalPDF,"AfbS") != NULL))
       // 	{
+      // 	  string varName;
       // 	  cout << "[ExtractYield::MakeMass2AnglesFit]\t@@@ Making profile likelihood plots @@@" << endl;
 
 
-      // 	  // ##############################################
-      // 	  // # Make the contout converge for certain bins #
-      // 	  // ##############################################
-      // 	  ResetAngularParam(NULL, *TotalPDF);
-      // 	  unsigned int q2BinIndx = 0;
-      // 	  CopyFitResults(*TotalPDF,q2BinIndx,&fitParam);
-      //     for (unsigned int i = 0 ; i < NCOEFFPOLYBKG; i++)
-      //       {
-      //         myString.clear(); myString.str("");
-      //         myString << "c1Poly" << i;
-      //         if (GetVar(*TotalPDF,myString.str().c_str()) != NULL) GetVar(*TotalPDF,myString.str().c_str())->setConstant(true);
-
-      //         myString.clear(); myString.str("");
-      //         myString << "c2Poly" << i;
-      //         if (GetVar(*TotalPDF,myString.str().c_str()) != NULL) GetVar(*TotalPDF,myString.str().c_str())->setConstant(true);
-      //       }
-
-	  
       // 	  // #############################
       // 	  // # Turn off all the printout #
       // 	  // #############################
       // 	  RooMsgService::instance().setGlobalKillBelow(RooFit::FATAL);
 
 
-      // 	  string varName;
-      // 	  RooAbsReal* NLL;
-      // 	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
-      // 	  else                                                               NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
-
-
-      //  	  localCanv[3]->cd();
-      // 	  RooMinimizer RooMin(*NLL);
-      // 	  RooMin.setStrategy(0); // Values: 0, 1, or 2
-      // 	  cout << "[ExtractYield::MakeMass2AnglesFit]\t@@@ Starting minimization placeholder @@@" << endl;
-      // 	  RooMin.minimize(MINIMIZER);
+      // 	  localCanv[3]->cd();
       // 	  cout << "[ExtractYield::MakeMass2AnglesFit]\t@@@ Starting contour scan @@@" << endl;
       // 	  RooPlot* myFrameNLL = RooMin.contour(*GetVar(*TotalPDF,"AfbS"),*GetVar(*TotalPDF,"FlS"),1.0,0.0,0.0);
       // 	  if (myFrameNLL != NULL)
@@ -5690,9 +5682,6 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // 	  myFrameNLLVar2->Draw();
 
 
-      // 	  delete NLL;
-	  
-	  
       // 	  // ############################
       // 	  // # Turn on all the printout #
       // 	  // ############################
@@ -6210,6 +6199,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       }
 
 
+  delete NLL;
   VarsYield.Clear();
   return fitResult;
 }
