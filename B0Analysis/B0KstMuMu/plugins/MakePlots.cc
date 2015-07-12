@@ -103,6 +103,7 @@ void PlotKK                (string fileName, bool bkgSub, string RECOorGEN);
 void PlotMuHadMass         (string fileName);
 void MakeFitResPlots       (string fileName, string plotType, int specBin, string varName, double lowBound, double highBound);
 void MakePvaluePlot        (string fileName, int specBin);
+void MakeContPlot          ();
 
 
 // ###########################
@@ -3208,6 +3209,87 @@ void MakePvaluePlot (string fileName, int specBin)
 }
 
 
+void MakeContPlot(string specBin)
+{
+  string scatterPlot = "toyMC_FLAFBstep0_" + specBin + ".root";
+  string contPlot    = "TotalPDFq2Bin_" + specBin + "_localCanv3_0.root";
+  string hitoName    = "contour_nll_TotalPDFq2Bin_" + specBin + "_SingleCandNTuple_RejectPsi_with_constr_n1.000000";
+  string physRegion  = "PhysRegion.root";
+  double LUMI        = Utility->ReadLumi(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str());
+
+
+  // ##########################
+  // # Set histo layout style #
+  // ##########################
+  SetStyle();
+  gStyle->SetOptFit(0);
+  gStyle->SetOptStat(0);
+  
+  TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
+
+
+  // #####################
+  // # Make scatter-plot #
+  // #####################
+  TFile* _file0 = TFile::Open(scatterPlot.c_str(),"READ");
+  TTree* theTree = (TTree*)_file0->Get("FitResults");
+  TH2D* h2D = new TH2D("h2D","h2D",100,-1,1,100,0,1);
+  h2D->SetXTitle("A_{FB}");
+  h2D->SetYTitle("F_{L}");
+  theTree->Draw("fit_Fl:fit_Afb>>h2D","","goff");
+  c0->cd();
+  h2D->SetMarkerColor(kBlue);
+  h2D->Draw();
+
+
+  // #####################
+  // # Make contour-plot #
+  // #####################
+  TFile* _file1 = TFile::Open(contPlot.c_str(),"READ");
+  TCanvas* c1   = (TCanvas*)_file1->Get("localCanv3");
+  TGraph* rPlot = (TGraph*)c1->GetPrimitive(hitoName.c_str());
+  c0->cd();
+  rPlot->SetLineColor(kBlue);
+  rPlot->Draw("same");
+
+
+  // ###########################
+  // # Make physics boundaries #
+  // ###########################
+  c0->cd();
+  TLine* line1 = new TLine(-3.0/4.0,0.0,0.0,1.0);
+  line1->SetLineColor(kRed);
+  line1->SetLineWidth(2);
+  line1->SetLineStyle(2);
+  line1->Draw("same");
+
+  TLine* line2 = new TLine(+3.0/4.0,0.0,0.0,1.0);
+  line2->SetLineColor(kRed);
+  line2->SetLineWidth(2);
+  line2->SetLineStyle(2);
+  line2->Draw("same");
+
+
+  // ########################
+  // # Make error bars-plot #
+  // ########################
+  TFile* _file2 = TFile::Open(physRegion.c_str(),"READ");
+  TCanvas* c2   = (TCanvas*)_file2->Get("canv0");
+  TGraphAsymmErrors* data2D = (TGraphAsymmErrors*)c2->GetPrimitive("Graph");    
+  c0->cd();
+  data2D->SetMarkerColor(kBlack);
+  data2D->SetMarkerStyle(20);
+  data2D->Draw("same P");
+
+
+  DrawString(LUMI);
+
+  
+  c0->Modified();
+  c0->Update();  
+}
+
+
 int main (int argc, char** argv)
 {
   if (argc >= 2)
@@ -3258,9 +3340,13 @@ int main (int argc, char** argv)
 	  fileName = argv[2];
 	  intVal   = atoi(argv[3]);
 	}
+      else if ((option == "ContPlot") && (argc == 3))
+	{
+	  tmpStr1 = argv[2];
+	}
       else if (option != "PhyRegion")
 	{
-	  cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass ScatB0MuMu]" << endl;
+	  cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass ScatB0MuMu ContPlot]" << endl;
 	  cout << "            [Phy: 0-2||10-14]" << endl;
 	  cout << "            [GenMultyRun: fileName q^2_bin_index]" << endl;
 	  cout << "            [DataMC: 0-27]" << endl;
@@ -3270,6 +3356,7 @@ int main (int argc, char** argv)
 	  cout << "            [KKMass: dataFileName bkgSub RECOorGEN]" << endl;
 	  cout << "            [MuHadMass: dataFileName]" << endl;
 	  cout << "            [ScatB0MuMu: dataFileName option]" << endl;
+	  cout << "            [ContPlot: q^2_bin_index]" << endl;
 
 	  return EXIT_FAILURE;
 	}
@@ -3320,6 +3407,7 @@ int main (int argc, char** argv)
       else if (option == "KstMass")     PlotKst(fileName,intVal,true);
       else if (option == "MuHadMass")   PlotMuHadMass(fileName);
       else if (option == "ScatB0MuMu")  ScatterPlotB0MuMu(fileName,intVal);
+      else if (option == "ContPlot")    MakeContPlot(tmpStr1);
   
       delete Utility;
       if (option != "GenMultyRun") theApp.Run (); // Eventloop on air
@@ -3327,7 +3415,7 @@ int main (int argc, char** argv)
     }
   else
     {
-      cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass ScatB0MuMu]" << endl;
+      cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass ScatB0MuMu ContPlot]" << endl;
       cout << "            [Phy: 0-2||10-14]" << endl;
       cout << "            [GenMultyRun: fileName q^2_bin_index]" << endl;
       cout << "            [DataMC: 0-27]" << endl;
@@ -3337,6 +3425,7 @@ int main (int argc, char** argv)
       cout << "            [KKMass: dataFileName bkgSub RECOorGEN]" << endl;
       cout << "            [MuHadMass: dataFileName]" << endl;
       cout << "            [ScatB0MuMu: dataFileName cutType]" << endl;
+      cout << "            [ContPlot: q^2_bin_index]" << endl;
 
       cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
       cout << "For [MuMuMass KKMass KstMass]:" << endl;
