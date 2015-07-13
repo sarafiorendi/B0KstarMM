@@ -1398,7 +1398,7 @@ void CheckPhysicsRegion ()
   
   stringstream myString;
   double offset = 0.02;
-  TCanvas* canv0 = new TCanvas("canv0","canv0",10,10,1200,600);
+  TCanvas* canv0 = new TCanvas("canv0","canv0",10,10,700,500);
   TGraphAsymmErrors* ge;
   TGraphAsymmErrors* geTMP;
   TH1D* histo = new TH1D("histo","histo",100,-1.0,1.0);
@@ -3238,6 +3238,7 @@ void MakeContPlot(string specBin)
   h2D->SetYTitle("F_{L}");
   theTree->Draw("fit_Fl:fit_Afb>>h2D","","goff");
   c0->cd();
+  h2D->SetMarkerStyle(6);
   h2D->SetMarkerColor(kBlue);
   h2D->Draw();
 
@@ -3249,7 +3250,8 @@ void MakeContPlot(string specBin)
   TCanvas* c1   = (TCanvas*)_file1->Get("localCanv3");
   TGraph* rPlot = (TGraph*)c1->GetPrimitive(hitoName.c_str());
   c0->cd();
-  rPlot->SetLineColor(kBlue);
+  rPlot->SetLineWidth(2);
+  rPlot->SetLineColor(kMagenta);
   rPlot->Draw("same");
 
 
@@ -3284,7 +3286,23 @@ void MakeContPlot(string specBin)
 
   DrawString(LUMI);
 
+
+  // ###############################################
+  // # Count number of events inside countour plot #
+  // ###############################################
+  unsigned int countInside = 0;
+  unsigned int totalEvents = 0;
+  for (int i = 1; i <= h2D->GetNbinsX(); i++)
+    for (int j = 1; j <= h2D->GetNbinsY(); j++)
+      if (h2D->GetBinContent(i,j) > 0)
+  	{
+  	  totalEvents += int(rint(h2D->GetBinContent(i,j)));
+  	  if (rPlot->IsInside(h2D->GetXaxis()->GetBinLowEdge(i),h2D->GetYaxis()->GetBinLowEdge(j)) == true) countInside += int(rint(h2D->GetBinContent(i,j)));
+  	}
+  cout << "[MakePlots::MakeContPlot]\tTotal number of events: " <<  totalEvents << "\tEvents inside contour-plot: " << countInside << endl;
+  cout << "[MakePlots::MakeContPlot]\tPercentage of events cotanined in contour plot: " << static_cast<double>(countInside) / static_cast<double>(totalEvents) * 100. << "%" << endl;
   
+
   c0->Modified();
   c0->Update();  
 }
