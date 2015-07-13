@@ -52,6 +52,7 @@ using namespace RooFit;
 // # Global constants #
 // ####################
 #define DIRSMCOMP "Data2012B0KstMuMuResults/PredictionSM/"
+#define NQ2BINS 9
 
 
 // #######################
@@ -1787,16 +1788,10 @@ void showData (int dataType, double offset, bool noHbar)
   gStyle->SetOptStat(0);
 
 
-  double luminosity = 20.5; // CMS data luminosity
   stringstream myString;
 
-  myString.clear(); myString.str("");
-  myString << DIRSMCOMP << "BFvsq2Template.root";
-  TFile* _file0 = TFile::Open(myString.str().c_str(),"READ");
-  TCanvas* c0   = (TCanvas*)_file0->Get("cHistoMeas");
-  TPad* p0      = (TPad*)c0->GetPrimitive("cHistoMeas_1");
-  TH1D* h0      = (TH1D*)p0->GetPrimitive("histoMeas0");
-  h0->GetXaxis()->SetRangeUser(0.0,19.0);
+  
+  TH1D* h0 = new TH1D("h1","h1",10,0,19);
   if (dataType == 0)
     {
       h0->GetYaxis()->SetRangeUser(0.0,1.0);
@@ -1813,7 +1808,6 @@ void showData (int dataType, double offset, bool noHbar)
       h0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); d#it{#Beta} / d#it{q}#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
     }
   h0->SetLineStyle(2);
-  cout << "I've read the templare of the q2 binning" << endl;
 
 
   TCanvas* cData  = new TCanvas("cData","cData",10,10,700,500);
@@ -1821,43 +1815,52 @@ void showData (int dataType, double offset, bool noHbar)
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "CMS_7e8TeV.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,20,false,0,noHbar,0.0*offset));
+  dVar.push_back(readData(myString.str().c_str(),dataType,NQ2BINS,1,21,false,0,noHbar,0.0*offset));
 
   // myString.clear(); myString.str("");
   // myString << DIRSMCOMP << "CMS_8TeV.data";
-  // dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,20,false,0,noHbar,0.0*offset));
+  // dVar.push_back(readData(myString.str().c_str(),dataType,NQ2BINS,1,21,false,0,noHbar,0.0*offset));
 
   // myString.clear(); myString.str("");
   // myString << DIRSMCOMP << "CMS_7TeV.data";
-  // dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX(),1,24,false,0,noHbar,0.3*offset));
+  // dVar.push_back(readData(myString.str().c_str(),dataType,NQ2BINS,1,21,false,0,noHbar,0.6*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "LHCb_1fb.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,2,21,false,0,noHbar,-0.3*offset));
+  dVar.push_back(readData(myString.str().c_str(),dataType,NQ2BINS-3,kGray+1,20,false,0,noHbar,0.4*offset));
 
   // myString.clear(); myString.str("");
   // myString << DIRSMCOMP << "LHCb_3fb.data";
-  // dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-1,2,21,false,0,noHbar,0.0*offset));
+  // dVar.push_back(readData(myString.str().c_str(),dataType,NQ2BINS-1,kGray+1,20,false,0,noHbar,0.0*offset));
 
   // myString.clear(); myString.str("");
   // myString << DIRSMCOMP << "Atlas.data";
-  // if (dataType != 2) dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,6,22,false,0,noHbar,0.8*offset));
+  // if (dataType != 2) dVar.push_back(readData(myString.str().c_str(),dataType,NQ2BINS-3,kGray+1,22,false,0,noHbar,0.8*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "BaBar.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,4,23,false,0,noHbar,-0.4*offset));
+  dVar.push_back(readData(myString.str().c_str(),dataType,NQ2BINS-3,kGray+1,23,false,0,noHbar,-0.4*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "Belle.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,8,28,false,0,noHbar,-0.6*offset));
+  dVar.push_back(readData(myString.str().c_str(),dataType,NQ2BINS-3,kGray+1,28,false,0,noHbar,-0.6*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "CDF.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,h0->GetNbinsX()-3,kGray+1,29,false,0,noHbar,-0.8*offset));
+  dVar.push_back(readData(myString.str().c_str(),dataType,NQ2BINS-3,kGray+1,29,false,0,noHbar,-0.9*offset));
 
 
   cData->cd();
   h0->Draw();
+
+
+  // ########################
+  // # Draw exclusion zones #
+  // ########################
+  DrawExclusion(08.68,10.09,-1.5,30.,"RejectJPsi1",3001,kGray);
+  DrawExclusion(12.86,14.18,-1.5,30.,"RejectPsiP1",3001,kGray);
+
+  
   for (unsigned int i = dVar.size(); i > 0; i--) dVar[i-1]->Draw("same p");
   dVar[0]->SetLineWidth(3);
 
@@ -1865,15 +1868,16 @@ void showData (int dataType, double offset, bool noHbar)
   unsigned int it = 0;
   TLegend* leg = NULL;
   leg = new TLegend(0.12, 0.6, 0.27, 0.88, "");
-  leg->SetTextSize(0.038);
-  leg->AddEntry(dVar[it++],"CMS (7 TeV + 8 TeV)","lp");
-  // leg->AddEntry(dVar[it++],"CMS (8 TeV)","lp");
-  // leg->AddEntry(dVar[it++],"CMS (7 TeV)","lp");
+  leg->SetFillColor(0);
+  leg->SetTextSize(0.05);
+  leg->AddEntry(dVar[it++],"CMS (7, 8 TeV)","lep");
+  // leg->AddEntry(dVar[it++],"CMS (8 TeV)","lep");
+  // leg->AddEntry(dVar[it++],"CMS (7 TeV)","lep");
   leg->AddEntry(dVar[it++],"LHCb","lp");
-  // if (dataType != 2) leg->AddEntry(dVar[it++],"Atlas","lp");
-  leg->AddEntry(dVar[it++],"BaBar","lp");
-  leg->AddEntry(dVar[it++],"Belle","lp");
-  leg->AddEntry(dVar[it++],"CDF","lp");
+  // if (dataType != 2) leg->AddEntry(dVar[it++],"Atlas","lep");
+  leg->AddEntry(dVar[it++],"BaBar","lep");
+  leg->AddEntry(dVar[it++],"Belle","lep");
+  leg->AddEntry(dVar[it++],"CDF","lep");
 
   leg->SetFillStyle(0);
   leg->SetFillColor(0);
@@ -1881,14 +1885,15 @@ void showData (int dataType, double offset, bool noHbar)
   leg->Draw();
 
 
-  TLine* line = new TLine(-1.0,0.0,19.0,0.0);
+  TLine* line = new TLine(0,0,19,0);
   line->SetLineStyle(kDashed);
   line->Draw();
 
   
-  DrawString(luminosity);
-  DrawExclusion(08.68,10.09,-1.5,30.,"RejectJPsi1",3001,kGray);
-  DrawExclusion(12.86,14.18,-1.5,30.,"RejectPsiP1",3001,kGray);
+  // #############################################
+  // # Redraw axis on top of the exclusion zones #
+  // #############################################
+  gPad->RedrawAxis();
 
 
   cData->Modified();

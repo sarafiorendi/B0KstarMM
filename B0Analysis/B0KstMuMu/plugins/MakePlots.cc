@@ -1956,12 +1956,21 @@ void MakePhysicsPlots (unsigned int PlotType)
   pad1->Draw();
   pad1->cd();
 
-
-  TLegend* leg = new TLegend(0.74, 0.7, 0.97, 0.89, "");
-  leg->SetTextSize(0.038);
+  
+  TLegend* leg = new TLegend(0.67, 0.7, 0.97, 0.89, "");
+  leg->SetTextSize(0.05);
   if ((PlotType == 0) || (PlotType == 1) || (PlotType == 2)) // Fl OR Afb OR Branching fraction
     {
       ge0->Draw("ape1");
+
+
+      // ########################
+      // # Draw exclusion zones #
+      // ########################
+      DrawExclusion(q2Bins[JPsibin],q2Bins[JPsibin+1],-1.2,30.,"RejectJPsi1",3001,kGray);
+      DrawExclusion(q2Bins[PsiPbin],q2Bins[PsiPbin+1],-1.2,30.,"RejectPsiP1",3001,kGray);
+
+
       ge11->Draw("same e2");
       ge1->Draw("same pe1");
 
@@ -1971,6 +1980,15 @@ void MakePhysicsPlots (unsigned int PlotType)
   else if ((PlotType == 10) || (PlotType == 11) || (PlotType == 12)) // Fl OR Afb OR Branching fraction
     {
       geStepTh_nL->Draw("ae2");
+
+
+      // ########################
+      // # Draw exclusion zones #
+      // ########################
+      DrawExclusion(q2Bins[JPsibin],q2Bins[JPsibin+1],-1.2,30.,"RejectJPsi1",3001,kGray);
+      DrawExclusion(q2Bins[PsiPbin],q2Bins[PsiPbin+1],-1.2,30.,"RejectPsiP1",3001,kGray);
+
+  
       geStepTh_yL->Draw("same e2");
       ge00->Draw("same pe1");
       // ###################################
@@ -2006,8 +2024,8 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->Draw("same pez");
 
       leg->AddEntry(ge00,"Data","EPL");
-      leg->AddEntry(geStepTh_nL,"#LT SM #GT (LCSR)","F");
-      leg->AddEntry(geStepTh_yL,"#LT SM #GT (Lattice)","F");
+      leg->AddEntry(geStepTh_nL,"#LT SM, LCSR #GT","F");
+      leg->AddEntry(geStepTh_yL,"#LT SM, Lattice #GT","F");
     }
   else if ((PlotType == 13) || (PlotType == 14)) // Fs OR As
     {
@@ -2065,12 +2083,11 @@ void MakePhysicsPlots (unsigned int PlotType)
 	}
     }
 
-
-  // ########################
-  // # Draw exclusion zones #
-  // ########################
-  DrawExclusion(q2Bins[JPsibin],q2Bins[JPsibin+1],-1.2,30.,"RejectJPsi1",3001,kGray);
-  DrawExclusion(q2Bins[PsiPbin],q2Bins[PsiPbin+1],-1.2,30.,"RejectPsiP1",3001,kGray);
+  
+  // #############################################
+  // # Redraw axis on top of the exclusion zones #
+  // #############################################
+  gPad->RedrawAxis();
 
 
   // ####################
