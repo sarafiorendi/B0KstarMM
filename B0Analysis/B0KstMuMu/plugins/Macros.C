@@ -1843,7 +1843,7 @@ void showData (int dataType, double offset, bool noHbar)
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "Belle.data";
-  dVar.push_back(readData(myString.str().c_str(),dataType,NQ2BINS-3,kGray+1,28,false,0,noHbar,-0.6*offset));
+  dVar.push_back(readData(myString.str().c_str(),dataType,NQ2BINS-3,kGray+1,34,false,0,noHbar,-0.6*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "CDF.data";
@@ -1873,7 +1873,7 @@ void showData (int dataType, double offset, bool noHbar)
   leg->AddEntry(dVar[it++],"CMS (7, 8 TeV)","lep");
   // leg->AddEntry(dVar[it++],"CMS (8 TeV)","lep");
   // leg->AddEntry(dVar[it++],"CMS (7 TeV)","lep");
-  leg->AddEntry(dVar[it++],"LHCb","lp");
+  leg->AddEntry(dVar[it++],"LHCb","lep");
   // if (dataType != 2) leg->AddEntry(dVar[it++],"Atlas","lep");
   leg->AddEntry(dVar[it++],"BaBar","lep");
   leg->AddEntry(dVar[it++],"Belle","lep");
