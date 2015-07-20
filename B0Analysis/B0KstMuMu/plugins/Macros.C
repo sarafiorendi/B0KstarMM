@@ -1823,7 +1823,7 @@ void showData (int dataType, double offset, bool noHbar)
 
   // myString.clear(); myString.str("");
   // myString << DIRSMCOMP << "CMS_7TeV.data";
-  // dVar.push_back(readData(myString.str().c_str(),dataType,NQ2BINS,1,21,false,0,noHbar,0.6*offset));
+  // dVar.push_back(readData(myString.str().c_str(),dataType,NQ2BINS,1,20,false,0,noHbar,0.6*offset));
 
   myString.clear(); myString.str("");
   myString << DIRSMCOMP << "LHCb_1fb.data";
