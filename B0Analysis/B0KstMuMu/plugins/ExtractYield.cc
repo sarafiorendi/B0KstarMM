@@ -4266,6 +4266,15 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
 
 	  cout << "[ExtractYield::IterativeMassFitq2Bins]\t===> dBF/dq^2 <===" << endl;
 	  cout << VecHistoMeas->operator[](0)->GetBinContent(i+1) << "   -" << dBFdq2Err << "   " << dBFdq2Err << endl;
+	  
+	  cout << "[ExtractYield::IterativeMass2AnglesFitq2Bins]\t===> Correlation matrix <===" << endl;
+	  TMatrixTSym<double> corMatrix(fitResult->correlationMatrix());
+	  for (int j = 0; j < corMatrix.GetNrows(); j++)
+	    {
+	      for (int k = 0; k < corMatrix.GetNrows(); k++) cout << corMatrix(j,k) << "\t";
+	      cout << endl;
+	    }
+	  corMatrix.Clear();
 	}
 
 
@@ -6490,6 +6499,15 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 
 	      cout << "[ExtractYield::IterativeMass2AnglesFitq2Bins]\t===> Fl-Afb correlation coefficient <===" << endl;
 	      cout << fitResult->correlation("FlS","AfbS") << endl;
+
+	      cout << "[ExtractYield::IterativeMass2AnglesFitq2Bins]\t===> Correlation matrix <===" << endl;
+	      TMatrixTSym<double> corMatrix(fitResult->correlationMatrix());
+	      for (int j = 0; j < corMatrix.GetNrows(); j++)
+		{
+		  for (int k = 0; k < corMatrix.GetNrows(); k++) cout << corMatrix(j,k) << "\t";
+		  cout << endl;
+		}
+	      corMatrix.Clear();
 	    }
 	}
 
