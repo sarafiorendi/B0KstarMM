@@ -873,13 +873,13 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
       // #######################################################
       if (doTransf == true)
 	{
-	  FlS  = new RooRealVar("FlS","F_{L}",0.0);
-	  AfbS = new RooRealVar("AfbS","A_{FB}",0.0);
+	  FlS  = new RooRealVar("FlS","#it{F}_{L}",0.0);
+	  AfbS = new RooRealVar("AfbS","#it{A}_{FB}",0.0);
 	}
       else
 	{
-	  FlS  = new RooRealVar("FlS","F_{L}",0.0,0.0,1.0);
-	  AfbS = new RooRealVar("AfbS","A_{FB}",0.0,-2./3.,2./3.);
+	  FlS  = new RooRealVar("FlS","#it{F}_{L}",0.0,0.0,1.0);
+	  AfbS = new RooRealVar("AfbS","#it{A}_{FB}",0.0,-2./3.,2./3.);
 	}
       VarsAng->add(*FlS);
       VarsAng->add(*AfbS);
@@ -898,8 +898,8 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	}
       else
     	{
-	  FsS = new RooRealVar("FsS","F_{S}",0.0,0.0,1.0);
-          AsS = new RooRealVar("AsS","A_{S}",0.0,-1.0,1.0);
+	  FsS = new RooRealVar("FsS","#it{F}_{S}",0.0,0.0,1.0);
+          AsS = new RooRealVar("AsS","#it{A}_{S}",0.0,-1.0,1.0);
     	  VarsAng->add(*FsS);
     	  VarsAng->add(*AsS);
 
@@ -3103,8 +3103,8 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       (*TotalPDFJPsi)->plotOn(myFrameJPsi, Name((*TotalPDFJPsi)->getPlotLabel()), LineColor(kBlack));
       legNamesPsi[nElements++] = "Total fit";
       
-      (*TotalPDFJPsi)->plotOn(myFrameJPsi, Components(*JPsi), FillStyle(3345), FillColor(kBlue), DrawOption("F"));
       (*TotalPDFJPsi)->plotOn(myFrameJPsi, Components(*JPsi), LineStyle(7),    LineColor(kBlue), DrawOption("L"));
+      (*TotalPDFJPsi)->plotOn(myFrameJPsi, Components(*JPsi), FillStyle(3345), FillColor(kBlue), LineStyle(7), LineColor(kBlue), DrawOption("F"));
       legNamesPsi[nElements++] = "Signal";
       
       if (justKeepPsi != true)
@@ -3138,8 +3138,9 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       	  TString objName = myFrameJPsi->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameJPsi->nameOf(i-1)))) continue;
 	  TObject* obj = myFrameJPsi->findObject(objName.Data());
-	  if (legNamesPsi[it] == "Data") legJPsi->AddEntry(obj,legNamesPsi[it++],"PLE");
-	  else                           legJPsi->AddEntry(obj,legNamesPsi[it++],"PL");
+	  if      (legNamesPsi[it] == "Data")   legJPsi->AddEntry(obj,legNamesPsi[it++],"PLE");
+	  else if (legNamesPsi[it] == "Signal") legJPsi->AddEntry(obj,legNamesPsi[it++],"PFL");
+	  else                                  legJPsi->AddEntry(obj,legNamesPsi[it++],"PL");
 	  legJPsi->SetTextFont(42);
       	}
       legJPsi->SetFillStyle(0);
@@ -3255,8 +3256,8 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
       (*TotalPDFPsiP)->plotOn(myFramePsiP, Name((*TotalPDFPsiP)->getPlotLabel()), LineColor(kBlack));
       legNamesPsi[nElements++] = "Total fit";
 
-      (*TotalPDFPsiP)->plotOn(myFramePsiP, Components(*PsiP), FillStyle(3345), FillColor(kBlue), DrawOption("F"));
       (*TotalPDFPsiP)->plotOn(myFramePsiP, Components(*PsiP), LineStyle(7),    LineColor(kBlue), DrawOption("L"));
+      (*TotalPDFPsiP)->plotOn(myFramePsiP, Components(*PsiP), FillStyle(3345), FillColor(kBlue), LineStyle(7), LineColor(kBlue), DrawOption("F"));
       legNamesPsi[nElements++] = "Signal";
 
       if (justKeepPsi != true)
@@ -3290,8 +3291,9 @@ void FitDimuonInvMass (RooDataSet* dataSet, RooAbsPdf** TotalPDFJPsi, RooAbsPdf*
 	  TString objName = myFramePsiP->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFramePsiP->nameOf(i-1)))) continue;
 	  TObject* obj = myFramePsiP->findObject(objName.Data());
-	  if (legNamesPsi[it] == "Data") legPsiP->AddEntry(obj,legNamesPsi[it++],"PLE");
-	  else                           legPsiP->AddEntry(obj,legNamesPsi[it++],"PL");
+	  if      (legNamesPsi[it] == "Data")   legPsiP->AddEntry(obj,legNamesPsi[it++],"PLE");
+	  else if (legNamesPsi[it] == "Signal") legPsiP->AddEntry(obj,legNamesPsi[it++],"PFL");
+	  else                                  legPsiP->AddEntry(obj,legNamesPsi[it++],"PL");
 	  legPsiP->SetTextFont(42);
 	}
       legPsiP->SetFillStyle(0);
@@ -3862,16 +3864,16 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
 
   if (GetVar(*TotalPDF,"nSig") != NULL)
     {
-      (*TotalPDF)->plotOn(myFrameX, Components(*MassSignal), FillStyle(3345), FillColor(kBlue), DrawOption("F"));
       (*TotalPDF)->plotOn(myFrameX, Components(*MassSignal), LineStyle(7),    LineColor(kBlue), DrawOption("L"));
+      (*TotalPDF)->plotOn(myFrameX, Components(*MassSignal), FillStyle(3345), FillColor(kBlue), LineStyle(7), LineColor(kBlue), DrawOption("F"));
       legNames[nElements++] = "Corr. tag sig.";
       VarsYield.add(*nSig);
     }
 
   if (GetVar(*TotalPDF,"nMisTagFrac") != NULL)
     {
-      (*TotalPDF)->plotOn(myFrameX, Components(*MassMisTag), FillStyle(3354), FillColor(kGreen+1), DrawOption("F"));
       (*TotalPDF)->plotOn(myFrameX, Components(*MassMisTag), LineStyle(8),    LineColor(kGreen+1), DrawOption("L"));
+      (*TotalPDF)->plotOn(myFrameX, Components(*MassMisTag), FillStyle(3354), FillColor(kGreen+1), LineStyle(8), LineColor(kGreen+1), DrawOption("F"));
       legNames[nElements++] = "Mistag sig.";
       VarsYield.add(*nMisTagFrac);
     }
@@ -3973,8 +3975,9 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
       TString objName = myFrameX->nameOf(i);
       if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameX->nameOf(i-1)))) continue;
       TObject* obj = myFrameX->findObject(objName.Data());
-      if (legNames[it] == "Data") legX->AddEntry(obj,legNames[it++],"PLE");
-      else                        legX->AddEntry(obj,legNames[it++],"PL");
+      if      (legNames[it] == "Data")                                                legX->AddEntry(obj,legNames[it++],"PLE");
+      else if ((legNames[it] == "Corr. tag sig.") || (legNames[it] == "Mistag sig.")) legX->AddEntry(obj,legNames[it++],"PFL");
+      else                                                                            legX->AddEntry(obj,legNames[it++],"PL");
       legX->SetTextFont(42);
     }
   legX->SetFillStyle(0);
@@ -5169,8 +5172,9 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  TString objName = myFrameY->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameY->nameOf(i-1)))) continue;
 	  TObject* obj = myFrameY->findObject(objName.Data());
-	  if (legNames[it] == "Data") legY->AddEntry(obj,legNames[it++],"PLE");
-	  else                        legY->AddEntry(obj,legNames[it++],"PL");
+	  if      (legNames[it] == "Data")                                                legY->AddEntry(obj,legNames[it++],"PLE");
+	  else if ((legNames[it] == "Corr. tag sig.") || (legNames[it] == "Mistag sig.")) legY->AddEntry(obj,legNames[it++],"PFL");
+	  else                                                                            legY->AddEntry(obj,legNames[it++],"PL");
 	  legY->SetTextFont(42);
 	}
       legY->SetFillStyle(0);
@@ -5209,8 +5213,9 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  TString objName = myFrameZ->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameY->nameOf(i-1)))) continue;
 	  TObject* obj = myFrameZ->findObject(objName.Data());
-	  if (legNames[it] == "Data") legZ->AddEntry(obj,legNames[it++],"PLE");
-	  else                        legZ->AddEntry(obj,legNames[it++],"PL");
+	  if      (legNames[it] == "Data")                                                legZ->AddEntry(obj,legNames[it++],"PLE");
+	  else if ((legNames[it] == "Corr. tag sig.") || (legNames[it] == "Mistag sig.")) legZ->AddEntry(obj,legNames[it++],"PFL");
+	  else                                                                            legZ->AddEntry(obj,legNames[it++],"PL");
 	  legZ->SetTextFont(42);
 	}
       legZ->SetFillStyle(0);
@@ -5307,6 +5312,9 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  // ###################
 	  // # Make actual fit #
 	  // ###################
+	  // @TMP@ : first for more stable fits, second for contour plots
+	  // if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebands),Save(true));
+	  // else                                                               fitResult = TmpPDF->fitTo(*sideBands,Save(true));
 	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = TmpPDF->createNLL(*sideBands,ExternalConstraints(constrSidebands));
 	  else                                                               NLL = TmpPDF->createNLL(*sideBands);
       	  RooMinimizer RooMin(*NLL);
@@ -5351,6 +5359,9 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // ###################
       // # Make actual fit #
       // ###################
+      // @TMP@ : first for more stable fit, second for contour plots
+      // if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER));
+      // else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER));
       if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
       else                                                               NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
       RooMinimizer RooMin(*NLL);
@@ -5387,16 +5398,16 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       if (GetVar(*TotalPDF,"nSig") != NULL)
 	{
-	  (*TotalPDF)->plotOn(myFrameX, Components(*Signal), FillStyle(3345), FillColor(kBlue), Project(RooArgSet(*y,*z)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameX, Components(*Signal), LineStyle(7),    LineColor(kBlue), Project(RooArgSet(*y,*z)), DrawOption("L"));
+	  (*TotalPDF)->plotOn(myFrameX, Components(*Signal), FillStyle(3345), FillColor(kBlue), Project(RooArgSet(*y,*z)), LineStyle(7), LineColor(kBlue), DrawOption("F"));
 	  legNames[nElements++] = "Corr. tag sig.";
 	  VarsYield.add(*nSig);
 	}
 
       if (GetVar(*TotalPDF,"nMisTagFrac") != NULL)
 	{
-	  (*TotalPDF)->plotOn(myFrameX, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), Project(RooArgSet(*y,*z)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameX, Components(*MassAngleMisTag), LineStyle(8),    LineColor(kGreen+1), Project(RooArgSet(*y,*z)), DrawOption("L"));
+	  (*TotalPDF)->plotOn(myFrameX, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), Project(RooArgSet(*y,*z)), LineStyle(8), LineColor(kGreen+1), DrawOption("F"));
 	  legNames[nElements++] = "Mistag sig.";
 	  VarsYield.add(*nMisTagFrac);
 	}
@@ -5492,8 +5503,9 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
   	  TString objName = myFrameX->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameX->nameOf(i-1)))) continue;
   	  TObject* obj = myFrameX->findObject(objName.Data());
-	  if (legNames[it] == "Data") legX->AddEntry(obj,legNames[it++],"PLE");
-	  else                        legX->AddEntry(obj,legNames[it++],"PL");
+	  if      (legNames[it] == "Data")                                                legX->AddEntry(obj,legNames[it++],"PLE");
+	  else if ((legNames[it] == "Corr. tag sig.") || (legNames[it] == "Mistag sig.")) legX->AddEntry(obj,legNames[it++],"PFL");
+	  else                                                                            legX->AddEntry(obj,legNames[it++],"PL");
 	  legX->SetTextFont(42);
   	}
       legX->SetFillStyle(0);
@@ -5519,13 +5531,13 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       if (GetVar(*TotalPDF,"nSig")        != NULL)
 	{
-	  (*TotalPDF)->plotOn(myFrameY, Components(*Signal), FillStyle(3345), FillColor(kBlue), Project(RooArgSet(*x,*z)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameY, Components(*Signal), LineStyle(7),    LineColor(kBlue), Project(RooArgSet(*x,*z)), DrawOption("L"));
+	  (*TotalPDF)->plotOn(myFrameY, Components(*Signal), FillStyle(3345), FillColor(kBlue), Project(RooArgSet(*x,*z)), LineStyle(7), LineColor(kBlue), DrawOption("F"));
 	}
       if (GetVar(*TotalPDF,"nMisTagFrac") != NULL)
 	{
-	  (*TotalPDF)->plotOn(myFrameY, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), Project(RooArgSet(*x,*z)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameY, Components(*MassAngleMisTag), LineStyle(8),    LineColor(kGreen+1), Project(RooArgSet(*x,*z)), DrawOption("L"));
+	  (*TotalPDF)->plotOn(myFrameY, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), Project(RooArgSet(*x,*z)), LineStyle(8), LineColor(kGreen+1), DrawOption("F"));
 	}
       if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameY, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     Project(RooArgSet(*x,*z)));
       if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  Project(RooArgSet(*x,*z)));
@@ -5554,8 +5566,9 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	  TString objName = myFrameY->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameY->nameOf(i-1)))) continue;
       	  TObject* obj = myFrameY->findObject(objName.Data());
-	  if (legNames[it] == "Data") legY->AddEntry(obj,legNames[it++],"PLE");
-	  else                        legY->AddEntry(obj,legNames[it++],"PL");
+	  if      (legNames[it] == "Data")                                                legY->AddEntry(obj,legNames[it++],"PLE");
+	  else if ((legNames[it] == "Corr. tag sig.") || (legNames[it] == "Mistag sig.")) legY->AddEntry(obj,legNames[it++],"PFL");
+	  else                                                                            legY->AddEntry(obj,legNames[it++],"PL");
 	  legY->SetTextFont(42);
       	}
       legY->SetFillStyle(0);
@@ -5590,13 +5603,13 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       if (GetVar(*TotalPDF,"nSig")        != NULL)
 	{
-	  (*TotalPDF)->plotOn(myFrameZ, Components(*Signal), FillStyle(3345), FillColor(kBlue), Project(RooArgSet(*x,*y)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameZ, Components(*Signal), LineStyle(7),    LineColor(kBlue), Project(RooArgSet(*x,*y)), DrawOption("L"));
+	  (*TotalPDF)->plotOn(myFrameZ, Components(*Signal), FillStyle(3345), FillColor(kBlue), Project(RooArgSet(*x,*y)), LineStyle(7), LineColor(kBlue), DrawOption("F"));
 	}
       if (GetVar(*TotalPDF,"nMisTagFrac") != NULL)
 	{
-	  (*TotalPDF)->plotOn(myFrameZ, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), Project(RooArgSet(*x,*y)), DrawOption("F"));
-	  (*TotalPDF)->plotOn(myFrameZ, Components(*MassAngleMisTag),  LineStyle(8),   LineColor(kGreen+1), Project(RooArgSet(*x,*y)), DrawOption("L"));
+	  (*TotalPDF)->plotOn(myFrameZ, Components(*MassAngleMisTag), LineStyle(8),    LineColor(kGreen+1), Project(RooArgSet(*x,*y)), DrawOption("L"));
+	  (*TotalPDF)->plotOn(myFrameZ, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), Project(RooArgSet(*x,*y)), LineStyle(8), LineColor(kGreen+1), DrawOption("F"));
 	}
       if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameZ, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     Project(RooArgSet(*x,*y)));
       if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  Project(RooArgSet(*x,*y)));
@@ -5625,8 +5638,9 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	  TString objName = myFrameZ->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameZ->nameOf(i-1)))) continue;
       	  TObject* obj = myFrameZ->findObject(objName.Data());
-	  if (legNames[it] == "Data") legZ->AddEntry(obj,legNames[it++],"PLE");
-	  else                        legZ->AddEntry(obj,legNames[it++],"PL");
+	  if      (legNames[it] == "Data")                                                legZ->AddEntry(obj,legNames[it++],"PLE");
+	  else if ((legNames[it] == "Corr. tag sig.") || (legNames[it] == "Mistag sig.")) legZ->AddEntry(obj,legNames[it++],"PFL");
+	  else                                                                            legZ->AddEntry(obj,legNames[it++],"PL");
 	  legZ->SetTextFont(42);
       	}
       legZ->SetFillStyle(0);
@@ -5808,13 +5822,13 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       if (GetVar(*TotalPDF,"nSig")        != NULL)
 	{
-	  (*TotalPDF)->plotOn(myFrameLowSideBY, Components(*Signal), FillStyle(3345), FillColor(kBlue), ProjectionRange("lowSideband"), Project(RooArgSet(*x,*z)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameLowSideBY, Components(*Signal), LineStyle(7),    LineColor(kBlue), ProjectionRange("lowSideband"), Project(RooArgSet(*x,*z)), DrawOption("L"));
+	  (*TotalPDF)->plotOn(myFrameLowSideBY, Components(*Signal), FillStyle(3345), FillColor(kBlue), ProjectionRange("lowSideband"), Project(RooArgSet(*x,*z)), LineStyle(7), LineColor(kBlue), DrawOption("F"));
 	}
       if (GetVar(*TotalPDF,"nMisTagFrac") != NULL)
 	{
-	  (*TotalPDF)->plotOn(myFrameLowSideBY, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), ProjectionRange("lowSideband"), Project(RooArgSet(*x,*z)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameLowSideBY, Components(*MassAngleMisTag), LineStyle(8),    LineColor(kGreen+1), ProjectionRange("lowSideband"), Project(RooArgSet(*x,*z)), DrawOption("L"));
+	  (*TotalPDF)->plotOn(myFrameLowSideBY, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), ProjectionRange("lowSideband"), Project(RooArgSet(*x,*z)), LineStyle(8), LineColor(kGreen+1), DrawOption("F"));
 	}
       if (GetVar(*TotalPDF,"nBkgComb")    != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("lowSideband"), Project(RooArgSet(*x,*z)));
       if (GetVar(*TotalPDF,"nBkgPeak")    != NULL) (*TotalPDF)->plotOn(myFrameLowSideBY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("lowSideband"), Project(RooArgSet(*x,*z)));
@@ -5839,8 +5853,9 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  TString objName = myFrameLowSideBY->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameLowSideBY->nameOf(i-1)))) continue;
 	  TObject* obj = myFrameLowSideBY->findObject(objName.Data());
-	  if (legNames[it] == "Data") legLowSideBY->AddEntry(obj,legNames[it++],"PLE");
-	  else                        legLowSideBY->AddEntry(obj,legNames[it++],"PL");
+	  if      (legNames[it] == "Data")                                                legLowSideBY->AddEntry(obj,legNames[it++],"PLE");
+	  else if ((legNames[it] == "Corr. tag sig.") || (legNames[it] == "Mistag sig.")) legLowSideBY->AddEntry(obj,legNames[it++],"PFL");
+	  else                                                                            legLowSideBY->AddEntry(obj,legNames[it++],"PL");
 	  legLowSideBY->SetTextFont(42);
 	}
       legLowSideBY->SetFillStyle(0);
@@ -5869,13 +5884,13 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       if (GetVar(*TotalPDF,"nSig") != NULL)
 	{
-	  (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*Signal), FillStyle(3345), FillColor(kBlue), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*z)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*Signal), LineStyle(7),    LineColor(kBlue), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*z)), DrawOption("L"));
+	  (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*Signal), FillStyle(3345), FillColor(kBlue), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*z)), LineStyle(7), LineColor(kBlue), DrawOption("F"));
 	}
       if (GetVar(*TotalPDF,"nMisTagFrac") != NULL)
 	{
-	  (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*z)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*MassAngleMisTag), LineStyle(8),    LineColor(kGreen+1), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*z)), DrawOption("L"));
+	  (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*z)), LineStyle(8), LineColor(kGreen+1), DrawOption("F"));
 	}
       if (GetVar(*TotalPDF,"nBkgComb") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("signalRegion"), Project(RooArgSet(*x,*z)));
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("signalRegion"), Project(RooArgSet(*x,*z)));
@@ -5900,8 +5915,9 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  TString objName = myFrameSignalRegionY->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameSignalRegionY->nameOf(i-1)))) continue;
 	  TObject* obj = myFrameSignalRegionY->findObject(objName.Data());
-	  if (legNames[it] == "Data") legSignalRegionY->AddEntry(obj,legNames[it++],"PLE");
-	  else                        legSignalRegionY->AddEntry(obj,legNames[it++],"PL");
+	  if      (legNames[it] == "Data")                                                legSignalRegionY->AddEntry(obj,legNames[it++],"PLE");
+	  else if ((legNames[it] == "Corr. tag sig.") || (legNames[it] == "Mistag sig.")) legSignalRegionY->AddEntry(obj,legNames[it++],"PFL");
+	  else                                                                            legSignalRegionY->AddEntry(obj,legNames[it++],"PL");
 	  legSignalRegionY->SetTextFont(42);
 	}
       legSignalRegionY->SetFillStyle(0);
@@ -5930,13 +5946,13 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       if (GetVar(*TotalPDF,"nSig") != NULL)
 	{
-	  (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*Signal), FillStyle(3345), FillColor(kBlue), ProjectionRange("highSideband"), Project(RooArgSet(*x,*z)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*Signal), LineStyle(7),    LineColor(kBlue), ProjectionRange("highSideband"), Project(RooArgSet(*x,*z)), DrawOption("L"));
+	  (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*Signal), FillStyle(3345), FillColor(kBlue), ProjectionRange("highSideband"), Project(RooArgSet(*x,*z)), LineStyle(7), LineColor(kBlue), DrawOption("F"));
 	}
       if (GetVar(*TotalPDF,"nMisTagFrac") != NULL)
 	{
-	  (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), ProjectionRange("highSideband"), Project(RooArgSet(*x,*z)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*MassAngleMisTag), LineStyle(8),    LineColor(kGreen+1), ProjectionRange("highSideband"), Project(RooArgSet(*x,*z)), DrawOption("L"));
+	  (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), ProjectionRange("highSideband"), Project(RooArgSet(*x,*z)), LineStyle(8), LineColor(kGreen+1), DrawOption("F"));
 	}
       if (GetVar(*TotalPDF,"nBkgComb") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("highSideband"), Project(RooArgSet(*x,*z)));
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBY, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("highSideband"), Project(RooArgSet(*x,*z)));
@@ -5961,8 +5977,9 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  TString objName = myFrameHighSideBY->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameHighSideBY->nameOf(i-1)))) continue;
 	  TObject* obj = myFrameHighSideBY->findObject(objName.Data());
-	  if (legNames[it] == "Data") legHighSideBY->AddEntry(obj,legNames[it++],"PLE");
-	  else                        legHighSideBY->AddEntry(obj,legNames[it++],"PL");
+	  if      (legNames[it] == "Data")                                                legHighSideBY->AddEntry(obj,legNames[it++],"PLE");
+	  else if ((legNames[it] == "Corr. tag sig.") || (legNames[it] == "Mistag sig.")) legHighSideBY->AddEntry(obj,legNames[it++],"PFL");
+	  else                                                                            legHighSideBY->AddEntry(obj,legNames[it++],"PL");
 	  legHighSideBY->SetTextFont(42);
 	}
       legHighSideBY->SetFillStyle(0);
@@ -5996,13 +6013,13 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       if (GetVar(*TotalPDF,"nSig") != NULL)
 	{
-	  (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*Signal), FillStyle(3345), FillColor(kBlue), ProjectionRange("lowSideband"), Project(RooArgSet(*x,*y)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*Signal), LineStyle(7),    LineColor(kBlue), ProjectionRange("lowSideband"), Project(RooArgSet(*x,*y)), DrawOption("L"));
+	  (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*Signal), FillStyle(3345), FillColor(kBlue), ProjectionRange("lowSideband"), Project(RooArgSet(*x,*y)), LineStyle(7), LineColor(kBlue), DrawOption("F"));
 	}
       if (GetVar(*TotalPDF,"nMisTagFrac") != NULL)
 	{
-	  (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), ProjectionRange("lowSideband"), Project(RooArgSet(*x,*y)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*MassAngleMisTag), LineStyle(8),    LineColor(kGreen+1), ProjectionRange("lowSideband"), Project(RooArgSet(*x,*y)), DrawOption("L"));
+	  (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), ProjectionRange("lowSideband"), Project(RooArgSet(*x,*y)), LineStyle(8), LineColor(kGreen+1), DrawOption("F"));
 	}
       if (GetVar(*TotalPDF,"nBkgComb") != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("lowSideband"), Project(RooArgSet(*x,*y)));
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameLowSideBZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("lowSideband"), Project(RooArgSet(*x,*y)));
@@ -6027,8 +6044,9 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  TString objName = myFrameLowSideBZ->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameLowSideBZ->nameOf(i-1)))) continue;
 	  TObject* obj = myFrameLowSideBZ->findObject(objName.Data());
-	  if (legNames[it] == "Data") legLowSideBZ->AddEntry(obj,legNames[it++],"PLE");
-	  else                        legLowSideBZ->AddEntry(obj,legNames[it++],"PL");
+	  if      (legNames[it] == "Data")                                                legLowSideBZ->AddEntry(obj,legNames[it++],"PLE");
+	  else if ((legNames[it] == "Corr. tag sig.") || (legNames[it] == "Mistag sig.")) legLowSideBZ->AddEntry(obj,legNames[it++],"PFL");
+	  else                                                                            legLowSideBZ->AddEntry(obj,legNames[it++],"PL");
 	  legLowSideBZ->SetTextFont(42);
 	}
       legLowSideBZ->SetFillStyle(0);
@@ -6057,13 +6075,13 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       if (GetVar(*TotalPDF,"nSig") != NULL)
 	{
-	  (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*Signal), FillStyle(3345), FillColor(kBlue), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*y)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*Signal), LineStyle(7),    LineColor(kBlue), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*y)), DrawOption("L"));
+	  (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*Signal), FillStyle(3345), FillColor(kBlue), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*y)), LineStyle(7), LineColor(kBlue), DrawOption("F"));
 	}
       if (GetVar(*TotalPDF,"nMisTagFrac") != NULL)
 	{
-	  (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*y)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*MassAngleMisTag), LineStyle(8),    LineColor(kGreen+1), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*y)), DrawOption("L"));
+	  (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), ProjectionRange("signalRegion"), Project(RooArgSet(*x,*y)), LineStyle(8), LineColor(kGreen+1), DrawOption("F"));
 	}
       if (GetVar(*TotalPDF,"nBkgComb") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("signalRegion"), Project(RooArgSet(*x,*y)));
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameSignalRegionZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("signalRegion"), Project(RooArgSet(*x,*y)));
@@ -6088,8 +6106,9 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  TString objName = myFrameSignalRegionZ->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameSignalRegionZ->nameOf(i-1)))) continue;
 	  TObject* obj = myFrameSignalRegionZ->findObject(objName.Data());
-	  if (legNames[it] == "Data") legSignalRegionZ->AddEntry(obj,legNames[it++],"PLE");
-	  else                        legSignalRegionZ->AddEntry(obj,legNames[it++],"PL");
+	  if      (legNames[it] == "Data")                                                legSignalRegionZ->AddEntry(obj,legNames[it++],"PLE");
+	  else if ((legNames[it] == "Corr. tag sig.") || (legNames[it] == "Mistag sig.")) legSignalRegionZ->AddEntry(obj,legNames[it++],"PFL");
+	  else                                                                            legSignalRegionZ->AddEntry(obj,legNames[it++],"PL");
 	  legSignalRegionZ->SetTextFont(42);
 	}
       legSignalRegionZ->SetFillStyle(0);
@@ -6118,13 +6137,13 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 
       if (GetVar(*TotalPDF,"nSig") != NULL)
 	{
-	  (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*Signal), FillStyle(3345), FillColor(kBlue), ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*Signal), LineStyle(7),    LineColor(kBlue), ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)), DrawOption("L"));
+	  (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*Signal), FillStyle(3345), FillColor(kBlue), ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)), LineStyle(7), LineColor(kBlue), DrawOption("F"));
 	}
       if (GetVar(*TotalPDF,"nMisTagFrac") != NULL)
 	{
-	  (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)), DrawOption("F"));
 	  (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*MassAngleMisTag), LineStyle(8),    LineColor(kGreen+1), ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)), DrawOption("L"));
+	  (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*MassAngleMisTag), FillStyle(3354), FillColor(kGreen+1), ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)), LineStyle(8), LineColor(kGreen+1), DrawOption("F"));
 	}
       if (GetVar(*TotalPDF,"nBkgComb") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*BkgMassAngleComb), LineStyle(4), LineColor(kRed),     ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)));
       if (GetVar(*TotalPDF,"nBkgPeak") != NULL) (*TotalPDF)->plotOn(myFrameHighSideBZ, Components(*BkgMassAnglePeak), LineStyle(3), LineColor(kViolet),  ProjectionRange("highSideband"), Project(RooArgSet(*x,*y)));
@@ -6149,8 +6168,9 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  TString objName = myFrameHighSideBZ->nameOf(i);
 	  if ((objName == "") || (objName.Contains("paramBox") == true) || (objName.Contains("TPave") == true) || ((i > 0) && (objName == myFrameHighSideBZ->nameOf(i-1)))) continue;
 	  TObject* obj = myFrameHighSideBZ->findObject(objName.Data());
-	  if (legNames[it] == "Data") legHighSideBZ->AddEntry(obj,legNames[it++],"PLE");
-	  else                        legHighSideBZ->AddEntry(obj,legNames[it++],"PL");
+	  if      (legNames[it] == "Data")                                                legHighSideBZ->AddEntry(obj,legNames[it++],"PLE");
+	  else if ((legNames[it] == "Corr. tag sig.") || (legNames[it] == "Mistag sig.")) legHighSideBZ->AddEntry(obj,legNames[it++],"PFL");
+	  else                                                                            legHighSideBZ->AddEntry(obj,legNames[it++],"PL");
 	  legHighSideBZ->SetTextFont(42);
 	}
       legHighSideBZ->SetFillStyle(0);
@@ -7745,14 +7765,14 @@ int main(int argc, char** argv)
 		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B0 --> K*0(K+ pi-) mu+ mu- : FL vs dimuon q2", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas[0]->SetStats(false);
 		  VecHistoMeas[0]->SetXTitle("#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
-		  VecHistoMeas[0]->SetYTitle("F_{L}");
+		  VecHistoMeas[0]->SetYTitle("#it{F}_{L}");
 		  VecHistoMeas[0]->GetYaxis()->SetRangeUser(-0.01,1.01);
 
 		  cHistoMeas->cd(1);
 		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B0 --> K*0(K+ pi-) mu+ mu- : AFB vs dimuon q2", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas[1]->SetStats(false);
 		  VecHistoMeas[1]->SetXTitle("#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
-		  VecHistoMeas[1]->SetYTitle("A_{FB}");
+		  VecHistoMeas[1]->SetYTitle("#it{A}_{FB}");
 		  VecHistoMeas[1]->GetYaxis()->SetRangeUser(-1.0 - 0.01,1.0 + 0.01);
 
 		  cHistoMeas->cd(2);

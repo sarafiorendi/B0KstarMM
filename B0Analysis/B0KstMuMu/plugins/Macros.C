@@ -1399,7 +1399,7 @@ void ZeroCrossing (string fileName, const double minq2, const double maxq2, cons
 
   TH1D* hAFB = new TH1D("hAFB","hAFB",nBins,0,8.5);
   hAFB->GetXaxis()->SetTitle("#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
-  hAFB->GetYaxis()->SetTitle("A_{FB}");
+  hAFB->GetYaxis()->SetTitle("#it{A}_{FB}");
   hAFB->SetMarkerStyle(20);
 
   TH1D* h1p = new TH1D("h1p","h1p",nBins,0,8.5);
@@ -1749,8 +1749,8 @@ TGraphAsymmErrors* readData (TString fileName, int dataType, int nBins, int colo
   printData(V1,V2,V3,V4,V5,V6);
 
   TGraphAsymmErrors* gra = new TGraphAsymmErrors(V1,V4,V2,V3,V5,V6);
-  if      (dataType == 0) gra->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); F_{L}");
-  else if (dataType == 1) gra->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); A_{FB}");
+  if      (dataType == 0) gra->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); #it{F}_{L}");
+  else if (dataType == 1) gra->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); #it{A}_{FB}");
   else if (dataType == 2) gra->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); d#it{#Beta} / d#it{q}#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
   if (doFill == true)
     {
@@ -1795,12 +1795,12 @@ void showData (int dataType, double offset, bool noHbar)
   if (dataType == 0)
     {
       h0->GetYaxis()->SetRangeUser(0.0,1.0);
-      h0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); F_{L}");      
+      h0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); #it{F}_{L}");
     }
   else if (dataType == 1)
     {
       h0->GetYaxis()->SetRangeUser(-1.0,1.0);
-      h0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); A_{FB}");
+      h0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}}); #it{A}_{FB}");
     }
   else if (dataType == 2)
     {

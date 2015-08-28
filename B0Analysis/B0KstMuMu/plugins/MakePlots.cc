@@ -1403,8 +1403,8 @@ void CheckPhysicsRegion ()
   TGraphAsymmErrors* geTMP;
   TH1D* histo = new TH1D("histo","histo",100,-1.0,1.0);
   histo->GetYaxis()->SetRangeUser(0.0,1.0);
-  histo->SetXTitle("A_{FB}");
-  histo->SetYTitle("F_{L}");
+  histo->SetXTitle("#it{A}_{FB}");
+  histo->SetYTitle("#it{F}_{L}");
   TLine* line1;
   TLine* line2;
   TLatex* binIndx;
@@ -1531,7 +1531,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-0.02,1.0);
-      ge0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{L}");
+      ge0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});#it{F}_{L}");
 
       Utility->MakeGraphVar(Utility->MakeAnalysisPATH(ParameterFILE_MCRECO).c_str(),&ge1,"Fl");
       ge1->SetMarkerColor(kBlack);
@@ -1543,7 +1543,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge1->SetLineWidth(2);
       ge1->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge1->GetYaxis()->SetRangeUser(-0.02,1.0);
-      ge1->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{L}");
+      ge1->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});#it{F}_{L}");
      }
   else if (PlotType == 1) // Afb
     {
@@ -1557,7 +1557,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-1.04,1.0);
-      ge0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{FB}");
+      ge0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});#it{A}_{FB}");
  
       Utility->MakeGraphVar(Utility->MakeAnalysisPATH(ParameterFILE_MCRECO).c_str(),&ge1,"Afb");
       ge1->SetMarkerColor(kBlack);
@@ -1569,7 +1569,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge1->SetLineWidth(2);
       ge1->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge1->GetYaxis()->SetRangeUser(-1.04,1.0);
-      ge1->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{FB}");
+      ge1->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});#it{A}_{FB}");
     }
   else if (PlotType == 2) // Branching fraction
     {
@@ -1607,7 +1607,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(0.0,1.0);
-      ge0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^2});F_{L}");
+      ge0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^2});#it{F}_{L}");
     }
   else if (PlotType == 11) // Afb
     {
@@ -1619,7 +1619,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-1.0,1.0);
-      ge0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{FB}");
+      ge0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});#it{A}_{FB}");
     }
   else if (PlotType == 12) // Branching fraction
     {
@@ -1643,7 +1643,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(0.0,1.0);
-      ge0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{S}");
+      ge0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});#it{F}_{S}");
     }
   else if (PlotType == 14) // As
     {
@@ -1655,7 +1655,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       ge0->SetLineWidth(2);
       ge0->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       ge0->GetYaxis()->SetRangeUser(-1.0,1.0);
-      ge0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{S}");
+      ge0->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});#it{A}_{S}");
     }
   else
     {
@@ -1803,10 +1803,10 @@ void MakePhysicsPlots (unsigned int PlotType)
 
 
       geStepTh_nL->GetYaxis()->SetRangeUser(0.0,1.0);
-      geStepTh_nL->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{L}");
+      geStepTh_nL->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});#it{F}_{L}");
 
       geStepTh_yL->GetYaxis()->SetRangeUser(0.0,1.0);
-      geStepTh_yL->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{L}");
+      geStepTh_yL->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});#it{F}_{L}");
     }
   else if (PlotType == 11) // Afb
     {
@@ -1837,10 +1837,10 @@ void MakePhysicsPlots (unsigned int PlotType)
 
       
       geStepTh_nL->GetYaxis()->SetRangeUser(-1.0,1.0);
-      geStepTh_nL->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{FB}");
+      geStepTh_nL->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});#it{A}_{FB}");
 
       geStepTh_yL->GetYaxis()->SetRangeUser(-1.0,1.0);
-      geStepTh_yL->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{FB}");
+      geStepTh_yL->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});#it{A}_{FB}");
     }
   else if (PlotType == 12) // Branching fraction
     {
@@ -1920,7 +1920,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       for (unsigned int i = 0; i < q2Bins.size()-1; i++) geStepTh_nL->SetPoint(i,geStepTh_nL->GetX()[i],YvalueOutsideLimits);
       geStepTh_nL->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       geStepTh_nL->GetYaxis()->SetRangeUser(0.0,1.0);
-      geStepTh_nL->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});F_{S}");
+      geStepTh_nL->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});#it{F}_{S}");
     }
   else if (PlotType == 14) // As
     {
@@ -1939,7 +1939,7 @@ void MakePhysicsPlots (unsigned int PlotType)
       for (unsigned int i = 0; i < q2Bins.size()-1; i++) geStepTh_nL->SetPoint(i,geStepTh_nL->GetX()[i],YvalueOutsideLimits);
       geStepTh_nL->GetXaxis()->SetLimits(q2Bins[0],q2Bins[q2Bins.size()-1]);
       geStepTh_nL->GetYaxis()->SetRangeUser(-1.0,1.0);
-      geStepTh_nL->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});A_{S}");
+      geStepTh_nL->SetTitle(";#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}});#it{A}_{S}");
     }
   
 
@@ -3251,8 +3251,8 @@ void MakeContPlot(string specBin)
   TFile* _file0 = TFile::Open(scatterPlot.c_str(),"READ");
   TTree* theTree = (TTree*)_file0->Get("FitResults");
   TH2D* h2D = new TH2D("h2D","h2D",100,-1,1,100,0,1);
-  h2D->SetXTitle("A_{FB}");
-  h2D->SetYTitle("F_{L}");
+  h2D->SetXTitle("#it{A}_{FB}");
+  h2D->SetYTitle("#it{F}_{L}");
   theTree->Draw("fit_Fl:fit_Afb>>h2D","","goff");
   c0->cd();
   h2D->SetMarkerStyle(6);
