@@ -51,6 +51,7 @@ using std::vector;
 #define ParameterFILE_MCGEN  "/results/ParameterFile_Sig_Psi_MCGEN.txt"
 #define ParameterFILE_MCRECO "/results/ParameterFile_Sig_MCRECO.txt"
 
+#define NPARfitSYSTfile 24       // Number of parameters saved in the file for fit systematic computation
 #define YvalueOutsideLimits 20.0 // Value given to bins with zero error in order not to show them
 #define FORPAPER true            // "true" = make special layout for publication in "MakePhysicsPlots" member function
 #define q0SM  4.0                // Standard Model value of AFB zero crossing point
@@ -2254,12 +2255,12 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
 {
   ifstream inputFile;
 
-  unsigned int nPar = 18;
-
   double ID;
   double fit_Fl,  errorHi_Fl,  errorLo_Fl,  pdf_Fl;
   double fit_Afb, errorHi_Afb, errorLo_Afb, pdf_Afb;
-  double fit_BF,  error_BF, pdf_BF;
+  double fit_Fs,  errorHi_Fs,  errorLo_Fs,  pdf_Fs;
+  double fit_As,  errorHi_As,  errorLo_As,  pdf_As;
+  double fit_BF,  error_BF,                 pdf_BF;
   double effMuMuGoodTag, effMuMuMisTag;
   double fitOrg_Fl,  errorHiOrg_Fl,  errorLoOrg_Fl;
   double fitOrg_Afb, errorHiOrg_Afb, errorLoOrg_Afb;
@@ -2280,6 +2281,8 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
   ParameterFile->ReadFromFile(Utility->ParFileBlockN("BF"),&ParVector);
   pdf_Fl  = atof(fitParam[Utility->GetFitParamIndx("FlS")]->operator[](q2BinIndx).c_str());
   pdf_Afb = atof(fitParam[Utility->GetFitParamIndx("AfbS")]->operator[](q2BinIndx).c_str());
+  pdf_Fs  = atof(fitParam[Utility->GetFitParamIndx("FsS")]->operator[](q2BinIndx).c_str());
+  pdf_As  = atof(fitParam[Utility->GetFitParamIndx("AsS")]->operator[](q2BinIndx).c_str());
   pdf_BF  = atof(ParVector[q2BinIndx].c_str());
 
 
@@ -2315,6 +2318,14 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
   FitResults->Branch("errorHiOrg_Afb",&errorHiOrg_Afb,"errorHiOrg_Afb/D");
   FitResults->Branch("errorLoOrg_Afb",&errorLoOrg_Afb,"errorLoOrg_Afb/D");
 
+  FitResults->Branch("fit_Fs",    &fit_Fs,    "fit_Fs/D");
+  FitResults->Branch("errorHi_Fs",&errorHi_Fs,"errorHi_Fs/D");
+  FitResults->Branch("errorLo_Fs",&errorLo_Fs,"errorLo_Fs/D");
+
+  FitResults->Branch("fit_As",    &fit_As,    "fit_As/D");
+  FitResults->Branch("errorHi_As",&errorHi_As,"errorHi_As/D");
+  FitResults->Branch("errorLo_As",&errorLo_As,"errorLo_As/D");
+
   FitResults->Branch("nll",&nll,"nll/D");
 
 
@@ -2330,7 +2341,7 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
     }
 
 
-  for (unsigned int i = 0; i < nPar; i++)
+  for (unsigned int i = 0; i < NPARfitSYSTfile; i++)
     {
       vecVar.push_back(0.0);
       inputFile >> vecVar.back();
@@ -2342,18 +2353,18 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
     {
       if (vecVar[1] != -2.0)
 	{
-	  ID          = vecVar[0];
+	  ID             = vecVar[0];
 
-	  fit_Fl      = vecVar[1];
-	  errorHi_Fl  = vecVar[2];
-	  errorLo_Fl  = vecVar[3];
+	  fit_Fl         = vecVar[1];
+	  errorHi_Fl     = vecVar[2];
+	  errorLo_Fl     = vecVar[3];
 
-	  fit_Afb     = vecVar[4];
-	  errorHi_Afb = vecVar[5];
-	  errorLo_Afb = vecVar[6];
+	  fit_Afb        = vecVar[4];
+	  errorHi_Afb    = vecVar[5];
+	  errorLo_Afb    = vecVar[6];
 
-	  fit_BF      = vecVar[7];
-	  error_BF    = vecVar[8];
+	  fit_BF         = vecVar[7];
+	  error_BF       = vecVar[8];
 
 	  effMuMuGoodTag = vecVar[9];
 	  effMuMuMisTag  = vecVar[10];
@@ -2366,12 +2377,20 @@ void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx)
 	  errorHiOrg_Afb = vecVar[15];
 	  errorLoOrg_Afb = vecVar[16];
 
-	  nll         = vecVar[17];
+	  fit_Fs         = vecVar[17];
+	  errorHi_Fs     = vecVar[18];
+	  errorLo_Fs     = vecVar[19];
+
+	  fit_As         = vecVar[20];
+	  errorHi_As     = vecVar[21];
+	  errorLo_As     = vecVar[22];
+
+	  nll            = vecVar[23];
 
 	  FitResults->Fill();
 	}
 
-      for (unsigned int i = 0; i < nPar; i++)
+      for (unsigned int i = 0; i < NPARfitSYSTfile; i++)
 	{
 	  vecVar[i];
 	  inputFile >> vecVar[i];

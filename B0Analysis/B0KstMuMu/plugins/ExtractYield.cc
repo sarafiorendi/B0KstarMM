@@ -5313,13 +5313,13 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  // # Make actual fit #
 	  // ###################
 	  // @TMP@ : first for more stable fits, second for contour plots
-	  // if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebands),Save(true));
-	  // else                                                               fitResult = TmpPDF->fitTo(*sideBands,Save(true));
-	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = TmpPDF->createNLL(*sideBands,ExternalConstraints(constrSidebands));
-	  else                                                               NLL = TmpPDF->createNLL(*sideBands);
-      	  RooMinimizer RooMin(*NLL);
-      	  RooMin.minimize(MINIMIZER);
-	  fitResult = RooMin.lastMinuitFit();
+ 	  if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = TmpPDF->fitTo(*sideBands,ExternalConstraints(constrSidebands),Save(true));
+	  else                                                               fitResult = TmpPDF->fitTo(*sideBands,Save(true));
+	  // if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = TmpPDF->createNLL(*sideBands,ExternalConstraints(constrSidebands));
+	  // else                                                               NLL = TmpPDF->createNLL(*sideBands);
+      	  // RooMinimizer RooMin(*NLL);
+      	  // RooMin.minimize(MINIMIZER);
+	  // fitResult = RooMin.lastMinuitFit();
 	  if (fitResult != NULL) fitResult->Print("v");
 
 
@@ -5360,14 +5360,14 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       // # Make actual fit #
       // ###################
       // @TMP@ : first for more stable fit, second for contour plots
-      // if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER));
-      // else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER));
-      if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
-      else                                                               NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
-      RooMinimizer RooMin(*NLL);
-      RooMin.minimize(MINIMIZER);
-      if (atoi(Utility->GetGenericParam("UseMINOS").c_str()) == true) RooMin.minos(RooArgSet(*GetVar(*TotalPDF,"AfbS"),*GetVar(*TotalPDF,"FlS")));
-      fitResult = RooMin.lastMinuitFit();
+      if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),ExternalConstraints(*vecConstr),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER));
+      else                                                               fitResult = (*TotalPDF)->fitTo(*dataSet,Extended(true),Save(true),Minos(atoi(Utility->GetGenericParam("UseMINOS").c_str())),Minimizer(MINIMIZER));
+      // if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true),ExternalConstraints(*vecConstr));
+      // else                                                               NLL = (*TotalPDF)->createNLL(*dataSet,Extended(true));
+      // RooMinimizer RooMin(*NLL);
+      // RooMin.minimize(MINIMIZER);
+      // if (atoi(Utility->GetGenericParam("UseMINOS").c_str()) == true) RooMin.minos(RooArgSet(*GetVar(*TotalPDF,"AfbS"),*GetVar(*TotalPDF,"FlS")));
+      // fitResult = RooMin.lastMinuitFit();
 
 
       // ###################################################
@@ -6547,6 +6547,9 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 	  GetValueAndErrors(TotalPDFq2Bins[i],"FlS", &myString,varVal1,varVal1ELo,varVal1EHi);
 	  GetValueAndErrors(TotalPDFq2Bins[i],"AfbS",&myString,varVal2,varVal2ELo,varVal2EHi);
 
+	  GetValueAndErrors(TotalPDFq2Bins[i],"FsS", &myString,varVal1,varVal1ELo,varVal1EHi);
+	  GetValueAndErrors(TotalPDFq2Bins[i],"AsS", &myString,varVal2,varVal2ELo,varVal2EHi);
+
 	  myString << NLLvalue;
 	}
       else myString << ID << "   "
@@ -6554,6 +6557,8 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
 		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
 		    << -2.0 << "   " << -2.0 << "   "
 		    << -2.0 << "   " << -2.0 << "   "
+		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
+		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
 		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
 		    << -2.0 << "   " << -2.0 << "   " << -2.0 << "   "
 		    << -2.0;
@@ -7104,6 +7109,8 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   double fitOrg_Fl, errorOrgLo_Fl, errorOrgHi_Fl, pdfOrg_Fl;
   double fit_Afb, errorLo_Afb, errorHi_Afb, pdf_Afb;
   double fitOrg_Afb, errorOrgLo_Afb, errorOrgHi_Afb, pdfOrg_Afb;
+  double fit_Fs, errorLo_Fs, errorHi_Fs, pdf_Fs;
+  double fit_As, errorLo_As, errorHi_As, pdf_As;
   double nll;
 
   TTree* FitResults = new TTree("FitResults","Toy fit results");
@@ -7132,6 +7139,16 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
   FitResults->Branch("errorOrgLo_Afb",&errorOrgLo_Afb,"errorOrgLo_Afb/D");
   FitResults->Branch("errorOrgHi_Afb",&errorOrgHi_Afb,"errorOrgHi_Afb/D");
   FitResults->Branch("pdfOrg_Afb",    &pdfOrg_Afb,    "pdfOrg_Afb/D");
+
+  FitResults->Branch("fit_Fs",    &fit_Fs,    "fit_Fs/D");
+  FitResults->Branch("errorLo_Fs",&errorLo_Fs,"errorLo_Fs/D");
+  FitResults->Branch("errorHi_Fs",&errorHi_Fs,"errorHi_Fs/D");
+  FitResults->Branch("pdf_Fs",    &pdf_Fs,    "pdf_Fs/D");
+
+  FitResults->Branch("fit_As",    &fit_As,    "fit_As/D");
+  FitResults->Branch("errorLo_As",&errorLo_As,"errorLo_As/D");
+  FitResults->Branch("errorHi_As",&errorHi_As,"errorHi_As/D");
+  FitResults->Branch("pdf_As",    &pdf_As,    "pdf_As/D");
 
   FitResults->Branch("nll",&nll,"nll/D");
 
@@ -7217,6 +7234,22 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 	  pdf_Afb = atof(fitParam->operator[](Utility->GetFitParamIndx("AfbS"))->operator[](specBin).c_str());
 	  tmpVar2.setVal(pdf_Afb);
           Utility->AntiTransformer("AfbS",atoi(Utility->GetGenericParam("doTransf").c_str()),pdfOrg_Afb,varValELo,varValEHi,&tmpVar1,&tmpVar2);
+
+
+	  // # FS #
+	  fit_Fs = GetVar(TotalPDF,"FsS")->getVal();
+          errorLo_Fs = GetVar(TotalPDF,"FsS")->getErrorLo();
+          errorHi_Fs = GetVar(TotalPDF,"FsS")->getErrorHi();
+
+	  pdf_Fs = atof(fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](specBin).c_str());
+
+
+	  // # AS #
+	  fit_As = GetVar(TotalPDF,"AsS")->getVal();
+          errorLo_As = GetVar(TotalPDF,"AsS")->getErrorLo();
+          errorHi_As = GetVar(TotalPDF,"AsS")->getErrorHi();
+
+	  pdf_As = atof(fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](specBin).c_str());
 
 
 	  nll = NLLvalue;
