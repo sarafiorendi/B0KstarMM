@@ -4038,7 +4038,7 @@ RooFitResult* MakeMassFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, RooRealVar
   if (SETBATCH == true) delete legX;
 
 
-  delete NLL;
+  if (NLL != NULL) delete NLL;
   VarsYield.Clear();
   return fitResult;
 }
@@ -5329,7 +5329,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       	  StorePolyResultsInFile(*TotalPDF);
 
 
-	  delete NLL;
+	  if (NLL != NULL) delete NLL;
       	  delete TmpPDF;
       	  delete sideBands;
      	  ClearVars(&constrSidebands);
@@ -6242,7 +6242,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       }
 
 
-  delete NLL;
+  if (NLL != NULL) delete NLL;
   VarsYield.Clear();
   return fitResult;
 }
