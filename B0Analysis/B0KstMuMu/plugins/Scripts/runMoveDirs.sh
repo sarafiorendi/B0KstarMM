@@ -6,13 +6,14 @@
 dir2Move="FLAFB10"
 dir2Go="../tmp"
 
+echo "Directory to move:" $dir2Move
+echo "Directory to go:" $dir2Go
+
 if [ $# -eq 0 ]
     then
     echo "Syapsis: source runMoveDirs.sh number_of_jobs q2bin"
 else
     echo "Parameters:" $1 "and" $2
-    echo "Directory to move:" $dir2Move
-    echo "Directory to go:" $dir2Go
     
     i=1;
     while [ "$i" -le "$1" ]
