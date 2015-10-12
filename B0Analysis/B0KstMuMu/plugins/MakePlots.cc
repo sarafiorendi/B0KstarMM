@@ -157,14 +157,14 @@ void DrawString (double Lumi)
   LumiTex1->DrawLatex(0.1,0.9,myString.str().c_str());
 
 
-  myString.clear(); myString.str("");
-  myString << "#it{Preliminary}";
-  TLatex* LumiTex2 = new TLatex(0.2,0.9,myString.str().c_str());
-  LumiTex2->SetTextFont(42);
-  LumiTex2->SetTextSize(0.06 * scaleRespect2CMS);
-  LumiTex2->SetTextColor(kBlack);
-  LumiTex2->SetNDC(true);
-  LumiTex2->DrawLatex(0.2,0.9,myString.str().c_str());
+  // myString.clear(); myString.str("");
+  // myString << "#it{Preliminary}";
+  // TLatex* LumiTex2 = new TLatex(0.2,0.9,myString.str().c_str());
+  // LumiTex2->SetTextFont(42);
+  // LumiTex2->SetTextSize(0.06 * scaleRespect2CMS);
+  // LumiTex2->SetTextColor(kBlack);
+  // LumiTex2->SetNDC(true);
+  // LumiTex2->DrawLatex(0.2,0.9,myString.str().c_str());
 
 
   myString.clear(); myString.str("");
@@ -2031,6 +2031,13 @@ void MakePhysicsPlots (unsigned int PlotType)
   else if ((PlotType == 13) || (PlotType == 14)) // Fs OR As
     {
       geStepTh_nL->Draw("ae2");
+
+      // ########################
+      // # Draw exclusion zones #
+      // ########################
+      DrawExclusion(q2Bins[JPsibin],q2Bins[JPsibin+1],-1.2,30.,"RejectJPsi1",3001,kGray);
+      DrawExclusion(q2Bins[PsiPbin],q2Bins[PsiPbin+1],-1.2,30.,"RejectPsiP1",3001,kGray);
+
       ge00->Draw("same pe1");
 
       leg->AddEntry(ge00,"Data","EPL");

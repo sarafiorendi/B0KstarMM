@@ -1608,13 +1608,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # Combinatorial bkg yield
-567.118   -28.1595   28.9706
+566   -20   20
 # Mistag fraction
 0.132   -0.001   0.001
 # Peaking bkg yield
 0.0
 # Signal yield
-313.325   -21.1918   21.6749
+313   -20   20
 ###################################################################
 ### Number of coefficients of the peak.bkg angle1 poly ###
 5
@@ -1690,9 +1690,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.363696
+0.5
 # AFB +/- err
-0.161807
+0.133
 # P1 +/- err
 0.0
 # P2 +/- err
