@@ -337,7 +337,7 @@ void DrawString                 (double Lumi, RooPlot* myFrame = NULL);
 bool IsInConstraints            (RooArgSet* vecConstr, string varName);
 void AddGaussConstraint         (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName);
 void BuildMassConstraints       (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName);
-void BuildAngularConstraints    (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName, vector<vector<string>*>* fitParam = NULL, unsigned int q2BinIndx = 0);
+void BuildAngularConstraints    (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName);
 
 RooAbsPdf* MakeAngWithEffPDF    (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsigned int FitType, bool useEffPDF, RooArgSet* VarsAng, RooArgSet* VarsPoly, vector<double>* q2Bins, int q2BinIndx, bool doTransf);
 void DeleteFit                  (RooAbsPdf* pdf, string DeleteType);
@@ -425,11 +425,13 @@ bool CheckGoodFit (RooFitResult* fitResult, TPaveText* paveText)
       if ((fitResult->covQual() == 3) && (fitResult->status() == 0))
 	{
 	  if (paveText != NULL) paveText->AddText("Fit status: GOOD");
+	  if (SETBATCH == false) system("say \" Fit status: GOOD ! \"");
 	  return true;
 	}
       else
 	{
 	  if (paveText != NULL) paveText->AddText("Fit status: BAD");
+	  if (SETBATCH == false) system("say \" Fit status: BAD ! \"");
 	  return false;
 	}
     }
@@ -770,9 +772,8 @@ void BuildMassConstraints (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName)
 }
 
 
-void BuildAngularConstraints (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName, vector<vector<string>*>* fitParam, unsigned int q2BinIndx)
+void BuildAngularConstraints (RooArgSet* vecConstr, RooAbsPdf* pdf, string varName)
 // #######################################################
-// # sign: apply constraint to angular S-wave signal     #
 // # comb: apply constraint to angular combinatorial bkg #
 // # peak: apply constraint to angular peaking bkg       #
 // #######################################################
@@ -791,48 +792,20 @@ void BuildAngularConstraints (RooArgSet* vecConstr, RooAbsPdf* pdf, string varNa
 
 	  for (unsigned int i = 0; i < NCOEFFPOLYBKG; i++)
 	    {
-	      // @TMP@ : choose between fixed or constrained angular bkg shape
-
 	      myString.clear(); myString.str("");
 	      myString << polyType.c_str() << "1Poly" << i;
-	      // if (GetVar(pdf,myString.str().c_str()) != NULL) GetVar(pdf,myString.str().c_str())->setConstant(true);
 	      if (GetVar(pdf,myString.str().c_str()) != NULL) AddGaussConstraint(vecConstr, pdf, myString.str().c_str());
 
 	      myString.clear(); myString.str("");
 	      myString << polyType.c_str() << "2Poly" << i;
-	      // if (GetVar(pdf,myString.str().c_str()) != NULL) GetVar(pdf,myString.str().c_str())->setConstant(true);
 	      if (GetVar(pdf,myString.str().c_str()) != NULL) AddGaussConstraint(vecConstr, pdf, myString.str().c_str());
 
 	      myString.clear(); myString.str("");
 	      myString << polyType.c_str() << "3Poly" << i;
-	      // if (GetVar(pdf,myString.str().c_str()) != NULL) GetVar(pdf,myString.str().c_str())->setConstant(true);
 	      if (GetVar(pdf,myString.str().c_str()) != NULL) AddGaussConstraint(vecConstr, pdf, myString.str().c_str());
 	    }
 	}
-      else if (varName == "sign")
-	{
-	  double value, errLo, errHi;
-	  RooRealVar tmpVar("tmpVar","tmpVar",0.0);
-
-
-	  tmpVar.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](q2BinIndx).c_str()));
-	  Utility->AntiTransformer("FsS",atoi(Utility->GetGenericParam("doTransf").c_str()),value,errLo,errHi,&tmpVar);
-	  myString.clear(); myString.str("");
-	  myString << value << "   " << errLo << "   " << errHi;
-	  SetValueAndErrors(pdf,"FsS",1.0,&myString,&value,&errLo,&errHi);
-
-	  if (GetVar(pdf,"FsS") != NULL) GetVar(pdf,"FsS")->setConstant(true);
-
-
-	  tmpVar.setVal(atof(fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](q2BinIndx).c_str()));
-	  Utility->AntiTransformer("AsS",atoi(Utility->GetGenericParam("doTransf").c_str()),value,errLo,errHi,&tmpVar);
-	  myString.clear(); myString.str("");
-	  myString << value << "   " << errLo << "   " << errHi;
-	  SetValueAndErrors(pdf,"AsS",1.0,&myString,&value,&errLo,&errHi);
-
-	  if (GetVar(pdf,"AsS") != NULL) GetVar(pdf,"AsS")->setConstant(true);
-	}
-      else if ((varName != "sign") && (varName == "comb") && (varName == "peak"))
+      else if ((varName == "comb") && (varName == "peak"))
 	{
 	  cout << "[ExtractYield::BuildAngularConstraints]\tWrong parameter: " << varName << endl;
 	  exit (EXIT_FAILURE);
@@ -1472,7 +1445,7 @@ double StoreFitResultsInFile (RooAbsPdf* pdf, RooFitResult* fitResult, RooDataSe
         }
       if (GetVar(pdf,"AsS") != NULL)
         {
-	  Utility->Transformer("AsS",atoi(Utility->GetGenericParam("doTransf").c_str()),varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"AsS"));
+	  Utility->Transformer("AsS",atoi(Utility->GetGenericParam("doTransf").c_str()),varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"FsS"),GetVar(pdf,"AsS"));
 	  fileFitResults << "As: " << varVal << " +/- " << (varValEHi - varValELo) / 2. << " (" << varValEHi << "/" << varValELo << ")" << endl;
         }
 
@@ -1988,7 +1961,7 @@ vector<string>* SaveFitResults (unsigned int q2BinIndx, vector<vector<string>*>*
   vecParStr->push_back("# AS +/- err");
   if ((pdf != NULL) && (GetVar(pdf,"AsS") != NULL) && (fitResult->floatParsFinal().index("AsS") >= 0))
     {
-      Utility->Transformer("AsS",atoi(Utility->GetGenericParam("doTransf").c_str()),varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"AsS"));
+      Utility->Transformer("AsS",atoi(Utility->GetGenericParam("doTransf").c_str()),varVal,varValELo,varValEHi,fitResult,GetVar(pdf,"FlS"),GetVar(pdf,"FsS"),GetVar(pdf,"AsS"));
       myString.clear(); myString.str("");
       myString << varVal << "   " << varValELo << "   " << varValEHi;
       vecParStr->push_back(myString.str());
@@ -5318,7 +5291,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
 	  // if (atoi(Utility->GetGenericParam("ApplyConstr").c_str()) == true) NLL = TmpPDF->createNLL(*sideBands,ExternalConstraints(constrSidebands));
 	  // else                                                               NLL = TmpPDF->createNLL(*sideBands);
       	  // RooMinimizer RooMin(*NLL);
-      	  // RooMin.minimize(MINIMIZER);
+     	  // RooMin.minimize(MINIMIZER);
 	  // fitResult = RooMin.lastMinuitFit();
 	  if (fitResult != NULL) fitResult->Print("v");
 
@@ -7237,17 +7210,17 @@ void MakeMass2AnglesToy (RooAbsPdf* TotalPDF, RooRealVar* x, RooRealVar* y, RooR
 
 
 	  // # FS #
-	  fit_Fs = GetVar(TotalPDF,"FsS")->getVal();
-          errorLo_Fs = GetVar(TotalPDF,"FsS")->getErrorLo();
-          errorHi_Fs = GetVar(TotalPDF,"FsS")->getErrorHi();
+	  Utility->Transformer("FS",atoi(Utility->GetGenericParam("doTransf").c_str()),fit_As,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FsS"));
+	  errorLo_Fs = varValELo;
+	  errorHi_Fs = varValEHi;
 
 	  pdf_Fs = atof(fitParam->operator[](Utility->GetFitParamIndx("FsS"))->operator[](specBin).c_str());
 
 
 	  // # AS #
-	  fit_As = GetVar(TotalPDF,"AsS")->getVal();
-          errorLo_As = GetVar(TotalPDF,"AsS")->getErrorLo();
-          errorHi_As = GetVar(TotalPDF,"AsS")->getErrorHi();
+	  Utility->Transformer("AsS",atoi(Utility->GetGenericParam("doTransf").c_str()),fit_As,varValELo,varValEHi,fitResult,GetVar(TotalPDF,"FlS"),GetVar(TotalPDF,"FsS"),GetVar(TotalPDF,"AsS"));
+	  errorLo_As = varValELo;
+	  errorHi_As = varValEHi;
 
 	  pdf_As = atof(fitParam->operator[](Utility->GetFitParamIndx("AsS"))->operator[](specBin).c_str());
 

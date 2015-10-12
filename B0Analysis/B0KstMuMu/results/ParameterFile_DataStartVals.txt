@@ -1538,17 +1538,17 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.537318   -0.00206184   0.0020587
+0.537324   -0.00201885   0.00204177
 # AFB +/- err
-0.0076739   -0.00261238   0.00261023
+0.00767531   -0.00257138   0.00257203
 # P1 +/- err
 0.0
 # P2 +/- err
 0.0
 # FS +/- err
-7.10639e-09   -0.00176938   0.00176938
+0.00813763   -0.000745072   0.000745072
 # AS +/- err
--0.204534   -0.00682714   0.00682714
+-0.203036   -0.00675902   0.0138349
 ###################################################################
 # Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -1842,17 +1842,17 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.538159   -0.00846236   0.00840851
+0.538161   -0.00836698   0.00851299
 # AFB +/- err
-0.0438016   -0.00967385   0.00950819
+0.0437839   -0.0094964   0.00958944
 # P1 +/- err
 0.0
 # P2 +/- err
 0.0
 # FS +/- err
-0.0663698   -0.0189542   0.0189542
+0.0658986   -0.0183881   0.0195641
 # AS +/- err
--0.204446   -0.0276010   0.0276010
+-0.20487   -0.0513801   0.0458126
 ###################################################################
 # Use signal: 0 = no; 1 = 1 gaussian; 2 = 2 gaussians
 2
@@ -1941,7 +1941,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle1 poly coeff. c2
 0.0
 # Bkg angle1 poly coeff. c3
--1.5
+0.0
 # Bkg angle1 poly coeff. c4
 0.0
 ### Number of coefficients of the peak.bkg angle2 poly ###
@@ -1961,7 +1961,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Bkg angle2 poly coeff. c0
 0.0
 # Bkg angle2 poly coeff. c1
--1.0
+0.0
 # Bkg angle2 poly coeff. c2
 0.0
 # Bkg angle2 poly coeff. c3
@@ -1994,9 +1994,9 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0
 ###################################################################
 # FL +/- err
-0.437537
+0.44
 # AFB +/- err
-0.414074
+0.41
 # P1 +/- err
 0.0
 # P2 +/- err
@@ -2187,13 +2187,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 1.0   0.0   0.0
 
 # q^2 bin 4
-0.0037615   -4.43008e-06   4.43008e-06
+0.00376244   -5.93969e-06   5.93969e-06
 
 # q^2 bin 5
 1.0   0.0   0.0
 
 # q^2 bin 6
-0.00383351   -1.76927e-05   1.76927e-05
+0.00383373   -1.77355e-05   1.77355e-05
 
 # q^2 bin 7
 1.0   0.0   0.0
@@ -2221,13 +2221,13 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 1.0   0.0   0.0
 
 # q^2 bin 4
-0.000565492   -8.59692e-07   8.59692e-07
+0.000567096   -8.88022e-07   8.88022e-07
 
 # q^2 bin 5
 1.0   0.0   0.0
 
 # q^2 bin 6
-0.00059674   -4.10635e-06   4.10635e-06
+0.000596646   -4.21188e-06   4.21188e-06
 
 # q^2 bin 7
 1.0   0.0   0.0
@@ -2285,7 +2285,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction [x 10-8]
+# Branching-Fraction [%]
 0.0   0.0
 
 # q^2 bin 1; +error --- -error
@@ -2297,7 +2297,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction [x 10-8]
+# Branching-Fraction [%]
 0.0   0.0
 
 # q^2 bin 2; +error --- -error
@@ -2309,7 +2309,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction [x 10-8]
+# Branching-Fraction [%]
 0.0   0.0
 
 # q^2 bin 3; +error --- -error
@@ -2321,7 +2321,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction [x 10-8]
+# Branching-Fraction [%]
 0.0   0.0
 
 # q^2 bin 4; +error --- -error
@@ -2333,7 +2333,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction [x 10-8]
+# Branching-Fraction [%]
 0.0   0.0
 
 # q^2 bin 5; +error --- -error
@@ -2345,7 +2345,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction [x 10-8]
+# Branching-Fraction [%]
 0.0   0.0
 
 # q^2 bin 6; +error --- -error
@@ -2357,7 +2357,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction [x 10-8]
+# Branching-Fraction [%]
 0.0   0.0
 
 # q^2 bin 7; +error --- -error
@@ -2369,7 +2369,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction [x 10-8]
+# Branching-Fraction [%]
 0.0   0.0
 
 # q^2 bin 8; +error --- -error
@@ -2381,7 +2381,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 0.0   0.0
 # P2
 0.0   0.0
-# Branching-Fraction [x 10-8]
+# Branching-Fraction [%]
 0.0   0.0
 
 

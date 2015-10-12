@@ -1771,8 +1771,8 @@ void MakePhysicsPlots (unsigned int PlotType)
       for (int i = 0; i < ge1->GetN(); i++)
 	if (Utility->ValIsInPsi(&q2Bins,(q2Bins[i+1]+q2Bins[i])/2.) == false)
 	  {
-	    ge1->SetPointEYhigh(i,sqrt(ge1->GetErrorYhigh(i)*ge1->GetErrorYhigh(i) + vecObs[8]->operator[](i)*vecObs[8]->operator[](i)));
-	    ge1->SetPointEYlow(i, sqrt(ge1->GetErrorYlow(i)*ge1->GetErrorYlow(i)   + vecObs[9]->operator[](i)*vecObs[9]->operator[](i)));
+	    ge1->SetPointEYhigh(i,sqrt(ge1->GetErrorYhigh(i)*ge1->GetErrorYhigh(i) + vecObs[8]->operator[](i)*ge1->GetY()[i]/100. * vecObs[8]->operator[](i)*ge1->GetY()[i]/100.));
+	    ge1->SetPointEYlow(i, sqrt(ge1->GetErrorYlow(i)*ge1->GetErrorYlow(i)   + vecObs[9]->operator[](i)*ge1->GetY()[i]/100. * vecObs[9]->operator[](i)*ge1->GetY()[i]/100.));
 	  }
     }
   else if (PlotType == 10) // Fl
@@ -1866,8 +1866,8 @@ void MakePhysicsPlots (unsigned int PlotType)
 	    ge0->SetPointEXlow(i,0.0);
 	    ge0->SetPointEXhigh(i,0.0);
 
-	    ge0->SetPointEYhigh(i,sqrt(ge0->GetErrorYhigh(i)*ge0->GetErrorYhigh(i) + vecObs[8]->operator[](i)*vecObs[8]->operator[](i)));
-	    ge0->SetPointEYlow(i, sqrt(ge0->GetErrorYlow(i)*ge0->GetErrorYlow(i)   + vecObs[9]->operator[](i)*vecObs[9]->operator[](i)));
+	    ge0->SetPointEYhigh(i,sqrt(ge0->GetErrorYhigh(i)*ge0->GetErrorYhigh(i) + vecObs[8]->operator[](i)*ge0->GetY()[i]/100. * vecObs[8]->operator[](i)*ge0->GetY()[i]/100.));
+	    ge0->SetPointEYlow(i, sqrt(ge0->GetErrorYlow(i)*ge0->GetErrorYlow(i)   + vecObs[9]->operator[](i)*ge0->GetY()[i]/100. * vecObs[9]->operator[](i)*ge0->GetY()[i]/100.));
 	  }
 
 

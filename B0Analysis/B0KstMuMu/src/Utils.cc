@@ -299,7 +299,7 @@ void Utils::ReadAllBins (std::string fileName, std::vector<double>* q2Bins, std:
   // #################
   // # Read q^2 bins #
   // #################
-  std::cout << "\n[Utils::ReadAllBins]\tAll bins from file : " << fileName.c_str() << std::endl;
+  std::cout << "[Utils::ReadAllBins]\tAll bins from file : " << fileName.c_str() << std::endl;
   ParVector.clear();
   ParameterFile->ReadFromFile(ParFileBlockN("q2"),&ParVector);
   for (unsigned int i = 0; i < ParVector.size(); i++)
@@ -314,7 +314,7 @@ void Utils::ReadAllBins (std::string fileName, std::vector<double>* q2Bins, std:
       // #######################
       // # Read cosThetaK bins #
       // #######################
-      std::cout << "\n@@@ cos(theta_K) bins from file @@@" << std::endl;
+      std::cout << "@@@ cos(theta_K) bins from file @@@" << std::endl;
       ParVector.clear();
       ParameterFile->ReadFromFile(ParFileBlockN("thetaKokTag"),&ParVector);
       for (unsigned int i = 0; i < ParVector.size(); i++)
@@ -327,7 +327,7 @@ void Utils::ReadAllBins (std::string fileName, std::vector<double>* q2Bins, std:
       // #######################
       // # Read cosThetaL bins #
       // #######################
-      std::cout << "\n@@@ cos(theta_l) bins from file @@@" << std::endl;
+      std::cout << "@@@ cos(theta_l) bins from file @@@" << std::endl;
       ParVector.clear();
       ParameterFile->ReadFromFile(ParFileBlockN("thetaLokTag"),&ParVector);
       for (unsigned int i = 0; i < ParVector.size(); i++)
@@ -340,7 +340,7 @@ void Utils::ReadAllBins (std::string fileName, std::vector<double>* q2Bins, std:
       // #################
       // # Read phi bins #
       // #################
-      std::cout << "\n@@@ phi bins from file @@@" << std::endl;
+      std::cout << "@@@ phi bins from file @@@" << std::endl;
       ParVector.clear();
       ParameterFile->ReadFromFile(ParFileBlockN("phiokTag"),&ParVector);
       for (unsigned int i = 0; i < ParVector.size(); i++)
@@ -354,7 +354,7 @@ void Utils::ReadAllBins (std::string fileName, std::vector<double>* q2Bins, std:
       // #######################
       // # Read cosThetaK bins #
       // #######################
-      std::cout << "\n@@@ cos(theta_K) bins from file @@@" << std::endl;
+      std::cout << "@@@ cos(theta_K) bins from file @@@" << std::endl;
       ParVector.clear();
       ParameterFile->ReadFromFile(ParFileBlockN("thetaKmisTag"),&ParVector);
       for (unsigned int i = 0; i < ParVector.size(); i++)
@@ -367,7 +367,7 @@ void Utils::ReadAllBins (std::string fileName, std::vector<double>* q2Bins, std:
       // #######################
       // # Read cosThetaL bins #
       // #######################
-      std::cout << "\n@@@ cos(theta_l) bins from file @@@" << std::endl;
+      std::cout << "@@@ cos(theta_l) bins from file @@@" << std::endl;
       ParVector.clear();
       ParameterFile->ReadFromFile(ParFileBlockN("thetaLmisTag"),&ParVector);
       for (unsigned int i = 0; i < ParVector.size(); i++)
@@ -380,7 +380,7 @@ void Utils::ReadAllBins (std::string fileName, std::vector<double>* q2Bins, std:
       // #################
       // # Read phi bins #
       // #################
-      std::cout << "\n@@@ phi bins from file @@@" << std::endl;
+      std::cout << "@@@ phi bins from file @@@" << std::endl;
       ParVector.clear();
       ParameterFile->ReadFromFile(ParFileBlockN("phimisTag"),&ParVector);
       for (unsigned int i = 0; i < ParVector.size(); i++)
@@ -406,7 +406,7 @@ void Utils::Readq2Bins (std::string fileName, std::vector<double>* q2Bins)
   ReadParVsq2Bins(fileName,"q2",&ParVector);
 
 
-  std::cout << "\n[Utils::Readq2Bins]\tq^2 bins from file : " << fileName.c_str() << std::endl;
+  std::cout << "[Utils::Readq2Bins]\tq^2 bins from file : " << fileName.c_str() << std::endl;
   for (unsigned int i = 0; i < ParVector->size(); i++)
     {
       q2Bins->push_back(atof(ParVector->operator[](i).c_str()));
@@ -427,7 +427,7 @@ void Utils::ReadHLTpaths (std::string fileName, std::vector<std::string>* TrigTa
   // ###############################
   // # Read HLT-trigger table bins #
   // ###############################
-  std::cout << "\n[Utils::ReadHLTpaths]\tHLT-trigger table from file : " << fileName.c_str() << std::endl;
+  std::cout << "[Utils::ReadHLTpaths]\tHLT-trigger table from file : " << fileName.c_str() << std::endl;
   ParVector.clear();
   ParameterFile->ReadFromFile(ParFileBlockN("HLTpath"),&ParVector);
   for (unsigned int i = 0; i < ParVector.size(); i++)
@@ -1969,7 +1969,7 @@ double Utils::ReadLumi (std::string fileName)
   // ##############################
   ParameterFile->ReadFromFile(ParFileBlockN("lumi"),&ParVector);
   for (unsigned int i = 0; i < ParVector.size(); i++) val = val + atof(ParVector[i].c_str());
-  std::cout << "\n[Utils::ReadLumi]\t@@@ Recorded luminosity: " << val << " fb-1 @@@" << std::endl;
+  std::cout << "[Utils::ReadLumi]\t@@@ Recorded luminosity: " << val << " fb-1 @@@" << std::endl;
 
 
   ParVector.clear();
@@ -2007,7 +2007,7 @@ void Utils::ReadNLLval (std::string fileName, std::vector<std::vector<double>*>*
   for (unsigned int i = 0; i < ParVector.size(); i=i+nFitObserv)
     {
 
-      std::cout << "\nRead set-" << static_cast<int>(static_cast<double>(i)/static_cast<double>(nFitObserv)) << " of fit-observable NLL" << std::endl;
+      std::cout << "Read set-" << static_cast<int>(static_cast<double>(i)/static_cast<double>(nFitObserv)) << " of fit-observable NLL" << std::endl;
 
       for (unsigned int j = 0; j < nFitObserv; j++)
 	{
@@ -2061,7 +2061,7 @@ void Utils::ReadTriggerPathsANDCutsANDEntries (std::string fileName)
       VecHLTCutVar2.push_back(atof(ParVector[i+2].c_str()));
       VecHLTentries.push_back(atof(ParVector[i+3].c_str()));
 
-      std::cout << "\nRead trigger path from config file : " << HLTpath.back() << std::endl;
+      std::cout << "Read trigger path from config file : " << HLTpath.back() << std::endl;
       std::cout << "Read first cut value: "                  << VecHLTCutVar1.back() << std::endl;
       std::cout << "Read second cut value: "                 << VecHLTCutVar2.back() << std::endl;
       std::cout << "Read entries in Data: "                  << VecHLTentries.back() << std::endl;
@@ -2096,7 +2096,7 @@ void Utils::ReadFitStartingValues (std::string fileName, std::vector<std::vector
   for (unsigned int i = 0; i < ParVector.size(); i=i+nFitParam+nConfigParam)
     {
 
-      std::cout << "\nRead set-" << static_cast<int>(static_cast<double>(i)/static_cast<double>(nFitParam+nConfigParam)) << " of fit-parameter starting values" << std::endl;
+      std::cout << "Read set-" << static_cast<int>(static_cast<double>(i)/static_cast<double>(nFitParam+nConfigParam)) << " of fit-parameter starting values" << std::endl;
 
       for (unsigned int j = 0; j < nFitParam; j++)
 	{
@@ -2151,16 +2151,34 @@ void Utils::ReadFitSystematics (std::string fileName, std::vector<std::vector<do
   for (unsigned int i = 0; i < ParVector.size(); i=i+nFitObserv)
     {
 
-      std::cout << "\nRead set-" << static_cast<int>(static_cast<double>(i)/static_cast<double>(nFitObserv)) << " of fit-observable systematic errors" << std::endl;
+      std::cout << "Read set-" << static_cast<int>(static_cast<double>(i)/static_cast<double>(nFitObserv)) << " of fit-observable systematic errors" << std::endl;
 
       for (unsigned int j = 0; j < nFitObserv; j++)
 	{
 	  std::stringstream rawString(ParVector[i+j]);
-	  rawString >> val;
-	  vecParam->operator[](j*2)->push_back(val);
-	  rawString >> val;
-	  vecParam->operator[](j*2+1)->push_back(val);
-	  std::cout << "Fit observable-" << j << " systematic error: +" << vecParam->operator[](j*2)->back() << "/-" << vecParam->operator[](j*2+1)->back() << std::endl;
+	  vecParam->operator[](j*2)->push_back(0.0);
+	  vecParam->operator[](j*2+1)->push_back(0.0);
+
+	  while (true)
+	    {
+	      val = -1.0;
+	      rawString >> val;
+	      if (val == -1.0) break;
+	      vecParam->operator[](j*2)->back() += val*val;
+
+	      val = -1.0;
+	      rawString >> val;
+	      if (val == -1.0)
+		{
+		  std::cout << "[Utils::ReadFitSystematics]\tData format not valid in systematic error" << std::endl;
+		  exit (EXIT_FAILURE);
+		}
+	      vecParam->operator[](j*2+1)->back() += val*val;
+	    }
+
+	  vecParam->operator[](j*2)->back()   = sqrt(vecParam->operator[](j*2)->back());
+	  vecParam->operator[](j*2+1)->back() = sqrt(vecParam->operator[](j*2+1)->back());
+	  std::cout << "[Utils::ReadFitSystematics]\tFit observable-" << j << " systematic error: +" << vecParam->operator[](j*2)->back() << "/-" << vecParam->operator[](j*2+1)->back() << std::endl;
 	}
     }
 
@@ -2178,7 +2196,7 @@ void Utils::ReadParVsq2Bins (std::string fileName, std::string praName, std::vec
 
   ParameterFile->ReadFromFile(ParFileBlockN(praName.c_str()),*vecParam);
 
-  std::cout << "\n[Utils::ReadParVsq2Bins]\tReading parameters vs q^2 from file : " << fileName << std::endl;
+  std::cout << "[Utils::ReadParVsq2Bins]\tReading parameters vs q^2 from file : " << fileName << std::endl;
   for (unsigned int i = 0; i < (*vecParam)->size(); i++)
     std::cout << "Parameter value and errors for q2 bin " << i << ": " << (*vecParam)->operator[](i) << std::endl;
   
@@ -2309,7 +2327,7 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
 				  cosThetaKBins->operator[](0),cosThetaKBins->operator[](cosThetaKBins->size()-1),
 				  cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1)));
       
-      std::cout << "\n@@@ Reading coefficients for analytical efficiency for set-" << q2Indx << " from file : " << fileNameEffParams.c_str() << " @@@" << std::endl;
+      std::cout << "@@@ Reading coefficients for analytical efficiency for set-" << q2Indx << " from file : " << fileNameEffParams.c_str() << " @@@" << std::endl;
       
       for (unsigned int k = 0; k < NcoeffThetaL; k++)
 	{
@@ -2370,7 +2388,7 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
 				  cosThetaLBins->operator[](0),cosThetaLBins->operator[](cosThetaLBins->size()-1),
 				  phiBins->operator[](0),      phiBins->operator[](cosThetaLBins->size()-1)));
       
-      std::cout << "\n@@@ Reading coefficients for analytical efficiency for set-" << q2Indx << " from file : " << fileNameEffParams.c_str() << " @@@" << std::endl;
+      std::cout << "@@@ Reading coefficients for analytical efficiency for set-" << q2Indx << " from file : " << fileNameEffParams.c_str() << " @@@" << std::endl;
       
       for (unsigned int k = 0; k < NcoeffThetaL; k++)
 	{
@@ -2451,14 +2469,14 @@ void Utils::ReadAnalyticalEffFullCovariance (std::string fileNameEffParams, std:
 
   for (int q2Indx = 0; q2Indx < static_cast<int>(rint(ParVector.size()/Ncoeff)); q2Indx++)
     {
-      std::cout << "\n@@@ Reading covariance matrix for analytical efficiency for set-" << q2Indx << " from file : " << fileNameEffParams.c_str() << " @@@" << std::endl;
+      std::cout << "@@@ Reading covariance matrix for analytical efficiency for set-" << q2Indx << " from file : " << fileNameEffParams.c_str() << " @@@" << std::endl;
       
       covMatrices->push_back(new TMatrixTSym<double>(Ncoeff));
       
       for (unsigned int j = 0; j < Ncoeff; j++)
 	{
 	  std::stringstream rawString(ParVector[j+q2Indx*Ncoeff]);
-	  std::cout << "\nRow #" << j << ": " << rawString.str().c_str() << std::endl;
+	  std::cout << "Row #" << j << ": " << rawString.str().c_str() << std::endl;
 	  rawString >> coeffVec[0]; // Discard q2 bin value
 
 	  for (unsigned int k = 0; k < Ncoeff; k++)
@@ -2492,7 +2510,7 @@ double Utils::EffMinValue1D (double minX, double maxX, TF1* effFunc)
 	iMem = i;
       }
   
-  std::cout << "\n@@@ Efficiency minimal value (if less than zero): " << minVal << " at: X = " << maxX - (maxX - minX) / static_cast<double>(nsteps) * static_cast<double>(iMem);
+  std::cout << "@@@ Efficiency minimal value (if less than zero): " << minVal << " at: X = " << maxX - (maxX - minX) / static_cast<double>(nsteps) * static_cast<double>(iMem);
   std::cout << " (step along X: " << (maxX - minX) / static_cast<double>(nsteps) << ") @@@" << std::endl;
   
   return minVal;
@@ -2529,7 +2547,7 @@ double Utils::EffMinValue2D (std::vector<double>* cosThetaKBins, std::vector<dou
   valj = cosThetaKBins->operator[](cosThetaKBins->size()-1) - (cosThetaKBins->operator[](cosThetaKBins->size()-1) - cosThetaKBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(jMem);
   valk = cosThetaLBins->operator[](cosThetaLBins->size()-1) - (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(kMem);
 
-  std::cout << "\n[Utils::EffMinValue2D]\t@@@ Efficiency minimal value (if less than zero): " << minVal << " at: (theta_K,theta_l = " << valj << "," << valk << ")" << std::endl;
+  std::cout << "[Utils::EffMinValue2D]\t@@@ Efficiency minimal value (if less than zero): " << minVal << " at: (theta_K,theta_l = " << valj << "," << valk << ")" << std::endl;
 
   std::cout << "Corresponding to bin [#bin convention 0...N-1 (-1 = upper bin)] (theta_K,theta_l): ";
   std::cout << SearchBin(valj,cosThetaKBins) << ",";
@@ -2580,7 +2598,7 @@ double Utils::EffMinValue3D (std::vector<double>* cosThetaKBins, std::vector<dou
   valk = cosThetaLBins->operator[](cosThetaLBins->size()-1) - (cosThetaLBins->operator[](cosThetaLBins->size()-1) - cosThetaLBins->operator[](0)) / static_cast<double>(nsteps) * static_cast<double>(kMem);
   vall = phiBins->operator[](phiBins->size()-1)             - (phiBins->operator[](phiBins->size()-1)             - phiBins->operator[](0))       / static_cast<double>(nsteps) * static_cast<double>(lMem);
 
-  std::cout << "\n[Utils::EffMinValue3D]\t@@@ Efficiency minimal value (if less than zero): " << minVal << " at: (theta_K,theta_l,phi = " << valj << "," << valk << "," << vall << ")" << std::endl;
+  std::cout << "[Utils::EffMinValue3D]\t@@@ Efficiency minimal value (if less than zero): " << minVal << " at: (theta_K,theta_l,phi = " << valj << "," << valk << "," << vall << ")" << std::endl;
 
   std::cout << "Corresponding to bin [#bin convention 0...N-1 (-1 = upper bin)] (theta_K,theta_l,phi): ";
   std::cout << SearchBin(valj,cosThetaKBins) << ",";
@@ -3238,7 +3256,7 @@ void Utils::AddConstraint3D (TH3D** histo, double abscissaErr, double Tval, doub
   int deltaZ;
 
 
-  std::cout << "\n[Utils::AddConstraint3D]" << std::endl;
+  std::cout << "[Utils::AddConstraint3D]" << std::endl;
   std::cout << "Old binnig value (theta_K,theta_l,phi): ";
   std::cout << (*histo)->GetNbinsX() << "," << (*histo)->GetNbinsY() << "," << (*histo)->GetNbinsZ() << std::endl;
 
@@ -3421,15 +3439,17 @@ void Utils::SaveFitValues (std::string fileName, std::vector<std::string>* vecPa
 
 
 #if ROOFIT
-std::string Utils::Transformer (std::string varName, bool doIt, double& varValOut, double& varValOutELo, double& varValOutEHi, RooFitResult* fitResult, RooRealVar* varValIn1, RooRealVar* varValIn2)
-// ##########################
-// # varValIn1 = Fl, Fs, As #
-// # varValIn2 = Afb        #
-// ##########################
+std::string Utils::Transformer (std::string varName, bool doIt, double& varValOut, double& varValOutELo, double& varValOutEHi, RooFitResult* fitResult, RooRealVar* varValIn1, RooRealVar* varValIn2, RooRealVar* varValIn3)
+// #######################
+// # varValIn1 = Fl, Fs  #
+// # varValIn2 = Afb, Fs #
+// # varValIn3 = As      #
+// #######################
 {
+  double theorCoeff = 0.89; // @TMP@ : to be reviewed
   const TMatrixTSym<double>* CovM = (fitResult != NULL ? &fitResult->covarianceMatrix() : NULL);
-  double val1,val2,val1ELo,val1EHi;
-  std::string sVal;
+  double val1,val2,val1ELo,val1EHi,val2ELo,val2EHi;
+  std::string sVal1,sVal2;
   std::stringstream myString;
   myString.clear(); myString.str("");
 
@@ -3445,9 +3465,9 @@ std::string Utils::Transformer (std::string varName, bool doIt, double& varValOu
 	}
       else if (varName == "AfbS")
 	{
-	  sVal = Transformer("FlS",doIt,val1,val1ELo,val1EHi);
+	  sVal1 = Transformer("FlS",doIt,val1,val1ELo,val1EHi);
 
-	  if (doIt == true) myString << "(3/4*(1 - " << sVal << ") * 2*TMath::ATan(" << varName << ")/TMath::Pi())";
+	  if (doIt == true) myString << "(3/4*(1 - " << sVal1 << ") * 2*TMath::ATan(" << varName << ")/TMath::Pi())";
 	  else              myString << "(" << varName << ")";
 	  std::cout << "[Utils::Transformer]\tTransformer function: " << myString.str().c_str() << std::endl;
 	  return myString.str();
@@ -3460,7 +3480,10 @@ std::string Utils::Transformer (std::string varName, bool doIt, double& varValOu
 	}
       else if (varName == "AsS")
 	{
-	  myString << "(" << varName << ")";
+	  sVal1 = Transformer("FlS",doIt,val1,val1ELo,val1EHi);
+	  sVal2 = Transformer("FsS",doIt,val2,val2ELo,val2EHi);
+
+	  myString << "(" << varName << "*2*" << theorCoeff << "*sqrt(3*" << sVal2 << "*(1-" << sVal2 << ")*" << sVal1 << "))";
 	  std::cout << "[Utils::Transformer]\tTransformer function: " << myString.str().c_str() << std::endl;
 	  return myString.str();
 	}
@@ -3525,19 +3548,28 @@ std::string Utils::Transformer (std::string varName, bool doIt, double& varValOu
       varValOutELo = varValIn1->getErrorLo();
       varValOutEHi = varValIn1->getErrorHi();
     }
-  else if ((varName == "AsS") && (varValIn1 != NULL))
+  else if ((varName == "AsS") && (varValIn1 != NULL) && (varValIn2 != NULL) && (varValIn3 != NULL))
     {
-      varValOut    = varValIn1->getVal();
-      varValOutELo = varValIn1->getErrorLo();
-      varValOutEHi = varValIn1->getErrorHi();
+      Transformer("FlS",doIt,val1,val1ELo,val1EHi,fitResult,varValIn1);
+      Transformer("FsS",doIt,val2,val2ELo,val2EHi,fitResult,varValIn2);
+
+      varValOut = varValIn3->getVal() * 2.*theorCoeff * sqrt(3. * val2 * (1. - val2) * val1);
+
+      varValOutELo = - sqrt( pow(2.*theorCoeff * sqrt(3. * val2 * (1. - val2) * val1) * varValIn3->getErrorLo(),2.) +
+			     pow(varValIn3->getVal() * 2.*theorCoeff * sqrt(3. * val2 * (1. - val2) / (4. * val1)) * varValIn1->getErrorLo(),2.) +
+			     pow(varValIn3->getVal() * 2.*theorCoeff * sqrt(3. * val1 / (4. * val2 * (1. - val2))) * (1. - 2.*val2) * varValIn2->getErrorLo(),2.));
+
+      varValOutEHi = + sqrt( pow(2.*theorCoeff * sqrt(3. * val2 * (1. - val2) * val1) * varValIn3->getErrorHi(),2.) +
+			     pow(varValIn3->getVal() * 2.*theorCoeff * sqrt(3. * val2 * (1. - val2) / (4. * val1)) * varValIn1->getErrorHi(),2.) +
+			     pow(varValIn3->getVal() * 2.*theorCoeff * sqrt(3. * val1 / (4. * val2 * (1. - val2))) * (1. - 2.*val2) * varValIn2->getErrorHi(),2.));
     }
   else
     {
       std::cout << "[Utils::Transformer]\tWrong parameter: " << varName << std::endl;
       exit (EXIT_FAILURE);
     }
-  
-  
+
+
   return "";
 }
 
@@ -4086,7 +4118,7 @@ void Utils::ReadSelectionCuts (std::string fileName)
   // #######################
   // # Read selection cuts #
   // #######################
-  std::cout << "\n[Utils::ReadSelectionCuts]\tSelection cuts from file : " << fileName.c_str() << std::endl;
+  std::cout << "[Utils::ReadSelectionCuts]\tSelection cuts from file : " << fileName.c_str() << std::endl;
   ParVector.clear();
   ParameterFile->ReadFromFile(ParFileBlockN("selecuts"),&ParVector);
   for (unsigned int i = 0; i < ParVector.size(); i++)
@@ -4175,7 +4207,7 @@ void Utils::ReadPreselectionCut (std::string fileName)
   // ###########################
   // # Read pre-selection cuts #
   // ###########################
-  std::cout << "\n[Utils::ReadPreselectionCut]\tPre-selection cuts from file : " << fileName.c_str() << std::endl;
+  std::cout << "[Utils::ReadPreselectionCut]\tPre-selection cuts from file : " << fileName.c_str() << std::endl;
   ParVector.clear();
   ParameterFile->ReadFromFile(ParFileBlockN("precuts"),&ParVector);
   for (unsigned int i = 0; i < ParVector.size(); i++)
@@ -4271,7 +4303,7 @@ void Utils::ReadGenericParam (std::string fileName)
   // ###########################
   // # Read generic parameters #
   // ###########################
-  std::cout << "\n[Utils::ReadGenericParam]\tGeneric parameters from file : " << fileName.c_str() << std::endl;
+  std::cout << "[Utils::ReadGenericParam]\tGeneric parameters from file : " << fileName.c_str() << std::endl;
   ParVector.clear();
   ParameterFile->ReadFromFile(ParFileBlockN("genericpar"),&ParVector);
   for (unsigned int i = 0; i < ParVector.size(); i++)
