@@ -156,16 +156,17 @@ void DrawString (double Lumi)
   LumiTex1->SetNDC(true);
   LumiTex1->DrawLatex(0.1,0.9,myString.str().c_str());
 
-
-  myString.clear(); myString.str("");
-  myString << "#it{Preliminary}";
-  TLatex* LumiTex2 = new TLatex(0.2,0.9,myString.str().c_str());
-  LumiTex2->SetTextFont(42);
-  LumiTex2->SetTextSize(0.06 * scaleRespect2CMS);
-  LumiTex2->SetTextColor(kBlack);
-  LumiTex2->SetNDC(true);
-  LumiTex2->DrawLatex(0.2,0.9,myString.str().c_str());
-
+  if (FORPAPER == false)
+    {
+      myString.clear(); myString.str("");
+      myString << "#it{Preliminary}";
+      TLatex* LumiTex2 = new TLatex(0.2,0.9,myString.str().c_str());
+      LumiTex2->SetTextFont(42);
+      LumiTex2->SetTextSize(0.06 * scaleRespect2CMS);
+      LumiTex2->SetTextColor(kBlack);
+      LumiTex2->SetNDC(true);
+      LumiTex2->DrawLatex(0.2,0.9,myString.str().c_str());
+    }
 
   myString.clear(); myString.str("");
   myString << Lumi <<  " fb#lower[0.4]{^{#font[122]{\55}1}} (8 TeV)";
