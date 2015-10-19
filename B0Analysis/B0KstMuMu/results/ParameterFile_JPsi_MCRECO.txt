@@ -176,7 +176,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 6
 
 # Lower edge bin 0:
--1
+-1.0
 
 # Lower edge bin 1:
 -0.7
@@ -201,7 +201,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 7
 
 # Lower edge bin 0:
--1
+-1.0
 
 # Lower edge bin 1:
 -0.7
@@ -251,7 +251,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 6
 
 # Lower edge bin 0:
--1
+-1.0
 
 # Lower edge bin 1:
 -0.5
@@ -276,7 +276,7 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 6
 
 # Lower edge bin 0:
--1
+-1.0
 
 # Lower edge bin 1:
 -0.6
