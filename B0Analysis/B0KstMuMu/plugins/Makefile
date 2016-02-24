@@ -10,7 +10,7 @@ CXX           := g++
 DEBUG         := -g
 endif
 
-CXXFLAGS      := $(DEBUG) -ansi -Wall -Wextra -m64 -O3
+CXXFLAGS      := $(DEBUG) -ansi -pedantic -Wall -Wextra -m64 -O3
 
 SOURCEDIR     := ../src
 SOURCES       := $(filter-out $(SOURCEDIR)/B0KstMuMu.cc,$(wildcard $(SOURCEDIR)/*.cc))
