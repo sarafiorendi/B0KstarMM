@@ -1,4 +1,4 @@
 usercode
 ========
 
-My CMS usercode area
+My usercode area
