@@ -33,4 +33,4 @@ class Perceptron(object):
             self.neuron[i].save(f)
 
     def read(self,f):
-        f.readline()
+        fin = f.readline()

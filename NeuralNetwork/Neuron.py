@@ -72,7 +72,7 @@ class Neuron(object):
             f.write("    Weight[ " + str(k) + " ] " + str(self.weights[k]) + "\n")
 
     def read(self,f):
-        f.readline()
+        fin = f.readline()
 
     def learnRate(self,epoch):
         ltstart = 100

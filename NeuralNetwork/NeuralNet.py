@@ -135,5 +135,5 @@ class NeuralNet(object):
 
     def read(self):
         f = open("NeuralNet.txt","r")
-        fCont = f.readlines()
+        fin = f.readline()
         f.close()
