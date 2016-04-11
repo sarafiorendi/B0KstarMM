@@ -1,12 +1,10 @@
 from random import gauss
-from math   import tanh, sqrt
+from math   import tanh, sqrt, exp
 #############################
 # Activation function: tanh #
 #############################
 
 class Neuron(object):
-
-    learn_rate = 0.001
 
     ############################################
     # Nvars     = number of input variables    #
@@ -24,6 +22,7 @@ class Neuron(object):
             self.weights = [ 0 for k in xrange(self.Nvars) ]
         self.afun    = 0
         self.dafundz = 0
+        self.epoch   = 0
         
     def eval(self,invec):
         wsum = 0
@@ -39,9 +38,10 @@ class Neuron(object):
 
     def adapt(self,invec,dcdz):
         for k in xrange(self.Nvars):
-                self.weights[k] = self.weights[k] + self.learn_rate * dcdz * invec[k]
-        self.weights[self.Nvars] = self.weights[self.Nvars] + self.learn_rate * dcdz
-
+                self.weights[k] = self.weights[k] + self.learnRate(self.epoch) * dcdz * invec[k]
+        self.weights[self.Nvars] = self.weights[self.Nvars] + self.learnRate(self.epoch) * dcdz
+        self.epoch += 1
+        
     def aFun(self,val):
         if self.isBackPrN is False:
             return tanh(val)
@@ -54,9 +54,27 @@ class Neuron(object):
         else:
             return self.dafundz
 
-    def printWeights(self):
+    def printParams(self):
         for k in xrange(len(self.weights)):
-            print "Weight[", k, "] ", round(self.weights[k],2)
+            print "    Weight[", k, "] ", round(self.weights[k],2)
 
-    def reset(self):
-        self.__init__(self.Nvars,self.isBackPrN)
+    def reset(self,what):
+        if what == "all":
+            self.__init__(self.Nvars,self.isBackPrN)
+        elif what == "epoch":
+            self.epoch = 0
+        else:
+            print "[Neuron::reset]\toption not valid:", what
+            quit()
+
+    def save(self,f):
+        for k in xrange(len(self.weights)):
+            f.write("    Weight[ " + str(k) + " ] " + str(self.weights[k]) + "\n")
+
+    def read(self,f):
+        f.readline()
+
+    def learnRate(self,epoch):
+        ltstart = 100
+        ltend   = 100
+        return 1. / (ltstart + ltend * (1 - exp(-epoch / ltend)))

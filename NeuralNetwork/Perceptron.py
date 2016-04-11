@@ -18,11 +18,19 @@ class Perceptron(object):
         for i in xrange(self.Nneurons):
             self.neuron[i].adapt(invec,dcdz[i])
 
-    def printWeights(self):
+    def printParams(self):
         for i in xrange(self.Nneurons):
-            print "------ Neuron[", i, "aFun =", round(self.neuron[i].afun,2), "d(aFun)/dz =", round(self.neuron[i].dafundz,2), "] ------"
-            self.neuron[i].printWeights()
+            print "  Neuron[", i, "aFun =", round(self.neuron[i].afun,2), "d(aFun)/dz =", round(self.neuron[i].dafundz,2), "]"
+            self.neuron[i].printParams()
 
-    def reset(self):
+    def reset(self,what):
         for i in xrange(self.Nneurons):
-            self.neuron[i].reset()
+            self.neuron[i].reset(what)
+
+    def save(self,f):
+        for i in xrange(self.Nneurons):
+            f.write("  Neuron[ " + str(i) + " aFun = " + str(self.neuron[i].afun) + " d(aFun)/dz = " +  str(self.neuron[i].dafundz) + " ]\n")
+            self.neuron[i].save(f)
+
+    def read(self,f):
+        f.readline()

@@ -98,23 +98,23 @@ class NeuralNet(object):
 
         return sum(1./2 * a*a for a in error)
 
-    def printWeights(self):
-        print "\n\n-/-/-/ Feedforward Neural Network \-\-\-"
+    def printParams(self):
+        print "\n\n===>>> Feedforward Neural Net ===>>>"
         for j in xrange(self.Nperceptrons):
-            print "====== Perceptron[", j, "] ======"
-            self.FFperceptron[j].printWeights()
+            print "Perceptron[", j, "]"
+            self.FFperceptron[j].printParams()
 
-        print "\n-/-/-/ Backpropagation Neural Network \-\-\-"
+        print "\n<<<=== Backpropagation Neural Net <<<==="
         for j in xrange(self.Nperceptrons-1):
-            print "====== Perceptron[", j, "] ======"
-            self.BPperceptron[j].printWeights()
+            print "Perceptron[", j, "]"
+            self.BPperceptron[j].printParams()
 
-    def reset(self):
+    def reset(self,what):
         for j in xrange(self.Nperceptrons):
-            self.FFperceptron[j].reset()
+            self.FFperceptron[j].reset(what)
 
         for j in xrange(self.Nperceptrons-1):
-            self.BPperceptron[j].reset()
+            self.BPperceptron[j].reset(what)
 
     def copyFFtoBPweights(self):
         for j in xrange(self.Nperceptrons-1):
@@ -122,3 +122,18 @@ class NeuralNet(object):
                 self.BPperceptron[j].neuron[i].dafundz = self.FFperceptron[self.Nperceptrons-j-2].neuron[i].dafundz
                 for k in xrange(self.BPperceptron[j].neuron[i].Nvars):
                     self.BPperceptron[j].neuron[i].weights[k] = self.FFperceptron[self.Nperceptrons-j-1].neuron[k].weights[i]
+                    
+    def save(self):
+        f = open("NeuralNet.txt","w")
+        f.write("### M.E.D. Neural Network ###\n")
+        f.write("# Nvars, Nperceptrons, NNeurons\n")
+        f.write(str(self.FFperceptron[0].neuron[0].Nvars) + " " + str(self.Nperceptrons) + " " + str([ self.FFperceptron[j].Nneurons for j in xrange(self.Nperceptrons) ]) + "\n\n")
+        for j in xrange(self.Nperceptrons):
+            f.write("Perceptron[ " + str(j) + " ]\n")
+            self.FFperceptron[j].save(f)
+        f.close()
+
+    def read(self):
+        f = open("NeuralNet.txt","r")
+        fCont = f.readlines()
+        f.close()

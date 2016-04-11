@@ -4,17 +4,14 @@ MVA implementation with Perceptron Neural Neworks
                                  by Mauro Dinardo
 #################################################
 """
-########################
-# @TMP@                #
-# - Test non linearity #
-# - Make examples      #
-# - Inject noise       #
-########################
+####################
+# @TMP@            #
+# - Read from file #
+# - Batch learning #
+# - Inject noise   #
+####################
 from argparse  import ArgumentParser
 from random    import seed, random
-
-# @TMP@
-from math      import tan
 
 from ROOT      import gROOT, gStyle, TCanvas, TGraph, TGaxis
 
@@ -26,10 +23,10 @@ def ArgParser():
     # Argument parser #
     ###################
     parser = ArgumentParser()
-    parser.add_argument("-nv", "--Nvars",        dest = "Nvars",        type = int, help = "Number of variables",              required=True)
-    parser.add_argument("-np", "--Nperceptrons", dest = "Nperceptrons", type = int, help = "Number of perceptrons",            required=True)
-    parser.add_argument("-nn", "--Nneurons",     dest = "Nneurons",     type = int, help = "Number of neurons per perceptron", required=True, nargs='*')
-    parser.add_argument("-sg", "--SGrad",        dest = "SGrad",        type = int, help = "Stochastic gradient descent",      required=False)
+    parser.add_argument("-nv", "--Nvars",        dest = "Nvars",        type = int,  help = "Number of variables",              required=True)
+    parser.add_argument("-np", "--Nperceptrons", dest = "Nperceptrons", type = int,  help = "Number of perceptrons",            required=True)
+    parser.add_argument("-nn", "--Nneurons",     dest = "Nneurons",     type = int,  help = "Number of neurons per perceptron", required=True,  nargs='*')
+    parser.add_argument("-sg", "--SGrad",        dest = "SGrad",        type = bool, help = "Stochastic gradient descent",      required=False, default=False)
 
     options = parser.parse_args()
     if options.Nvars:
@@ -146,14 +143,14 @@ graphNN.SetMarkerColor(1)
 # Use always the same random seed #
 ###################################
 seed(0)
-nruns = 100000
+nruns = 10000
 
 
 ##############################
 # Neural net: initialization #
 ##############################
 NN = NeuralNet(cmd.Nvars,cmd.Nperceptrons,cmd.Nneurons)
-NN.printWeights()
+NN.printParams()
 
 
 
@@ -168,15 +165,15 @@ yend   =  4.
 for i in xrange(nruns):
     x = random() * (xend-xstart) + xstart
     y = random() * (yend-ystart) + ystart
-    if tan(x/3.) > y:
+    if 6*x*x*x > y:
         target = +1
         graphS.SetPoint(i,x,y)
     else:
         target = -1
         graphB.SetPoint(i,x,y)
-    cost = NN.learn([x,y],[target],False)
+    cost = NN.learn([x,y],[target],cmd.SGrad)
     graphNNCost.SetPoint(i,i,cost)
-NN.printWeights()
+NN.printParams()
 
 
 ####################
@@ -187,7 +184,7 @@ for i in xrange(nruns):
     x = random() * (xend-xstart) + xstart
     y = random() * (yend-ystart) + ystart
     NNoutput = NN.eval([x,y])
-    if ((NNoutput[0] > 0 and tan(x/3.) > y) or (NNoutput[0] < 0 and tan(x/3.) < y)):
+    if ((NNoutput[0] > 0 and 6*x*x*x > y) or (NNoutput[0] < 0 and 6*x*x*x < y)):
         count += 1
 print "\n--> I got it right:", count / nruns * 100., "% <--"
 
