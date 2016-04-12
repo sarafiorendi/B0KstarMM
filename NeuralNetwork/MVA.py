@@ -8,6 +8,7 @@ MVA implementation with Perceptron Neural Networks
 # @TMP@            #
 # - Batch learning #
 # - Inject noise   #
+# - Test stochastic gradient descent #
 ####################
 from argparse  import ArgumentParser
 from random    import seed, random
@@ -142,7 +143,7 @@ graphNN.SetMarkerColor(1)
 # Use always the same random seed #
 ###################################
 seed(0)
-nruns = 10
+nruns = 1000
 
 
 ##############################
@@ -173,7 +174,7 @@ for i in xrange(nruns):
     cost = NN.learn([x,y],[target],cmd.SGrad)
     graphNNCost.SetPoint(i,i,cost)
 NN.printParams()
-NN.save()
+NN.save("NeuralNet.txt")
 
 
 ####################

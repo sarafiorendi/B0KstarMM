@@ -123,9 +123,8 @@ class NeuralNet(object):
                 for k in xrange(self.BPperceptron[j].neuron[i].Nvars):
                     self.BPperceptron[j].neuron[i].weights[k] = self.FFperceptron[self.Nperceptrons-j-1].neuron[k].weights[i]
                     
-    def save(self):
-        name = "NeuralNet.txt"
-        f    = open(name,"w")
+    def save(self,name):
+        f = open(name,"w")
         
         f.write("### M.E.D. Neural Network ###\n")
         f.write("# Nvars, Nperceptrons, NNeurons\n")
@@ -141,8 +140,7 @@ class NeuralNet(object):
             
         f.close()
 
-    def read(self):
-        name = "NeuralNet.txt"
+    def read(self,name):
         f    = open(name,"r")
         line = f.readline()
         lele = line.split()
