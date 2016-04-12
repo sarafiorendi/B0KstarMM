@@ -68,8 +68,11 @@ class Neuron(object):
             quit()
 
     def save(self,f):
+        out = ""
         for k in xrange(len(self.weights)):
-            f.write("    Weight[ " + str(k) + " ] " + str(self.weights[k]) + "\n")
+            out += "{0:20f}".format(self.weights[k])
+        out += "\n"
+        f.write(out)
 
     def read(self,f):
         fin = f.readline()

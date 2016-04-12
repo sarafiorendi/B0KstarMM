@@ -151,6 +151,7 @@ nruns = 10000
 ##############################
 NN = NeuralNet(cmd.Nvars,cmd.Nperceptrons,cmd.Nneurons)
 NN.printParams()
+NN.save()
 
 
 

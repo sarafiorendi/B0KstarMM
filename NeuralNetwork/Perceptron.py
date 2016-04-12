@@ -29,7 +29,7 @@ class Perceptron(object):
 
     def save(self,f):
         for i in xrange(self.Nneurons):
-            f.write("  Neuron[ " + str(i) + " aFun = " + str(self.neuron[i].afun) + " d(aFun)/dz = " +  str(self.neuron[i].dafundz) + " ]\n")
+            f.write("  Neuron[ {0:d} ] aFun = {1:20f} d(aFun)/dz = {2:20f}".format(i,self.neuron[i].afun,self.neuron[i].dafundz))
             self.neuron[i].save(f)
 
     def read(self,f):
