@@ -127,7 +127,7 @@ class NeuralNet(object):
         f = open(name,"w")
         
         f.write("### M.E.D. Neural Network ###\n")
-        f.write("# Nvars, Nperceptrons, NNeurons\n")
+        f.write("# Nvars, Nperceptrons, Nneurons\n")
         out = str(self.FFperceptron[0].neuron[0].Nvars) + " " + str(self.Nperceptrons) + " ["
         for j in xrange(self.Nperceptrons):
             out += " " + str(self.FFperceptron[j].Nneurons)
