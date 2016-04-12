@@ -1,12 +1,11 @@
 """
-#################################################
-MVA implementation with Perceptron Neural Neworks
-                                 by Mauro Dinardo
-#################################################
+##################################################
+MVA implementation with Perceptron Neural Networks
+                                  by Mauro Dinardo
+##################################################
 """
 ####################
 # @TMP@            #
-# - Read from file #
 # - Batch learning #
 # - Inject noise   #
 ####################
@@ -143,7 +142,7 @@ graphNN.SetMarkerColor(1)
 # Use always the same random seed #
 ###################################
 seed(0)
-nruns = 10000
+nruns = 10
 
 
 ##############################
@@ -151,7 +150,6 @@ nruns = 10000
 ##############################
 NN = NeuralNet(cmd.Nvars,cmd.Nperceptrons,cmd.Nneurons)
 NN.printParams()
-NN.save()
 
 
 
@@ -175,6 +173,7 @@ for i in xrange(nruns):
     cost = NN.learn([x,y],[target],cmd.SGrad)
     graphNNCost.SetPoint(i,i,cost)
 NN.printParams()
+NN.save()
 
 
 ####################

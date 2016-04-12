@@ -75,7 +75,19 @@ class Neuron(object):
         f.write(out)
 
     def read(self,f):
-        fin = f.readline()
+        line = f.readline()
+        lele = line.split()
+
+        while len(lele) == 0 or (len(lele) > 0 and ("#" in lele[0] or "Neuron[" not in line)):
+            line = f.readline()
+            lele = line.split()
+
+        w = [ float(lele[i]) for i in xrange(len(lele)) if lele[i].replace(".","").replace("-","").isdigit() ]
+
+        self.afun    = w[1]
+        self.dafundz = w[2]
+        for k in xrange(self.Nvars+1):
+            self.weights[k] = w[3+k]
 
     def learnRate(self,epoch):
         ltstart = 100

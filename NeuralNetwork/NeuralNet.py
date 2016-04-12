@@ -124,16 +124,36 @@ class NeuralNet(object):
                     self.BPperceptron[j].neuron[i].weights[k] = self.FFperceptron[self.Nperceptrons-j-1].neuron[k].weights[i]
                     
     def save(self):
-        f = open("NeuralNet.txt","w")
+        name = "NeuralNet.txt"
+        f    = open(name,"w")
+        
         f.write("### M.E.D. Neural Network ###\n")
         f.write("# Nvars, Nperceptrons, NNeurons\n")
-        f.write(str(self.FFperceptron[0].neuron[0].Nvars) + " " + str(self.Nperceptrons) + " " + str([ self.FFperceptron[j].Nneurons for j in xrange(self.Nperceptrons) ]) + "\n\n")
+        out = str(self.FFperceptron[0].neuron[0].Nvars) + " " + str(self.Nperceptrons) + " ["
+        for j in xrange(self.Nperceptrons):
+            out += " " + str(self.FFperceptron[j].Nneurons)
+        out += " ]\n\n"
+        f.write(out)
+
         for j in xrange(self.Nperceptrons):
             f.write("Perceptron[ " + str(j) + " ]\n")
             self.FFperceptron[j].save(f)
+            
         f.close()
 
     def read(self):
-        f = open("NeuralNet.txt","r")
-        fin = f.readline()
+        name = "NeuralNet.txt"
+        f    = open(name,"r")
+        line = f.readline()
+        lele = line.split()
+        
+        while len(lele) == 0 or (len(lele) > 0 and "#" in lele[0]):
+            line = f.readline()
+            lele = line.split()
+        
+        self.__init__(int(lele[0]),int(lele[1]),[ int(lele[i]) for i in xrange(2,len(lele)) if lele[i].isdigit() ])
+
+        for j in xrange(self.Nperceptrons):
+            self.FFperceptron[j].read(f)
+
         f.close()

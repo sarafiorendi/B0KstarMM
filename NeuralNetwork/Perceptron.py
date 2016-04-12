@@ -33,4 +33,12 @@ class Perceptron(object):
             self.neuron[i].save(f)
 
     def read(self,f):
-        fin = f.readline()
+        line = f.readline()
+        lele = line.split()
+        
+        while len(lele) == 0 or (len(lele) > 0 and ("#" in lele[0] or "Perceptron[" not in line)):
+            line = f.readline()
+            lele = line.split()
+
+        for i in xrange(self.Nneurons):
+            self.neuron[i].read(f)
