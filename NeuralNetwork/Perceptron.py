@@ -27,6 +27,13 @@ class Perceptron(object):
         for i in xrange(self.Nneurons):
             self.neuron[i].reset(what)
 
+    def scramble(self,who):
+        if who and who[0] == -1:
+            who = [ i for i in xrange(self.Nneurons) ]
+            
+        for i in who:
+            self.neuron[i].scramble()
+
     def save(self,f):
         for i in xrange(self.Nneurons):
             f.write("  Neuron[ {0:d} ] aFun = {1:20f} d(aFun)/dz = {2:20f}".format(i,self.neuron[i].afun,self.neuron[i].dafundz))

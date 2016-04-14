@@ -67,6 +67,9 @@ class Neuron(object):
             print "[Neuron::reset]\toption not valid:", what
             quit()
 
+    def scramble(self):
+        self.weights = [ gauss(0,1./sqrt(Nvars)) for k in xrange(len(self.weights)) ]
+
     def save(self,f):
         out = ""
         for k in xrange(len(self.weights)):
@@ -90,6 +93,6 @@ class Neuron(object):
             self.weights[k] = w[3+k]
 
     def learnRate(self,epoch):
-        ltstart = 100
-        ltend   = 100
+        ltstart =  100
+        ltend   = 1000
         return 1. / (ltstart + ltend * (1 - exp(-epoch / ltend)))

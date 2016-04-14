@@ -6,9 +6,8 @@ MVA implementation with Perceptron Neural Networks
 """
 ####################
 # @TMP@            #
-# - Batch learning #
 # - Inject noise   #
-# - Test stochastic gradient descent #
+# - Batch learning #
 ####################
 from argparse  import ArgumentParser
 from random    import seed, random
@@ -26,7 +25,6 @@ def ArgParser():
     parser.add_argument("-nv", "--Nvars",        dest = "Nvars",        type = int,  help = "Number of variables",              required=True)
     parser.add_argument("-np", "--Nperceptrons", dest = "Nperceptrons", type = int,  help = "Number of perceptrons",            required=True)
     parser.add_argument("-nn", "--Nneurons",     dest = "Nneurons",     type = int,  help = "Number of neurons per perceptron", required=True,  nargs='*')
-    parser.add_argument("-sg", "--SGrad",        dest = "SGrad",        type = bool, help = "Stochastic gradient descent",      required=False, default=False)
 
     options = parser.parse_args()
     if options.Nvars:
@@ -37,9 +35,6 @@ def ArgParser():
 
     if options.Nneurons:
         print "I'm reading the neuron number per perceptron: ", options.Nneurons
-
-    if options.SGrad:
-        print "I'm reading the stochastic gradient descent: ", options.SGrad
 
     return options
 
@@ -143,7 +138,8 @@ graphNN.SetMarkerColor(1)
 # Use always the same random seed #
 ###################################
 seed(0)
-nruns = 1000
+nruns  = 1000
+scrlen =  100
 
 
 ##############################
@@ -165,13 +161,23 @@ yend   =  4.
 for i in xrange(nruns):
     x = random() * (xend-xstart) + xstart
     y = random() * (yend-ystart) + ystart
+
     if 6*x*x*x > y:
         target = +1
         graphS.SetPoint(i,x,y)
     else:
         target = -1
         graphB.SetPoint(i,x,y)
-    cost = NN.learn([x,y],[target],cmd.SGrad)
+
+    if i % scrlen == 0:
+        who = [ [-1] for i in xrange(i/scrlen) if i < cmd.Nperceptrons ]
+        print who
+#        NN.scramble([ [-1] ])
+#        NN.scramble([ [] [-1] ])
+#        NN.scramble([ [] [] [-1] ])
+#        NN.scramble([ [] [] [] [] ])
+        
+    cost = NN.learn([x,y],[target])
     graphNNCost.SetPoint(i,i,cost)
 NN.printParams()
 NN.save("NeuralNet.txt")

@@ -62,17 +62,12 @@ class NeuralNet(object):
         for j in xrange(1,self.Nperceptrons-1):
             self.BPperceptron[j].eval([ self.BPperceptron[j-1].neuron[i].afun for i in xrange(self.BPperceptron[j-1].Nneurons) ])
 
-    def learn(self,invec,target,stoGrad):
+    def learn(self,invec,target):
         ###############
         # Feedforward #
         ###############
         result = self.eval(invec)
         error  = [ a - b for a,b in zip(target,result) ]
-
-        # @TMP@
-        if stoGrad is True:
-            rnd   = [ gauss(0,1./10) for i in xrange(self.FFperceptron[self.Nperceptrons-1].Nneurons) ]
-            error = [ a + b for a,b in zip(error,rnd) ]
 
         ###################
         # Backpropagation #
@@ -115,6 +110,13 @@ class NeuralNet(object):
 
         for j in xrange(self.Nperceptrons-1):
             self.BPperceptron[j].reset(what)
+
+    def scramble(self,who):
+        if who and who[0] == -1:
+            who = [ [-1] for j in xrange(self.Nperceptrons) ]
+            
+        for j in who:
+            self.FFperceptron[j].scramble(who[j])
 
     def copyFFtoBPweights(self):
         for j in xrange(self.Nperceptrons-1):
