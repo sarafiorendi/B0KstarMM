@@ -138,8 +138,9 @@ graphNN.SetMarkerColor(1)
 # Use always the same random seed #
 ###################################
 seed(0)
-nruns  = 1000
-scrlen =  100
+nruns    = 200000
+scrstart =  10000
+scrlen   =  10000
 
 
 ##############################
@@ -155,6 +156,7 @@ xstart = -4.
 xend   =  4.
 ystart = -4.
 yend   =  4.
+allneurons = sum(cmd.Nneurons)
 ########################
 # Neural net: training #
 ########################
@@ -169,14 +171,52 @@ for i in xrange(nruns):
         target = -1
         graphB.SetPoint(i,x,y)
 
-    if i % scrlen == 0:
-        who = [ [-1] for i in xrange(i/scrlen) if i < cmd.Nperceptrons ]
-        print who
-#        NN.scramble([ [-1] ])
-#        NN.scramble([ [] [-1] ])
-#        NN.scramble([ [] [] [-1] ])
-#        NN.scramble([ [] [] [] [] ])
-        
+    # @TMP@
+    if i > scrstart and (i-scrstart) % scrlen == 0 and (i-scrstart)/scrlen-1 < allneurons:
+        if (i-scrstart)/scrlen-1 == 0:
+            NN.scramble({0:[0]})
+            print "AAA : 0"
+        elif (i-scrstart)/scrlen-1 == 1:
+            NN.scramble({0:[1]})
+            print "AAA : 1"
+
+        elif (i-scrstart)/scrlen-1 == 2:
+            NN.scramble({1:[0]})
+            print "AAA : 2"
+        elif (i-scrstart)/scrlen-1 == 3:
+            NN.scramble({1:[1]})
+            print "AAA : 3"
+        elif (i-scrstart)/scrlen-1 == 4:
+            NN.scramble({1:[2]})
+            print "AAA : 4"
+        elif (i-scrstart)/scrlen-1 == 5:
+            NN.scramble({1:[3]})
+            print "AAA : 5"
+
+        elif (i-scrstart)/scrlen-1 == 6:
+            NN.scramble({2:[0]})
+            print "AAA : 6"
+        elif (i-scrstart)/scrlen-1 == 7:
+            NN.scramble({2:[1]})
+            print "AAA : 7"
+        elif (i-scrstart)/scrlen-1 == 8:
+            NN.scramble({2:[2]})
+            print "AAA : 8"
+        elif (i-scrstart)/scrlen-1 == 9:
+            NN.scramble({2:[3]})
+            print "AAA : 9"
+
+        elif (i-scrstart)/scrlen-1 == 10:
+            NN.scramble({3:[0]})
+            print "AAA : 10"
+        elif (i-scrstart)/scrlen-1 == 11:
+            NN.scramble({3:[1]})
+            print "AAA : 11"
+
+        elif (i-scrstart)/scrlen-1 == 12:
+            NN.scramble({4:[0]})
+            print "AAA : 12"
+
     cost = NN.learn([x,y],[target])
     graphNNCost.SetPoint(i,i,cost)
 NN.printParams()

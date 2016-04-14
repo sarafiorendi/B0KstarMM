@@ -17,7 +17,7 @@ class Neuron(object):
         self.Nvars     = Nvars
         self.isBackPrN = isBackPrN        
         if self.isBackPrN is False:
-            self.weights = [ gauss(0,1./sqrt(Nvars)) for k in xrange(self.Nvars+1) ]
+            self.weights = [ gauss(0,1./sqrt(self.Nvars+1)) for k in xrange(self.Nvars+1) ]
         else:
             self.weights = [ 0 for k in xrange(self.Nvars) ]
         self.afun    = 0
@@ -68,11 +68,12 @@ class Neuron(object):
             quit()
 
     def scramble(self):
-        self.weights = [ gauss(0,1./sqrt(Nvars)) for k in xrange(len(self.weights)) ]
+        # @TMP@
+        self.weights = [ gauss(self.weights[k],1./5) for k in xrange(self.Nvars+1) ]
 
     def save(self,f):
         out = ""
-        for k in xrange(len(self.weights)):
+        for k in xrange(self.Nvars+1):
             out += "{0:20f}".format(self.weights[k])
         out += "\n"
         f.write(out)
@@ -93,6 +94,7 @@ class Neuron(object):
             self.weights[k] = w[3+k]
 
     def learnRate(self,epoch):
+        # @TMP@
         ltstart =  100
         ltend   = 1000
         return 1. / (ltstart + ltend * (1 - exp(-epoch / ltend)))

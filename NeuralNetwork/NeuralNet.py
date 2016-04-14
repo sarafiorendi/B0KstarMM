@@ -112,9 +112,9 @@ class NeuralNet(object):
             self.BPperceptron[j].reset(what)
 
     def scramble(self,who):
-        if who and who[0] == -1:
-            who = [ [-1] for j in xrange(self.Nperceptrons) ]
-            
+        if who and -1 in who.keys():
+            who = { j:[-1] for j in xrange(self.Nperceptrons) }
+
         for j in who:
             self.FFperceptron[j].scramble(who[j])
 
