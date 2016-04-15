@@ -6,6 +6,7 @@ MVA implementation with Perceptron Neural Networks
 """
 ####################
 # @TMP@            #
+# - Test readback  #
 # - Inject noise   #
 # - Batch learning #
 ####################
@@ -78,13 +79,13 @@ def SetStyle():
     gStyle.SetStatY(0.9)
 
 
-def findLevelCurveNN(NN,graphNN,xstart,xend,ystart,yend,nbins):
-    for i in xrange(nbins):
+def findLevelCurveNN(NN,graphNN,xRange,xOffset,yRange,yOffset,nBins):
+    for i in xrange(nBins):
         myMin = 1
-        myX   = i * (xend-xstart) / nbins + xstart
+        myX   = i * xRange / nBins + xOffset - xRange/2
         found = False
-        for j in xrange(nbins):
-            y = j * (yend-ystart) / nbins + ystart
+        for j in xrange(nBins):
+            y = j * yRange / nBins + yOffset - yRange/2
             NNoutput = NN.eval([myX,y])
             if abs(NNoutput[0]) < myMin:
                 myMin = abs(NNoutput[0])
@@ -138,9 +139,10 @@ graphNN.SetMarkerColor(1)
 # Use always the same random seed #
 ###################################
 seed(0)
-nruns    = 200000
-scrstart =  10000
-scrlen   =  10000
+nRuns     = 1000000
+scrStart  =   10000
+scrLen    =   10000
+saveEvery =     100
 
 
 ##############################
@@ -152,73 +154,42 @@ NN.printParams()
 
 
 
-xstart = -4.
-xend   =  4.
-ystart = -4.
-yend   =  4.
-allneurons = sum(cmd.Nneurons)
+xRange  = 3.
+xOffset = 3.
+yRange  = 3.
+yOffset = 0.
 ########################
 # Neural net: training #
 ########################
-for i in xrange(nruns):
-    x = random() * (xend-xstart) + xstart
-    y = random() * (yend-ystart) + ystart
+for i in xrange(nRuns):
+    x = random() * xRange + xOffset - xRange/2
+    y = random() * yRange + yOffset - yRange/2
 
-    if 6*x*x*x > y:
+    if (x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset) > 1:
         target = +1
-        graphS.SetPoint(i,x,y)
+        if i % saveEvery == 0:
+            graphS.SetPoint(i,x,y)
     else:
         target = -1
-        graphB.SetPoint(i,x,y)
+        if i % saveEvery == 0:
+            graphB.SetPoint(i,x,y)
 
-    # @TMP@
-    if i > scrstart and (i-scrstart) % scrlen == 0 and (i-scrstart)/scrlen-1 < allneurons:
-        if (i-scrstart)/scrlen-1 == 0:
-            NN.scramble({0:[0]})
-            print "AAA : 0"
-        elif (i-scrstart)/scrlen-1 == 1:
-            NN.scramble({0:[1]})
-            print "AAA : 1"
+            
+    ##########################
+    # Neural net: scrambling #
+    ##########################
+    indx = (i-scrStart)/scrLen-1
+    print ""
+    if i > scrStart and (i-scrStart) % scrLen == 0 and indx < cmd.Nperceptrons:
+        indx = cmd.Nperceptrons - 1 - indx
+        print "=== Scrambling perceptron [", indx, "]"
+        NN.scramble({indx:[-1]})
 
-        elif (i-scrstart)/scrlen-1 == 2:
-            NN.scramble({1:[0]})
-            print "AAA : 2"
-        elif (i-scrstart)/scrlen-1 == 3:
-            NN.scramble({1:[1]})
-            print "AAA : 3"
-        elif (i-scrstart)/scrlen-1 == 4:
-            NN.scramble({1:[2]})
-            print "AAA : 4"
-        elif (i-scrstart)/scrlen-1 == 5:
-            NN.scramble({1:[3]})
-            print "AAA : 5"
-
-        elif (i-scrstart)/scrlen-1 == 6:
-            NN.scramble({2:[0]})
-            print "AAA : 6"
-        elif (i-scrstart)/scrlen-1 == 7:
-            NN.scramble({2:[1]})
-            print "AAA : 7"
-        elif (i-scrstart)/scrlen-1 == 8:
-            NN.scramble({2:[2]})
-            print "AAA : 8"
-        elif (i-scrstart)/scrlen-1 == 9:
-            NN.scramble({2:[3]})
-            print "AAA : 9"
-
-        elif (i-scrstart)/scrlen-1 == 10:
-            NN.scramble({3:[0]})
-            print "AAA : 10"
-        elif (i-scrstart)/scrlen-1 == 11:
-            NN.scramble({3:[1]})
-            print "AAA : 11"
-
-        elif (i-scrstart)/scrlen-1 == 12:
-            NN.scramble({4:[0]})
-            print "AAA : 12"
 
     cost = NN.learn([x,y],[target])
-    graphNNCost.SetPoint(i,i,cost)
+    
+    if i % saveEvery == 0:
+        graphNNCost.SetPoint(i/saveEvery,i,cost)
 NN.printParams()
 NN.save("NeuralNet.txt")
 
@@ -227,13 +198,15 @@ NN.save("NeuralNet.txt")
 # Neural net: test #
 ####################
 count = 0.
-for i in xrange(nruns):
-    x = random() * (xend-xstart) + xstart
-    y = random() * (yend-ystart) + ystart
+for i in xrange(nRuns):
+    x = random() * xRange + xOffset - xRange/2
+    y = random() * yRange + yOffset - yRange/2
+
     NNoutput = NN.eval([x,y])
-    if ((NNoutput[0] > 0 and 6*x*x*x > y) or (NNoutput[0] < 0 and 6*x*x*x < y)):
+    
+    if ((NNoutput[0] > 0 and (x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset) > 1) or (NNoutput[0] <= 0 and (x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset) <= 1)):
         count += 1
-print "\n--> I got it right:", count / nruns * 100., "% <--"
+print "\n--> I got it right:", count / nRuns * 100., "% <--"
 
 
 
@@ -241,7 +214,7 @@ print "\n--> I got it right:", count / nruns * 100., "% <--"
 ####################
 # Neural net: show #
 ####################
-findLevelCurveNN(NN,graphNN,xstart,xend,ystart,yend,100)
+findLevelCurveNN(NN,graphNN,xRange,xOffset,yRange,yOffset,100)
 
 
 ##############
@@ -253,7 +226,7 @@ cCost.Modified()
 cCost.Update()
 
 cSpace.cd()
-cSpace.DrawFrame(xstart - 0.5,ystart - 0.5,xend + 0.5,yend + 0.5);
+cSpace.DrawFrame(xOffset - xRange/2 - xRange/20,yOffset - yRange/2 - xRange/20,xOffset + xRange/2 + xRange/20,yOffset + yRange/2 + xRange/20)
 graphS.Draw('P')
 graphB.Draw('P same')
 graphNN.Draw('P same')

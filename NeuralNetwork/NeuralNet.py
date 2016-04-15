@@ -5,8 +5,6 @@
 # Learning algorithm: online/incremental learning  #
 #                     with gradient descent        #
 ####################################################
-from random     import gauss
-
 from Perceptron import Perceptron
 
 class NeuralNet(object):

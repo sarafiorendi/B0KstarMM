@@ -68,8 +68,7 @@ class Neuron(object):
             quit()
 
     def scramble(self):
-        # @TMP@
-        self.weights = [ gauss(self.weights[k],1./5) for k in xrange(self.Nvars+1) ]
+        self.weights = [ gauss(self.weights[k],(1 - self.dafundz) / sqrt(self.Nvars+1)) for k in xrange(self.Nvars+1) ]
 
     def save(self,f):
         out = ""
@@ -95,6 +94,7 @@ class Neuron(object):
 
     def learnRate(self,epoch):
         # @TMP@
-        ltstart =  100
-        ltend   = 1000
-        return 1. / (ltstart + ltend * (1 - exp(-epoch / ltend)))
+        lrStart = 0.005
+        lrEnd   = 0.001
+        tau     = 10000
+        return lrStart * exp(-epoch / tau) + lrEnd * (1 - exp(-epoch / tau))
