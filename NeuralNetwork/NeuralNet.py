@@ -1,24 +1,28 @@
-####################################################
-# Documentation: neuralnetworksanddeeplearning.com #
-####################################################
-# Cost function: 1/2 (target-result)^2             #
-# Learning algorithm: online/incremental learning  #
-#                     with gradient descent        #
-####################################################
+"""
+################################################
+Feedforward Neural Network
+Cost function: 1/2 (target-result)^2
+Learning algorithm: online/incremental learning
+                    with gradient descent
+################################################
+Documentation: neuralnetworksanddeeplearning.com
+################################################
+"""
 from Perceptron import Perceptron
 
 class NeuralNet(object):
-
-    ####################################################################
-    # Nvars        = number of input variables                         #
-    # Nperceptrons = number of perceptrons of neural net (must be > 1) #
-    # Nneurons     = list of number of neurons for each perceptron     #
-    ####################################################################
-    # e.g.:                                                            #
-    #       a network with 2 inputs, a first layer of 2 neurons, an    #
-    #       intermediate layer of 2 neurons, and an output of 1 neuron #
-    #       2, 3, [2,2,1]                                              #
-    ####################################################################
+    """
+    ################################################################
+    Nvars        = number of input variables
+    Nperceptrons = number of perceptrons of neural net (must be > 1)
+    Nneurons     = list of number of neurons for each perceptron    
+    ################################################################
+    e.g.:
+          a network with 2 inputs, a first layer of 2 neurons, an
+          intermediate layer of 2 neurons, and an output of 1 neuron
+          2, 3, [2,2,1]
+    ################################################################
+    """
     def __init__(self,Nvars,Nperceptrons,Nneurons):
         self.Nperceptrons = Nperceptrons
         self.FFperceptron = []

@@ -3,17 +3,17 @@
 MVA implementation with Perceptron Neural Networks
                                   by Mauro Dinardo
 ##################################################
+Double-check:
+  - learnRate
+  - scramble
+Complete:
+  - batch learning
+##################################################
 """
-####################
-# @TMP@            #
-# - Test readback  #
-# - Inject noise   #
-# - Batch learning #
-####################
 from argparse  import ArgumentParser
-from random    import seed, random
+from random    import seed, random, gauss
 
-from ROOT      import gROOT, gStyle, TCanvas, TGraph, TGaxis
+from ROOT      import gROOT, gStyle, TCanvas, TGraph, TH1D, TGaxis
 
 from NeuralNet import NeuralNet
 
@@ -26,16 +26,22 @@ def ArgParser():
     parser.add_argument("-nv", "--Nvars",        dest = "Nvars",        type = int,  help = "Number of variables",              required=True)
     parser.add_argument("-np", "--Nperceptrons", dest = "Nperceptrons", type = int,  help = "Number of perceptrons",            required=True)
     parser.add_argument("-nn", "--Nneurons",     dest = "Nneurons",     type = int,  help = "Number of neurons per perceptron", required=True,  nargs='*')
+    parser.add_argument("-sc", "--Scramble",     dest = "doScramble",   type = bool, help = "Perform NN scrambling",            required=False, default=False)
 
     options = parser.parse_args()
+
+    print ""
     if options.Nvars:
-        print "I'm reading the variable number: ", options.Nvars
+        print "--> I'm reading the variable number: ", options.Nvars
 
     if options.Nperceptrons:
-        print "I'm reading the perceptron number: ", options.Nperceptrons
+        print "--> I'm reading the perceptron number: ", options.Nperceptrons
 
     if options.Nneurons:
-        print "I'm reading the neuron number per perceptron: ", options.Nneurons
+        print "--> I'm reading the neuron number per perceptron: ", options.Nneurons
+
+    if options.doScramble:
+        print "--> I'm reading the option scramble: ", options.doScramble
 
     return options
 
@@ -79,22 +85,8 @@ def SetStyle():
     gStyle.SetStatY(0.9)
 
 
-def findLevelCurveNN(NN,graphNN,xRange,xOffset,yRange,yOffset,nBins):
-    for i in xrange(nBins):
-        myMin = 1
-        myX   = i * xRange / nBins + xOffset - xRange/2
-        found = False
-        for j in xrange(nBins):
-            y = j * yRange / nBins + yOffset - yRange/2
-            NNoutput = NN.eval([myX,y])
-            if abs(NNoutput[0]) < myMin:
-                myMin = abs(NNoutput[0])
-                myY   = y
-                found = True
-        if found is True:
-            graphNN.SetPoint(i,myX,myY)
 
-
+    
 ################
 # Main program #
 ################
@@ -107,8 +99,10 @@ cmd = ArgParser()
 gROOT.Reset()
 SetStyle()
 
-cCost  = TCanvas('cCost', 'The Cost Function', 800, 0, 700, 500)
-cSpace = TCanvas('cSpace', 'The Parameter Space', 0, 0, 700, 500)
+cCost  = TCanvas('cCost', 'The Cost Function', 0, 0, 700, 500)
+cNNin  = TCanvas('cNNin', 'NN Input', 0, 0, 700, 500)
+cNNout = TCanvas('cNNout', 'NN Output', 0, 0, 700, 500)
+cNNval = TCanvas('cNNval', 'NN Values', 0, 0, 700, 500)
 
 graphNNCost = TGraph()
 graphNNCost.SetTitle('NN cost function;Epoch [#];Cost Function')
@@ -116,23 +110,43 @@ graphNNCost.SetMarkerStyle(20)
 graphNNCost.SetMarkerSize(0.5)
 graphNNCost.SetMarkerColor(1)
 
-graphS = TGraph()
-graphS.SetTitle('NN test in 2D;x;y')
-graphS.SetMarkerStyle(20)
-graphS.SetMarkerSize(0.5)
-graphS.SetMarkerColor(4)
+graphSin = TGraph()
+graphSin.SetTitle('NN input;x;y')
+graphSin.SetMarkerStyle(20)
+graphSin.SetMarkerSize(0.5)
+graphSin.SetMarkerColor(4)
 
-graphB = TGraph()
-graphB.SetTitle('NN test in 2D;x;y')
-graphB.SetMarkerStyle(20)
-graphB.SetMarkerSize(0.5)
-graphB.SetMarkerColor(2)
+graphBin = TGraph()
+graphBin.SetTitle('NN input;x;y')
+graphBin.SetMarkerStyle(20)
+graphBin.SetMarkerSize(0.5)
+graphBin.SetMarkerColor(2)
 
-graphNN = TGraph()
-graphNN.SetTitle('NN test in 2D;x;y')
-graphNN.SetMarkerStyle(20)
-graphNN.SetMarkerSize(0.7)
-graphNN.SetMarkerColor(1)
+graphSout = TGraph()
+graphSout.SetTitle('NN output;x;y')
+graphSout.SetMarkerStyle(20)
+graphSout.SetMarkerSize(0.5)
+graphSout.SetMarkerColor(4)
+
+graphBout = TGraph()
+graphBout.SetTitle('NN output;x;y')
+graphBout.SetMarkerStyle(20)
+graphBout.SetMarkerSize(0.5)
+graphBout.SetMarkerColor(2)
+
+graphNNerr = TGraph()
+graphNNerr.SetTitle('NN output;x;y')
+graphNNerr.SetMarkerStyle(20)
+graphNNerr.SetMarkerSize(0.5)
+graphNNerr.SetMarkerColor(3)
+
+histoNNS = TH1D('histoNNS','histoNNS',100,-1,1)
+histoNNS.SetTitle('NN signal output;NN output;Entries [#]')
+histoNNS.SetLineColor(4)
+
+histoNNB = TH1D('histoNNB','histoNNB',100,-1,1)
+histoNNB.SetTitle('NN background output;NN output;Entries [#]')
+histoNNB.SetLineColor(2)
 
 
 ###################################
@@ -142,7 +156,7 @@ seed(0)
 nRuns     = 1000000
 scrStart  =   10000
 scrLen    =   10000
-saveEvery =     100
+saveEvery =      10
 
 
 ##############################
@@ -158,6 +172,8 @@ xRange  = 3.
 xOffset = 3.
 yRange  = 3.
 yOffset = 0.
+sigma   = 0.1
+xyCorr  = lambda x,y: ((x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset))
 ########################
 # Neural net: training #
 ########################
@@ -165,22 +181,21 @@ for i in xrange(nRuns):
     x = random() * xRange + xOffset - xRange/2
     y = random() * yRange + yOffset - yRange/2
 
-    if (x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset) > 1:
+    if xyCorr(x,y) > gauss(1,sigma):
         target = +1
         if i % saveEvery == 0:
-            graphS.SetPoint(i,x,y)
+            graphSin.SetPoint(i,x,y)
     else:
         target = -1
         if i % saveEvery == 0:
-            graphB.SetPoint(i,x,y)
+            graphBin.SetPoint(i,x,y)
 
             
     ##########################
     # Neural net: scrambling #
     ##########################
     indx = (i-scrStart)/scrLen-1
-    print ""
-    if i > scrStart and (i-scrStart) % scrLen == 0 and indx < cmd.Nperceptrons:
+    if cmd.doScramble and i > scrStart and (i-scrStart) % scrLen == 0 and indx < cmd.Nperceptrons:
         indx = cmd.Nperceptrons - 1 - indx
         print "=== Scrambling perceptron [", indx, "]"
         NN.scramble({indx:[-1]})
@@ -204,34 +219,55 @@ for i in xrange(nRuns):
 
     NNoutput = NN.eval([x,y])
     
-    if ((NNoutput[0] > 0 and (x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset) > 1) or (NNoutput[0] <= 0 and (x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset) <= 1)):
+    if ((NNoutput[0] > 0 and xyCorr(x,y) > 1) or (NNoutput[0] <= 0 and xyCorr(x,y) <= 1)):
         count += 1
+
+    if i % saveEvery == 0:
+        if (NNoutput[0] > 0 and xyCorr(x,y) > 1):
+            graphSout.SetPoint(i,x,y)
+        elif (NNoutput[0] <= 0 and xyCorr(x,y) <= 1):
+            graphBout.SetPoint(i,x,y)
+        else:
+            graphNNerr.SetPoint(i,x,y)
+
+    if NNoutput[0] > 0:
+        histoNNS.Fill(NNoutput[0])
+    elif NNoutput[0] <= 0:
+        histoNNB.Fill(NNoutput[0])
+
 print "\n--> I got it right:", count / nRuns * 100., "% <--"
 
 
 
 
-####################
-# Neural net: show #
-####################
-findLevelCurveNN(NN,graphNN,xRange,xOffset,yRange,yOffset,100)
-
-
-##############
-# Show plots #
-##############
+#############################
+# Neural net: control plots #
+#############################
 cCost.cd()
 graphNNCost.Draw('AL')
 cCost.Modified()
 cCost.Update()
 
-cSpace.cd()
-cSpace.DrawFrame(xOffset - xRange/2 - xRange/20,yOffset - yRange/2 - xRange/20,xOffset + xRange/2 + xRange/20,yOffset + yRange/2 + xRange/20)
-graphS.Draw('P')
-graphB.Draw('P same')
-graphNN.Draw('P same')
-cSpace.Modified()
-cSpace.Update()
+cNNin.cd()
+cNNin.DrawFrame(xOffset - xRange/2 - xRange/20,yOffset - yRange/2 - xRange/20,xOffset + xRange/2 + xRange/20,yOffset + yRange/2 + xRange/20)
+graphSin.Draw('P')
+graphBin.Draw('P same')
+cNNin.Modified()
+cNNin.Update()
+
+cNNout.cd()
+cNNout.DrawFrame(xOffset - xRange/2 - xRange/20,yOffset - yRange/2 - xRange/20,xOffset + xRange/2 + xRange/20,yOffset + yRange/2 + xRange/20)
+graphSout.Draw('P')
+graphBout.Draw('P same')
+graphNNerr.Draw('P same')
+cNNout.Modified()
+cNNout.Update()
+
+cNNval.cd()
+histoNNS.Draw()
+histoNNB.Draw('same')
+cNNval.Modified()
+cNNval.Update()
 
 
 ############################

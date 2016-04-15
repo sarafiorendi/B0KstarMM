@@ -1,12 +1,13 @@
 from Neuron import Neuron
 
 class Perceptron(object):
-
-    #########################################################
-    # Nneurons  = number of neurons of the perceptron       #
-    # Nvars     = number of input variables for each neuron #
-    # isBackPrN = is a backpropagation network              #
-    #########################################################
+    """
+    #####################################################
+    Nneurons  = number of neurons of the perceptron
+    Nvars     = number of input variables for each neuron
+    isBackPrN = is a backpropagation network
+    #####################################################
+    """
     def __init__(self,Nneurons,Nvars,isBackPrN):
         self.Nneurons = Nneurons
         self.neuron   = [ Neuron(Nvars,isBackPrN) for i in xrange(self.Nneurons) ]

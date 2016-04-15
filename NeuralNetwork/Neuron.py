@@ -5,14 +5,15 @@ from math   import tanh, sqrt, exp
 #############################
 
 class Neuron(object):
-
-    ############################################
-    # Nvars     = number of input variables    #
-    # isBackPrN = is a backpropagation network #
-    ############################################
-    # Return the value of the activation       #
-    # function and its derivative              #
-    ############################################
+    """
+    ########################################
+    Nvars     = number of input variables
+    isBackPrN = is a backpropagation network
+    ########################################
+    Return the value of the activation
+    function and its derivative
+    ########################################
+    """
     def __init__(self,Nvars,isBackPrN):
         self.Nvars     = Nvars
         self.isBackPrN = isBackPrN        
@@ -93,7 +94,6 @@ class Neuron(object):
             self.weights[k] = w[3+k]
 
     def learnRate(self,epoch):
-        # @TMP@
         lrStart = 0.005
         lrEnd   = 0.001
         tau     = 10000
