@@ -3,11 +3,18 @@
 MVA implementation with Perceptron Neural Networks
                                   by Mauro Dinardo
 ##################################################
-Double-check:
+Always double-check:
   - learnRate
   - scramble
 Complete:
+  - add
+  - remove
+  - plot d_delta vs time
+
   - batch learning
+  - porting in pyCUDA
+##################################################
+e.g.: python MVA.py -nv 2 -np 6 -nn 2 3 4 3 2 1
 ##################################################
 """
 from argparse  import ArgumentParser
@@ -153,7 +160,7 @@ histoNNB.SetLineColor(2)
 # Use always the same random seed #
 ###################################
 seed(0)
-nRuns     = 1000000
+nRuns     = 100000
 scrStart  =   10000
 scrLen    =   10000
 saveEvery =      10
@@ -172,7 +179,7 @@ xRange  = 3.
 xOffset = 3.
 yRange  = 3.
 yOffset = 0.
-sigma   = 0.1
+noise   = 0.1
 xyCorr  = lambda x,y: ((x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset))
 ########################
 # Neural net: training #
@@ -181,7 +188,7 @@ for i in xrange(nRuns):
     x = random() * xRange + xOffset - xRange/2
     y = random() * yRange + yOffset - yRange/2
 
-    if xyCorr(x,y) > gauss(1,sigma):
+    if xyCorr(x,y) > gauss(1,noise):
         target = +1
         if i % saveEvery == 0:
             graphSin.SetPoint(i,x,y)

@@ -1,7 +1,7 @@
 """
 ################################################
 Feedforward Neural Network
-Cost function: 1/2 (target-result)^2
+Cost function: 1/2 (target - result)^2
 Learning algorithm: online/incremental learning
                     with gradient descent
 ################################################
@@ -124,9 +124,18 @@ class NeuralNet(object):
         for j in xrange(self.Nperceptrons-1):
             for i in xrange(self.BPperceptron[j].Nneurons):
                 self.BPperceptron[j].neuron[i].dafundz = self.FFperceptron[self.Nperceptrons-j-2].neuron[i].dafundz
-                for k in xrange(self.BPperceptron[j].neuron[i].Nvars):
+                for k in xrange(self.BPperceptron[j].neuron[i].myNvars):
                     self.BPperceptron[j].neuron[i].weights[k] = self.FFperceptron[self.Nperceptrons-j-1].neuron[k].weights[i]
                     
+    def copy(self):
+        out = NeuralNet(self.FFperceptron[0].neuron[0].Nvars,self.Nperceptrons,[ self.FFperceptron[j].Nneurons for j in xrange(self.Nperceptrons) ])
+        
+        for j in xrange(self.Nperceptrons):
+            for i in xrange(self.FFperceptron[j].Nneurons):
+                for k in xrange(self.FFperceptron[j].neuron[i].myNvars):
+                    out.FFperceptron[j].neuron[i].weights[k] = self.FFperceptron[j].neuron[i].weights[k]
+        return out
+
     def save(self,name):
         f = open(name,"w")
         

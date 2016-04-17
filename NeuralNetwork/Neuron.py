@@ -1,10 +1,15 @@
 from random import gauss
 from math   import tanh, sqrt, exp
-#############################
-# Activation function: tanh #
-#############################
-
+"""
+#########################
+Activation function: tanh
+#########################
+"""
 class Neuron(object):
+    lrStart = 0.005
+    lrEnd   = 0.001
+    tau     = 10000
+
     """
     ########################################
     Nvars     = number of input variables
@@ -16,15 +21,17 @@ class Neuron(object):
     """
     def __init__(self,Nvars,isBackPrN):
         self.Nvars     = Nvars
-        self.isBackPrN = isBackPrN        
+        self.isBackPrN = isBackPrN
         if self.isBackPrN is False:
-            self.weights = [ gauss(0,1./sqrt(self.Nvars+1)) for k in xrange(self.Nvars+1) ]
+            self.myNvars = self.Nvars + 1
+            self.weights = [ gauss(0,1/sqrt(self.Nvars+1)) for k in xrange(self.Nvars+1) ]
         else:
+            self.myNvars = self.Nvars
             self.weights = [ 0 for k in xrange(self.Nvars) ]
         self.afun    = 0
         self.dafundz = 0
         self.epoch   = 0
-        
+
     def eval(self,invec):
         wsum = 0
         for k in xrange(self.Nvars):
@@ -60,6 +67,10 @@ class Neuron(object):
             print "    Weight[", k, "] ", round(self.weights[k],2)
 
     def reset(self,what):
+        ##################
+        # what = "all"   #
+        # what = "epoch" #
+        ##################
         if what == "all":
             self.__init__(self.Nvars,self.isBackPrN)
         elif what == "epoch":
@@ -94,7 +105,4 @@ class Neuron(object):
             self.weights[k] = w[3+k]
 
     def learnRate(self,epoch):
-        lrStart = 0.005
-        lrEnd   = 0.001
-        tau     = 10000
-        return lrStart * exp(-epoch / tau) + lrEnd * (1 - exp(-epoch / tau))
+        return self.lrStart * exp(-epoch / self.tau) + self.lrEnd * (1 - exp(-epoch / self.tau))
