@@ -22,12 +22,14 @@ class Neuron(object):
     def __init__(self,Nvars,isBackPrN):
         self.Nvars     = Nvars
         self.isBackPrN = isBackPrN
+        
         if self.isBackPrN is False:
             self.myNvars = self.Nvars + 1
             self.weights = [ gauss(0,1/sqrt(self.Nvars+1)) for k in xrange(self.Nvars+1) ]
         else:
             self.myNvars = self.Nvars
             self.weights = [ 0 for k in xrange(self.Nvars) ]
+
         self.afun    = 0
         self.dafundz = 0
         self.epoch   = 0
@@ -48,6 +50,7 @@ class Neuron(object):
         for k in xrange(self.Nvars):
                 self.weights[k] = self.weights[k] + self.learnRate(self.epoch) * dcdz * invec[k]
         self.weights[self.Nvars] = self.weights[self.Nvars] + self.learnRate(self.epoch) * dcdz
+        
         self.epoch += 1
         
     def aFun(self,val):
@@ -63,8 +66,8 @@ class Neuron(object):
             return self.dafundz
 
     def printParams(self):
-        for k in xrange(len(self.weights)):
-            print "    Weight[", k, "] ", round(self.weights[k],2)
+        for k,W in enumerate(self.weights):
+            print "    Weight[", k, "] ", round(W,2)
 
     def reset(self,what):
         ##################
@@ -80,12 +83,18 @@ class Neuron(object):
             quit()
 
     def scramble(self):
-        self.weights = [ gauss(self.weights[k],(1 - self.dafundz) / sqrt(self.Nvars+1)) for k in xrange(self.Nvars+1) ]
+        self.weights = [ gauss(W,(1 - self.dafundz) / sqrt(self.Nvars+1)) for W in self.weights ]
+
+    def removeW(self,who):
+        if type(who) is list:
+            self.weights = [ W for k,W in enumerate(self.weights) if k not in who ]
+        else:
+            self.__init__(who,self.isBackPrN)
 
     def save(self,f):
         out = ""
-        for k in xrange(self.Nvars+1):
-            out += "{0:20f}".format(self.weights[k])
+        for W in self.weights:
+            out += "{0:20f}".format(W)
         out += "\n"
         f.write(out)
 
@@ -99,10 +108,10 @@ class Neuron(object):
 
         w = [ float(lele[i]) for i in xrange(len(lele)) if lele[i].replace(".","").replace("-","").isdigit() ]
 
-        self.afun    = w[1]
-        self.dafundz = w[2]
-        for k in xrange(self.Nvars+1):
-            self.weights[k] = w[3+k]
+        w.pop(0)
+        self.afun    = w.pop(0)
+        self.dafundz = w.pop(0)
+        self.weights = w
 
     def learnRate(self,epoch):
         return self.lrStart * exp(-epoch / self.tau) + self.lrEnd * (1 - exp(-epoch / self.tau))

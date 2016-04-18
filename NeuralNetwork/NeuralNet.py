@@ -24,45 +24,48 @@ class NeuralNet(object):
     ################################################################
     """
     def __init__(self,Nvars,Nperceptrons,Nneurons):
-        self.Nperceptrons = Nperceptrons
-        self.FFperceptron = []
-        self.BPperceptron = []
+        self.Nperceptrons  = Nperceptrons
+        self.FFperceptrons = []
+        self.BPperceptrons = []
 
         #######################
         # Feedforward network #
         #######################
         ### First layer ###
-        self.FFperceptron.append(Perceptron(Nneurons[0],Nvars,False))
+        self.FFperceptrons.append(Perceptron(Nneurons[0],Nvars,False))
 
         ### Intermediate layers + last layer ###
-        self.FFperceptron.extend(Perceptron(Nneurons[j],self.FFperceptron[j-1].Nneurons,False) for j in xrange(1,self.Nperceptrons))
+        self.FFperceptrons.extend(Perceptron(Nneurons[j],self.FFperceptrons[j-1].Nneurons,False) for j in xrange(1,self.Nperceptrons))
 
         ###########################
         # Backpropagation network #
         ###########################
+        self.initBPnetwork()
+
+    def initBPnetwork(self):
         ### First layer ###
-        self.BPperceptron.append(Perceptron(self.FFperceptron[self.Nperceptrons-2].Nneurons,self.FFperceptron[self.Nperceptrons-1].Nneurons,True))
+        self.BPperceptrons.append(Perceptron(self.FFperceptrons[self.Nperceptrons-2].Nneurons,self.FFperceptrons[self.Nperceptrons-1].Nneurons,True))
 
         ### Intermediate layers + last layer ###
-        self.BPperceptron.extend(Perceptron(self.FFperceptron[self.Nperceptrons-j-1].Nneurons,self.FFperceptron[self.Nperceptrons-j].Nneurons,True) for j in xrange(2,self.Nperceptrons))
-
+        self.BPperceptrons.extend(Perceptron(self.FFperceptrons[self.Nperceptrons-j-1].Nneurons,self.FFperceptrons[self.Nperceptrons-j].Nneurons,True) for j in xrange(2,self.Nperceptrons))        
+        
     def eval(self,invec):
         ### First layer ###
-        self.FFperceptron[0].eval(invec)
+        self.FFperceptrons[0].eval(invec)
 
         ### Intermediate layers + last layer ###
         for j in xrange(1,self.Nperceptrons):
-            self.FFperceptron[j].eval([ self.FFperceptron[j-1].neuron[i].afun for i in xrange(self.FFperceptron[j-1].Nneurons) ])
+            self.FFperceptrons[j].eval([ self.FFperceptrons[j-1].neurons[i].afun for i in xrange(self.FFperceptrons[j-1].Nneurons) ])
 
-        return [ self.FFperceptron[self.Nperceptrons-1].neuron[i].afun for i in xrange(self.FFperceptron[self.Nperceptrons-1].Nneurons) ]
+        return [ self.FFperceptrons[self.Nperceptrons-1].neurons[i].afun for i in xrange(self.FFperceptrons[self.Nperceptrons-1].Nneurons) ]
 
     def evalBP(self,invec):
         ### First layer ###
-        self.BPperceptron[0].eval(invec)
+        self.BPperceptrons[0].eval(invec)
 
         ### Intermediate layers + last layer ###
         for j in xrange(1,self.Nperceptrons-1):
-            self.BPperceptron[j].eval([ self.BPperceptron[j-1].neuron[i].afun for i in xrange(self.BPperceptron[j-1].Nneurons) ])
+            self.BPperceptrons[j].eval([ self.BPperceptrons[j-1].neurons[i].afun for i in xrange(self.BPperceptrons[j-1].Nneurons) ])
 
     def learn(self,invec,target):
         ###############
@@ -75,81 +78,99 @@ class NeuralNet(object):
         # Backpropagation #
         ###################
         self.copyFFtoBPweights()
-        dcdz = [ error[i] * self.FFperceptron[self.Nperceptrons-1].neuron[i].dafundz for i in xrange(self.FFperceptron[self.Nperceptrons-1].Nneurons) ]
+        dcdz = [ error[i] * self.FFperceptrons[self.Nperceptrons-1].neurons[i].dafundz for i in xrange(self.FFperceptrons[self.Nperceptrons-1].Nneurons) ]
         self.evalBP(dcdz)
 
         ##########
         # Update #
         ##########
         ### Last layer ###
-        self.FFperceptron[self.Nperceptrons-1].adapt([ self.FFperceptron[self.Nperceptrons-2].neuron[i].afun for i in xrange(self.FFperceptron[self.Nperceptrons-2].Nneurons) ],dcdz)
+        self.FFperceptrons[self.Nperceptrons-1].adapt([ self.FFperceptrons[self.Nperceptrons-2].neurons[i].afun for i in xrange(self.FFperceptrons[self.Nperceptrons-2].Nneurons) ],dcdz)
 
         ### Intermediate layers ###
         if self.Nperceptrons > 2:
             for j in xrange(self.Nperceptrons-2):
-                self.FFperceptron[self.Nperceptrons-j-2].adapt([ self.FFperceptron[self.Nperceptrons-j-3].neuron[i].afun for i in xrange(self.FFperceptron[self.Nperceptrons-j-3].Nneurons) ],
-                                                               [ self.BPperceptron[j].neuron[i].afun for i in xrange(self.BPperceptron[j].Nneurons) ])
+                self.FFperceptrons[self.Nperceptrons-j-2].adapt([ self.FFperceptrons[self.Nperceptrons-j-3].neurons[i].afun for i in xrange(self.FFperceptrons[self.Nperceptrons-j-3].Nneurons) ],
+                                                                [ self.BPperceptrons[j].neurons[i].afun for i in xrange(self.BPperceptrons[j].Nneurons) ])
 
         ### First layer ###
-        self.FFperceptron[0].adapt(invec,[ self.BPperceptron[self.Nperceptrons-2].neuron[i].afun for i in xrange(self.BPperceptron[self.Nperceptrons-2].Nneurons) ])
+        self.FFperceptrons[0].adapt(invec,[ self.BPperceptrons[self.Nperceptrons-2].neurons[i].afun for i in xrange(self.BPperceptrons[self.Nperceptrons-2].Nneurons) ])
 
         return sum(1./2 * a*a for a in error)
 
     def printParams(self):
         print "\n\n===>>> Feedforward Neural Net ===>>>"
-        for j in xrange(self.Nperceptrons):
+        for j,P in enumerate(self.FFperceptrons):
             print "Perceptron[", j, "]"
-            self.FFperceptron[j].printParams()
+            P.printParams()
 
         print "\n<<<=== Backpropagation Neural Net <<<==="
-        for j in xrange(self.Nperceptrons-1):
+        for j,P in enumerate(self.BPperceptrons):
             print "Perceptron[", j, "]"
-            self.BPperceptron[j].printParams()
+            P.printParams()
 
     def reset(self,what):
-        for j in xrange(self.Nperceptrons):
-            self.FFperceptron[j].reset(what)
+        for P in self.FFperceptrons:
+            P.reset(what)
 
-        for j in xrange(self.Nperceptrons-1):
-            self.BPperceptron[j].reset(what)
+        for P in self.BPperceptrons:
+            P.reset(what)
 
     def scramble(self,who):
-        if who and -1 in who.keys():
+        if -1 in who.keys():
             who = { j:[-1] for j in xrange(self.Nperceptrons) }
 
         for j in who:
-            self.FFperceptron[j].scramble(who[j])
+            self.FFperceptrons[j].scramble(who[j])
 
     def copyFFtoBPweights(self):
         for j in xrange(self.Nperceptrons-1):
-            for i in xrange(self.BPperceptron[j].Nneurons):
-                self.BPperceptron[j].neuron[i].dafundz = self.FFperceptron[self.Nperceptrons-j-2].neuron[i].dafundz
-                for k in xrange(self.BPperceptron[j].neuron[i].myNvars):
-                    self.BPperceptron[j].neuron[i].weights[k] = self.FFperceptron[self.Nperceptrons-j-1].neuron[k].weights[i]
+            for i in xrange(self.BPperceptrons[j].Nneurons):
+                self.BPperceptrons[j].neurons[i].dafundz = self.FFperceptrons[self.Nperceptrons-j-2].neurons[i].dafundz
+                for k in xrange(self.BPperceptrons[j].neurons[i].myNvars):
+                    self.BPperceptrons[j].neurons[i].weights[k] = self.FFperceptrons[self.Nperceptrons-j-1].neurons[k].weights[i]
                     
     def copy(self):
-        out = NeuralNet(self.FFperceptron[0].neuron[0].Nvars,self.Nperceptrons,[ self.FFperceptron[j].Nneurons for j in xrange(self.Nperceptrons) ])
+        out = NeuralNet(self.FFperceptrons[0].neurons[0].Nvars,self.Nperceptrons,[ self.FFperceptrons[j].Nneurons for j in xrange(self.Nperceptrons) ])
         
         for j in xrange(self.Nperceptrons):
-            for i in xrange(self.FFperceptron[j].Nneurons):
-                for k in xrange(self.FFperceptron[j].neuron[i].myNvars):
-                    out.FFperceptron[j].neuron[i].weights[k] = self.FFperceptron[j].neuron[i].weights[k]
+            for i in xrange(self.FFperceptrons[j].Nneurons):
+                for k in xrange(self.FFperceptrons[j].neurons[i].myNvars):
+                    out.FFperceptrons[j].neurons[i].weights[k] = self.FFperceptrons[j].neurons[i].weights[k]
+
         return out
+
+    def remove(self,who):
+        if -1 in who.keys():
+            who = { j:[-1] for j in xrange(self.Nperceptrons) }
+
+        for j in who:
+            if j < self.Nperceptrons-1:
+                if who[j][0] == -1:
+                    self.FFperceptrons[j+1].removeW(self.FFperceptrons[j].neurons[0].Nvars)
+                    self.Nperceptrons -= 1
+                else:
+                    self.FFperceptrons[j+1].removeW(who[j])
+
+            self.FFperceptrons[j].removeN(who[j])
+
+        self.FFperceptrons = [ P for j,P in enumerate(self.FFperceptrons) if (j not in who.keys()) or (j in who.keys() and who[j][0] != -1) ]
+        self.initBPnetwork()
 
     def save(self,name):
         f = open(name,"w")
         
         f.write("### M.E.D. Neural Network ###\n")
         f.write("# Nvars, Nperceptrons, Nneurons\n")
-        out = str(self.FFperceptron[0].neuron[0].Nvars) + " " + str(self.Nperceptrons) + " ["
-        for j in xrange(self.Nperceptrons):
-            out += " " + str(self.FFperceptron[j].Nneurons)
+        out = str(self.FFperceptrons[0].neurons[0].Nvars) + " " + str(self.Nperceptrons) + " ["
+        for P in self.FFperceptrons:
+            out += " " + str(P.Nneurons)
         out += " ]\n\n"
         f.write(out)
 
-        for j in xrange(self.Nperceptrons):
+        for j,P in enumerate(self.FFperceptrons):
             f.write("Perceptron[ " + str(j) + " ]\n")
-            self.FFperceptron[j].save(f)
+            P.save(f)
             
         f.close()
 
@@ -164,7 +185,7 @@ class NeuralNet(object):
         
         self.__init__(int(lele[0]),int(lele[1]),[ int(lele[i]) for i in xrange(2,len(lele)) if lele[i].isdigit() ])
 
-        for j in xrange(self.Nperceptrons):
-            self.FFperceptron[j].read(f)
+        for P in self.FFperceptrons:
+            P.read(f)
 
         f.close()

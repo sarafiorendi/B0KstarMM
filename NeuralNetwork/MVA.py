@@ -8,7 +8,6 @@ Always double-check:
   - scramble
 Complete:
   - add
-  - remove
   - plot d_delta vs time
 
   - batch learning
@@ -160,7 +159,7 @@ histoNNB.SetLineColor(2)
 # Use always the same random seed #
 ###################################
 seed(0)
-nRuns     = 100000
+nRuns     = 1000000
 scrStart  =   10000
 scrLen    =   10000
 saveEvery =      10

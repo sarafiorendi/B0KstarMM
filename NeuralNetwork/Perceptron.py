@@ -10,35 +10,45 @@ class Perceptron(object):
     """
     def __init__(self,Nneurons,Nvars,isBackPrN):
         self.Nneurons = Nneurons
-        self.neuron   = [ Neuron(Nvars,isBackPrN) for i in xrange(self.Nneurons) ]
+        self.neurons  = [ Neuron(Nvars,isBackPrN) for i in xrange(self.Nneurons) ]
 
     def eval(self,invec):
-        return [ self.neuron[i].eval(invec) for i in xrange(self.Nneurons) ]
+        return [ N.eval(invec) for N in self.neurons ]
 
     def adapt(self,invec,dcdz):
-        for i in xrange(self.Nneurons):
-            self.neuron[i].adapt(invec,dcdz[i])
+        for i,N in enumerate(self.neurons):
+            N.adapt(invec,dcdz[i])
 
     def printParams(self):
-        for i in xrange(self.Nneurons):
-            print "  Neuron[", i, "aFun =", round(self.neuron[i].afun,2), "d(aFun)/dz =", round(self.neuron[i].dafundz,2), "]"
-            self.neuron[i].printParams()
+        for i,N in enumerate(self.neurons):
+            print "  Neuron[", i, "aFun =", round(N.afun,2), "d(aFun)/dz =", round(N.dafundz,2), "]"
+            N.printParams()
 
     def reset(self,what):
-        for i in xrange(self.Nneurons):
-            self.neuron[i].reset(what)
+        for N in self.neurons:
+            N.reset(what)
 
     def scramble(self,who):
-        if who and who[0] == -1:
+        if who[0] == -1:
             who = [ i for i in xrange(self.Nneurons) ]
-            
+
         for i in who:
-            self.neuron[i].scramble()
+            self.neurons[i].scramble()
+
+    def removeN(self,who):
+        if who[0] == -1:
+            who = [ i for i in xrange(self.Nneurons) ]
+
+        self.neurons = [ N for i,N in enumerate(self.neurons) if i not in who ]
+
+    def removeW(self,who):
+         for N in self.neurons:
+            N.removeW(who)
 
     def save(self,f):
-        for i in xrange(self.Nneurons):
-            f.write("  Neuron[ {0:d} ] aFun = {1:20f} d(aFun)/dz = {2:20f}".format(i,self.neuron[i].afun,self.neuron[i].dafundz))
-            self.neuron[i].save(f)
+        for i,N in enumerate(self.neurons):
+            f.write("  Neuron[ {0:d} ] aFun = {1:20f} d(aFun)/dz = {2:20f}".format(i,N.afun,N.dafundz))
+            N.save(f)
 
     def read(self,f):
         line = f.readline()
@@ -48,5 +58,5 @@ class Perceptron(object):
             line = f.readline()
             lele = line.split()
 
-        for i in xrange(self.Nneurons):
-            self.neuron[i].read(f)
+        for N in self.neurons:
+            N.read(f)
