@@ -7,9 +7,9 @@ Always double-check:
   - learnRate
   - scramble
 Complete:
-  - add
+  - test corona circolare
   - plot d_delta vs time
-
+  - add
   - batch learning
   - porting in pyCUDA
 ##################################################
@@ -25,9 +25,11 @@ from NeuralNet import NeuralNet
 
 
 def ArgParser():
-    ###################
-    # Argument parser #
-    ###################
+    """
+    ###############
+    Argument parser
+    ###############
+    """
     parser = ArgumentParser()
     parser.add_argument("-nv", "--Nvars",        dest = "Nvars",        type = int,  help = "Number of variables",              required=True)
     parser.add_argument("-np", "--Nperceptrons", dest = "Nperceptrons", type = int,  help = "Number of perceptrons",            required=True)
@@ -53,9 +55,11 @@ def ArgParser():
 
 
 def SetStyle():
-    #######################
-    # ROOT style settings #
-    #######################
+    """
+    ###################
+    ROOT style settings
+    ###################
+    """
     gROOT.SetStyle("Plain")
     gROOT.ForceStyle()
     gStyle.SetTextFont(42)
@@ -93,15 +97,19 @@ def SetStyle():
 
 
     
-################
-# Main program #
-################
+"""
+############
+Main program
+############
+"""
 cmd = ArgParser()
 
 
-#############################
-# Graphics layout and plots #
-#############################
+"""
+#########################
+Graphics layout and plots
+#########################
+"""
 gROOT.Reset()
 SetStyle()
 
@@ -155,9 +163,11 @@ histoNNB.SetTitle('NN background output;NN output;Entries [#]')
 histoNNB.SetLineColor(2)
 
 
-###################################
-# Use always the same random seed #
-###################################
+"""
+###############################
+Use always the same random seed
+###############################
+"""
 seed(0)
 nRuns     = 1000000
 scrStart  =   10000
@@ -165,9 +175,11 @@ scrLen    =   10000
 saveEvery =      10
 
 
-##############################
-# Neural net: initialization #
-##############################
+"""
+##########################
+Neural net: initialization
+##########################
+"""
 NN = NeuralNet(cmd.Nvars,cmd.Nperceptrons,cmd.Nneurons)
 NN.printParams()
 
@@ -180,14 +192,16 @@ yRange  = 3.
 yOffset = 0.
 noise   = 0.1
 xyCorr  = lambda x,y: ((x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset))
-########################
-# Neural net: training #
-########################
+"""
+####################
+Neural net: training
+####################
+"""
 for i in xrange(nRuns):
     x = random() * xRange + xOffset - xRange/2
     y = random() * yRange + yOffset - yRange/2
 
-    if xyCorr(x,y) > gauss(1,noise):
+    if 0.5 < xyCorr(x,y) < 1:
         target = +1
         if i % saveEvery == 0:
             graphSin.SetPoint(i,x,y)
@@ -196,10 +210,12 @@ for i in xrange(nRuns):
         if i % saveEvery == 0:
             graphBin.SetPoint(i,x,y)
 
-            
-    ##########################
-    # Neural net: scrambling #
-    ##########################
+
+    """
+    ######################
+    Neural net: scrambling
+    ######################
+    """
     indx = (i-scrStart)/scrLen-1
     if cmd.doScramble and i > scrStart and (i-scrStart) % scrLen == 0 and indx < cmd.Nperceptrons:
         indx = cmd.Nperceptrons - 1 - indx
@@ -215,9 +231,11 @@ NN.printParams()
 NN.save("NeuralNet.txt")
 
 
-####################
-# Neural net: test #
-####################
+"""
+################
+Neural net: test
+################
+"""
 count = 0.
 for i in xrange(nRuns):
     x = random() * xRange + xOffset - xRange/2
@@ -225,13 +243,13 @@ for i in xrange(nRuns):
 
     NNoutput = NN.eval([x,y])
     
-    if ((NNoutput[0] > 0 and xyCorr(x,y) > 1) or (NNoutput[0] <= 0 and xyCorr(x,y) <= 1)):
+    if ((NNoutput[0] > 0 and 0.5 < xyCorr(x,y) < 1) or (NNoutput[0] <= 0 and (xyCorr(x,y) <= 0.5 or 1 <= xyCorr(x,y)))):
         count += 1
 
     if i % saveEvery == 0:
-        if (NNoutput[0] > 0 and xyCorr(x,y) > 1):
+        if (NNoutput[0] > 0 and 0.5 < xyCorr(x,y) < 1):
             graphSout.SetPoint(i,x,y)
-        elif (NNoutput[0] <= 0 and xyCorr(x,y) <= 1):
+        elif (NNoutput[0] <= 0 and (xyCorr(x,y) <= 0.5 or 1 <= xyCorr(x,y))):
             graphBout.SetPoint(i,x,y)
         else:
             graphNNerr.SetPoint(i,x,y)
@@ -246,9 +264,11 @@ print "\n--> I got it right:", count / nRuns * 100., "% <--"
 
 
 
-#############################
-# Neural net: control plots #
-#############################
+"""
+#########################
+Neural net: control plots
+#########################
+"""
 cCost.cd()
 graphNNCost.Draw('AL')
 cCost.Modified()
@@ -276,7 +296,9 @@ cNNval.Modified()
 cNNval.Update()
 
 
-############################
-# Wait for keyborad stroke #
-############################
+"""
+########################
+Wait for keyborad stroke
+########################
+"""
 raw_input("\n---press enter---")

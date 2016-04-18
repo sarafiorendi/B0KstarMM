@@ -39,12 +39,21 @@ class Perceptron(object):
         if who[0] == -1:
             who = [ i for i in xrange(self.Nneurons) ]
 
-        self.neurons = [ N for i,N in enumerate(self.neurons) if i not in who ]
+        self.neurons  = [ N for i,N in enumerate(self.neurons) if i not in who ]
+        self.Nneurons = len(self.neurons[:])
 
     def removeW(self,who):
          for N in self.neurons:
             N.removeW(who)
 
+    def addN(self,who):
+        print "[Perceptron::addN]\tNot implemented yet"
+        quit()
+
+    def addW(self,who):
+        print "[Perceptron::addW]\tNot implemented yet"
+        quit()
+            
     def save(self,f):
         for i,N in enumerate(self.neurons):
             f.write("  Neuron[ {0:d} ] aFun = {1:20f} d(aFun)/dz = {2:20f}".format(i,N.afun,N.dafundz))

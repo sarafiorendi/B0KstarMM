@@ -15,31 +15,30 @@ class Neuron(object):
     Nvars     = number of input variables
     isBackPrN = is a backpropagation network
     ########################################
-    Return the value of the activation
-    function and its derivative
-    ########################################
     """
     def __init__(self,Nvars,isBackPrN):
         self.Nvars     = Nvars
         self.isBackPrN = isBackPrN
         
-        if self.isBackPrN is False:
-            self.myNvars = self.Nvars + 1
-            self.weights = [ gauss(0,1/sqrt(self.Nvars+1)) for k in xrange(self.Nvars+1) ]
-        else:
-            self.myNvars = self.Nvars
-            self.weights = [ 0 for k in xrange(self.Nvars) ]
+        self.weights = [ gauss(0,1/sqrt(self.Nvars+1)) for k in xrange(self.Nvars+1) ]
+        if self.isBackPrN is True:
+            self.weights = [ 0 for k in xrange(self.Nvars+1) ]
 
         self.afun    = 0
         self.dafundz = 0
         self.epoch   = 0
 
     def eval(self,invec):
+        """
+        ##################################
+        Return the value of the activation
+        function and its derivative
+        ##################################
+        """
         wsum = 0
         for k in xrange(self.Nvars):
             wsum += self.weights[k] * invec[k]
-        if self.isBackPrN is False:
-            wsum += self.weights[self.Nvars]
+        wsum += self.weights[self.Nvars]
 
         self.afun    = self.aFun(wsum)
         self.dafundz = self.daFunDz(wsum)
@@ -70,10 +69,12 @@ class Neuron(object):
             print "    Weight[", k, "] ", round(W,2)
 
     def reset(self,what):
-        ##################
-        # what = "all"   #
-        # what = "epoch" #
-        ##################
+        """
+        ##############
+        what = "all"
+        what = "epoch"
+        ##############
+        """
         if what == "all":
             self.__init__(self.Nvars,self.isBackPrN)
         elif what == "epoch":
@@ -88,9 +89,14 @@ class Neuron(object):
     def removeW(self,who):
         if type(who) is list:
             self.weights = [ W for k,W in enumerate(self.weights) if k not in who ]
+            self.Nvars   = len(self.weights[:])
         else:
             self.__init__(who,self.isBackPrN)
 
+    def addW(self,who):
+        print "[Neuron::addW]\tNot implemented yet"
+        quit()
+        
     def save(self,f):
         out = ""
         for W in self.weights:
