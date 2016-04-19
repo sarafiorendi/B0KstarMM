@@ -7,7 +7,7 @@ Activation function: tanh
 """
 class Neuron(object):
     lrStart = 0.005
-    lrEnd   = 0.001
+    lrEnd   = 0.0001
     tau     = 10000
 
     """
