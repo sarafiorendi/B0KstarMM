@@ -107,6 +107,7 @@ class NeuralNet(object):
         ### First layer ###
         self.FFperceptrons[0].adapt(invec,[ N.afun for N in self.BPperceptrons[self.Nperceptrons-2].neurons ])
 
+        ### Cost function ###
         return sum(1./2 * a*a for a in error)
 
     def printParams(self):

@@ -152,7 +152,7 @@ graphNNerr = TGraph()
 graphNNerr.SetTitle('NN output;x;y')
 graphNNerr.SetMarkerStyle(20)
 graphNNerr.SetMarkerSize(0.5)
-graphNNerr.SetMarkerColor(3)
+graphNNerr.SetMarkerColorAlpha(3,0.8)
 
 histoNNS = TH1D('histoNNS','histoNNS',100,-1,1)
 histoNNS.SetTitle('NN signal output;NN output;Entries [#]')

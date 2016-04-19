@@ -52,12 +52,14 @@ class Neuron(object):
         
         self.epoch += 1
         
+    ### Activation function ###
     def aFun(self,val):
         if self.isBackPrN is False:
             return tanh(val)
         else:
             return val * self.dafundz
 
+    ### d(Activation function)/dz ###
     def daFunDz(self,val):
         if self.isBackPrN is False:
             return 1 - self.afun * self.afun
