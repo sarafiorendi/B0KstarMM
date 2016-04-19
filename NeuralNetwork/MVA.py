@@ -4,11 +4,10 @@ MVA implementation with Perceptron Neural Networks
                                   by Mauro Dinardo
 ##################################################
 Always double-check:
+  - number of perceptrons&neurons
   - learnRate
   - scramble
 Complete:
-  - test corona circolare
-  - plot d_delta vs time
   - add
   - batch learning
   - porting in pyCUDA
@@ -113,16 +112,15 @@ Graphics layout and plots
 gROOT.Reset()
 SetStyle()
 
-cCost  = TCanvas('cCost', 'The Cost Function', 0, 0, 700, 500)
-cNNin  = TCanvas('cNNin', 'NN Input', 0, 0, 700, 500)
-cNNout = TCanvas('cNNout', 'NN Output', 0, 0, 700, 500)
-cNNval = TCanvas('cNNval', 'NN Values', 0, 0, 700, 500)
+cCost  = TCanvas('cCost',  'NN Cost Function', 0, 0, 700, 500)
+cNNin  = TCanvas('cNNin',  'NN Input',         0, 0, 700, 500)
+cNNout = TCanvas('cNNout', 'NN Output',        0, 0, 700, 500)
+cNNval = TCanvas('cNNval', 'NN Values',        0, 0, 700, 500)
+cDeriv = TCanvas('cDeriv', 'NN Derivatives',   0, 0, 700, 500)
+cDelta = TCanvas('cDelta', 'NN Deltas',        0, 0, 700, 500)
 
 graphNNCost = TGraph()
 graphNNCost.SetTitle('NN cost function;Epoch [#];Cost Function')
-graphNNCost.SetMarkerStyle(20)
-graphNNCost.SetMarkerSize(0.5)
-graphNNCost.SetMarkerColor(1)
 
 graphSin = TGraph()
 graphSin.SetTitle('NN input;x;y')
@@ -162,6 +160,9 @@ histoNNB = TH1D('histoNNB','histoNNB',100,-1,1)
 histoNNB.SetTitle('NN background output;NN output;Entries [#]')
 histoNNB.SetLineColor(2)
 
+graphDeriv = []
+graphDelta = []
+
 
 """
 ###############################
@@ -172,7 +173,7 @@ seed(0)
 nRuns     = 1000000
 scrStart  =   10000
 scrLen    =   10000
-saveEvery =      10
+saveEvery =     100
 
 
 """
@@ -191,6 +192,8 @@ xOffset = 3.
 yRange  = 3.
 yOffset = 0.
 noise   = 0.1
+loR     = 0.5
+hiR     = 1.
 xyCorr  = lambda x,y: ((x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset))
 """
 ####################
@@ -201,7 +204,7 @@ for i in xrange(nRuns):
     x = random() * xRange + xOffset - xRange/2
     y = random() * yRange + yOffset - yRange/2
 
-    if 0.5 < xyCorr(x,y) < 1:
+    if loR <= xyCorr(x,y) < gauss(hiR,noise):
         target = +1
         if i % saveEvery == 0:
             graphSin.SetPoint(i,x,y)
@@ -219,7 +222,7 @@ for i in xrange(nRuns):
     indx = (i-scrStart)/scrLen-1
     if cmd.doScramble and i > scrStart and (i-scrStart) % scrLen == 0 and indx < cmd.Nperceptrons:
         indx = cmd.Nperceptrons - 1 - indx
-        print "=== Scrambling perceptron [", indx, "]"
+        print "=== Scrambling perceptron [", indx, "] ==="
         NN.scramble({indx:[-1]})
 
 
@@ -227,6 +230,35 @@ for i in xrange(nRuns):
     
     if i % saveEvery == 0:
         graphNNCost.SetPoint(i/saveEvery,i,cost)
+
+        
+        """
+        #################################################
+        Neural net: saving activation function derivative
+        #################################################
+        """
+        k = 0
+        for P in NN.FFperceptrons:
+            for N in P.neurons:
+                if i == 0:
+                    graphDeriv.append(TGraph())
+                graphDeriv[k].SetPoint(i/saveEvery,i,N.dafundz)
+                k += 1
+
+        """
+        #################################
+        Neural net: saving delta function
+        #################################
+        """
+        k = 0
+        for P in NN.BPperceptrons:
+            for N in P.neurons:
+                if i == 0:
+                    graphDelta.append(TGraph())
+                graphDelta[k].SetPoint(i/saveEvery,i,N.afun)
+                k += 1
+
+                
 NN.printParams()
 NN.save("NeuralNet.txt")
 
@@ -243,13 +275,13 @@ for i in xrange(nRuns):
 
     NNoutput = NN.eval([x,y])
     
-    if ((NNoutput[0] > 0 and 0.5 < xyCorr(x,y) < 1) or (NNoutput[0] <= 0 and (xyCorr(x,y) <= 0.5 or 1 <= xyCorr(x,y)))):
+    if ((NNoutput[0] > 0 and loR <= xyCorr(x,y) < hiR) or (NNoutput[0] <= 0 and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y)))):
         count += 1
 
     if i % saveEvery == 0:
-        if (NNoutput[0] > 0 and 0.5 < xyCorr(x,y) < 1):
+        if (NNoutput[0] > 0 and loR <= xyCorr(x,y) < hiR):
             graphSout.SetPoint(i,x,y)
-        elif (NNoutput[0] <= 0 and (xyCorr(x,y) <= 0.5 or 1 <= xyCorr(x,y))):
+        elif (NNoutput[0] <= 0 and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y))):
             graphBout.SetPoint(i,x,y)
         else:
             graphNNerr.SetPoint(i,x,y)
@@ -259,7 +291,7 @@ for i in xrange(nRuns):
     elif NNoutput[0] <= 0:
         histoNNB.Fill(NNoutput[0])
 
-print "\n--> I got it right:", count / nRuns * 100., "% <--"
+print "\n=== I got it right:", count / nRuns * 100., "% ==="
 
 
 
@@ -294,6 +326,26 @@ histoNNS.Draw()
 histoNNB.Draw('same')
 cNNval.Modified()
 cNNval.Update()
+
+cDeriv.cd()
+graphDeriv[0].Draw('AL')
+graphDeriv[0].SetTitle('NN activation function derivative;Epoch [#];Activation Function Derivative')
+graphDeriv[0].SetLineColor(1)
+for k in xrange(1,len(graphDeriv[:])):
+    graphDeriv[k].SetLineColor(k+1)
+    graphDeriv[k].Draw('L same')
+cDeriv.Modified()
+cDeriv.Update()
+
+cDelta.cd()
+graphDelta[0].Draw('AL')
+graphDelta[0].SetTitle('NN delta function;Epoch [#];Delta Function')
+graphDelta[0].SetLineColor(1)
+for k in xrange(1,len(graphDelta[:])):
+    graphDelta[k].SetLineColor(k+1)
+    graphDelta[k].Draw('L same')
+cDelta.Modified()
+cDelta.Update()
 
 
 """
