@@ -11,17 +11,17 @@ class Neuron(object):
     tau     = 10000
 
     """
-    ########################################
-    Nvars     = number of input variables
-    isBackPrN = is a backpropagation network
-    ########################################
+    ####################################
+    Nvars = number of input variables
+    isBPN = is a backpropagation network
+    ####################################
     """
-    def __init__(self,Nvars,isBackPrN):
-        self.Nvars     = Nvars
-        self.isBackPrN = isBackPrN
+    def __init__(self,Nvars,isBPN=False):
+        self.Nvars = Nvars
+        self.isBPN = isBPN
         
         self.weights = [ gauss(0,1/sqrt(self.Nvars+1)) for k in xrange(self.Nvars+1) ]
-        if self.isBackPrN is True:
+        if self.isBPN is True:
             self.weights = [ 0 for k in xrange(self.Nvars+1) ]
 
         self.afun    = 0
@@ -54,14 +54,14 @@ class Neuron(object):
         
     ### Activation function ###
     def aFun(self,val):
-        if self.isBackPrN is False:
+        if self.isBPN is False:
             return tanh(val)
         else:
             return val * self.dafundz
 
     ### d(Activation function)/dz ###
     def daFunDz(self,val):
-        if self.isBackPrN is False:
+        if self.isBPN is False:
             return 1 - self.afun * self.afun
         else:
             return self.dafundz
@@ -78,7 +78,7 @@ class Neuron(object):
         ##############
         """
         if what == "all":
-            self.__init__(self.Nvars,self.isBackPrN)
+            self.__init__(self.Nvars,self.isBPN)
         elif what == "epoch":
             self.epoch = 0
         else:
@@ -93,7 +93,7 @@ class Neuron(object):
             self.weights = [ W for k,W in enumerate(self.weights) if k not in who ]
             self.Nvars   = len(self.weights[:])
         else:
-            self.__init__(who,self.isBackPrN)
+            self.__init__(who)
 
     def addW(self,who):
         print "[Neuron::addW]\tNot implemented yet"

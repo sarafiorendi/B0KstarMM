@@ -4,7 +4,7 @@ MVA implementation with Perceptron Neural Networks
                                   by Mauro Dinardo
 ##################################################
 Always double-check:
-  - number of perceptrons&neurons
+  - number of perceptrons & neurons
   - learnRate
   - scramble
 Complete:
@@ -94,7 +94,7 @@ def SetStyle():
     gStyle.SetStatY(0.9)
 
 
-
+    
     
 """
 ############
@@ -165,15 +165,23 @@ graphDelta = []
 
 
 """
-###############################
-Use always the same random seed
-###############################
+###################
+Internal parameters
+###################
 """
 seed(0)
 nRuns     = 1000000
 scrStart  =   10000
 scrLen    =   10000
 saveEvery =     100
+xRange    = 3.
+xOffset   = 3.
+yRange    = 3.
+yOffset   = 0.
+noise     = 0.1
+loR       = 0.5
+hiR       = 1.
+xyCorr    = lambda x,y: ((x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset))
 
 
 """
@@ -181,20 +189,11 @@ saveEvery =     100
 Neural net: initialization
 ##########################
 """
+seed(0)
 NN = NeuralNet(cmd.Nvars,cmd.Nperceptrons,cmd.Nneurons)
 NN.printParams()
 
 
-
-
-xRange  = 3.
-xOffset = 3.
-yRange  = 3.
-yOffset = 0.
-noise   = 0.1
-loR     = 0.5
-hiR     = 1.
-xyCorr  = lambda x,y: ((x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset))
 """
 ####################
 Neural net: training
@@ -292,8 +291,6 @@ for i in xrange(nRuns):
         histoNNB.Fill(NNoutput[0])
 
 print "\n=== I got it right:", count / nRuns * 100., "% ==="
-
-
 
 
 """
