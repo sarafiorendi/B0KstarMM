@@ -10,7 +10,7 @@ class Perceptron(object):
     """
     def __init__(self,Nneurons,Nvars,isBPN=False):
         self.Nneurons = Nneurons
-        self.neurons  = [ Neuron(Nvars,isBackPrN) for i in xrange(self.Nneurons) ]
+        self.neurons  = [ Neuron(Nvars,isBPN) for i in xrange(self.Nneurons) ]
 
     def eval(self,invec):
         return [ N.eval(invec) for N in self.neurons ]

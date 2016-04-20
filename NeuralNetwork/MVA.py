@@ -170,10 +170,10 @@ Internal parameters
 ###################
 """
 seed(0)
-nRuns     = 1000000
-scrStart  =   10000
-scrLen    =   10000
-saveEvery =     100
+nRuns     = 10000000
+scrStart  =    10000
+scrLen    =    10000
+saveEvery =     1000
 xRange    = 3.
 xOffset   = 3.
 yRange    = 3.
