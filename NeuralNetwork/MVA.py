@@ -18,7 +18,7 @@ e.g.: python MVA.py -nv 2 -np 6 -nn 2 3 4 3 2 1
 from argparse  import ArgumentParser
 from random    import seed, random, gauss
 
-from ROOT      import gROOT, gStyle, TCanvas, TGraph, TH1D, TGaxis
+from ROOT      import gROOT, gStyle, TCanvas, TGraph, TH1D, TGaxis, TLegend
 
 from NeuralNet import NeuralNet
 
@@ -64,8 +64,8 @@ def SetStyle():
     gStyle.SetTextFont(42)
     
     gStyle.SetOptTitle(0)
-    gStyle.SetOptFit(1112)
-    gStyle.SetOptStat(1110)
+    gStyle.SetOptFit(0)
+    gStyle.SetOptStat(0)
     
     gStyle.SetPadRightMargin(0.08)
     gStyle.SetPadTopMargin(0.11)
@@ -150,7 +150,7 @@ graphNNerr = TGraph()
 graphNNerr.SetTitle('NN output;x;y')
 graphNNerr.SetMarkerStyle(20)
 graphNNerr.SetMarkerSize(0.5)
-graphNNerr.SetMarkerColorAlpha(3,0.3)
+graphNNerr.SetMarkerColor(3)
 
 histoNNS = TH1D('histoNNS','histoNNS',100,-1,1)
 histoNNS.SetTitle('NN signal output;NN output;Entries [#]')
@@ -160,6 +160,12 @@ histoNNB = TH1D('histoNNB','histoNNB',100,-1,1)
 histoNNB.SetTitle('NN background output;NN output;Entries [#]')
 histoNNB.SetLineColor(2)
 
+legDeriv = TLegend(0.8, 0.12, 0.92, 0.89, "")
+legDeriv.SetTextSize(0.03)
+legDeriv.SetFillStyle(0)
+legDelta = TLegend(0.8, 0.12, 0.92, 0.89, "")
+legDelta.SetTextSize(0.03)
+legDelta.SetFillStyle(0)
 graphDeriv = []
 graphDelta = []
 
@@ -199,18 +205,18 @@ NN.printParams()
 Neural net: training
 ####################
 """
-for i in xrange(nRuns):
+for n in xrange(nRuns):
     x = random() * xRange + xOffset - xRange/2
     y = random() * yRange + yOffset - yRange/2
 
-    if loR <= xyCorr(x,y) < gauss(hiR,noise):
+    if lgauss(loR,noise) <= xyCorr(x,y) < gauss(hiR,noise):
         target = +1
-        if i % saveEvery == 0:
-            graphSin.SetPoint(i,x,y)
+        if n % saveEvery == 0:
+            graphSin.SetPoint(n,x,y)
     else:
         target = -1
-        if i % saveEvery == 0:
-            graphBin.SetPoint(i,x,y)
+        if n % saveEvery == 0:
+            graphBin.SetPoint(n,x,y)
 
 
     """
@@ -218,8 +224,8 @@ for i in xrange(nRuns):
     Neural net: scrambling
     ######################
     """
-    indx = (i-scrStart)/scrLen-1
-    if cmd.doScramble and i > scrStart and (i-scrStart) % scrLen == 0 and indx < cmd.Nperceptrons:
+    indx = (n-scrStart)/scrLen-1
+    if cmd.doScramble and n > scrStart and (n-scrStart) % scrLen == 0 and indx < cmd.Nperceptrons:
         indx = cmd.Nperceptrons - 1 - indx
         print "=== Scrambling perceptron [", indx, "] ==="
         NN.scramble({indx:[-1]})
@@ -227,8 +233,8 @@ for i in xrange(nRuns):
 
     cost = NN.learn([x,y],[target])
     
-    if i % saveEvery == 0:
-        graphNNCost.SetPoint(i/saveEvery,i,cost)
+    if n % saveEvery == 0:
+        graphNNCost.SetPoint(n/saveEvery,n,cost)
 
         
         """
@@ -237,11 +243,13 @@ for i in xrange(nRuns):
         #################################################
         """
         k = 0
-        for P in NN.FFperceptrons:
-            for N in P.neurons:
-                if i == 0:
+        for j,P in enumerate(NN.FFperceptrons):
+            for i,N in enumerate(P.neurons):
+                if n == 0:
                     graphDeriv.append(TGraph())
-                graphDeriv[k].SetPoint(i/saveEvery,i,N.dafundz)
+                    leg = "P:" + str(j) +  "; N:" + str(i)
+                    legDeriv.AddEntry(graphDeriv[k],leg,"L");
+                graphDeriv[k].SetPoint(n/saveEvery,n,N.dafundz)
                 k += 1
 
         """
@@ -250,11 +258,13 @@ for i in xrange(nRuns):
         #################################
         """
         k = 0
-        for P in NN.BPperceptrons:
-            for N in P.neurons:
-                if i == 0:
+        for j,P in enumerate(NN.BPperceptrons):
+            for i,N in enumerate(P.neurons):
+                if n == 0:
                     graphDelta.append(TGraph())
-                graphDelta[k].SetPoint(i/saveEvery,i,N.afun)
+                    leg = "P:" + str(j) +  "; N:" + str(i)
+                    legDelta.AddEntry(graphDelta[k],leg,"L");
+                graphDelta[k].SetPoint(n/saveEvery,n,N.afun)
                 k += 1
 
                 
@@ -268,7 +278,7 @@ Neural net: test
 ################
 """
 count = 0.
-for i in xrange(nRuns):
+for n in xrange(nRuns):
     x = random() * xRange + xOffset - xRange/2
     y = random() * yRange + yOffset - yRange/2
 
@@ -277,13 +287,13 @@ for i in xrange(nRuns):
     if ((NNoutput[0] > 0 and loR <= xyCorr(x,y) < hiR) or (NNoutput[0] <= 0 and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y)))):
         count += 1
 
-    if i % saveEvery == 0:
+    if n % saveEvery == 0:
         if (NNoutput[0] > 0 and loR <= xyCorr(x,y) < hiR):
-            graphSout.SetPoint(i,x,y)
+            graphSout.SetPoint(n/saveEvery,x,y)
         elif (NNoutput[0] <= 0 and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y))):
-            graphBout.SetPoint(i,x,y)
+            graphBout.SetPoint(n/saveEvery,x,y)
         else:
-            graphNNerr.SetPoint(i,x,y)
+            graphNNerr.SetPoint(n/saveEvery,x,y)
 
     if NNoutput[0] > 0:
         histoNNS.Fill(NNoutput[0])
@@ -328,6 +338,7 @@ cDeriv.cd()
 graphDeriv[0].Draw('AL')
 graphDeriv[0].SetTitle('NN activation function derivative;Epoch [#];Activation Function Derivative')
 graphDeriv[0].SetLineColor(1)
+legDeriv.Draw("same")
 for k in xrange(1,len(graphDeriv[:])):
     graphDeriv[k].SetLineColor(k+1)
     graphDeriv[k].Draw('L same')
@@ -338,6 +349,7 @@ cDelta.cd()
 graphDelta[0].Draw('AL')
 graphDelta[0].SetTitle('NN delta function;Epoch [#];Delta Function')
 graphDelta[0].SetLineColor(1)
+legDelta.Draw("same")
 for k in xrange(1,len(graphDelta[:])):
     graphDelta[k].SetLineColor(k+1)
     graphDelta[k].Draw('L same')
