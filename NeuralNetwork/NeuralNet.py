@@ -153,6 +153,14 @@ class NeuralNet(object):
         return out
 
     def remove(self,who):
+        """
+        #################################################################
+        e.g.:
+        NN.remove({-1:[]})   --> remove everything
+        NN.remove({1:[-1]})  --> remove perceptron 1
+        NN.remove({2:[0,3]}) --> remove neurons 0 and 2 from perceptron 2
+        #################################################################
+        """
         if -1 in who.keys():
             who = { j:[-1] for j in xrange(self.Nperceptrons) }
 
@@ -173,8 +181,25 @@ class NeuralNet(object):
         self.initBPnetwork()
 
     def add(self,who):
-        print "[NeuralNet::add]\tNot implemented yet"
-        quit()
+        """
+        #####################################################################
+        e.g.:
+        NN.add({1:3})     --> add new perceptron with 3 neurons in position 1
+        NN.add({2:[0,3]}) --> add neurons in position 0 and 3 in perceptron 2
+        #####################################################################
+        """
+        for j in who:
+            if type(who[j]) is list:
+                self.FFperceptrons[j].addN(who[j])
+            else:
+                self.Nperceptrons += 1
+                
+                self.FFperceptrons.insert(j,Perceptron(who[j],self.FFperceptrons[j].neurons[0].Nvars))
+
+            if j < self.Nperceptrons-1:
+                self.FFperceptrons[j+1].addW(who[j])
+                
+        self.initBPnetwork()
 
     def save(self,name):
         f = open(name,"w")

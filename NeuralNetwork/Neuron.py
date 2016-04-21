@@ -89,16 +89,14 @@ class Neuron(object):
         self.weights = [ gauss(W,(1 - self.dafundz) / sqrt(self.Nvars+1)) for W in self.weights ]
 
     def removeW(self,who):
-        if type(who) is list:
             self.weights = [ W for k,W in enumerate(self.weights) if k not in who ]
             self.Nvars   = len(self.weights[:])
-        else:
-            self.__init__(who)
 
     def addW(self,who):
-        print "[Neuron::addW]\tNot implemented yet"
-        quit()
-        
+        self.Nvars += len(who[:])        
+        for k,pos in enumerate(who):
+            self.weights.insert(pos+k,gauss(0,1/sqrt(self.Nvars+1)))
+            
     def save(self,f):
         out = ""
         for W in self.weights:

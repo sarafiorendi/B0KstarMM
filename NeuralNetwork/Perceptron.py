@@ -44,16 +44,24 @@ class Perceptron(object):
 
     def removeW(self,who):
          for N in self.neurons:
-            N.removeW(who)
+             if type(who) is list:
+                 N.removeW(who)
+             else:
+                N.__init__(who)
 
     def addN(self,who):
-        print "[Perceptron::addN]\tNot implemented yet"
-        quit()
+        self.Nneurons += len(who[:])
+        
+        for i,pos in enumerate(who):
+            self.neurons.insert(pos+i,Neuron(self.neurons[0].Nvars))
 
     def addW(self,who):
-        print "[Perceptron::addW]\tNot implemented yet"
-        quit()
-            
+        for N in self.neurons:
+            if type(who) is list:
+                N.addW(who)
+            else:
+                N.__init__(who)
+
     def save(self,f):
         for i,N in enumerate(self.neurons):
             f.write("  Neuron[ {0:d} ] aFun = {1:20f} d(aFun)/dz = {2:20f}".format(i,N.afun,N.dafundz))

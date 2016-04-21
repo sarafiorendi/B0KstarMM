@@ -3,16 +3,15 @@
 MVA implementation with Perceptron Neural Networks
                                   by Mauro Dinardo
 ##################################################
-Always double-check:
+Before running double-check:
   - number of perceptrons & neurons
   - learnRate
   - scramble
-Complete:
-  - add
+To-do:
   - batch learning
   - porting in pyCUDA
 ##################################################
-e.g.: python MVA.py -nv 2 -np 6 -nn 2 3 4 3 2 1
+e.g.:    python MVA.py -nv 2 -np 6 -nn 2 3 4 3 2 1
 ##################################################
 """
 from argparse  import ArgumentParser
@@ -163,9 +162,11 @@ histoNNB.SetLineColor(2)
 legDeriv = TLegend(0.8, 0.12, 0.92, 0.89, "")
 legDeriv.SetTextSize(0.03)
 legDeriv.SetFillStyle(0)
+
 legDelta = TLegend(0.8, 0.12, 0.92, 0.89, "")
 legDelta.SetTextSize(0.03)
 legDelta.SetFillStyle(0)
+
 graphDeriv = []
 graphDelta = []
 
@@ -177,14 +178,14 @@ Internal parameters
 """
 seed(0)
 nRuns     = 10000000
-scrStart  =    10000
-scrLen    =    10000
+scrStart  =   100000
+scrLen    =   100000
 saveEvery =     1000
 xRange    = 3.
 xOffset   = 3.
 yRange    = 3.
 yOffset   = 0.
-noise     = 0.1
+noiseBand = 0.1
 loR       = 0.5
 hiR       = 1.
 xyCorr    = lambda x,y: ((x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset))
@@ -209,7 +210,7 @@ for n in xrange(nRuns):
     x = random() * xRange + xOffset - xRange/2
     y = random() * yRange + yOffset - yRange/2
 
-    if lgauss(loR,noise) <= xyCorr(x,y) < gauss(hiR,noise):
+    if gauss(loR,noiseBand) <= xyCorr(x,y) < gauss(hiR,noiseBand):
         target = +1
         if n % saveEvery == 0:
             graphSin.SetPoint(n,x,y)
