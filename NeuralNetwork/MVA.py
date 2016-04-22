@@ -64,7 +64,7 @@ def SetStyle():
     
     gStyle.SetOptTitle(0)
     gStyle.SetOptFit(0)
-    gStyle.SetOptStat(0)
+    gStyle.SetOptStat(1111)
     
     gStyle.SetPadRightMargin(0.08)
     gStyle.SetPadTopMargin(0.11)
@@ -165,11 +165,11 @@ histoNNE.SetLineColor(3)
 
 legDeriv = TLegend(0.8, 0.12, 0.92, 0.89, "")
 legDeriv.SetTextSize(0.03)
-legDeriv.SetFillStyle(0)
+legDeriv.SetFillStyle(1001)
 
 legDelta = TLegend(0.8, 0.12, 0.92, 0.89, "")
 legDelta.SetTextSize(0.03)
-legDelta.SetFillStyle(0)
+legDelta.SetFillStyle(1001)
 
 graphDeriv = []
 graphDelta = []
@@ -184,7 +184,7 @@ seed(0)
 nRuns     = 10000000
 scrStart  =   100000
 scrLen    =   100000
-saveEvery =     1000
+saveEvery =      500
 xRange    = 3.
 xOffset   = 3.
 yRange    = 3.
@@ -335,9 +335,9 @@ cNNout.Modified()
 cNNout.Update()
 
 cNNval.cd()
-histoNNS.Draw()
-histoNNB.Draw('same')
-histoNNE.Draw('same')
+histoNNS.Draw("s")
+histoNNB.Draw('sames')
+histoNNE.Draw('sames')
 cNNval.Modified()
 cNNval.Update()
 
@@ -345,10 +345,10 @@ cDeriv.cd()
 graphDeriv[0].Draw('AL')
 graphDeriv[0].SetTitle('NN activation function derivative;Epoch [#];Activation Function Derivative')
 graphDeriv[0].SetLineColor(1)
-legDeriv.Draw("same")
 for k in xrange(1,len(graphDeriv[:])):
     graphDeriv[k].SetLineColor(k+1)
     graphDeriv[k].Draw('L same')
+legDeriv.Draw("same")
 cDeriv.Modified()
 cDeriv.Update()
 
@@ -356,10 +356,10 @@ cDelta.cd()
 graphDelta[0].Draw('AL')
 graphDelta[0].SetTitle('NN delta function;Epoch [#];Delta Function')
 graphDelta[0].SetLineColor(1)
-legDelta.Draw("same")
 for k in xrange(1,len(graphDelta[:])):
     graphDelta[k].SetLineColor(k+1)
     graphDelta[k].Draw('L same')
+legDelta.Draw("same")
 cDelta.Modified()
 cDelta.Update()
 
