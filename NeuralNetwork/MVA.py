@@ -163,11 +163,11 @@ histoNNE = TH1D('histoNNE','histoNNE',100,-1,1)
 histoNNE.SetTitle('NN error output;NN output;Entries [#]')
 histoNNE.SetLineColor(3)
 
-legDeriv = TLegend(0.8, 0.12, 0.92, 0.89, "")
+legDeriv = TLegend(0.88, 0.12, 1.0, 0.89, "")
 legDeriv.SetTextSize(0.03)
 legDeriv.SetFillStyle(1001)
 
-legDelta = TLegend(0.8, 0.12, 0.92, 0.89, "")
+legDelta = TLegend(0.88, 0.12, 1.0, 0.89, "")
 legDelta.SetTextSize(0.03)
 legDelta.SetFillStyle(1001)
 
@@ -181,7 +181,7 @@ Internal parameters
 ###################
 """
 seed(0)
-nRuns     = 10000000
+nRuns     = 10000
 scrStart  =   100000
 scrLen    =   100000
 saveEvery =      500

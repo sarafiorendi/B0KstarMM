@@ -204,7 +204,7 @@ class NeuralNet(object):
         
         f.write("### M.E.D. Neural Network ###\n")
         f.write("# Nvars, Nperceptrons, Nneurons\n")
-        out = str(self.FFperceptrons[0].neurons[0].Nvars) + ", " + str(self.Nperceptrons) + ", ["
+        out = str(self.FFperceptrons[0].neurons[0].Nvars) + " , " + str(self.Nperceptrons) + " , ["
         for P in self.FFperceptrons:
             out += " " + str(P.Nneurons)
         out += " ]\n\n"
@@ -224,8 +224,10 @@ class NeuralNet(object):
         while len(lele) == 0 or (len(lele) > 0 and "#" in lele[0]):
             line = f.readline()
             lele = line.split()
+
+        leled = [ int(lele[i]) for i in xrange(len(lele)) if lele[i].isdigit() ]
         
-        self.__init__(int(lele[0]),int(lele[1]),[ int(lele[i]) for i in xrange(2,len(lele)) if lele[i].isdigit() ])
+        self.__init__(leled[0],leled[1],leled[2:])
 
         for P in self.FFperceptrons:
             P.read(f)
