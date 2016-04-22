@@ -43,10 +43,10 @@ class Perceptron(object):
         self.Nneurons = len(self.neurons[:])
 
     def removeW(self,who):
-         for N in self.neurons:
-             if type(who) is list:
-                 N.removeW(who)
-             else:
+        for N in self.neurons:
+            if type(who) is list:
+                N.removeW(who)
+            else:
                 N.__init__(who)
 
     def addN(self,who):
