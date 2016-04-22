@@ -1,11 +1,9 @@
 """
 ################################################
-Feedforward Neural Network
-Cost function: 1/2 (target - result)^2
-Learning algorithm: online/incremental learning
-                    with gradient descent
-################################################
-Documentation: neuralnetworksanddeeplearning.com
+.Neural Network:     feedforward
+.Cost function:      1/2 (target - result)^2
+.Learning algorithm: online/incremental learning
+                     with gradient descent
 ################################################
 """
 from Perceptron import Perceptron
@@ -206,7 +204,7 @@ class NeuralNet(object):
         
         f.write("### M.E.D. Neural Network ###\n")
         f.write("# Nvars, Nperceptrons, Nneurons\n")
-        out = str(self.FFperceptrons[0].neurons[0].Nvars) + " " + str(self.Nperceptrons) + " ["
+        out = str(self.FFperceptrons[0].neurons[0].Nvars) + ", " + str(self.Nperceptrons) + ", ["
         for P in self.FFperceptrons:
             out += " " + str(P.Nneurons)
         out += " ]\n\n"
