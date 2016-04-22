@@ -335,7 +335,7 @@ cNNout.Modified()
 cNNout.Update()
 
 cNNval.cd()
-histoNNS.Draw("s")
+histoNNS.Draw()
 histoNNB.Draw('sames')
 histoNNE.Draw('sames')
 cNNval.Modified()
