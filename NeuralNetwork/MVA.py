@@ -93,8 +93,8 @@ def SetStyle():
     gStyle.SetStatY(0.9)
 
 
-    
-    
+
+
 """
 ############
 Main program
@@ -158,6 +158,10 @@ histoNNS.SetLineColor(4)
 histoNNB = TH1D('histoNNB','histoNNB',100,-1,1)
 histoNNB.SetTitle('NN background output;NN output;Entries [#]')
 histoNNB.SetLineColor(2)
+
+histoNNE = TH1D('histoNNE','histoNNE',100,-1,1)
+histoNNE.SetTitle('NN error output;NN output;Entries [#]')
+histoNNE.SetLineColor(3)
 
 legDeriv = TLegend(0.8, 0.12, 0.92, 0.89, "")
 legDeriv.SetTextSize(0.03)
@@ -234,6 +238,7 @@ for n in xrange(nRuns):
 
 
     cost = NN.learn([x,y],[target])
+
     
     if n % saveEvery == 0:
         graphNNCost.SetPoint(n/saveEvery,n,cost)
@@ -293,15 +298,13 @@ for n in xrange(nRuns):
     if n % saveEvery == 0:
         if (NNoutput[0] > 0 and loR <= xyCorr(x,y) < hiR):
             graphSout.SetPoint(n/saveEvery,x,y)
+            histoNNS.Fill(NNoutput[0])
         elif (NNoutput[0] <= 0 and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y))):
             graphBout.SetPoint(n/saveEvery,x,y)
+            histoNNB.Fill(NNoutput[0])
         else:
             graphNNerr.SetPoint(n/saveEvery,x,y)
-
-    if NNoutput[0] > 0:
-        histoNNS.Fill(NNoutput[0])
-    elif NNoutput[0] <= 0:
-        histoNNB.Fill(NNoutput[0])
+            histoNNE.Fill(NNoutput[0])
 
 print "\n=== Success rate:", count / nRuns * 100., "% ==="
 
@@ -334,6 +337,7 @@ cNNout.Update()
 cNNval.cd()
 histoNNS.Draw()
 histoNNB.Draw('same')
+histoNNE.Draw('same')
 cNNval.Modified()
 cNNval.Update()
 
