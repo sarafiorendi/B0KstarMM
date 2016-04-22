@@ -206,6 +206,7 @@ NN.printParams()
 Neural net: training
 ####################
 """
+print "\n=== Training neural netowrk ==="
 for n in xrange(nRuns):
     x = random() * xRange + xOffset - xRange/2
     y = random() * yRange + yOffset - yRange/2
@@ -278,6 +279,7 @@ NN.save("NeuralNet.txt")
 Neural net: test
 ################
 """
+print "\n=== Testing neural netowrk ==="
 count = 0.
 for n in xrange(nRuns):
     x = random() * xRange + xOffset - xRange/2
@@ -301,7 +303,7 @@ for n in xrange(nRuns):
     elif NNoutput[0] <= 0:
         histoNNB.Fill(NNoutput[0])
 
-print "\n=== I got it right:", count / nRuns * 100., "% ==="
+print "\n=== Success rate:", count / nRuns * 100., "% ==="
 
 
 """
