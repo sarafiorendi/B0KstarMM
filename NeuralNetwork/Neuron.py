@@ -89,8 +89,8 @@ class Neuron(object):
         self.weights = [ gauss(W,(1 - self.dafundz) / sqrt(self.Nvars+1)) for W in self.weights ]
 
     def removeW(self,who):
-            self.weights = [ W for k,W in enumerate(self.weights) if k not in who ]
-            self.Nvars   = len(self.weights[:])
+        self.weights = [ W for k,W in enumerate(self.weights) if k not in who ]
+        self.Nvars   = len(self.weights[:])
 
     def addW(self,who):
         self.Nvars += len(who[:])        

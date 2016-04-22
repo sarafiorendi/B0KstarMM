@@ -1,8 +1,8 @@
 """
-##################################################
-MVA implementation with Perceptron Neural Networks
-                                  by Mauro Dinardo
-##################################################
+###############################################
+MVA implementation with Neural Networks
+                       by Mauro Dinardo
+###############################################
 Before running double-check:
   - number of perceptrons & neurons
   - learnRate
@@ -10,9 +10,9 @@ Before running double-check:
 To-do:
   - batch learning
   - porting in pyCUDA
-##################################################
-e.g.:    python MVA.py -nv 2 -np 6 -nn 2 3 4 3 2 1
-##################################################
+###############################################
+e.g.: python MVA.py -nv 2 -np 6 -nn 2 3 4 3 2 1
+###############################################
 """
 from argparse  import ArgumentParser
 from random    import seed, random, gauss
