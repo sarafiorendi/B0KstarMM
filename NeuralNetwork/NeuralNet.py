@@ -85,7 +85,7 @@ class NeuralNet(object):
         ###############
         """
         self.copyFFtoBPweights()
-        dcdz = [ error[i] * N.dafundz for i,N in enumerate(self.FFperceptrons[self.Nperceptrons-1].neurons) ]
+        dcdz = [ e * N.dafundz for e,N in zip(error,self.FFperceptrons[self.Nperceptrons-1].neurons) ]
         self.evalBP(dcdz)
 
         """

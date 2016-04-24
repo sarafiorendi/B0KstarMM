@@ -16,8 +16,8 @@ class Perceptron(object):
         return [ N.eval(invec) for N in self.neurons ]
 
     def adapt(self,invec,dcdz):
-        for i,N in enumerate(self.neurons):
-            N.adapt(invec,dcdz[i])
+        for d,N in zip(dcdz,self.neurons):
+            N.adapt(invec,d)
 
     def printParams(self):
         for i,N in enumerate(self.neurons):
