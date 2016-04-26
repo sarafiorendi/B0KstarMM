@@ -24,16 +24,25 @@ class Perceptron(object):
             print "  Neuron[", i, "aFun =", round(N.afun,2), "d(aFun)/dz =", round(N.dafundz,2), "]"
             N.printParams()
 
-    def reset(self,what):
+    def reset(self):
         for N in self.neurons:
-            N.reset(what)
+            N.reset()
 
+    def sum2W(self):
+        return sum(N.sum2W() for N in self.neurons)
+            
     def scramble(self,who):
         if who[0] == -1:
             who = [ i for i in xrange(self.Nneurons) ]
 
         for i in who:
             self.neurons[i].scramble()
+
+    def outputMin(self,indx):
+        return self.neurons[indx].outputMin
+
+    def outputMax(self,indx):
+        return self.neurons[indx].outputMax
 
     def removeN(self,who):
         if who[0] == -1:

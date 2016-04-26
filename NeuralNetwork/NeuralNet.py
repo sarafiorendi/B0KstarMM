@@ -1,10 +1,10 @@
 """
-################################################
-.Neural Network:     feedforward
-.Cost function:      1/2 (target - result)^2
-.Learning algorithm: online/incremental learning
-                     with gradient descent
-################################################
+#############################################
+.Neural Network type: feedforward
+.Cost function:       1/2 (result - target)^2
+.Learning algorithm:  online/incremental with
+                      gradient descent
+#############################################
 """
 from Perceptron import Perceptron
 
@@ -77,7 +77,7 @@ class NeuralNet(object):
         ###########
         """
         result = self.eval(invec)
-        error  = [ a - b for a,b in zip(target,result) ]
+        error  = [ a - b for a,b in zip(result,target) ]
 
         """
         ###############
@@ -106,6 +106,9 @@ class NeuralNet(object):
         self.FFperceptrons[0].adapt(invec,[ N.afun for N in self.BPperceptrons[self.Nperceptrons-2].neurons ])
 
         ### Cost function ###
+        # @TMP@
+#        regular = self.FFperceptrons[0].neurons[0].regular / 2 * sum(P.sum2W() for P in self.FFperceptrons)
+#        return sum(1./2 * a*a for a in error) + regular
         return sum(1./2 * a*a for a in error)
 
     def printParams(self):
@@ -119,12 +122,12 @@ class NeuralNet(object):
             print "Perceptron[", j, "]"
             P.printParams()
 
-    def reset(self,what):
+    def reset(self):
         for P in self.FFperceptrons:
-            P.reset(what)
+            P.reset()
 
         for P in self.BPperceptrons:
-            P.reset(what)
+            P.reset()
 
     def scramble(self,who):
         if -1 in who.keys():
@@ -149,6 +152,12 @@ class NeuralNet(object):
                     out.FFperceptrons[j].neurons[i].weights[k] = self.FFperceptrons[j].neurons[i].weights[k]
 
         return out
+
+    def outputMin(self,indx):
+        return self.FFperceptrons[indx].outputMin(0)
+
+    def outputMax(self,indx):
+        return self.FFperceptrons[indx].outputMax(0)
 
     def remove(self,who):
         """
@@ -200,15 +209,20 @@ class NeuralNet(object):
         self.initBPnetwork()
 
     def save(self,name):
-        f = open(name,"w")
+        f   = open(name,"w")
+        out = []
         
         f.write("### M.E.D. Neural Network ###\n")
-        f.write("# Nvars, Nperceptrons, Nneurons\n")
-        out = str(self.FFperceptrons[0].neurons[0].Nvars) + " , " + str(self.Nperceptrons) + " , ["
+        f.write("# {0:20s} {1:20s} {2:40s} {3:20s}\n".format("Nvars","Nperceptrons","Nneurons","Learn rate"))
+
+        out.append(str(self.FFperceptrons[0].neurons[0].Nvars))
+        out.append(str(self.Nperceptrons))
+        out.append("[")
         for P in self.FFperceptrons:
-            out += " " + str(P.Nneurons)
-        out += " ]\n\n"
-        f.write(out)
+            out[-1] += " " + str(P.Nneurons)
+        out[-1] += " ]"
+        out.append(str(self.FFperceptrons[0].neurons[0].lRate))
+        f.write("  {0:20s} {1:20s} {2:40s} {3:20s}\n\n".format(out[0],out[1],out[2],out[3]))
 
         for j,P in enumerate(self.FFperceptrons):
             f.write("Perceptron[ " + str(j) + " ]\n")
@@ -217,19 +231,32 @@ class NeuralNet(object):
         f.close()
 
     def read(self,name):
-        f    = open(name,"r")
-        line = f.readline()
-        lele = line.split()
+        f     = open(name,"r")
+        line  = f.readline()
+        lele  = line.split()
+        leled = []
         
         while len(lele) == 0 or (len(lele) > 0 and "#" in lele[0]):
             line = f.readline()
             lele = line.split()
 
-        leled = [ int(lele[i]) for i in xrange(len(lele)) if lele[i].isdigit() ]
-        
+        for i in xrange(len(lele)):
+            if lele[i].isdigit():
+                leled.append(int(lele[i]))
+            elif self.isfloat(lele[i]):
+                lRate = float(lele[i])
+
         self.__init__(leled[0],leled[1],leled[2:])
+        self.FFperceptrons[0].neurons[0].lRate = lRate
 
         for P in self.FFperceptrons:
             P.read(f)
 
         f.close()
+
+    def isfloat(self,value):
+        try:
+            float(value)
+            return True
+        except ValueError:
+            return False

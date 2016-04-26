@@ -1,15 +1,16 @@
 from random import gauss
-from math   import tanh, sqrt, exp
+from math   import exp, sqrt, tanh
 """
 #########################
 Activation function: tanh
+Regularization:      L2
 #########################
 """
 class Neuron(object):
-    lrStart = 0.01
-    lrEnd   = 0.0001
-    tau     = 10000
-
+    lRate     = 0.01
+    regular   = 0.
+    outputMin = -1.
+    outputMax = +1.
     """
     ####################################
     Nvars = number of input variables
@@ -19,14 +20,14 @@ class Neuron(object):
     def __init__(self,Nvars,isBPN=False):
         self.Nvars = Nvars
         self.isBPN = isBPN
-        
-        self.weights = [ gauss(0,1/sqrt(self.Nvars+1)) for k in xrange(self.Nvars+1) ]
+
+        self.weights = [ gauss(0,1/sqrt(self.Nvars)) for k in xrange(self.Nvars) ]
+        self.weights.append(gauss(0,1))
         if self.isBPN is True:
             self.weights = [ 0 for k in xrange(self.Nvars+1) ]
 
         self.afun    = 0
         self.dafundz = 0
-        self.epoch   = 0
 
     def eval(self,invec):
         """
@@ -47,10 +48,8 @@ class Neuron(object):
 
     def adapt(self,invec,dcdz):
         for k in xrange(self.Nvars):
-                self.weights[k] = self.weights[k] + self.learnRate(self.epoch) * dcdz * invec[k]
-        self.weights[self.Nvars] = self.weights[self.Nvars] + self.learnRate(self.epoch) * dcdz
-        
-        self.epoch += 1
+                self.weights[k] = self.weights[k] * (1 - self.lRate * self.regular) - self.lRate * dcdz * invec[k]
+        self.weights[self.Nvars] = self.weights[self.Nvars] - self.lRate * dcdz
         
     ### Activation function ###
     def aFun(self,val):
@@ -70,24 +69,16 @@ class Neuron(object):
         for k,W in enumerate(self.weights):
             print "    Weight[", k, "] ", round(W,2)
 
-    def reset(self,what):
-        """
-        ##############
-        what = "all"
-        what = "epoch"
-        ##############
-        """
-        if what == "all":
-            self.__init__(self.Nvars,self.isBPN)
-        elif what == "epoch":
-            self.epoch = 0
-        else:
-            print "[Neuron::reset]\toption not valid:", what
-            quit()
+    def reset(self):
+        self.__init__(self.Nvars,self.isBPN)
+
+    def sum2W(self):
+        return sum(W*W for W in self.weights[:-1])
 
     def scramble(self):
-        self.weights = [ gauss(W,(1 - self.dafundz) / sqrt(self.Nvars+1)) for W in self.weights ]
-
+        self.weights = [ gauss(W,(1 - self.dafundz)/sqrt(self.Nvars)) for W in self.weights[:-1] ]
+        self.weights[self.Nvars] = gauss(self.weights[self.Nvars],1 - self.dafundz)
+        
     def removeW(self,who):
         self.weights = [ W for k,W in enumerate(self.weights) if k not in who ]
         self.Nvars   = len(self.weights[:])
@@ -95,7 +86,7 @@ class Neuron(object):
     def addW(self,who):
         self.Nvars += len(who[:])        
         for k,pos in enumerate(who):
-            self.weights.insert(pos+k,gauss(0,1/sqrt(self.Nvars+1)))
+            self.weights.insert(pos+k,gauss(0,1/sqrt(self.Nvars)))
             
     def save(self,f):
         out = ""
@@ -118,6 +109,3 @@ class Neuron(object):
         self.afun    = w.pop(0)
         self.dafundz = w.pop(0)
         self.weights = w
-
-    def learnRate(self,epoch):
-        return self.lrStart * exp(-epoch / self.tau) + self.lrEnd * (1 - exp(-epoch / self.tau))
