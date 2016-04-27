@@ -6,6 +6,7 @@
                       gradient descent
 #############################################
 """
+from math       import sqrt
 from Perceptron import Perceptron
 
 class NeuralNet(object):
@@ -24,7 +25,8 @@ class NeuralNet(object):
     def __init__(self,Nvars,Nperceptrons,Nneurons):
         self.Nperceptrons  = Nperceptrons
         self.FFperceptrons = []
-
+        self.inputDelta    = []
+        
         """
         ###################
         Feedforward network
@@ -85,8 +87,8 @@ class NeuralNet(object):
         ###############
         """
         self.copyFFtoBPweights()
-        delta = [ e * N.dafundz for e,N in zip(error,self.FFperceptrons[self.Nperceptrons-1].neurons) ]
-        self.evalBP(delta)
+        self.inputDelta = [ e * N.dafundz for e,N in zip(error,self.FFperceptrons[self.Nperceptrons-1].neurons) ]
+        self.evalBP(self.inputDelta)
 
         """
         ######
@@ -94,7 +96,7 @@ class NeuralNet(object):
         ######
         """
         ### Last layer ###
-        self.FFperceptrons[self.Nperceptrons-1].adapt([ N.afun for N in self.FFperceptrons[self.Nperceptrons-2].neurons ],delta)
+        self.FFperceptrons[self.Nperceptrons-1].adapt([ N.afun for N in self.FFperceptrons[self.Nperceptrons-2].neurons ],self.inputDelta)
 
         ### Intermediate layers ###
         if self.Nperceptrons > 2:
@@ -112,7 +114,10 @@ class NeuralNet(object):
         return sum(1./2 * a*a for a in error)
 
     def speed(self,who):
-        return self.BPperceptrons[who].speed()
+        if who == 0:
+            return sqrt(sum(d * d for d in self.inputDelta))
+        else:
+            return self.BPperceptrons[who-1].speed()
     
     def printParams(self):
         print "\n\n===>>> Feedforward Neural Net ===>>>"
@@ -143,10 +148,10 @@ class NeuralNet(object):
         for j in xrange(self.Nperceptrons-1):
             for i in xrange(self.BPperceptrons[j].Nneurons):
                 self.BPperceptrons[j].neurons[i].dafundz = self.FFperceptrons[self.Nperceptrons-j-2].neurons[i].dafundz
-                
+
                 for k in xrange(self.BPperceptrons[j].neurons[i].Nvars):
                     self.BPperceptrons[j].neurons[i].weights[k] = self.FFperceptrons[self.Nperceptrons-j-1].neurons[k].weights[i]
-                    
+
     def copy(self):
         out = NeuralNet(self.FFperceptrons[0].neurons[0].Nvars,self.Nperceptrons,[ P.Nneurons for P in self.FFperceptrons ])
         
@@ -217,7 +222,7 @@ class NeuralNet(object):
         out = []
         
         f.write("### M.E.D. Neural Network ###\n")
-        f.write("# {0:20s} {1:20s} {2:40s} {3:20s}\n".format("Nvars","Nperceptrons","Nneurons","Learn rate"))
+        f.write("# {0:20s} {1:20s} {2:40s} {3:20s} {4:20s}\n".format("Nvars","Nperceptrons","Nneurons","Learn rate","Regularization"))
 
         out.append(str(self.FFperceptrons[0].neurons[0].Nvars))
         out.append(str(self.Nperceptrons))
@@ -226,7 +231,8 @@ class NeuralNet(object):
             out[-1] += " " + str(P.Nneurons)
         out[-1] += " ]"
         out.append(str(self.FFperceptrons[0].neurons[0].lRate))
-        f.write("  {0:20s} {1:20s} {2:40s} {3:20s}\n\n".format(out[0],out[1],out[2],out[3]))
+        out.append(str(self.FFperceptrons[0].neurons[0].regular))
+        f.write("  {0:20s} {1:20s} {2:40s} {3:20s} {4:20s}\n\n".format(out[0],out[1],out[2],out[3],out[4]))
 
         for j,P in enumerate(self.FFperceptrons):
             f.write("Perceptron[ " + str(j) + " ]\n")
@@ -239,6 +245,7 @@ class NeuralNet(object):
         line  = f.readline()
         lele  = line.split()
         leled = []
+        lelef = []
         
         while len(lele) == 0 or (len(lele) > 0 and "#" in lele[0]):
             line = f.readline()
@@ -247,20 +254,14 @@ class NeuralNet(object):
         for i in xrange(len(lele)):
             if lele[i].isdigit():
                 leled.append(int(lele[i]))
-            elif self.isfloat(lele[i]):
-                lRate = float(lele[i])
+            elif lele[i].replace(".","").replace("-","").isdigit():
+                lelef.append(float(lele[i]))
 
         self.__init__(leled[0],leled[1],leled[2:])
-        self.FFperceptrons[0].neurons[0].lRate = lRate
+        self.FFperceptrons[0].neurons[0].lRate   = lelef[0]
+        self.FFperceptrons[0].neurons[0].regular = lelef[1]
 
         for P in self.FFperceptrons:
             P.read(f)
 
         f.close()
-
-    def isfloat(self,value):
-        try:
-            float(value)
-            return True
-        except ValueError:
-            return False

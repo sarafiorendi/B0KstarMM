@@ -21,7 +21,7 @@ class Perceptron(object):
             N.adapt(invec,d)
 
     def speed(self):
-        return sqrt(sum(N.afun*N.afun for N in self.neurons))
+        return sqrt(sum(N.afun * N.afun for N in self.neurons))
 
     def printParams(self):
         for i,N in enumerate(self.neurons):

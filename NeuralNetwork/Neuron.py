@@ -7,7 +7,7 @@ Regularization:      L2
 #########################
 """
 class Neuron(object):
-    lRate     =  0.01
+    lRate     =  0.001
     regular   =  0.
     outputMin = -1.
     outputMax = +1.
@@ -36,9 +36,7 @@ class Neuron(object):
         function and its derivative
         ##################################
         """
-        wsum = 0
-        for k in xrange(self.Nvars):
-            wsum += self.weights[k] * invec[k]
+        wsum  = sum(W * i for W,i in zip(self.weights,invec))
         wsum += self.weights[self.Nvars]
 
         self.afun    = self.aFun(wsum)
@@ -48,7 +46,7 @@ class Neuron(object):
 
     def adapt(self,invec,delta):
         for k in xrange(self.Nvars):
-                self.weights[k] = self.weights[k] * (1 - self.learnRate() * self.regular) - self.learnRate() * delta * invec[k]
+            self.weights[k] = self.weights[k] * (1 - self.learnRate() * self.regular) - self.learnRate() * delta * invec[k]
         self.weights[self.Nvars] -= self.learnRate() * delta
         
     ### Activation function ###
@@ -104,7 +102,7 @@ class Neuron(object):
             line = f.readline()
             lele = line.split()
 
-        w = [ float(lele[i]) for i in xrange(len(lele)) if lele[i].replace(".","").replace("-","").isdigit() ]
+        w = [ float(a) for a in lele if a.replace(".","").replace("-","").isdigit() ]
 
         w.pop(0)
         self.afun    = w.pop(0)

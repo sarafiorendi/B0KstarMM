@@ -10,7 +10,6 @@ Before running check on hyper-parameter space:
   - scramble
 
 To-do:
-  - memorize invec in order to have Delta also from output neuron (?)
   - cross-entropy for tanh
   - speed up code for regularization
   - softmax + log-likelihood
@@ -125,19 +124,19 @@ Internal parameters
 ###################
 """
 seed(0)
-nRuns     = 500000
-scrStart  =   1000
-scrLen    =   1000
-saveEvery =    100
+nRuns     = 10000000
+saveEvery =      500
+scrStart  =     1000
+scrLen    =     1000
 xRange    = 3.
-xOffset   = 0.
+xOffset   = 3.
 yRange    = 3.
 yOffset   = 0.
 noiseBand = 0.1
 loR       = 0.5
 hiR       = 1.
-NNoutMin  = NN.outputMin(cmd.Nperceptrons-1)
-NNoutMax  = NN.outputMax(cmd.Nperceptrons-1)
+NNoutMin  = NN.outputMin(NN.Nperceptrons-1)
+NNoutMax  = NN.outputMax(NN.Nperceptrons-1)
 NNthr     = (NNoutMin+NNoutMax) / 2.
 xyCorr    = lambda x,y: ((x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset))
 #xyCorr    = lambda x,y: (6*(x-xOffset)*(x-xOffset)*(x-xOffset) - (y-yOffset))
@@ -153,10 +152,10 @@ SetStyle()
 
 cCost  = TCanvas('cCost',  'NN Cost Function', 0, 0, 700, 500)
 cAccu  = TCanvas('cAccu',  'NN Accuracy',      0, 0, 700, 500)
+cSpeed = TCanvas('cSpeed', 'NN Speed',         0, 0, 700, 500)
 cNNin  = TCanvas('cNNin',  'NN Input',         0, 0, 700, 500)
 cNNout = TCanvas('cNNout', 'NN Output',        0, 0, 700, 500)
 cNNval = TCanvas('cNNval', 'NN Values',        0, 0, 700, 500)
-cSpeed = TCanvas('cSpeed', 'NN Speed',         0, 0, 700, 500)
 
 graphNNcost = TGraph()
 graphNNcost.SetTitle('NN cost function;Epoch [#];Cost Function')
@@ -219,7 +218,7 @@ Neural net: training
 ####################
 """
 print "\n=== Training neural network ==="
-NNspeed = [ 0. for P in NN.BPperceptrons ]
+NNspeed = [ 0. for j in xrange(NN.Nperceptrons) ]
 NNcost  = 0.
 count   = 0.
 for n in xrange(nRuns):
@@ -248,18 +247,18 @@ for n in xrange(nRuns):
     ######################
     """
     indx = (n-scrStart)/scrLen-1
-    if cmd.doScramble and n > scrStart and (n-scrStart) % scrLen == 0 and indx < cmd.Nperceptrons:
-        indx = cmd.Nperceptrons - 1 - indx
+    if cmd.doScramble and n > scrStart and (n-scrStart) % scrLen == 0 and indx < NN.Nperceptrons:
+        indx = NN.Nperceptrons - 1 - indx
         print "=== Scrambling perceptron [", indx, "] ==="
         NN.scramble({indx:[-1]})
 
 
-    NNcost  += NN.learn([x,y],[target])
-    NNspeed  = [ NNspeed[j] + P.speed() for j,P in enumerate(NN.BPperceptrons) ]
+    NNcost += NN.learn([x,y],[target])
+    NNspeed = [ a + NN.speed(j) for j,a in enumerate(NNspeed) ]
 
     
     if n % saveEvery == 0:
-        graphNNcost.SetPoint(n/saveEvery,n,NNcost/saveEvery)
+        graphNNcost.SetPoint(n/saveEvery,n,NNcost / saveEvery)
         NNcost = 0.
 
         
@@ -269,14 +268,14 @@ for n in xrange(nRuns):
         ############################################
         """
         k = 0
-        for j,P in enumerate(NN.BPperceptrons):
+        for j,a in enumerate(NNspeed):
             if n == 0:
                 graphNNspeed.append(TGraph())
                 leg = "P:" + str(j)
                 legNNspeed.AddEntry(graphNNspeed[k],leg,"L");
-            graphNNspeed[k].SetPoint(n/saveEvery,n,NNspeed[k]/saveEvery)
+            graphNNspeed[k].SetPoint(n/saveEvery,n,a / saveEvery)
             k += 1
-        NNspeed = [ 0 for P in NN.BPperceptrons ]
+        NNspeed = [ 0. for j in xrange(NN.Nperceptrons) ]
 
 
     """
@@ -347,6 +346,17 @@ graphNNaccuracy.Draw('AL')
 cAccu.Modified()
 cAccu.Update()
 
+cSpeed.cd()
+graphNNspeed[0].Draw('AL')
+graphNNspeed[0].SetTitle('NN activation function speed;Epoch [#];Activation Function Speed')
+graphNNspeed[0].SetLineColor(1)
+for k in xrange(1,len(graphNNspeed[:])):
+    graphNNspeed[k].SetLineColor(k+1)
+    graphNNspeed[k].Draw('L same')
+legNNspeed.Draw("same")
+cSpeed.Modified()
+cSpeed.Update()
+
 cNNin.cd()
 cNNin.DrawFrame(xOffset - xRange/2 - xRange/20,yOffset - yRange/2 - xRange/20,xOffset + xRange/2 + xRange/20,yOffset + yRange/2 + xRange/20)
 graphSin.Draw('P')
@@ -368,17 +378,6 @@ histoNNB.Draw('sames')
 histoNNE.Draw('sames')
 cNNval.Modified()
 cNNval.Update()
-
-cSpeed.cd()
-graphNNspeed[0].Draw('AL')
-graphNNspeed[0].SetTitle('NN activation function speed;Epoch [#];Activation Function Speed')
-graphNNspeed[0].SetLineColor(1)
-for k in xrange(1,len(graphNNspeed[:])):
-    graphNNspeed[k].SetLineColor(k+1)
-    graphNNspeed[k].Draw('L same')
-legNNspeed.Draw("same")
-cSpeed.Modified()
-cSpeed.Update()
 
 
 """
