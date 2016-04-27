@@ -1,3 +1,4 @@
+from math   import sqrt
 from Neuron import Neuron
 
 class Perceptron(object):
@@ -15,9 +16,12 @@ class Perceptron(object):
     def eval(self,invec):
         return [ N.eval(invec) for N in self.neurons ]
 
-    def adapt(self,invec,dcdz):
-        for d,N in zip(dcdz,self.neurons):
+    def adapt(self,invec,delta):
+        for d,N in zip(delta,self.neurons):
             N.adapt(invec,d)
+
+    def speed(self):
+        return sqrt(sum(N.afun*N.afun for N in self.neurons))
 
     def printParams(self):
         for i,N in enumerate(self.neurons):
@@ -28,6 +32,7 @@ class Perceptron(object):
         for N in self.neurons:
             N.reset()
 
+    # @TMP@
     def sum2W(self):
         return sum(N.sum2W() for N in self.neurons)
             

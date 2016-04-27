@@ -1,5 +1,5 @@
 from random import gauss
-from math   import exp, sqrt, tanh
+from math   import sqrt, tanh
 """
 #########################
 Activation function: tanh
@@ -7,8 +7,8 @@ Regularization:      L2
 #########################
 """
 class Neuron(object):
-    lRate     = 0.01
-    regular   = 0.
+    lRate     =  0.01
+    regular   =  0.
     outputMin = -1.
     outputMax = +1.
     """
@@ -46,10 +46,10 @@ class Neuron(object):
 
         return [self.afun, self.dafundz]
 
-    def adapt(self,invec,dcdz):
+    def adapt(self,invec,delta):
         for k in xrange(self.Nvars):
-                self.weights[k] = self.weights[k] * (1 - self.lRate * self.regular) - self.lRate * dcdz * invec[k]
-        self.weights[self.Nvars] = self.weights[self.Nvars] - self.lRate * dcdz
+                self.weights[k] = self.weights[k] * (1 - self.learnRate() * self.regular) - self.learnRate() * delta * invec[k]
+        self.weights[self.Nvars] -= self.learnRate() * delta
         
     ### Activation function ###
     def aFun(self,val):
@@ -72,6 +72,7 @@ class Neuron(object):
     def reset(self):
         self.__init__(self.Nvars,self.isBPN)
 
+    # @TMP@
     def sum2W(self):
         return sum(W*W for W in self.weights[:-1])
 
@@ -109,3 +110,6 @@ class Neuron(object):
         self.afun    = w.pop(0)
         self.dafundz = w.pop(0)
         self.weights = w
+
+    def learnRate(self):
+        return self.lRate

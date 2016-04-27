@@ -3,12 +3,17 @@
 MVA implementation with Neural Networks
                        by Mauro Dinardo
 ###############################################
-Before running double-check:
+Before running check on hyper-parameter space:
   - number of perceptrons & neurons
   - learn rate
   - regulator
   - scramble
+
 To-do:
+  - memorize invec in order to have Delta also from output neuron (?)
+  - cross-entropy for tanh
+  - speed up code for regularization
+  - softmax + log-likelihood
   - mini-batch learning
   - porting in pyCUDA
 ###############################################
@@ -120,7 +125,7 @@ Internal parameters
 ###################
 """
 seed(0)
-nRuns     = 100000
+nRuns     = 500000
 scrStart  =   1000
 scrLen    =   1000
 saveEvery =    100
@@ -130,12 +135,12 @@ yRange    = 3.
 yOffset   = 0.
 noiseBand = 0.1
 loR       = 0.5
-hiR       = 0.
+hiR       = 1.
 NNoutMin  = NN.outputMin(cmd.Nperceptrons-1)
 NNoutMax  = NN.outputMax(cmd.Nperceptrons-1)
 NNthr     = (NNoutMin+NNoutMax) / 2.
-#xyCorr    = lambda x,y: ((x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset))
-xyCorr    = lambda x,y: (6*(x-xOffset)*(x-xOffset)*(x-xOffset) - (y-yOffset))
+xyCorr    = lambda x,y: ((x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset))
+#xyCorr    = lambda x,y: (6*(x-xOffset)*(x-xOffset)*(x-xOffset) - (y-yOffset))
 
 
 """
@@ -151,8 +156,7 @@ cAccu  = TCanvas('cAccu',  'NN Accuracy',      0, 0, 700, 500)
 cNNin  = TCanvas('cNNin',  'NN Input',         0, 0, 700, 500)
 cNNout = TCanvas('cNNout', 'NN Output',        0, 0, 700, 500)
 cNNval = TCanvas('cNNval', 'NN Values',        0, 0, 700, 500)
-cDeriv = TCanvas('cDeriv', 'NN Derivatives',   0, 0, 700, 500)
-cDelta = TCanvas('cDelta', 'NN Deltas',        0, 0, 700, 500)
+cSpeed = TCanvas('cSpeed', 'NN Speed',         0, 0, 700, 500)
 
 graphNNcost = TGraph()
 graphNNcost.SetTitle('NN cost function;Epoch [#];Cost Function')
@@ -202,16 +206,11 @@ histoNNE = TH1D('histoNNE','histoNNE',100,NNoutMin,NNoutMax)
 histoNNE.SetTitle('NN error output;NN output;Entries [#]')
 histoNNE.SetLineColor(3)
 
-legNNderiv = TLegend(0.88, 0.17, 1.0, 1.0, "")
-legNNderiv.SetTextSize(0.03)
-legNNderiv.SetFillStyle(1001)
+legNNspeed = TLegend(0.88, 0.17, 1.0, 1.0, "")
+legNNspeed.SetTextSize(0.03)
+legNNspeed.SetFillStyle(1001)
 
-legNNdelta = TLegend(0.88, 0.17, 1.0, 1.0, "")
-legNNdelta.SetTextSize(0.03)
-legNNdelta.SetFillStyle(1001)
-
-graphNNderiv = []
-graphNNdelta = []
+graphNNspeed = []
 
 
 """
@@ -219,9 +218,10 @@ graphNNdelta = []
 Neural net: training
 ####################
 """
-print "\n=== Training neural netowrk ==="
-NNcost = 0.
-count  = 0.
+print "\n=== Training neural network ==="
+NNspeed = [ 0. for P in NN.BPperceptrons ]
+NNcost  = 0.
+count   = 0.
 for n in xrange(nRuns):
     """
     ####################
@@ -231,8 +231,8 @@ for n in xrange(nRuns):
     x = random() * xRange + xOffset - xRange/2
     y = random() * yRange + yOffset - yRange/2
 
-#    if gauss(loR,noiseBand) <= xyCorr(x,y) < gauss(hiR,noiseBand):
-    if xyCorr(x,y) > hiR:
+    if gauss(loR,noiseBand) <= xyCorr(x,y) < gauss(hiR,noiseBand):
+#    if xyCorr(x,y) > hiR:
         target = NNoutMax
         if n % saveEvery == 0:
             graphSin.SetPoint(n/saveEvery,x,y)
@@ -254,8 +254,9 @@ for n in xrange(nRuns):
         NN.scramble({indx:[-1]})
 
 
-    NNcost += NN.learn([x,y],[target])
-    
+    NNcost  += NN.learn([x,y],[target])
+    NNspeed  = [ NNspeed[j] + P.speed() for j,P in enumerate(NN.BPperceptrons) ]
+
     
     if n % saveEvery == 0:
         graphNNcost.SetPoint(n/saveEvery,n,NNcost/saveEvery)
@@ -263,35 +264,19 @@ for n in xrange(nRuns):
 
         
         """
-        #################################################
-        Neural net: saving activation function derivative
-        #################################################
-        """
-        k = 0
-        for j,P in enumerate(NN.FFperceptrons):
-            for i,N in enumerate(P.neurons):
-                if n == 0:
-                    graphNNderiv.append(TGraph())
-                    leg = "P:" + str(j) +  "; N:" + str(i)
-                    legNNderiv.AddEntry(graphNNderiv[k],leg,"L");
-                graphNNderiv[k].SetPoint(n/saveEvery,n,N.dafundz)
-                k += 1
-
-                
-        """
-        #################################
-        Neural net: saving delta function
-        #################################
+        ############################################
+        Neural net: saving activation function speed
+        ############################################
         """
         k = 0
         for j,P in enumerate(NN.BPperceptrons):
-            for i,N in enumerate(P.neurons):
-                if n == 0:
-                    graphNNdelta.append(TGraph())
-                    leg = "P:" + str(j) +  "; N:" + str(i)
-                    legNNdelta.AddEntry(graphNNdelta[k],leg,"L");
-                graphNNdelta[k].SetPoint(n/saveEvery,n,N.afun)
-                k += 1
+            if n == 0:
+                graphNNspeed.append(TGraph())
+                leg = "P:" + str(j)
+                legNNspeed.AddEntry(graphNNspeed[k],leg,"L");
+            graphNNspeed[k].SetPoint(n/saveEvery,n,NNspeed[k]/saveEvery)
+            k += 1
+        NNspeed = [ 0 for P in NN.BPperceptrons ]
 
 
     """
@@ -306,8 +291,8 @@ for n in xrange(nRuns):
     NNout = NN.eval([x,y])
      
 
-#    if ((NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR) or (NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y)))):
-    if ((NNout[0] > NNthr and xyCorr(x,y) > hiR) or (NNout[0] <= NNthr and xyCorr(x,y) <= hiR)):
+    if ((NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR) or (NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y)))):
+#    if ((NNout[0] > NNthr and xyCorr(x,y) > hiR) or (NNout[0] <= NNthr and xyCorr(x,y) <= hiR)):
         count += 1
     else:
         count -= 1
@@ -324,7 +309,7 @@ NN.save("NeuralNet.txt")
 Neural net: test
 ################
 """
-print "\n=== Testing neural netowrk ==="
+print "\n=== Testing neural network ==="
 for n in xrange(nRuns/saveEvery):
     x = random() * xRange + xOffset - xRange/2
     y = random() * yRange + yOffset - yRange/2
@@ -333,12 +318,12 @@ for n in xrange(nRuns/saveEvery):
     NNout = NN.eval([x,y])
      
 
-#    if (NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR):
-    if (NNout[0] > NNthr and xyCorr(x,y) > hiR):
+    if (NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR):
+#    if (NNout[0] > NNthr and xyCorr(x,y) > hiR):
         graphSout.SetPoint(n,x,y)
         histoNNS.Fill(NNout[0])
-#    elif (NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y))):
-    elif (NNout[0] <= NNthr and xyCorr(x,y) <= hiR):
+    elif (NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y))):
+#    elif (NNout[0] <= NNthr and xyCorr(x,y) <= hiR):
         graphBout.SetPoint(n,x,y)
         histoNNB.Fill(NNout[0])
     else:
@@ -384,27 +369,16 @@ histoNNE.Draw('sames')
 cNNval.Modified()
 cNNval.Update()
 
-cDeriv.cd()
-graphNNderiv[0].Draw('AL')
-graphNNderiv[0].SetTitle('NN activation function derivative;Epoch [#];Activation Function Derivative')
-graphNNderiv[0].SetLineColor(1)
-for k in xrange(1,len(graphNNderiv[:])):
-    graphNNderiv[k].SetLineColor(k+1)
-    graphNNderiv[k].Draw('L same')
-legNNderiv.Draw("same")
-cDeriv.Modified()
-cDeriv.Update()
-
-cDelta.cd()
-graphNNdelta[0].Draw('AL')
-graphNNdelta[0].SetTitle('NN delta function;Epoch [#];Delta Function')
-graphNNdelta[0].SetLineColor(1)
-for k in xrange(1,len(graphNNdelta[:])):
-    graphNNdelta[k].SetLineColor(k+1)
-    graphNNdelta[k].Draw('L same')
-legNNdelta.Draw("same")
-cDelta.Modified()
-cDelta.Update()
+cSpeed.cd()
+graphNNspeed[0].Draw('AL')
+graphNNspeed[0].SetTitle('NN activation function speed;Epoch [#];Activation Function Speed')
+graphNNspeed[0].SetLineColor(1)
+for k in xrange(1,len(graphNNspeed[:])):
+    graphNNspeed[k].SetLineColor(k+1)
+    graphNNspeed[k].Draw('L same')
+legNNspeed.Draw("same")
+cSpeed.Modified()
+cSpeed.Update()
 
 
 """

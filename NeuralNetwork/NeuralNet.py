@@ -1,6 +1,6 @@
 """
 #############################################
-.Neural Network type: feedforward
+.Neural network type: feedforward
 .Cost function:       1/2 (result - target)^2
 .Learning algorithm:  online/incremental with
                       gradient descent
@@ -85,8 +85,8 @@ class NeuralNet(object):
         ###############
         """
         self.copyFFtoBPweights()
-        dcdz = [ e * N.dafundz for e,N in zip(error,self.FFperceptrons[self.Nperceptrons-1].neurons) ]
-        self.evalBP(dcdz)
+        delta = [ e * N.dafundz for e,N in zip(error,self.FFperceptrons[self.Nperceptrons-1].neurons) ]
+        self.evalBP(delta)
 
         """
         ######
@@ -94,7 +94,7 @@ class NeuralNet(object):
         ######
         """
         ### Last layer ###
-        self.FFperceptrons[self.Nperceptrons-1].adapt([ N.afun for N in self.FFperceptrons[self.Nperceptrons-2].neurons ],dcdz)
+        self.FFperceptrons[self.Nperceptrons-1].adapt([ N.afun for N in self.FFperceptrons[self.Nperceptrons-2].neurons ],delta)
 
         ### Intermediate layers ###
         if self.Nperceptrons > 2:
@@ -111,6 +111,9 @@ class NeuralNet(object):
 #        return sum(1./2 * a*a for a in error) + regular
         return sum(1./2 * a*a for a in error)
 
+    def speed(self,who):
+        return self.BPperceptrons[who].speed()
+    
     def printParams(self):
         print "\n\n===>>> Feedforward Neural Net ===>>>"
         for j,P in enumerate(self.FFperceptrons):
@@ -140,6 +143,7 @@ class NeuralNet(object):
         for j in xrange(self.Nperceptrons-1):
             for i in xrange(self.BPperceptrons[j].Nneurons):
                 self.BPperceptrons[j].neurons[i].dafundz = self.FFperceptrons[self.Nperceptrons-j-2].neurons[i].dafundz
+                
                 for k in xrange(self.BPperceptrons[j].neurons[i].Nvars):
                     self.BPperceptrons[j].neurons[i].weights[k] = self.FFperceptrons[self.Nperceptrons-j-1].neurons[k].weights[i]
                     
