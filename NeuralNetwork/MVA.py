@@ -1,18 +1,17 @@
 """
 ###############################################
 MVA implementation with Neural Networks
-                       by Mauro Dinardo
+                            by Mauro E. Dinardo
 ###############################################
 Before running check on hyper-parameter space:
   - number of perceptrons & neurons
   - learn rate
   - regulator
   - scramble
+  - Cost functions:
+    quadratic / cross-entropy / softmax&logLikelihood
 
 To-do:
-  - cross-entropy for tanh
-  - speed up code for regularization
-  - softmax + log-likelihood
   - mini-batch learning
   - porting in pyCUDA
 ###############################################
@@ -34,10 +33,10 @@ def ArgParser():
     ###############
     """
     parser = ArgumentParser()
-    parser.add_argument("-nv", "--Nvars",        dest = "Nvars",        type = int,  help = "Number of variables",              required=True)
-    parser.add_argument("-np", "--Nperceptrons", dest = "Nperceptrons", type = int,  help = "Number of perceptrons",            required=True)
-    parser.add_argument("-nn", "--Nneurons",     dest = "Nneurons",     type = int,  help = "Number of neurons per perceptron", required=True,  nargs='*')
-    parser.add_argument("-sc", "--Scramble",     dest = "doScramble",   type = bool, help = "Perform NN scrambling",            required=False, default=False)
+    parser.add_argument("-nv", "--Nvars",        dest = "Nvars",        type = int, help = "Number of variables",              required=True)
+    parser.add_argument("-np", "--Nperceptrons", dest = "Nperceptrons", type = int, help = "Number of perceptrons",            required=True)
+    parser.add_argument("-nn", "--Nneurons",     dest = "Nneurons",     type = int, help = "Number of neurons per perceptron", required=True,  nargs='*')
+    parser.add_argument("-sc", "--Nscramble",    dest = "Nscramble",    type = int, help = "Perceptrons to scramble",          required=False, nargs='*', default=[])
 
     options = parser.parse_args()
 
@@ -51,8 +50,8 @@ def ArgParser():
     if options.Nneurons:
         print "--> I'm reading the neuron number per perceptron: ", options.Nneurons
 
-    if options.doScramble:
-        print "--> I'm reading the option scramble: ", options.doScramble
+    if options.Nscramble:
+        print "--> I'm reading the perceptron number to scramble: ", options.Nscramble
 
     return options
 
@@ -115,7 +114,9 @@ Neural net: initialization
 """
 seed(0)
 NN = NeuralNet(cmd.Nvars,cmd.Nperceptrons,cmd.Nneurons)
+NN.read("NeuralNet_dropout.txt")
 NN.printParams()
+NN.add({3:[1,3]})
 
 
 """
@@ -124,22 +125,22 @@ Internal parameters
 ###################
 """
 seed(0)
-nRuns     = 100000
-saveEvery =      100
-scrStart  =     1000
-scrLen    =     1000
+nRuns     = 50000
+saveEvery =   100
+scrStart  =     0
+scrLen    = 10000
 xRange    = 3.
-xOffset   = 0.
+xOffset   = 3.
 yRange    = 3.
 yOffset   = 0.
 noiseBand = 0.1
 loR       = 0.5
-hiR       = 0.
+hiR       = 1.
 NNoutMin  = NN.outputMin(NN.Nperceptrons-1)
 NNoutMax  = NN.outputMax(NN.Nperceptrons-1)
 NNthr     = (NNoutMin+NNoutMax) / 2.
-#xyCorr    = lambda x,y: ((x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset))
-xyCorr    = lambda x,y: (6*(x-xOffset)*(x-xOffset)*(x-xOffset) - (y-yOffset))
+xyCorr    = lambda x,y: ((x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset))
+#xyCorr    = lambda x,y: (6*(x-xOffset)*(x-xOffset)*(x-xOffset) - (y-yOffset)) # @TMP@
 
 
 """
@@ -217,7 +218,7 @@ graphNNspeed = []
 Neural net: training
 ####################
 """
-print "\n=== Training neural network ==="
+print "\n\n=== Training neural network ==="
 NNspeed = [ 0. for j in xrange(NN.Nperceptrons) ]
 NNcost  = 0.
 count   = 0.
@@ -230,8 +231,8 @@ for n in xrange(nRuns):
     x = random() * xRange + xOffset - xRange/2
     y = random() * yRange + yOffset - yRange/2
 
-#    if gauss(loR,noiseBand) <= xyCorr(x,y) < gauss(hiR,noiseBand):
-    if xyCorr(x,y) > hiR:
+    if gauss(loR,noiseBand) <= xyCorr(x,y) < gauss(hiR,noiseBand):
+#    if xyCorr(x,y) > hiR: # @TMP@
         target = NNoutMax
         if n % saveEvery == 0:
             graphSin.SetPoint(n/saveEvery,x,y)
@@ -246,13 +247,14 @@ for n in xrange(nRuns):
     Neural net: scrambling
     ######################
     """
-    indx = (n-scrStart)/scrLen-1
-    if cmd.doScramble and n > scrStart and (n-scrStart) % scrLen == 0 and indx < NN.Nperceptrons:
-        indx = NN.Nperceptrons - 1 - indx
-        print "=== Scrambling perceptron [", indx, "] ==="
+    if cmd.Nscramble and n == scrStart:
+        print ""
+    indx = NN.Nperceptrons - 1 - (n-scrStart)/scrLen
+    if indx in cmd.Nscramble and n >= scrStart and (n-scrStart) % scrLen == 0:
+        print "  Scrambling perceptron [", indx, "]"
         NN.scramble({indx:[-1]})
 
-
+        
     NNcost += NN.learn([x,y],[target])
     NNspeed = [ a + NN.speed(j) for j,a in enumerate(NNspeed) ]
 
@@ -290,11 +292,9 @@ for n in xrange(nRuns):
     NNout = NN.eval([x,y])
      
 
-#    if ((NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR) or (NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y)))):
-    if ((NNout[0] > NNthr and xyCorr(x,y) > hiR) or (NNout[0] <= NNthr and xyCorr(x,y) <= hiR)):
+    if ((NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR) or (NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y)))):
+#    if ((NNout[0] > NNthr and xyCorr(x,y) > hiR) or (NNout[0] <= NNthr and xyCorr(x,y) <= hiR)): # @TMP@
         count += 1
-    else:
-        count -= 1
 
     if n % saveEvery == 0:
         graphNNaccuracy.SetPoint(n/saveEvery,n,count / saveEvery * 100)
@@ -308,8 +308,8 @@ NN.save("NeuralNet.txt")
 Neural net: test
 ################
 """
-print "\n=== Testing neural network ==="
-for n in xrange(nRuns/saveEvery):
+print "\n\n=== Testing neural network ==="
+for n in xrange(nRuns):
     x = random() * xRange + xOffset - xRange/2
     y = random() * yRange + yOffset - yRange/2
 
@@ -317,12 +317,12 @@ for n in xrange(nRuns/saveEvery):
     NNout = NN.eval([x,y])
      
 
-#    if (NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR):
-    if (NNout[0] > NNthr and xyCorr(x,y) > hiR):
+    if (NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR):
+#    if (NNout[0] > NNthr and xyCorr(x,y) > hiR): # @TMP@
         graphSout.SetPoint(n,x,y)
         histoNNS.Fill(NNout[0])
-#    elif (NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y))):
-    elif (NNout[0] <= NNthr and xyCorr(x,y) <= hiR):
+    elif (NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y))):
+#    elif (NNout[0] <= NNthr and xyCorr(x,y) <= hiR): # @TMP@
         graphBout.SetPoint(n,x,y)
         histoNNB.Fill(NNout[0])
     else:
@@ -385,4 +385,4 @@ cNNval.Update()
 Wait for keyborad stroke
 ########################
 """
-raw_input("\n---press enter---")
+raw_input("\n\n---press enter---")

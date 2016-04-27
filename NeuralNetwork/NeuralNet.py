@@ -3,6 +3,7 @@
 .Neural network type: feedforward
 .Learning algorithm:  online/incremental with
                       gradient descent
+                          by Mauro E. Dinardo
 #############################################
 """
 from math       import sqrt
@@ -105,7 +106,9 @@ class NeuralNet(object):
         ### First layer ###
         self.FFperceptrons[0].adapt(invec,[ N.afun for N in self.BPperceptrons[self.Nperceptrons-2].neurons ])
 
+        # @TMP@ : regularization
         return self.FFperceptrons[self.Nperceptrons-1].cFun(target)
+#        return self.FFperceptrons[self.Nperceptrons-1].cFun(target) + self.FFperceptrons[0].neurons[0].regular/2 * sum(P.sum2W() for P in self.FFperceptrons)
 
     def speed(self,who):
         if who == 0:

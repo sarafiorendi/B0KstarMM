@@ -38,7 +38,6 @@ class Perceptron(object):
         for N in self.neurons:
             N.reset()
 
-    # @TMP@
     def sum2W(self):
         return sum(N.sum2W() for N in self.neurons)
             

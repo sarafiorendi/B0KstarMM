@@ -1,14 +1,16 @@
 from random import gauss
 from math   import sqrt, log, tanh, atanh
 """
-#######################################
+#########################################
 .Activation function: tanh
-.Cost function: 1/2 (result - target)^2
+.Cost functions:
+  1/2 (result - target)^2
+  -log(sqrt(result))-target*atanh(result)
 .Regularization: L2
-#######################################
+#########################################
 """
 class Neuron(object):
-    lRate     =  0.005
+    lRate     =  0.001
     regular   =  0.
     outputMin = -1.
     outputMax = +1.
@@ -22,7 +24,7 @@ class Neuron(object):
         self.Nvars = Nvars
         self.isBPN = isBPN
 
-        self.weights = [ gauss(0,1/sqrt(self.Nvars)) for k in xrange(self.Nvars) ]
+        self.weights = [ gauss(0,1 / sqrt(self.Nvars)) for k in xrange(self.Nvars) ]
         self.weights.append(gauss(0,1))
         if self.isBPN is True:
             self.weights = [ 0 for k in xrange(self.Nvars+1) ]
@@ -67,14 +69,14 @@ class Neuron(object):
     ### Cost function ###
     def cFun(self,target):
         # @TMP@
-#        return 1./2 * (self.afun - target) * (self.afun - target)
-        return -log(sqrt(self.dafundz)) - target * atanh(self.afun)
+        return 1./2 * (self.afun - target) * (self.afun - target)
+#        return -log(sqrt(self.dafundz)) - target * atanh(self.afun)
 
     ### d(Cost function) / dz ###
     def dcFunDz(self,target):
         # @TMP@
-#        return (self.afun - target) * self.dafundz
-        return self.afun - target
+        return (self.afun - target) * self.dafundz
+#        return self.afun - target
 
     def printParams(self):
         for k,W in enumerate(self.weights):
@@ -83,22 +85,22 @@ class Neuron(object):
     def reset(self):
         self.__init__(self.Nvars,self.isBPN)
 
-    # @TMP@
     def sum2W(self):
         return sum(W*W for W in self.weights[:-1])
 
     def scramble(self):
-        self.weights = [ gauss(W,(1 - self.dafundz)/sqrt(self.Nvars)) for W in self.weights[:-1] ]
+        for i in xrange(self.Nvars):
+            self.weights[i] = gauss(self.weights[i],(1 - self.dafundz) / sqrt(self.Nvars))
         self.weights[self.Nvars] = gauss(self.weights[self.Nvars],1 - self.dafundz)
         
     def removeW(self,who):
         self.weights = [ W for k,W in enumerate(self.weights) if k not in who ]
-        self.Nvars   = len(self.weights[:])
+        self.Nvars   = len(self.weights[:]) - 1
 
     def addW(self,who):
         self.Nvars += len(who[:])        
         for k,pos in enumerate(who):
-            self.weights.insert(pos+k,gauss(0,1/sqrt(self.Nvars)))
+            self.weights.insert(pos+k,gauss(0,1 / sqrt(self.Nvars)))
             
     def save(self,f):
         out = ""
