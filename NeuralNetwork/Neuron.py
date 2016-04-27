@@ -1,13 +1,14 @@
 from random import gauss
-from math   import sqrt, tanh
+from math   import sqrt, log, tanh, atanh
 """
-#########################
-Activation function: tanh
-Regularization:      L2
-#########################
+#######################################
+.Activation function: tanh
+.Cost function: 1/2 (result - target)^2
+.Regularization: L2
+#######################################
 """
 class Neuron(object):
-    lRate     =  0.001
+    lRate     =  0.005
     regular   =  0.
     outputMin = -1.
     outputMax = +1.
@@ -48,7 +49,7 @@ class Neuron(object):
         for k in xrange(self.Nvars):
             self.weights[k] = self.weights[k] * (1 - self.learnRate() * self.regular) - self.learnRate() * delta * invec[k]
         self.weights[self.Nvars] -= self.learnRate() * delta
-        
+
     ### Activation function ###
     def aFun(self,val):
         if self.isBPN is False:
@@ -56,12 +57,24 @@ class Neuron(object):
         else:
             return val * self.dafundz
 
-    ### d(Activation function)/dz ###
+    ### d(Activation function) / dz ###
     def daFunDz(self,val):
         if self.isBPN is False:
             return 1 - self.afun * self.afun
         else:
             return self.dafundz
+
+    ### Cost function ###
+    def cFun(self,target):
+        # @TMP@
+#        return 1./2 * (self.afun - target) * (self.afun - target)
+        return -log(sqrt(self.dafundz)) - target * atanh(self.afun)
+
+    ### d(Cost function) / dz ###
+    def dcFunDz(self,target):
+        # @TMP@
+#        return (self.afun - target) * self.dafundz
+        return self.afun - target
 
     def printParams(self):
         for k,W in enumerate(self.weights):

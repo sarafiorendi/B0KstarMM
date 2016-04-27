@@ -1,7 +1,6 @@
 """
 #############################################
 .Neural network type: feedforward
-.Cost function:       1/2 (result - target)^2
 .Learning algorithm:  online/incremental with
                       gradient descent
 #############################################
@@ -18,8 +17,8 @@ class NeuralNet(object):
     ################################################################
     e.g.:
           a network with 2 inputs, a first layer of 2 neurons, an
-          intermediate layer of 2 neurons, and an output of 1 neuron
-          2, 3, [2,2,1]
+          intermediate layer of 2 neurons, and an output layer of 1
+          neuron 2, 3, [2, 2, 1]
     ################################################################
     """
     def __init__(self,Nvars,Nperceptrons,Nneurons):
@@ -78,8 +77,7 @@ class NeuralNet(object):
         Feedforward
         ###########
         """
-        result = self.eval(invec)
-        error  = [ a - b for a,b in zip(result,target) ]
+        self.eval(invec)
 
         """
         ###############
@@ -87,7 +85,7 @@ class NeuralNet(object):
         ###############
         """
         self.copyFFtoBPweights()
-        self.inputDelta = [ e * N.dafundz for e,N in zip(error,self.FFperceptrons[self.Nperceptrons-1].neurons) ]
+        self.inputDelta = self.FFperceptrons[self.Nperceptrons-1].dcFunDz(target)
         self.evalBP(self.inputDelta)
 
         """
@@ -107,11 +105,7 @@ class NeuralNet(object):
         ### First layer ###
         self.FFperceptrons[0].adapt(invec,[ N.afun for N in self.BPperceptrons[self.Nperceptrons-2].neurons ])
 
-        ### Cost function ###
-        # @TMP@
-#        regular = self.FFperceptrons[0].neurons[0].regular / 2 * sum(P.sum2W() for P in self.FFperceptrons)
-#        return sum(1./2 * a*a for a in error) + regular
-        return sum(1./2 * a*a for a in error)
+        return self.FFperceptrons[self.Nperceptrons-1].cFun(target)
 
     def speed(self,who):
         if who == 0:

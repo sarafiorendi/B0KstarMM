@@ -17,8 +17,14 @@ class Perceptron(object):
         return [ N.eval(invec) for N in self.neurons ]
 
     def adapt(self,invec,delta):
-        for d,N in zip(delta,self.neurons):
-            N.adapt(invec,d)
+        for a,N in zip(delta,self.neurons):
+            N.adapt(invec,a)
+
+    def cFun(self,target):
+        return sum(N.cFun(a) for a,N in zip(target,self.neurons))
+
+    def dcFunDz(self,target):
+        return [ N.dcFunDz(a) for a,N in zip(target,self.neurons) ]
 
     def speed(self):
         return sqrt(sum(N.afun * N.afun for N in self.neurons))
