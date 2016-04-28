@@ -10,10 +10,11 @@ from math   import sqrt, log, tanh, atanh
 #########################################
 """
 class Neuron(object):
-    lRate     =  0.001
-    regular   =  0.
-    outputMin = -1.
-    outputMax = +1.
+    lRate      =  0.001
+    regular    =  0.
+    aFunMin    = -1.
+    aFunMax    = +1.
+    daFunDzMax =  1.
     """
     ####################################
     Nvars = number of input variables
@@ -47,10 +48,10 @@ class Neuron(object):
 
         return [self.afun, self.dafundz]
 
-    def adapt(self,invec,delta):
+    def adapt(self,invec,dCdZ):
         for k in xrange(self.Nvars):
-            self.weights[k] = self.weights[k] * (1 - self.learnRate() * self.regular) - self.learnRate() * delta * invec[k]
-        self.weights[self.Nvars] -= self.learnRate() * delta
+            self.weights[k] = self.weights[k] * (1 - self.learnRate() * self.regular) - self.learnRate() * dCdZ * invec[k]
+        self.weights[self.Nvars] -= self.learnRate() * dCdZ
 
     ### Activation function ###
     def aFun(self,val):
@@ -88,10 +89,11 @@ class Neuron(object):
     def sum2W(self):
         return sum(W*W for W in self.weights[:-1])
 
+    # @TMP@
     def scramble(self):
         for i in xrange(self.Nvars):
-            self.weights[i] = gauss(self.weights[i],(1 - self.dafundz) / sqrt(self.Nvars))
-        self.weights[self.Nvars] = gauss(self.weights[self.Nvars],1 - self.dafundz)
+            self.weights[i] = gauss(self.weights[i],(self.daFunDzMax - self.dafundz) / sqrt(self.Nvars))
+        self.weights[self.Nvars] = gauss(self.weights[self.Nvars],self.daFunDzMax - self.dafundz)
         
     def removeW(self,who):
         self.weights = [ W for k,W in enumerate(self.weights) if k not in who ]

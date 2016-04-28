@@ -25,7 +25,7 @@ class NeuralNet(object):
     def __init__(self,Nvars,Nperceptrons,Nneurons):
         self.Nperceptrons  = Nperceptrons
         self.FFperceptrons = []
-        self.inputDelta    = []
+        self.inputDcDz     = []
         
         """
         ###################
@@ -86,8 +86,8 @@ class NeuralNet(object):
         ###############
         """
         self.copyFFtoBPweights()
-        self.inputDelta = self.FFperceptrons[self.Nperceptrons-1].dcFunDz(target)
-        self.evalBP(self.inputDelta)
+        self.inputDcDz = self.FFperceptrons[self.Nperceptrons-1].dcFunDz(target)
+        self.evalBP(self.inputDcDz)
 
         """
         ######
@@ -95,7 +95,7 @@ class NeuralNet(object):
         ######
         """
         ### Last layer ###
-        self.FFperceptrons[self.Nperceptrons-1].adapt([ N.afun for N in self.FFperceptrons[self.Nperceptrons-2].neurons ],self.inputDelta)
+        self.FFperceptrons[self.Nperceptrons-1].adapt([ N.afun for N in self.FFperceptrons[self.Nperceptrons-2].neurons ],self.inputDcDz)
 
         ### Intermediate layers ###
         if self.Nperceptrons > 2:
@@ -112,7 +112,7 @@ class NeuralNet(object):
 
     def speed(self,who):
         if who == 0:
-            return sqrt(sum(d * d for d in self.inputDelta))
+            return sqrt(sum(d * d for d in self.inputDcDz))
         else:
             return self.BPperceptrons[who-1].speed()
     
@@ -159,11 +159,11 @@ class NeuralNet(object):
 
         return out
 
-    def outputMin(self,indx):
-        return self.FFperceptrons[indx].outputMin(0)
+    def aFunMin(self,indx):
+        return self.FFperceptrons[indx].aFunMin(0)
 
-    def outputMax(self,indx):
-        return self.FFperceptrons[indx].outputMax(0)
+    def aFunMax(self,indx):
+        return self.FFperceptrons[indx].aFunMax(0)
 
     def remove(self,who):
         """

@@ -8,10 +8,12 @@ Before running check on hyper-parameter space:
   - learn rate
   - regulator
   - scramble
+  - dropout
   - Cost functions:
     quadratic / cross-entropy / softmax&logLikelihood
 
 To-do:
+  - migliorare scramble
   - mini-batch learning
   - porting in pyCUDA
 ###############################################
@@ -114,9 +116,8 @@ Neural net: initialization
 """
 seed(0)
 NN = NeuralNet(cmd.Nvars,cmd.Nperceptrons,cmd.Nneurons)
-NN.read("NeuralNet_dropout.txt")
+NN.read("NeuralNet_ringTrained.txt")
 NN.printParams()
-NN.add({3:[1,3]})
 
 
 """
@@ -136,8 +137,8 @@ yOffset   = 0.
 noiseBand = 0.1
 loR       = 0.5
 hiR       = 1.
-NNoutMin  = NN.outputMin(NN.Nperceptrons-1)
-NNoutMax  = NN.outputMax(NN.Nperceptrons-1)
+NNoutMin  = NN.aFunMin(NN.Nperceptrons-1)
+NNoutMax  = NN.aFunMax(NN.Nperceptrons-1)
 NNthr     = (NNoutMin+NNoutMax) / 2.
 xyCorr    = lambda x,y: ((x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset))
 #xyCorr    = lambda x,y: (6*(x-xOffset)*(x-xOffset)*(x-xOffset) - (y-yOffset)) # @TMP@

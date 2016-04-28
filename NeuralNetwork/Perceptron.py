@@ -16,8 +16,8 @@ class Perceptron(object):
     def eval(self,invec):
         return [ N.eval(invec) for N in self.neurons ]
 
-    def adapt(self,invec,delta):
-        for a,N in zip(delta,self.neurons):
+    def adapt(self,invec,dCdZ):
+        for a,N in zip(dCdZ,self.neurons):
             N.adapt(invec,a)
 
     def cFun(self,target):
@@ -48,11 +48,11 @@ class Perceptron(object):
         for i in who:
             self.neurons[i].scramble()
 
-    def outputMin(self,indx):
-        return self.neurons[indx].outputMin
+    def aFunMin(self,indx):
+        return self.neurons[indx].aFunMin
 
-    def outputMax(self,indx):
-        return self.neurons[indx].outputMax
+    def aFunMax(self,indx):
+        return self.neurons[indx].aFunMax
 
     def removeN(self,who):
         if who[0] == -1:
@@ -83,7 +83,7 @@ class Perceptron(object):
 
     def save(self,f):
         for i,N in enumerate(self.neurons):
-            f.write("  Neuron[ {0:d} ] aFun = {1:20f} d(aFun)/dz = {2:20f}".format(i,N.afun,N.dafundz))
+            f.write("  Neuron[ {0:d} ] aFun = {1:20f} d(aFun)/dz = {2:20f} Weights:".format(i,N.afun,N.dafundz))
             N.save(f)
 
     def read(self,f):
