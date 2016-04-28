@@ -106,9 +106,10 @@ class NeuralNet(object):
         ### First layer ###
         self.FFperceptrons[0].adapt(invec,[ N.afun for N in self.BPperceptrons[self.Nperceptrons-2].neurons ])
 
-        # @TMP@ : regularization
-        return self.FFperceptrons[self.Nperceptrons-1].cFun(target)
-#        return self.FFperceptrons[self.Nperceptrons-1].cFun(target) + self.FFperceptrons[0].neurons[0].regular/2 * sum(P.sum2W() for P in self.FFperceptrons)
+        if self.FFperceptrons[0].neurons[0].regular != 0:
+            return self.FFperceptrons[self.Nperceptrons-1].cFun(target) + self.FFperceptrons[0].neurons[0].regular/2 * sum(P.sum2W() for P in self.FFperceptrons)
+        else:
+            return self.FFperceptrons[self.Nperceptrons-1].cFun(target)
 
     def speed(self,who):
         if who == 0:

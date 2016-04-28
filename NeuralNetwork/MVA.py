@@ -13,7 +13,7 @@ Before running check on hyper-parameter space:
     quadratic / cross-entropy / softmax&logLikelihood
 
 To-do:
-  - migliorare scramble
+  - ameliorate rnd generation in scramble
   - mini-batch learning
   - porting in pyCUDA
 ###############################################
@@ -248,8 +248,6 @@ for n in xrange(nRuns):
     Neural net: scrambling
     ######################
     """
-    if cmd.Nscramble and n == scrStart:
-        print ""
     indx = NN.Nperceptrons - 1 - (n-scrStart)/scrLen
     if indx in cmd.Nscramble and n >= scrStart and (n-scrStart) % scrLen == 0:
         print "  Scrambling perceptron [", indx, "]"
