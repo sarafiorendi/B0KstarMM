@@ -21,7 +21,7 @@ class NeuralNet(object):
           neuron 2, 3, [2, 2, 1]
     ################################################################
     """
-    def __init__(self,Nvars,Nperceptrons,Nneurons):
+    def __init__(self,Nvars=2,Nperceptrons=2,Nneurons=[2,1]):
         self.Nperceptrons  = Nperceptrons
         self.FFperceptrons = []
         self.inputDcDz     = []

@@ -34,14 +34,18 @@ def ArgParser():
     ###############
     """
     parser = ArgumentParser()
-    parser.add_argument("-nv", "--Nvars",        dest = "Nvars",        type = int, help = "Number of variables",              required=True)
-    parser.add_argument("-np", "--Nperceptrons", dest = "Nperceptrons", type = int, help = "Number of perceptrons",            required=True)
-    parser.add_argument("-nn", "--Nneurons",     dest = "Nneurons",     type = int, help = "Number of neurons per perceptron", required=True,  nargs='*')
+    parser.add_argument("-in", "--infile",       dest = "infile",       type = str, help = "Input neural network",             required=False, default="")
+    parser.add_argument("-nv", "--Nvars",        dest = "Nvars",        type = int, help = "Number of variables",              required=False)
+    parser.add_argument("-np", "--Nperceptrons", dest = "Nperceptrons", type = int, help = "Number of perceptrons",            required=False)
+    parser.add_argument("-nn", "--Nneurons",     dest = "Nneurons",     type = int, help = "Number of neurons per perceptron", required=False, nargs='*')
     parser.add_argument("-sc", "--Nscramble",    dest = "Nscramble",    type = int, help = "Perceptrons to scramble",          required=False, nargs='*', default=[])
 
     options = parser.parse_args()
 
     print ""
+    if options.infile:
+        print "--> I'm reading the input file: ", options.infile
+
     if options.Nvars:
         print "--> I'm reading the variable number: ", options.Nvars
 
@@ -114,8 +118,11 @@ Neural net: initialization
 ##########################
 """
 seed(0)
-NN = NeuralNet(cmd.Nvars,cmd.Nperceptrons,cmd.Nneurons)
-NN.read("NeuralNet_ringTrained.txt")
+if cmd.infile:
+    NN = NeuralNet()
+    NN.read(cmd.infile)
+else:
+    NN = NeuralNet(cmd.Nvars,cmd.Nperceptrons,cmd.Nneurons)
 NN.printParams()
 
 

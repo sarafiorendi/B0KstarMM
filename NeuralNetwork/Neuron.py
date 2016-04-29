@@ -91,9 +91,9 @@ class Neuron(object):
 
     def scramble(self):
         for i in xrange(self.Nvars):
-            self.weights[i] = gauss(self.weights[i],self.afun / self.dafundz / sqrt(self.Nvars))
-        self.weights[self.Nvars] = gauss(self.weights[self.Nvars],self.afun / self.dafundz)
-        
+            self.weights[i] = self.weights[i] - cmp(self.weights[i],1) * gauss(0,self.afun / self.dafundz / sqrt(self.Nvars))
+        self.weights[self.Nvars] = self.weights[self.Nvars] - cmp(self.weights[self.Nvars],1) * gauss(0,self.afun / self.dafundz)
+
     def removeW(self,who):
         self.weights = [ W for k,W in enumerate(self.weights) if k not in who ]
         self.Nvars   = len(self.weights[:]) - 1
