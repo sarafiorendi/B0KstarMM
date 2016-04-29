@@ -89,11 +89,10 @@ class Neuron(object):
     def sum2W(self):
         return sum(W*W for W in self.weights[:-1])
 
-    # @TMP@
     def scramble(self):
         for i in xrange(self.Nvars):
-            self.weights[i] = gauss(self.weights[i],(self.daFunDzMax - self.dafundz) / sqrt(self.Nvars))
-        self.weights[self.Nvars] = gauss(self.weights[self.Nvars],self.daFunDzMax - self.dafundz)
+            self.weights[i] = gauss(self.weights[i],self.afun / self.dafundz / sqrt(self.Nvars))
+        self.weights[self.Nvars] = gauss(self.weights[self.Nvars],self.afun / self.dafundz)
         
     def removeW(self,who):
         self.weights = [ W for k,W in enumerate(self.weights) if k not in who ]

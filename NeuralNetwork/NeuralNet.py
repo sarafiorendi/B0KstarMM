@@ -1,10 +1,10 @@
 """
-#############################################
-.Neural network type: feedforward
-.Learning algorithm:  online/incremental with
-                      gradient descent
-                          by Mauro E. Dinardo
-#############################################
+###########################################
+.Neural Network type: feedforward
+.Learning algorithm:  online/incremental
+                      with gradient descent
+                        by Mauro E. Dinardo
+###########################################
 """
 from math       import sqrt
 from Perceptron import Perceptron
@@ -16,8 +16,7 @@ class NeuralNet(object):
     Nperceptrons = number of perceptrons of neural net (must be > 1)
     Nneurons     = list of number of neurons for each perceptron    
     ################################################################
-    e.g.:
-          a network with 2 inputs, a first layer of 2 neurons, an
+    e.g.: a network with 2 inputs, a first layer of 2 neurons, an
           intermediate layer of 2 neurons, and an output layer of 1
           neuron 2, 3, [2, 2, 1]
     ################################################################

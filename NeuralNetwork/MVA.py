@@ -1,24 +1,23 @@
 """
-###############################################
-MVA implementation with Neural Networks
-                            by Mauro E. Dinardo
-###############################################
+#######################################################
+MVA implementation with Neural Network
+                                    by Mauro E. Dinardo
+#######################################################
 Before running check on hyper-parameter space:
-  - number of perceptrons & neurons
-  - learn rate
-  - regulator
-  - scramble
-  - dropout
-  - Cost functions:
-    quadratic / cross-entropy / softmax&logLikelihood
+  .number of perceptrons & neurons
+  .learn rate
+  .regulator
+  .scramble
+  .dropout
+  .Cost functions:
+   quadratic / cross-entropy / softmax&logLikelihood
 
 To-do:
-  - ameliorate rnd generation in scramble
   - mini-batch learning
   - porting in pyCUDA
-###############################################
-e.g.: python MVA.py -nv 2 -np 6 -nn 2 3 4 3 2 1
-###############################################
+#######################################################
+e.g.: python MVA.py -nv 2 -np 6 -nn 2 3 4 3 2 1 -sc 5 4
+#######################################################
 """
 from argparse  import ArgumentParser
 from random    import seed, random, gauss
@@ -126,7 +125,7 @@ Internal parameters
 ###################
 """
 seed(0)
-nRuns     = 50000
+nRuns     = 30000
 saveEvery =   100
 scrStart  =     0
 scrLen    = 10000
@@ -141,7 +140,6 @@ NNoutMin  = NN.aFunMin(NN.Nperceptrons-1)
 NNoutMax  = NN.aFunMax(NN.Nperceptrons-1)
 NNthr     = (NNoutMin+NNoutMax) / 2.
 xyCorr    = lambda x,y: ((x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset))
-#xyCorr    = lambda x,y: (6*(x-xOffset)*(x-xOffset)*(x-xOffset) - (y-yOffset)) # @TMP@
 
 
 """
@@ -233,7 +231,6 @@ for n in xrange(nRuns):
     y = random() * yRange + yOffset - yRange/2
 
     if gauss(loR,noiseBand) <= xyCorr(x,y) < gauss(hiR,noiseBand):
-#    if xyCorr(x,y) > hiR: # @TMP@
         target = NNoutMax
         if n % saveEvery == 0:
             graphSin.SetPoint(n/saveEvery,x,y)
@@ -292,7 +289,6 @@ for n in xrange(nRuns):
      
 
     if ((NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR) or (NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y)))):
-#    if ((NNout[0] > NNthr and xyCorr(x,y) > hiR) or (NNout[0] <= NNthr and xyCorr(x,y) <= hiR)): # @TMP@
         count += 1
 
     if n % saveEvery == 0:
@@ -317,11 +313,9 @@ for n in xrange(nRuns):
      
 
     if (NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR):
-#    if (NNout[0] > NNthr and xyCorr(x,y) > hiR): # @TMP@
         graphSout.SetPoint(n,x,y)
         histoNNS.Fill(NNout[0])
     elif (NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y))):
-#    elif (NNout[0] <= NNthr and xyCorr(x,y) <= hiR): # @TMP@
         graphBout.SetPoint(n,x,y)
         histoNNB.Fill(NNout[0])
     else:
