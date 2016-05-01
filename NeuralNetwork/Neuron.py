@@ -44,7 +44,7 @@ class Neuron(object):
         wsum += self.weights[self.Nvars]
 
         self.afun    = self.aFun(wsum)
-        self.dafundz = self.daFunDz(wsum)
+        self.dafundz = self.daFunDz()
 
         return [self.afun, self.dafundz]
 
@@ -61,7 +61,7 @@ class Neuron(object):
             return val * self.dafundz
 
     ### d(Activation function) / dz ###
-    def daFunDz(self,val):
+    def daFunDz(self):
         if self.isBPN is False:
             return 1 - self.afun * self.afun
         else:
