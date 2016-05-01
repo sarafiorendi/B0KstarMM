@@ -14,7 +14,9 @@ Before running check on hyper-parameter space:
    quadratic / cross-entropy / softmax&logLikelihood
 
 To-do:
-  - implement rectified linear unit: max(0,w*x+b)
+  - implement rectified linear unit: max(0,z) + a*min(0,z)
+  - implement RMSprop
+
   - mini-batch learning
   - porting in pyCUDA
 #######################################################
