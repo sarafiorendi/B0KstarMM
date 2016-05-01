@@ -6,13 +6,15 @@ MVA implementation with Neural Network
 Before running check on hyper-parameter space:
   .number of perceptrons & neurons
   .learn rate
-  .regulator
+  .regularization
   .scramble
   .dropout
+  .rectified linear unit (?)
   .Cost functions:
    quadratic / cross-entropy / softmax&logLikelihood
 
 To-do:
+  - implement rectified linear unit: max(0,w*x+b)
   - mini-batch learning
   - porting in pyCUDA
 #######################################################
