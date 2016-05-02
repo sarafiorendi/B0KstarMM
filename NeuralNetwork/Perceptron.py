@@ -6,12 +6,13 @@ class Perceptron(object):
     ####################################################
     Nneurons = number of neurons of the perceptron
     Nvars    = number of input variables for each neuron
-    isBPN    = is a backpropagation network
+    afunType = type of activation function
+               "tanh", "BPN"
     ####################################################
     """
-    def __init__(self,Nneurons,Nvars,isBPN=False):
+    def __init__(self,Nneurons,Nvars,afunType="tanh"):
         self.Nneurons = Nneurons
-        self.neurons  = [ Neuron(Nvars,isBPN) for i in xrange(self.Nneurons) ]
+        self.neurons  = [ Neuron(Nvars,afunType) for i in xrange(self.Nneurons) ]
 
     def eval(self,invec):
         return [ N.eval(invec) for N in self.neurons ]
@@ -31,7 +32,7 @@ class Perceptron(object):
 
     def printParams(self):
         for i,N in enumerate(self.neurons):
-            print "  Neuron[", i, "aFun =", round(N.afun,2), "d(aFun)/dz =", round(N.dafundz,2), "]"
+            print "  Neuron[", i, "type =", N.afunType, "aFun =", round(N.afun,2), "d(aFun)/dz =", round(N.dafundz,2), "]"
             N.printParams()
 
     def reset(self):
@@ -66,24 +67,24 @@ class Perceptron(object):
             if type(who) is list:
                 N.removeW(who)
             else:
-                N.__init__(who)
+                N.__init__(who,N.afunType)
 
     def addN(self,who):
         self.Nneurons += len(who[:])
         
         for i,pos in enumerate(who):
-            self.neurons.insert(pos+i,Neuron(self.neurons[0].Nvars))
+            self.neurons.insert(pos+i,Neuron(self.neurons[0].Nvars,self.neurons[0].afunType))
 
     def addW(self,who):
         for N in self.neurons:
             if type(who) is list:
                 N.addW(who)
             else:
-                N.__init__(who)
+                N.__init__(who,N.afunType)
 
     def save(self,f):
         for i,N in enumerate(self.neurons):
-            f.write("  Neuron[ {0:d} ] aFun = {1:20f} d(aFun)/dz = {2:20f} Weights:".format(i,N.afun,N.dafundz))
+            f.write("  Neuron[ {0:d} ] type = {1:10s} aFun = {2:20f} d(aFun)/dz = {3:20f} Weights:".format(i,N.afunType,N.afun,N.dafundz))
             N.save(f)
 
     def read(self,f):

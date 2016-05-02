@@ -9,11 +9,10 @@ Before running check on hyper-parameter space:
   .regularization
   .scramble
   .dropout
-  .cost function:
-   quadratic / cross-entropy / softmax&logLikelihood
+  .cost function: quadratic / cross-entropy
 
 To-do:
-  - implement rectified linear unit: max(0,z) + a * min(0,z)
+  - activation functions ReLU and softmax&logLikelihood
   - mini-batch learning
   - porting in pyCUDA
 #######################################################
@@ -133,13 +132,13 @@ NN.printParams()
 Internal parameters
 ###################
 """
-nRuns     = 10000
+nRuns     = 10000000
 saveEvery =   100
 
 scrStart  = 10000
 scrLen    = 10000
 
-stepDecay = 10000
+stepDecay = 10000000
 
 xRange    = 3.
 xOffset   = 3.

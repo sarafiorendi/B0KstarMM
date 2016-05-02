@@ -2,7 +2,7 @@ from random import gauss
 from math   import sqrt, log, tanh, atanh
 """
 #########################################
-.Activation function: tanh
+.Activation function: tanh, BPN
 .Cost functions:
   1/2 (result - target)^2
   -log(sqrt(result))-target*atanh(result)
@@ -11,31 +11,40 @@ from math   import sqrt, log, tanh, atanh
 """
 class Neuron(object):
     learnRate  =  0.01
-    rmsPrDecay =  0.99
-    regular    =  0.
+    rmsPrDecay =  0.99 # If = 1 then no RMSprop
+    regular    =  0.   # If = 0 then no reguarization
 
     aFunMin    = -1.
     aFunMax    = +1.
     daFunDzMax =  1.
     """
-    ####################################
-    Nvars = number of input variables
-    isBPN = is a backpropagation network
-    ####################################
+    ######################################
+    Nvars    = number of input variables
+    aFunType = type of activation function
+               "tanh", "BPN"
+    ######################################
     """
-    def __init__(self,Nvars,isBPN=False):
+    def __init__(self,Nvars,afunType="tanh"):
         self.Nvars = Nvars
-        self.isBPN = isBPN
+        
+        if afunType == "tanh" or afunType == "BPN":
+            self.afunType = afunType
+        else:
+            print "[Neuron::__init__]\tWrong option:", afunType
+            quit()
 
         self.weights = [ gauss(0,1 / sqrt(self.Nvars)) for k in xrange(self.Nvars) ]
         self.weights.append(gauss(0,1))
-        if self.isBPN is True:
+        if self.afunType is "BPN":
             self.weights = [ 0 for k in xrange(self.Nvars+1) ]
 
         self.afun    = 0
         self.dafundz = 0
 
-        self.rmsProp = 0
+        if self.rmsPrDecay == 1:
+            self.rmsProp = 1
+        else:
+            self.rmsProp = 0
 
     def eval(self,invec):
         """
@@ -61,17 +70,19 @@ class Neuron(object):
 
     ### Activation function ###
     def aFun(self,val):
-        if self.isBPN is False:
-            return tanh(val)
-        else:
+        if self.afunType == "BPN":
             return val * self.dafundz
+
+        if self.afunType == "tanh":
+            return tanh(val)
 
     ### d(Activation function) / dz ###
     def daFunDz(self):
-        if self.isBPN is False:
-            return 1 - self.afun * self.afun
-        else:
+        if self.afunType == "BPN":
             return self.dafundz
+
+        if self.afunType == "tanh":
+            return 1 - self.afun * self.afun
 
     ### Cost function ###
     def cFun(self,target):
@@ -90,14 +101,14 @@ class Neuron(object):
             print "    Weight[", k, "] ", round(W,2)
 
     def reset(self):
-        self.__init__(self.Nvars,self.isBPN)
+        self.__init__(self.Nvars,self.afunType)
 
     def sum2W(self):
         return sum(W*W for W in self.weights[:-1])
 
     def scramble(self):
         for k in xrange(self.Nvars):
-            self.weights[k] = self.weights[k] - cmp(self.weights[k],1) * gauss(0,(1 - self.afun) / self.dafundz * sqrt(self.Nvars))
+            self.weights[k] = self.weights[k] - cmp(self.weights[k],1) * gauss(0,(1 - self.afun) / self.dafundz / sqrt(self.Nvars))
         self.weights[self.Nvars] = self.weights[self.Nvars] - cmp(self.weights[self.Nvars],1) * gauss(0,(1 - self.afun) / self.dafundz)
 
     def removeW(self,who):
@@ -126,7 +137,9 @@ class Neuron(object):
 
         w = [ float(a) for a in lele if a.replace(".","").replace("-","").isdigit() ]
 
+        self.afunType = next(lele[i+2] for i,a in enumerate(lele) if a == "type")
+
         w.pop(0)
-        self.afun    = w.pop(0)
-        self.dafundz = w.pop(0)
-        self.weights = w
+        self.afun     = w.pop(0)
+        self.dafundz  = w.pop(0)
+        self.weights  = w

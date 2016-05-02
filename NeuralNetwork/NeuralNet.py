@@ -34,8 +34,11 @@ class NeuralNet(object):
         ### First layer ###
         self.FFperceptrons.append(Perceptron(Nneurons[0],Nvars))
 
-        ### Intermediate layers + last layer ###
+        ### Intermediate layers ###
         self.FFperceptrons.extend(Perceptron(Nneurons[j],self.FFperceptrons[j-1].Nneurons) for j in xrange(1,self.Nperceptrons))
+
+        ### Last layer ###
+        self.FFperceptrons.append(Perceptron(Nneurons[self.Nperceptrons-1],self.FFperceptrons[self.Nperceptrons-2].Nneurons))
 
         """
         #######################
@@ -48,10 +51,10 @@ class NeuralNet(object):
         self.BPperceptrons = []
 
         ### First layer ###
-        self.BPperceptrons.append(Perceptron(self.FFperceptrons[self.Nperceptrons-2].Nneurons,self.FFperceptrons[self.Nperceptrons-1].Nneurons,True))
+        self.BPperceptrons.append(Perceptron(self.FFperceptrons[self.Nperceptrons-2].Nneurons,self.FFperceptrons[self.Nperceptrons-1].Nneurons,"BPN"))
 
         ### Intermediate layers + last layer ###
-        self.BPperceptrons.extend(Perceptron(self.FFperceptrons[self.Nperceptrons-j-1].Nneurons,self.FFperceptrons[self.Nperceptrons-j].Nneurons,True) for j in xrange(2,self.Nperceptrons))
+        self.BPperceptrons.extend(Perceptron(self.FFperceptrons[self.Nperceptrons-j-1].Nneurons,self.FFperceptrons[self.Nperceptrons-j].Nneurons,"BPN") for j in xrange(2,self.Nperceptrons))
         
     def eval(self,invec):
         ### First layer ###
@@ -151,7 +154,7 @@ class NeuralNet(object):
 
     def copy(self):
         out = NeuralNet(self.FFperceptrons[0].neurons[0].Nvars,self.Nperceptrons,[ P.Nneurons for P in self.FFperceptrons ])
-        
+
         for j in xrange(self.Nperceptrons):
             for i in xrange(self.FFperceptrons[j].Nneurons):
                 for k in xrange(len(self.FFperceptrons[j].neurons[i].weights[:])):
@@ -207,8 +210,9 @@ class NeuralNet(object):
             else:
                 self.Nperceptrons += 1
                 
+                # @TMP@
                 self.FFperceptrons.insert(j,Perceptron(who[j],self.FFperceptrons[j].neurons[0].Nvars))
-
+                
             if j < self.Nperceptrons-1:
                 self.FFperceptrons[j+1].addW(who[j])
                 
@@ -235,7 +239,7 @@ class NeuralNet(object):
         for j,P in enumerate(self.FFperceptrons):
             f.write("Perceptron[ " + str(j) + " ]\n")
             P.save(f)
-            
+
         f.close()
 
     def read(self,name):
