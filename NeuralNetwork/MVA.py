@@ -5,18 +5,15 @@ MVA implementation with Neural Network
 #######################################################
 Before running check on hyper-parameter space:
   .number of perceptrons & neurons
-  .learn rate
+  .learn rate (with step decay)
   .regularization
   .scramble
   .dropout
-  .rectified linear unit (?)
-  .Cost functions:
+  .cost function:
    quadratic / cross-entropy / softmax&logLikelihood
 
 To-do:
-  - implement rectified linear unit: max(0,z) + a*min(0,z)
-  - implement RMSprop
-
+  - implement rectified linear unit: max(0,z) + a * min(0,z)
   - mini-batch learning
   - porting in pyCUDA
 #######################################################
@@ -122,6 +119,7 @@ Neural net: initialization
 ##########################
 """
 seed(0)
+
 if cmd.infile:
     NN = NeuralNet()
     NN.read(cmd.infile)
@@ -135,21 +133,29 @@ NN.printParams()
 Internal parameters
 ###################
 """
-seed(0)
-nRuns     = 30000
+nRuns     = 1000000
 saveEvery =   100
-scrStart  =     0
+
+scrStart  = 10000
 scrLen    = 10000
+
+stepDecay = 1000000
+
 xRange    = 3.
 xOffset   = 3.
 yRange    = 3.
 yOffset   = 0.
+
 noiseBand = 0.1
 loR       = 0.5
 hiR       = 1.
+
+learnRate = 0.001
+
 NNoutMin  = NN.aFunMin(NN.Nperceptrons-1)
 NNoutMax  = NN.aFunMax(NN.Nperceptrons-1)
 NNthr     = (NNoutMin+NNoutMax) / 2.
+
 xyCorr    = lambda x,y: ((x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset))
 
 
@@ -216,7 +222,7 @@ histoNNE = TH1D('histoNNE','histoNNE',100,NNoutMin,NNoutMax)
 histoNNE.SetTitle('NN error output;NN output;Entries [#]')
 histoNNE.SetLineColor(3)
 
-legNNspeed = TLegend(0.88, 0.17, 1.0, 1.0, "")
+legNNspeed = TLegend(0.92, 0.17, 1.0, 1.0, "")
 legNNspeed.SetTextSize(0.03)
 legNNspeed.SetFillStyle(1001)
 
@@ -266,6 +272,15 @@ for n in xrange(nRuns):
     NNspeed = [ a + NN.speed(j) for j,a in enumerate(NNspeed) ]
 
     
+    """
+    ##########################################
+    Neural net: set learn rate with step decay
+    ##########################################
+    """
+    if n < scrStart and n % stepDecay == 0:
+        NN.setLearnRate(learnRate / (n % stepDecay + 1))
+
+
     if n % saveEvery == 0:
         graphNNcost.SetPoint(n/saveEvery,n,NNcost / saveEvery)
         NNcost = 0.

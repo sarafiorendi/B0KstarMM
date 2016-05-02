@@ -219,7 +219,7 @@ class NeuralNet(object):
         out = []
         
         f.write("### M.E.D. Neural Network ###\n")
-        f.write("# {0:20s} {1:20s} {2:40s} {3:20s} {4:20s}\n".format("Nvars","Nperceptrons","Nneurons","Learn rate","Regularization"))
+        f.write("# {0:20s} {1:20s} {2:40s} {3:20s} {4:20s} {5:20s}\n".format("Nvars","Nperceptrons","Nneurons","Learn rate","Regularization","RMSprop decay"))
 
         out.append(str(self.FFperceptrons[0].neurons[0].Nvars))
         out.append(str(self.Nperceptrons))
@@ -227,9 +227,10 @@ class NeuralNet(object):
         for P in self.FFperceptrons:
             out[-1] += " " + str(P.Nneurons)
         out[-1] += " ]"
-        out.append(str(self.FFperceptrons[0].neurons[0].lRate))
+        out.append(str(self.FFperceptrons[0].neurons[0].learnRate))
         out.append(str(self.FFperceptrons[0].neurons[0].regular))
-        f.write("  {0:20s} {1:20s} {2:40s} {3:20s} {4:20s}\n\n".format(out[0],out[1],out[2],out[3],out[4]))
+        out.append(str(self.FFperceptrons[0].neurons[0].rmsPrDecay))
+        f.write("  {0:20s} {1:20s} {2:40s} {3:20s} {4:20s} {5:20s}\n\n".format(out[0],out[1],out[2],out[3],out[4],out[5]))
 
         for j,P in enumerate(self.FFperceptrons):
             f.write("Perceptron[ " + str(j) + " ]\n")
@@ -255,10 +256,15 @@ class NeuralNet(object):
                 lelef.append(float(lele[i]))
 
         self.__init__(leled[0],leled[1],leled[2:])
-        self.FFperceptrons[0].neurons[0].lRate   = lelef[0]
-        self.FFperceptrons[0].neurons[0].regular = lelef[1]
+        self.FFperceptrons[0].neurons[0].learnRate  = lelef[0]
+        self.FFperceptrons[0].neurons[0].regular    = lelef[1]
+        self.FFperceptrons[0].neurons[0].rmsPrDecay = lelef[2]
 
         for P in self.FFperceptrons:
             P.read(f)
 
         f.close()
+
+    def setLearnRate(self,val):
+        for P in self.FFperceptrons:
+            P.setLearnRate(val)

@@ -10,8 +10,10 @@ from math   import sqrt, log, tanh, atanh
 #########################################
 """
 class Neuron(object):
-    lRate      =  0.001
+    learnRate  =  0.01
+    rmsPrDecay =  0.99
     regular    =  0.
+
     aFunMin    = -1.
     aFunMax    = +1.
     daFunDzMax =  1.
@@ -33,6 +35,8 @@ class Neuron(object):
         self.afun    = 0
         self.dafundz = 0
 
+        self.rmsProp = 0
+
     def eval(self,invec):
         """
         ##################################
@@ -49,9 +53,11 @@ class Neuron(object):
         return [self.afun, self.dafundz]
 
     def adapt(self,invec,dCdZ):
+        self.rmsProp = self.rmsPrDecay * self.rmsProp + (1 - self.rmsPrDecay) * dCdZ * dCdZ
+
         for k in xrange(self.Nvars):
-            self.weights[k] = self.weights[k] * (1 - self.learnRate() * self.regular) - self.learnRate() * dCdZ * invec[k]
-        self.weights[self.Nvars] -= self.learnRate() * dCdZ
+            self.weights[k] = self.weights[k] * (1 - self.learnRate * self.regular) - self.learnRate * dCdZ * invec[k] / sqrt(self.rmsProp)
+        self.weights[self.Nvars] -= self.learnRate * dCdZ
 
     ### Activation function ###
     def aFun(self,val):
@@ -90,9 +96,9 @@ class Neuron(object):
         return sum(W*W for W in self.weights[:-1])
 
     def scramble(self):
-        for i in xrange(self.Nvars):
-            self.weights[i] = self.weights[i] - cmp(self.weights[i],1) * gauss(0,self.afun / self.dafundz / sqrt(self.Nvars))
-        self.weights[self.Nvars] = self.weights[self.Nvars] - cmp(self.weights[self.Nvars],1) * gauss(0,self.afun / self.dafundz)
+        for k in xrange(self.Nvars):
+            self.weights[k] = self.weights[k] - cmp(self.weights[k],1) * gauss(0,(1 - self.afun) / self.dafundz * sqrt(self.Nvars))
+        self.weights[self.Nvars] = self.weights[self.Nvars] - cmp(self.weights[self.Nvars],1) * gauss(0,(1 - self.afun) / self.dafundz)
 
     def removeW(self,who):
         self.weights = [ W for k,W in enumerate(self.weights) if k not in who ]
@@ -124,6 +130,3 @@ class Neuron(object):
         self.afun    = w.pop(0)
         self.dafundz = w.pop(0)
         self.weights = w
-
-    def learnRate(self):
-        return self.lRate

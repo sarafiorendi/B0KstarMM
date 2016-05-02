@@ -96,3 +96,7 @@ class Perceptron(object):
 
         for N in self.neurons:
             N.read(f)
+
+    def setLearnRate(self,val):
+        for N in self.neurons:
+            N.learnRate = val
