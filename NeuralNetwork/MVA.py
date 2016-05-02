@@ -71,22 +71,22 @@ def SetStyle():
     gROOT.SetStyle("Plain")
     gROOT.ForceStyle()
     gStyle.SetTextFont(42)
-    
+
     gStyle.SetOptTitle(0)
     gStyle.SetOptFit(0)
     gStyle.SetOptStat(1111)
-    
+
     gStyle.SetPadRightMargin(0.08)
     gStyle.SetPadTopMargin(0.11)
     gStyle.SetPadBottomMargin(0.12)
-    
+
     gStyle.SetTitleFont(42,"x")
     gStyle.SetTitleFont(42,"y")
     gStyle.SetTitleFont(42,"z")
     
     gStyle.SetTitleOffset(1.05,"x")
     gStyle.SetTitleOffset(0.95,"y")
-    
+
     gStyle.SetTitleSize(0.05,"x")
     gStyle.SetTitleSize(0.05,"y")
     gStyle.SetTitleSize(0.05,"z")
@@ -94,7 +94,7 @@ def SetStyle():
     gStyle.SetLabelFont(42,"x")
     gStyle.SetLabelFont(42,"y")
     gStyle.SetLabelFont(42,"z")
-    
+
     gStyle.SetLabelSize(0.05,"x")
     gStyle.SetLabelSize(0.05,"y")
     gStyle.SetLabelSize(0.05,"z")
@@ -103,7 +103,7 @@ def SetStyle():
     gStyle.SetStatY(0.9)
 
 
-    
+
 
 """
 ############
@@ -133,13 +133,13 @@ NN.printParams()
 Internal parameters
 ###################
 """
-nRuns     = 1000000
+nRuns     = 10000
 saveEvery =   100
 
 scrStart  = 10000
 scrLen    = 10000
 
-stepDecay = 1000000
+stepDecay = 10000
 
 xRange    = 3.
 xOffset   = 3.
@@ -150,13 +150,13 @@ noiseBand = 0.1
 loR       = 0.5
 hiR       = 1.
 
-learnRate = 0.001
+learnRate = 0.0001
 
 NNoutMin  = NN.aFunMin(NN.Nperceptrons-1)
 NNoutMax  = NN.aFunMax(NN.Nperceptrons-1)
-NNthr     = (NNoutMin+NNoutMax) / 2.
+NNthr     = (NNoutMin + NNoutMax) / 2.
 
-xyCorr    = lambda x,y: ((x-xOffset)*(x-xOffset)+(y-yOffset)*(y-yOffset))
+xyCorr    = lambda x,y: ((x-xOffset)*(x-xOffset) + (y-yOffset)*(y-yOffset))
 
 
 """
