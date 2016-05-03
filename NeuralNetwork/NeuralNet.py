@@ -209,10 +209,8 @@ class NeuralNet(object):
                 self.FFperceptrons[j].addN(who[j])
             else:
                 self.Nperceptrons += 1
-                
-                # @TMP@
                 self.FFperceptrons.insert(j,Perceptron(who[j],self.FFperceptrons[j].neurons[0].Nvars))
-                
+
             if j < self.Nperceptrons-1:
                 self.FFperceptrons[j+1].addW(who[j])
                 

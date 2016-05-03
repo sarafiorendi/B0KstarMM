@@ -12,7 +12,7 @@ Before running check on hyper-parameter space:
   .cost function: quadratic / cross-entropy
 
 To-do:
-  - activation functions ReLU and softmax&logLikelihood
+  - activation function: ReLU and softmax&logLikelihood
   - mini-batch learning
   - porting in pyCUDA
 #######################################################
@@ -189,7 +189,7 @@ graphBin = TGraph()
 graphBin.SetTitle('NN input;x;y')
 graphBin.SetMarkerStyle(20)
 graphBin.SetMarkerSize(0.5)
-graphBin.SetMarkerColor(2)
+graphBin.SetMarkerColorAlpha(2,0.5)
 
 graphSout = TGraph()
 graphSout.SetTitle('NN output;x;y')
@@ -201,13 +201,13 @@ graphBout = TGraph()
 graphBout.SetTitle('NN output;x;y')
 graphBout.SetMarkerStyle(20)
 graphBout.SetMarkerSize(0.5)
-graphBout.SetMarkerColor(2)
+graphBout.SetMarkerColorAlpha(2,0.5)
 
 graphNNerr = TGraph()
 graphNNerr.SetTitle('NN output;x;y')
 graphNNerr.SetMarkerStyle(20)
 graphNNerr.SetMarkerSize(0.5)
-graphNNerr.SetMarkerColor(3)
+graphNNerr.SetMarkerColorAlpha(3,0.25)
 
 histoNNS = TH1D('histoNNS','histoNNS',100,NNoutMin,NNoutMax)
 histoNNS.SetTitle('NN signal output;NN output;Entries [#]')
