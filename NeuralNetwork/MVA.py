@@ -132,13 +132,13 @@ NN.printParams()
 Internal parameters
 ###################
 """
-nRuns     = 10000000
+nRuns     = 50000
 saveEvery =   100
 
 scrStart  = 10000
 scrLen    = 10000
 
-stepDecay = 10000000
+stepDecay = 50000
 
 xRange    = 3.
 xOffset   = 3.
@@ -151,11 +151,11 @@ hiR       = 1.
 
 learnRate = 0.0001
 
-NNoutMin  = NN.aFunMin(NN.Nperceptrons-1)
-NNoutMax  = NN.aFunMax(NN.Nperceptrons-1)
-NNthr     = (NNoutMin + NNoutMax) / 2.
+NNoutMin = NN.aFunMin(NN.Nperceptrons-1)
+NNoutMax = NN.aFunMax(NN.Nperceptrons-1)
+NNthr    = (NNoutMin + NNoutMax) / 2.
 
-xyCorr    = lambda x,y: ((x-xOffset)*(x-xOffset) + (y-yOffset)*(y-yOffset))
+xyCorr   = lambda x,y: ((x-xOffset)*(x-xOffset) + (y-yOffset)*(y-yOffset))
 
 
 """
@@ -266,18 +266,19 @@ for n in xrange(nRuns):
         print "  Scrambling perceptron [", indx, "]"
         NN.scramble({indx:[-1]})
 
-        
-    NNcost += NN.learn([x,y],[target])
-    NNspeed = [ a + NN.speed(j) for j,a in enumerate(NNspeed) ]
 
-    
     """
     ##########################################
     Neural net: set learn rate with step decay
     ##########################################
     """
     if n < scrStart and n % stepDecay == 0:
-        NN.setLearnRate(learnRate / (n % stepDecay + 1))
+        print "  Learn rate set to", learnRate / (n / stepDecay + 1)
+        NN.setLearnRate(learnRate / (n / stepDecay + 1))
+
+
+    NNcost += NN.learn([x,y],[target])
+    NNspeed = [ a + NN.speed(j) for j,a in enumerate(NNspeed) ]
 
 
     if n % saveEvery == 0:
