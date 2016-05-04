@@ -35,7 +35,7 @@ class NeuralNet(object):
         self.FFperceptrons.append(Perceptron(Nneurons[0],Nvars))
 
         ### Intermediate layers ###
-        self.FFperceptrons.extend(Perceptron(Nneurons[j],self.FFperceptrons[j-1].Nneurons) for j in xrange(1,self.Nperceptrons))
+        self.FFperceptrons.extend(Perceptron(Nneurons[j],self.FFperceptrons[j-1].Nneurons) for j in xrange(1,self.Nperceptrons-1))
 
         ### Last layer ###
         self.FFperceptrons.append(Perceptron(Nneurons[self.Nperceptrons-1],self.FFperceptrons[self.Nperceptrons-2].Nneurons))
