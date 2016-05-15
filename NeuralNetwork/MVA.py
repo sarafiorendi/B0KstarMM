@@ -128,9 +128,9 @@ NN.printParams()
 
 
 """
-###################
-Internal parameters
-###################
+##################################
+Internal parameters: for execution
+##################################
 """
 nRuns     = 50000
 saveEvery =   100
@@ -138,8 +138,15 @@ saveEvery =   100
 scrStart  = 10000
 scrLen    = 10000
 
+learnRate = 0.0001
 stepDecay = 50000
 
+
+"""
+#####################################
+Internal parameters: problem specific
+#####################################
+"""
 xRange    = 3.
 xOffset   = 3.
 yRange    = 3.
@@ -148,8 +155,6 @@ yOffset   = 0.
 noiseBand = 0.1
 loR       = 0.5
 hiR       = 1.
-
-learnRate = 0.0001
 
 NNoutMin = NN.aFunMin(NN.Nperceptrons-1)
 NNoutMax = NN.aFunMax(NN.Nperceptrons-1)
