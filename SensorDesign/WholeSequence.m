@@ -30,7 +30,7 @@
 
 Step         = 5;
 subStep      = 1;
-Bulk         = 300;
+Bulk         = 100;
 Pitch        = 100;
 Radius       = Step/10;
 BField       = 0.0;
