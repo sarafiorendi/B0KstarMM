@@ -4048,10 +4048,15 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
   double effMuMuMisTag     = 1.0;
   double effMuMuMisTagErr  = 0.0;
 
-  TCanvas*    cq2Bins[q2Bins->size()-1];
-  RooDataSet* dataSet_q2Bins[q2Bins->size()-1];
-  RooAbsPdf*  TotalPDFq2Bins[q2Bins->size()-1];
-  TPaveText*  extText[q2Bins->size()-1];
+  vector<TCanvas*>    cq2Bins;
+  vector<RooDataSet*> dataSet_q2Bins;
+  vector<RooAbsPdf*>  TotalPDFq2Bins;
+  vector<TPaveText*>  extText;
+
+  cq2Bins.reserve(q2Bins->size()-1);
+  dataSet_q2Bins.reserve(q2Bins->size()-1);
+  TotalPDFq2Bins.reserve(q2Bins->size()-1);
+  extText.reserve(q2Bins->size()-1);
 
   RooFitResult* fitResult;
 
@@ -6256,10 +6261,15 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
   double varVal1, varVal1ELo, varVal1EHi;
   double varVal2, varVal2ELo, varVal2EHi;
 
-  TCanvas*    cq2Bins[q2Bins->size()-1];
-  RooDataSet* dataSet_q2Bins[q2Bins->size()-1];
-  RooAbsPdf*  TotalPDFq2Bins[q2Bins->size()-1];
-  TPaveText*  extText[q2Bins->size()-1];
+  vector<TCanvas*>    cq2Bins;
+  vector<RooDataSet*> dataSet_q2Bins;
+  vector<RooAbsPdf*>  TotalPDFq2Bins;
+  vector<TPaveText*>  extText;
+
+  cq2Bins.reserve(q2Bins->size()-1);
+  dataSet_q2Bins.reserve(q2Bins->size()-1);
+  TotalPDFq2Bins.reserve(q2Bins->size()-1);
+  extText.reserve(q2Bins->size()-1);
 
   RooFitResult* fitResult;
   RooAbsReal*   EffPDFintegral = NULL;

@@ -1,43 +1,91 @@
+from math   import sqrt
 from Neuron import Neuron
 
 class Perceptron(object):
-
-    #########################################################
-    # Nneurons  = number of neurons of the perceptron       #
-    # Nvars     = number of input variables for each neuron #
-    # isBackPrN = is a backpropagation network              #
-    #########################################################
-    def __init__(self,Nneurons,Nvars,isBackPrN):
+    """
+    ####################################################
+    Nneurons = number of neurons of the perceptron
+    Nvars    = number of input variables for each neuron
+    afunType = type of activation function
+               "tanh", "BPN"
+    ####################################################
+    """
+    def __init__(self,Nneurons,Nvars,afunType="tanh"):
         self.Nneurons = Nneurons
-        self.neuron   = [ Neuron(Nvars,isBackPrN) for i in xrange(self.Nneurons) ]
+        self.neurons  = [ Neuron(Nvars,afunType) for i in xrange(self.Nneurons) ]
 
     def eval(self,invec):
-        return [ self.neuron[i].eval(invec) for i in xrange(self.Nneurons) ]
+        return [ N.eval(invec) for N in self.neurons ]
 
-    def adapt(self,invec,dcdz):
-        for i in xrange(self.Nneurons):
-            self.neuron[i].adapt(invec,dcdz[i])
+    def adapt(self,invec,dCdZ):
+        for a,N in zip(dCdZ,self.neurons):
+            N.adapt(invec,a)
+
+    def cFun(self,target):
+        return sum(N.cFun(a) for a,N in zip(target,self.neurons))
+
+    def dcFunDz(self,target):
+        return [ N.dcFunDz(a) for a,N in zip(target,self.neurons) ]
+
+    def speed(self):
+        return sqrt(sum(N.afun * N.afun for N in self.neurons))
 
     def printParams(self):
-        for i in xrange(self.Nneurons):
-            print "  Neuron[", i, "aFun =", round(self.neuron[i].afun,2), "d(aFun)/dz =", round(self.neuron[i].dafundz,2), "]"
-            self.neuron[i].printParams()
+        for i,N in enumerate(self.neurons):
+            print "  Neuron[", i, "type =", N.afunType, "aFun =", round(N.afun,2), "d(aFun)/dz =", round(N.dafundz,2), "]"
+            N.printParams()
 
-    def reset(self,what):
-        for i in xrange(self.Nneurons):
-            self.neuron[i].reset(what)
+    def reset(self):
+        for N in self.neurons:
+            N.reset()
 
-    def scramble(self,who):
-        if who and who[0] == -1:
-            who = [ i for i in xrange(self.Nneurons) ]
+    def sum2W(self):
+        return sum(N.sum2W() for N in self.neurons)
             
+    def scramble(self,who):
+        if who[0] == -1:
+            who = [ i for i in xrange(self.Nneurons) ]
+
         for i in who:
-            self.neuron[i].scramble()
+            self.neurons[i].scramble()
+
+    def aFunMin(self,indx):
+        return self.neurons[indx].aFunMin
+
+    def aFunMax(self,indx):
+        return self.neurons[indx].aFunMax
+
+    def removeN(self,who):
+        if who[0] == -1:
+            who = [ i for i in xrange(self.Nneurons) ]
+
+        self.neurons  = [ N for i,N in enumerate(self.neurons) if i not in who ]
+        self.Nneurons = len(self.neurons[:])
+
+    def removeW(self,who):
+        for N in self.neurons:
+            if type(who) is list:
+                N.removeW(who)
+            else:
+                N.__init__(who,N.afunType)
+
+    def addN(self,who):
+        self.Nneurons += len(who[:])
+        
+        for i,pos in enumerate(who):
+            self.neurons.insert(pos+i,Neuron(self.neurons[0].Nvars,self.neurons[0].afunType))
+
+    def addW(self,who):
+        for N in self.neurons:
+            if type(who) is list:
+                N.addW(who)
+            else:
+                N.__init__(who,N.afunType)
 
     def save(self,f):
-        for i in xrange(self.Nneurons):
-            f.write("  Neuron[ {0:d} ] aFun = {1:20f} d(aFun)/dz = {2:20f}".format(i,self.neuron[i].afun,self.neuron[i].dafundz))
-            self.neuron[i].save(f)
+        for i,N in enumerate(self.neurons):
+            f.write("  Neuron[ {0:d} ] type = {1:10s} aFun = {2:20f} d(aFun)/dz = {3:20f} Weights:".format(i,N.afunType,N.afun,N.dafundz))
+            N.save(f)
 
     def read(self,f):
         line = f.readline()
@@ -47,5 +95,9 @@ class Perceptron(object):
             line = f.readline()
             lele = line.split()
 
-        for i in xrange(self.Nneurons):
-            self.neuron[i].read(f)
+        for N in self.neurons:
+            N.read(f)
+
+    def setLearnRate(self,val):
+        for N in self.neurons:
+            N.learnRate = val

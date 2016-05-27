@@ -31,6 +31,7 @@
 #include "DataFormats/MuonReco/interface/MuonChamberMatch.h"
 #include "DataFormats/MuonReco/interface/MuonFwd.h"
 #include "DataFormats/TrackReco/interface/Track.h"
+#include "DataFormats/TrackReco/interface/HitPattern.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 
@@ -1200,9 +1201,9 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 			  NTuple->mumKinkChi2->push_back(iMuonM->combinedQuality().trkKink);
 			  NTuple->mumFracHits->push_back(static_cast<double>(muTrackm->hitPattern().numberOfValidHits()) / static_cast<double>(muTrackm->hitPattern().numberOfValidHits() +
-																	       muTrackm->hitPattern().numberOfLostHits() +
-																	       muTrackm->trackerExpectedHitsInner().numberOfLostHits() +
-																	       muTrackm->trackerExpectedHitsOuter().numberOfLostHits()));
+																	       muTrackm->hitPattern().numberOfLostHits(reco::HitPattern::TRACK_HITS) +
+																	       muTrackm->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS) +
+																	       muTrackm->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_OUTER_HITS)));
 			  theDCAXVtx = IPTools::absoluteTransverseImpactParameter(muTrackmTT, bestVtxReFit);
 			  NTuple->mumdxyVtx->push_back(theDCAXVtx.second.value());
 			  NTuple->mumdzVtx->push_back(muTrackmTT.track().dz(bestVtxReFit.position()));
@@ -1245,9 +1246,9 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  
 			  NTuple->mupKinkChi2->push_back(iMuonP->combinedQuality().trkKink);
 			  NTuple->mupFracHits->push_back(static_cast<double>(muTrackp->hitPattern().numberOfValidHits()) / static_cast<double>(muTrackp->hitPattern().numberOfValidHits() +
-																	       muTrackp->hitPattern().numberOfLostHits() +
-																	       muTrackp->trackerExpectedHitsInner().numberOfLostHits() +
-																	       muTrackp->trackerExpectedHitsOuter().numberOfLostHits()));
+																	       muTrackp->hitPattern().numberOfLostHits(reco::HitPattern::TRACK_HITS) +
+																	       muTrackp->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS) +
+																	       muTrackp->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_OUTER_HITS)));
 			  theDCAXVtx = IPTools::absoluteTransverseImpactParameter(muTrackpTT, bestVtxReFit);
 			  NTuple->mupdxyVtx->push_back(theDCAXVtx.second.value());
 			  NTuple->mupdzVtx->push_back(muTrackpTT.track().dz(bestVtxReFit.position()));
@@ -1289,8 +1290,8 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  NTuple->kstTrkmDCABSE->push_back(DCAKstTrkmBSErr);
 
 			  NTuple->kstTrkmFracHits->push_back(static_cast<double>(Trackm->hitPattern().numberOfValidHits()) / static_cast<double>(Trackm->hitPattern().numberOfValidHits() +
-																		 Trackm->hitPattern().numberOfLostHits() +
-																		 Trackm->trackerExpectedHitsInner().numberOfLostHits()));
+																		 Trackm->hitPattern().numberOfLostHits(reco::HitPattern::TRACK_HITS) +
+																		 Trackm->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS)));
 			  theDCAXVtx = IPTools::absoluteTransverseImpactParameter(TrackmTT, bestVtxReFit);
 			  NTuple->kstTrkmdxyVtx->push_back(theDCAXVtx.second.value());
 			  NTuple->kstTrkmdzVtx->push_back(TrackmTT.track().dz(bestVtxReFit.position()));
@@ -1320,8 +1321,8 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  NTuple->kstTrkpDCABSE->push_back(DCAKstTrkpBSErr);
 
 			  NTuple->kstTrkpFracHits->push_back(static_cast<double>(Trackp->hitPattern().numberOfValidHits()) / static_cast<double>(Trackp->hitPattern().numberOfValidHits() +
-																		 Trackp->hitPattern().numberOfLostHits() +
-																		 Trackp->trackerExpectedHitsInner().numberOfLostHits()));
+																		 Trackp->hitPattern().numberOfLostHits(reco::HitPattern::TRACK_HITS) +
+																		 Trackp->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS)));
 			  theDCAXVtx = IPTools::absoluteTransverseImpactParameter(TrackpTT, bestVtxReFit);
 			  NTuple->kstTrkpdxyVtx->push_back(theDCAXVtx.second.value());
 			  NTuple->kstTrkpdzVtx->push_back(TrackpTT.track().dz(bestVtxReFit.position()));

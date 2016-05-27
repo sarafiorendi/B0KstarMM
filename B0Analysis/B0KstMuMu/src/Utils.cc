@@ -2357,7 +2357,7 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
     }
 
 
-  delete coeffVec;
+  delete[] coeffVec;
   ParVector.clear();
   delete ParameterFile;
 }
@@ -2436,7 +2436,7 @@ void Utils::ReadAnalyticalEff (std::string fileNameEffParams,
     }
 
 
-  delete coeffVec;
+  delete[] coeffVec;
   ParVector.clear();
   delete ParameterFile;
 }
@@ -2489,7 +2489,7 @@ void Utils::ReadAnalyticalEffFullCovariance (std::string fileNameEffParams, std:
     }
 
 
-  delete coeffVec;
+  delete[] coeffVec;
   ParVector.clear();
   delete ParameterFile;
 }
