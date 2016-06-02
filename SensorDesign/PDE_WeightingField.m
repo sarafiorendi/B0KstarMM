@@ -2,16 +2,17 @@ function [pw,ew,tw,uw] = PDE_WeightingField(Pitch,Bulk)
 
 % Parameters of the sensor:
 DConst     = 3.9;   % Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
-rho        = 0.0;   % Charge denisty in the bulk [Coulomb / m^2]
-NupBulk    = 5;     % Number of bulk thicknesses above sensor (included)
+rho        = 0.0;   % Charge denisty in the bulk [#charges / m^3]
+rho        = rho*1.6e-19; % Charge denisty in the bulk [Coulomb / m^3]
+NupBulk    = 3;     % Number of bulk thicknesses above sensor (included)
 StrThick   = 5;     % Strip metalization thickness [um]
 EleHVwidth = 80;    % HV strip metalization width [um]
 EleSGwidth = 80;    % Signal strip metalization width [um]
 % The Pitch shouldn't be changed because a change in the Pitch can be
 % emulated with a change in the bulk thickness and strip metalization width
-BiasB      = '0';   % Sensor Backplane voltage [V]
-BiasS      = '0';   % Sensor Strip voltage [V]
-BiasW      = '1';   % Sensor central Strip voltage for weighting field [V]
+BiasB      = '0';   % Sensor backplane voltage [V]
+BiasS      = '0';   % Sensor strip voltage [V]
+BiasW      = '1';   % Sensor central strip voltage for weighting field [V]
 ShowNstrip = 8;     % Number of strips to show in the plot
 
 [pde_fig,ax]=pdeinit;

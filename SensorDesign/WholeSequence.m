@@ -2,15 +2,6 @@
 % Function that run the whole sequence of steps %
 % to caculate the signal in particle sensors    %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% (A) Run PDE_AllStrips.m
-% (B) Export Solution ut = total potential
-% (C) Export Mesh pt (points), et (edges), tt (triangles)
-
-% (D) Run PDE_WeightingField.m
-% (E) Export Solution uw = weighting potential
-% (F) Export Mesh pw (points), ew (edges), tw (triangles)
-
-% (G) Run WholeSequence.m
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -34,17 +25,10 @@ Bulk         = 100;
 Pitch        = 100;
 Radius       = Step/10;
 BField       = 0.0;
-
-TauBe        = 1000;
-TauSe        = 1000;
-TauBh        = 1000;
-TauSh        = 1000;
-
-%TauBe        = 0.64;
-%TauSe        = 0.64;
-%TauBh        = 0.46;
-%TauSh        = 0.46;
-
+TauBe        = 0.64;
+TauSe        = 0.64;
+TauBh        = 0.46;
+TauSh        = 0.46;
 NAverage     = 10;
 NParticles   = 10000;
 ParticleType = 'beta';
@@ -97,15 +81,17 @@ ComputeSpectra(subWorkTransportTotal,subx,suby,NParticles,Pitch,Step,...
 % Test %
 %%%%%%%%
 % Random generation work transport matrix
-% Velocity field in case of fixed charge density
+% Check interpolation/fit in this page
+% Add limited number of iteration steps when drifting the charges
+% Check if work is computer with weigthing field or total field
+% Include strip in Silicon bulk
 
 
 %%%%%%%%%%%%%%%%
 % Improvements %
 %%%%%%%%%%%%%%%%
 % 1. Implement spectra for gamma particles
-% 2. Implement non-uniform bulk fixed charge distribution
-% 3. Implement dependance of mobility from temperature
+% 2. Implement dependance of mobility from temperature
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%
