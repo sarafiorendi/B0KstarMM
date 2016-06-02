@@ -3,7 +3,7 @@ function [pt,et,tt,ut] = PDE_AllStrips(Pitch,Bulk)
 % Parameters of the sensor:
 DConst     = 3.9;   % Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
 epsilon    = 8.854187817e-12; % Vacuum diectric constant [Farad / m]
-rho        = 1.0;   % Charge denisty in the bulk [#charges / um^2 / epsilon]
+rho        = -1.0;  % Charge denisty in the bulk [#charges / um^2 / epsilon]
 rho        = rho*1.6e-7/epsilon; % Charge denisty in the bulk [Coulomb / m^2]
 NupBulk    = 5;     % Number of bulk thicknesses above sensor (included)
 StrThick   = 5;     % Strip metalization thickness [um]

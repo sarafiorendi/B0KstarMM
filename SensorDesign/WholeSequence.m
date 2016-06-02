@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Function that run the whole sequence of steps %
-% to caculate the Diamond signal                %
+% to caculate the signal in particle sensors    %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % (A) Run PDE_AllStrips.m
 % (B) Export Solution ut = total potential
@@ -34,13 +34,20 @@ Bulk         = 100;
 Pitch        = 100;
 Radius       = Step/10;
 BField       = 0.0;
-TauBe        = 1;
-TauSe        = 4;
-TauBh        = 1;
-TauSh        = 4;
-NAverage     = 5;
-NParticles   = 1000;
-ParticleType = 'alpha';
+
+TauBe        = 1000;
+TauSe        = 1000;
+TauBh        = 1000;
+TauSh        = 1000;
+
+%TauBe        = 0.64;
+%TauSe        = 0.64;
+%TauBh        = 0.46;
+%TauSh        = 0.46;
+
+NAverage     = 10;
+NParticles   = 10000;
+ParticleType = 'beta';
 
 
 rng default; % Reset random seed
@@ -73,7 +80,7 @@ suby = y(1):subStep:y(length(y));
 [WorkTransportTotal_, goodness, output] = fit([x0 y0],z0,'cubicinterp');
 subWorkTransportTotal = WorkTransportTotal_(subxx, subyy);
 
-figure (8);
+figure (7);
 colormap jet;
 surf(subxx,subyy,subWorkTransportTotal,'EdgeColor','none');
 %plot(WorkTransportTotal_,[x0 y0],z0); % To show and compare fit resuts
@@ -84,6 +91,13 @@ zlabel('Work / q [#charges * V]');
 
 ComputeSpectra(subWorkTransportTotal,subx,suby,NParticles,Pitch,Step,...
     subStep,Bulk,Radius*subStep/Step,ParticleType);
+
+
+%%%%%%%%
+% Test %
+%%%%%%%%
+% Random generation work transport matrix
+% Velocity field in case of fixed charge density
 
 
 %%%%%%%%%%%%%%%%
