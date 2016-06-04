@@ -1,13 +1,13 @@
 function [p,e,t,u] = PDE_ParallelElectrodes(Bulk)
 
-% Parameters of the Diamond sensor:
-DConst   = 5.7;    % Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
-rho      = 0.0;    % Charge denisty in the bulk [#charges / um^2]
-rho      = rho*1.6e-7; % Charge denisty in the bulk [Coulomb / m^2]
-NupBulk  = 5;      % Number of bulk thicknesses above sensor (included)
-StrThick = 5;      % Strip metalization thickness [um]
-BiasB    = '-300'; % Sensor Backplane voltage [V]
-Width    = 1000;   % Plane width [um]
+% Parameters of the sensor:
+DConst     = 3.9;    % Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
+rho        = 0.0;    % Charge denisty in the bulk [#charges / m^3]
+rho        = rho*1.6e-19; % Charge denisty in the bulk [Coulomb / m^3]
+NupBulk    = 3;      % Number of bulk thicknesses above sensor (included)
+StrThick   = 5;      % Strip metalization thickness [um]
+BiasB      = '-200'; % Sensor backplane voltage [V]
+Width      = 1000;   % Plane width [um]
 
 [pde_fig,ax]=pdeinit;
 pdetool('appl_cb',5);

@@ -1,16 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Function that run the whole sequence of steps %
-% to caculate the Diamond signal                %
+% to caculate the signal in particle sensors    %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% (A) Run PDE_AllStrips.m
-% (B) Export Solution ut = total potential
-% (C) Export Mesh pt (points), et (edges), tt (triangles)
-
-% (D) Run PDE_WeightingField.m
-% (E) Export Solution uw = weighting potential
-% (F) Export Mesh pw (points), ew (edges), tw (triangles)
-
-% (G) Run WholeSequence.m
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -30,17 +21,17 @@
 
 Step         = 5;
 subStep      = 1;
-Bulk         = 300;
+Bulk         = 100;
 Pitch        = 100;
 Radius       = Step/10;
 BField       = 0.0;
-TauBe        = 1;
-TauSe        = 4;
-TauBh        = 1;
-TauSh        = 4;
-NAverage     = 5;
-NParticles   = 1000;
-ParticleType = 'alpha';
+TauBe        = 0.64;
+TauSe        = 0.64;
+TauBh        = 0.46;
+TauSh        = 0.46;
+NAverage     = 10;
+NParticles   = 10000;
+ParticleType = 'beta';
 
 
 rng default; % Reset random seed
@@ -73,7 +64,7 @@ suby = y(1):subStep:y(length(y));
 [WorkTransportTotal_, goodness, output] = fit([x0 y0],z0,'cubicinterp');
 subWorkTransportTotal = WorkTransportTotal_(subxx, subyy);
 
-figure (8);
+figure (7);
 colormap jet;
 surf(subxx,subyy,subWorkTransportTotal,'EdgeColor','none');
 %plot(WorkTransportTotal_,[x0 y0],z0); % To show and compare fit resuts
@@ -86,12 +77,21 @@ ComputeSpectra(subWorkTransportTotal,subx,suby,NParticles,Pitch,Step,...
     subStep,Bulk,Radius*subStep/Step,ParticleType);
 
 
+%%%%%%%%
+% Test %
+%%%%%%%%
+% Random generation work transport matrix
+% Check interpolation/fit in this page
+% Add limited number of iteration steps when drifting the charges
+% Check if work is computer with weigthing field or total field
+% Include strip in Silicon bulk
+
+
 %%%%%%%%%%%%%%%%
 % Improvements %
 %%%%%%%%%%%%%%%%
 % 1. Implement spectra for gamma particles
-% 2. Implement non-uniform bulk fixed charge distribution
-% 3. Implement dependance of mobility from temperature
+% 2. Implement dependance of mobility from temperature
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%
