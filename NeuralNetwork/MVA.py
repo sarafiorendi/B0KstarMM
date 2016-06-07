@@ -3,7 +3,7 @@
 MVA implementation with Neural Network
                                     by Mauro E. Dinardo
 #######################################################
-Before running check on hyper-parameter space:
+Before running check hyper-parameter space:
   .number of perceptrons & neurons
   .learn rate (with step decay)
   .regularization
