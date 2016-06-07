@@ -47,7 +47,7 @@ else
 end
 
 eNoise      = 1000; % Electronic noise [electrons]
-nBins       = 100; % Spectrum's number of bins
+nBins       = 100;  % Spectrum's number of bins
 EnergyScale = 0:eMax/nBins:eMax; % Spectrum energy axis [electrons]
 
 

@@ -25,11 +25,11 @@ Bulk         = 100;
 Pitch        = 100;
 Radius       = Step/10;
 BField       = 0.0;
-TauBe        = 0.64;
-TauSe        = 0.64;
-TauBh        = 0.46;
-TauSh        = 0.46;
-NAverage     = 10;
+TauBe        = 1.67;
+TauSe        = 1.67;
+TauBh        = 1.19;
+TauSh        = 1.19;
+NAverage     = 20;
 NParticles   = 10000;
 ParticleType = 'beta';
 
@@ -77,21 +77,11 @@ ComputeSpectra(subWorkTransportTotal,subx,suby,NParticles,Pitch,Step,...
     subStep,Bulk,Radius*subStep/Step,ParticleType);
 
 
-%%%%%%%%
-% Test %
-%%%%%%%%
-% Random generation work transport matrix
-% Check interpolation/fit in this page
-% Add limited number of iteration steps when drifting the charges
-% Check if work is computer with weigthing field or total field
-% Include strip in Silicon bulk
-
-
 %%%%%%%%%%%%%%%%
 % Improvements %
 %%%%%%%%%%%%%%%%
-% 1. Implement spectra for gamma particles
-% 2. Implement dependance of mobility from temperature
+% 1. Include strip in Silicon bulk
+% 2. Implement spectra for gamma particles
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%
