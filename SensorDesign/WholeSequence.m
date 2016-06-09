@@ -29,7 +29,7 @@ TauBe        = 1.67;
 TauSe        = 1.67;
 TauBh        = 1.19;
 TauSh        = 1.19;
-NAverage     = 20;
+NAverage     = 100;
 NParticles   = 10000;
 ParticleType = 'beta';
 
@@ -80,8 +80,7 @@ ComputeSpectra(subWorkTransportTotal,subx,suby,NParticles,Pitch,Step,...
 %%%%%%%%%%%%%%%%
 % Improvements %
 %%%%%%%%%%%%%%%%
-% 1. Include strip in Silicon bulk
-% 2. Implement spectra for gamma particles
+% Implement spectra for gamma particles
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%

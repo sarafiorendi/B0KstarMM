@@ -65,7 +65,7 @@ for i = 1:NParticles
 %        enter = Pitch/2 * (2*rand(1,1) - 1); % x-coordinate entering particle
 %        exit  = Pitch/2 * (2*rand(1,1) - 1); % x-coordinate exiting  particle
         enter = 0;
-        exit  = 0;
+        exit  = enter;
         mean  = ehLength*sqrt(depth^2 + (exit-enter)^2); % Landau MPV [electrons]
         sigma = mean / 10; % 8 = scale factor between MPV and sigma of Landau [electrons]
         ChargeDensity = LandauRND(mean,sigma);
