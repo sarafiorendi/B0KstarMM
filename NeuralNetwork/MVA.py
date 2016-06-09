@@ -343,10 +343,10 @@ for n in xrange(nRuns):
     NNout = NN.eval([x,y])
      
 
-    if (NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR):
+    if NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR:
         graphSout.SetPoint(n,x,y)
         histoNNS.Fill(NNout[0])
-    elif (NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y))):
+    elif NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y)):
         graphBout.SetPoint(n,x,y)
         histoNNB.Fill(NNout[0])
     else:
