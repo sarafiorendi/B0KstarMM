@@ -63,8 +63,10 @@ for i = 1:NParticles
     if strcmp(particle,'beta') == true
     % Particles enter randomly between -Pitch/2 -- +Pitch/2
     % Particles exit  randomly between -Pitch/2 -- +Pitch/2
-        enter = Pitch/2 * (2*rand(1,1) - 1); % x-coordinate entering particle
-        exit  = Pitch/2 * (2*rand(1,1) - 1); % x-coordinate exiting  particle
+%        enter = Pitch/2 * (2*rand(1,1) - 1); % x-coordinate entering particle
+%        exit  = Pitch/2 * (2*rand(1,1) - 1); % x-coordinate exiting  particle
+        enter = 0;
+        exit  = enter;
         mean  = ehLength*sqrt(depth^2 + (exit-enter)^2); % Landau MPV [electrons]
         sigma = mean / 10; % 8 or 10 = scale factor between MPV and sigma of Landau [electrons]
         ChargeDensity = LandauRND(mean,sigma);
