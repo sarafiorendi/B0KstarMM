@@ -41,10 +41,7 @@ class Neuron(object):
         self.afun    = 0
         self.dafundz = 0
 
-        if self.rmsPrDecay == 1:
-            self.rmsProp = 1
-        else:
-            self.rmsProp = 0
+        self.initRMSprop()
 
     def eval(self,invec):
         """
@@ -111,6 +108,8 @@ class Neuron(object):
             self.weights[k] = self.weights[k] - cmp(self.weights[k],1) * gauss(0,(1 - self.afun) / self.dafundz / sqrt(self.Nvars))
         self.weights[self.Nvars] = self.weights[self.Nvars] - cmp(self.weights[self.Nvars],1) * gauss(0,(1 - self.afun) / self.dafundz)
 
+        self.initRMSprop()
+
     def removeW(self,who):
         self.weights = [ W for k,W in enumerate(self.weights) if k not in who ]
         self.Nvars   = len(self.weights[:]) - 1
@@ -143,3 +142,9 @@ class Neuron(object):
         self.afun     = w.pop(0)
         self.dafundz  = w.pop(0)
         self.weights  = w
+
+    def initRMSprop(self):
+         if self.rmsPrDecay == 1:
+             self.rmsProp = 1
+         else:
+             self.rmsProp = 0
