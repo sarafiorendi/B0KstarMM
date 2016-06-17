@@ -131,13 +131,13 @@ NN.printParams()
 Internal parameters: for execution
 ##################################
 """
-nRuns     = 300000
+nRuns     = 10000000
 miniBatch = 500
 
 scrStart  = 2
 scrLen    = 10000
 
-learnRate = 0.1
+learnRate = 0.01
 stepDecay = 1
 
 
@@ -152,7 +152,7 @@ yRange    = 3.
 yOffset   = 0.
 
 noiseBand = 0.1
-loR       = 5.
+loR       = 0.5
 hiR       = 1.
 
 NNoutMin = NN.aFunMin(NN.Nperceptrons-1)
@@ -285,8 +285,10 @@ for n in xrange(1,nRuns + 1):
     Neural net: learning
     ####################
     """
+    NNspeed = [ a + NN.speed(j) for j,a in enumerate(NNspeed) ]
     if n % miniBatch == 0:
         NNcost += NN.learn([x,y],[target],miniBatch)
+
         graphNNcost.SetPoint(n/miniBatch,n,NNcost / miniBatch)
         NNcost = 0.
 
@@ -305,7 +307,6 @@ for n in xrange(1,nRuns + 1):
         NNspeed = [ 0. for j in xrange(NN.Nperceptrons) ]
     else:
         NNcost += NN.learn([x,y],[target])
-        NNspeed = [ a + NN.speed(j) for j,a in enumerate(NNspeed) ]
 
 
     """
@@ -322,12 +323,12 @@ for n in xrange(1,nRuns + 1):
 
     if n % miniBatch == 0:
         graphNNaccuracy.SetPoint(n/miniBatch,n,count / miniBatch * 100)
-        count = 0.
+        count = 1.
     elif n == 1:
-        count = 0
+        count = 1.
 
     if ((NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR) or (NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y)))):        
-        count += 1
+        count += 1.
 
 NN.printParams()
 NN.save("NeuralNet.txt")
