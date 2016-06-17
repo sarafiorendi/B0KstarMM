@@ -240,6 +240,7 @@ Neural net: training
 print "\n\n=== Training neural network ==="
 NNspeed = [ 0. for j in xrange(NN.Nperceptrons) ]
 NNcost  = 0.
+count   = 0.
 for n in xrange(1,nRuns + 1):
     """
     ####################
@@ -321,14 +322,12 @@ for n in xrange(1,nRuns + 1):
     NNout = NN.eval([x,y])
      
 
-    if n % miniBatch == 0:
-        graphNNaccuracy.SetPoint(n/miniBatch,n,count / miniBatch * 100)
-        count = 1.
-    elif n == 1:
-        count = 1.
-
     if ((NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR) or (NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y)))):        
         count += 1.
+
+    if n % miniBatch == 0:
+        graphNNaccuracy.SetPoint(n/miniBatch,n,count / miniBatch * 100)
+        count = 0.
 
 NN.printParams()
 NN.save("NeuralNet.txt")
