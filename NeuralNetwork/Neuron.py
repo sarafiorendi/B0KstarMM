@@ -10,7 +10,7 @@ from math   import sqrt, log, tanh, atanh
 #########################################
 """
 class Neuron(object):
-    learnRate  =  0.001
+    learnRate  =  0.01
     rmsPrDecay =  0.99 # If = 1 then no RMSprop
     regular    =  0.   # If = 0 then no reguarization
 
@@ -41,7 +41,8 @@ class Neuron(object):
         self.afun    = 0
         self.dafundz = 0
 
-        self.initRMSprop()
+        self.reset("rmsprop")
+        self.reset("adapt")
 
     def eval(self,invec):
         """
@@ -58,12 +59,24 @@ class Neuron(object):
 
         return [self.afun, self.dafundz]
 
-    def adapt(self,invec,dCdZ):
+    def adapt(self,invec,dCdZ,miniBatch=0):
+        """
+        ######################################
+        If miniBatch  = 0 add terms to average
+        If miniBatch != 0 update the weights
+        ######################################
+        """
         self.rmsProp = self.rmsPrDecay * self.rmsProp + (1 - self.rmsPrDecay) * dCdZ * dCdZ
 
-        for k in xrange(self.Nvars):
-            self.weights[k] = self.weights[k] * (1 - self.learnRate * self.regular) - self.learnRate * dCdZ * invec[k] / sqrt(self.rmsProp)
-        self.weights[self.Nvars] -= self.learnRate * dCdZ
+        self.dCdZ += dCdZ
+        self.dCdW = [ a + dCdZ * b / sqrt(self.rmsProp) for a,b in zip(self.dCdW,invec) ]
+
+        if miniBatch != 0:
+            for k in xrange(self.Nvars):
+                self.weights[k] = self.weights[k] * (1 - self.learnRate * self.regular) - self.learnRate * self.dCdW[k] / miniBatch
+            self.weights[self.Nvars] -= self.learnRate * self.dCdZ / miniBatch
+
+            self.reset("adapt")
 
     ### Activation function ###
     def aFun(self,val):
@@ -97,8 +110,17 @@ class Neuron(object):
         for k,W in enumerate(self.weights):
             print "    Weight[", k, "] ", round(W,2)
 
-    def reset(self):
-        self.__init__(self.Nvars,self.afunType)
+    def reset(self,what="all"):
+        if what == "all":
+            self.__init__(self.Nvars,self.afunType)
+        elif what == "rmsprop":
+            if self.rmsPrDecay == 1:
+                self.rmsProp = 1
+            else:
+                self.rmsProp = 0
+        elif what == "adapt":
+            self.dCdZ = 0
+            self.dCdW = [ 0 for k in xrange(self.Nvars) ]
 
     def sum2W(self):
         return sum(W*W for W in self.weights[:-1])
@@ -108,7 +130,7 @@ class Neuron(object):
             self.weights[k] = self.weights[k] - cmp(self.weights[k],1) * gauss(0,(1 - self.afun) / self.dafundz / sqrt(self.Nvars))
         self.weights[self.Nvars] = self.weights[self.Nvars] - cmp(self.weights[self.Nvars],1) * gauss(0,(1 - self.afun) / self.dafundz)
 
-        self.initRMSprop()
+        self.reset("rmsprop")
 
     def removeW(self,who):
         self.weights = [ W for k,W in enumerate(self.weights) if k not in who ]
@@ -139,12 +161,6 @@ class Neuron(object):
         self.afunType = next(lele[i+2] for i,a in enumerate(lele) if a == "type")
 
         w.pop(0)
-        self.afun     = w.pop(0)
-        self.dafundz  = w.pop(0)
-        self.weights  = w
-
-    def initRMSprop(self):
-         if self.rmsPrDecay == 1:
-             self.rmsProp = 1
-         else:
-             self.rmsProp = 0
+        self.afun    = w.pop(0)
+        self.dafundz = w.pop(0)
+        self.weights = w
