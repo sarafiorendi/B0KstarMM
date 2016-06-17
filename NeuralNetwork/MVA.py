@@ -132,14 +132,14 @@ NN.printParams()
 Internal parameters: for execution
 ##################################
 """
-nRuns     = 50000
-saveEvery =   100
+nRuns     = 10000000
+saveEvery = 100
 
-scrStart  = 10000
+scrStart  = nRuns
 scrLen    = 10000
 
-learnRate = 0.0001
-stepDecay = 50000
+learnRate = 0.001
+stepDecay = nRuns
 
 
 """
@@ -148,7 +148,7 @@ Internal parameters: problem specific
 #####################################
 """
 xRange    = 3.
-xOffset   = 3.
+xOffset   = 0.
 yRange    = 3.
 yOffset   = 0.
 
@@ -268,7 +268,7 @@ for n in xrange(nRuns):
     """
     indx = NN.Nperceptrons - 1 - (n-scrStart)/scrLen
     if indx in cmd.Nscramble and n >= scrStart and (n-scrStart) % scrLen == 0:
-        print "  Scrambling perceptron [", indx, "]"
+        print "  [", n, "] Scrambling perceptron [", indx, "]"
         NN.scramble({indx:[-1]})
 
 
@@ -278,8 +278,8 @@ for n in xrange(nRuns):
     ##########################################
     """
     if n < scrStart and n % stepDecay == 0:
-        print "  Learn rate set to", learnRate / (n / stepDecay + 1)
-        NN.setLearnRate(learnRate / (n / stepDecay + 1))
+        print "  [", n, "] Learn rate set to", learnRate * (n / stepDecay + 1)
+        NN.setLearnRate(learnRate * (n / stepDecay + 1))
 
 
     NNcost += NN.learn([x,y],[target])
@@ -341,7 +341,7 @@ for n in xrange(nRuns):
 
     
     NNout = NN.eval([x,y])
-     
+
 
     if NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR:
         graphSout.SetPoint(n,x,y)

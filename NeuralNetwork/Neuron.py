@@ -10,9 +10,9 @@ from math   import sqrt, log, tanh, atanh
 #########################################
 """
 class Neuron(object):
-    learnRate  =  0.0001
-    rmsPrDecay =  0.99 # If = 1 then no RMSprop
-    regular    =  0.   # If = 0 then no reguarization
+    learnRate  =  0.001
+    rmsPrDecay =  1. # If = 1 then no RMSprop
+    regular    =  0. # If = 0 then no reguarization
 
     aFunMin    = -1.
     aFunMax    = +1.
