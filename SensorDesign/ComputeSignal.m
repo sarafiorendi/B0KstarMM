@@ -14,7 +14,7 @@
 % Radius        = Unit step of the movements [um]
 % ChargeDensity = Charge density [electrons/um]
 
-function [Charge] = DiamondSignal(WorkTransportTotal,x,y,Depth,...
+function [Charge] = ComputeSignal(WorkTransportTotal,x,y,Depth,...
     XEnteranceParticle,XExitParticle,Step,subStep,Bulk,Radius,ChargeDensity)
 
 
@@ -56,7 +56,7 @@ while my >= 0 && ((Depth >= 0 && my <= Depth) || (Depth < 0 && my <= Bulk))
                     dist = eps;
                 end
                 
-                W = W + WorkTransportTotal(y_near(jj),x_near(ii))/Step*subStep / dist;
+                W = W + WorkTransportTotal(y_near(jj),x_near(ii)) / Step*subStep / dist;
                 weight = weight + 1 / dist;
             end
         end

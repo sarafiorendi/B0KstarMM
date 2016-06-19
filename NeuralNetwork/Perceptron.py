@@ -17,9 +17,9 @@ class Perceptron(object):
     def eval(self,invec):
         return [ N.eval(invec) for N in self.neurons ]
 
-    def adapt(self,invec,dCdZ):
+    def adapt(self,invec,dCdZ,miniBatch=0):
         for a,N in zip(dCdZ,self.neurons):
-            N.adapt(invec,a)
+            N.adapt(invec,a,miniBatch)
 
     def cFun(self,target):
         return sum(N.cFun(a) for a,N in zip(target,self.neurons))
