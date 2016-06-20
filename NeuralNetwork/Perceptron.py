@@ -49,6 +49,19 @@ class Perceptron(object):
         for i in who:
             self.neurons[i].scramble()
 
+    def fixAllBut(self,who):
+        genExp = (N for (i,N) in enumerate(self.neurons) if i not in who)
+        for N in genExp:
+            N.amIfixed = True
+
+    def release(self,who):
+        if who[0] == -1:
+            who = [ i for i in xrange(self.Nneurons) ]
+
+        genExp = (N for (i,N) in enumerate(self.neurons) if i in who)
+        for N in genExp:
+            N.amIfixed = False
+
     def aFunMin(self,indx):
         return self.neurons[indx].aFunMin
 

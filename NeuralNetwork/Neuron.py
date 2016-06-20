@@ -10,7 +10,7 @@ from math   import sqrt, log, tanh, atanh
 #########################################
 """
 class Neuron(object):
-    learnRate  =  0.01
+    learnRate  =  0.0001
     rmsPrDecay =  0.99 # If = 1 then no RMSprop
     regular    =  0.   # If = 0 then no reguarization
 
@@ -38,8 +38,9 @@ class Neuron(object):
         if self.afunType is "BPN":
             self.weights = [ 0 for k in xrange(self.Nvars+1) ]
 
-        self.afun    = 0
-        self.dafundz = 0
+        self.afun     = 0
+        self.dafundz  = 0
+        self.amIfixed = False
 
         self.reset("rmsprop")
         self.reset("adapt")
@@ -71,7 +72,7 @@ class Neuron(object):
         self.dCdZ += dCdZ
         self.dCdW = [ a + dCdZ * b / sqrt(self.rmsProp) for a,b in zip(self.dCdW,invec) ]
 
-        if miniBatch != 0:
+        if miniBatch != 0 and self.amIfixed == False:
             for k in xrange(self.Nvars):
                 self.weights[k] = self.weights[k] * (1 - self.learnRate * self.regular) - self.learnRate * self.dCdW[k] / miniBatch
             self.weights[self.Nvars] -= self.learnRate * self.dCdZ / miniBatch

@@ -137,7 +137,7 @@ miniBatch = 500
 scrStart  = 2
 scrLen    = 10000
 
-learnRate = 0.01
+learnRate = 0.0001
 stepDecay = 1
 
 
@@ -267,8 +267,10 @@ for n in xrange(1,nRuns + 1):
     """
     indx = NN.Nperceptrons - 1 - (n-scrStart) / scrLen
     if indx in cmd.Nscramble and n >= scrStart and (n-scrStart) % scrLen == 0:
+        NN.release({-1:[]})
         print "  [", n, "] Scrambling perceptron [", indx, "]"
-        NN.scramble({indx:[-1]})
+        NN.scramble({indx:[0]})
+        NN.fixAllBut({indx:[0]})
 
 
     """
