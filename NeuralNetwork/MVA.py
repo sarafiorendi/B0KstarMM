@@ -37,7 +37,6 @@ def ArgParser():
     parser.add_argument("-nv", "--Nvars",        dest = "Nvars",        type = int, help = "Number of variables",              required=False)
     parser.add_argument("-np", "--Nperceptrons", dest = "Nperceptrons", type = int, help = "Number of perceptrons",            required=False)
     parser.add_argument("-nn", "--Nneurons",     dest = "Nneurons",     type = int, help = "Number of neurons per perceptron", required=False, nargs='*')
-    parser.add_argument("-sc", "--Nscramble",    dest = "Nscramble",    type = int, help = "Perceptrons to scramble",          required=False, nargs='*', default=[])
 
     options = parser.parse_args()
 
@@ -53,9 +52,6 @@ def ArgParser():
 
     if options.Nneurons:
         print "--> I'm reading the neuron number per perceptron: ", options.Nneurons
-
-    if options.Nscramble:
-        print "--> I'm reading the perceptron number to scramble: ", options.Nscramble
 
     return options
 
@@ -131,14 +127,15 @@ NN.printParams()
 Internal parameters: for execution
 ##################################
 """
-nRuns     = 10000000
-miniBatch = 500
+nRuns      = 10000000
+miniBatch  = 500
 
-scrStart  = 2
-scrLen    = 10000
+toScramble = {7:[-1]}
+scrStart   = nRuns
+scrLen     = 10000
 
-learnRate = 0.0001
-stepDecay = 1
+learnRate  = 0.0001
+stepDecay  = nRuns
 
 
 """
@@ -155,11 +152,11 @@ noiseBand = 0.1
 loR       = 0.5
 hiR       = 1.
 
-NNoutMin = NN.aFunMin(NN.Nperceptrons-1)
-NNoutMax = NN.aFunMax(NN.Nperceptrons-1)
-NNthr    = (NNoutMin + NNoutMax) / 2.
+NNoutMin  = NN.aFunMin(NN.Nperceptrons-1)
+NNoutMax  = NN.aFunMax(NN.Nperceptrons-1)
+NNthr     = (NNoutMin + NNoutMax) / 2.
 
-xyCorr   = lambda x,y: ((x-xOffset)*(x-xOffset) + (y-yOffset)*(y-yOffset))
+xyCorr    = lambda x,y: ((x-xOffset)*(x-xOffset) + (y-yOffset)*(y-yOffset))
 
 
 """
@@ -265,12 +262,11 @@ for n in xrange(1,nRuns + 1):
     Neural net: scrambling
     ######################
     """
-    indx = NN.Nperceptrons - 1 - (n-scrStart) / scrLen
-    if indx in cmd.Nscramble and n >= scrStart and (n-scrStart) % scrLen == 0:
+    if n >= scrStart and (n-scrStart) < scrLen:
         NN.release({-1:[]})
-        print "  [", n, "] Scrambling perceptron [", indx, "]"
-        NN.scramble({indx:[0]})
-        NN.fixAllBut({indx:[0]})
+        print "  [", n, "] Scrambling", toScramble
+        NN.scramble(toScramble)
+        NN.fixAllBut(toScramble)
 
 
     """
