@@ -20,18 +20,18 @@ function [VFieldx_e, VFieldy_e, VFieldx_h, VFieldy_h, x, y] = ...
 TStart = cputime; % CPU time at start
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Parameters of the sensor %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameters of the sensor: they are all temperature-dependent %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 mu_e   = 140; % Electron mobility [um^2/(V*ns)] [140 Silicon, 180 Diamond]
 RH_e   = 1;   % Relative Hall electron mobility [1 Silicon, 1 Diamond]
 vs_e   = 100; % Saturation velocity of the electrons [um/ns] [100 Silicon, 260 Diamond]
-beta_e = 1;%0.81 Exponent for the electric field dependence of the mobility [0.81 Silicon, 0.81 Diamond]
+beta_e = 1;   % Exponent for the electric field dependence of the mobility [0.81 Silicon, 0.81 Diamond]
 
 mu_h   = 45; % Hole mobility in [um^2/(V*ns)] [45 Silicon, 120 Diamond]
-RH_h   = 1;   % Relative Hall hole mobility in [1 Silicon, 1 Diamond]
+RH_h   = 1;  % Relative Hall hole mobility in [1 Silicon, 1 Diamond]
 vs_h   = 66; % Saturation velocity of the holes [um/ns] [66 Silicon, 160 Diamond]
-beta_h = 1;%0.42 Exponent for the electric field dependence of the mobility [0.42 Silicon, 0.42 Diamond]
+beta_h = 1;  % Exponent for the electric field dependence of the mobility [0.42 Silicon, 0.42 Diamond]
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%

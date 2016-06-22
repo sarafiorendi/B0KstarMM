@@ -21,8 +21,8 @@ function [Charge] = ComputeSignal(WorkTransportTotal,x,y,Depth,...
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Variable initialization %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-eps = Radius/10; % Minimum step to avoid infinities [um]
-Charge = 0; % Starting value of the signal [electrons]
+Charge = 0;         % Starting value of the signal [electrons]
+eps    = Radius/10; % Minimum step to avoid infinities [um]
 
 
 %%%%%%%%%%%%%%%%%%%
