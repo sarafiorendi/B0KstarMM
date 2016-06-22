@@ -5,9 +5,8 @@
 % x, y          = Axes
 % Depth         = Penetration depth along y (positive = from back side,
 %                 negative = from strip side) [um]
-% XEnteranceParticle = X cordinate of the entrance of the particle [um]
-% (back-plane side)
-% XExitParticle = X cordinate of the exit of the particle [um] (strip side)
+% XEnteranceParticle = X cordinate of the entrance of the particle [um] (back-plane side)
+% XExitParticle      = X cordinate of the exit of the particle [um] (strip side)
 % Step          = Unit step of the lattice on which the field is computed [um]
 % subStep       = Unit step of the lattice on which the field is interpolated [um]
 % Bulk          = Bulk thickness [um]
