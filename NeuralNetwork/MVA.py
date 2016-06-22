@@ -13,7 +13,6 @@ Before running check hyper-parameter space:
 
 To-do:
   - activation function: ReLU and softmax&logLikelihood
-  - mini-batch learning
   - porting in pyCUDA
 #######################################################
 e.g.: python MVA.py -nv 2 -np 6 -nn 2 3 4 3 2 1 -sc 5 4
@@ -38,7 +37,6 @@ def ArgParser():
     parser.add_argument("-nv", "--Nvars",        dest = "Nvars",        type = int, help = "Number of variables",              required=False)
     parser.add_argument("-np", "--Nperceptrons", dest = "Nperceptrons", type = int, help = "Number of perceptrons",            required=False)
     parser.add_argument("-nn", "--Nneurons",     dest = "Nneurons",     type = int, help = "Number of neurons per perceptron", required=False, nargs='*')
-    parser.add_argument("-sc", "--Nscramble",    dest = "Nscramble",    type = int, help = "Perceptrons to scramble",          required=False, nargs='*', default=[])
 
     options = parser.parse_args()
 
@@ -54,9 +52,6 @@ def ArgParser():
 
     if options.Nneurons:
         print "--> I'm reading the neuron number per perceptron: ", options.Nneurons
-
-    if options.Nscramble:
-        print "--> I'm reading the perceptron number to scramble: ", options.Nscramble
 
     return options
 
@@ -132,14 +127,15 @@ NN.printParams()
 Internal parameters: for execution
 ##################################
 """
-nRuns     = 50000
-saveEvery =   100
+nRuns      = 10000000
+miniBatch  = 500
 
-scrStart  = 10000
-scrLen    = 10000
+toScramble = {7:[-1]}
+scrStart   = nRuns
+scrLen     = 10000
 
-learnRate = 0.0001
-stepDecay = 50000
+learnRate  = 0.0001
+stepDecay  = nRuns
 
 
 """
@@ -148,7 +144,7 @@ Internal parameters: problem specific
 #####################################
 """
 xRange    = 3.
-xOffset   = 3.
+xOffset   = 0.
 yRange    = 3.
 yOffset   = 0.
 
@@ -156,11 +152,11 @@ noiseBand = 0.1
 loR       = 0.5
 hiR       = 1.
 
-NNoutMin = NN.aFunMin(NN.Nperceptrons-1)
-NNoutMax = NN.aFunMax(NN.Nperceptrons-1)
-NNthr    = (NNoutMin + NNoutMax) / 2.
+NNoutMin  = NN.aFunMin(NN.Nperceptrons-1)
+NNoutMax  = NN.aFunMax(NN.Nperceptrons-1)
+NNthr     = (NNoutMin + NNoutMax) / 2.
 
-xyCorr   = lambda x,y: ((x-xOffset)*(x-xOffset) + (y-yOffset)*(y-yOffset))
+xyCorr    = lambda x,y: ((x-xOffset)*(x-xOffset) + (y-yOffset)*(y-yOffset))
 
 
 """
@@ -242,7 +238,7 @@ print "\n\n=== Training neural network ==="
 NNspeed = [ 0. for j in xrange(NN.Nperceptrons) ]
 NNcost  = 0.
 count   = 0.
-for n in xrange(nRuns):
+for n in xrange(1,nRuns + 1):
     """
     ####################
     Neural net: training
@@ -253,12 +249,12 @@ for n in xrange(nRuns):
 
     if gauss(loR,noiseBand) <= xyCorr(x,y) < gauss(hiR,noiseBand):
         target = NNoutMax
-        if n % saveEvery == 0:
-            graphSin.SetPoint(n/saveEvery,x,y)
+        if n % miniBatch == 0:
+            graphSin.SetPoint(n/miniBatch,x,y)
     else:
         target = NNoutMin
-        if n % saveEvery == 0:
-            graphBin.SetPoint(n/saveEvery,x,y)
+        if n % miniBatch == 0:
+            graphBin.SetPoint(n/miniBatch,x,y)
 
 
     """
@@ -266,10 +262,11 @@ for n in xrange(nRuns):
     Neural net: scrambling
     ######################
     """
-    indx = NN.Nperceptrons - 1 - (n-scrStart)/scrLen
-    if indx in cmd.Nscramble and n >= scrStart and (n-scrStart) % scrLen == 0:
-        print "  Scrambling perceptron [", indx, "]"
-        NN.scramble({indx:[-1]})
+    if n >= scrStart and (n-scrStart) < scrLen:
+        NN.release({-1:[]})
+        print "  [", n, "] Scrambling", toScramble
+        NN.scramble(toScramble)
+        NN.fixAllBut(toScramble)
 
 
     """
@@ -278,33 +275,37 @@ for n in xrange(nRuns):
     ##########################################
     """
     if n < scrStart and n % stepDecay == 0:
-        print "  Learn rate set to", learnRate / (n / stepDecay + 1)
-        NN.setLearnRate(learnRate / (n / stepDecay + 1))
+        print "  [", n, "] Learn rate set to", learnRate * (n / stepDecay)
+        NN.setLearnRate(learnRate * (n / stepDecay))
 
 
-    NNcost += NN.learn([x,y],[target])
+    """
+    ####################
+    Neural net: learning
+    ####################
+    """
     NNspeed = [ a + NN.speed(j) for j,a in enumerate(NNspeed) ]
+    if n % miniBatch == 0:
+        NNcost += NN.learn([x,y],[target],miniBatch)
 
-
-    if n % saveEvery == 0:
-        graphNNcost.SetPoint(n/saveEvery,n,NNcost / saveEvery)
+        graphNNcost.SetPoint(n/miniBatch,n,NNcost / miniBatch)
         NNcost = 0.
 
-        
+
         """
         ############################################
         Neural net: saving activation function speed
         ############################################
         """
-        k = 0
         for j,a in enumerate(NNspeed):
-            if n == 0:
+            if n/miniBatch == 1:
                 graphNNspeed.append(TGraph())
                 leg = "P:" + str(j)
-                legNNspeed.AddEntry(graphNNspeed[k],leg,"L");
-            graphNNspeed[k].SetPoint(n/saveEvery,n,a / saveEvery)
-            k += 1
+                legNNspeed.AddEntry(graphNNspeed[j],leg,"L");
+            graphNNspeed[j].SetPoint(n/miniBatch,n,a / miniBatch)
         NNspeed = [ 0. for j in xrange(NN.Nperceptrons) ]
+    else:
+        NNcost += NN.learn([x,y],[target])
 
 
     """
@@ -319,12 +320,13 @@ for n in xrange(nRuns):
     NNout = NN.eval([x,y])
      
 
-    if ((NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR) or (NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y)))):
-        count += 1
+    if ((NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR) or (NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y)))):        
+        count += 1.
 
-    if n % saveEvery == 0:
-        graphNNaccuracy.SetPoint(n/saveEvery,n,count / saveEvery * 100)
+    if n % miniBatch == 0:
+        graphNNaccuracy.SetPoint(n/miniBatch,n,count / miniBatch * 100)
         count = 0.
+
 NN.printParams()
 NN.save("NeuralNet.txt")
 
@@ -335,18 +337,18 @@ Neural net: test
 ################
 """
 print "\n\n=== Testing neural network ==="
-for n in xrange(nRuns):
+for n in xrange(1,nRuns/miniBatch + 1):
     x = random() * xRange + xOffset - xRange/2
     y = random() * yRange + yOffset - yRange/2
 
-    
-    NNout = NN.eval([x,y])
-     
 
-    if (NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR):
+    NNout = NN.eval([x,y])
+
+
+    if NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR:
         graphSout.SetPoint(n,x,y)
         histoNNS.Fill(NNout[0])
-    elif (NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y))):
+    elif NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y)):
         graphBout.SetPoint(n,x,y)
         histoNNB.Fill(NNout[0])
     else:

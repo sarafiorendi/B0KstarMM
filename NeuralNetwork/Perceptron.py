@@ -17,9 +17,9 @@ class Perceptron(object):
     def eval(self,invec):
         return [ N.eval(invec) for N in self.neurons ]
 
-    def adapt(self,invec,dCdZ):
+    def adapt(self,invec,dCdZ,miniBatch=0):
         for a,N in zip(dCdZ,self.neurons):
-            N.adapt(invec,a)
+            N.adapt(invec,a,miniBatch)
 
     def cFun(self,target):
         return sum(N.cFun(a) for a,N in zip(target,self.neurons))
@@ -48,6 +48,19 @@ class Perceptron(object):
 
         for i in who:
             self.neurons[i].scramble()
+
+    def fixAllBut(self,who):
+        genExp = (N for (i,N) in enumerate(self.neurons) if i not in who)
+        for N in genExp:
+            N.amIfixed = True
+
+    def release(self,who):
+        if who[0] == -1:
+            who = [ i for i in xrange(self.Nneurons) ]
+
+        genExp = (N for (i,N) in enumerate(self.neurons) if i in who)
+        for N in genExp:
+            N.amIfixed = False
 
     def aFunMin(self,indx):
         return self.neurons[indx].aFunMin

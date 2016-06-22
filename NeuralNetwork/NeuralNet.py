@@ -74,7 +74,7 @@ class NeuralNet(object):
         for j in xrange(1,self.Nperceptrons-1):
             self.BPperceptrons[j].eval([ N.afun for N in self.BPperceptrons[j-1].neurons ])
 
-    def learn(self,invec,target):
+    def learn(self,invec,target,miniBatch=0):
         """
         ###########
         Feedforward
@@ -97,16 +97,16 @@ class NeuralNet(object):
         ######
         """
         ### Last layer ###
-        self.FFperceptrons[self.Nperceptrons-1].adapt([ N.afun for N in self.FFperceptrons[self.Nperceptrons-2].neurons ],self.inputDcDz)
+        self.FFperceptrons[self.Nperceptrons-1].adapt([ N.afun for N in self.FFperceptrons[self.Nperceptrons-2].neurons ],self.inputDcDz,miniBatch)
 
         ### Intermediate layers ###
         if self.Nperceptrons > 2:
             for j in xrange(self.Nperceptrons-2):
                 self.FFperceptrons[self.Nperceptrons-j-2].adapt([ N.afun for N in self.FFperceptrons[self.Nperceptrons-j-3].neurons ],
-                                                                [ N.afun for N in self.BPperceptrons[j].neurons ])
+                                                                [ N.afun for N in self.BPperceptrons[j].neurons ],miniBatch)
 
         ### First layer ###
-        self.FFperceptrons[0].adapt(invec,[ N.afun for N in self.BPperceptrons[self.Nperceptrons-2].neurons ])
+        self.FFperceptrons[0].adapt(invec,[ N.afun for N in self.BPperceptrons[self.Nperceptrons-2].neurons ],miniBatch)
 
         if self.FFperceptrons[0].neurons[0].regular != 0:
             return self.FFperceptrons[self.Nperceptrons-1].cFun(target) + self.FFperceptrons[0].neurons[0].regular/2 * sum(P.sum2W() for P in self.FFperceptrons)
@@ -144,6 +144,34 @@ class NeuralNet(object):
         for j in who:
             self.FFperceptrons[j].scramble(who[j])
 
+    def fixAllBut(self,who):
+        """
+        #########################################################################
+        e.g.:
+        NN.fixAllBut({2:[0,3]}) --> fix all but neurons 0 and 3 from perceptron 2
+        #########################################################################
+        """
+        for j,P in enumerate(self.FFperceptrons):
+            if j not in who:
+                P.fixAllBut({j:[-1]})
+            else:
+                P.fixAllBut(who[j])
+
+    def release(self,who):
+        """
+        ###################################################################
+        e.g.:
+        NN.release({-1:[]})   --> release everything
+        NN.release({1:[-1]})  --> release perceptron 1
+        NN.release({2:[0,3]}) --> release neurons 0 and 3 from perceptron 2
+        ###################################################################
+        """
+        if -1 in who.keys():
+            who = { j:[-1] for j in xrange(self.Nperceptrons) }
+
+        for j in who:
+            self.FFperceptrons[j].release(who[j])
+
     def copyFFtoBPweights(self):
         for j in xrange(self.Nperceptrons-1):
             for i in xrange(self.BPperceptrons[j].Nneurons):
@@ -174,7 +202,7 @@ class NeuralNet(object):
         e.g.:
         NN.remove({-1:[]})   --> remove everything
         NN.remove({1:[-1]})  --> remove perceptron 1
-        NN.remove({2:[0,3]}) --> remove neurons 0 and 2 from perceptron 2
+        NN.remove({2:[0,3]}) --> remove neurons 0 and 3 from perceptron 2
         #################################################################
         """
         if -1 in who.keys():
