@@ -25,10 +25,10 @@ Bulk         = 100;
 Pitch        = 100;
 Radius       = Step/10;
 BField       = 0.0;
-TauBe        = 1.67;
-TauSe        = 1.67;
-TauBh        = 1.19;
-TauSh        = 1.19;
+TauBe        = 89;
+TauSe        = 89;
+TauBh        = 65;
+TauSh        = 65;
 NAverage     = 100;
 NParticles   = 10000;
 ParticleType = 'beta';
@@ -57,9 +57,9 @@ suby = y(1):subStep:y(length(y));
 %WorkTransportTotal_ = griddedInterpolant(xx', yy', WorkTransportTotal', 'spline', 'spline');
 %subWorkTransportTotal = WorkTransportTotal_(subxx', subyy');
 %subWorkTransportTotal = subWorkTransportTotal';
-%%%%%%%%%%%%%%%%%%%
-% Fit/Smoothening %
-%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%
+% Fit/Smoothing %
+%%%%%%%%%%%%%%%%%
 [x0, y0, z0] = prepareSurfaceData(x,y,WorkTransportTotal);
 [WorkTransportTotal_, goodness, output] = fit([x0 y0],z0,'cubicinterp');
 subWorkTransportTotal = WorkTransportTotal_(subxx, subyy);

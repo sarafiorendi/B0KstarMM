@@ -26,30 +26,29 @@ if strcmp(particle,'beta') == true
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Charge spectrum for Beta %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    ehLength = 60; % Electron-holes pairs per unit length [electrons]
-    depth    = Bulk; % Source penetration depth [um]
+    ehLength = 60;            % Electron-holes pairs per unit length [electrons]
+    depth    = Bulk;          % Source penetration depth [um]
     eMax     = ehLength*Bulk; % Maximum released charge [electrons]
-elseif strcmp(particle,'alpha') == true
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Charge spectrum for Alpha %
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    energyPair = 13; % Energy to create an electron-hole pair [eV]
-    depth      = 10; % Source penetration depth [um]
+elseif strcmp(particle,'alpha') == true || strcmp(particle,'gamma')
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Charge spectrum for Alpha/Gamma %
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    energyPair = 13;                   % Energy to create an electron-hole pair [eV] [3.2 Silicon, 13 Diamond]
     eMax       = 4520000 / energyPair; % Maximum released charge [electrons]
-    mean       = eMax; % Alpha spectrum mean [electrons]
-    sigma      = 17000 / energyPair; % Alpha spectrum sigma [electrons]
-elseif strcmp(particle,'gamma') == true
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Charge spectrum for Gamma %
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    fprintf('Particle not yet implemented\n');
-    return;
+    mean       = eMax;                 % Particle spectrum mean [electrons]
+    sigma      = 17000 / energyPair;   % Particle spectrum sigma [electrons]
+    % Particle penetration depth [um]
+    if strcmp(particle,'alpha') == true
+        depth = 10;
+    elseif strcmp(particle,'gamma') == true
+        depth = Bulk * rand(1,1);
+    end
 else
     fprintf('Unknown particle: %s\n',particle);
     return;
 end
 
-EnergyScale = 0:eMax/nBins:eMax; % Spectrum energy axis [electrons]
+EnergyScale = 0:eMax/nBins:2*eMax; % Spectrum energy axis [electrons]
 
 
 %%%%%%%%%%%%%%%%%%%
@@ -63,12 +62,13 @@ for i = 1:NParticles
     if strcmp(particle,'beta') == true
     % Particles enter randomly between -Pitch/2 -- +Pitch/2
     % Particles exit  randomly between -Pitch/2 -- +Pitch/2
+% @TMP@
 %        enter = Pitch/2 * (2*rand(1,1) - 1); % x-coordinate entering particle
 %        exit  = Pitch/2 * (2*rand(1,1) - 1); % x-coordinate exiting  particle
         enter = 0;
         exit  = enter;
         mean  = ehLength*sqrt(depth^2 + (exit-enter)^2); % Landau MPV [electrons]
-        sigma = mean / 10; % 8 or 10 = scale factor between MPV and sigma of Landau [electrons]
+        sigma = mean / 10; % (8 or 10) scale factor between MPV and sigma of Landau [electrons]
         ChargeDensity = LandauRND(mean,sigma);
     elseif strcmp(particle,'alpha') == true
     % Particles enter randomly between -Pitch/2 -- +Pitch/2
