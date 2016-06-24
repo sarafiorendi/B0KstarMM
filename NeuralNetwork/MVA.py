@@ -5,6 +5,7 @@ MVA implementation with Neural Network
 #######################################################
 Before running check hyper-parameter space:
   .number of perceptrons & neurons
+  .number of mini-batches
   .learn rate (with step decay)
   .regularization
   .scramble
@@ -127,14 +128,14 @@ NN.printParams()
 Internal parameters: for execution
 ##################################
 """
-nRuns      = 10000000
-miniBatch  = 500
+nRuns      = 100000
+miniBatch  = 200
 
-toScramble = {7:[-1]}
-scrStart   = nRuns
-scrLen     = 10000
+toScramble = {3:[2]}
+scrStart   = 0
+scrLen     = 2
 
-learnRate  = 0.0001
+learnRate  = 0.001
 stepDecay  = nRuns
 
 
@@ -144,7 +145,7 @@ Internal parameters: problem specific
 #####################################
 """
 xRange    = 3.
-xOffset   = 0.
+xOffset   = 3.
 yRange    = 3.
 yOffset   = 0.
 
@@ -262,7 +263,7 @@ for n in xrange(1,nRuns + 1):
     Neural net: scrambling
     ######################
     """
-    if n >= scrStart and (n-scrStart) < scrLen:
+    if n > scrStart and (n-scrStart) < scrLen:
         NN.release({-1:[]})
         print "  [", n, "] Scrambling", toScramble
         NN.scramble(toScramble)

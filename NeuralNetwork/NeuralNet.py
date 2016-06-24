@@ -153,7 +153,7 @@ class NeuralNet(object):
         """
         for j,P in enumerate(self.FFperceptrons):
             if j not in who:
-                P.fixAllBut({j:[-1]})
+                P.fixAllBut([-1])
             else:
                 P.fixAllBut(who[j])
 
