@@ -134,7 +134,7 @@ Internal parameters: for execution
 ##################################
 """
 nRuns          = 10000000
-miniBatch      = 100
+miniBatch      = 10
 
 toScramble     = {3:[2]}
 
@@ -342,7 +342,7 @@ NN.save("NeuralNet.txt")
 Save additional hyper-parameter information
 ###########################################
 """
-NN.saveHypPar("NeuralNet.txt",nRuns,miniBatch,learnRateStart,learnRateEnd,learnRateTau,**toScramble)
+NN.saveHypPar("NeuralNet.txt",nRuns,miniBatch,learnRateStart,learnRateEnd,learnRateTau,toScramble)
 
 
 """

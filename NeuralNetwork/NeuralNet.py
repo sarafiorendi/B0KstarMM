@@ -299,7 +299,7 @@ class NeuralNet(object):
         for P in self.FFperceptrons:
             P.setLearnRate(val)
 
-    def saveHypPar(self,*args,**keys):
+    def saveHypPar(self,*args):
         """
         args[0] = file name
         args[1] = number of runs
@@ -307,7 +307,7 @@ class NeuralNet(object):
         args[3] = learn rate starting value
         args[4] = learn rate ending value
         args[5] = learn rate decay time
-        keys    = dictionary for scrambled neurons
+        args[6] = scrambled neurons
         """
         f = open(args[0],"a")
 
@@ -321,6 +321,6 @@ class NeuralNet(object):
         f.write("  Learn rate tau: " + str(args[5]) + "\n")
 
         f.write("\n  # Scramble parameters\n")
-        f.write("  Neuron to scramble: " + str(keys) + "\n")
+        f.write("  Neuron to scramble: " + str(args[6]) + "\n")
 
         f.close()
