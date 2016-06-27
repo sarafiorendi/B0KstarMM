@@ -134,15 +134,13 @@ Internal parameters: for execution
 ##################################
 """
 nRuns          = 10000000
-miniBatch      = 1
+miniBatch      = 100
 
 toScramble     = {3:[2]}
-scrambleStart  = 1
 
-doLearnRate    = True
 learnRateStart = 0.01
 learnRateEnd   = 0.001
-learnRateTau   = 10
+learnRateTau   = 1
 
 
 """
@@ -269,7 +267,7 @@ for n in xrange(1,nRuns + 1):
     Neural net: scrambling
     ######################
     """
-    if cmd.Scramble == True and n == scrambleStart:
+    if cmd.Scramble == True and n == 1:
         NN.release({-1:[]})
         print "  [", n, "] Scrambling", toScramble
         NN.scramble(toScramble)
@@ -282,7 +280,7 @@ for n in xrange(1,nRuns + 1):
     ##########################
     """
     lr = learnRateEnd*(1 - exp(-(n-1) / learnRateTau)) + learnRateStart*exp(-(n-1) / learnRateTau)
-    if doLearnRate == True and n < 10*learnRateTau:
+    if n < 10*learnRateTau:
         print "  [", n, "] Learn rate set to", lr
         NN.setLearnRate(lr)
 
@@ -344,18 +342,7 @@ NN.save("NeuralNet.txt")
 Save additional hyper-parameter information
 ###########################################
 """
-f = open("NeuralNet.txt","a")
-f.write("\n### Hyper-parameter information ###")
-f.write("Mini-batch: " + str(miniBatch));
-if doLearnRate == True:
-    f.write("# Learn rate parameters");
-    f.write("Learn rate start: " + str(learnRateStart));
-    f.write("Learn rate end: " + str(learnRateEnd));
-    f.write("Learn rate tau: " + str(learnRateTau));
-if cms.Scramble == True:
-    f.write("# Scramble parameters");
-    f.write("Neuron to scramble: " + str(toScramble));
-f.close()
+NN.saveHypPar("NeuralNet.txt",nRuns,miniBatch,learnRateStart,learnRateEnd,learnRateTau,**toScramble)
 
 
 """

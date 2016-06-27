@@ -248,7 +248,7 @@ class NeuralNet(object):
         f   = open(name,"w")
         out = []
         
-        f.write("### M.E.D. Neural Network ###\n")
+        f.write("# === M.E.D. Neural Network === #\n")
         f.write("# {0:20s} {1:20s} {2:40s} {3:20s} {4:20s} {5:20s}\n".format("Nvars","Nperceptrons","Nneurons","Learn rate","Regularization","RMSprop decay"))
 
         out.append(str(self.FFperceptrons[0].neurons[0].Nvars))
@@ -298,3 +298,29 @@ class NeuralNet(object):
     def setLearnRate(self,val):
         for P in self.FFperceptrons:
             P.setLearnRate(val)
+
+    def saveHypPar(self,*args,**keys):
+        """
+        args[0] = file name
+        args[1] = number of runs
+        args[2] = mini batch
+        args[3] = learn rate starting value
+        args[4] = learn rate ending value
+        args[5] = learn rate decay time
+        keys    = dictionary for scrambled neurons
+        """
+        f = open(args[0],"a")
+
+        f.write("\n# Hyper-parameter information\n")
+        f.write("  Number of runs: " + str(args[1]) + "\n")
+        f.write("  Mini-batch: " + str(args[2]) + "\n")
+
+        f.write("\n  # Learn rate parameters\n")
+        f.write("  Learn rate start: " + str(args[3]) + "\n")
+        f.write("  Learn rate end: " + str(args[4]) + "\n")
+        f.write("  Learn rate tau: " + str(args[5]) + "\n")
+
+        f.write("\n  # Scramble parameters\n")
+        f.write("  Neuron to scramble: " + str(keys) + "\n")
+
+        f.close()
