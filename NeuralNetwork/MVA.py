@@ -346,15 +346,15 @@ Save additional hyper-parameter information
 """
 f = open("NeuralNet.txt","a")
 f.write("\n### Hyper-parameter information ###")
-f.write("Mini-batch:", miniBatch);
+f.write("Mini-batch: " + str(miniBatch));
 if doLearnRate == True:
     f.write("# Learn rate parameters");
-    f.write("Learn rate start:", learnRateStart);
-    f.write("Learn rate end:", learnRateEnd);
-    f.write("Learn rate tau:", learnRateTau);
+    f.write("Learn rate start: " + str(learnRateStart));
+    f.write("Learn rate end: " + str(learnRateEnd));
+    f.write("Learn rate tau: " + str(learnRateTau));
 if cms.Scramble == True:
     f.write("# Scramble parameters");
-    f.write("Neuron to scramble:", toScramble);
+    f.write("Neuron to scramble: " + str(toScramble));
 f.close()
 
 
