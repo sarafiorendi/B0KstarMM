@@ -6,8 +6,8 @@ MVA implementation with Neural Network
 Before running check hyper-parameter space:
   .number of perceptrons & neurons
   .number of mini-batches
-  .learn rate (with step decay)
-  .regularization
+  .RMSprop and regularization
+  .learn rate
   .scramble
   .dropout
   .cost function: quadratic / cross-entropy
@@ -21,6 +21,7 @@ e.g.: python MVA.py -nv 2 -np 6 -nn 2 3 4 3 2 1 -sc 5 4
 """
 from argparse  import ArgumentParser
 from random    import seed, random, gauss
+from math      import exp
 
 from ROOT      import gROOT, gStyle, TCanvas, TGraph, TH1D, TGaxis, TLegend
 
@@ -34,10 +35,11 @@ def ArgParser():
     ###############
     """
     parser = ArgumentParser()
-    parser.add_argument("-in", "--infile",       dest = "infile",       type = str, help = "Input neural network",             required=False, default="")
-    parser.add_argument("-nv", "--Nvars",        dest = "Nvars",        type = int, help = "Number of variables",              required=False)
-    parser.add_argument("-np", "--Nperceptrons", dest = "Nperceptrons", type = int, help = "Number of perceptrons",            required=False)
-    parser.add_argument("-nn", "--Nneurons",     dest = "Nneurons",     type = int, help = "Number of neurons per perceptron", required=False, nargs='*')
+    parser.add_argument("-in", "--infile",       dest = "infile",       type = str,  help = "Input neural network",             required=False, default="")
+    parser.add_argument("-nv", "--Nvars",        dest = "Nvars",        type = int,  help = "Number of variables",              required=False)
+    parser.add_argument("-np", "--Nperceptrons", dest = "Nperceptrons", type = int,  help = "Number of perceptrons",            required=False)
+    parser.add_argument("-nn", "--Nneurons",     dest = "Nneurons",     type = int,  help = "Number of neurons per perceptron", required=False, nargs='*')
+    parser.add_argument("-sc", "--Scramble",     dest = "Scramble",     type = bool, help = "Do scramble",                      required=False, default=False)
 
     options = parser.parse_args()
 
@@ -53,6 +55,9 @@ def ArgParser():
 
     if options.Nneurons:
         print "--> I'm reading the neuron number per perceptron: ", options.Nneurons
+
+    if options.Scramble:
+        print "--> I'm reading the scramble flag: ", options.Scramble
 
     return options
 
@@ -128,15 +133,16 @@ NN.printParams()
 Internal parameters: for execution
 ##################################
 """
-nRuns      = 100000
-miniBatch  = 200
+nRuns          = 10000000
+miniBatch      = 1
 
-toScramble = {3:[2]}
-scrStart   = 0
-scrLen     = 2
+toScramble     = {3:[2]}
+scrambleStart  = 1
 
-learnRate  = 0.001
-stepDecay  = nRuns
+doLearnRate    = True
+learnRateStart = 0.01
+learnRateEnd   = 0.001
+learnRateTau   = 10
 
 
 """
@@ -263,7 +269,7 @@ for n in xrange(1,nRuns + 1):
     Neural net: scrambling
     ######################
     """
-    if n > scrStart and (n-scrStart) < scrLen:
+    if cmd.Scramble == True and n == scrambleStart:
         NN.release({-1:[]})
         print "  [", n, "] Scrambling", toScramble
         NN.scramble(toScramble)
@@ -271,13 +277,14 @@ for n in xrange(1,nRuns + 1):
 
 
     """
-    ##########################################
-    Neural net: set learn rate with step decay
-    ##########################################
+    ##########################
+    Neural net: set learn rate
+    ##########################
     """
-    if n < scrStart and n % stepDecay == 0:
-        print "  [", n, "] Learn rate set to", learnRate * (n / stepDecay)
-        NN.setLearnRate(learnRate * (n / stepDecay))
+    lr = learnRateEnd*(1 - exp(-(n-1) / learnRateTau)) + learnRateStart*exp(-(n-1) / learnRateTau)
+    if doLearnRate == True and n < 10*learnRateTau:
+        print "  [", n, "] Learn rate set to", lr
+        NN.setLearnRate(lr)
 
 
     """
@@ -330,6 +337,25 @@ for n in xrange(1,nRuns + 1):
 
 NN.printParams()
 NN.save("NeuralNet.txt")
+
+
+"""
+###########################################
+Save additional hyper-parameter information
+###########################################
+"""
+f = open("NeuralNet.txt","a")
+f.write("\n### Hyper-parameter information ###")
+f.write("Mini-batch:", miniBatch);
+if doLearnRate == True:
+    f.write("# Learn rate parameters");
+    f.write("Learn rate start:", learnRateStart);
+    f.write("Learn rate end:", learnRateEnd);
+    f.write("Learn rate tau:", learnRateTau);
+if cms.Scramble == True:
+    f.write("# Scramble parameters");
+    f.write("Neuron to scramble:", toScramble);
+f.close()
 
 
 """
