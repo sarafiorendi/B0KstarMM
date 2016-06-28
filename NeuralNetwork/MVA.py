@@ -134,7 +134,7 @@ Hyperparameters
 ###############
 """
 nRuns          = 10000000
-miniBatch      = 1
+miniBatch      = 10
 
 toScramble     = {3:[2]}
 

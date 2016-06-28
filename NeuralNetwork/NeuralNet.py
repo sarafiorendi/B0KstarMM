@@ -301,6 +301,8 @@ class NeuralNet(object):
 
     def saveHypPar(self,*args):
         """
+        ###################################
+        Calling sequence:
         args[0] = file name
         args[1] = number of runs
         args[2] = mini batch
@@ -308,6 +310,7 @@ class NeuralNet(object):
         args[4] = learn rate ending value
         args[5] = learn rate decay time
         args[6] = scrambled neurons
+        ###################################
         """
         f = open(args[0],"a")
 
