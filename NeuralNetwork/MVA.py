@@ -22,6 +22,7 @@ e.g.: python MVA.py -nv 2 -np 6 -nn 2 3 4 3 2 1 -sc 5 4
 from argparse  import ArgumentParser
 from random    import seed, random, gauss
 from math      import exp
+from os        import system
 
 from ROOT      import gROOT, gStyle, TCanvas, TGraph, TH1D, TGaxis, TLegend
 
@@ -429,4 +430,5 @@ cNNval.Update()
 Wait for keyborad stroke
 ########################
 """
+system("say 'Neural netowrk optimized'")
 raw_input("\n\n---press enter---")
