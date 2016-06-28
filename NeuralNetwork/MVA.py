@@ -135,7 +135,7 @@ Hyperparameters
 ###############
 """
 nRuns          = 10000000
-miniBatch      = 10
+miniBatch      = 1
 
 toScramble     = {3:[2]}
 
@@ -339,7 +339,7 @@ for n in xrange(1,nRuns + 1):
         count = 0.
 
 NN.printParams()
-NN.save("NeuralNet_test.txt")
+NN.save("NeuralNet.txt")
 
 
 """
@@ -347,7 +347,7 @@ NN.save("NeuralNet_test.txt")
 Save additional hyper-parameter information
 ###########################################
 """
-NN.saveHypPar("NeuralNet_test.txt",nRuns,miniBatch,learnRateStart,learnRateEnd,learnRateTau,toScramble)
+NN.saveHypPar("NeuralNet.txt",nRuns,miniBatch,learnRateStart,learnRateEnd,learnRateTau,toScramble)
 
 
 """
