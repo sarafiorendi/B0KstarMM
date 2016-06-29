@@ -153,7 +153,7 @@ class NeuralNet(object):
         """
         for j,P in enumerate(self.FFperceptrons):
             if j not in who:
-                P.fixAllBut({j:[-1]})
+                P.fixAllBut([-1])
             else:
                 P.fixAllBut(who[j])
 
@@ -248,7 +248,7 @@ class NeuralNet(object):
         f   = open(name,"w")
         out = []
         
-        f.write("### M.E.D. Neural Network ###\n")
+        f.write("# === M.E.D. Neural Network === #\n")
         f.write("# {0:20s} {1:20s} {2:40s} {3:20s} {4:20s} {5:20s}\n".format("Nvars","Nperceptrons","Nneurons","Learn rate","Regularization","RMSprop decay"))
 
         out.append(str(self.FFperceptrons[0].neurons[0].Nvars))
@@ -298,3 +298,32 @@ class NeuralNet(object):
     def setLearnRate(self,val):
         for P in self.FFperceptrons:
             P.setLearnRate(val)
+
+    def saveHypPar(self,*args):
+        """
+        ###################################
+        Calling sequence:
+        args[0] = file name
+        args[1] = number of runs
+        args[2] = mini batch
+        args[3] = learn rate starting value
+        args[4] = learn rate ending value
+        args[5] = learn rate decay time
+        args[6] = scrambled neurons
+        ###################################
+        """
+        f = open(args[0],"a")
+
+        f.write("\n# Hyper-parameter information\n")
+        f.write("  Number of runs: {:_^10d}\n".format(args[1]))
+        f.write("  Mini-batch: {:_^10d}\n".format(args[2]))
+
+        f.write("\n  # Learn rate parameters\n")
+        f.write("  Learn rate start: {:_^10f}\n".format(args[3]))
+        f.write("  Learn rate end: {:_^10f}\n".format(args[4]))
+        f.write("  Learn rate tau: {:_^10f}\n".format(args[5]))
+
+        f.write("\n  # Scramble parameters\n")
+        f.write("  Neuron to scramble: {:_^20s}\n".format(str(args[6])))
+
+        f.close()

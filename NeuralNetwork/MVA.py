@@ -5,8 +5,9 @@ MVA implementation with Neural Network
 #######################################################
 Before running check hyper-parameter space:
   .number of perceptrons & neurons
-  .learn rate (with step decay)
-  .regularization
+  .number of mini-batches
+  .RMSprop and regularization
+  .learn rate
   .scramble
   .dropout
   .cost function: quadratic / cross-entropy
@@ -20,6 +21,8 @@ e.g.: python MVA.py -nv 2 -np 6 -nn 2 3 4 3 2 1 -sc 5 4
 """
 from argparse  import ArgumentParser
 from random    import seed, random, gauss
+from math      import exp
+from os        import system
 
 from ROOT      import gROOT, gStyle, TCanvas, TGraph, TH1D, TGaxis, TLegend
 
@@ -33,10 +36,11 @@ def ArgParser():
     ###############
     """
     parser = ArgumentParser()
-    parser.add_argument("-in", "--infile",       dest = "infile",       type = str, help = "Input neural network",             required=False, default="")
-    parser.add_argument("-nv", "--Nvars",        dest = "Nvars",        type = int, help = "Number of variables",              required=False)
-    parser.add_argument("-np", "--Nperceptrons", dest = "Nperceptrons", type = int, help = "Number of perceptrons",            required=False)
-    parser.add_argument("-nn", "--Nneurons",     dest = "Nneurons",     type = int, help = "Number of neurons per perceptron", required=False, nargs='*')
+    parser.add_argument("-in", "--infile",       dest = "infile",       type = str,  help = "Input neural network",             required=False, default="")
+    parser.add_argument("-nv", "--Nvars",        dest = "Nvars",        type = int,  help = "Number of variables",              required=False)
+    parser.add_argument("-np", "--Nperceptrons", dest = "Nperceptrons", type = int,  help = "Number of perceptrons",            required=False)
+    parser.add_argument("-nn", "--Nneurons",     dest = "Nneurons",     type = int,  help = "Number of neurons per perceptron", required=False, nargs='*')
+    parser.add_argument("-sc", "--Scramble",     dest = "Scramble",     type = bool, help = "Do scramble",                      required=False, default=False)
 
     options = parser.parse_args()
 
@@ -52,6 +56,9 @@ def ArgParser():
 
     if options.Nneurons:
         print "--> I'm reading the neuron number per perceptron: ", options.Nneurons
+
+    if options.Scramble:
+        print "--> I'm reading the scramble flag: ", options.Scramble
 
     return options
 
@@ -123,19 +130,18 @@ NN.printParams()
 
 
 """
-##################################
-Internal parameters: for execution
-##################################
+###############
+Hyperparameters
+###############
 """
-nRuns      = 10000000
-miniBatch  = 500
+nRuns          = 10000000
+miniBatch      = 1
 
-toScramble = {7:[-1]}
-scrStart   = nRuns
-scrLen     = 10000
+toScramble     = {3:[2]}
 
-learnRate  = 0.0001
-stepDecay  = nRuns
+learnRateStart = 0.01
+learnRateEnd   = 0.001
+learnRateTau   = 1
 
 
 """
@@ -143,18 +149,20 @@ stepDecay  = nRuns
 Internal parameters: problem specific
 #####################################
 """
+saveEvery = 100
+
+NNoutMin  = NN.aFunMin(NN.Nperceptrons-1)
+NNoutMax  = NN.aFunMax(NN.Nperceptrons-1)
+NNthr     = (NNoutMin + NNoutMax) / 2.
+
 xRange    = 3.
-xOffset   = 0.
+xOffset   = 3.
 yRange    = 3.
 yOffset   = 0.
 
 noiseBand = 0.1
 loR       = 0.5
 hiR       = 1.
-
-NNoutMin  = NN.aFunMin(NN.Nperceptrons-1)
-NNoutMax  = NN.aFunMax(NN.Nperceptrons-1)
-NNthr     = (NNoutMin + NNoutMax) / 2.
 
 xyCorr    = lambda x,y: ((x-xOffset)*(x-xOffset) + (y-yOffset)*(y-yOffset))
 
@@ -249,12 +257,12 @@ for n in xrange(1,nRuns + 1):
 
     if gauss(loR,noiseBand) <= xyCorr(x,y) < gauss(hiR,noiseBand):
         target = NNoutMax
-        if n % miniBatch == 0:
-            graphSin.SetPoint(n/miniBatch,x,y)
+        if n % saveEvery == 0:
+            graphSin.SetPoint(n/saveEvery,x,y)
     else:
         target = NNoutMin
-        if n % miniBatch == 0:
-            graphBin.SetPoint(n/miniBatch,x,y)
+        if n % saveEvery == 0:
+            graphBin.SetPoint(n/saveEvery,x,y)
 
 
     """
@@ -262,7 +270,7 @@ for n in xrange(1,nRuns + 1):
     Neural net: scrambling
     ######################
     """
-    if n >= scrStart and (n-scrStart) < scrLen:
+    if cmd.Scramble == True and n == 1:
         NN.release({-1:[]})
         print "  [", n, "] Scrambling", toScramble
         NN.scramble(toScramble)
@@ -270,13 +278,14 @@ for n in xrange(1,nRuns + 1):
 
 
     """
-    ##########################################
-    Neural net: set learn rate with step decay
-    ##########################################
+    ##########################
+    Neural net: set learn rate
+    ##########################
     """
-    if n < scrStart and n % stepDecay == 0:
-        print "  [", n, "] Learn rate set to", learnRate * (n / stepDecay)
-        NN.setLearnRate(learnRate * (n / stepDecay))
+    lr = learnRateEnd*(1 - exp(-(n-1) / learnRateTau)) + learnRateStart*exp(-(n-1) / learnRateTau)
+    if n < 10*learnRateTau:
+        print "  [", n, "] Learn rate set to", lr
+        NN.setLearnRate(lr)
 
 
     """
@@ -284,28 +293,30 @@ for n in xrange(1,nRuns + 1):
     Neural net: learning
     ####################
     """
-    NNspeed = [ a + NN.speed(j) for j,a in enumerate(NNspeed) ]
     if n % miniBatch == 0:
         NNcost += NN.learn([x,y],[target],miniBatch)
+    else:
+        NNcost += NN.learn([x,y],[target])
 
-        graphNNcost.SetPoint(n/miniBatch,n,NNcost / miniBatch)
+
+    """
+    #####################################################
+    Neural net: saving activation function speed and cost
+    #####################################################
+    """
+    NNspeed = [ a + NN.speed(j) for j,a in enumerate(NNspeed) ]
+    if n % saveEvery == 0:
+        graphNNcost.SetPoint(n/saveEvery,n,NNcost / saveEvery)
         NNcost = 0.
 
 
-        """
-        ############################################
-        Neural net: saving activation function speed
-        ############################################
-        """
         for j,a in enumerate(NNspeed):
-            if n/miniBatch == 1:
+            if n/saveEvery == 1:
                 graphNNspeed.append(TGraph())
                 leg = "P:" + str(j)
                 legNNspeed.AddEntry(graphNNspeed[j],leg,"L");
-            graphNNspeed[j].SetPoint(n/miniBatch,n,a / miniBatch)
+            graphNNspeed[j].SetPoint(n/saveEvery,n,a / saveEvery)
         NNspeed = [ 0. for j in xrange(NN.Nperceptrons) ]
-    else:
-        NNcost += NN.learn([x,y],[target])
 
 
     """
@@ -323,12 +334,20 @@ for n in xrange(1,nRuns + 1):
     if ((NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR) or (NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y)))):        
         count += 1.
 
-    if n % miniBatch == 0:
-        graphNNaccuracy.SetPoint(n/miniBatch,n,count / miniBatch * 100)
+    if n % saveEvery == 0:
+        graphNNaccuracy.SetPoint(n/saveEvery,n,count / saveEvery * 100)
         count = 0.
 
 NN.printParams()
 NN.save("NeuralNet.txt")
+
+
+"""
+###########################################
+Save additional hyper-parameter information
+###########################################
+"""
+NN.saveHypPar("NeuralNet.txt",nRuns,miniBatch,learnRateStart,learnRateEnd,learnRateTau,toScramble)
 
 
 """
@@ -337,7 +356,7 @@ Neural net: test
 ################
 """
 print "\n\n=== Testing neural network ==="
-for n in xrange(1,nRuns/miniBatch + 1):
+for n in xrange(1,nRuns + 1):
     x = random() * xRange + xOffset - xRange/2
     y = random() * yRange + yOffset - yRange/2
 
@@ -411,4 +430,5 @@ cNNval.Update()
 Wait for keyborad stroke
 ########################
 """
+system("say 'Neural netowrk optimized'")
 raw_input("\n\n---press enter---")
