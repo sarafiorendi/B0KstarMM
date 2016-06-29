@@ -2,19 +2,18 @@
 % Function that calculates the signal given the "Work-Transport" matrix %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % WorkTransportTotal = Total "Work-Transport" matrix
-% x, y          = Axes
-% Depth         = Penetration depth along y (positive = from back side,
+% x, y           = Axes
+% Depth          = Penetration depth along y (positive = from back side,
 %                 negative = from strip side) [um]
-% XEnteranceParticle = X cordinate of the entrance of the particle [um] (back-plane side)
-% XExitParticle      = X cordinate of the exit of the particle [um] (strip side)
-% Step          = Unit step of the lattice on which the field is computed [um]
-% subStep       = Unit step of the lattice on which the field is interpolated [um]
-% Bulk          = Bulk thickness [um]
-% Radius        = Unit step of the movements [um]
-% ChargeDensity = Charge density [electrons/um]
+% XEnterParticle = X cordinate of the enter of the particle [um] (back-plane side)
+% XExitParticle  = X cordinate of the exit of the particle [um] (strip side)
+% Bulk           = Bulk thickness [um]
+% Radius         = Unit step of the movements and field interpolation [um]
+% ChargeDensity  = Charge density [electrons/um]
+% IsGamma        = [true/false]
 
 function [Charge] = ComputeSignal(WorkTransportTotal,x,y,Depth,...
-    XEnteranceParticle,XExitParticle,Step,subStep,Bulk,Radius,ChargeDensity)
+    XEnterParticle,XExitParticle,Bulk,Radius,ChargeDensity,IsGamma)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -27,7 +26,7 @@ eps    = Radius/10; % Minimum step to avoid infinities [um]
 %%%%%%%%%%%%%%%%%%%
 % Start algorithm %
 %%%%%%%%%%%%%%%%%%%
-mx = find(x >= XEnteranceParticle);
+mx = find(x >= XEnterParticle);
 mx = x(mx(1));
 if Depth >= 0
     my = y(1);
@@ -38,10 +37,10 @@ end
 
 while my >= 0 && ((Depth >= 0 && my <= Depth) || (Depth < 0 && my <= Bulk))
 
-    x_near = find(abs(x - mx) <= subStep);
-    y_near = find(abs(y - my) <= subStep);
+    x_near = find(abs(x - mx) <= Radius);
+    y_near = find(abs(y - my) <= Radius);
 
-    % Calculate the average Work within a radius = subStep
+    % Calculate the average Work within a radius = Radius
     W      = 0;
     weight = 0;
     for ii = 1:length(x_near)
@@ -49,13 +48,13 @@ while my >= 0 && ((Depth >= 0 && my <= Depth) || (Depth < 0 && my <= Bulk))
 
             dist = sqrt((mx-x(x_near(ii)))^2 + (my-y(y_near(jj)))^2);
 
-            if dist <= subStep && ~isnan(WorkTransportTotal(y_near(jj),x_near(ii)))
+            if dist <= Radius && ~isnan(WorkTransportTotal(y_near(jj),x_near(ii)))
                 
                 if dist < eps
                     dist = eps;
                 end
                 
-                W = W + WorkTransportTotal(y_near(jj),x_near(ii)) / Step*subStep / dist;
+                W = W + WorkTransportTotal(y_near(jj),x_near(ii)) / dist;
                 weight = weight + 1 / dist;
             end
         end
@@ -68,13 +67,17 @@ while my >= 0 && ((Depth >= 0 && my <= Depth) || (Depth < 0 && my <= Bulk))
 %    fprintf('Signal: %d\tx: %d\ty: %d\n',S,mx,my);
 
     % Calculate the next movement
-    dx   = XExitParticle - XEnteranceParticle;
-    sinv = dx   / sqrt(dx^2 + Bulk^2);
-    cosv = Bulk / sqrt(dx^2 + Bulk^2);
-    mx   = mx + Radius*sinv;
-    my   = my + Radius*cosv;
+    if IsGamma == false
+        dx   = XExitParticle - XEnterParticle;
+        sinv = dx   / sqrt(dx^2 + Bulk^2);
+        cosv = Bulk / sqrt(dx^2 + Bulk^2);
+        mx   = mx + Radius*sinv;
+        my   = my + Radius*cosv;
+    else
+        break
+    end
 end
 
-Charge = ChargeDensity * Charge * Radius / subStep;
+Charge = ChargeDensity * Charge;
 %fprintf('Total signal: %d [e-]\n',S);
 end

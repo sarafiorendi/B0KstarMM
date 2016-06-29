@@ -125,8 +125,8 @@ for i = 1:length(x)
             
 %fprintf('New point --> x: %d\ty: %d\tPath: %d\tVolt: %d\n',...
 %    mx,my,Path,LocalEffectiveV);
-        end        
-        WorkMatrix(j,i) = Charge * Step * LocalEffectiveV;
+        end
+        WorkMatrix(j,i) = Charge * Radius * LocalEffectiveV;
     end
 end
 end

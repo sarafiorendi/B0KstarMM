@@ -8,7 +8,7 @@
 % x, y    = Axes
 % Step    = Unit step of the lattice on which the field is computed [um]
 % Bulk    = Bulk thickness [um]
-% Radius  = Unit step of the movements [um]
+% Radius  = Unit step of the movements and field interpolation [um]
 % TauBe/h = Life-time on the backplane side [ns]
 % TauSe/h = Life-time on the strip side [ns]
 

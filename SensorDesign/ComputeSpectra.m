@@ -4,23 +4,22 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % WorkTransportTotal = Total "Work-Transport" matrix
 % x, y       = Axes
-% Step       = Unit step of the lattice on which the field is computed [um]
-% subStep    = Unit step of the lattice on which the field is interpolated [um]
 % Bulk       = Bulk thickness [um]
 % Pitch      = Strip pitch [um]
-% Radius     = Unit step of the movements [um]
+% Radius     = Unit step of the movements and field interpolation [um]
 % NParticles = Total number of particles to be simulated
 
 function [] = ComputeSpectra(WorkTransportTotal,x,y,...
-    NParticles,Pitch,Step,subStep,Bulk,Radius,particle)
+    NParticles,Pitch,Bulk,Radius,particle)
 TStart = cputime; % CPU time at start
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Variable initialization %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-eNoise = 1000; % Electronic noise [electrons]
-nBins  = 100;  % Spectrum's number of bins
+eNoise  = 1000;  % Electronic noise [electrons]
+nBins   = 100;   % Spectrum's number of bins
+IsGamma = false; % Define whether the particle is a gamma or not
 
 if strcmp(particle,'beta') == true
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -29,11 +28,11 @@ if strcmp(particle,'beta') == true
     ehLength = 60;            % Electron-holes pairs per unit length [electrons]
     depth    = Bulk;          % Source penetration depth [um]
     eMax     = ehLength*Bulk; % Maximum released charge [electrons]
-elseif strcmp(particle,'alpha') == true || strcmp(particle,'gamma')
+elseif strcmp(particle,'alpha') == true || strcmp(particle,'gamma') == true
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Charge spectrum for Alpha/Gamma %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    energyPair = 13;                   % Energy to create an electron-hole pair [eV] [3.2 Silicon, 13 Diamond]
+    energyPair = 3.2;                  % Energy to create an electron-hole pair [eV] [3.2 Silicon, 13 Diamond]
     eMax       = 4520000 / energyPair; % Maximum released charge [electrons]
     mean       = eMax;                 % Particle spectrum mean [electrons]
     sigma      = 17000 / energyPair;   % Particle spectrum sigma [electrons]
@@ -41,7 +40,8 @@ elseif strcmp(particle,'alpha') == true || strcmp(particle,'gamma')
     if strcmp(particle,'alpha') == true
         depth = 10;
     elseif strcmp(particle,'gamma') == true
-        depth = Bulk * rand(1,1);
+        depth   = Bulk * rand(1,1);
+        IsGamma = true;
     end
 else
     fprintf('Unknown particle: %s\n',particle);
@@ -70,22 +70,24 @@ for i = 1:NParticles
         mean  = ehLength*sqrt(depth^2 + (exit-enter)^2); % Landau MPV [electrons]
         sigma = mean / 10; % (8 or 10) scale factor between MPV and sigma of Landau [electrons]
         ChargeDensity = LandauRND(mean,sigma);
-    elseif strcmp(particle,'alpha') == true
+    elseif strcmp(particle,'alpha') == true || strcmp(particle,'gamma') == true
     % Particles enter randomly between -Pitch/2 -- +Pitch/2
-    % Particles exit  randomly at Xin + Depth*sin(theta)
+    % Particles exit  randomly at Xin + Depth*tan(theta)
     % where theta is chosen randomly between -pi/4 and pi/4
         enter = Pitch/2 * (2*rand(1,1) - 1);
         exit  = enter + depth*tan(pi/2*rand(1,1) - pi/4);
         ChargeDensity = normrnd(mean,sigma);
-    elseif strcmp(particle,'gamma') == true
-        fprintf('Particle not yet implemented\n');
-        return;
     end
     
     Noise         = normrnd(0,eNoise);
-    ChargeDensity = (ChargeDensity + Noise) / sqrt(depth^2 + (exit-enter)^2);
+    ChargeDensity = ChargeDensity + Noise;
+    if strcmp(particle,'gamma') == false
+        ChargeDensity = ChargeDensity / sqrt(depth^2 + (exit-enter)^2);
+    else
+        ChargeDensity = ChargeDensity / Radius;
+    end
     [Charge] = ComputeSignal(WorkTransportTotal,x,y,depth,...
-        enter,exit,Step,subStep,Bulk,Radius,ChargeDensity);
+        enter,exit,Bulk,Radius,ChargeDensity,IsGamma);
     
     HistoCharge(i) = Charge;
 end

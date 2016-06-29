@@ -8,10 +8,9 @@
 % Variable initialization %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Step     = Unit step of the lattice on which the field is computed [um]
-% subStep  = Unit step of the lattice on which the field is interpolated [um]
 % Bulk     = Bulk thickness [um]
 % Pitch    = Strip pitch [um]
-% Radius   = Unit step of the movements [um]
+% Radius   = Unit step of the movements and field interpolation [um]
 % BField   = Magnetic field (orthogonal+outgoing from the 2D geometry) [T]
 % TauBe/h  = Life-time on the backplane side [ns]
 % TauSe/h  = Life-time on the strip side [ns]
@@ -20,7 +19,6 @@
 % ParticleType = 'alpha', 'beta', 'gamma'
 
 Step         = 5;
-subStep      = 1;
 Bulk         = 100;
 Pitch        = 100;
 Radius       = Step/10;
@@ -29,7 +27,7 @@ TauBe        = 89;
 TauSe        = 89;
 TauBh        = 65;
 TauSh        = 65;
-NAverage     = 100;
+NAverage     = 1;
 NParticles   = 10000;
 ParticleType = 'beta';
 
@@ -46,10 +44,10 @@ rng default; % Reset random seed
     ManyWorkTransport(uw,pw,tw,VFieldx_e,VFieldy_e,VFieldx_h,VFieldy_h,...
     x,y,Step,Bulk,Radius,TauBe,TauSe,TauBh,TauSh,NAverage);
 
-fprintf('@@@ I''m interpolating the work transport matrix with a step of %d um @@@\n\n',subStep);
+fprintf('@@@ I''m interpolating the work transport matrix with a step of %d um @@@\n\n',Radius);
 [xx,yy] = meshgrid(x,y);
-subx = x(1):subStep:x(length(x));
-suby = y(1):subStep:y(length(y));
+subx = x(1):Radius:x(length(x));
+suby = y(1):Radius:y(length(y));
 [subxx,subyy] = meshgrid(subx,suby);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Interpolation/Extrapolation: linear, nearest, cubic, spline %
@@ -73,14 +71,8 @@ xlabel('X [\mum]');
 ylabel('Y [\mum]');
 zlabel('Work / q [#charges * V]');
 
-ComputeSpectra(subWorkTransportTotal,subx,suby,NParticles,Pitch,Step,...
-    subStep,Bulk,Radius*subStep/Step,ParticleType);
-
-
-%%%%%%%%%%%%%%%%
-% Improvements %
-%%%%%%%%%%%%%%%%
-% Implement spectra for gamma particles
+ComputeSpectra(subWorkTransportTotal,subx,suby,NParticles,Pitch,...
+    Bulk,Radius,ParticleType);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%
