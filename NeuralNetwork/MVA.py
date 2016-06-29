@@ -356,7 +356,7 @@ Neural net: test
 ################
 """
 print "\n\n=== Testing neural network ==="
-for n in xrange(1,nRuns/saveEvery + 1):
+for n in xrange(1,nRuns + 1):
     x = random() * xRange + xOffset - xRange/2
     y = random() * yRange + yOffset - yRange/2
 
