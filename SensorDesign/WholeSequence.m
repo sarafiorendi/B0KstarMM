@@ -37,7 +37,7 @@ TauSe        = 89;
 TauBh        = 65;
 TauSh        = 65;
 
-NAverage     = 100;
+NAverage     = 10;
 NParticles   = 10000;
 ParticleType = 'beta';
 
