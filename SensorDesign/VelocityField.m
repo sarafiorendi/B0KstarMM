@@ -41,8 +41,8 @@ ReSample   = 2;   % Used in order to make nice plots [um]
 ContLevel  = 40;  % Contour plot levels
 MagnVector = 1.2; % Vector field magnification
 
-x = -Pitch:Step:Pitch;  % Bound along x-coordinate
-y = 0:Step:Bulk+Bulk/2; % Bound along y-coordinate
+x = -Pitch:Step:Pitch; % Bound along x-coordinate
+y = 0:Step:Bulk * 3/2; % Bound along y-coordinate
 
 VFieldx_e = zeros(length(y), length(x));
 VFieldy_e = zeros(length(y), length(x));

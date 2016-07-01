@@ -13,7 +13,7 @@ TStart = cputime; % CPU time at start
 %%%%%%%%%%%%%%%%%%%
 % Start algorithm %
 %%%%%%%%%%%%%%%%%%%
-[WorkTransportTotal_, x, y, ItFigIn] =...
+[WorkTransportTotal_, x, y, ItFigOut] =...
     WorkTransport(potential,VFieldx_e,VFieldy_e,VFieldx_h,VFieldy_h,...
     x,y,Step,Bulk,Radius,TauBe,TauSe,TauBh,TauSh,ItFigIn);
 WorkTransportTotal = WorkTransportTotal_;
@@ -36,7 +36,7 @@ fprintf('@@@ Average over all "Work-Transport" matrices @@@\n');
 %%%%%%%%%
 [xx,yy] = meshgrid(x,y);
 
-figure(ItFigIn);
+figure(ItFigOut);
 colormap jet;
 surf(xx,yy,WorkTransportTotal,'EdgeColor','none');
 title('Total <Work-Transport>');
@@ -44,6 +44,6 @@ xlabel('X [\mum]');
 ylabel('Y [\mum]');
 zlabel('Work / q [#charges * V]');
 
-ItFigOut = ItFigIn + 1;
+ItFigOut = ItFigOut + 1;
 fprintf('CPU time --> %d[min]\n\n',(cputime-TStart)/60);
 end
