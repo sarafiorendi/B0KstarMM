@@ -78,6 +78,7 @@ class Neuron(object):
             self.weights[self.Nvars] -= self.learnRate * self.dCdZ / miniBatch
 
             self.reset("adapt")
+            self.reset("rmsprop")
 
     ### Activation function ###
     def aFun(self,val):
