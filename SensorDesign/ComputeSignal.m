@@ -4,7 +4,7 @@
 % WorkTransportTotal = Total "Work-Transport" matrix
 % x, y           = Axes
 % Depth          = Penetration depth along y (positive = from back side,
-%                 negative = from strip side) [um]
+%                  negative = from strip side) [um]
 % XEnterParticle = X cordinate of the enter of the particle [um] (back-plane side)
 % XExitParticle  = X cordinate of the exit of the particle [um] (strip side)
 % Bulk           = Bulk thickness [um]
@@ -64,7 +64,6 @@ while my >= 0 && ((Depth >= 0 && my <= Depth) || (Depth < 0 && my <= Bulk))
     end
     
     Charge = Charge + W;
-%    fprintf('Signal: %d\tx: %d\ty: %d\n',S,mx,my);
 
     % Calculate the next movement
     if IsGamma == false
@@ -79,5 +78,4 @@ while my >= 0 && ((Depth >= 0 && my <= Depth) || (Depth < 0 && my <= Bulk))
 end
 
 Charge = ChargeDensity * Charge;
-%fprintf('Total signal: %d [e-]\n',S);
 end

@@ -1,36 +1,36 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Function that solves Poisson equation %
-% to compute the total field            %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Function that solves Poisson equation to compute the potential %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % [gd,sf,ns] = Geometry description
 % Bulk       = Bulk thickness [um]
 % Pitch      = Strip pitch [um]
-% itFig      = Figure iterator
+% BiasB      = Sensor backplane voltage [V] [0 Weighting; -200 All]
+% BiasS      = Sensor strip voltage [V]
+% BiasW      = Sensor central strip voltage [V] [1 Weighting; 0 All]
+% ItFigIn    = Figure iterator input
 
-function [potential] = SolveAllStripsFieldPDE(gd,sf,ns,Bulk,Pitch,itFig)
+function [potential, ItFigOut] = SolvePoissonPDE(gd,sf,ns,...
+    Bulk,Pitch,BiasB,BiasS,BiasW,ItFigIn)
 TStart = cputime; % CPU time at start
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Variable initialization %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-ContLevel  = 30; % Contour plot levels
-MagnVector = 2;  % Vector field magnification
-MeshMax    = 15; % Maximum mesh edge length
-Step    = 5; % Unit step of the lattice on which the field is computed [um]
+ReSampleFine   =  1;  % Used in order to make nice plots [um]
+ReSampleCoarse = 10;  % Used in order to make nice plots [um]
+ContLevel      = 40;  % Contour plot levels
+MagnVector     = 1.2; % Vector field magnification
+MeshMax        = 15;  % Maximum mesh edge length [um]
 
-BiasB   = 0; % Sensor backplane voltage [V]
-BiasS   = 0; % Sensor strip voltage [V]
-BiasW   = 1; % Sensor central strip voltage for weighting field [V]
-
-NupBulk = 3; % Number of bulk thicknesses above sensor (included)
-Nstrips = 21;% Total number of strips
+NupBulk = 3;  % Number of bulk thicknesses above sensor (included)
+Nstrips = 21; % Total number of strips
 
 
 %%%%%%%%%%%%%%%%%%%%
 % Create PDE model %
 %%%%%%%%%%%%%%%%%%%%
-fprintf('@@@ I''m solving Poisson equation to calculate the total field @@@\n');
+fprintf('@@@ I''m solving Poisson equation to calculate the potential @@@\n');
 pdem = createpde(1);
 
 
@@ -154,55 +154,63 @@ potential = solvepde(pdem);
 %%%%%%%%%
 % Plots %
 %%%%%%%%%
-figure (itFig);
+figure(ItFigIn);
 pdegplot(pdem,'EdgeLabels','on');
 hold on;
 pdemesh(pdem);
 xlim([-Pitch*Nstrips/2,+Pitch*Nstrips/2]);
 ylim([0,Bulk*NupBulk]);
 title('Delaunay mesh');
-xlabel('x');
-ylabel('y');
+xlabel('X [\mum]');
+ylabel('Y [\mum]');
 hold off;
 
-figure (itFig+1);
+ItFigIn = ItFigIn + 1;
+figure(ItFigIn);
 subplot(1,2,1);
 colormap jet;
 pdeplot(pdem,'xydata',potential.NodalSolution);
-xlim([-Pitch*Nstrips/2,+Pitch*Nstrips/2]);
-ylim([0,Bulk*NupBulk]);
-title('Total field');
-xlabel('x');
-ylabel('y');
+xlim([-Pitch * Nstrips/2,+Pitch * Nstrips/2]);
+ylim([0,Bulk  * NupBulk]);
+title('Potential');
+xlabel('X [\mum]');
+ylabel('Y [\mum]');
 
 subplot(1,2,2);
-x = -Pitch:Step:Pitch;
-y = 0:Step:Bulk*3/2;
-[mshx,mshy] = meshgrid(x,y);
-querypoints = [mshx(:),mshy(:)]';
+
+x = -Pitch:ReSampleFine:Pitch;
+y = 0:ReSampleFine:Bulk * 3/2;
+[FineMeshX,FineMeshY] = meshgrid(x,y);
+FineQuery = [FineMeshX(:),FineMeshY(:)]';
+
+x = -Pitch:ReSampleCoarse:Pitch;
+y = 0:ReSampleCoarse:Bulk*3/2;
+[CoarseMeshX,CoarseMeshY] = meshgrid(x,y);
+CoarseQuery = [CoarseMeshX(:),CoarseMeshY(:)]';
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Recompute solution on a different mesh %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-interp = interpolateSolution(potential,querypoints);
-interp = reshape(interp,size(mshx));
+interp = interpolateSolution(potential,FineQuery);
+interp = reshape(interp,size(FineMeshX));
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 % Evaluate the gradient %
 %%%%%%%%%%%%%%%%%%%%%%%%%
-[gradx,grady] = evaluateGradient(potential,querypoints);
+[gradx,grady] = evaluateGradient(potential,CoarseQuery);
 
 
-contour(mshx,mshy,interp,ContLevel);
+contour(FineMeshX,FineMeshY,interp,ContLevel);
 hold on;
-quiver(mshx(:),mshy(:),gradx,grady,MagnVector);
+quiver(CoarseMeshX(:),CoarseMeshY(:),gradx,grady,MagnVector);
 hold off;
 
-title('Total field contour and gradient');
-xlabel('x');
-ylabel('y');
+title('Potential and its gradient');
+xlabel('X [\mum]');
+ylabel('Y [\mum]');
 
+ItFigOut = ItFigIn + 1;
 fprintf('CPU time --> %d[min]\n\n',(cputime-TStart)/60);
 end

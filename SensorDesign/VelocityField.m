@@ -8,15 +8,15 @@
 % mu * (Ey - vx*B) = vy --> vy = mu / (1 + (mu*R*B)^2) * (Ey - mu*R*B*Ex) -->
 % --> vy = mu / [(1+(mu*R*B)^2) * (1+mu*E/vs)] * (Ey - mu*R*B*Ex)
 
-% ut = total potential
-% pt (points), tt (triangles) = mesh
-% Step   = Unit step of the lattice on which the field is computed [um]
-% Bulk   = Bulk thickness [um]
-% BField = Magnetic field (orthogonal+outgoing from the 2D geometry) [T]
-% Pitch  = Strip pitch [um]
+% potential = Solution of the Poisson equation
+% Step    = Unit step of the lattice on which the field is computed [um]
+% Bulk    = Bulk thickness [um]
+% BField  = Magnetic field (orthogonal+outgoing from the 2D geometry) [T]
+% Pitch   = Strip pitch [um]
+% ItFigIn = Figure iterator input
 
-function [VFieldx_e, VFieldy_e, VFieldx_h, VFieldy_h, x, y] = ...
-    VelocityField(ut,pt,tt,Step,Bulk,BField,Pitch)
+function [VFieldx_e, VFieldy_e, VFieldx_h, VFieldy_h, x, y, ItFigOut] = ...
+    VelocityField(potential,Step,Bulk,BField,Pitch,ItFigIn)
 TStart = cputime; % CPU time at start
 
 
@@ -37,22 +37,33 @@ beta_h = 1;  % Exponent for the electric field dependence of the mobility [0.42 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Variable initialization %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-ReSample   = 2;   % Used in order to make nice plots
+ReSample   = 2;   % Used in order to make nice plots [um]
 ContLevel  = 40;  % Contour plot levels
 MagnVector = 1.2; % Vector field magnification
-x          = -Pitch:Step:Pitch; % Bound along x-coordinate
-y          = 0:Step:Bulk+Bulk/2;
-VFieldx_e  = zeros(length(y), length(x));
-VFieldy_e  = zeros(length(y), length(x));
-VFieldx_h  = zeros(length(y), length(x));
-VFieldy_h  = zeros(length(y), length(x));
+
+x = -Pitch:Step:Pitch;  % Bound along x-coordinate
+y = 0:Step:Bulk+Bulk/2; % Bound along y-coordinate
+
+VFieldx_e = zeros(length(y), length(x));
+VFieldy_e = zeros(length(y), length(x));
+VFieldx_h = zeros(length(y), length(x));
+VFieldy_h = zeros(length(y), length(x));
 
 
 %%%%%%%%%%%%%%%%%%%
 % Start algorithm %
 %%%%%%%%%%%%%%%%%%%
-utxy = tri2grid(pt,tt,ut,x,y);
-[Etx, Ety] = gradient(utxy,Step,Step);
+[mshx,mshy] = meshgrid(x,y);
+queryPoints = [mshx(:),mshy(:)]';
+
+[Etx, Ety] = evaluateGradient(potential,queryPoints);
+
+Etx = reshape(Etx,size(mshx));
+Ety = reshape(Ety,size(mshy));
+
+interp = interpolateSolution(potential,queryPoints);
+interp = reshape(interp,size(mshx));
+
 
 % Velocity field calculation for electrons
 fprintf('@@@ I''m calculating the Velocity-Field @@@\n');
@@ -106,11 +117,13 @@ VFieldx_e_ReSample = VFieldx_e(1:ReSample:length(y), 1:ReSample:length(x));
 VFieldy_e_ReSample = VFieldy_e(1:ReSample:length(y), 1:ReSample:length(x));
 VFieldx_h_ReSample = VFieldx_h(1:ReSample:length(y), 1:ReSample:length(x));
 VFieldy_h_ReSample = VFieldy_h(1:ReSample:length(y), 1:ReSample:length(x));
-xp      = x(1:ReSample:length(x));
-yp      = y(1:ReSample:length(y));
+
+xp = x(1:ReSample:length(x));
+yp = y(1:ReSample:length(y));
+
 [xx,yy] = meshgrid(x,y);
 
-figure (1);
+figure(ItFigIn);
 colormap jet;
 subplot(2,2,1);
 surf(xx,yy,VFieldx_e,'EdgeColor','none');
@@ -137,10 +150,11 @@ xlabel('X [\mum]');
 ylabel('Y [\mum]');
 zlabel('Velocity Field [\mum / ns]');
 
-figure (2);
+ItFigIn = ItFigIn + 1;
+figure(ItFigIn);
 colormap jet;
 subplot(1,2,1);
-contour(x,y,utxy,ContLevel);
+contour(x,y,interp,ContLevel);
 hold on
 quiver(xp,yp,VFieldx_e_ReSample,VFieldy_e_ReSample,MagnVector);
 colormap jet;
@@ -150,7 +164,7 @@ xlabel('X [\mum]');
 ylabel('Y [\mum]');
 zlabel('Velocity Field [\mum / ns]');
 subplot(1,2,2);
-contour(x,y,utxy,ContLevel);
+contour(x,y,interp,ContLevel);
 hold on
 quiver(xp,yp,VFieldx_h_ReSample,VFieldy_h_ReSample,MagnVector);
 colormap jet;
@@ -160,5 +174,6 @@ xlabel('X [\mum]');
 ylabel('Y [\mum]');
 zlabel('Velocity Field [\mum / ns]');
 
+ItFigOut = ItFigIn + 1;
 fprintf('CPU time --> %d[min]\n\n',(cputime-TStart)/60);
 end

@@ -13,6 +13,9 @@ xAxis  = mpv + sigma*nSigma;
 toss   = true;
 
 
+%%%%%%%%%%%%%%%%%%%
+% Start algorithm %
+%%%%%%%%%%%%%%%%%%%
 while toss == true
     x    = rand(1,1)*xAxis;
     coin = rand(1,1)*0.18; % Maximum of Landau
@@ -22,5 +25,4 @@ while toss == true
         toss = false;
     end
 end
-
 end

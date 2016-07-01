@@ -8,9 +8,10 @@
 % Pitch      = Strip pitch [um]
 % Radius     = Unit step of the movements and field interpolation [um]
 % NParticles = Total number of particles to be simulated
+% ItFigIn    = Figure iterator input
 
-function [] = ComputeSpectra(WorkTransportTotal,x,y,...
-    NParticles,Pitch,Bulk,Radius,particle)
+function [ItFigOut] = ComputeSpectra(WorkTransportTotal,x,y,...
+    NParticles,Pitch,Bulk,Radius,particle,ItFigIn)
 TStart = cputime; % CPU time at start
 
 
@@ -96,8 +97,7 @@ end
 %%%%%%%%%
 % Plots %
 %%%%%%%%%
-figure (8);
-hold off
+figure(ItFigIn);
 histo = hist(HistoCharge,EnergyScale);
 plot(EnergyScale,histo,'-o','LineWidth',1,...
     'MarkerEdgeColor','black','MarkerFaceColor','blue','MarkerSize',7);
@@ -106,5 +106,6 @@ xlabel('Energy [e-]');
 ylabel('Entries [#]');
 grid on
 
+ItFigOut = ItFigIn + 1;
 fprintf('CPU time --> %d[min]\n\n',(cputime-TStart)/60);
 end

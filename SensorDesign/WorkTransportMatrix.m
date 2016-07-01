@@ -121,10 +121,7 @@ for i = 1:length(x)
             if VFx ~= 0 || VFy ~= 0
                 LocalEffectiveV = LocalEffectiveV +...
                 (EFx*VFx + EFy*VFy)/sqrt(VFx^2 + VFy^2) * Radius;
-            end
-            
-%fprintf('New point --> x: %d\ty: %d\tPath: %d\tVolt: %d\n',...
-%    mx,my,Path,LocalEffectiveV);
+            end            
         end
         WorkMatrix(j,i) = Charge * Radius * LocalEffectiveV;
     end
