@@ -1,6 +1,6 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Program to caculate the signal in particle sensors %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Program to caculate the signal in particle-detection sensors %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -45,13 +45,12 @@ ParticleType = 'beta';
 rng default; % Reset random seed
 ItFig = 1;   % Figure iterator
 
-%[pw,ew,tw,uw] = PDE_WeightingField(Pitch,Bulk); % To export geometry
-
+% Run PDE_WeightingField(Pitch,Bulk) to export geometry
 [WeightPot, ItFig] = SolvePoissonPDE(gd,sf,ns,Bulk,Pitch,0,0,1,ItFig);
 [TotalPot,  ItFig] = SolvePoissonPDE(gd,sf,ns,Bulk,Pitch,BiasV,0,0,ItFig);
 
 [VFieldx_e, VFieldy_e, VFieldx_h, VFieldy_h, x, y, ItFig] =...
-    VelocityField(TotalPot,Step,Bulk,BField,2 * Pitch,ItFig);
+    VelocityField(TotalPot,Step,Bulk,BField,Pitch,ItFig);
 
 [WorkTransportTotal, x, y, ItFig] =...
     ManyWorkTransport(WeightPot,VFieldx_e,VFieldy_e,VFieldx_h,VFieldy_h,...
@@ -72,7 +71,6 @@ subWorkTransportTotal = WorkTransportTotal_(ssubx, ssuby);
 figure(ItFig);
 colormap jet;
 surf(ssubx,ssuby,subWorkTransportTotal,'EdgeColor','none');
-%plot(WorkTransportTotal_,[x0 y0],z0); % To show and compare fit resuts
 title('Interpolated Total <Work-Transport>');
 xlabel('X [\mum]');
 ylabel('Y [\mum]');
