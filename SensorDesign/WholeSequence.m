@@ -60,7 +60,8 @@ ItFig = 1;   % Figure iterator
 %%%%%%%%%%%%%%%%%
 % Fit/Smoothing %
 %%%%%%%%%%%%%%%%%
-fprintf('@@@ I''m interpolating the work transport matrix with a step of %d um @@@\n\n',Radius);
+fprintf('@@@ I''m interpolating the work transport matrix with...
+a step of %d um @@@\n\n',Radius);
 subx = x(1):Radius:x(length(x));
 suby = y(1):Radius:y(length(y));
 [ssubx,ssuby] = meshgrid(subx,suby);
@@ -78,12 +79,12 @@ zlabel('Work / q [#charges * V]');
 ItFig = ItFig + 1;
 
 
-[ItFig] = ComputeSpectra(subWorkTransportTotal,subx,suby,NParticles,Pitch,...
-    Bulk,Radius,ParticleType,ItFig);
+[ItFig] = ComputeSpectra(subWorkTransportTotal,subx,suby,NParticles,...
+    Pitch,Bulk,Radius,ParticleType,ItFig);
 
 
 %%%%%%%%%
 % To do %
 %%%%%%%%%
 % 1. Definition of multiple dielectrics
-% 2. Automatic generation of the geometry
+% 2. Automatic generation of geometry
