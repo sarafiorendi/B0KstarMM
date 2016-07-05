@@ -7,7 +7,7 @@
 % Variable initialization %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % epsR = Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
-% rho  = Charge denisty in the bulk [Coulomb / m^3]
+% rho  = Charge denisty in the bulk [(Coulomb / um^3) / eps0]
 
 % Step   = Unit step of the lattice on which the field is computed [um]
 % Radius = Unit step of the movements and field interpolation [um]
@@ -27,7 +27,7 @@
 
 
 epsR = 3.9;
-rho = -1e18 * 1.6e-19;
+rho  = (-1 * 1.6e-19) / 8.85e-12;
 
 Step   = 5;
 Radius = Step/10;
@@ -43,7 +43,7 @@ TauSe = 89;
 TauBh = 65;
 TauSh = 65;
 
-NAverage     = 1;
+NAverage     = 10;
 NParticles   = 10000;
 ParticleType = 'beta';
 
