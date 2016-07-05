@@ -1,30 +1,34 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Function that solves Poisson equation to compute the potential %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% [gd,sf,ns] = Geometry description
-% Bulk       = Bulk thickness [um]
-% Pitch      = Strip pitch [um]
-% BiasB      = Sensor backplane voltage [V] [0 Weighting; -200 All]
-% BiasS      = Sensor strip voltage [V]
-% BiasW      = Sensor central strip voltage [V] [1 Weighting; 0 All]
-% ItFigIn    = Figure iterator input
+% Bulk    = Bulk thickness [um]
+% Pitch   = Strip pitch [um]
+% BiasB   = Sensor backplane voltage [V] [0 Weighting; -200 All]
+% BiasS   = Sensor strip voltage [V]
+% BiasW   = Sensor central strip voltage [V] [1 Weighting; 0 All]
+% epsR    = Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
+% rho     = Charge denisty in the bulk [Coulomb / m^3]
+% ItFigIn = Figure iterator input
 
-function [potential, ItFigOut] = SolvePoissonPDE(gd,sf,ns,...
-    Bulk,Pitch,BiasB,BiasS,BiasW,ItFigIn)
+function [potential, ItFigOut] = SolvePoissonPDE(Bulk,Pitch,...
+    BiasB,BiasS,BiasW,epsR,rho,ItFigIn)
 TStart = cputime; % CPU time at start
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Variable initialization %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-ReSampleFine   =  1;  % Used in order to make nice plots [um]
+ReSampleFine   = 1;   % Used in order to make nice plots [um]
 ReSampleCoarse = 10;  % Used in order to make nice plots [um]
 ContLevel      = 40;  % Contour plot levels
 MagnVector     = 1.2; % Vector field magnification
 MeshMax        = 15;  % Maximum mesh edge length [um]
 
-NupBulk = 3;  % Number of bulk thicknesses above sensor (included)
-Nstrips = 21; % Total number of strips
+StrThick   = 5;  % Strip metalization thickness [um]
+EleHVwidth = 80; % HV strip metalization width [um]
+EleSGwidth = 80; % Signal strip metalization width [um]
+NupBulk    = 2;  % Number of bulk thicknesses above sensor (included)
+Nstrips    = 21; % Total number of strips
 
 
 %%%%%%%%%%%%%%%%%%%%
@@ -37,6 +41,61 @@ pdem = createpde(1);
 %%%%%%%%%%%%%%%%%%%%%%
 % Create 2D geometry %
 %%%%%%%%%%%%%%%%%%%%%%
+R1 = [ 3 4 -EleSGwidth/2 EleSGwidth/2 EleSGwidth/2 -EleSGwidth/2 ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+
+R2 = [ 3 4 1*Pitch-EleHVwidth/2 1*Pitch+EleHVwidth/2 1*Pitch+EleHVwidth/2 1*Pitch-EleHVwidth/2 ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+R3 = [ 3 4 2*Pitch-EleHVwidth/2 2*Pitch+EleHVwidth/2 2*Pitch+EleHVwidth/2 2*Pitch-EleHVwidth/2 ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+R4 = [ 3 4 3*Pitch-EleHVwidth/2 3*Pitch+EleHVwidth/2 3*Pitch+EleHVwidth/2 3*Pitch-EleHVwidth/2 ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+R5 = [ 3 4 4*Pitch-EleHVwidth/2 4*Pitch+EleHVwidth/2 4*Pitch+EleHVwidth/2 4*Pitch-EleHVwidth/2 ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+R6 = [ 3 4 5*Pitch-EleHVwidth/2 5*Pitch+EleHVwidth/2 5*Pitch+EleHVwidth/2 5*Pitch-EleHVwidth/2 ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+R7 = [ 3 4 6*Pitch-EleHVwidth/2 6*Pitch+EleHVwidth/2 6*Pitch+EleHVwidth/2 6*Pitch-EleHVwidth/2 ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+R8 = [ 3 4 7*Pitch-EleHVwidth/2 7*Pitch+EleHVwidth/2 7*Pitch+EleHVwidth/2 7*Pitch-EleHVwidth/2 ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+R9 = [ 3 4 8*Pitch-EleHVwidth/2 8*Pitch+EleHVwidth/2 8*Pitch+EleHVwidth/2 8*Pitch-EleHVwidth/2 ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+R10 = [ 3 4 9*Pitch-EleHVwidth/2 9*Pitch+EleHVwidth/2 9*Pitch+EleHVwidth/2 9*Pitch-EleHVwidth/2 ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+R11 = [ 3 4 10*Pitch-EleHVwidth/2 10*Pitch+EleHVwidth/2 10*Pitch+EleHVwidth/2 10*Pitch-EleHVwidth/2 ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+
+R12 = [ 3 4 -(1*Pitch-EleHVwidth/2) -(1*Pitch+EleHVwidth/2) -(1*Pitch+EleHVwidth/2) -(1*Pitch-EleHVwidth/2) ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+R13 = [ 3 4 -(2*Pitch-EleHVwidth/2) -(2*Pitch+EleHVwidth/2) -(2*Pitch+EleHVwidth/2) -(2*Pitch-EleHVwidth/2) ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+R14 = [ 3 4 -(3*Pitch-EleHVwidth/2) -(3*Pitch+EleHVwidth/2) -(3*Pitch+EleHVwidth/2) -(3*Pitch-EleHVwidth/2) ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+R15 = [ 3 4 -(4*Pitch-EleHVwidth/2) -(4*Pitch+EleHVwidth/2) -(4*Pitch+EleHVwidth/2) -(4*Pitch-EleHVwidth/2) ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+R16 = [ 3 4 -(5*Pitch-EleHVwidth/2) -(5*Pitch+EleHVwidth/2) -(5*Pitch+EleHVwidth/2) -(5*Pitch-EleHVwidth/2) ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+R17 = [ 3 4 -(6*Pitch-EleHVwidth/2) -(6*Pitch+EleHVwidth/2) -(6*Pitch+EleHVwidth/2) -(6*Pitch-EleHVwidth/2) ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+R18 = [ 3 4 -(7*Pitch-EleHVwidth/2) -(7*Pitch+EleHVwidth/2) -(7*Pitch+EleHVwidth/2) -(7*Pitch-EleHVwidth/2) ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+R19 = [ 3 4 -(8*Pitch-EleHVwidth/2) -(8*Pitch+EleHVwidth/2) -(8*Pitch+EleHVwidth/2) -(8*Pitch-EleHVwidth/2) ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+R20 = [ 3 4 -(9*Pitch-EleHVwidth/2) -(9*Pitch+EleHVwidth/2) -(9*Pitch+EleHVwidth/2) -(9*Pitch-EleHVwidth/2) ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+R21 = [ 3 4 -(10*Pitch-EleHVwidth/2) -(10*Pitch+EleHVwidth/2) -(10*Pitch+EleHVwidth/2) -(10*Pitch-EleHVwidth/2) ...
+    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+
+R22 = [ 3 4 -(10*Pitch+Pitch/2) (10*Pitch+Pitch/2) (10*Pitch+Pitch/2) -(10*Pitch+Pitch/2) ...
+    Bulk Bulk 0 0 ]';
+R23 = [ 3 4 -(10*Pitch+Pitch/2) (10*Pitch+Pitch/2) (10*Pitch+Pitch/2) -(10*Pitch+Pitch/2) ...
+    Bulk*NupBulk Bulk*NupBulk 0 0 ]';
+
+gd = [R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R12,R13,R14,R15,R16,R17,R18,R19,R20,R21,R22,R23];
+sf = 'R23-(R1+R2+R3+R4+R5+R6+R7+R8+R9+R10+R11+R12+R13+R14+R15+R16+R17+R18+R19+R20+R21)+R22';
+ns = char('R1','R2','R3','R4','R5','R6','R7','R8','R9','R10','R11','R12','R13','R14','R15','R16','R17','R18','R19','R20','R21','R22','R23');
+ns = ns';
+
 dl = decsg(gd,sf,ns);
 geometryFromEdges(pdem,dl);
 
@@ -139,13 +198,15 @@ applyBoundaryCondition(pdem,'edge',1,'h',1,'r',BiasW);
 %%%%%%%%%%%%%%%%%
 % Generate mesh %
 %%%%%%%%%%%%%%%%%
-msh = generateMesh(pdem,'Hmax',MeshMax,'Jiggle','minimum');
+msh = generateMesh(pdem,'Hmax',MeshMax,'Jiggle','mean',...
+    'GeometricOrder','quadratic','MesherVersion','R2013a');
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 % Solve Poisson equation %
 %%%%%%%%%%%%%%%%%%%%%%%%%%
-specifyCoefficients(pdem,'m',0,'d',0,'c',1,'a',0,'f',0);
+specifyCoefficients(pdem,'m',0,'d',0,'c',1,   'a',0,'f',0,  'face',1); % Air
+specifyCoefficients(pdem,'m',0,'d',0,'c',epsR,'a',0,'f',rho,'face',2); % Sensor
 potential = solvepde(pdem);
 
 
@@ -153,7 +214,15 @@ potential = solvepde(pdem);
 % Plots %
 %%%%%%%%%
 figure(ItFigIn);
-pdegplot(pdem,'EdgeLabels','on');
+subplot(1,2,1);
+pdegplot(dl,'EdgeLabels','on','SubdomainLabels','on');
+xlim([-Pitch*Nstrips/2,+Pitch*Nstrips/2]);
+ylim([0,Bulk*NupBulk]);
+title('Geometry');
+xlabel('X [\mum]');
+ylabel('Y [\mum]');
+subplot(1,2,2);
+pdegplot(pdem);
 hold on;
 pdemesh(pdem);
 xlim([-Pitch*Nstrips/2,+Pitch*Nstrips/2]);
@@ -173,7 +242,6 @@ ylim([0,Bulk  * NupBulk]);
 title('Potential');
 xlabel('X [\mum]');
 ylabel('Y [\mum]');
-
 subplot(1,2,2);
 
 x = -Pitch:ReSampleFine:Pitch;
