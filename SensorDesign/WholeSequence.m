@@ -7,7 +7,7 @@
 % Variable initialization %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % epsR = Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
-% rho  = Charge denisty in the bulk [(Coulomb / um^3) / eps0]
+% rho  = Charge denisty in the bulk [(Coulomb / um^3) / eps0 [F/um]]
 
 % Step   = Unit step of the lattice on which the field is computed [um]
 % Radius = Unit step of the movements and field interpolation [um]
@@ -27,7 +27,7 @@
 
 
 epsR = 3.9;
-rho  = (-1 * 1.6e-19) / 8.85e-12;
+rho  = (-1 * 1.6e-19) / 8.85e-18;
 
 Step   = 5;
 Radius = Step/10;
@@ -50,6 +50,7 @@ ParticleType = 'beta';
 
 rng default; % Reset random seed
 ItFig = 1;   % Figure iterator
+
 
 [WeightPot, ItFig] = SolvePoissonPDE(Bulk,Pitch,0,0,1,epsR,0,ItFig);
 [TotalPot,  ItFig] = SolvePoissonPDE(Bulk,Pitch,BiasV,0,0,epsR,rho,ItFig);
