@@ -85,8 +85,6 @@ applyBoundaryCondition(pdem,'edge',53,'h',1,'r',BiasS);
 applyBoundaryCondition(pdem,'edge',52,'h',1,'r',0);
 applyBoundaryCondition(pdem,'edge',51,'h',1,'r',BiasS);
 applyBoundaryCondition(pdem,'edge',50,'h',1,'r',0);
-applyBoundaryCondition(pdem,'edge',51,'h',1,'r',BiasS);
-applyBoundaryCondition(pdem,'edge',50,'h',1,'r',0);
 applyBoundaryCondition(pdem,'edge',49,'h',1,'r',BiasS);
 applyBoundaryCondition(pdem,'edge',48,'h',1,'r',0);
 applyBoundaryCondition(pdem,'edge',47,'h',1,'r',BiasS);
@@ -135,7 +133,7 @@ applyBoundaryCondition(pdem,'edge',5,'h',1,'r',0);
 applyBoundaryCondition(pdem,'edge',4,'h',1,'r',BiasS);
 applyBoundaryCondition(pdem,'edge',3,'h',1,'r',BiasS);
 applyBoundaryCondition(pdem,'edge',2,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'edge',1,'h',1,'r',BiasS);
+applyBoundaryCondition(pdem,'edge',1,'h',1,'r',BiasW);
 
 
 %%%%%%%%%%%%%%%%%
