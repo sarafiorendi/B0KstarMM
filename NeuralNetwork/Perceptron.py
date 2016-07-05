@@ -6,8 +6,7 @@ class Perceptron(object):
     ####################################################
     Nneurons = number of neurons of the perceptron
     Nvars    = number of input variables for each neuron
-    afunType = type of activation function
-               "tanh", "BPN"
+    afunType = type of activation function "tanh", "BPN"
     ####################################################
     """
     def __init__(self,Nneurons,Nvars,afunType="tanh"):
