@@ -100,13 +100,25 @@ end
 %%%%%%%%%
 figure(ItFigIn);
 histo = hist(HistoCharge,EnergyScale);
-
-% @TMP@
-%ft = fittype('Landau(x,a,b,c)');
-%f  = fit(EnergyScale,histo,ft);
-
 plot(EnergyScale,histo,'-o','LineWidth',1,...
     'MarkerEdgeColor','black','MarkerFaceColor','blue','MarkerSize',7);
+
+
+%%%%%%%
+% Fit %
+%%%%%%%
+if strcmp(particle,'beta') == true
+    %EnergyScale = EnergyScale';
+    %histo = histo';
+    ft = fittype('LandauHist(x,mpv,sigma,ampl)');
+    fprintf('@@@ Fit parameters @@@\n');
+    f  = fit(EnergyScale',histo',ft,'StartPoint',[mean sigma NParticles/50])
+    hold on;
+    plot(f);
+    hold off;
+end
+
+
 title('Collected charge histogram');
 xlabel('Energy [e-]');
 ylabel('Entries [#]');

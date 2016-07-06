@@ -29,7 +29,7 @@
 epsR = 3.9;
 rho  = (-4 * 1.6e-19) / 8.85e-18;
 
-Step   = 2;
+Step   = 4;
 Radius = Step/10;
 
 BiasV = -200;
@@ -44,7 +44,7 @@ TauBh = 2.2;
 TauSh = 2.2;
 
 NAverage     = 10;
-NParticles   = 1000;
+NParticles   = 10000;
 ParticleType = 'beta';
 
 
