@@ -100,12 +100,26 @@ end
 %%%%%%%%%
 figure(ItFigIn);
 histo = hist(HistoCharge,EnergyScale);
+
+% @TMP@
+%ft = fittype('Landau(x,a,b,c)');
+%f  = fit(EnergyScale,histo,ft);
+
 plot(EnergyScale,histo,'-o','LineWidth',1,...
     'MarkerEdgeColor','black','MarkerFaceColor','blue','MarkerSize',7);
 title('Collected charge histogram');
 xlabel('Energy [e-]');
 ylabel('Entries [#]');
 grid on
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% Save data into file %
+%%%%%%%%%%%%%%%%%%%%%%%
+fileID = fopen('Spectrum.txt','w');
+fprintf(fileID,'%14s %14s\n','Energy [e-]','Entries [#]');
+fprintf(fileID,'%14.2f %14.2f\n',[EnergyScale; histo]);
+fclose(fileID);
 
 ItFigOut = ItFigIn + 1;
 fprintf('CPU time --> %d[min]\n\n',(cputime-TStart)/60);

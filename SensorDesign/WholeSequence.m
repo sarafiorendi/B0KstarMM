@@ -29,7 +29,7 @@
 epsR = 3.9;
 rho  = (-4 * 1.6e-19) / 8.85e-18;
 
-Step   = 4;
+Step   = 2;
 Radius = Step/10;
 
 BiasV = -200;
@@ -38,13 +38,13 @@ Pitch = 100;
 
 BField = 0.0;
 
-TauBe = 1.8;
-TauSe = 1.8;
-TauBh = 1.5;
-TauSh = 1.5;
+TauBe = 2.6;
+TauSe = 2.6;
+TauBh = 2.2;
+TauSh = 2.2;
 
 NAverage     = 10;
-NParticles   = 10000;
+NParticles   = 1000;
 ParticleType = 'beta';
 
 
