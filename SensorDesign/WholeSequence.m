@@ -27,9 +27,9 @@
 
 
 epsR = 3.9;
-rho  = (-1 * 1.6e-19) / 8.85e-18;
+rho  = (-4 * 1.6e-19) / 8.85e-18;
 
-Step   = 5;
+Step   = 4;
 Radius = Step/10;
 
 BiasV = -200;
@@ -38,10 +38,10 @@ Pitch = 100;
 
 BField = 0.0;
 
-TauBe = 89;
-TauSe = 89;
-TauBh = 65;
-TauSh = 65;
+TauBe = 1.8;
+TauSe = 1.8;
+TauBh = 1.5;
+TauSh = 1.5;
 
 NAverage     = 10;
 NParticles   = 10000;
