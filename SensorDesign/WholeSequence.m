@@ -38,13 +38,13 @@ Pitch = 100;
 
 BField = 0.0;
 
-TauBe = 2.6;
-TauSe = 2.6;
-TauBh = 2.2;
-TauSh = 2.2;
+TauBe = 3.79;
+TauSe = 3.79;
+TauBh = 4.46;
+TauSh = 4.46;
 
 NAverage     = 10;
-NParticles   = 10000;
+NParticles   = 20000;
 ParticleType = 'beta';
 
 

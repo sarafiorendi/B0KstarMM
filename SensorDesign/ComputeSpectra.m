@@ -50,7 +50,8 @@ else
     return;
 end
 
-EnergyScale = 0:eMax/nBins:2*eMax; % Spectrum energy axis [electrons]
+eMax = 3*eMax;
+EnergyScale = 0:eMax/nBins:eMax; % Spectrum energy axis [electrons]
 
 
 %%%%%%%%%%%%%%%%%%%
@@ -108,13 +109,12 @@ plot(EnergyScale,histo,'-o','LineWidth',1,...
 % Fit %
 %%%%%%%
 if strcmp(particle,'beta') == true
-    %EnergyScale = EnergyScale';
-    %histo = histo';
     ft = fittype('LandauHist(x,mpv,sigma,ampl)');
-    fprintf('@@@ Fit parameters @@@\n');
-    f  = fit(EnergyScale',histo',ft,'StartPoint',[mean sigma NParticles/50])
+    fprintf('Fit parameters:');
+    f  = fit(EnergyScale',histo',ft,'StartPoint',[mean sigma NParticles/10])
     hold on;
-    plot(f);
+    pf = plot(f);
+    legend(pf,'Landau fit');
     hold off;
 end
 
@@ -129,8 +129,9 @@ grid on
 % Save data into file %
 %%%%%%%%%%%%%%%%%%%%%%%
 fileID = fopen('Spectrum.txt','w');
-fprintf(fileID,'%14s %14s\n','Energy [e-]','Entries [#]');
-fprintf(fileID,'%14.2f %14.2f\n',[EnergyScale; histo]);
+fprintf(fileID,'%12s %12s %12s %12s\n','Energy [e-]','Entries [#]','x-error','y-error');
+fprintf(fileID,'%12.2f %12.2f %12.2f %12.2f\n',[EnergyScale; histo;...
+    eMax/nBins*ones(size(EnergyScale)); sqrt(histo)+1]);
 fclose(fileID);
 
 ItFigOut = ItFigIn + 1;
