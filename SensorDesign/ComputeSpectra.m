@@ -103,6 +103,10 @@ figure(ItFigIn);
 histo = hist(HistoCharge,EnergyScale);
 plot(EnergyScale,histo,'-o','LineWidth',1,...
     'MarkerEdgeColor','black','MarkerFaceColor','blue','MarkerSize',7);
+title('Collected charge histogram');
+xlabel('Energy [e-]');
+ylabel('Entries [#]');
+grid on;
 
 
 %%%%%%%
@@ -115,14 +119,8 @@ if strcmp(particle,'beta') == true
     hold on;
     pf = plot(f);
     legend(pf,'Landau fit');
+    hold off;
 end
-
-
-title('Collected charge histogram');
-xlabel('Energy [e-]');
-ylabel('Entries [#]');
-grid on;
-hold off;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%
