@@ -85,9 +85,9 @@ geometryFromEdges(pdem,dl);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Apply boundary conditions (only on conductors) %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Right edge air
+% Left edge air
 applyBoundaryCondition(pdem,'edge',112,'q',0,'g',0);
-% Right edge sensor
+% Left edge sensor
 applyBoundaryCondition(pdem,'edge',111,'q',0,'g',0);
 % Bottom edge
 applyBoundaryCondition(pdem,'edge',110,'h',1,'r',BiasB);
@@ -187,7 +187,7 @@ applyBoundaryCondition(pdem,'edge',6,'h',1,'r',0);
 applyBoundaryCondition(pdem,'edge',5,'h',1,'r',0);
 applyBoundaryCondition(pdem,'edge',4,'h',1,'r',BiasS);
 applyBoundaryCondition(pdem,'edge',3,'h',1,'r',BiasS);
-%Central strip
+% Central strip
 applyBoundaryCondition(pdem,'edge',2,'h',1,'r',BiasW);
 applyBoundaryCondition(pdem,'edge',1,'h',1,'r',BiasW);
 
