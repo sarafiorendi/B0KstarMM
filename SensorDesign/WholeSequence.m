@@ -24,7 +24,7 @@ TauBh = 4.46; % Life-time on the backplane side [ns]
 TauSh = 4.46; % Life-time on the strip side [ns]
 
 NAverage   = 100;    % Generate NAverage "Work-Transport" matrices and average them
-NParticles = 20000;  % Total number of particles to be simulated
+NParticles = 30000;  % Total number of particles to be simulated
 PType      = 'beta'; % Particle type ['alpha' 'beta' 'gamma']
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -7,7 +7,7 @@
 % BiasS   = Sensor strip voltage [V]
 % BiasW   = Sensor central strip voltage [V] [1 Weighting; 0 All]
 % epsR    = Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
-% rho     = Charge denisty in the bulk [(Coulomb / um^3) / eps0]
+% rho     = Charge denisty in the bulk [(Coulomb / um^3) / eps0 [F/um]]
 % ItFigIn = Figure iterator input
 
 function [potential, ItFigOut] = SolvePoissonPDE(Bulk,Pitch,...

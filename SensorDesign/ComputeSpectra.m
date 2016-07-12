@@ -111,11 +111,10 @@ plot(EnergyScale,histo,'-o','LineWidth',1,...
 %%%%%%%
 if strcmp(PType,'beta') == true
     ft = fittype('LandauHist(x,mpv,sigma,ampl)');
-    fprintf('Fit parameters:');
-    f  = fit(EnergyScale',histo',ft,'StartPoint',[mean sigma NParticles/10])
+    f = fit(EnergyScale',histo',ft,'StartPoint',[mean sigma NParticles/10]);
     hold on;
-    pf = plot(f);
-    legend(pf,'Landau fit');
+    plot(f);
+    legend('Simulation','Landau fit');
     hold off;
 end
 
@@ -124,6 +123,13 @@ title('Collected charge histogram');
 xlabel('Energy [e-]');
 ylabel('Entries [#]');
 grid on;
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Print fit results on screen %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fprintf('Fit parameters:');
+f
 
 
 %%%%%%%%%%%%%%%%%%%%%%%
