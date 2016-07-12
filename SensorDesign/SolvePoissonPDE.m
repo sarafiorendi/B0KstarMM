@@ -1,6 +1,6 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Function that solves Poisson equation to compute the potential %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Solve Poisson equation to compute the potential %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Bulk    = Bulk thickness [um]
 % Pitch   = Strip pitch [um]
 % BiasB   = Sensor backplane voltage [V] [0 Weighting; -200 All]
@@ -196,10 +196,10 @@ hold on;
 pdemesh(pdem);
 xlim([-Pitch * NStrips/2,+Pitch * NStrips/2]);
 ylim([0,Bulk * SHeight]);
+hold off;
 title('Delaunay mesh');
 xlabel('X [\mum]');
 ylabel('Y [\mum]');
-hold off;
 
 ItFigIn = ItFigIn + 1;
 figure(ItFigIn);
@@ -211,7 +211,9 @@ ylim([0,Bulk * SHeight]);
 title('Potential');
 xlabel('X [\mum]');
 ylabel('Y [\mum]');
+
 subplot(1,2,2);
+colormap jet;
 
 x = -Pitch:ReSampleFine:Pitch;
 y = 0:ReSampleFine:Bulk * 3/2;

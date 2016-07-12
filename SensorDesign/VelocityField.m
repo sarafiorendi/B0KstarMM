@@ -1,14 +1,14 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Function that calculates the velocity field taking into account %
-% a magnetic field (coming out of the surface/screen)             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Calculate the velocity field taking into account      %
+% the magnetic field (coming out of the surface/screen) %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Relations between Force field and velocity field
-% mu * (Ex + vy*B) = vx --> vx = mu / (1 + (mu*R*B)^2) * (Ex + mu*R*B*Ey) -->
+% mu * (Ex + vy*B) = vx --> vx = mu / (1 + (mu*R*B)^2) * (Ex + mu*R*B*Ey)
 % --> vx = mu / [(1+(mu*R*B)^2) * (1+mu*E/vs)] * (Ex + mu*R*B*Ey)
-% mu * (Ey - vx*B) = vy --> vy = mu / (1 + (mu*R*B)^2) * (Ey - mu*R*B*Ex) -->
+% mu * (Ey - vx*B) = vy --> vy = mu / (1 + (mu*R*B)^2) * (Ey - mu*R*B*Ex)
 % --> vy = mu / [(1+(mu*R*B)^2) * (1+mu*E/vs)] * (Ey - mu*R*B*Ex)
 
-% potential = Solution of the Poisson equation
+% Potential = Solution of the Poisson equation
 % Step    = Unit step of the lattice on which the field is computed [um]
 % Bulk    = Bulk thickness [um]
 % BField  = Magnetic field (orthogonal+outgoing from the 2D geometry) [T]
@@ -16,22 +16,25 @@
 % ItFigIn = Figure iterator input
 
 function [VFieldx_e, VFieldy_e, VFieldx_h, VFieldy_h, x, y, ItFigOut] = ...
-    VelocityField(potential,Step,Bulk,BField,Pitch,ItFigIn)
+    VelocityField(Potential,Step,Bulk,BField,Pitch,ItFigIn)
 TStart = cputime; % CPU time at start
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters of the sensor: they are all temperature-dependent %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 mu_e   = 140; % Electron mobility [um^2/(V*ns)] [140 Silicon, 180 Diamond]
 RH_e   = 1;   % Relative Hall electron mobility [1 Silicon, 1 Diamond]
-vs_e   = 100; % Saturation velocity of the electrons [um/ns] [100 Silicon, 260 Diamond]
-beta_e = 1;   % Exponent for the electric field dependence of the mobility [0.81 Silicon, 0.81 Diamond]
+vs_e   = 100; % Saturation velocity of the electrons
+              % [um/ns] [100 Silicon, 260 Diamond]
+beta_e = 1;   % Exponent for the electric field dependence
+              % of the mobility [0.81 Silicon, 0.81 Diamond]
 
 mu_h   = 45; % Hole mobility in [um^2/(V*ns)] [45 Silicon, 120 Diamond]
 RH_h   = 1;  % Relative Hall hole mobility in [1 Silicon, 1 Diamond]
-vs_h   = 66; % Saturation velocity of the holes [um/ns] [66 Silicon, 160 Diamond]
-beta_h = 1;  % Exponent for the electric field dependence of the mobility [0.42 Silicon, 0.42 Diamond]
+vs_h   = 66; % Saturation velocity of the holes
+             % [um/ns] [66 Silicon, 160 Diamond]
+beta_h = 1;  % Exponent for the electric field dependence
+             % of the mobility [0.42 Silicon, 0.42 Diamond]
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -56,12 +59,12 @@ VFieldy_h = zeros(length(y), length(x));
 [mshx,mshy] = meshgrid(x,y);
 queryPoints = [mshx(:),mshy(:)]';
 
-[Etx, Ety] = evaluateGradient(potential,queryPoints);
+[Etx, Ety] = evaluateGradient(Potential,queryPoints);
 
 Etx = reshape(Etx,size(mshx));
 Ety = reshape(Ety,size(mshy));
 
-interp = interpolateSolution(potential,queryPoints);
+interp = interpolateSolution(Potential,queryPoints);
 interp = reshape(interp,size(mshx));
 
 

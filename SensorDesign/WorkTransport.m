@@ -1,7 +1,7 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Function that calculates the "Work-Transport" matrix %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% potential = Solution of the Poisson equation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Calculate the "Work-Transport" matrix %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Potential = Solution of the Poisson equation
 % VFieldx_e, VFieldy_e = xy Velocity-Field components for electrons [um/ns]
 % VFieldx_h, VFieldy_h = xy Velocity-Field components for holes [um/ns]
 % x, y    = Axes
@@ -13,17 +13,9 @@
 % ItFigIn = Figure iterator input
 
 function [WorkTransportTotal, x, y, ItFigOut] = ...
-    WorkTransport(potential,VFieldx_e,VFieldy_e,VFieldx_h,VFieldy_h,...
+    WorkTransport(Potential,VFieldx_e,VFieldy_e,VFieldx_h,VFieldy_h,...
     x,y,Step,Bulk,Radius,TauBe,TauSe,TauBh,TauSh,ItFigIn)
 TStart = cputime; % CPU time at start
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Variable initialization %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ReSample   = 2;   % Used in order to make nice plots [um]
-ContLevel  = 40;  % Contour plot levels
-MagnVector = 1.2; % Vector field magnification
 
 
 %%%%%%%%%%%%%%%%%%%
@@ -32,12 +24,12 @@ MagnVector = 1.2; % Vector field magnification
 [mshx,mshy] = meshgrid(x,y);
 queryPoints = [mshx(:),mshy(:)]';
 
-[Ewx, Ewy] = evaluateGradient(potential,queryPoints);
+[Ewx, Ewy] = evaluateGradient(Potential,queryPoints);
 
 Ewx = reshape(Ewx,size(mshx));
 Ewy = reshape(Ewy,size(mshy));
 
-interp = interpolateSolution(potential,queryPoints);
+interp = interpolateSolution(Potential,queryPoints);
 interp = reshape(interp,size(mshx));
 
 fprintf('@@@ I''m calculating the work for electrons @@@\n');
@@ -56,32 +48,15 @@ WorkTransportTotal = WTransport_e + WTransport_h;
 %%%%%%%%%
 % Plots %
 %%%%%%%%%
-Ewx_ReSample = Ewx(1:ReSample:length(y), 1:ReSample:length(x));
-Ewy_ReSample = Ewy(1:ReSample:length(y), 1:ReSample:length(x));
-
-xp = x(1:ReSample:length(x));
-yp = y(1:ReSample:length(y));
-
 [xx,yy] = meshgrid(x,y);
 
 figure(ItFigIn);
 colormap jet;
-subplot(1,2,1);
 surf(xx,yy,interp,'EdgeColor','none');
 title('Weighting potential');
 xlabel('X [\mum]');
 ylabel('Y [\mum]');
 zlabel('Potential [V]');
-subplot(1,2,2);
-contour(x,y,interp,ContLevel);
-hold on
-quiver(xp,yp,Ewx_ReSample,Ewy_ReSample,MagnVector);
-colormap jet;
-hold off
-title('Weighting field');
-xlabel('X [\mum]');
-ylabel('Y [\mum]');
-zlabel('Weighting Field [V / \mum]');
 
 ItFigIn = ItFigIn + 1;
 figure(ItFigIn);

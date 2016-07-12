@@ -1,51 +1,32 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Program to caculate the signal in particle-detection sensors %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         % Program to caculate the signal in particle detectors %
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Variable initialization %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% epsR = Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
-% rho  = Charge denisty in the bulk [(Coulomb / um^3) / eps0 [F/um]]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%% Variable initialization %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+epsR = 3.9;                       % Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
+rho  = (-4 * 1.6e-19) / 8.85e-18; % Charge denisty in the bulk [(Coulomb / um^3) / eps0 [F/um]]
 
-% Step   = Unit step of the lattice on which the field is computed [um]
-% Radius = Unit step of the movements and field interpolation [um]
+Step   = 3;       % Unit step of the lattice on which the field is computed [um]
+Radius = Step/10; % Unit step of the movements and field interpolation [um]
 
-% BiasV = Sensor backplane voltage [V]
-% Bulk  = Bulk thickness [um]
-% Pitch = Strip pitch [um]
+BiasV = -200; % Sensor backplane voltage [V]
+Bulk  = 100;  % Bulk thickness [um]
+Pitch = 100;  % Strip pitch [um]
 
-% BField = Magnetic field (orthogonal+outgoing from the 2D geometry) [T]
+BField = 0.0; % Magnetic field (orthogonal+outgoing from the 2D geometry) [T]
 
-% TauBe/h = Life-time on the backplane side [ns]
-% TauSe/h = Life-time on the strip side [ns]
+TauBe = 3.79; % Life-time on the backplane side [ns]
+TauSe = 3.79; % Life-time on the strip side [ns]
+TauBh = 4.46; % Life-time on the backplane side [ns]
+TauSh = 4.46; % Life-time on the strip side [ns]
 
-% NAverage = Generate NAverage "Work-Transport" matrices and average them
-% NParticles = Total number of particles to be simulated
-% ParticleType = 'alpha', 'beta', 'gamma'
-
-
-epsR = 3.9;
-rho  = (-4 * 1.6e-19) / 8.85e-18;
-
-Step   = 3;
-Radius = Step/10;
-
-BiasV = -200;
-Bulk  = 100;
-Pitch = 100;
-
-BField = 0.0;
-
-TauBe = 3.79;
-TauSe = 3.79;
-TauBh = 4.46;
-TauSh = 4.46;
-
-NAverage     = 100;
-NParticles   = 20000;
-ParticleType = 'beta';
+NAverage   = 100;    % Generate NAverage "Work-Transport" matrices and average them
+NParticles = 20000;  % Total number of particles to be simulated
+PType      = 'beta'; % Particle type ['alpha' 'beta' 'gamma']
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 rng default; % Reset random seed
@@ -85,4 +66,4 @@ ItFig = ItFig + 1;
 
 
 [ItFig] = ComputeSpectra(subWorkTransportTotal,subx,suby,NParticles,...
-    Pitch,Bulk,Radius,ParticleType,ItFig);
+    Pitch,Bulk,Radius,PType,ItFig);

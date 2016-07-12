@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Landau distributed random numbers %
+% Landau-distributed random numbers %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function out = LandauRND(mpv,sigma)
