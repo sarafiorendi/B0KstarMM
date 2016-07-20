@@ -71,7 +71,7 @@ for i = 1:NParticles
         enter = 30 * (2*rand(1,1) - 1); % x-coordinate entering particle
         exit  = enter;
         mean  = ehLength*sqrt(depth^2 + (exit-enter)^2); % Landau MPV [electrons]
-        sigma = mean / 10; % Scale factor between MPV and sigma of Landau [electrons]
+        sigma = mean / 26; % Scale factor between MPV and sigma of Landau [electrons]
         ChargeDensity = LandauRND(mean,sigma);
     elseif strcmp(PType,'alpha') == true || strcmp(PType,'gamma') == true
     % Particles enter randomly between -Pitch/2 -- +Pitch/2

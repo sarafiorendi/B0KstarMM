@@ -25,8 +25,8 @@ MagnVector     = 1.2; % Vector field magnification
 MeshMax        = 15;  % Maximum mesh edge length [um]
 
 StrThick   = 5;  % Strip metalization thickness [um]
-EleHVwidth = 80; % HV strip metalization width [um]
-EleSGwidth = 80; % Signal strip metalization width [um]
+EleHVwidth = 90; % HV strip metalization width [um]
+EleSGwidth = 90; % Signal strip metalization width [um]
 SHeight    = 2;  % Sensor height [units of bulk thickness]
 NStrips    = 13; % Total number of strips
 

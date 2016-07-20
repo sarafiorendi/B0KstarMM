@@ -29,12 +29,12 @@ vs_e   = 100; % Saturation velocity of the electrons
 beta_e = 1;   % Exponent for the electric field dependence
               % of the mobility [0.81 Silicon, 0.81 Diamond]
 
-mu_h   = 45; % Hole mobility in [um^2/(V*ns)] [45 Silicon, 120 Diamond]
-RH_h   = 1;  % Relative Hall hole mobility in [1 Silicon, 1 Diamond]
-vs_h   = 66; % Saturation velocity of the holes
-             % [um/ns] [66 Silicon, 160 Diamond]
-beta_h = 1;  % Exponent for the electric field dependence
-             % of the mobility [0.42 Silicon, 0.42 Diamond]
+mu_h   = 45;  % Hole mobility in [um^2/(V*ns)] [45 Silicon, 120 Diamond]
+RH_h   = 1;   % Relative Hall hole mobility in [1 Silicon, 1 Diamond]
+vs_h   = 80;  % Saturation velocity of the holes
+              % [um/ns] [80 Silicon, 160 Diamond]
+beta_h = 1;   % Exponent for the electric field dependence
+              % of the mobility [0.42 Silicon, 0.42 Diamond]
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%

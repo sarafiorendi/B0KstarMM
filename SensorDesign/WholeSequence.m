@@ -9,7 +9,7 @@
 epsR = 3.9;                       % Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
 rho  = (-4 * 1.6e-19) / 8.85e-18; % Charge denisty in the bulk [(Coulomb / um^3) / eps0 [F/um]]
 
-Step   = 3;       % Unit step of the lattice on which the field is computed [um]
+Step   = 2;       % Unit step of the lattice on which the field is computed [um]
 Radius = Step/10; % Unit step of the movements and field interpolation [um]
 
 BiasV = -200; % Sensor backplane voltage [V]
@@ -18,13 +18,13 @@ Pitch = 100;  % Strip pitch [um]
 
 BField = 0.0; % Magnetic field (orthogonal+outgoing from the 2D geometry) [T]
 
-TauBe = 3.79; % Life-time on the backplane side [ns]
-TauSe = 3.79; % Life-time on the strip side [ns]
-TauBh = 4.46; % Life-time on the backplane side [ns]
-TauSh = 4.46; % Life-time on the strip side [ns]
+TauBe = 2.90; % Life-time on the backplane side [ns]
+TauSe = 2.90; % Life-time on the strip side [ns]
+TauBh = 2.29; % Life-time on the backplane side [ns]
+TauSh = 2.29; % Life-time on the strip side [ns]
 
-NAverage   = 100;    % Generate NAverage "Work-Transport" matrices and average them
-NParticles = 30000;  % Total number of particles to be simulated
+NAverage   = 20;    % Generate NAverage "Work-Transport" matrices and average them
+NParticles = 10000;  % Total number of particles to be simulated
 PType      = 'beta'; % Particle type ['alpha' 'beta' 'gamma']
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
