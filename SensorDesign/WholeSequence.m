@@ -12,16 +12,21 @@ rho  = (-4 * 1.6e-19) / 8.85e-18; % Charge denisty in the bulk [(Coulomb / um^3)
 Step   = 2;       % Unit step of the lattice on which the field is computed [um]
 Radius = Step/10; % Unit step of the movements and field interpolation [um]
 
-BiasV = -800; % Sensor backplane voltage [V]
+BiasV = -600; % Sensor backplane voltage [V]
 Bulk  = 100;  % Bulk thickness [um]
 Pitch = 100;  % Strip pitch [um]
 
 BField = 0.0; % Magnetic field (orthogonal+outgoing from the 2D geometry) [T]
 
-TauBe = 0.17; % Life-time on the backplane side [ns]
-TauSe = 0.17; % Life-time on the strip side [ns]
-TauBh = 0.13; % Life-time on the backplane side [ns]
-TauSh = 0.13; % Life-time on the strip side [ns]
+Fluence = 1.0; % Irradiation fluence [10^16 1 MeV eq. n / cm^2]
+betaE   = 1.8; % Conversion factor life-time - fluence [10^16 / ns]
+betaH   = 3.2; % Conversion factor life-time - fluence [10^16 / ns]
+TauBe   = 1 / (betaE*Fluence); % Life-time on the backplane side [ns]
+TauSe   = 1 / (betaE*Fluence); % Life-time on the strip side [ns]
+TauBh   = 1 / (betaH*Fluence); % Life-time on the backplane side [ns]
+TauSh   = 1 / (betaH*Fluence); % Life-time on the strip side [ns]
+fprintf('@@@ Electron life-time: %.2f ns, %.2f ns @@@\n',TauBe,TauSe);
+fprintf('@@@ Hole life-time: %.2f ns, %.2f ns @@@\n\n',TauBh,TauSh);
 
 NAverage   = 100;    % Generate NAverage "Work-Transport" matrices and average them
 NParticles = 10000;  % Total number of particles to be simulated
