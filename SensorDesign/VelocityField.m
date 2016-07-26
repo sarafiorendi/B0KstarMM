@@ -42,7 +42,7 @@ beta_h = 1;   % Exponent for the electric field dependence
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 ReSample   = 2;   % Used in order to make nice plots [um]
 ContLevel  = 40;  % Contour plot levels
-MagnVector = 1.2; % Vector field magnification
+MagnVector = 1.5; % Vector field magnification
 
 x = -Pitch:Step:Pitch; % Bound along x-coordinate
 y = 0:Step:Bulk * 3/2; % Bound along y-coordinate
@@ -178,5 +178,5 @@ ylabel('Y [\mum]');
 zlabel('Velocity Field [\mum / ns]');
 
 ItFigOut = ItFigIn + 1;
-fprintf('CPU time --> %d[min]\n\n',(cputime-TStart)/60);
+fprintf('CPU time --> %.2f[min]\n\n',(cputime-TStart)/60);
 end

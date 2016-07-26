@@ -38,8 +38,8 @@ rng default; % Reset random seed
 ItFig = 1;   % Figure iterator
 
 
-[WeightPot, ItFig] = SolvePoissonPDE(Bulk,Pitch,0,0,1,epsR,0,ItFig);
-[TotalPot,  ItFig] = SolvePoissonPDE(Bulk,Pitch,BiasV,0,0,epsR,rho,ItFig);
+[WeightPot, ItFig] = SolvePoissonPDE2D(Bulk,Pitch,0,0,1,epsR,0,ItFig);
+[TotalPot,  ItFig] = SolvePoissonPDE2D(Bulk,Pitch,BiasV,0,0,epsR,rho,ItFig);
 
 [VFieldx_e, VFieldy_e, VFieldx_h, VFieldy_h, x, y, ItFig] =...
     VelocityField(TotalPot,Step,Bulk,BField,Pitch,ItFig);
@@ -52,7 +52,7 @@ ItFig = 1;   % Figure iterator
 %%%%%%%%%%%%%%%%%
 % Fit/Smoothing %
 %%%%%%%%%%%%%%%%%
-fprintf('@@@ I''m interpolating the work transport matrix with a step of %d um @@@\n\n',Radius);
+fprintf('@@@ I''m interpolating the work transport matrix with a step of %.2f um @@@\n\n',Radius);
 subx = x(1):Radius:x(length(x));
 suby = y(1):Radius:y(length(y));
 [ssubx,ssuby] = meshgrid(subx,suby);

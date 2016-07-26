@@ -10,7 +10,7 @@
 % rho     = Charge denisty in the bulk [(Coulomb / um^3) / eps0 [F/um]]
 % ItFigIn = Figure iterator input
 
-function [potential, ItFigOut] = SolvePoissonPDE(Bulk,Pitch,...
+function [potential, ItFigOut] = SolvePoissonPDE2D(Bulk,Pitch,...
     BiasB,BiasS,BiasW,epsR,rho,ItFigIn)
 TStart = cputime; % CPU time at start
 
@@ -21,10 +21,10 @@ TStart = cputime; % CPU time at start
 ReSampleFine   = 1;   % Used in order to make nice plots [um]
 ReSampleCoarse = 10;  % Used in order to make nice plots [um]
 ContLevel      = 40;  % Contour plot levels
-MagnVector     = 1.2; % Vector field magnification
+MagnVector     = 1.5; % Vector field magnification
 MeshMax        = 15;  % Maximum mesh edge length [um]
 
-StrThick   = 5;  % Strip metalization thickness [um]
+MetalThick = 5;  % Metalization thickness [um]
 EleHVwidth = 90; % HV strip metalization width [um]
 EleSGwidth = 90; % Signal strip metalization width [um]
 SHeight    = 2;  % Sensor height [units of bulk thickness]
@@ -43,33 +43,33 @@ pdem = createpde(1);
 %%%%%%%%%%%%%%%%%%%%%%
 % Central strip
 R1 = [ 3 4 -EleSGwidth/2 EleSGwidth/2 EleSGwidth/2 -EleSGwidth/2 ...
-    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+    Bulk+MetalThick Bulk+MetalThick Bulk Bulk ]';
 % Positive strips
 R2 = [ 3 4 1*Pitch-EleHVwidth/2 1*Pitch+EleHVwidth/2 1*Pitch+EleHVwidth/2 1*Pitch-EleHVwidth/2 ...
-    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+    Bulk+MetalThick Bulk+MetalThick Bulk Bulk ]';
 R3 = [ 3 4 2*Pitch-EleHVwidth/2 2*Pitch+EleHVwidth/2 2*Pitch+EleHVwidth/2 2*Pitch-EleHVwidth/2 ...
-    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+    Bulk+MetalThick Bulk+MetalThick Bulk Bulk ]';
 R4 = [ 3 4 3*Pitch-EleHVwidth/2 3*Pitch+EleHVwidth/2 3*Pitch+EleHVwidth/2 3*Pitch-EleHVwidth/2 ...
-    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+    Bulk+MetalThick Bulk+MetalThick Bulk Bulk ]';
 R5 = [ 3 4 4*Pitch-EleHVwidth/2 4*Pitch+EleHVwidth/2 4*Pitch+EleHVwidth/2 4*Pitch-EleHVwidth/2 ...
-    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+    Bulk+MetalThick Bulk+MetalThick Bulk Bulk ]';
 R6 = [ 3 4 5*Pitch-EleHVwidth/2 5*Pitch+EleHVwidth/2 5*Pitch+EleHVwidth/2 5*Pitch-EleHVwidth/2 ...
-    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+    Bulk+MetalThick Bulk+MetalThick Bulk Bulk ]';
 R7 = [ 3 4 6*Pitch-EleHVwidth/2 6*Pitch+EleHVwidth/2 6*Pitch+EleHVwidth/2 6*Pitch-EleHVwidth/2 ...
-    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+    Bulk+MetalThick Bulk+MetalThick Bulk Bulk ]';
 % Negative strips
 R8 = [ 3 4 -(1*Pitch-EleHVwidth/2) -(1*Pitch+EleHVwidth/2) -(1*Pitch+EleHVwidth/2) -(1*Pitch-EleHVwidth/2) ...
-    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+    Bulk+MetalThick Bulk+MetalThick Bulk Bulk ]';
 R9 = [ 3 4 -(2*Pitch-EleHVwidth/2) -(2*Pitch+EleHVwidth/2) -(2*Pitch+EleHVwidth/2) -(2*Pitch-EleHVwidth/2) ...
-    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+    Bulk+MetalThick Bulk+MetalThick Bulk Bulk ]';
 R10 = [ 3 4 -(3*Pitch-EleHVwidth/2) -(3*Pitch+EleHVwidth/2) -(3*Pitch+EleHVwidth/2) -(3*Pitch-EleHVwidth/2) ...
-    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+    Bulk+MetalThick Bulk+MetalThick Bulk Bulk ]';
 R11 = [ 3 4 -(4*Pitch-EleHVwidth/2) -(4*Pitch+EleHVwidth/2) -(4*Pitch+EleHVwidth/2) -(4*Pitch-EleHVwidth/2) ...
-    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+    Bulk+MetalThick Bulk+MetalThick Bulk Bulk ]';
 R12 = [ 3 4 -(5*Pitch-EleHVwidth/2) -(5*Pitch+EleHVwidth/2) -(5*Pitch+EleHVwidth/2) -(5*Pitch-EleHVwidth/2) ...
-    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+    Bulk+MetalThick Bulk+MetalThick Bulk Bulk ]';
 R13 = [ 3 4 -(6*Pitch-EleHVwidth/2) -(6*Pitch+EleHVwidth/2) -(6*Pitch+EleHVwidth/2) -(6*Pitch-EleHVwidth/2) ...
-    Bulk+StrThick Bulk+StrThick Bulk Bulk ]';
+    Bulk+MetalThick Bulk+MetalThick Bulk Bulk ]';
 % Sensor volume
 R14 = [ 3 4 -(6*Pitch+Pitch/2) (6*Pitch+Pitch/2) (6*Pitch+Pitch/2) -(6*Pitch+Pitch/2) ...
     Bulk Bulk 0 0 ]';
@@ -249,5 +249,5 @@ xlabel('X [\mum]');
 ylabel('Y [\mum]');
 
 ItFigOut = ItFigIn + 1;
-fprintf('CPU time --> %d[min]\n\n',(cputime-TStart)/60);
+fprintf('CPU time --> %.2f[min]\n\n',(cputime-TStart)/60);
 end
