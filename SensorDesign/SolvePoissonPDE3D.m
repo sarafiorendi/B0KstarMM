@@ -12,9 +12,9 @@
 % ItFigIn = Figure iterator input
 
 
-% TODO:
+% TO DO:
 % 1. Define Sensor and Air volumes
-% 2. Plot potential along a certain z-axis
+% 2. Better definition of volumes
 
 
 function [potential, ItFigOut] = SolvePoissonPDE3D(Bulk,PitchX,PitchY,...
@@ -25,8 +25,10 @@ TStart = cputime; % CPU time at start
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Variable initialization %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-StepMesh    = 5;   % Step to build mesh [um]
-StepSlices  = 5;   % Step to build slices along z [um]
+StepMesh    = 5;  % Step to build mesh [um]
+StepSlices  = 10; % Step to build slices along z [um]
+XQ          = 0;  % Coordinate for potential query along z [um]
+YQ          = 0;  % Coordinate for potential query along z [um]
 
 MetalThick  = 5;   % Metalization thickness [um]
 MetalWidthX = 50;  % Metalization width along X [um]
@@ -55,6 +57,7 @@ pdem = createpde(1);
 x00 = x00(:);
 y00 = y00(:);
 z00 = z00(:);
+k00 = convhull(x00,y00,z00);
 
 [xp10,yp10,zp10] = meshgrid(1*PitchX-MetalWidthX/2:StepMesh:1*PitchX+MetalWidthX/2,...
     -MetalWidthY/2:StepMesh:MetalWidthY/2,...
@@ -361,12 +364,13 @@ for i=1:(5*5*6+6)
     applyBoundaryCondition(pdem,'face',i,'h',1,'r',0);
 end
 
-% Bottom face
+% Backplane
 applyBoundaryCondition(pdem,'face',1,'h',1,'r',BiasB);
 
 % Central pixel
 applyBoundaryCondition(pdem,'face',14,'h',1,'r',BiasW);
 applyBoundaryCondition(pdem,'face',32,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',68,'h',1,'r',BiasW);
 applyBoundaryCondition(pdem,'face',77,'h',1,'r',BiasW);
 applyBoundaryCondition(pdem,'face',113,'h',1,'r',BiasW);
 applyBoundaryCondition(pdem,'face',157,'h',1,'r',BiasW);
@@ -412,15 +416,27 @@ figure(ItFigIn);
 colormap jet;
 [x,y,z] = meshgrid(-2*PitchX-MetalWidthX/2:StepMesh:2*PitchX+MetalWidthX/2,...
     -2*PitchY-MetalWidthY/2:StepMesh:2*PitchY+MetalWidthY/2,...
-    0:StepSlices:Bulk*3/2);
+    0:StepMesh:Bulk*3/2);
 V = interpolateSolution(potential,x,y,z);
 V = reshape(V,size(x));
-contourslice(x,y,z,V,[],[],0:StepMesh:Bulk);
+contourslice(x,y,z,V,[],[],0:StepSlices:Bulk);
 title('Potential and its gradient');
 xlabel('X [\mum]');
 ylabel('Y [\mum]');
 zlabel('Z [\mum]');
 colorbar;
+
+ItFigIn = ItFigIn + 1;
+figure(ItFigIn);
+zq = 0:StepMesh:Bulk*3/2;
+xq = XQ * ones(1,length(zq));
+yq = YQ * ones(1,length(zq));
+sq = interpolateSolution(potential,xq,yq,zq);
+plot(zq,sq);
+title(sprintf('Potential along z at x = %.2f um y = %.2f um',XQ,YQ));
+xlabel('Z [\mum]');
+ylabel('Potential');
+grid on;
 
 ItFigOut = ItFigIn + 1;
 fprintf('CPU time --> %.2f[min]\n\n',(cputime-TStart)/60);

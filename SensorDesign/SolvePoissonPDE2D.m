@@ -23,6 +23,7 @@ ReSampleCoarse = 10;  % Used in order to make nice plots [um]
 ContLevel      = 40;  % Contour plot levels
 MagnVector     = 1.5; % Vector field magnification
 MeshMax        = 15;  % Maximum mesh edge length [um]
+XQ             = 0;   % Coordinate for potential query along y [um]
 
 MetalThick   = 5;  % Metalization thickness [um]
 MetalWidthHV = 90; % Metalization width HV strip [um]
@@ -247,6 +248,17 @@ hold off;
 title('Potential and its gradient');
 xlabel('X [\mum]');
 ylabel('Y [\mum]');
+
+ItFigIn = ItFigIn + 1;
+figure(ItFigIn);
+yq = 0:ReSampleFine:Bulk*3/2;
+xq = XQ * ones(1,length(yq));
+sq = interpolateSolution(potential,xq,yq);
+plot(yq,sq);
+title(sprintf('Potential along y at x = %.2f um',XQ));
+xlabel('Y [\mum]');
+ylabel('Potential');
+grid on;
 
 ItFigOut = ItFigIn + 1;
 fprintf('CPU time --> %.2f[min]\n\n',(cputime-TStart)/60);
