@@ -417,10 +417,10 @@ colormap jet;
 [x,y,z] = meshgrid(-2*PitchX-MetalWidthX/2:StepMesh:2*PitchX+MetalWidthX/2,...
     -2*PitchY-MetalWidthY/2:StepMesh:2*PitchY+MetalWidthY/2,...
     0:StepMesh:Bulk*3/2);
-V = interpolateSolution(potential,x,y,z);
-V = reshape(V,size(x));
-contourslice(x,y,z,V,[],[],0:StepSlices:Bulk);
-title('Potential and its gradient');
+sl = interpolateSolution(potential,x,y,z);
+sl = reshape(sl,size(x));
+contourslice(x,y,z,sl,[],[],0:StepSlices:Bulk);
+title('Potential slices');
 xlabel('X [\mum]');
 ylabel('Y [\mum]');
 zlabel('Z [\mum]');
