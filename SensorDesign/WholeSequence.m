@@ -42,15 +42,18 @@ rng default; % Reset random seed
 ItFig = 1;   % Figure iterator
 
 
-[WeightPot, Sq2D, xq3D, ItFig] = SolvePoissonPDE2D(Bulk,PitchX,0,0,1,epsR,0,XQ,ItFig);
-[TotalPot,  Sq, xq, ItFig] = SolvePoissonPDE2D(Bulk,PitchX,BiasV,0,0,epsR,rho,XQ,ItFig);
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Compute the potentials %
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+[TotalPot,  ~,       ~, ItFig] = SolvePoissonPDE2D(Bulk,PitchX,BiasV,0,0,epsR,rho,XQ,ItFig);
+[WeightPot, Sq2D, xq2D, ItFig] = SolvePoissonPDE2D(Bulk,PitchX,0,0,1,epsR,0,XQ,ItFig);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Compare the potential in 2D and 3D %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fprintf('@@@ I''m comparing the potential in 2D and 3D @@@\n');
-[tmpW, Sq3D, xq2D, ItFig] = SolvePoissonPDE3D(Bulk,PitchX,PitchY,0,1,epsR,0,XQ,YQ,ItFig);
+[~, Sq3D, xq3D, ItFig] = SolvePoissonPDE3D(Bulk,PitchX,PitchY,0,1,epsR,0,XQ,YQ,ItFig);
 Diff2D3D = (Sq2D - Sq3D) ./ Sq3D * 100;
 
 figure(ItFig);
@@ -62,9 +65,16 @@ grid on;
 ItFig = ItFig + 1;
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Compute the velocity field %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [VFieldx_e, VFieldy_e, VFieldx_h, VFieldy_h, x, y, ItFig] =...
     VelocityField(TotalPot,Step,Bulk,BField,PitchX,ItFig);
 
+
+%%%%%%%%%%%%%%%%%%%%
+% Compute the work %
+%%%%%%%%%%%%%%%%%%%%
 [WorkTransportTotal, x, y, ItFig] =...
     ManyWorkTransport(WeightPot,VFieldx_e,VFieldy_e,VFieldx_h,VFieldy_h,...
     x,y,Step,Bulk,Radius,TauBe,TauSe,TauBh,TauSh,NAverage,ItFig);
@@ -86,10 +96,13 @@ colormap jet;
 surf(ssubx,ssuby,subWorkTransportTotal,'EdgeColor','none');
 title('Interpolated Total <Work-Transport>');
 xlabel('X [\mum]');
-ylabel('Y [\mum]');
+ylabel('Z [\mum]');
 zlabel('Work / q [#charges * V]');
 ItFig = ItFig + 1;
 
 
+%%%%%%%%%%%%%%%%%%%%%%%
+% Compute the spectra %
+%%%%%%%%%%%%%%%%%%%%%%%
 [ItFig] = ComputeSpectra(subWorkTransportTotal,subx,suby,NParticles,...
     PitchX,Bulk,Radius,PType,ItFig);

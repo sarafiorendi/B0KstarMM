@@ -55,7 +55,7 @@ colormap jet;
 surf(xx,yy,interp,'EdgeColor','none');
 title('Weighting potential');
 xlabel('X [\mum]');
-ylabel('Y [\mum]');
+ylabel('Z [\mum]');
 zlabel('Potential [V]');
 
 ItFigIn = ItFigIn + 1;
@@ -64,7 +64,7 @@ colormap jet;
 surf(xx,yy,WorkTransportTotal,'EdgeColor','none');
 title('Total Work-Transport');
 xlabel('X [\mum]');
-ylabel('Y [\mum]');
+ylabel('Z [\mum]');
 zlabel('Work / q [#charges * V]');
 
 ItFigIn = ItFigIn + 1;
@@ -74,13 +74,13 @@ subplot(1,2,1);
 surf(xx,yy,WTransport_e,'EdgeColor','none');
 title('Electron Work-Transport');
 xlabel('X [\mum]');
-ylabel('Y [\mum]');
+ylabel('Z [\mum]');
 zlabel('Work / q [#charges * V]');
 subplot(1,2,2);
 surf(xx,yy,WTransport_h,'EdgeColor','none');
 title('Hole Work-Transport');
 xlabel('X [\mum]');
-ylabel('Y [\mum]');
+ylabel('Z [\mum]');
 zlabel('Work / q [#charges * V]');
 
 ItFigOut = ItFigIn + 1;

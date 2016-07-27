@@ -57,7 +57,7 @@ EnergyScale = 0:eMax/nBins:eMax; % Spectrum energy axis [electrons]
 %%%%%%%%%%%%%%%%%%%
 % Start algorithm %
 %%%%%%%%%%%%%%%%%%%
-fprintf('@@@ I''m calculating the spectra of %d %s particles @@@\n',NParticles,PType);
+fprintf('@@@ I''m calculating the spectrum of %d %s particles @@@\n',NParticles,PType);
 HistoCharge = zeros(NParticles,1);
 
 for i = 1:NParticles

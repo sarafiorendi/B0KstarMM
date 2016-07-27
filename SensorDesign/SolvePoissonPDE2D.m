@@ -190,7 +190,7 @@ xlim([-Pitch * NStrips/2,+Pitch * NStrips/2]);
 ylim([0,Bulk * SHeight]);
 title('Geometry');
 xlabel('X [\mum]');
-ylabel('Y [\mum]');
+ylabel('Z [\mum]');
 subplot(1,2,2);
 pdegplot(pdem);
 hold on;
@@ -200,7 +200,7 @@ ylim([0,Bulk * SHeight]);
 hold off;
 title('Delaunay mesh');
 xlabel('X [\mum]');
-ylabel('Y [\mum]');
+ylabel('Z [\mum]');
 
 ItFigIn = ItFigIn + 1;
 figure(ItFigIn);
@@ -211,7 +211,7 @@ xlim([-Pitch * NStrips/2,+Pitch * NStrips/2]);
 ylim([0,Bulk * SHeight]);
 title('Potential');
 xlabel('X [\mum]');
-ylabel('Y [\mum]');
+ylabel('Z [\mum]');
 
 subplot(1,2,2);
 colormap jet;
@@ -247,7 +247,7 @@ hold off;
 
 title('Potential and its gradient');
 xlabel('X [\mum]');
-ylabel('Y [\mum]');
+ylabel('Z [\mum]');
 
 ItFigIn = ItFigIn + 1;
 figure(ItFigIn);
@@ -255,8 +255,8 @@ yq = 0:ReSampleFine:Bulk*3/2;
 xq = XQ * ones(1,length(yq));
 Sq = interpolateSolution(potential,xq,yq);
 plot(yq,Sq);
-title(sprintf('Potential along y at x = %.2f um',XQ));
-xlabel('Y [\mum]');
+title(sprintf('Potential along z at x = %.2f um',XQ));
+xlabel('Z [\mum]');
 ylabel('Potential');
 grid on;
 

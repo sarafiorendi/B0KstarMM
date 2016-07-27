@@ -18,8 +18,8 @@
 % TO DO %
 %%%%%%%%%
 % 1. Count exact number of Faces
-% 2. Define Sensor and Air volumes
-% 3. Better definition of volumes
+% 2. Better definition of volumes
+% 3. Define Sensor and Air volumes
 
 
 function [potential, Sq, zq, ItFigOut] = SolvePoissonPDE3D(Bulk,...
@@ -410,7 +410,7 @@ figure(ItFigIn);
 u = potential.NodalSolution;
 pdeplot3D(pdem,'colormapdata',u);
 axis on;
-title('Delaunay mesh');
+title('Potential on conductors');
 xlabel('X [\mum]');
 ylabel('Y [\mum]');
 zlabel('Z [\mum]');

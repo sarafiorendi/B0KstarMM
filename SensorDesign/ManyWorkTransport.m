@@ -40,7 +40,7 @@ colormap jet;
 surf(xx,yy,WorkTransportTotal,'EdgeColor','none');
 title('Total <Work-Transport>');
 xlabel('X [\mum]');
-ylabel('Y [\mum]');
+ylabel('Z [\mum]');
 zlabel('Work / q [#charges * V]');
 
 ItFigOut = ItFigOut + 1;
