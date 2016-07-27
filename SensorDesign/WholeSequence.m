@@ -38,8 +38,8 @@ rng default; % Reset random seed
 ItFig = 1;   % Figure iterator
 
 
-[WeightPot, ItFig] = SolvePoissonPDE2D(Bulk,Pitch,0,0,1,epsR,0,ItFig);
-[TotalPot,  ItFig] = SolvePoissonPDE2D(Bulk,Pitch,BiasV,0,0,epsR,rho,ItFig);
+[WeightPot, ItFig] = SolvePoissonPDE2D(Bulk,Pitch,0,0,1,epsR,0,0,ItFig);
+[TotalPot,  ItFig] = SolvePoissonPDE2D(Bulk,Pitch,BiasV,0,0,epsR,rho,0,ItFig);
 
 [VFieldx_e, VFieldy_e, VFieldx_h, VFieldy_h, x, y, ItFig] =...
     VelocityField(TotalPot,Step,Bulk,BField,Pitch,ItFig);

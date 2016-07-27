@@ -8,10 +8,11 @@
 % BiasW   = Sensor central strip voltage [V] [1 Weighting; 0 All]
 % epsR    = Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
 % rho     = Charge denisty in the bulk [(Coulomb / um^3) / eps0 [F/um]]
+% XQ      = Coordinate for potential query along y [um]
 % ItFigIn = Figure iterator input
 
 function [potential, ItFigOut] = SolvePoissonPDE2D(Bulk,Pitch,...
-    BiasB,BiasS,BiasW,epsR,rho,ItFigIn)
+    BiasB,BiasS,BiasW,epsR,rho,XQ,ItFigIn)
 TStart = cputime; % CPU time at start
 
 
@@ -23,7 +24,6 @@ ReSampleCoarse = 10;  % Used in order to make nice plots [um]
 ContLevel      = 40;  % Contour plot levels
 MagnVector     = 1.5; % Vector field magnification
 MeshMax        = 15;  % Maximum mesh edge length [um]
-XQ             = 0;   % Coordinate for potential query along y [um]
 
 MetalThick   = 5;  % Metalization thickness [um]
 MetalWidthHV = 90; % Metalization width HV strip [um]

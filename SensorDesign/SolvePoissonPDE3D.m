@@ -9,16 +9,20 @@
 % BiasW   = Sensor central pixel voltage [V] [1 Weighting; 0 All]
 % epsR    = Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
 % rho     = Charge denisty in the bulk [(Coulomb / um^3) / eps0 [F/um]]
+% XQ      = Coordinate for potential query along z [um]
+% YQ      = Coordinate for potential query along z [um]
 % ItFigIn = Figure iterator input
 
 
-% TO DO:
+%%%%%%%%%
+% TO DO %
+%%%%%%%%%
 % 1. Define Sensor and Air volumes
 % 2. Better definition of volumes
 
 
 function [potential, ItFigOut] = SolvePoissonPDE3D(Bulk,PitchX,PitchY,...
-    BiasB,BiasW,epsR,rho,ItFigIn)
+    BiasB,BiasW,epsR,rho,XQ,YQ,ItFigIn)
 TStart = cputime; % CPU time at start
 
 
@@ -27,8 +31,6 @@ TStart = cputime; % CPU time at start
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 StepMesh    = 5;  % Step to build mesh [um]
 StepSlices  = 10; % Step to build slices along z [um]
-XQ          = 0;  % Coordinate for potential query along z [um]
-YQ          = 0;  % Coordinate for potential query along z [um]
 
 MetalThick  = 5;   % Metalization thickness [um]
 MetalWidthX = 50;  % Metalization width along X [um]
