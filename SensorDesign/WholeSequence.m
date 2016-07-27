@@ -12,9 +12,13 @@ rho  = (-4 * 1.6e-19) / 8.85e-18; % Charge denisty in the bulk [(Coulomb / um^3)
 Step   = 2;       % Unit step of the lattice on which the field is computed [um]
 Radius = Step/10; % Unit step of the movements and field interpolation [um]
 
-BiasV = -600; % Sensor backplane voltage [V]
-Bulk  = 100;  % Bulk thickness [um]
-Pitch = 100;  % Strip pitch [um]
+BiasV  = -600; % Sensor backplane voltage [V]
+Bulk   = 100;  % Bulk thickness [um]
+PitchX = 100;  % Pitch along X [um] (for 2D geometry)
+PitchY = 150;  % Pitch along Y [um] (for 3D geometry)
+
+XQ = 0; % Coordinate for potential query along z [um]
+YQ = 0; % Coordinate for potential query along z [um]
 
 BField = 0.0; % Magnetic field (orthogonal+outgoing from the 2D geometry) [T]
 
@@ -25,8 +29,8 @@ TauBe   = 1 / (betaE*Fluence); % Life-time on the backplane side [ns]
 TauSe   = 1 / (betaE*Fluence); % Life-time on the strip side [ns]
 TauBh   = 1 / (betaH*Fluence); % Life-time on the backplane side [ns]
 TauSh   = 1 / (betaH*Fluence); % Life-time on the strip side [ns]
-fprintf('@@@ Electron life-time: %.2f ns, %.2f ns @@@\n',TauBe,TauSe);
-fprintf('@@@ Hole life-time: %.2f ns, %.2f ns @@@\n\n',TauBh,TauSh);
+fprintf('@@@ Electron''s life-time: %.2f ns, %.2f ns @@@\n',TauBe,TauSe);
+fprintf('@@@ Hole''s life-time: %.2f ns, %.2f ns @@@\n\n',TauBh,TauSh);
 
 NAverage   = 100;    % Generate NAverage "Work-Transport" matrices and average them
 NParticles = 10000;  % Total number of particles to be simulated
@@ -38,11 +42,28 @@ rng default; % Reset random seed
 ItFig = 1;   % Figure iterator
 
 
-[WeightPot, ItFig] = SolvePoissonPDE2D(Bulk,Pitch,0,0,1,epsR,0,0,ItFig);
-[TotalPot,  ItFig] = SolvePoissonPDE2D(Bulk,Pitch,BiasV,0,0,epsR,rho,0,ItFig);
+[WeightPot, Sq2D, xq3D, ItFig] = SolvePoissonPDE2D(Bulk,PitchX,0,0,1,epsR,0,XQ,ItFig);
+[TotalPot,  Sq, xq, ItFig] = SolvePoissonPDE2D(Bulk,PitchX,BiasV,0,0,epsR,rho,XQ,ItFig);
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Compare the potential in 2D and 3D %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fprintf('@@@ I''m comparing the potential in 2D and 3D @@@\n');
+[tmpW, Sq3D, xq2D, ItFig] = SolvePoissonPDE3D(Bulk,PitchX,PitchY,0,1,epsR,0,XQ,YQ,ItFig);
+Diff2D3D = (Sq2D - Sq3D) ./ Sq3D * 100;
+
+figure(ItFig);
+plot(xq2D,Diff2D3D);
+title(sprintf('Potential difference (2D - 3D) / 3D at x = %.2f um y = %.2f um',XQ,YQ));
+xlabel('Z [\mum]');
+ylabel('Percentage [%]');
+grid on;
+ItFig = ItFig + 1;
+
 
 [VFieldx_e, VFieldy_e, VFieldx_h, VFieldy_h, x, y, ItFig] =...
-    VelocityField(TotalPot,Step,Bulk,BField,Pitch,ItFig);
+    VelocityField(TotalPot,Step,Bulk,BField,PitchX,ItFig);
 
 [WorkTransportTotal, x, y, ItFig] =...
     ManyWorkTransport(WeightPot,VFieldx_e,VFieldy_e,VFieldx_h,VFieldy_h,...
@@ -71,4 +92,4 @@ ItFig = ItFig + 1;
 
 
 [ItFig] = ComputeSpectra(subWorkTransportTotal,subx,suby,NParticles,...
-    Pitch,Bulk,Radius,PType,ItFig);
+    PitchX,Bulk,Radius,PType,ItFig);

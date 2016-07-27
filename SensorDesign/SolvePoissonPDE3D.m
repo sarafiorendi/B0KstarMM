@@ -2,8 +2,8 @@
 % Solve Poisson equation to compute the potential %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Bulk    = Bulk thickness [um]
-% PitchX  = Pixel pitch along X [um]
-% PitchY  = Pixel pitch along Y [um]
+% PitchX  = Pitch along X [um]
+% PitchY  = Pitch along Y [um]
 % BiasB   = Sensor backplane voltage [V] [0 Weighting; -200 All]
 % BiasS   = Sensor piel voltage [V]
 % BiasW   = Sensor central pixel voltage [V] [1 Weighting; 0 All]
@@ -17,20 +17,22 @@
 %%%%%%%%%
 % TO DO %
 %%%%%%%%%
-% 1. Define Sensor and Air volumes
-% 2. Better definition of volumes
+% 1. Count exact number of Faces
+% 2. Define Sensor and Air volumes
+% 3. Better definition of volumes
 
 
-function [potential, ItFigOut] = SolvePoissonPDE3D(Bulk,PitchX,PitchY,...
-    BiasB,BiasW,epsR,rho,XQ,YQ,ItFigIn)
+function [potential, Sq, zq, ItFigOut] = SolvePoissonPDE3D(Bulk,...
+    PitchX,PitchY,BiasB,BiasW,epsR,rho,XQ,YQ,ItFigIn)
 TStart = cputime; % CPU time at start
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Variable initialization %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-StepMesh    = 5;  % Step to build mesh [um]
-StepSlices  = 10; % Step to build slices along z [um]
+ReSampleFine = 1;  % Used in order to make nice plots [um]
+StepMesh     = 4;  % Step to build mesh [um]
+StepSlices   = 10; % Step to build slices along z [um]
 
 MetalThick  = 5;   % Metalization thickness [um]
 MetalWidthX = 50;  % Metalization width along X [um]
@@ -41,7 +43,7 @@ SHeight     = 2;   % Sensor height [units of bulk thickness]
 %%%%%%%%%%%%%%%%%%%%
 % Create PDE model %
 %%%%%%%%%%%%%%%%%%%%
-fprintf('@@@ I''m solving Poisson equation to calculate the potential @@@\n');
+fprintf('@@@ I''m solving Poisson equation in 3D to calculate the potential @@@\n');
 pdem = createpde(1);
 
 
@@ -362,7 +364,7 @@ zlabel('Z [\mum]');
 % Boundary conditions %
 %%%%%%%%%%%%%%%%%%%%%%%
 % Initialisation for all faces
-for i=1:(5*5*6+6)
+for i=1:(5*5*7+6)
     applyBoundaryCondition(pdem,'face',i,'h',1,'r',0);
 end
 
@@ -370,13 +372,13 @@ end
 applyBoundaryCondition(pdem,'face',1,'h',1,'r',BiasB);
 
 % Central pixel
-applyBoundaryCondition(pdem,'face',14,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',32,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',68,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',77,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',113,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',157,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',169,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',23,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',51,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',59,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',108,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',121,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',137,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',139,'h',1,'r',BiasW);
 
 
 %%%%%%%%%%%%%%%
@@ -430,11 +432,11 @@ colorbar;
 
 ItFigIn = ItFigIn + 1;
 figure(ItFigIn);
-zq = 0:StepMesh:Bulk*3/2;
+zq = 0:ReSampleFine:Bulk*3/2;
 xq = XQ * ones(1,length(zq));
 yq = YQ * ones(1,length(zq));
-sq = interpolateSolution(potential,xq,yq,zq);
-plot(zq,sq);
+Sq = interpolateSolution(potential,xq,yq,zq);
+plot(zq,Sq);
 title(sprintf('Potential along z at x = %.2f um y = %.2f um',XQ,YQ));
 xlabel('Z [\mum]');
 ylabel('Potential');

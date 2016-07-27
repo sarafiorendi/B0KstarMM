@@ -11,7 +11,7 @@
 % XQ      = Coordinate for potential query along y [um]
 % ItFigIn = Figure iterator input
 
-function [potential, ItFigOut] = SolvePoissonPDE2D(Bulk,Pitch,...
+function [potential, Sq, yq, ItFigOut] = SolvePoissonPDE2D(Bulk,Pitch,...
     BiasB,BiasS,BiasW,epsR,rho,XQ,ItFigIn)
 TStart = cputime; % CPU time at start
 
@@ -35,7 +35,7 @@ NStrips      = 13; % Total number of strips
 %%%%%%%%%%%%%%%%%%%%
 % Create PDE model %
 %%%%%%%%%%%%%%%%%%%%
-fprintf('@@@ I''m solving Poisson equation to calculate the potential @@@\n');
+fprintf('@@@ I''m solving Poisson equation in 2D to calculate the potential @@@\n');
 pdem = createpde(1);
 
 
@@ -253,8 +253,8 @@ ItFigIn = ItFigIn + 1;
 figure(ItFigIn);
 yq = 0:ReSampleFine:Bulk*3/2;
 xq = XQ * ones(1,length(yq));
-sq = interpolateSolution(potential,xq,yq);
-plot(yq,sq);
+Sq = interpolateSolution(potential,xq,yq);
+plot(yq,Sq);
 title(sprintf('Potential along y at x = %.2f um',XQ));
 xlabel('Y [\mum]');
 ylabel('Potential');
