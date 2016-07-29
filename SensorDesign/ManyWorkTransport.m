@@ -1,7 +1,6 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Function that generates several "Work-Transport" %
-% matrices and computes the average                %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Generate several "Work-Transport" matrices and compute the average %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NAverage = Generate NAverage WorkTransportTotal and average them
 
 function [WorkTransportTotal, x, y, ItFigOut] = ...
@@ -41,9 +40,9 @@ colormap jet;
 surf(xx,yy,WorkTransportTotal,'EdgeColor','none');
 title('Total <Work-Transport>');
 xlabel('X [\mum]');
-ylabel('Y [\mum]');
+ylabel('Z [\mum]');
 zlabel('Work / q [#charges * V]');
 
 ItFigOut = ItFigOut + 1;
-fprintf('CPU time --> %d[min]\n\n',(cputime-TStart)/60);
+fprintf('CPU time --> %.2f[min]\n\n',(cputime-TStart)/60);
 end

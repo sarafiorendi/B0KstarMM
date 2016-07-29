@@ -1,57 +1,80 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Program to caculate the signal in particle-detection sensors %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         % Program to caculate the signal in particle detectors %
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Variable initialization %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Step   = Unit step of the lattice on which the field is computed [um]
-% Radius = Unit step of the movements and field interpolation [um]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%% Variable initialization %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+epsR = 3.9;                       % Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
+rho  = (-4 * 1.6e-19) / 8.85e-18; % Charge denisty in the bulk [(Coulomb / um^3) / eps0 [F/um]]
 
-% BiasV = Sensor backplane voltage [V]
-% Bulk  = Bulk thickness [um]
-% Pitch = Strip pitch [um]
+Step   = 2;       % Unit step of the lattice on which the field is computed [um]
+Radius = Step/10; % Unit step of the movements and field interpolation [um]
 
-% BField = Magnetic field (orthogonal+outgoing from the 2D geometry) [T]
+BiasV  = -600; % Sensor backplane voltage [V]
+Bulk   = 100;  % Bulk thickness [um]
+PitchX = 100;  % Pitch along X [um] (for 2D geometry)
+PitchY = 150;  % Pitch along Y [um] (for 3D geometry)
 
-% TauBe/h = Life-time on the backplane side [ns]
-% TauSe/h = Life-time on the strip side [ns]
+XQ = 0; % Coordinate for potential query along z [um]
+YQ = 0; % Coordinate for potential query along z [um]
 
-% NAverage = Generate NAverage "Work-Transport" matrices and average them
-% NParticles = Total number of particles to be simulated
-% ParticleType = 'alpha', 'beta', 'gamma'
+BField = 0.0; % Magnetic field (orthogonal+outgoing from the 2D geometry) [T]
 
+Fluence = 1.0; % Irradiation fluence [10^16 1 MeV eq. n / cm^2]
+betaE   = 1.8; % Conversion factor life-time - fluence [10^16 / ns]
+betaH   = 3.2; % Conversion factor life-time - fluence [10^16 / ns]
+TauBe   = 1 / (betaE*Fluence); % Life-time on the backplane side [ns]
+TauSe   = 1 / (betaE*Fluence); % Life-time on the strip side [ns]
+TauBh   = 1 / (betaH*Fluence); % Life-time on the backplane side [ns]
+TauSh   = 1 / (betaH*Fluence); % Life-time on the strip side [ns]
+fprintf('@@@ Electron''s life-time: %.2f ns, %.2f ns @@@\n',TauBe,TauSe);
+fprintf('@@@ Hole''s life-time: %.2f ns, %.2f ns @@@\n\n',TauBh,TauSh);
 
-Step   = 5;
-Radius = Step/10;
-
-BiasV = -200;
-Bulk  = 100;
-Pitch = 100;
-
-BField = 0.0;
-
-TauBe = 89;
-TauSe = 89;
-TauBh = 65;
-TauSh = 65;
-
-NAverage     = 10;
-NParticles   = 10000;
-ParticleType = 'beta';
+NAverage   = 100;    % Generate NAverage "Work-Transport" matrices and average them
+NParticles = 10000;  % Total number of particles to be simulated
+PType      = 'beta'; % Particle type ['alpha' 'beta' 'gamma']
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 rng default; % Reset random seed
 ItFig = 1;   % Figure iterator
 
-% Run PDE_WeightingField(Pitch,Bulk) to export geometry
-[WeightPot, ItFig] = SolvePoissonPDE(gd,sf,ns,Bulk,Pitch,0,0,1,ItFig);
-[TotalPot,  ItFig] = SolvePoissonPDE(gd,sf,ns,Bulk,Pitch,BiasV,0,0,ItFig);
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Compute the potentials %
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+[TotalPot,  ~,       ~, ItFig] = SolvePoissonPDE2D(Bulk,PitchX,BiasV,0,0,epsR,rho,XQ,ItFig);
+[WeightPot, Sq2D, xq2D, ItFig] = SolvePoissonPDE2D(Bulk,PitchX,0,0,1,epsR,0,XQ,ItFig);
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Compare the potential in 2D and 3D %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+fprintf('@@@ I''m comparing the potential in 2D and 3D @@@\n');
+[~, Sq3D, xq3D, ItFig] = SolvePoissonPDE3D(Bulk,PitchX,PitchY,0,1,epsR,0,XQ,YQ,ItFig);
+Diff2D3D = (Sq2D - Sq3D) ./ Sq3D * 100;
+
+figure(ItFig);
+plot(xq2D,Diff2D3D);
+title(sprintf('Potential difference (2D - 3D) / 3D at x = %.2f um y = %.2f um',XQ,YQ));
+xlabel('Z [\mum]');
+ylabel('Percentage [%]');
+grid on;
+ItFig = ItFig + 1;
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Compute the velocity field %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [VFieldx_e, VFieldy_e, VFieldx_h, VFieldy_h, x, y, ItFig] =...
-    VelocityField(TotalPot,Step,Bulk,BField,Pitch,ItFig);
+    VelocityField(TotalPot,Step,Bulk,BField,PitchX,ItFig);
 
+
+%%%%%%%%%%%%%%%%%%%%
+% Compute the work %
+%%%%%%%%%%%%%%%%%%%%
 [WorkTransportTotal, x, y, ItFig] =...
     ManyWorkTransport(WeightPot,VFieldx_e,VFieldy_e,VFieldx_h,VFieldy_h,...
     x,y,Step,Bulk,Radius,TauBe,TauSe,TauBh,TauSh,NAverage,ItFig);
@@ -60,8 +83,7 @@ ItFig = 1;   % Figure iterator
 %%%%%%%%%%%%%%%%%
 % Fit/Smoothing %
 %%%%%%%%%%%%%%%%%
-fprintf('@@@ I''m interpolating the work transport matrix with...
-a step of %d um @@@\n\n',Radius);
+fprintf('@@@ I''m interpolating the work transport matrix with a step of %.2f um @@@\n\n',Radius);
 subx = x(1):Radius:x(length(x));
 suby = y(1):Radius:y(length(y));
 [ssubx,ssuby] = meshgrid(subx,suby);
@@ -74,17 +96,13 @@ colormap jet;
 surf(ssubx,ssuby,subWorkTransportTotal,'EdgeColor','none');
 title('Interpolated Total <Work-Transport>');
 xlabel('X [\mum]');
-ylabel('Y [\mum]');
+ylabel('Z [\mum]');
 zlabel('Work / q [#charges * V]');
 ItFig = ItFig + 1;
 
 
+%%%%%%%%%%%%%%%%%%%%%%%
+% Compute the spectra %
+%%%%%%%%%%%%%%%%%%%%%%%
 [ItFig] = ComputeSpectra(subWorkTransportTotal,subx,suby,NParticles,...
-    Pitch,Bulk,Radius,ParticleType,ItFig);
-
-
-%%%%%%%%%
-% To do %
-%%%%%%%%%
-% 1. Definition of multiple dielectrics
-% 2. Automatic generation of geometry
+    PitchX,Bulk,Radius,PType,ItFig);

@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Landau distributed random numbers %
+% Landau-distributed random numbers %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function out = LandauRND(mpv,sigma)
@@ -18,7 +18,7 @@ toss   = true;
 %%%%%%%%%%%%%%%%%%%
 while toss == true
     x    = rand(1,1)*xAxis;
-    coin = rand(1,1)*0.18; % Maximum of Landau
+    coin = rand(1,1)*0.180655; % Maximum of Landau
 
     if coin < Landau(x,mpv,sigma,false);
         out  = x;
