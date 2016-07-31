@@ -347,7 +347,7 @@ NN.save("NeuralNet.txt")
 Save additional hyper-parameter information
 ###########################################
 """
-NN.saveHypPar("NeuralNet.txt",nRuns,miniBatch,learnRateStart,learnRateEnd,learnRateTau,toScramble)
+NN.saveHypPar("NeuralNet.txt",nRuns,miniBatch,learnRateStart,learnRateEnd,learnRateTau,cmd.Scramble,toScramble)
 
 
 """
