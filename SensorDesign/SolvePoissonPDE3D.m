@@ -17,9 +17,7 @@
 %%%%%%%%%
 % TO DO %
 %%%%%%%%%
-% 1. Count exact number of Faces
-% 2. Better definition of volumes
-% 3. Define Sensor and Air volumes
+% Define Sensor and Air volumes
 
 
 function [potential, Sq, zq, ItFigOut] = SolvePoissonPDE3D(Bulk,...
@@ -31,7 +29,8 @@ TStart = cputime; % CPU time at start
 % Variable initialization %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 ReSampleFine = 1;  % Used in order to make nice plots [um]
-StepMesh     = 4;  % Step to build mesh [um]
+StepMesh     = 5;  % Step to build mesh (better if it's a divisor of every
+                   % geometrical quantities) [um]
 StepSlices   = 10; % Step to build slices along z [um]
 
 MetalThick  = 5;   % Metalization thickness [um]
@@ -61,7 +60,6 @@ pdem = createpde(1);
 x00 = x00(:);
 y00 = y00(:);
 z00 = z00(:);
-k00 = convhull(x00,y00,z00);
 
 [xp10,yp10,zp10] = meshgrid(1*PitchX-MetalWidthX/2:StepMesh:1*PitchX+MetalWidthX/2,...
     -MetalWidthY/2:StepMesh:MetalWidthY/2,...
@@ -278,28 +276,6 @@ x = x(:);
 y = y(:);
 z = z(:);
 
-%%%%%%%%%%%%%%
-% Air volume %
-%%%%%%%%%%%%%%
-[xAir,yAir,zAir] = meshgrid(-2*PitchX-MetalWidthX:StepMesh:2*PitchX+MetalWidthX,...
-    -2*PitchY-MetalWidthY:StepMesh:2*PitchY+MetalWidthY,...
-    Bulk:StepMesh:Bulk*SHeight);
-
-xAir = xAir(:);
-yAir = yAir(:);
-zAir = zAir(:);
-
-%%%%%%%%%%%%%%%%%
-% Sensor volume %
-%%%%%%%%%%%%%%%%%
-[xSen,ySen,zSen] = meshgrid(-2*PitchX-MetalWidthX:StepMesh:2*PitchX+MetalWidthX,...
-    -2*PitchY-MetalWidthY:StepMesh:2*PitchY+MetalWidthY,...
-    0:StepMesh:Bulk);
-
-xSen = xSen(:);
-ySen = ySen(:);
-zSen = zSen(:);
-
 
 %%%%%%%%%%%%%%%%%%%%%%
 % Combine all pixels %
@@ -321,23 +297,20 @@ zPx = [zm2m2' zm1m2' z0m2' zp1m2' zp2m2'...
        zm2p2' zm1p2' z0p2' zp1p2' zp2p2']';
 
 shpPx = alphaShape(xPx,yPx,zPx);
+kAll = convhull(xPx,yPx,zPx);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%
 % Create final volume %
 %%%%%%%%%%%%%%%%%%%%%%%
-in = inShape(shpPx,x,y,z);
+inVol = inShape(shpPx,x,y,z);
+inFrn = ismember([x';y';z']',[xPx(kAll(:,1))';yPx(kAll(:,2))';zPx(kAll(:,3))']','rows');
+in = inVol | inFrn;
+fprintf('Number of frontier points to be included in geometry: %d\n',sum(inFrn));
+fprintf('Number of frontier points in common to volume points: %d\n',sum(inVol & inFrn));
 x = x(~in);
 y = y(~in);
 z = z(~in);
-%in = inShape(shpPx,xAir,yAir,zAir);
-%xAir = xAir(~in);
-%yAir = yAir(~in);
-%zAir = zAir(~in);
-
-%x = [xAir' xSen']';
-%y = [yAir' ySen']';
-%z = [zAir' zSen']';
 
 shpAll = alphaShape(x,y,z);
 [elements,nodes] = boundaryFacets(shpAll);
@@ -351,34 +324,23 @@ elements = elements';
 geometryFromMesh(pdem,nodes,elements);
 
 
-figure(ItFigIn);
-h = pdegplot(pdem,'FaceLabels','on');
-h(1).FaceAlpha = 0.5;
-title('Geometry');
-xlabel('X [\mum]');
-ylabel('Y [\mum]');
-zlabel('Z [\mum]');
-
-
 %%%%%%%%%%%%%%%%%%%%%%%
 % Boundary conditions %
 %%%%%%%%%%%%%%%%%%%%%%%
 % Initialisation for all faces
-for i=1:(5*5*7+6)
-    applyBoundaryCondition(pdem,'face',i,'h',1,'r',0);
-end
+applyBoundaryCondition(pdem,'face',1:pdem.Geometry.NumFaces,'h',1,'r',0);
 
 % Backplane
 applyBoundaryCondition(pdem,'face',1,'h',1,'r',BiasB);
 
 % Central pixel
-applyBoundaryCondition(pdem,'face',23,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',51,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',59,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',108,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',121,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',137,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',139,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',14,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',32,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',68,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',77,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',113,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',157,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',169,'h',1,'r',BiasW);
 
 
 %%%%%%%%%%%%%%%
@@ -428,6 +390,7 @@ title('Potential slices');
 xlabel('X [\mum]');
 ylabel('Y [\mum]');
 zlabel('Z [\mum]');
+grid on;
 colorbar;
 
 ItFigIn = ItFigIn + 1;
