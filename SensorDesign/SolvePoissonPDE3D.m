@@ -30,7 +30,7 @@ TStart = cputime; % CPU time at start
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 ReSampleFine = 1;  % Used in order to make nice plots [um]
 StepMesh     = 5;  % Step to build mesh (better if it's a divisor of every
-                   % geometrical quantities) [um]
+                   % geometrical quantity) [um]
 StepSlices   = 10; % Step to build slices along z [um]
 
 MetalThick  = 5;   % Metalization thickness [um]
