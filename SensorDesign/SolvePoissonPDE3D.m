@@ -307,6 +307,7 @@ inVol = inShape(shpPx,x,y,z);
 inFrn = ismember([x';y';z']',[xPx(kAll(:,1))';yPx(kAll(:,2))';zPx(kAll(:,3))']','rows');
 %in = xor(inVol,inFrn);
 in = inVol;
+fprintf('Number of volume points to be exincluded from geometry: %d\n',sum(inVol));
 fprintf('Number of frontier points to be included in geometry: %d\n',sum(inFrn));
 fprintf('Number of frontier points in common to volume points: %d\n',sum(inVol & inFrn));
 x = x(~in);
