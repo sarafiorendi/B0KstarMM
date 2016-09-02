@@ -1,3 +1,8 @@
+% Clean up everything
+close all;
+clear;
+clc;
+
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          % Program to caculate the signal in particle detectors %
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -6,8 +11,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%% Variable initialization %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-epsR = 3.9;                       % Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
-rho  = (-4 * 1.6e-19) / 8.85e-18; % Charge denisty in the bulk [(Coulomb / um^3) / eps0 [F/um]]
+epsR = 3.9;                    % Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
+rho = -4 * 1.6e-19 / 8.85e-18; % Charge denisty in the bulk [(Coulomb / um^3) / eps0 [F/um]]
 
 Step   = 2;       % Unit step of the lattice on which the field is computed [um]
 Radius = Step/10; % Unit step of the movements and field interpolation [um]

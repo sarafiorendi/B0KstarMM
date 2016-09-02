@@ -50,7 +50,7 @@ else
     return;
 end
 
-eMax = eMax * 2.5;
+eMax = eMax * 2; % @TMP@
 EnergyScale = 0:eMax/nBins:eMax; % Spectrum energy axis [electrons]
 
 
@@ -68,7 +68,7 @@ for i = 1:NParticles
 % @TMP@
 %        enter = Pitch/2 * (2*rand(1,1) - 1); % x-coordinate entering particle
 %        exit  = Pitch/2 * (2*rand(1,1) - 1); % x-coordinate exiting  particle
-        enter = 0; %30 * (2*rand(1,1) - 1);
+        enter = 30 * (2*rand(1,1) - 1);
         exit  = enter;
         mean  = ehLength*sqrt(depth^2 + (exit-enter)^2); % Landau MPV [electrons]
         sigma = mean / 26; % Scale factor between MPV and sigma of Landau [electrons]
