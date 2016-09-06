@@ -25,11 +25,11 @@ ContLevel      = 40;  % Contour plot levels
 MagnVector     = 1.5; % Vector field magnification
 MeshMax        = 15;  % Maximum mesh edge length [um]
 
-MetalThick   = 5;  % Metalization thickness [um]
-MetalWidthHV = 90; % Metalization width HV strip [um]
-MetalWidthSg = 90; % Metalization width Signal strip [um]
-SHeight      = 2;  % Sensor height [units of bulk thickness]
-NStrips      = 13; % Total number of strips
+MetalThick   = 5;        % Metalization thickness [um]
+MetalWidthHV = Pitch-10; % Metalization width HV strip [um]
+MetalWidthSg = Pitch-10; % Metalization width Signal strip [um]
+SHeight      = 2;        % Sensor height [units of bulk thickness]
+NStrips      = 13;       % Total number of strips
 
 
 %%%%%%%%%%%%%%%%%%%%

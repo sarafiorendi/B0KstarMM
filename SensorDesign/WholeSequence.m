@@ -1,3 +1,9 @@
+%%%%%%%%%
+% TO DO %
+%%%%%%%%%
+% Define Sensor&Air volumes in SolvePoisson3D - not available in MATLAB 2016
+
+
 % Clean up everything
 close all;
 clear;
@@ -17,7 +23,7 @@ rho = -4 * 1.6e-19 / 8.85e-18; % Charge denisty in the bulk [(Coulomb / um^3) / 
 Step   = 2;       % Unit step of the lattice on which the field is computed [um]
 Radius = Step/10; % Unit step of the movements and field interpolation [um]
 
-BiasV  = -600; % Sensor backplane voltage [V]
+BiasV  = -900; % Sensor backplane voltage [V]
 Bulk   = 100;  % Bulk thickness [um]
 PitchX = 100;  % Pitch along X [um] (for 2D geometry)
 PitchY = 150;  % Pitch along Y [um] (for 3D geometry)
@@ -111,3 +117,10 @@ ItFig = ItFig + 1;
 %%%%%%%%%%%%%%%%%%%%%%%
 [ItFig] = ComputeSpectra(subWorkTransportTotal,subx,suby,NParticles,...
     PitchX,Bulk,Radius,PType,ItFig);
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+% Alert for completion %
+%%%%%%%%%%%%%%%%%%%%%%%%
+load handel;
+sound(y,Fs);

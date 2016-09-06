@@ -14,12 +14,6 @@
 % ItFigIn = Figure iterator input
 
 
-%%%%%%%%%
-% TO DO %
-%%%%%%%%%
-% Define Sensor and Air volumes (not yet available in MATLAB 2016)
-
-
 function [potential, Sq, zq, ItFigOut] = SolvePoissonPDE3D(Bulk,...
     PitchX,PitchY,BiasB,BiasW,epsR,rho,XQ,YQ,ItFigIn)
 TStart = cputime; % CPU time at start
