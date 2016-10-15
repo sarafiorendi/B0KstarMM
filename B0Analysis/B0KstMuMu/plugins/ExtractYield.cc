@@ -122,6 +122,7 @@ TTree* theTree;
 Utils* Utility;
 B0KstMuMuSingleCandTreeContent* NTuple;
 
+TFile* fileFitResultsRooFit;
 ofstream fileFitResults;
 ofstream fileFitSystematics;
 
@@ -571,6 +572,8 @@ void ClearVars (RooArgSet* vecVars)
 
 void CloseAllAndQuit (TApplication* theApp, TFile* NtplFile)
 {
+  fileFitResultsRooFit->Close();
+  delete fileFitResultsRooFit;
   fileFitResults.close();
   fileFitSystematics.close();
   
@@ -1454,6 +1457,13 @@ double StoreFitResultsInFile (RooAbsPdf* pdf, RooFitResult* fitResult, RooDataSe
 	fileFitResults << "Fl-Afb correlation coef.: " << fitResult->correlation("FlS","AfbS") << endl;
     }
 
+
+  // #######################################
+  // # Store full fit results in ROOT file #
+  // #######################################
+  fileFitResultsRooFit->cd();
+  fitResult->Write(dataSet->GetName());
+  
 
   return NLLvalue;
 }
@@ -7434,10 +7444,12 @@ int main(int argc, char** argv)
 	    }
 	  fileFitResults << "@@@@@@@@@@@@@@@@@ Fit results : B0 --> K*0 mu+ mu- @@@@@@@@@@@@@@@@@" << endl;
 	  fileFitResults << "Fit ID: " << fileIndx << endl;
-	  fileName.replace(fileName.find(".txt"),4,".root");
+	  fileName.replace(fileName.find(".txt"),4,"_rooFitResuls.root");
+	  fileFitResultsRooFit = new TFile(fileName.c_str(),"RECREATE");
+	  fileName.replace(fileName.find("_rooFitResuls.root"),18,".root");
 
 
- 	  // ###################
+	  // ###################
 	  // # Read parameters #
  	  // ###################
 	  Utility->ReadGenericParam(ParameterFILE);
