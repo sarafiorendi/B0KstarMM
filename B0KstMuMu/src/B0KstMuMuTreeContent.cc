@@ -1,4 +1,4 @@
-#include "../interface/B0KstMuMuTreeContent.h"
+#include "B0KstMuMuTreeContent.h"
 #include <iostream>
 
 B0KstMuMuTreeContent::B0KstMuMuTreeContent ()

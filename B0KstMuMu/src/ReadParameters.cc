@@ -1,4 +1,4 @@
-#include "../interface/ReadParameters.h"
+#include "ReadParameters.h"
 
 #include <cstdlib>
 #include <iostream>
