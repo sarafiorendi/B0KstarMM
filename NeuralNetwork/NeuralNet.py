@@ -114,10 +114,7 @@ class NeuralNet(object):
             return self.FFperceptrons[self.Nperceptrons-1].cFun(target)
 
     def speed(self,who):
-        if who == 0:
-            return sqrt(sum(d * d for d in self.inputDcDz))
-        else:
-            return self.BPperceptrons[who-1].speed()
+        return sqrt(sum(d * d for d in self.inputDcDz)) if who = 0 else self.BPperceptrons[who-1].speed()
     
     def printParams(self):
         print "\n\n===>>> Feedforward Neural Net ===>>>"
@@ -152,10 +149,7 @@ class NeuralNet(object):
         #########################################################################
         """
         for j,P in enumerate(self.FFperceptrons):
-            if j not in who:
-                P.fixAllBut([-1])
-            else:
-                P.fixAllBut(who[j])
+            P.fixAllBut([-1]) if j not in who else P.fixAllBut(who[j])
 
     def release(self,who):
         """
@@ -325,9 +319,6 @@ class NeuralNet(object):
         f.write("  Learn rate tau: {:_^20f}\n".format(args[5]))
 
         f.write("\n  # Scramble parameters\n")
-        if args[6] == True:
-            f.write("  Neuron to scramble: {:_^20s}\n".format(str(args[7])))
-        else:
-            f.write("  Neuron to scramble: {:_^20s}\n".format(""))
+        f.write("  Neuron to scramble: {:_^20s}\n".format(str(args[7]))) if args[6] == True else f.write("  Neuron to scramble: {:_^20s}\n".format(""))
 
         f.close()

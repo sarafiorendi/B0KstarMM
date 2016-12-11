@@ -293,10 +293,7 @@ for n in xrange(1,nRuns + 1):
     Neural net: learning
     ####################
     """
-    if n % miniBatch == 0:
-        NNcost += NN.learn([x,y],[target],miniBatch)
-    else:
-        NNcost += NN.learn([x,y],[target])
+    NNcost += NN.learn([x,y],[target],miniBatch) if n % miniBatch == 0 else NN.learn([x,y],[target])
 
 
     """
