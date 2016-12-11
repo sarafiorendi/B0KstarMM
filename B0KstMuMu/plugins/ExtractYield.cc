@@ -36,6 +36,7 @@
 #include <RooRandom.h>
 #include <RooDataHist.h>
 #include <RooHistPdf.h>
+#include <RooHistFunc.h>
 #include <RooMinimizer.h>
 #include <RooFunctorBinding.h>
 #include <RooStats/RooStatsUtils.h>
@@ -287,7 +288,7 @@ RooArgSet vecConstr;
 struct MyProdPdf
 {
 public:
-  MyProdPdf (RooAbsPdf& pdf1, RooAbsPdf& pdf2) : _pdf1(pdf1), _pdf2(pdf2)
+  MyProdPdf (RooAbsReal& pdf1, RooAbsReal& pdf2) : _pdf1(pdf1), _pdf2(pdf2)
   { 
     const RooArgSet* allvar1 = pdf1.getVariables();
     const RooArgSet* allvar2 = pdf2.getVariables();
@@ -318,8 +319,8 @@ public:
 
 
 private:
-  RooAbsPdf& _pdf1; 
-  RooAbsPdf& _pdf2; 
+  RooAbsReal& _pdf1; 
+  RooAbsReal& _pdf2; 
   RooArgList _vars; 
 };
 
@@ -962,7 +963,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 
       // @TMP@ : for the mis-tag I use the binned efficiency, and NOT the analytical efficiency, due to problems in fitting the binned efficiency
       VarsPoly->removeAll();
-      RooHistPdf* histoEffPDF;
+      RooHistFunc* histoEffPDF;
       if (useEffPDF == true)
 	{
 	  RooGenericPdf* _AnglesPDF = new RooGenericPdf("_AnglesPDF",myString.str().c_str(),RooArgSet(*VarsAng));
@@ -971,7 +972,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	  // # Make 2D efficiency p.d.f. #
 	  // #############################
 	  RooDataHist* histoEff = new RooDataHist("histoEff","histoEff",RooArgSet(*z,*y),Import(*Utility->Get2DEffHistoq2Bin(&cosThetaKBins,&cosThetaLBins,q2BinIndx,GetSignalType(FitType,q2Bins,q2BinIndx),false,make_pair(-1.0,1.0),make_pair(-1.0,1.0)),true));
-	  histoEffPDF           = new RooHistPdf("histoEffPDF","histoEffPDF",RooArgSet(*z,*y),*histoEff,atoi(Utility->GetGenericParam("DegreeInterp").c_str()));
+	  histoEffPDF           = new RooHistFunc("histoEffPDF","histoEffPDF",RooArgSet(*z,*y),*histoEff,atoi(Utility->GetGenericParam("DegreeInterp").c_str()));
 	  MyProdPdf* myprodpdf  = new MyProdPdf(*_AnglesPDF,*histoEffPDF);
 	  ROOT::Math::Functor* prodFunctor = new ROOT::Math::Functor(*myprodpdf,myprodpdf->ndim());
 	  AnglesPDF             = new RooFunctorPdfBinding("AngleMisTag","MisTag * Efficiency",*prodFunctor,myprodpdf->vars());
@@ -2869,8 +2870,8 @@ void GenerateDatasetFromDataset (RooDataSet* dataSet, vector<double>* q2Bins, in
       
       myHistoDataset.push_back(myDataSet.back()->binnedClone());
       myHistoPDF.push_back(new RooHistPdf("myHistoPDF","myHistoPDF",*var,*myHistoDataset.back(),interpDegree));
-      
-      
+
+
       // #####################
       // # Toy-MC generation #
       // #####################

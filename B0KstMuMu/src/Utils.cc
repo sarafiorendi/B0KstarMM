@@ -1,5 +1,5 @@
-#include "../interface/Utils.h"
-#include "../interface/ReadParameters.h"
+#include "Utils.h"
+#include "ReadParameters.h"
 
 #include <TAxis.h>
 #include <TMath.h>
