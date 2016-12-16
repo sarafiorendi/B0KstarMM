@@ -114,7 +114,7 @@ class NeuralNet(object):
             return self.FFperceptrons[self.Nperceptrons-1].cFun(target)
 
     def speed(self,who):
-        return sqrt(sum(d * d for d in self.inputDcDz)) if who = 0 else self.BPperceptrons[who-1].speed()
+        return sqrt(sum(d * d for d in self.inputDcDz)) if who == 0 else self.BPperceptrons[who-1].speed()
     
     def printParams(self):
         print "\n\n===>>> Feedforward Neural Net ===>>>"
