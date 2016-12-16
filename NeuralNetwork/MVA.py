@@ -134,7 +134,8 @@ NN.printParams()
 Hyperparameters
 ###############
 """
-nRuns          = 10000000
+nRunsTraining  = 0 if cmd.infile else 10000000
+nRunsTest      = 10000
 miniBatch      = 1
 
 toScramble     = {3:[2]}
@@ -246,7 +247,7 @@ print "\n\n=== Training neural network ==="
 NNspeed = [ 0. for j in xrange(NN.Nperceptrons) ]
 NNcost  = 0.
 count   = 0.
-for n in xrange(1,nRuns + 1):
+for n in xrange(1,nRunsTraining + 1):
     """
     ####################
     Neural net: training
@@ -344,7 +345,7 @@ NN.save("NeuralNet.txt")
 Save additional hyper-parameter information
 ###########################################
 """
-NN.saveHypPar("NeuralNet.txt",nRuns,miniBatch,learnRateStart,learnRateEnd,learnRateTau,cmd.Scramble,toScramble)
+NN.saveHypPar("NeuralNet.txt",nRunsTraining,miniBatch,learnRateStart,learnRateEnd,learnRateTau,cmd.Scramble,toScramble)
 
 
 """
@@ -353,7 +354,7 @@ Neural net: test
 ################
 """
 print "\n\n=== Testing neural network ==="
-for n in xrange(1,nRuns + 1):
+for n in xrange(1,nRunsTest + 1):
     x = random() * xRange + xOffset - xRange/2
     y = random() * yRange + yOffset - yRange/2
 
@@ -389,13 +390,14 @@ cAccu.Modified()
 cAccu.Update()
 
 cSpeed.cd()
-graphNNspeed[0].Draw('AL')
-graphNNspeed[0].SetTitle('NN activation function speed;Epoch [#];Activation Function Speed')
-graphNNspeed[0].SetLineColor(1)
-for k in xrange(1,len(graphNNspeed[:])):
-    graphNNspeed[k].SetLineColor(k+1)
-    graphNNspeed[k].Draw('L same')
-legNNspeed.Draw("same")
+if len(graphNNspeed[:]) != 0:
+    graphNNspeed[0].Draw('AL')
+    graphNNspeed[0].SetTitle('NN activation function speed;Epoch [#];Activation Function Speed')
+    graphNNspeed[0].SetLineColor(1)
+    for k in xrange(1,len(graphNNspeed[:])):
+        graphNNspeed[k].SetLineColor(k+1)
+        graphNNspeed[k].Draw('L same')
+    legNNspeed.Draw("same")
 cSpeed.Modified()
 cSpeed.Update()
 
