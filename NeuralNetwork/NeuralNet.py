@@ -6,6 +6,9 @@
                         by Mauro E. Dinardo
 ###########################################
 """
+import os
+import ast
+
 from math       import sqrt
 from Perceptron import Perceptron
 
@@ -273,11 +276,11 @@ class NeuralNet(object):
             line = f.readline()
             lele = line.split()
 
-        for i in xrange(len(lele)):
-            if lele[i].isdigit():
-                leled.append(int(lele[i]))
-            elif lele[i].replace(".","").replace("-","").isdigit():
-                lelef.append(float(lele[i]))
+        for ele in lele:
+            if ele.isdigit():
+                leled.append(int(ele))
+            elif ele.replace(".","").replace("-","").isdigit():
+                lelef.append(float(ele))
 
         self.__init__(leled[0],leled[1],leled[2:])
         self.FFperceptrons[0].neurons[0].learnRate  = lelef[0]
@@ -320,5 +323,36 @@ class NeuralNet(object):
 
         f.write("\n  # Scramble parameters\n")
         f.write("  Neuron to scramble: {:_^20s}\n".format(str(args[7]))) if args[6] == True else f.write("  Neuron to scramble: {:_^20s}\n".format(""))
+
+        f.close()
+
+    def readHypPar(self,name):
+        """
+        ############################
+        Return sequence:
+        1. number of runs
+        2. mini batch
+        3. learn rate starting value
+        4. learn rate ending value
+        5. learn rate decay time
+        6. scrambled neurons
+        ############################
+        """
+        f    = open(name,"r")
+        line = f.readline()
+
+        while "Hyper-parameter" not in line:
+            line = f.readline()
+
+        while f.tell() != os.fstat(f.fileno()).st_size:
+            line = f.readline()
+            lele = line.split("_")
+            for ele in lele:
+                if ele.isdigit():
+                    yield int(ele)
+                elif ele.replace(".","").replace("-","").isdigit():
+                    yield float(ele)
+                elif '{' and '}' in ele:
+                    yield ast.literal_eval(ele)
 
         f.close()

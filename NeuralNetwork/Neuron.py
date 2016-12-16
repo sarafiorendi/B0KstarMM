@@ -16,7 +16,6 @@ class Neuron(object):
 
     aFunMin    = -1.
     aFunMax    = +1.
-    daFunDzMax =  1.
     """
     ######################################
     Nvars    = number of input variables
