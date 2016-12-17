@@ -16,7 +16,7 @@ To-do:
   - activation function: ReLU and softmax&logLikelihood
   - porting in pyCUDA
 #######################################################
-e.g.: python MVA.py -nv 2 -np 6 -nn 2 3 4 3 2 1 -sc 5 4
+e.g.: python MVA.py -nv 2 -np 5 -nn 2 3 3 2 1 -sc True
 #######################################################
 """
 from argparse  import ArgumentParser
@@ -40,7 +40,7 @@ def ArgParser():
     parser.add_argument("-nv", "--Nvars",        dest = "Nvars",        type = int,  help = "Number of variables",              required=False)
     parser.add_argument("-np", "--Nperceptrons", dest = "Nperceptrons", type = int,  help = "Number of perceptrons",            required=False)
     parser.add_argument("-nn", "--Nneurons",     dest = "Nneurons",     type = int,  help = "Number of neurons per perceptron", required=False, nargs='*')
-    parser.add_argument("-sc", "--Scramble",     dest = "Scramble",     type = bool, help = "Do scramble",                      required=False, default=False)
+    parser.add_argument("-sc", "--Scramble",     dest = "scramble",     type = bool, help = "Do scramble",                      required=False, default=False)
 
     options = parser.parse_args()
 
@@ -57,8 +57,8 @@ def ArgParser():
     if options.Nneurons:
         print "--> I'm reading the neuron number per perceptron: ", options.Nneurons
 
-    if options.Scramble:
-        print "--> I'm reading the scramble flag: ", options.Scramble
+    if options.scramble:
+        print "--> I'm reading the scramble flag: ", options.scramble
 
     return options
 
@@ -134,8 +134,9 @@ NN.printParams()
 Hyperparameters
 ###############
 """
-nRunsTraining  = 0 if cmd.infile else 10000000
-nRunsTest      = 10000
+nRunTrainingLn = 10010000
+nRunTrainingSt = 1
+nRunTest       = 100000
 miniBatch      = 1
 
 toScramble     = {3:[2]}
@@ -143,6 +144,15 @@ toScramble     = {3:[2]}
 learnRateStart = 0.01
 learnRateEnd   = 0.001
 learnRateTau   = 1
+
+
+"""
+###########################################
+Read additional hyper-parameter information
+###########################################
+"""
+if cmd.infile:
+    nRunTrainingSt,miniBatch,learnRateStart,learnRateEnd,learnRateTau,toScramble = NN.readHypPar(cmd.infile)
 
 
 """
@@ -247,7 +257,7 @@ print "\n\n=== Training neural network ==="
 NNspeed = [ 0. for j in xrange(NN.Nperceptrons) ]
 NNcost  = 0.
 count   = 0.
-for n in xrange(1,nRunsTraining + 1):
+for n in xrange(nRunTrainingSt,nRunTrainingSt + nRunTrainingLn + 1):
     """
     ####################
     Neural net: training
@@ -258,12 +268,12 @@ for n in xrange(1,nRunsTraining + 1):
 
     if gauss(loR,noiseBand) <= xyCorr(x,y) < gauss(hiR,noiseBand):
         target = NNoutMax
-        if n % saveEvery == 0:
-            graphSin.SetPoint(n/saveEvery,x,y)
+        if (n-nRunTrainingSt+1) % saveEvery == 0:
+            graphSin.SetPoint((n-nRunTrainingSt+1) / saveEvery - 1,x,y)
     else:
         target = NNoutMin
-        if n % saveEvery == 0:
-            graphBin.SetPoint(n/saveEvery,x,y)
+        if (n-nRunTrainingSt+1) % saveEvery == 0:
+            graphBin.SetPoint((n-nRunTrainingSt+1) / saveEvery - 1,x,y)
 
 
     """
@@ -271,7 +281,7 @@ for n in xrange(1,nRunsTraining + 1):
     Neural net: scrambling
     ######################
     """
-    if cmd.Scramble == True and n == 1:
+    if cmd.scramble == True and toScramble != None and n == nRunTrainingSt:
         NN.release({-1:[]})
         print "  [", n, "] Scrambling", toScramble
         NN.scramble(toScramble)
@@ -284,7 +294,7 @@ for n in xrange(1,nRunsTraining + 1):
     ##########################
     """
     lr = learnRateEnd*(1 - exp(-(n-1) / learnRateTau)) + learnRateStart*exp(-(n-1) / learnRateTau)
-    if n < 10*learnRateTau:
+    if (n-nRunTrainingSt+1) < 10*learnRateTau:
         print "  [", n, "] Learn rate set to", lr
         NN.setLearnRate(lr)
 
@@ -294,7 +304,7 @@ for n in xrange(1,nRunsTraining + 1):
     Neural net: learning
     ####################
     """
-    NNcost += NN.learn([x,y],[target],miniBatch) if n % miniBatch == 0 else NN.learn([x,y],[target])
+    NNcost += NN.learn([x,y],[target],miniBatch) if (n-nRunTrainingSt+1) % miniBatch == 0 else NN.learn([x,y],[target])
 
 
     """
@@ -303,17 +313,17 @@ for n in xrange(1,nRunsTraining + 1):
     #####################################################
     """
     NNspeed = [ a + NN.speed(j) for j,a in enumerate(NNspeed) ]
-    if n % saveEvery == 0:
-        graphNNcost.SetPoint(n/saveEvery,n,NNcost / saveEvery)
+    if (n-nRunTrainingSt+1) % saveEvery == 0:
+        graphNNcost.SetPoint((n-nRunTrainingSt+1) / saveEvery - 1,n,NNcost / saveEvery)
         NNcost = 0.
 
 
         for j,a in enumerate(NNspeed):
-            if n/saveEvery == 1:
+            if (n-nRunTrainingSt+1) / saveEvery == 1:
                 graphNNspeed.append(TGraph())
                 leg = "P:" + str(j)
                 legNNspeed.AddEntry(graphNNspeed[j],leg,"L");
-            graphNNspeed[j].SetPoint(n/saveEvery,n,a / saveEvery)
+            graphNNspeed[j].SetPoint((n-nRunTrainingSt+1) / saveEvery - 1,n,a / saveEvery)
         NNspeed = [ 0. for j in xrange(NN.Nperceptrons) ]
 
 
@@ -332,8 +342,8 @@ for n in xrange(1,nRunsTraining + 1):
     if ((NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR) or (NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y)))):        
         count += 1.
 
-    if n % saveEvery == 0:
-        graphNNaccuracy.SetPoint(n/saveEvery,n,count / saveEvery * 100)
+    if (n-nRunTrainingSt+1) % saveEvery == 0:
+        graphNNaccuracy.SetPoint((n-nRunTrainingSt+1) / saveEvery - 1,n,count / saveEvery * 100)
         count = 0.
 
 NN.printParams()
@@ -345,7 +355,7 @@ NN.save("NeuralNet.txt")
 Save additional hyper-parameter information
 ###########################################
 """
-NN.saveHypPar("NeuralNet.txt",nRunsTraining,miniBatch,learnRateStart,learnRateEnd,learnRateTau,cmd.Scramble,toScramble)
+NN.saveHypPar("NeuralNet.txt",nRunTrainingSt+nRunTrainingLn-1,miniBatch,learnRateStart,learnRateEnd,learnRateTau,cmd.scramble,toScramble)
 
 
 """
@@ -354,7 +364,7 @@ Neural net: test
 ################
 """
 print "\n\n=== Testing neural network ==="
-for n in xrange(1,nRunsTest + 1):
+for n in xrange(0,nRunTest):
     x = random() * xRange + xOffset - xRange/2
     y = random() * yRange + yOffset - yRange/2
 
@@ -390,14 +400,13 @@ cAccu.Modified()
 cAccu.Update()
 
 cSpeed.cd()
-if len(graphNNspeed[:]) != 0:
-    graphNNspeed[0].Draw('AL')
-    graphNNspeed[0].SetTitle('NN activation function speed;Epoch [#];Activation Function Speed')
-    graphNNspeed[0].SetLineColor(1)
-    for k in xrange(1,len(graphNNspeed[:])):
-        graphNNspeed[k].SetLineColor(k+1)
-        graphNNspeed[k].Draw('L same')
-    legNNspeed.Draw("same")
+graphNNspeed[0].Draw('AL')
+graphNNspeed[0].SetTitle('NN activation function speed;Epoch [#];Activation Function Speed')
+graphNNspeed[0].SetLineColor(1)
+for k in xrange(1,len(graphNNspeed[:])):
+    graphNNspeed[k].SetLineColor(k+1)
+    graphNNspeed[k].Draw('L same')
+legNNspeed.Draw("same")
 cSpeed.Modified()
 cSpeed.Update()
 

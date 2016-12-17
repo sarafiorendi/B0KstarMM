@@ -344,15 +344,23 @@ class NeuralNet(object):
         while "Hyper-parameter" not in line:
             line = f.readline()
 
+        it = 0
         while f.tell() != os.fstat(f.fileno()).st_size:
             line = f.readline()
             lele = line.split("_")
             for ele in lele:
                 if ele.isdigit():
                     yield int(ele)
+                    it += 1
                 elif ele.replace(".","").replace("-","").isdigit():
                     yield float(ele)
+                    it += 1
                 elif '{' and '}' in ele:
                     yield ast.literal_eval(ele)
+                    it += 1
 
         f.close()
+        
+        while it < 6:
+            yield
+            it += 1
