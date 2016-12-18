@@ -241,6 +241,10 @@ class NeuralNet(object):
                 
         self.initBPnetwork()
 
+    def setLearnRate(self,val):
+        for P in self.FFperceptrons:
+            P.setLearnRate(val)
+
     def save(self,name):
         f   = open(name,"w")
         out = []
@@ -291,10 +295,6 @@ class NeuralNet(object):
             P.read(f)
 
         f.close()
-
-    def setLearnRate(self,val):
-        for P in self.FFperceptrons:
-            P.setLearnRate(val)
 
     def saveHypPar(self,*args):
         """
