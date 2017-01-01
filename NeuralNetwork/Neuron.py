@@ -2,7 +2,7 @@ from random import gauss
 from math   import sqrt, log, tanh, atanh
 """
 #########################################
-.Activation function: tanh, BPN
+.Activation function: 'tanh', 'BPN'
 .Cost functions:
   1/2 (result - target)^2
   -log(sqrt(result))-target*atanh(result)
@@ -20,29 +20,29 @@ class Neuron(object):
     ######################################
     Nvars    = number of input variables
     aFunType = type of activation function
-               "tanh", "BPN"
+               'tanh', 'BPN'
     ######################################
     """
-    def __init__(self,Nvars,afunType="tanh"):
+    def __init__(self,Nvars,afunType='tanh'):
         self.Nvars = Nvars
         
-        if afunType == "tanh" or afunType == "BPN":
+        if afunType == 'tanh' or afunType == 'BPN':
             self.afunType = afunType
         else:
-            print "[Neuron::__init__]\tWrong option:", afunType
+            print '[Neuron::__init__]\tWrong option:', afunType
             quit()
 
         self.weights = [ gauss(0,1 / sqrt(self.Nvars)) for k in xrange(self.Nvars) ]
         self.weights.append(gauss(0,1))
-        if self.afunType is "BPN":
+        if self.afunType is 'BPN':
             self.weights = [ 0 for k in xrange(self.Nvars+1) ]
 
         self.afun     = 0
         self.dafundz  = 0
         self.amIfixed = False
 
-        self.reset("rmsprop")
-        self.reset("adapt")
+        self.reset('rmsprop')
+        self.reset('adapt')
 
     def eval(self,invec):
         """
@@ -76,23 +76,23 @@ class Neuron(object):
                 self.weights[k] = self.weights[k] * (1 - self.learnRate * self.regular) - self.learnRate * self.dCdW[k] / miniBatch
             self.weights[self.Nvars] -= self.learnRate * self.dCdZ / miniBatch
 
-            self.reset("adapt")
-            self.reset("rmsprop")
+            self.reset('adapt')
+            self.reset('rmsprop')
 
     ### Activation function ###
     def aFun(self,val):
-        if self.afunType == "BPN":
+        if self.afunType == 'BPN':
             return val * self.dafundz
 
-        if self.afunType == "tanh":
+        if self.afunType == 'tanh':
             return tanh(val)
 
     ### d(Activation function) / dz ###
     def daFunDz(self):
-        if self.afunType == "BPN":
+        if self.afunType == 'BPN':
             return self.dafundz
 
-        if self.afunType == "tanh":
+        if self.afunType == 'tanh':
             return 1 - self.afun * self.afun
 
     ### Cost function ###
@@ -109,17 +109,17 @@ class Neuron(object):
 
     def printParams(self):
         for k,W in enumerate(self.weights):
-            print "    Weight[", k, "] ", round(W,2)
+            print '    Weight[', k, '] ', round(W,2)
 
-    def reset(self,what="all"):
-        if what == "all":
+    def reset(self,what='all'):
+        if what == 'all':
             self.__init__(self.Nvars,self.afunType)
-        elif what == "rmsprop":
+        elif what == 'rmsprop':
             if self.rmsPrDecay == 1:
                 self.rmsProp = 1
             else:
                 self.rmsProp = 0
-        elif what == "adapt":
+        elif what == 'adapt':
             self.dCdZ = 0
             self.dCdW = [ 0 for k in xrange(self.Nvars) ]
 
@@ -131,7 +131,7 @@ class Neuron(object):
             self.weights[k] = self.weights[k] - cmp(self.weights[k],1) * gauss(0,(1 - self.afun) / self.dafundz / sqrt(self.Nvars))
         self.weights[self.Nvars] = self.weights[self.Nvars] - cmp(self.weights[self.Nvars],1) * gauss(0,(1 - self.afun) / self.dafundz)
 
-        self.reset("rmsprop")
+        self.reset('rmsprop')
 
     def removeW(self,who):
         self.weights = [ W for k,W in enumerate(self.weights) if k not in who ]
@@ -143,23 +143,23 @@ class Neuron(object):
             self.weights.insert(pos+k,gauss(0,1 / sqrt(self.Nvars)))
             
     def save(self,f):
-        out = ""
+        out = ''
         for W in self.weights:
-            out += "{0:20f}".format(W)
-        out += "\n"
+            out += '{0:20f}'.format(W)
+        out += '\n'
         f.write(out)
 
     def read(self,f):
         line = f.readline()
         lele = line.split()
 
-        while len(lele) == 0 or (len(lele) > 0 and ("#" in lele[0] or "Neuron[" not in line)):
+        while len(lele) == 0 or (len(lele) > 0 and ('#' in lele[0] or 'Neuron[' not in line)):
             line = f.readline()
             lele = line.split()
 
-        w = [ float(a) for a in lele if a.replace(".","").replace("-","").isdigit() ]
+        w = [ float(a) for a in lele if a.replace('.','').replace('-','').isdigit() ]
 
-        self.afunType = next(lele[i+2] for i,a in enumerate(lele) if a == "type")
+        self.afunType = next(lele[i+2] for i,a in enumerate(lele) if a == 'type')
 
         w.pop(0)
         self.afun    = w.pop(0)

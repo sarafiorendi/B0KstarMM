@@ -1,4 +1,4 @@
-"""
+"""""
 #######################################################
 MVA implementation with Neural Network
                                     by Mauro E. Dinardo
@@ -23,6 +23,7 @@ from argparse  import ArgumentParser
 from random    import seed, random, gauss
 from math      import exp
 from os        import system
+from timeit    import default_timer
 
 from ROOT      import gROOT, gStyle, TCanvas, TGraph, TH1D, TGaxis, TLegend
 
@@ -36,29 +37,29 @@ def ArgParser():
     ###############
     """
     parser = ArgumentParser()
-    parser.add_argument("-in", "--infile",       dest = "infile",       type = str,  help = "Input neural network",             required=False, default="")
-    parser.add_argument("-nv", "--Nvars",        dest = "Nvars",        type = int,  help = "Number of variables",              required=False)
-    parser.add_argument("-np", "--Nperceptrons", dest = "Nperceptrons", type = int,  help = "Number of perceptrons",            required=False)
-    parser.add_argument("-nn", "--Nneurons",     dest = "Nneurons",     type = int,  help = "Number of neurons per perceptron", required=False, nargs='*')
-    parser.add_argument("-sc", "--Scramble",     dest = "scramble",     type = bool, help = "Do scramble",                      required=False, default=False)
+    parser.add_argument('-in', '--infile',       dest = 'infile',       type = str,  help = 'Input neural network',             required=False, default='')
+    parser.add_argument('-nv', '--Nvars',        dest = 'Nvars',        type = int,  help = 'Number of variables',              required=False)
+    parser.add_argument('-np', '--Nperceptrons', dest = 'Nperceptrons', type = int,  help = 'Number of perceptrons',            required=False)
+    parser.add_argument('-nn', '--Nneurons',     dest = 'Nneurons',     type = int,  help = 'Number of neurons per perceptron', required=False, nargs='*')
+    parser.add_argument('-sc', '--Scramble',     dest = 'scramble',     type = bool, help = 'Do scramble',                      required=False, default=False)
 
     options = parser.parse_args()
 
-    print ""
+    print ''
     if options.infile:
-        print "--> I'm reading the input file: ", options.infile
+        print '--> I\'m reading the input file:', options.infile
 
     if options.Nvars:
-        print "--> I'm reading the variable number: ", options.Nvars
+        print '--> I\'m reading the variable number:', options.Nvars
 
     if options.Nperceptrons:
-        print "--> I'm reading the perceptron number: ", options.Nperceptrons
+        print '--> I\'m reading the perceptron number:', options.Nperceptrons
 
     if options.Nneurons:
-        print "--> I'm reading the neuron number per perceptron: ", options.Nneurons
+        print '--> I\'m reading the neuron number per perceptron:', options.Nneurons
 
     if options.scramble:
-        print "--> I'm reading the scramble flag: ", options.scramble
+        print '--> I\'m reading the scramble flag:', options.scramble
 
     return options
 
@@ -69,7 +70,7 @@ def SetStyle():
     ROOT style settings
     ###################
     """
-    gROOT.SetStyle("Plain")
+    gROOT.SetStyle('Plain')
     gROOT.ForceStyle()
     gStyle.SetTextFont(42)
 
@@ -81,24 +82,24 @@ def SetStyle():
     gStyle.SetPadTopMargin(0.11)
     gStyle.SetPadBottomMargin(0.12)
 
-    gStyle.SetTitleFont(42,"x")
-    gStyle.SetTitleFont(42,"y")
-    gStyle.SetTitleFont(42,"z")
+    gStyle.SetTitleFont(42,'x')
+    gStyle.SetTitleFont(42,'y')
+    gStyle.SetTitleFont(42,'z')
     
-    gStyle.SetTitleOffset(1.05,"x")
-    gStyle.SetTitleOffset(0.95,"y")
+    gStyle.SetTitleOffset(1.05,'x')
+    gStyle.SetTitleOffset(0.95,'y')
 
-    gStyle.SetTitleSize(0.05,"x")
-    gStyle.SetTitleSize(0.05,"y")
-    gStyle.SetTitleSize(0.05,"z")
+    gStyle.SetTitleSize(0.05,'x')
+    gStyle.SetTitleSize(0.05,'y')
+    gStyle.SetTitleSize(0.05,'z')
     
-    gStyle.SetLabelFont(42,"x")
-    gStyle.SetLabelFont(42,"y")
-    gStyle.SetLabelFont(42,"z")
+    gStyle.SetLabelFont(42,'x')
+    gStyle.SetLabelFont(42,'y')
+    gStyle.SetLabelFont(42,'z')
 
-    gStyle.SetLabelSize(0.05,"x")
-    gStyle.SetLabelSize(0.05,"y")
-    gStyle.SetLabelSize(0.05,"z")
+    gStyle.SetLabelSize(0.05,'x')
+    gStyle.SetLabelSize(0.05,'y')
+    gStyle.SetLabelSize(0.05,'z')
     
     TGaxis.SetMaxDigits(3)
     gStyle.SetStatY(0.9)
@@ -134,7 +135,8 @@ NN.printParams()
 Hyperparameters
 ###############
 """
-nRunTrainingLn = 10010000
+#nRunTrainingLn = 10010000
+nRunTrainingLn = 100000
 nRunTrainingSt = 0
 nRunTest       = 100000
 miniBatch      = 1
@@ -241,7 +243,7 @@ histoNNE = TH1D('histoNNE','histoNNE',100,NNoutMin,NNoutMax)
 histoNNE.SetTitle('NN error output;NN output;Entries [#]')
 histoNNE.SetLineColor(3)
 
-legNNspeed = TLegend(0.92, 0.17, 1.0, 1.0, "")
+legNNspeed = TLegend(0.92, 0.17, 1.0, 1.0, '')
 legNNspeed.SetTextSize(0.03)
 legNNspeed.SetFillStyle(1001)
 
@@ -253,10 +255,11 @@ graphNNspeed = []
 Neural net: training
 ####################
 """
-print "\n\n=== Training neural network ==="
+print '\n\n=== Training neural network ==='
 NNspeed = [ 0. for j in xrange(NN.Nperceptrons) ]
 NNcost  = 0.
 count   = 0.
+startClock = default_timer()
 for n in xrange(nRunTrainingSt+1,nRunTrainingSt+1 + nRunTrainingLn):
     """
     ####################
@@ -283,7 +286,7 @@ for n in xrange(nRunTrainingSt+1,nRunTrainingSt+1 + nRunTrainingLn):
     """
     if cmd.scramble == True and toScramble != None and n == nRunTrainingSt+1:
         NN.release({-1:[]})
-        print "  [", n, "] Scrambling", toScramble
+        print '  [', n, '] Scrambling', toScramble
         NN.scramble(toScramble)
         NN.fixAllBut(toScramble)
 
@@ -318,8 +321,8 @@ for n in xrange(nRunTrainingSt+1,nRunTrainingSt+1 + nRunTrainingLn):
         for j,a in enumerate(NNspeed):
             if (n-nRunTrainingSt) / saveEvery == 1:
                 graphNNspeed.append(TGraph())
-                leg = "P:" + str(j)
-                legNNspeed.AddEntry(graphNNspeed[j],leg,"L");
+                leg = 'P:' + str(j)
+                legNNspeed.AddEntry(graphNNspeed[j],leg,'L');
             graphNNspeed[j].SetPoint((n-nRunTrainingSt) / saveEvery - 1,n,a / saveEvery)
         NNspeed = [ 0. for j in xrange(NN.Nperceptrons) ]
 
@@ -343,8 +346,11 @@ for n in xrange(nRunTrainingSt+1,nRunTrainingSt+1 + nRunTrainingLn):
         graphNNaccuracy.SetPoint((n-nRunTrainingSt) / saveEvery - 1,n,count / saveEvery * 100)
         count = 0.
 
+endClock = default_timer()
+print '--> Training time:', endClock - startClock, '[s]'
+
 NN.printParams()
-NN.save("NeuralNet.txt")
+NN.save('NeuralNet.txt')
 
 
 """
@@ -352,7 +358,7 @@ NN.save("NeuralNet.txt")
 Save additional hyper-parameter information
 ###########################################
 """
-NN.saveHypPar("NeuralNet.txt",nRunTrainingSt+nRunTrainingLn,miniBatch,learnRateStart,learnRateEnd,learnRateTau,cmd.scramble,toScramble)
+NN.saveHypPar('NeuralNet.txt',nRunTrainingSt+nRunTrainingLn,miniBatch,learnRateStart,learnRateEnd,learnRateTau,cmd.scramble,toScramble)
 
 
 """
@@ -360,7 +366,8 @@ NN.saveHypPar("NeuralNet.txt",nRunTrainingSt+nRunTrainingLn,miniBatch,learnRateS
 Neural net: test
 ################
 """
-print "\n\n=== Testing neural network ==="
+print '\n\n=== Testing neural network ==='
+startClock = default_timer()
 for n in xrange(0,nRunTest):
     x = random() * xRange + xOffset - xRange/2
     y = random() * yRange + yOffset - yRange/2
@@ -378,6 +385,9 @@ for n in xrange(0,nRunTest):
     else:
         graphNNerr.SetPoint(n,x,y)
         histoNNE.Fill(NNout[0])
+
+endClock = default_timer()
+print '--> Testing time:', endClock - startClock, '[s]'
 
 
 """
@@ -404,7 +414,7 @@ if len(graphNNspeed[:]) > 0:
 for k in xrange(1,len(graphNNspeed[:])):
     graphNNspeed[k].SetLineColor(k+1)
     graphNNspeed[k].Draw('L same')
-legNNspeed.Draw("same")
+legNNspeed.Draw('same')
 cSpeed.Modified()
 cSpeed.Update()
 
@@ -436,5 +446,5 @@ cNNval.Update()
 Wait for keyborad stroke
 ########################
 """
-system("say 'Neural netowrk optimized'")
-raw_input("\n\n---press enter---")
+system('say \'Neural netowrk optimized\'')
+raw_input('\n\n---press enter---')
