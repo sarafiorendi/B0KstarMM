@@ -135,8 +135,7 @@ NN.printParams()
 Hyperparameters
 ###############
 """
-#nRunTrainingLn = 10010000
-nRunTrainingLn = 100000
+nRunTrainingLn = 10010000
 nRunTrainingSt = 0
 nRunTest       = 100000
 miniBatch      = 1
@@ -296,7 +295,7 @@ for n in xrange(nRunTrainingSt+1,nRunTrainingSt+1 + nRunTrainingLn):
     Neural net: setting learn rate
     ##############################
     """
-    NN.setLearnRate(learnRateEnd*(1 - exp(-(n-1) / learnRateTau)) + learnRateStart*exp(-(n-1) / learnRateTau))
+    NN.setLearnRate(learnRateEnd*(1 - exp(-(n-1.) / learnRateTau)) + learnRateStart*exp(-(n-1.) / learnRateTau))
 
 
     """
