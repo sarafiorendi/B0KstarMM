@@ -1,4 +1,0 @@
-MyProjects
-==========
-
-My projects area ...
