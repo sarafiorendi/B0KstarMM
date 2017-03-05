@@ -1,6 +1,6 @@
 if [ "$#" -ne 2 ] ; then
     echo @@@ Error: Parameter missing @@@
-    echo "Synopsis: InitAnalysis.sh analysis_path unset_display[0=false;1=true]"
+    echo "Synopsis: InitAnalysis.sh analysis_ABSOLUTE_path unset_display[0=false;1=true]"
 else
     export ANALYPATH=$1
 
