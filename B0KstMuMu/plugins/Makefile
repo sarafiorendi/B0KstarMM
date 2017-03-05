@@ -2,7 +2,7 @@ OS            := $(shell uname)
 
 ifeq ($(OS), Darwin)
 CXX           := clang++
-DEBUG         :=
+#DEBUG         := -g
 endif
 
 ifeq ($(OS), Linux)
@@ -18,6 +18,8 @@ SOURCES       := $(filter-out $(SOURCEDIR)/B0KstMuMu.cc,$(wildcard $(SOURCEDIR)/
 INCLUDEDIR    := ../interface
 INCLUDES      := -I $(INCLUDEDIR)
 
+#MYLIBRARY     := -L . $(addprefix -l, $(basename $(wildcard Roo*_cxx.so)))
+
 XERCESINFLAGS := -I $(HOME)/xerces/include
 BOOSTINFLAGS  := -I $(HOME)/boost
 GSLINCFLAGS   := -I $(HOME)/gsl/include
@@ -28,7 +30,6 @@ GSLFLAGS      := -L $(HOME)/gsl/lib -lgsl
 
 ROOTFLAGS     := `root-config --cflags --glibs` -lMinuit
 ROOFITFLAGS   := $(ROOTFLAGS) -lRooFit -lRooFitCore -lFoam
-
 
 SingleCandB0KstMuMu: $(SOURCEDIR) $(INCLUDEDIR) SingleCandB0KstMuMu.cc
 	$(CXX) $(CXXFLAGS) -o $@ $(ROOTFLAGS) $(INCLUDES) $(SOURCES) $@.cc
@@ -46,7 +47,7 @@ MakePlots: $(SOURCEDIR) $(INCLUDEDIR) MakePlots.cc
 	$(CXX) $(CXXFLAGS) -o $@ $(ROOFITFLAGS) $(INCLUDES) $(SOURCES) -D"ROOFIT" $@.cc
 
 ExtractYield: $(SOURCEDIR) $(INCLUDEDIR) ExtractYield.cc
-	$(CXX) $(CXXFLAGS) -o $@ $(ROOFITFLAGS) $(INCLUDES) $(SOURCES) -D"ROOFIT" $@.cc
+	$(CXX) $(CXXFLAGS) -o $@ $(ROOFITFLAGS) $(INCLUDES) $(SOURCES) $(MYLIBRARY) -D"ROOFIT" $@.cc
 
 LOCALCC := $(wildcard *.cc)
 clean:
