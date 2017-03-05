@@ -942,8 +942,8 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
       cout << myString.str() << endl;
 
       // @TMP@ : (2)
-      AnglesPDF = new RooGenericPdf("AngleS",myString.str().c_str(),RooArgSet(*VarsAng,*VarsPoly));
-      // AnglesPDF = RooClassFactory::makePdfInstance("AngleS",myString.str().c_str(),RooArgSet(*VarsAng,*VarsPoly));
+      // AnglesPDF = new RooGenericPdf("AngleS",myString.str().c_str(),RooArgSet(*VarsAng,*VarsPoly));
+      AnglesPDF = RooClassFactory::makePdfInstance("AngleS",myString.str().c_str(),RooArgSet(*VarsAng,*VarsPoly));
       // AnglesPDF = new RooAngleSPdf("AngleS","AngleS",RooArgSet(*VarsAng,*VarsPoly));
     }
   else if ((FitType == 1*10) || (FitType == 41*10) || (FitType == 61*10) || (FitType == 81*10) || // Branching fraction
@@ -985,8 +985,8 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
       if (useEffPDF == true)
 	{
 	  // @TMP@ : (2)
-	  RooGenericPdf* _AnglesPDF = new RooGenericPdf("_AnglesPDF",myString.str().c_str(),RooArgSet(*VarsAng));
-	  // RooAbsPdf* _AnglesPDF = RooClassFactory::makePdfInstance("_AngleS",myString.str().c_str(),RooArgSet(*VarsAng));
+	  // RooGenericPdf* _AnglesPDF = new RooGenericPdf("_AnglesPDF",myString.str().c_str(),RooArgSet(*VarsAng));
+	  RooAbsPdf* _AnglesPDF = RooClassFactory::makePdfInstance("_AngleS",myString.str().c_str(),RooArgSet(*VarsAng));
  	  // RooAbsPdf* _AnglesPDF = new Roo_AngleSPdf("_AngleS","_AngleS",RooArgSet(*VarsAng));
   
 	  // #############################
