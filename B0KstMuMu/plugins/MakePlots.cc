@@ -318,21 +318,21 @@ void MakeComparisonDataMC (unsigned int plotType)
   // #########
   else if (plotType == 5)
     {
-      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} p_{T} (GeV)";
+      Xtitle = "#mu^{#font[122]{+}} p_{T} (GeV)";
       maxX = 40.0;
 
       fileName = "MuppT.pdf";
     }
   else if (plotType == 6)
     {
-      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}} p_{T} (GeV)";
+      Xtitle = "#mu^{#font[122]{\55}} p_{T} (GeV)";
       maxX = 40.0;
 
       fileName = "MumpT.pdf";
     }
   else if (plotType == 7)
     {
-      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #eta";
+      Xtitle = "#mu^{#font[122]{+}} #eta";
       minX = -2.4;
       maxX = 2.4;
 
@@ -340,7 +340,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 8)
     {
-      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}} #eta";
+      Xtitle = "#mu^{#font[122]{\55}} #eta";
       minX = -2.4;
       maxX = 2.4;
 
@@ -348,7 +348,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 9)
     {
-      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #phi";
+      Xtitle = "#mu^{#font[122]{+}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -362,7 +362,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 10)
     {
-      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #phi";
+      Xtitle = "#mu^{#font[122]{+}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -376,7 +376,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 11)
     {
-      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #phi";
+      Xtitle = "#mu^{#font[122]{+}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -390,7 +390,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 12)
     {
-      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}} #phi";
+      Xtitle = "#mu^{#font[122]{+}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -404,7 +404,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 13)
     {
-      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}} #phi";
+      Xtitle = "#mu^{#font[122]{\55}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -418,7 +418,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 14)
     {
-      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}} #phi";
+      Xtitle = "#mu^{#font[122]{\55}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -432,7 +432,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 15)
     {
-      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}} #phi";
+      Xtitle = "#mu^{#font[122]{\55}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -446,7 +446,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 16)
     {
-      Xtitle = "#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}} #phi";
+      Xtitle = "#mu^{#font[122]{\55}} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -464,7 +464,7 @@ void MakeComparisonDataMC (unsigned int plotType)
   // ###########
   else if (plotType == 17)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} p_{T} (GeV)";
+      Xtitle = "#font[122]{K}^{#font[122]{*0}} trk#font[122]{+} p_{T} (GeV)";
       maxX = 20.0;
 
       // @TMP@ : special binning for hadron pT
@@ -474,7 +474,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 18)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{\55} p_{T} (GeV)";
+      Xtitle = "#font[122]{K}^{#font[122]{*0}} trk#font[122]{\55} p_{T} (GeV)";
       maxX = 20.0;
 
       // @TMP@ : special binning for hadron pT
@@ -484,7 +484,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 19)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} #eta";
+      Xtitle = "#font[122]{K}^{#font[122]{*0}} trk#font[122]{+} #eta";
       minX = -3.0;
       maxX = 3.0;
 
@@ -492,7 +492,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 20)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{\55} #eta";
+      Xtitle = "#font[122]{K}^{#font[122]{*0}} trk#font[122]{\55} #eta";
       minX = -3.0;
       maxX = 3.0;
 
@@ -500,7 +500,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 21)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} #phi";
+      Xtitle = "#font[122]{K}^{#font[122]{*0}} trk#font[122]{+} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -514,7 +514,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 22)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} #phi";
+      Xtitle = "#font[122]{K}^{#font[122]{*0}} trk#font[122]{+} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -528,7 +528,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 23)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} #phi";
+      Xtitle = "#font[122]{K}^{#font[122]{*0}} trk#font[122]{+} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -542,7 +542,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 24)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} #phi";
+      Xtitle = "#font[122]{K}^{#font[122]{*0}} trk#font[122]{+} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -556,7 +556,7 @@ void MakeComparisonDataMC (unsigned int plotType)
    }
   else if (plotType == 25)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{\55} #phi";
+      Xtitle = "#font[122]{K}^{#font[122]{*0}} trk#font[122]{\55} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -570,7 +570,7 @@ void MakeComparisonDataMC (unsigned int plotType)
    }
   else if (plotType == 26)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{\55} #phi";
+      Xtitle = "#font[122]{K}^{#font[122]{*0}} trk#font[122]{\55} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -584,7 +584,7 @@ void MakeComparisonDataMC (unsigned int plotType)
    }
   else if (plotType == 27)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{\55} #phi";
+      Xtitle = "#font[122]{K}^{#font[122]{*0}} trk#font[122]{\55} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -598,7 +598,7 @@ void MakeComparisonDataMC (unsigned int plotType)
     }
   else if (plotType == 28)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{\55} #phi";
+      Xtitle = "#font[122]{K}^{#font[122]{*0}} trk#font[122]{\55} #phi";
       minX = -3.15;
       maxX = 3.15;
 
@@ -612,7 +612,7 @@ void MakeComparisonDataMC (unsigned int plotType)
    }
   else if (plotType == 29)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{+} DCA/#sigma";
+      Xtitle = "#font[122]{K}^{#font[122]{*0}} trk#font[122]{+} DCA/#sigma";
       minX = 0.0;
       maxX = 40;
 
@@ -622,7 +622,7 @@ void MakeComparisonDataMC (unsigned int plotType)
    }
   else if (plotType == 30)
     {
-      Xtitle = "#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}} trk#font[122]{\55} DCA/#sigma";
+      Xtitle = "#font[122]{K}^{#font[122]{*0}} trk#font[122]{\55} DCA/#sigma";
       minX = 0.0;
       maxX = 40;
 
@@ -2481,12 +2481,12 @@ void PlotMuMu (string fileName, bool bkgSub)
   c0->cd();
 
   TH1D* hDsig = new TH1D("hDsig","hDsig",nBins,minX,maxX);
-  hDsig->SetXTitle("m(#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
+  hDsig->SetXTitle("m(#mu^{#font[122]{+}} #kern[-0.2]{#mu^{#font[122]{\55}}}) (GeV)");
   hDsig->SetYTitle("Entries / (0.014 GeV)");
   hDsig->SetMarkerStyle(20);
 
   TH1D* hDbkg = new TH1D("hDbkg","hDbkg",nBins,minX,maxX);
-  hDbkg->SetXTitle("m(#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
+  hDbkg->SetXTitle("m(#mu^{#font[122]{+}} #kern[-0.2]{#mu^{#font[122]{\55}}}) (GeV)");
   hDbkg->SetYTitle("Entries / (0.014 GeV)");
   hDbkg->SetMarkerStyle(20);
 
@@ -2559,24 +2559,24 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
   cout << "\n[MakePlots::PlotKst]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
   TH1D* h1Dsig = new TH1D("h1Dsig","h1Dsig",nBins,minX - extra,maxX + extra);
-  h1Dsig->SetXTitle("m(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
+  h1Dsig->SetXTitle("m(#font[122]{K}^{#font[122]{*0}}) (GeV)");
   h1Dsig->SetYTitle("Entries / (0.004 GeV)");
   h1Dsig->SetMarkerStyle(20);
 
   TH1D* h2Dsig = new TH1D("h2Dsig","h2Dsig",nBins,minX - extra,maxX + extra);
-  h2Dsig->SetXTitle("m(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
+  h2Dsig->SetXTitle("m(#font[122]{K}^{#font[122]{*0}}) (GeV)");
   h2Dsig->SetYTitle("Entries / (0.004 GeV)");
   h2Dsig->SetMarkerStyle(21);
   h2Dsig->SetMarkerColor(kRed);
 
 
   TH1D* h1Dbkg = new TH1D("h1Dbkg","h1Dbkg",nBins,minX - extra,maxX + extra);
-  h1Dbkg->SetXTitle("m(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
+  h1Dbkg->SetXTitle("m(#font[122]{K}^{#font[122]{*0}}) (GeV)");
   h1Dbkg->SetYTitle("Entries / (0.004 GeV)");
   h1Dbkg->SetMarkerStyle(20);
 
   TH1D* h2Dbkg = new TH1D("h2Dbkg","h2Dbkg",nBins,minX - extra,maxX + extra);
-  h2Dbkg->SetXTitle("m(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
+  h2Dbkg->SetXTitle("m(#font[122]{K}^{#font[122]{*0}}) (GeV)");
   h2Dbkg->SetYTitle("Entries / (0.004 GeV)");
   h2Dbkg->SetMarkerStyle(21);
   h2Dbkg->SetMarkerColor(kRed);
@@ -2643,7 +2643,7 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
   theTree->Draw("kstBarMass>>h2Dsig",tmpstring.c_str());
 
   TH1D* h3Dsig = (TH1D*)h1Dsig->Clone("h3Dsig");
-  h3Dsig->SetXTitle("m(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
+  h3Dsig->SetXTitle("m(#font[122]{K}^{#font[122]{*0}}) (GeV)");
   h3Dsig->SetYTitle("Entries / (0.004 GeV)");
   h3Dsig->SetMarkerStyle(20);
 
@@ -2659,7 +2659,7 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
   theTree->Draw("kstBarMass>>h2Dbkg",tmpstring.c_str());
 
   TH1D* h3Dbkg = (TH1D*)h1Dbkg->Clone("h3Dbkg");
-  h3Dbkg->SetXTitle("m(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}) (GeV)");
+  h3Dbkg->SetXTitle("m(#font[122]{K}^{#font[122]{*0}}) (GeV)");
   h3Dbkg->SetYTitle("Entries / (0.004 GeV)");
   h3Dbkg->SetMarkerStyle(20);
 
@@ -2709,8 +2709,8 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
   h2Dsig->Draw("e1p sames");
 
   TLegend* leg1 = new TLegend(0.15, 0.6, 0.25, 0.85, "");
-  leg1->AddEntry(h1Dsig,"#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}");
-  leg1->AddEntry(h2Dsig,"#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{*0}}}}#lower[-0.4]{_{bar}}");
+  leg1->AddEntry(h1Dsig,"#font[122]{K}^{#font[122]{*0}}");
+  leg1->AddEntry(h2Dsig,"#font[122]{K}^{#font[122]{*0}}_{bar}");
   leg1->SetFillColor(0);
   leg1->SetBorderSize(0);
   leg1->Draw();
@@ -3087,8 +3087,8 @@ void ScatterPlotB0MuMu (string fileName, unsigned int cutType)
   TCanvas* c0 = new TCanvas("c0","c0",1200,800);
   c0->cd();
   TH2D* hs = new TH2D("hs","hs",200,sqrt(q2Bins[0]),sqrt(q2Bins[q2Bins.size()-1]),200,lowB0Mass,highB0Mass);
-  hs->SetXTitle("m(#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
-  hs->SetYTitle("m(K#pi#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}}) (GeV)");
+  hs->SetXTitle("m(#mu^{#font[122]{+}} #kern[-0.2]{#mu^{#font[122]{\55}}}) (GeV)");
+  hs->SetYTitle("m(K #pi #mu^{#font[122]{+}} #mu^{#font[122]{\55}}) (GeV)");
   hs->SetZTitle("Entries [#]");
 
   
