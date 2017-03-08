@@ -18,7 +18,9 @@ SOURCES       := $(filter-out $(SOURCEDIR)/B0KstMuMu.cc,$(wildcard $(SOURCEDIR)/
 INCLUDEDIR    := ../interface
 INCLUDES      := -I $(INCLUDEDIR)
 
-#MYLIBRARY     := -L . $(addprefix -l, $(basename $(wildcard Roo*_cxx.so)))
+MYLIBSRC      := $(filter-out $(wildcard *_dict*), $(wildcard Roo*.cxx))
+MYLIBINCLUDE  := $(wildcard Roo*.h)
+MYLIBDICTSRC  := $(wildcard Roo*.cxx)
 
 XERCESINFLAGS := -I $(HOME)/xerces/include
 BOOSTINFLAGS  := -I $(HOME)/boost
@@ -46,8 +48,11 @@ ComputeEfficiency: $(SOURCEDIR) $(INCLUDEDIR) ComputeEfficiency.cc
 MakePlots: $(SOURCEDIR) $(INCLUDEDIR) MakePlots.cc
 	$(CXX) $(CXXFLAGS) -o $@ $(ROOFITFLAGS) $(INCLUDES) $(SOURCES) -D"ROOFIT" $@.cc
 
+Dict: LinkDef.h
+	rootcling -f RooMyDictionary_dict.cxx -c $(MYLIBINCLUDE) LinkDef.h
+
 ExtractYield: $(SOURCEDIR) $(INCLUDEDIR) ExtractYield.cc
-	$(CXX) $(CXXFLAGS) -o $@ $(ROOFITFLAGS) $(INCLUDES) $(SOURCES) $(MYLIBRARY) -D"ROOFIT" $@.cc
+	$(CXX) $(CXXFLAGS) -o $@ $(ROOFITFLAGS) $(INCLUDES) $(SOURCES) $(MYLIBDICTSRC) -D"ROOFIT" $@.cc
 
 LOCALCC := $(wildcard *.cc)
 clean:
