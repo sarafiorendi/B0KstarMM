@@ -94,7 +94,7 @@ using namespace RooFit;
 // ##########################################
 #define MAKEmumuPLOTS false
 #define SETBATCH      false
-#define SAVEPOLY      true   // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
+#define SAVEPOLY      false  // ["true" = save bkg polynomial coefficients in new parameter file; "false" = save original values]
 #define SAVEPLOT      false
 #define RESETsigANG   false  // Reset signal angular parameters before starting the fit
 #define RESETcomANG   false  // Reset combinatorial bkg angular parameters before starting the fit
