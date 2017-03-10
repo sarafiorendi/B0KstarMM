@@ -2,7 +2,15 @@
 // # Program to perform the full angular analysis of the decay B0 --> K*0 mu+ mu- #
 // # Author: Mauro Dinardo                                                        #
 // ################################################################################
-// # Search for @TMP@ to look for temporary code options                          #
+// # Search @TMP@ to look for temporary code options                              #
+// ################################################################################
+// # To use pre-compiled code for the p.d.f. (right now still using RooGenericPdf)#
+// # @TMP@ : (1) comment out the header files                                     #
+// # @TMP@ : (2) run uncommenting the "makePdfInstance" line                      #
+// # run : make Dict                                                              #
+// # @TMP@ : (1) uncomment the header files                                       #
+// # @TMP@ : (2) comment our the "makePdfInstance" line                           #
+// # @TMP@ : (2) run uncommeting the next line                                    #
 // ################################################################################
 
 #include <TROOT.h>
@@ -26,6 +34,13 @@
 #include <RooAddPdf.h>
 #include <RooDataSet.h>
 #include <RooGenericPdf.h>
+#include <RooClassFactory.h>
+
+// @TMP@ : (1)
+// #include "RooAngleSPdf.h"
+// #include "Roo_AngleSPDFPdf.h"
+// #include "RooAngleMisTagPdf.h"
+
 #include <RooPlot.h>
 #include <RooArgSet.h>
 #include <RooFitResult.h>
@@ -651,7 +666,7 @@ void DrawString (double Lumi, RooPlot* myFrame)
 
   myString.clear(); myString.str("");
   myString << "CMS";
-  TLatex* LumiTex1 = new TLatex(0.18,0.9,myString.str().c_str());
+  TLatex* LumiTex1 = new TLatex(0.17,0.9,myString.str().c_str());
   LumiTex1->SetTextFont(61);
   LumiTex1->SetTextSize(0.06);
   LumiTex1->SetTextColor(kBlack);
@@ -666,7 +681,7 @@ void DrawString (double Lumi, RooPlot* myFrame)
 
   myString.clear(); myString.str("");
   myString << "#it{Preliminary}";
-  TLatex* LumiTex2 = new TLatex(0.28,0.9,myString.str().c_str());
+  TLatex* LumiTex2 = new TLatex(0.26,0.9,myString.str().c_str());
   LumiTex2->SetTextFont(42);
   LumiTex2->SetTextSize(0.06 * scaleRespect2CMS);
   LumiTex2->SetTextColor(kBlack);
@@ -681,7 +696,7 @@ void DrawString (double Lumi, RooPlot* myFrame)
 
   myString.clear(); myString.str("");
   myString << Lumi <<  " fb#lower[0.4]{^{#font[122]{\55}1}} (8 TeV)";
-  TLatex* LumiTex3 = new TLatex(0.76,0.9,myString.str().c_str());
+  TLatex* LumiTex3 = new TLatex(0.78,0.9,myString.str().c_str());
   LumiTex3->SetTextFont(42);
   LumiTex3->SetTextSize(0.06 * scaleRespect2CMS);
   LumiTex3->SetTextColor(kBlack);
@@ -869,8 +884,8 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
     	  // #####################
     	  // # P-wave decay rate #
     	  // #####################
-	  myString << "(3/4 * (3/2 * " << Utility->Transformer("FlS",doTransf,a,b,c) << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-          myString << "(3/8 * (1-" << Utility->Transformer("FlS",doTransf,a,b,c) << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + " << Utility->Transformer("AfbS",doTransf,a,b,c) << "*" << y->getPlotLabel() << ") * ";
+	  myString << "(3./4. * (3./2. * " << Utility->Transformer("FlS",doTransf,a,b,c) << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+          myString << "(3./8. * (1-" << Utility->Transformer("FlS",doTransf,a,b,c) << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + " << Utility->Transformer("AfbS",doTransf,a,b,c) << "*" << y->getPlotLabel() << ") * ";
           myString << "(1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ")))";
 	}
       else
@@ -883,11 +898,11 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
     	  // ###########################
     	  // # S and P-wave decay rate #
     	  // ###########################
-          myString << "(9/16 * (2/3*(" << Utility->Transformer("FsS",doTransf,a,b,c) << " + " << Utility->Transformer("AsS",doTransf,a,b,c) << "*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+          myString << "(9./16. * (2./3.*(" << Utility->Transformer("FsS",doTransf,a,b,c) << " + " << Utility->Transformer("AsS",doTransf,a,b,c) << "*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
           myString << "(1-" << Utility->Transformer("FsS",doTransf,a,b,c) << ") * ";
-          myString << "(2*" << Utility->Transformer("FlS",doTransf,a,b,c) << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
-          myString << "1/2*(1-" << Utility->Transformer("FlS",doTransf,a,b,c) << ") * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
-          myString << "4/3*" << Utility->Transformer("AfbS",doTransf,a,b,c) << " * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * " << y->getPlotLabel() << ")))";
+          myString << "(2.*" << Utility->Transformer("FlS",doTransf,a,b,c) << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+          myString << "1./2.*(1-" << Utility->Transformer("FlS",doTransf,a,b,c) << ") * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+          myString << "4./3.*" << Utility->Transformer("AfbS",doTransf,a,b,c) << " * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * " << y->getPlotLabel() << ")))";
     	}
 
       VarsPoly->removeAll();
@@ -926,14 +941,17 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
       cout << "[ExtractYield::MakeAngWithEffPDF]\t@@@ 2D angular*efficiency p.d.f. @@@" << endl;
       cout << myString.str() << endl;
 
+      // @TMP@ : (2)
       AnglesPDF = new RooGenericPdf("AngleS",myString.str().c_str(),RooArgSet(*VarsAng,*VarsPoly));
+      // AnglesPDF = RooClassFactory::makePdfInstance("AngleS",myString.str().c_str(),RooArgSet(*VarsAng,*VarsPoly));
+      // AnglesPDF = new RooAngleSPdf();
     }
   else if ((FitType == 1*10) || (FitType == 41*10) || (FitType == 61*10) || (FitType == 81*10) || // Branching fraction
 	   (FitType == 6*10) || (FitType == 26*10) || (FitType == 36*10) || (FitType == 46*10) || (FitType == 56*10) || (FitType == 66*10) || (FitType == 76*10) || (FitType == 86*10) || (FitType == 96*10)) // Fl-Afb-fit
     {
       // #######################################################
       // # Make 2D signal*efficiency p.d.f.: integral over phi #
-      // # For incorrectly tagged events                       #
+      // # For mis-tagged events                               #
       // #######################################################
 
       myString.clear(); myString.str("");
@@ -942,8 +960,8 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	  // #####################
 	  // # P-wave decay rate #
 	  // #####################
-          myString << "(3/4 * (3/2 * " << Utility->Transformer("FlS",doTransf,a,b,c) << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
-	  myString << "(3/8 * (1-" << Utility->Transformer("FlS",doTransf,a,b,c) <<") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - " << Utility->Transformer("AfbS",doTransf,a,b,c) << "*" << y->getPlotLabel() << ") * ";
+          myString << "(3./4. * (3./2. * " << Utility->Transformer("FlS",doTransf,a,b,c) << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") * " << z->getPlotLabel() << "*" << z->getPlotLabel() << " + ";
+	  myString << "(3./8. * (1-" << Utility->Transformer("FlS",doTransf,a,b,c) <<") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - " << Utility->Transformer("AfbS",doTransf,a,b,c) << "*" << y->getPlotLabel() << ") * ";
           myString << "(1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ")))";
 	}
       else
@@ -951,11 +969,11 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	  // ###########################
 	  // # S and P-wave decay rate #
 	  // ###########################
-	  myString << "(9/16 * (2/3*(" << Utility->Transformer("FsS",doTransf,a,b,c) << " - " << Utility->Transformer("AsS",doTransf,a,b,c) << "*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+	  myString << "(9./16. * (2./3.*(" << Utility->Transformer("FsS",doTransf,a,b,c) << " - " << Utility->Transformer("AsS",doTransf,a,b,c) << "*" << z->getPlotLabel() << ") * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
           myString << "(1-" << Utility->Transformer("FsS",doTransf,a,b,c) << ") * ";
-          myString << "(2*" << Utility->Transformer("FlS",doTransf,a,b,c) << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
-          myString << "1/2*(1-" << Utility->Transformer("FlS",doTransf,a,b,c) << ") * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - ";
-          myString << "4/3*" << Utility->Transformer("AfbS",doTransf,a,b,c) << " * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * " << y->getPlotLabel() << ")))";
+          myString << "(2.*" << Utility->Transformer("FlS",doTransf,a,b,c) << "*" << z->getPlotLabel() << "*" << z->getPlotLabel() << " * (1-" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") + ";
+          myString << "1./2.*(1-" << Utility->Transformer("FlS",doTransf,a,b,c) << ") * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * (1+" << y->getPlotLabel() << "*" << y->getPlotLabel() << ") - ";
+          myString << "4./3.*" << Utility->Transformer("AfbS",doTransf,a,b,c) << " * (1-" << z->getPlotLabel() << "*" << z->getPlotLabel() << ") * " << y->getPlotLabel() << ")))";
  	}
 
       cout << "[ExtractYield::MakeAngWithEffPDF]\t@@@ 2D angular p.d.f. @@@" << endl;
@@ -966,8 +984,11 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
       RooHistFunc* histoEffPDF;
       if (useEffPDF == true)
 	{
+	  // @TMP@ : (2)
 	  RooGenericPdf* _AnglesPDF = new RooGenericPdf("_AnglesPDF",myString.str().c_str(),RooArgSet(*VarsAng));
-
+	  // RooAbsPdf* _AnglesPDF = RooClassFactory::makePdfInstance("_AnglesPDF",myString.str().c_str(),RooArgSet(*VarsAng));
+	  // RooAbsPdf* _AnglesPDF = new Roo_AngleSPdf();
+  
 	  // #############################
 	  // # Make 2D efficiency p.d.f. #
 	  // #############################
@@ -977,7 +998,10 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	  ROOT::Math::Functor* prodFunctor = new ROOT::Math::Functor(*myprodpdf,myprodpdf->ndim());
 	  AnglesPDF             = new RooFunctorPdfBinding("AngleMisTag","MisTag * Efficiency",*prodFunctor,myprodpdf->vars());
 	}
+      // @TMP@ : (2)
       else AnglesPDF = new RooGenericPdf("AngleMisTag",myString.str().c_str(),RooArgSet(*VarsAng));
+      // else AnglesPDF = RooClassFactory::makePdfInstance("AngleMisTag",myString.str().c_str(),RooArgSet(*VarsAng));
+      // else AnglesPDF = new RooAngleMisTagPdf();
     }
 
 
@@ -3411,12 +3435,12 @@ void MakeDatasets (B0KstMuMuSingleCandTreeContent* NTuple, unsigned int FitType,
   // ###########################
   // # Define useful variables #
   // ###########################
-  B0MassArb          = new RooRealVar("B0MassArb","#font[12]{m}(#font[122]{K}#kern[0.1]{#lower[0.4]{^{#font[122]{+}}}}#kern[-0.3]{#pi}#kern[-0.3]{#lower[0.6]{^{#font[122]{\55}}}}#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}})",Utility->B0Mass - atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),Utility->B0Mass + atof(Utility->GetGenericParam("B0MassIntervalRight").c_str()),"GeV");
-  mumuMass           = new RooRealVar("mumuMass","#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}} inv. mass",0.0,6.0,"GeV");
-  mumuMassE          = new RooRealVar("mumuMassE","#mu#kern[-0.9]{#lower[0.6]{^{#font[122]{+}}}}#kern[-0.1]{#mu}#kern[-1.3]{#lower[0.6]{^{#font[122]{\55}}}} inv. mass error",0.0,0.5,"GeV");
+  B0MassArb          = new RooRealVar("B0MassArb","#font[12]{m}(#font[122]{K}^{#font[122]{+}} #kern[-0.2]{#pi^{#font[122]{\55}}} #kern[-0.2]{#mu^{#font[122]{+}}} #kern[-0.2]{#mu^{#font[122]{\55}}})",Utility->B0Mass - atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),Utility->B0Mass + atof(Utility->GetGenericParam("B0MassIntervalRight").c_str()),"GeV");
+  mumuMass           = new RooRealVar("mumuMass","#mu^{#font[122]{+}} #kern[-0.2]{#mu^{#font[122]{\55}}} inv. mass",0.0,6.0,"GeV");
+  mumuMassE          = new RooRealVar("mumuMassE","#mu^{#font[122]{+}} #kern[-0.2]{#mu^{#font[122]{\55}}} inv. mass error",0.0,0.5,"GeV");
   CosThetaKArb       = new RooRealVar("CosThetaKArb","cos(#theta#lower[-0.4]{_{#font[122]{K}}})",-1.0,1.0,"");
   CosThetaMuArb      = new RooRealVar("CosThetaMuArb","cos(#theta#lower[-0.4]{_{#font[12]{l}}})",-1.0,1.0,"");
-  PhiKstMuMuPlaneArb = new RooRealVar("PhiKstMuMuPlaneArb","Angle (#mu#mu)--(#font[122]{K}#lower[0.4]{^{#font[122]{+}}}#pi#lower[0.4]{^{#font[122]{\55}}}) planes",-Utility->PI,Utility->PI,"rad");
+  PhiKstMuMuPlaneArb = new RooRealVar("PhiKstMuMuPlaneArb","Angle (#mu#mu)--(#font[122]{K}#lower[0.4]{^{#font[122]{+}}} #pi#lower[0.4]{^{#font[122]{\55}}}) planes",-Utility->PI,Utility->PI,"rad");
   truthMatchSignal   = new RooRealVar("truthMatchSignal","Truth matching",0.0,1.0,"bool");
   rightFlavorTag     = new RooRealVar("rightFlavorTag","Right flavor tag",0.0,1.0,"bool");
 
@@ -4125,7 +4149,7 @@ void IterativeMassFitq2Bins (RooDataSet* dataSet,
       // # Make external text #
       // ######################
       extText[i] = new TPaveText(0.64,0.48,0.95,0.6,"NDC");
-      extText[i]->AddText(Form("%s%.2f%s%.2f%s","#it{q}#lower[0.4]{^{2}}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," GeV#lower[0.4]{^{2}}"));
+      extText[i]->AddText(Form("%s%.2f%s%.2f%s","#it{q}#kern[0.3]{#lower[0.4]{^{2}}}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," GeV#lower[0.4]{^{2}}"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
       extText[i]->SetFillStyle(0);
@@ -5740,7 +5764,7 @@ RooFitResult* MakeMass2AnglesFit (RooDataSet* dataSet, RooAbsPdf** TotalPDF, Roo
       DrawString(LUMI,myFrameX);
       if ((extText != NULL) && (SETBATCH == false))
       	{
-      	  if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%1.f #pm%1.f","Signal yield: ",totalYield,totalYieldE));
+      	  if (GetVar(*TotalPDF,"nSig") != NULL) extText->AddText(Form("%s%1.f#pm%1.f","Signal yield: ",totalYield,totalYieldE));
       	  extText->Paint();
       	  myFrameX->addObject(extText);
       	}
@@ -6342,7 +6366,7 @@ void IterativeMass2AnglesFitq2Bins (RooDataSet* dataSet,
       // # Make external text #
       // ######################
       extText[i] = new TPaveText(0.64,0.48,0.95,0.6,"NDC"); // @TMP@ : OR extText[i] = new TPaveText(0.11,0.74,0.41,0.86,"NDC");
-      extText[i]->AddText(Form("%s%.2f%s%.2f%s","#it{q}#lower[0.4]{^{2}}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," GeV#lower[0.4]{^{2}}"));
+      extText[i]->AddText(Form("%s%.2f%s%.2f%s","#it{q}#kern[0.3]{#lower[0.4]{^{2}}}: ",q2Bins->operator[](i)," #font[122]{\55} ",q2Bins->operator[](i+1)," GeV#lower[0.4]{^{2}}"));
       extText[i]->SetTextAlign(11);
       extText[i]->SetBorderSize(0.0);
       extText[i]->SetFillStyle(0);
@@ -7457,7 +7481,6 @@ int main(int argc, char** argv)
 	  Utility->ReadSelectionCuts(ParameterFILE);
 	  Utility->ReadFitStartingValues(((correct4Efficiency.find("yesEffCorrGen") == string::npos) && (tmpFileName.size() != 0) ? tmpFileName : ParameterFILE),&fitParam,&configParam,((correct4Efficiency.find("yesEffCorrGen") == string::npos) && (tmpFileName.size() != 0) ? 1 : Utility->ParFileBlockN("fitValGlob")));
 
-
 	  CTRLfitWRKflow = Utility->GetGenericParam("CtrlFitWrkFlow");
 
 	  fileFitResults << "Normalize to J/psi and not psi(2S): " << Utility->GetGenericParam("NormJPSInotPSIP").c_str() << " (0 = false; 1 = true)" << endl;
@@ -7729,8 +7752,8 @@ int main(int argc, char** argv)
 		      cHistoMeas->cd(1);
 		      VecHistoMeas.push_back(new TH1D("histoMeas0", "B0 --> K*0(K+ pi-) mu+ mu- / B0 --> K*0(K+ pi-) J/psi(mu+ mu-) Branching Fraction", q2Bins.size()-1, q2BinsHisto));
 		      VecHistoMeas[0]->SetStats(false);
-		      VecHistoMeas[0]->SetXTitle("#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
-		      VecHistoMeas[0]->SetYTitle("d#it{#Beta} / d#it{q}#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
+		      VecHistoMeas[0]->SetXTitle("#it{q}#kern[0.3]{#lower[0.4]{^{2}}} (GeV#lower[0.4]{^{2}})");
+		      VecHistoMeas[0]->SetYTitle("d#it{#Beta}/d#it{q}#kern[0.4]{#lower[0.4]{^{2}}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
 		      VecHistoMeas[0]->GetYaxis()->SetRangeUser(0.0,12.);
 
 		      cout << "[ExtractYield::main]\t@@@ Now fit invariant mass per mumu q^2 bins @@@" << endl;
@@ -7793,22 +7816,22 @@ int main(int argc, char** argv)
 		  cHistoMeas->cd(1);
 		  VecHistoMeas.push_back(new TH1D("histoMeas0", "B0 --> K*0(K+ pi-) mu+ mu- : FL vs dimuon q2", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas[0]->SetStats(false);
-		  VecHistoMeas[0]->SetXTitle("#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		  VecHistoMeas[0]->SetXTitle("#it{q}#kern[0.3]{#lower[0.4]{^{2}}} (GeV#lower[0.4]{^{2}})");
 		  VecHistoMeas[0]->SetYTitle("#it{F}_{L}");
 		  VecHistoMeas[0]->GetYaxis()->SetRangeUser(-0.01,1.01);
 
 		  cHistoMeas->cd(1);
 		  VecHistoMeas.push_back(new TH1D("histoMeas1", "B0 --> K*0(K+ pi-) mu+ mu- : AFB vs dimuon q2", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas[1]->SetStats(false);
-		  VecHistoMeas[1]->SetXTitle("#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
+		  VecHistoMeas[1]->SetXTitle("#it{q}#kern[0.3]{#lower[0.4]{^{2}}} (GeV#lower[0.4]{^{2}})");
 		  VecHistoMeas[1]->SetYTitle("#it{A}_{FB}");
 		  VecHistoMeas[1]->GetYaxis()->SetRangeUser(-1.0 - 0.01,1.0 + 0.01);
 
 		  cHistoMeas->cd(2);
 		  VecHistoMeas.push_back(new TH1D("histoMeas2", "B0 --> K*0(K+ pi-) mu+ mu- : dBF/dq2 vs dimuon q2", q2Bins.size()-1, q2BinsHisto));
 		  VecHistoMeas[2]->SetStats(false);
-		  VecHistoMeas[2]->SetXTitle("#it{q}#lower[0.4]{^{2}} (GeV#lower[0.4]{^{2}})");
-		  VecHistoMeas[2]->SetYTitle("d#it{#Beta} / d#it{q}#lower[0.4]{^{2}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
+		  VecHistoMeas[2]->SetXTitle("#it{q}#kern[0.3]{#lower[0.4]{^{2}}} (GeV#lower[0.4]{^{2}})");
+		  VecHistoMeas[2]->SetYTitle("d#it{#Beta}/d#it{q}#kern[0.4]{#lower[0.4]{^{2}}} (10#lower[0.4]{^{#font[122]{\55}8}} #times GeV#lower[0.4]{^{#font[122]{\55}2}})");
 		  VecHistoMeas[2]->GetYaxis()->SetRangeUser(0.0,12.);
 
 		  cout << "[ExtractYield::main]\t@@@ Now fit invariant mass, cos(theta_K) and cos(theta_l) per mumu q^2 bins @@@" << endl;

@@ -6,10 +6,10 @@ class Perceptron(object):
     ####################################################
     Nneurons = number of neurons of the perceptron
     Nvars    = number of input variables for each neuron
-    afunType = type of activation function "tanh", "BPN"
+    afunType = type of activation function 'tanh', 'BPN'
     ####################################################
     """
-    def __init__(self,Nneurons,Nvars,afunType="tanh"):
+    def __init__(self,Nneurons,Nvars,afunType='tanh'):
         self.Nneurons = Nneurons
         self.neurons  = [ Neuron(Nvars,afunType) for i in xrange(self.Nneurons) ]
 
@@ -31,7 +31,7 @@ class Perceptron(object):
 
     def printParams(self):
         for i,N in enumerate(self.neurons):
-            print "  Neuron[", i, "type =", N.afunType, "aFun =", round(N.afun,2), "d(aFun)/dz =", round(N.dafundz,2), "]"
+            print '  Neuron[', i, 'type =', N.afunType, 'aFun =', round(N.afun,2), 'd(aFun)/dz =', round(N.dafundz,2), ']'
             N.printParams()
 
     def reset(self):
@@ -88,22 +88,22 @@ class Perceptron(object):
         for N in self.neurons:
             N.addW(who) if type(who) is list else N.__init__(who,N.afunType)
 
+    def setLearnRate(self,val):
+        for N in self.neurons:
+            N.learnRate = val
+
     def save(self,f):
         for i,N in enumerate(self.neurons):
-            f.write("  Neuron[ {0:d} ] type = {1:10s} aFun = {2:20f} d(aFun)/dz = {3:20f} Weights:".format(i,N.afunType,N.afun,N.dafundz))
+            f.write('  Neuron[ {0:d} ] type = {1:10s} aFun = {2:20f} d(aFun)/dz = {3:20f} Weights:'.format(i,N.afunType,N.afun,N.dafundz))
             N.save(f)
 
     def read(self,f):
         line = f.readline()
         lele = line.split()
         
-        while len(lele) == 0 or (len(lele) > 0 and ("#" in lele[0] or "Perceptron[" not in line)):
+        while len(lele) == 0 or (len(lele) > 0 and ('#' in lele[0] or 'Perceptron[' not in line)):
             line = f.readline()
             lele = line.split()
 
         for N in self.neurons:
             N.read(f)
-
-    def setLearnRate(self,val):
-        for N in self.neurons:
-            N.learnRate = val

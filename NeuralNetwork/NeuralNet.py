@@ -54,10 +54,10 @@ class NeuralNet(object):
         self.BPperceptrons = []
 
         ### First layer ###
-        self.BPperceptrons.append(Perceptron(self.FFperceptrons[self.Nperceptrons-2].Nneurons,self.FFperceptrons[self.Nperceptrons-1].Nneurons,"BPN"))
+        self.BPperceptrons.append(Perceptron(self.FFperceptrons[self.Nperceptrons-2].Nneurons,self.FFperceptrons[self.Nperceptrons-1].Nneurons,'BPN'))
 
         ### Intermediate layers + last layer ###
-        self.BPperceptrons.extend(Perceptron(self.FFperceptrons[self.Nperceptrons-j-1].Nneurons,self.FFperceptrons[self.Nperceptrons-j].Nneurons,"BPN") for j in xrange(2,self.Nperceptrons))
+        self.BPperceptrons.extend(Perceptron(self.FFperceptrons[self.Nperceptrons-j-1].Nneurons,self.FFperceptrons[self.Nperceptrons-j].Nneurons,'BPN') for j in xrange(2,self.Nperceptrons))
         
     def eval(self,invec):
         ### First layer ###
@@ -120,14 +120,14 @@ class NeuralNet(object):
         return sqrt(sum(d * d for d in self.inputDcDz)) if who == 0 else self.BPperceptrons[who-1].speed()
     
     def printParams(self):
-        print "\n\n===>>> Feedforward Neural Net ===>>>"
+        print '\n\n===>>> Feedforward Neural Net ===>>>'
         for j,P in enumerate(self.FFperceptrons):
-            print "Perceptron[", j, "]"
+            print 'Perceptron[', j, ']'
             P.printParams()
 
-        print "\n<<<=== Backpropagation Neural Net <<<==="
+        print '\n<<<=== Backpropagation Neural Net <<<==='
         for j,P in enumerate(self.BPperceptrons):
-            print "Perceptron[", j, "]"
+            print 'Perceptron[', j, ']'
             P.printParams()
 
     def reset(self):
@@ -241,45 +241,49 @@ class NeuralNet(object):
                 
         self.initBPnetwork()
 
+    def setLearnRate(self,val):
+        for P in self.FFperceptrons:
+            P.setLearnRate(val)
+
     def save(self,name):
-        f   = open(name,"w")
+        f   = open(name,'w')
         out = []
         
-        f.write("# === M.E.D. Neural Network === #\n")
-        f.write("# {0:20s} {1:20s} {2:40s} {3:20s} {4:20s} {5:20s}\n".format("Nvars","Nperceptrons","Nneurons","Learn rate","Regularization","RMSprop decay"))
+        f.write('# === M.E.D. Neural Network === #\n')
+        f.write('# {0:20s} {1:20s} {2:40s} {3:20s} {4:20s} {5:20s}\n'.format('Nvars','Nperceptrons','Nneurons','Learn rate','Regularization','RMSprop decay'))
 
         out.append(str(self.FFperceptrons[0].neurons[0].Nvars))
         out.append(str(self.Nperceptrons))
-        out.append("[")
+        out.append('[')
         for P in self.FFperceptrons:
-            out[-1] += " " + str(P.Nneurons)
-        out[-1] += " ]"
+            out[-1] += ' ' + str(P.Nneurons)
+        out[-1] += ' ]'
         out.append(str(self.FFperceptrons[0].neurons[0].learnRate))
         out.append(str(self.FFperceptrons[0].neurons[0].regular))
         out.append(str(self.FFperceptrons[0].neurons[0].rmsPrDecay))
-        f.write("  {0:20s} {1:20s} {2:40s} {3:20s} {4:20s} {5:20s}\n\n".format(out[0],out[1],out[2],out[3],out[4],out[5]))
+        f.write('  {0:20s} {1:20s} {2:40s} {3:20s} {4:20s} {5:20s}\n\n'.format(out[0],out[1],out[2],out[3],out[4],out[5]))
 
         for j,P in enumerate(self.FFperceptrons):
-            f.write("Perceptron[ " + str(j) + " ]\n")
+            f.write('Perceptron[ ' + str(j) + ' ]\n')
             P.save(f)
 
         f.close()
 
     def read(self,name):
-        f     = open(name,"r")
+        f     = open(name,'r')
         line  = f.readline()
         lele  = line.split()
         leled = []
         lelef = []
         
-        while len(lele) == 0 or (len(lele) > 0 and "#" in lele[0]):
+        while len(lele) == 0 or (len(lele) > 0 and '#' in lele[0]):
             line = f.readline()
             lele = line.split()
 
         for ele in lele:
             if ele.isdigit():
                 leled.append(int(ele))
-            elif ele.replace(".","").replace("-","").isdigit():
+            elif ele.replace('.','').replace('-','').isdigit():
                 lelef.append(float(ele))
 
         self.__init__(leled[0],leled[1],leled[2:])
@@ -291,10 +295,6 @@ class NeuralNet(object):
             P.read(f)
 
         f.close()
-
-    def setLearnRate(self,val):
-        for P in self.FFperceptrons:
-            P.setLearnRate(val)
 
     def saveHypPar(self,*args):
         """
@@ -310,19 +310,19 @@ class NeuralNet(object):
         args[7] = scrambled neurons
         ###################################
         """
-        f = open(args[0],"a")
+        f = open(args[0],'a')
 
-        f.write("\n# Hyper-parameter information\n")
-        f.write("  Number of runs: {:_^20d}\n".format(args[1]))
-        f.write("  Mini-batch: {:_^20d}\n".format(args[2]))
+        f.write('\n# Hyper-parameter information\n')
+        f.write('  Number of runs: {:_^20d}\n'.format(args[1]))
+        f.write('  Mini-batch: {:_^20d}\n'.format(args[2]))
 
-        f.write("\n  # Learn rate parameters\n")
-        f.write("  Learn rate start: {:_^20f}\n".format(args[3]))
-        f.write("  Learn rate end: {:_^20f}\n".format(args[4]))
-        f.write("  Learn rate tau: {:_^20f}\n".format(args[5]))
+        f.write('\n  # Learn rate parameters\n')
+        f.write('  Learn rate start: {:_^20f}\n'.format(args[3]))
+        f.write('  Learn rate end: {:_^20f}\n'.format(args[4]))
+        f.write('  Learn rate tau: {:_^20d}\n'.format(args[5]))
 
-        f.write("\n  # Scramble parameters\n")
-        f.write("  Neuron to scramble: {:_^20s}\n".format(str(args[7]))) if args[6] == True else f.write("  Neuron to scramble: {:_^20s}\n".format(""))
+        f.write('\n  # Scramble parameters\n')
+        f.write('  Neuron to scramble: {:_^20s}\n'.format(str(args[7]))) if args[6] == True else f.write('  Neuron to scramble: {:_^20s}\n'.format(''))
 
         f.close()
 
@@ -338,21 +338,21 @@ class NeuralNet(object):
         6. scrambled neurons
         ############################
         """
-        f    = open(name,"r")
+        f    = open(name,'r')
         line = f.readline()
 
-        while "Hyper-parameter" not in line:
+        while 'Hyper-parameter' not in line:
             line = f.readline()
 
         it = 0
         while f.tell() != os.fstat(f.fileno()).st_size:
             line = f.readline()
-            lele = line.split("_")
+            lele = line.split('_')
             for ele in lele:
                 if ele.isdigit():
                     yield int(ele)
                     it += 1
-                elif ele.replace(".","").replace("-","").isdigit():
+                elif ele.replace('.','').replace('-','').isdigit():
                     yield float(ele)
                     it += 1
                 elif '{' and '}' in ele:
