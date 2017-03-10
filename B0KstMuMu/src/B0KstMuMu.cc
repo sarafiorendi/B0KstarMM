@@ -21,20 +21,6 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-#include "DataFormats/Common/interface/Handle.h"
-#include "DataFormats/Common/interface/TriggerResults.h"
-#include "DataFormats/Candidate/interface/Candidate.h"
-#include "DataFormats/Candidate/interface/CompositeCandidate.h"
-#include "DataFormats/PatCandidates/interface/Muon.h"
-#include "DataFormats/PatCandidates/interface/GenericParticle.h"
-#include "DataFormats/HLTReco/interface/TriggerEvent.h"
-#include "DataFormats/MuonReco/interface/MuonChamberMatch.h"
-#include "DataFormats/MuonReco/interface/MuonFwd.h"
-#include "DataFormats/TrackReco/interface/Track.h"
-#include "DataFormats/TrackReco/interface/HitPattern.h"
-#include "DataFormats/VertexReco/interface/Vertex.h"
-#include "DataFormats/VertexReco/interface/VertexFwd.h"
-
 #include "RecoVertex/AdaptiveVertexFit/interface/AdaptiveVertexFitter.h"
 #include "RecoVertex/KinematicFit/interface/KinematicConstrainedVertexFitter.h"
 #include "RecoVertex/KinematicFit/interface/TwoTrackMassKinematicConstraint.h"
@@ -53,10 +39,6 @@
 
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
-#include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
-#include "SimDataFormats/GeneratorProducts/interface/GenFilterInfo.h"
-#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
-#include "MagneticField/Engine/interface/MagneticField.h"
 
 #include "TMath.h"
 
@@ -87,11 +69,23 @@
 
 B0KstMuMu::B0KstMuMu (const edm::ParameterSet& iConfig) :
   hltTriggerResults_ ( iConfig.getUntrackedParameter<std::string>("HLTriggerResults", std::string("HLT")) ),
-  vtxSample_         ( iConfig.getUntrackedParameter<std::string>("VtxSample",        std::string("offlinePrimaryVertices")) ),
-  beamSpot_          ( iConfig.getUntrackedParameter<std::string>("BeamSpot",         std::string("offlineBeamSpot")) ),
-  genParticles_      ( iConfig.getUntrackedParameter<std::string>("GenParticles",     std::string("genParticles")) ),
-  muonType_          ( iConfig.getUntrackedParameter<std::string>("MuonType",         std::string("cleanPatMuonsTriggerMatch")) ),
-  trackType_         ( iConfig.getUntrackedParameter<std::string>("TrackType",        std::string("cleanPatTrackCands")) ),
+  vtxSampleTag_      ( iConfig.getParameter<edm::InputTag>("VtxSample")), 
+    vtxSampleToken_     (consumes<reco::VertexCollection>(vtxSampleTag_)), 
+  beamSpotTag_       ( iConfig.getParameter<edm::InputTag>("BeamSpot")), 
+    beamSpotToken_      (consumes<reco::BeamSpot>(beamSpotTag_)), 
+  genParticlesTag_   ( iConfig.getUntrackedParameter<edm::InputTag>("GenParticles")),
+    genParticlesToken_  (consumes<reco::GenParticleCollection>(genParticlesTag_)), 
+  muonTypeTag_       ( iConfig.getUntrackedParameter<edm::InputTag>("MuonType")),
+    muonTypeToken_      (consumes< std::vector<pat::Muon> >(muonTypeTag_)), 
+  trackTypeTag_      ( iConfig.getUntrackedParameter<edm::InputTag>("TrackType")),
+    trackTypeToken_     (consumes< std::vector<pat::GenericParticle> >(trackTypeTag_)), 
+  triggerResultTag_  (iConfig.getUntrackedParameter<edm::InputTag>("TriggerResult")), 
+    triggerResultToken_ (consumes<edm::TriggerResults>(triggerResultTag_)),
+  puTag_             (iConfig.getUntrackedParameter<edm::InputTag>("PuInfoTag")),
+    puToken_            (consumes<std::vector< PileupSummaryInfo>>(puTag_)), 
+  genFilterTag_      (iConfig.getUntrackedParameter<edm::InputTag>("GenFilterTag")),
+    genFilterToken_     (consumes<GenFilterInfo>(genFilterTag_)), 
+
   parameterFile_     ( iConfig.getUntrackedParameter<std::string>("ParameterFile",    std::string("ParameterFile.txt")) ),
   doGenReco_         ( iConfig.getUntrackedParameter<unsigned int>("doGenReco",       1) ),
   printMsg           ( iConfig.getUntrackedParameter<bool>("printMsg",                false) ),
@@ -100,10 +94,10 @@ B0KstMuMu::B0KstMuMu (const edm::ParameterSet& iConfig) :
 {
   std::cout << "\n@@@ Ntuplizer configuration parameters @@@" << std::endl;
   std::cout << __LINE__ << " : hltTriggerResults    = " << hltTriggerResults_ << std::endl;
-  std::cout << __LINE__ << " : vtxSample     = " << vtxSample_ << std::endl;
-  std::cout << __LINE__ << " : beamSpot      = " << beamSpot_ << std::endl;
-  std::cout << __LINE__ << " : genParticles  = " << genParticles_ << std::endl;
-  std::cout << __LINE__ << " : trackType     = " << trackType_ << std::endl;
+//   std::cout << __LINE__ << " : vtxSample     = " << vtxSample_ << std::endl;
+//   std::cout << __LINE__ << " : beamSpot      = " << beamSpot_ << std::endl;
+//   std::cout << __LINE__ << " : genParticles  = " << genParticles_ << std::endl;
+//   std::cout << __LINE__ << " : trackType     = " << trackType_ << std::endl;
   std::cout << __LINE__ << " : parameterFile = " << parameterFile_ << std::endl;
   std::cout << __LINE__ << " : doGenReco     = " << doGenReco_ << std::endl;
   std::cout << __LINE__ << " : printMsg      = " << printMsg << std::endl;
@@ -128,6 +122,7 @@ B0KstMuMu::~B0KstMuMu ()
 
 void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+  std::cout << __LINE__<< std::endl;
   // ######################
   // # Internal Variables #
   // ######################
@@ -188,7 +183,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
   // Get Gen-Particles
   edm::Handle<reco::GenParticleCollection> genParticles;
-  if ((doGenReco_ == 2) || (doGenReco_ == 3)) iEvent.getByLabel(genParticles_, genParticles);
+  if ((doGenReco_ == 2) || (doGenReco_ == 3)) iEvent.getByToken(genParticlesToken_, genParticles);
 
   // Get magnetic field
   edm::ESHandle<MagneticField> bFieldHandle;
@@ -198,7 +193,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
   edm::Handle<edm::TriggerResults> hltTriggerResults;
   try
     {
-      iEvent.getByLabel(edm::InputTag(std::string("TriggerResults::")+hltTriggerResults_), hltTriggerResults);
+      iEvent.getByToken(triggerResultToken_, hltTriggerResults);
     }
   catch ( ... )
     {
@@ -256,22 +251,22 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
     {
       // Get BeamSpot
       edm::Handle<reco::BeamSpot> beamSpotH;
-      iEvent.getByLabel(beamSpot_, beamSpotH);
+      iEvent.getByToken(beamSpotToken_, beamSpotH);
       reco::BeamSpot beamSpot = *beamSpotH;
       
       // Get primary vertex with BeamSpot constraint: ordered by the scalar sum of the |pT|^2 of the tracks that compose the vertex
       edm::Handle<reco::VertexCollection> recVtx;
-      iEvent.getByLabel(vtxSample_, recVtx);
+      iEvent.getByToken(vtxSampleToken_, recVtx);
       reco::Vertex bestVtx = *(recVtx->begin());
       reco::Vertex bestVtxReFit;
       
       // Get PAT Muons
       edm::Handle< std::vector<pat::Muon> > thePATMuonHandle;
-      iEvent.getByLabel(muonType_, thePATMuonHandle);
+      iEvent.getByToken(muonTypeToken_, thePATMuonHandle);
       
       // Get PAT Tracks
       edm::Handle< std::vector<pat::GenericParticle> > thePATTrackHandle;
-      iEvent.getByLabel(trackType_, thePATTrackHandle);
+      iEvent.getByToken(trackTypeToken_, thePATTrackHandle);
 
 
       if (printMsg == true) std::cout << __LINE__ << " : the event has: " << thePATMuonHandle->size() << " muons AND " << thePATTrackHandle->size() << " tracks" << std::endl;
@@ -1304,6 +1299,15 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  NTuple->kstTrkmNTrkHits->push_back(Trackm->hitPattern().numberOfValidTrackerHits());
 			  NTuple->kstTrkmNTrkLayers->push_back(Trackm->hitPattern().trackerLayersWithMeasurement());
 
+			  tmpString.clear();
+			  const pat::GenericParticle* patTrkm = &(*iTrackM);
+			  for (unsigned int i = 0; i < TrigTable.size(); i++)
+			    {
+			      myString.clear(); myString.str(""); myString << TrigTable[i].c_str() << "*";
+			      if (patTrkm->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString.append(TrigTable[i]+" ");
+			    }
+			  if (tmpString.size() == 0) tmpString.append("NotInTable");
+			  NTuple->kstTrkmTrig->push_back(tmpString);
 
 			  // ################
 			  // # Save: Track+ #
@@ -1335,6 +1339,16 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  NTuple->kstTrkpNTrkHits->push_back(Trackp->hitPattern().numberOfValidTrackerHits());
 			  NTuple->kstTrkpNTrkLayers->push_back(Trackp->hitPattern().trackerLayersWithMeasurement());
 
+
+			  tmpString.clear();
+			  const pat::GenericParticle* patTrkp = &(*iTrackP);
+			  for (unsigned int i = 0; i < TrigTable.size(); i++)
+			    {
+			      myString.clear(); myString.str(""); myString << TrigTable[i].c_str() << "*";
+			      if (patTrkp->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString.append(TrigTable[i]+" ");
+			    }
+			  if (tmpString.size() == 0) tmpString.append("NotInTable");
+			  NTuple->kstTrkpTrig->push_back(tmpString);
 
 
 
@@ -1420,7 +1434,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
       // # Save pileup information in MC #
       // #################################
       edm::Handle< std::vector<PileupSummaryInfo> > PupInfo;
-      iEvent.getByLabel(edm::InputTag("addPileupInfo"), PupInfo);
+      iEvent.getByToken(puToken_, PupInfo);
       for (std::vector<PileupSummaryInfo>::const_iterator PVI = PupInfo->begin(); PVI != PupInfo->end(); PVI++)
 	{
 	  NTuple->bunchXingMC->push_back(PVI->getBunchCrossing());
@@ -2329,7 +2343,7 @@ void B0KstMuMu::endLuminosityBlock(const edm::LuminosityBlock& lumiBlock, const 
   if ((doGenReco_ == 2) || (doGenReco_ == 3))
     {
       edm::Handle<GenFilterInfo> genFilter;
-      lumiBlock.getByLabel("genFilterEfficiencyProducer", genFilter);
+      lumiBlock.getByToken(genFilterToken_, genFilter);
 
       NTuple->numEventsTried  = genFilter->numEventsTried();
       NTuple->numEventsPassed = genFilter->numEventsPassed();

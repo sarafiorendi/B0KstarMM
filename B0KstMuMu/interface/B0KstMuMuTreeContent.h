@@ -141,6 +141,7 @@ class B0KstMuMuTreeContent
   std::vector<double>       *kstTrkmDeltaRwithMC;
   std::vector<int>          *kstTrkmNPixHits, *kstTrkmNPixLayers, *kstTrkmNTrkHits, *kstTrkmNTrkLayers;
   std::vector<std::string>  *kstTrkmMuMatch;
+  std::vector<std::string>  *kstTrkmTrig;
 
   // ##############
   // # K*0 track+ #
@@ -152,6 +153,7 @@ class B0KstMuMuTreeContent
   std::vector<double>       *kstTrkpDeltaRwithMC;
   std::vector<int>          *kstTrkpNPixHits, *kstTrkpNPixLayers, *kstTrkpNTrkHits, *kstTrkpNTrkLayers;
   std::vector<std::string>  *kstTrkpMuMatch;
+  std::vector<std::string>  *kstTrkpTrig;
 
   // #########################
   // # Generated Observables #

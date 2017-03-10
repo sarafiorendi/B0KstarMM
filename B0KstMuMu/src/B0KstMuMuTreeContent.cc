@@ -1,4 +1,4 @@
-#include "B0KstMuMuTreeContent.h"
+#include "B0KstarMM/B0KstMuMu/interface/B0KstMuMuTreeContent.h"
 #include <iostream>
 
 B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
@@ -148,6 +148,7 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   kstTrkmNTrkHits     = NULL;
   kstTrkmNTrkLayers   = NULL;
   kstTrkmMuMatch      = NULL;
+  kstTrkmTrig         = NULL;
 
   // ### K*0 track+ ###
   kstTrkpHighPurity   = NULL;
@@ -169,6 +170,7 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   kstTrkpNTrkHits     = NULL;
   kstTrkpNTrkLayers   = NULL;
   kstTrkpMuMatch      = NULL;
+  kstTrkpTrig         = NULL;
 
   // ### Matching Between Reconstructed and Generated ###
   truthMatchSignal = NULL;
@@ -323,6 +325,7 @@ void B0KstMuMuTreeContent::Init ()
   kstTrkmNTrkHits     = new std::vector<int>;
   kstTrkmNTrkLayers   = new std::vector<int>;
   kstTrkmMuMatch      = new std::vector<std::string>;
+  kstTrkmTrig         = new std::vector<std::string>;
 
   // ### K*0 track+ ###
   kstTrkpHighPurity   = new std::vector<bool>;
@@ -344,6 +347,7 @@ void B0KstMuMuTreeContent::Init ()
   kstTrkpNTrkHits     = new std::vector<int>;
   kstTrkpNTrkLayers   = new std::vector<int>;
   kstTrkpMuMatch      = new std::vector<std::string>;
+  kstTrkpTrig         = new std::vector<std::string>;
 
   // ### Matching Between Reconstructed and Generated ###
   truthMatchSignal = new std::vector<bool>;
@@ -498,6 +502,7 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete kstTrkmNTrkHits;
   delete kstTrkmNTrkLayers;
   delete kstTrkmMuMatch;
+  delete kstTrkmTrig;
 
   // ### K*0 track+ ###
   delete kstTrkpHighPurity;
@@ -519,6 +524,7 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete kstTrkpNTrkHits;
   delete kstTrkpNTrkLayers;
   delete kstTrkpMuMatch;
+  delete kstTrkpTrig;
 
   // ### Matching Between Reconstructed and Generated ###
   delete truthMatchSignal;
@@ -771,6 +777,7 @@ void B0KstMuMuTreeContent::ClearVectors ()
   kstTrkmNTrkHits->clear();
   kstTrkmNTrkLayers->clear();
   kstTrkmMuMatch->clear();
+  kstTrkmTrig->clear();
 
   // ### K*0 track+ ###
   kstTrkpHighPurity->clear();
@@ -792,6 +799,7 @@ void B0KstMuMuTreeContent::ClearVectors ()
   kstTrkpNTrkHits->clear();
   kstTrkpNTrkLayers->clear();
   kstTrkpMuMatch->clear();
+  kstTrkpTrig->clear();
 
   ClearVectorsMonteCarlo();
 }
@@ -984,6 +992,7 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("kstTrkmNTrkHits",     &kstTrkmNTrkHits);
   theTree->Branch("kstTrkmNTrkLayers",   &kstTrkmNTrkLayers);
   theTree->Branch("kstTrkmMuMatch",      &kstTrkmMuMatch);
+  theTree->Branch("kstTrkmTrig",         &kstTrkmTrig);
 
   // ### K*0 track+ ### 
   theTree->Branch("kstTrkpHighPurity",   &kstTrkpHighPurity);
@@ -1005,6 +1014,7 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("kstTrkpNTrkHits",     &kstTrkpNTrkHits);
   theTree->Branch("kstTrkpNTrkLayers",   &kstTrkpNTrkLayers);
   theTree->Branch("kstTrkpMuMatch",      &kstTrkpMuMatch);
+  theTree->Branch("kstTrkpTrig",         &kstTrkpTrig);
   
   // ### Generated Observables ###
   theTree->Branch("genSignal",        &genSignal,        "genSignal/I");
@@ -1249,6 +1259,7 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("kstTrkmNTrkHits",     &kstTrkmNTrkHits);
   theTree->SetBranchAddress("kstTrkmNTrkLayers",   &kstTrkmNTrkLayers);
   theTree->SetBranchAddress("kstTrkmMuMatch",      &kstTrkmMuMatch);
+  theTree->SetBranchAddress("kstTrkmTrig",         &kstTrkmTrig);
 
   // ### K*0 track+ ### 
   theTree->SetBranchAddress("kstTrkpHighPurity",   &kstTrkpHighPurity);
@@ -1270,6 +1281,7 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("kstTrkpNTrkHits",     &kstTrkpNTrkHits);
   theTree->SetBranchAddress("kstTrkpNTrkLayers",   &kstTrkpNTrkLayers);
   theTree->SetBranchAddress("kstTrkpMuMatch",      &kstTrkpMuMatch);
+  theTree->SetBranchAddress("kstTrkpTrig",         &kstTrkpTrig);
 
   // ### Generated Observables ###
   theTree->SetBranchAddress("genSignal",        &genSignal);
@@ -1607,6 +1619,7 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       kstTrkmNTrkHits->push_back(NTupleIn->kstTrkmNTrkHits->at(index));
       kstTrkmNTrkLayers->push_back(NTupleIn->kstTrkmNTrkLayers->at(index));
       kstTrkmMuMatch->push_back(NTupleIn->kstTrkmMuMatch->at(index));
+      kstTrkmTrig->push_back(NTupleIn->kstTrkmTrig->at(index));
  
       // ### K*0 track+ ###
       kstTrkpHighPurity->push_back(NTupleIn->kstTrkpHighPurity->at(index));
@@ -1628,6 +1641,7 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       kstTrkpNTrkHits->push_back(NTupleIn->kstTrkpNTrkHits->at(index));
       kstTrkpNTrkLayers->push_back(NTupleIn->kstTrkpNTrkLayers->at(index));
       kstTrkpMuMatch->push_back(NTupleIn->kstTrkpMuMatch->at(index));
+      kstTrkpTrig->push_back(NTupleIn->kstTrkpTrig->at(index));
   
       // ### Matching Between Reconstructed and Generated ###
       truthMatchSignal->push_back(NTupleIn->truthMatchSignal->at(index));
@@ -1774,6 +1788,7 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (kstTrkmNTrkHits->size() < upTo)     for (unsigned int i = kstTrkmNTrkHits->size(); i < upTo; i++)     kstTrkmNTrkHits->push_back(0);
   if (kstTrkmNTrkLayers->size() < upTo)   for (unsigned int i = kstTrkmNTrkLayers->size(); i < upTo; i++)   kstTrkmNTrkLayers->push_back(0);
   if (kstTrkmMuMatch->size() < upTo)      for (unsigned int i = kstTrkmMuMatch->size(); i < upTo; i++)      kstTrkmMuMatch->push_back("");
+  if (kstTrkmTrig->size() < upTo)         for (unsigned int i = kstTrkmTrig->size(); i < upTo; i++)         kstTrkmTrig->push_back("");
  
   // ### K*0 track+ ###
   if (kstTrkpHighPurity->size() < upTo)   for (unsigned int i = kstTrkpHighPurity->size(); i < upTo; i++)   kstTrkpHighPurity->push_back(0);
@@ -1795,6 +1810,7 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (kstTrkpNTrkHits->size() < upTo)     for (unsigned int i = kstTrkpNTrkHits->size(); i < upTo; i++)     kstTrkpNTrkHits->push_back(0);
   if (kstTrkpNTrkLayers->size() < upTo)   for (unsigned int i = kstTrkpNTrkLayers->size(); i < upTo; i++)   kstTrkpNTrkLayers->push_back(0);
   if (kstTrkpMuMatch->size() < upTo)      for (unsigned int i = kstTrkpMuMatch->size(); i < upTo; i++)      kstTrkpMuMatch->push_back("");
+  if (kstTrkpTrig->size() < upTo)         for (unsigned int i = kstTrkpTrig->size(); i < upTo; i++)         kstTrkpTrig->push_back("");
   
   // ### Matching Between Reconstructed and Generated ###
   if (truthMatchSignal->size() < upTo) for (unsigned int i = truthMatchSignal->size(); i < upTo; i++) truthMatchSignal->push_back(0);

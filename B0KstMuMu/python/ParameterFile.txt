@@ -10,13 +10,13 @@
 1
 
 # HLT path 2011:
-#HLT_Dimuon7_LowMass_Displaced_v
-#HLT_DoubleMu4_LowMass_Displaced_v
-#HLT_DoubleMu4p5_LowMass_Displaced_v
-#HLT_DoubleMu5_LowMass_Displaced_v
+#HLT_DoubleMu4_JpsiTrk_Displaced_v
+#HLT_DoubleMu4_JpsiTrk_Displaced_v
+#HLT_DoubleMu4_JpsiTrk_Displaced_v
+#HLT_DoubleMu4_JpsiTrk_Displaced_v
 
 # HLT path 2012:
-HLT_DoubleMu3p5_LowMass_Displaced_v
+HLT_DoubleMu4_JpsiTrk_Displaced_v
 
 
 ###########################
@@ -41,8 +41,8 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # mu-mu cos(alpha) w/respect to BS [0.9]
 0.9
 
-# mu min pT [3.5 GeV/c]
-3.5
+# mu min pT [4.0 GeV/c]
+4.0
 
 # mu max eta [2.2]
 2.2
@@ -72,8 +72,8 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # hadron DCA/sigma w/respect to BS [0.8]
 0.8
 
-# hadron min pT [0.4 GeV/c]
-0.4
+# hadron min pT [0.8 GeV/c]
+0.8
 
 
 ###########################
@@ -85,8 +85,8 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # mu-mu Vtx CL [0.1]
 0.1
 
-# mu min pT [3.5 GeV/c]
-3.5
+# mu min pT [4.0 GeV/c]
+4.0
 
 # B0 L/sigma w/respect to BS [12.0]
 12.0
@@ -128,8 +128,8 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 # Muon selection: dxy w/respect to primary vtx [3.0]
 3.0
 
-# Muon selection: dz w/respect to primary vtx [30.0]
-30.0
+# Muon selection: dz w/respect to primary vtx [20.0]
+20.0
 
 
 ###########################
@@ -323,11 +323,11 @@ HLT_DoubleMu3p5_LowMass_Displaced_v
 4
 
 # HLT path:
-HLT_DoubleMu3p5_LowMass_Displaced_v
+HLT_DoubleMu4_JpsiTrk_Displaced_v
 # mu-mu Vtx CL
 0.1
 # mu min pT [GeV/c]
-3.5
+4.
 # Number of entries in Data
 1.0
 
