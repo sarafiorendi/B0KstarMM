@@ -160,12 +160,12 @@ void DrawString (double Lumi)
     {
       myString.clear(); myString.str("");
       myString << "#it{Preliminary}";
-      TLatex* LumiTex2 = new TLatex(0.19,0.9,myString.str().c_str());
+      TLatex* LumiTex2 = new TLatex(0.2,0.9,myString.str().c_str());
       LumiTex2->SetTextFont(42);
       LumiTex2->SetTextSize(0.06 * scaleRespect2CMS);
       LumiTex2->SetTextColor(kBlack);
       LumiTex2->SetNDC(true);
-      LumiTex2->DrawLatex(0.19,0.9,myString.str().c_str());
+      LumiTex2->DrawLatex(0.2,0.9,myString.str().c_str());
     }
 
   myString.clear(); myString.str("");
