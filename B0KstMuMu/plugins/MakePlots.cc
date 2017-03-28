@@ -100,6 +100,7 @@ void MakePhysicsPlots      (unsigned int PlotType);
 void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx);
 void PlotMuMu              (string fileName, bool bkgSub);
 void PlotKst               (string fileName, bool bkgSub, bool fitParamAreFixed);
+void PlotDmass             (string fileName);
 void PlotKK                (string fileName, bool bkgSub, string RECOorGEN);
 void PlotMuHadMass         (string fileName);
 void MakeFitResPlots       (string fileName, string plotType, int specBin, string varName, double lowBound, double highBound);
@@ -2729,6 +2730,71 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
 }
 
 
+void PlotDmass (string fileName)
+{
+  // ##########################
+  // # Set histo layout style #
+  // ##########################
+  SetStyle();
+  gStyle->SetPadRightMargin(0.14);
+
+
+  int nEntries;
+  unsigned int nBins = 100;
+  double DminX = 0.0;
+  double DmaxX = 3.0;
+  double Dmass = 0.0;
+
+  
+  TFile* file0 = TFile::Open(fileName.c_str(),"READ");
+  TTree* theTree = (TTree*)file0->Get("B0KstMuMu/B0KstMuMuNTuple");
+
+  B0KstMuMuSingleCandTreeContent* NTuple = new B0KstMuMuSingleCandTreeContent();
+  NTuple->Init();
+  NTuple->ClearNTuple();
+  NTuple->SetBranchAddresses(theTree);
+  
+  nEntries = theTree->GetEntries();
+  cout << "\n[MakePlots::PlotDmass]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
+
+
+  TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
+
+  TH1D* hDSig = new TH1D("hDSig","hDSig",nBins,DminX,DmaxX);
+  hDSig->SetXTitle("m(K #pi) (GeV)");
+  hDSig->SetYTitle("Entries");
+  hDSig->SetFillColor(kAzure+6);
+
+
+  for (int entry = 0; entry < nEntries; entry++)
+    {
+      theTree->GetEntry(entry);
+
+
+      if (NTuple->B0notB0bar == true)
+	{
+	  Dmass = NTuple->kstBarMass->at(0);
+	}
+      else
+	{
+	  Dmass = NTuple->kstMass->at(0);
+	}
+
+
+      // ####################
+      // # Make signal plot #
+      // ####################
+      hDSig->Fill(Dmass);
+    }
+
+
+  c0->cd();
+  hDSig->Draw();
+  c0->Modified();
+  c0->Update();
+}
+
+
 void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
 {
   // ##########################
@@ -3395,6 +3461,10 @@ int main (int argc, char** argv)
 	  fileName = argv[2];
 	  intVal   = atoi(argv[3]);
 	}
+      else if (option == "DMass")
+	{
+	  fileName = argv[2];
+	}
       else if ((option == "KKMass") && (argc == 5))
 	{
 	  fileName = argv[2];
@@ -3420,6 +3490,7 @@ int main (int argc, char** argv)
 	  cout << "            [Pval: toyFileName q^2_bin_index]" << endl;
 	  cout << "            [FitRes: toyFileName plotType q^2_bin_index varName lowBound highBound]" << endl;
 	  cout << "            [MuMuMass OR KstMass: dataFileName bkgSub]" << endl;
+	  cout << "            [DMass: dataFileName]" << endl;
 	  cout << "            [KKMass: dataFileName bkgSub RECOorGEN]" << endl;
 	  cout << "            [MuHadMass: dataFileName]" << endl;
 	  cout << "            [ScatB0MuMu: dataFileName option]" << endl;
@@ -3470,6 +3541,7 @@ int main (int argc, char** argv)
       else if (option == "Pval")        MakePvaluePlot(fileName,intVal);
       else if (option == "FitRes")      MakeFitResPlots(fileName,tmpStr1,intVal,tmpStr2,realVal1,realVal2);
       else if (option == "MuMuMass")    PlotMuMu(fileName,intVal);
+      else if (option == "DMass")       PlotDmass(fileName);
       else if (option == "KKMass")      PlotKK(fileName,intVal,tmpStr1);
       else if (option == "KstMass")     PlotKst(fileName,intVal,true);
       else if (option == "MuHadMass")   PlotMuHadMass(fileName);
@@ -3489,6 +3561,7 @@ int main (int argc, char** argv)
       cout << "            [Pval: toyFileName q^2_bin_index]" << endl;
       cout << "            [FitRes: toyFileName plotType q^2_bin_index varName lowBound highBound]" << endl;
       cout << "            [MuMuMass OR KstMass: dataFileName bkgSub]" << endl;
+      cout << "            [DMass: dataFileName]" << endl;
       cout << "            [KKMass: dataFileName bkgSub RECOorGEN]" << endl;
       cout << "            [MuHadMass: dataFileName]" << endl;
       cout << "            [ScatB0MuMu: dataFileName cutType]" << endl;
