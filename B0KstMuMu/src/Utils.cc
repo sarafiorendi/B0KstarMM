@@ -155,11 +155,16 @@ double Utils::computeInvMass (double Px1,
 			      double Px2,
 			      double Py2,
 			      double Pz2,
-			      double mass2)
+			      double mass2,
+			      double Px3,
+			      double Py3,
+			      double Pz3,
+			      double mass3)
 {
   double Energy1 = sqrt(Px1*Px1 + Py1*Py1 + Pz1*Pz1 + mass1*mass1);
   double Energy2 = sqrt(Px2*Px2 + Py2*Py2 + Pz2*Pz2 + mass2*mass2);
-  return sqrt((Energy1+Energy2) * (Energy1+Energy2) - ((Px1+Px2) * (Px1+Px2) + (Py1+Py2) * (Py1+Py2) + (Pz1+Pz2) * (Pz1+Pz2)));
+  double Energy3 = sqrt(Px3*Px3 + Py3*Py3 + Pz3*Pz3 + mass3*mass3);
+  return sqrt((Energy1+Energy2+Energy3) * (Energy1+Energy2+Energy3) - ((Px1+Px2+Px3) * (Px1+Px2+Px3) + (Py1+Py2+Py3) * (Py1+Py2+Py3) + (Pz1+Pz2+Pz3) * (Pz1+Pz2+Pz3)));
 }
 
 double Utils::computeEta (double Px,
