@@ -2,7 +2,9 @@
 // # Program to perform the full angular analysis of the decay B0 --> K*0 mu+ mu- #
 // # Author: Mauro Dinardo                                                        #
 // ################################################################################
-// # Search @TMP@ to look for temporary code options                              #
+// # N. B.:                                                                       #
+// # - compile root and the analysis with the same compiler                       #
+// # - search @TMP@ to look for temporary code options                            #
 // ################################################################################
 // # To use pre-compiled code for the p.d.f. (right now still using RooGenericPdf)#
 // # @TMP@ : (1) comment out the header files                                     #
