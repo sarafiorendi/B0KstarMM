@@ -2744,6 +2744,7 @@ void PlotDmass (string fileName)
   double DminX = 0.0;
   double DmaxX = 3.0;
   double Dmass = 0.0;
+  double Bmass = 0.0;
 
   
   TFile* file0 = TFile::Open(fileName.c_str(),"READ");
@@ -2758,38 +2759,73 @@ void PlotDmass (string fileName)
   cout << "\n[MakePlots::PlotDmass]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
 
 
-  TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
-
+  TCanvas* c0 = new TCanvas("c0","c0",10,10,700,1000);
+  c0->Divide(1,2);
+  
   TH1D* hDSig = new TH1D("hDSig","hDSig",nBins,DminX,DmaxX);
   hDSig->SetXTitle("m(K #pi) (GeV)");
   hDSig->SetYTitle("Entries");
   hDSig->SetFillColor(kAzure+6);
+
+  TH1D* hBSig = new TH1D("hBSig","hBSig",nBins,
+			 Utility->B0Mass - atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),
+			 Utility->B0Mass + atof(Utility->GetGenericParam("B0MassIntervalRight").c_str()));
+  hBSig->SetXTitle("m(K #pi #mu #mu) (GeV)");
+  hBSig->SetYTitle("Entries");
+  hBSig->SetFillColor(kAzure+6);
 
 
   for (int entry = 0; entry < nEntries; entry++)
     {
       theTree->GetEntry(entry);
 
-
-      if (NTuple->B0notB0bar == true)
+      // ##############
+      // # Reject psi #
+      // ##############
+      if ((fabs(NTuple->mumuMass->at(0) - Utility->JPsiMass) >  atof(Utility->GetGenericParam("NSigmaPsi").c_str()) * Utils->GetB0Width()) &&
+	  (fabs(NTuple->mumuMass->at(0) - Utility->PsiPMass) >  atof(Utility->GetGenericParam("NSigmaPsi").c_str()) * Utils->GetB0Width()))
 	{
-	  Dmass = NTuple->kstBarMass->at(0);
+	  // #################################
+	  // # Reject outside B0 mass window #
+	  // #################################
+	  if (
+	      ((NTuple->B0notB0bar == true) &&
+	       (NTuple->bMass->at(0) > (Utility->B0Mass - atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()))) &&
+	       (NTuple->bMass->at(0) < (Utility->B0Mass + atof(Utility->GetGenericParam("B0MassIntervalRight").c_str()))))
+	      ||
+	      ((NTuple->B0notB0bar == false) &&
+	       (NTuple->bBarMass->at(0) > (Utility->B0Mass - atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()))) &&
+	       (NTuple->bBarMass->at(0) < (Utility->B0Mass + atof(Utility->GetGenericParam("B0MassIntervalRight").c_str()))))
+	      )
+	    {
+	      if (NTuple->B0notB0bar == true)
+		{
+		  Dmass = NTuple->kstBarMass->at(0);
+		}
+	      else
+		{
+		  Dmass = NTuple->kstMass->at(0);
+		}
+	      
+	      if (fabs(NTuple->kstBarMass->at(0) - Utility->D0Mass) < fabs(NTuple->kstMass->at(0) - Utility->D0Mass)) Bmass = NTuple->bBarMass->at(0);
+	      else Bmass = NTuple->bMass->at(0);
+	      
+	      
+	      // ####################
+	      // # Make signal plot #
+	      // ####################
+	      hDSig->Fill(Dmass);
+	      hBSig->Fill(Bmass);
+	    }
 	}
-      else
-	{
-	  Dmass = NTuple->kstMass->at(0);
-	}
-
-
-      // ####################
-      // # Make signal plot #
-      // ####################
-      hDSig->Fill(Dmass);
     }
-
-
-  c0->cd();
+  
+  
+  c0->cd(1);
   hDSig->Draw();
+  c0->cd(2);
+  hBSig->Draw();
+  
   c0->Modified();
   c0->Update();
 }
@@ -3483,7 +3519,7 @@ int main (int argc, char** argv)
 	}
       else if (option != "PhyRegion")
 	{
-	  cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass ScatB0MuMu ContPlot]" << endl;
+	  cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass DMass KKMass KstMass MuHadMass ScatB0MuMu ContPlot]" << endl;
 	  cout << "            [Phy: 0-2||10-14]" << endl;
 	  cout << "            [GenMultyRun: fileName q^2_bin_index]" << endl;
 	  cout << "            [DataMC: 0-27]" << endl;
@@ -3554,7 +3590,7 @@ int main (int argc, char** argv)
     }
   else
     {
-      cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass ScatB0MuMu ContPlot]" << endl;
+      cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass DMass KKMass KstMass MuHadMass ScatB0MuMu ContPlot]" << endl;
       cout << "            [Phy: 0-2||10-14]" << endl;
       cout << "            [GenMultyRun: fileName q^2_bin_index]" << endl;
       cout << "            [DataMC: 0-27]" << endl;
@@ -3568,7 +3604,7 @@ int main (int argc, char** argv)
       cout << "            [ContPlot: q^2_bin_index]" << endl;
 
       cout << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-      cout << "For [MuMuMass KKMass KstMass]:" << endl;
+      cout << "For [MuMuMass DMass KKMass KstMass]:" << endl;
       cout << "bkgSub = 0 (do not subtract background)" << endl;
       cout << "bkgSub = 1 (subtract background)" << endl;
 

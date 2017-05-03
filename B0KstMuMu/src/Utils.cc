@@ -26,6 +26,7 @@ Utils::Utils (bool rightFlavorTag)
   B0Mass       = 5.27958;
   JPsiMass     = 3.096916;
   PsiPMass     = 3.686109;
+  D0Mass       = 1.86483;
 
   JPsiBF       =  7.87e-5; // B0 --> J/psi(mu+mu-) K*0          (1.32+/-0.06 * 5.96+/-0.03)
   JPsiKpiBF    =  5.25e-5; // B0 --> J/psi(mu+mu-) K*0(K+pi-)   (1.32+/-0.06 * 5.96+/-0.03 * 2/3)

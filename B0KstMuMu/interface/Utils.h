@@ -292,7 +292,8 @@ class Utils
   double B0Mass;
   double JPsiMass;
   double PsiPMass;
-
+  double D0Mass;
+  
   double JPsiBF;
   double JPsiKpiBF;
   double KstMuMuBF;
