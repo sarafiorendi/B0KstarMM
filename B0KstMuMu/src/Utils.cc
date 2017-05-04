@@ -22,6 +22,7 @@ Utils::Utils (bool rightFlavorTag)
   muonMass     = 0.10565837;
   pionMass     = 0.13957018;
   kaonMass     = 0.493677;
+  protonMass   = 0.93827;
   kstMass      = 0.896;
   B0Mass       = 5.27958;
   JPsiMass     = 3.096916;

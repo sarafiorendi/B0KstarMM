@@ -288,6 +288,7 @@ class Utils
   double muonMass;
   double pionMass;
   double kaonMass;
+  double protonMass;
   double kstMass;
   double B0Mass;
   double JPsiMass;
