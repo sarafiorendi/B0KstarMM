@@ -2783,7 +2783,7 @@ void PlotDmass (string fileName)
       // ##############
       // # Reject psi #
       // ##############
-      if (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"rejectPsi") == true)
+      if (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"rejectPsi",true) == true)
 	{
 	  // #################################
 	  // # Reject outside B0 mass window #
@@ -2835,8 +2835,8 @@ void PlotLambda_bmass (string fileName)
 
   int nEntries;
   unsigned int nBins = 100;
-  double LminX = 5.5;
-  double LmaxX = 6.0;
+  double LminX = 5.6;
+  double LmaxX = 5.9;
   double Lmass = 0.0;
 
   
@@ -2867,7 +2867,7 @@ void PlotLambda_bmass (string fileName)
       // ##############
       // # Reject psi #
       // ##############
-      if (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"rejectPsi") == true)
+      if (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"rejectPsi",true) == true)
 	{
 	  // #################################
 	  // # Reject outside B0 mass window #
