@@ -2835,7 +2835,7 @@ void PlotLambda_bmass (string fileName)
 
   int nEntries;
   unsigned int nBins = 100;
-  double LminX = 5.6;
+  double LminX = 5.4;
   double LmaxX = 5.9;
   double Lmass = 0.0;
 
@@ -2879,6 +2879,17 @@ void PlotLambda_bmass (string fileName)
 					      NTuple->kstTrkmPx->at(0),NTuple->kstTrkmPy->at(0),NTuple->kstTrkmPz->at(0),Utility->kaonMass,
 					      NTuple->kstTrkpPx->at(0),NTuple->kstTrkpPy->at(0),NTuple->kstTrkpPz->at(0),Utility->protonMass);
 	      
+
+	      // ####################
+	      // # Make signal plot #
+	      // ####################
+	      hLSig->Fill(Lmass);
+
+	      
+	      Lmass = Utility->computeInvMass(NTuple->mumuPx->at(0),NTuple->mumuPy->at(0),NTuple->mumuPz->at(0),NTuple->mumuMass->at(0),
+					      NTuple->kstTrkmPx->at(0),NTuple->kstTrkmPy->at(0),NTuple->kstTrkmPz->at(0),Utility->pionMass,
+					      NTuple->kstTrkpPx->at(0),NTuple->kstTrkpPy->at(0),NTuple->kstTrkpPz->at(0),Utility->protonMass);
+
 
 	      // ####################
 	      // # Make signal plot #
