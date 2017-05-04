@@ -2884,17 +2884,6 @@ void PlotLambda_bmass (string fileName)
 	      // # Make signal plot #
 	      // ####################
 	      hLSig->Fill(Lmass);
-
-	      
-	      Lmass = Utility->computeInvMass(NTuple->mumuPx->at(0),NTuple->mumuPy->at(0),NTuple->mumuPz->at(0),NTuple->mumuMass->at(0),
-					      NTuple->kstTrkmPx->at(0),NTuple->kstTrkmPy->at(0),NTuple->kstTrkmPz->at(0),Utility->pionMass,
-					      NTuple->kstTrkpPx->at(0),NTuple->kstTrkpPy->at(0),NTuple->kstTrkpPz->at(0),Utility->protonMass);
-
-
-	      // ####################
-	      // # Make signal plot #
-	      // ####################
-	      hLSig->Fill(Lmass);
 	    }
 	}
     }
