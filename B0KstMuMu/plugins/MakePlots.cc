@@ -2876,10 +2876,10 @@ void PlotLambda_bmass (string fileName)
 	      (NTuple->B0MassArb < Utility->B0Mass + atof(Utility->GetGenericParam("B0MassIntervalRight").c_str())))
 	    {
 	      Lmass = Utility->computeInvMass(NTuple->mumuPx->at(0),NTuple->mumuPy->at(0),NTuple->mumuPz->at(0),NTuple->mumuMass->at(0),
-					      NTuple->kstTrkmPx->at(0),NTuple->kstTrkmPy->at(0),NTuple->kstTrkmPz->at(0),Utility->kaonMass,
-					      NTuple->kstTrkpPx->at(0),NTuple->kstTrkpPy->at(0),NTuple->kstTrkpPz->at(0),Utility->protonMass);
+	  				      NTuple->kstTrkmPx->at(0),NTuple->kstTrkmPy->at(0),NTuple->kstTrkmPz->at(0),Utility->kaonMass,
+	  				      NTuple->kstTrkpPx->at(0),NTuple->kstTrkpPy->at(0),NTuple->kstTrkpPz->at(0),Utility->protonMass);
 	      
-
+	      
 	      // ####################
 	      // # Make signal plot #
 	      // ####################
@@ -2887,8 +2887,8 @@ void PlotLambda_bmass (string fileName)
 	    }
 	}
     }
-  
-  
+
+
   c0->cd();
   hLSig->Draw();
   c0->Modified();
