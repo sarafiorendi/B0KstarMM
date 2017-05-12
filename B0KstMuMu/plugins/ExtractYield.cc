@@ -2,7 +2,9 @@
 // # Program to perform the full angular analysis of the decay B0 --> K*0 mu+ mu- #
 // # Author: Mauro Dinardo                                                        #
 // ################################################################################
-// # Search @TMP@ to look for temporary code options                              #
+// # N. B.:                                                                       #
+// # - compile root and the analysis with the same C++ compiler                   #
+// # - search @TMP@ to look for temporary code options                            #
 // ################################################################################
 // # To use pre-compiled code for the p.d.f. (right now still using RooGenericPdf)#
 // # @TMP@ : (1) comment out the header files                                     #
@@ -38,7 +40,7 @@
 
 // @TMP@ : (1)
 // #include "RooAngleSPdf.h"
-// #include "Roo_AngleSPDFPdf.h"
+// #include "Roo_AnglesPDFPdf.h"
 // #include "RooAngleMisTagPdf.h"
 
 #include <RooPlot.h>
@@ -944,7 +946,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
       // @TMP@ : (2)
       AnglesPDF = new RooGenericPdf("AngleS",myString.str().c_str(),RooArgSet(*VarsAng,*VarsPoly));
       // AnglesPDF = RooClassFactory::makePdfInstance("AngleS",myString.str().c_str(),RooArgSet(*VarsAng,*VarsPoly));
-      // AnglesPDF = new RooAngleSPdf();
+      // AnglesPDF = new RooAngleSPdf("AngleS",myString.str().c_str(),RooArgSet(*VarsAng,*VarsPoly));
     }
   else if ((FitType == 1*10) || (FitType == 41*10) || (FitType == 61*10) || (FitType == 81*10) || // Branching fraction
 	   (FitType == 6*10) || (FitType == 26*10) || (FitType == 36*10) || (FitType == 46*10) || (FitType == 56*10) || (FitType == 66*10) || (FitType == 76*10) || (FitType == 86*10) || (FitType == 96*10)) // Fl-Afb-fit
@@ -987,7 +989,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
 	  // @TMP@ : (2)
 	  RooGenericPdf* _AnglesPDF = new RooGenericPdf("_AnglesPDF",myString.str().c_str(),RooArgSet(*VarsAng));
 	  // RooAbsPdf* _AnglesPDF = RooClassFactory::makePdfInstance("_AnglesPDF",myString.str().c_str(),RooArgSet(*VarsAng));
-	  // RooAbsPdf* _AnglesPDF = new Roo_AngleSPdf();
+	  // RooAbsPdf* _AnglesPDF = new Roo_AnglesPDFPdf("_AnglesPDF",myString.str().c_str(),RooArgSet(*VarsAng));
   
 	  // #############################
 	  // # Make 2D efficiency p.d.f. #
@@ -1001,7 +1003,7 @@ RooAbsPdf* MakeAngWithEffPDF (TF2* effFunc, RooRealVar* y, RooRealVar* z, unsign
       // @TMP@ : (2)
       else AnglesPDF = new RooGenericPdf("AngleMisTag",myString.str().c_str(),RooArgSet(*VarsAng));
       // else AnglesPDF = RooClassFactory::makePdfInstance("AngleMisTag",myString.str().c_str(),RooArgSet(*VarsAng));
-      // else AnglesPDF = new RooAngleMisTagPdf();
+      // else AnglesPDF = new RooAngleMisTagPdf("AngleMisTag",myString.str().c_str(),RooArgSet(*VarsAng));
     }
 
 
