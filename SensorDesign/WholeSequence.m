@@ -33,13 +33,18 @@ YQ = 0; % Coordinate for potential query along z [um]
 
 BField = 0.0; % Magnetic field (orthogonal+outgoing from the 2D geometry) [T]
 
-Fluence = 0.12;% Irradiation fluence [10^16 1 MeV eq. n. / cm^2]
-betaE   = 1.8; % Conversion factor life-time - fluence [10^16 / ns]
-betaH   = 3.3; % Conversion factor life-time - fluence [10^16 / ns]
-TauBe   = 1 / (betaE*Fluence); % Life-time on the backplane side [ns]
-TauSe   = 1 / (betaE*Fluence); % Life-time on the strip side [ns]
-TauBh   = 1 / (betaH*Fluence); % Life-time on the backplane side [ns]
-TauSh   = 1 / (betaH*Fluence); % Life-time on the strip side [ns]
+Fluence = 0.12; % Irradiation fluence [10^16 1 MeV eq. n. / cm^2]
+                % 1/tau = c*(1-exp(-(Fluence-s)/t)), extracted from fit to data [ns^-1]
+ce = 0.6735;
+se = -0.01235;
+te = 0.1772;
+ch = 2.586;
+sh = 0.008732;
+th = 0.6264;
+TauBe = 1/(ce*(1 - exp(-(Fluence - se)/te))); % Life-time on the backplane side [ns]
+TauSe = 1/(ce*(1 - exp(-(Fluence - se)/te))); % Life-time on the strip side [ns]
+TauBh = 1/(ch*(1 - exp(-(Fluence - sh)/th))); % Life-time on the backplane side [ns]
+TauSh = 1/(ch*(1 - exp(-(Fluence - sh)/th))); % Life-time on the strip side [ns]
 fprintf('@@@ Electron''s life-time: %.2f ns, %.2f ns @@@\n',TauBe,TauSe);
 fprintf('@@@ Hole''s life-time: %.2f ns, %.2f ns @@@\n\n',TauBh,TauSh);
 
