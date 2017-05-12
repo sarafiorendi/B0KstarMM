@@ -20,11 +20,11 @@ clc;
 epsR = 3.9;                    % Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
 rho = -4 * 1.6e-19 / 8.85e-18; % Charge denisty in the bulk [(Coulomb / um^3) / eps0 [F/um]]
 
-Step   = 2;       % Unit step of the lattice on which the field is computed [um]
+Step   = 1;       % Unit step of the lattice on which the field is computed [um]
 Radius = Step/10; % Unit step of the movements and field interpolation [um]
 
-BiasV  = -900; % Sensor backplane voltage [V]
-Bulk   = 100;  % Bulk thickness [um]
+BiasV  = -300; % Sensor backplane voltage [V]
+Bulk   = 120;  % Bulk thickness [um]
 PitchX = 100;  % Pitch along X [um] (for 2D geometry)
 PitchY = 150;  % Pitch along Y [um] (for 3D geometry)
 
@@ -33,9 +33,9 @@ YQ = 0; % Coordinate for potential query along z [um]
 
 BField = 0.0; % Magnetic field (orthogonal+outgoing from the 2D geometry) [T]
 
-Fluence = 1.0; % Irradiation fluence [10^16 1 MeV eq. n / cm^2]
+Fluence = 0.12;% Irradiation fluence [10^16 1 MeV eq. n. / cm^2]
 betaE   = 1.8; % Conversion factor life-time - fluence [10^16 / ns]
-betaH   = 3.2; % Conversion factor life-time - fluence [10^16 / ns]
+betaH   = 3.3; % Conversion factor life-time - fluence [10^16 / ns]
 TauBe   = 1 / (betaE*Fluence); % Life-time on the backplane side [ns]
 TauSe   = 1 / (betaE*Fluence); % Life-time on the strip side [ns]
 TauBh   = 1 / (betaH*Fluence); % Life-time on the backplane side [ns]
@@ -43,7 +43,7 @@ TauSh   = 1 / (betaH*Fluence); % Life-time on the strip side [ns]
 fprintf('@@@ Electron''s life-time: %.2f ns, %.2f ns @@@\n',TauBe,TauSe);
 fprintf('@@@ Hole''s life-time: %.2f ns, %.2f ns @@@\n\n',TauBh,TauSh);
 
-NAverage   = 100;    % Generate NAverage "Work-Transport" matrices and average them
+NAverage   = 10;     % Generate NAverage "Work-Transport" matrices and average them
 NParticles = 10000;  % Total number of particles to be simulated
 PType      = 'beta'; % Particle type ['alpha' 'beta' 'gamma']
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
