@@ -4,11 +4,11 @@
 % Bulk    = Bulk thickness [um]
 % PitchX  = Pitch along X [um]
 % PitchY  = Pitch along Y [um]
-% BiasB   = Sensor backplane voltage [V] [0 Weighting; -200 All]
+% BiasB   = Sensor backplane voltage [V] [0 Weighting; -V All]
 % BiasS   = Sensor piel voltage [V]
 % BiasW   = Sensor central pixel voltage [V] [1 Weighting; 0 All]
-% epsR    = Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
-% rho     = Charge denisty in the bulk [(Coulomb / um^3) / eps0 [F/um]]
+% epsR    = Relative permittivity
+% rho     = Charge denisty in the bulk [(Coulomb/um^3) / eps0 [F/um]]
 % XQ      = Coordinate for potential query along z [um]
 % YQ      = Coordinate for potential query along z [um]
 % ItFigIn = Figure iterator input
