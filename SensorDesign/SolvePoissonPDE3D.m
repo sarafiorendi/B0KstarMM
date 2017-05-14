@@ -520,13 +520,13 @@ geometryFromMesh(pdem,nodes,elements);
 applyBoundaryCondition(pdem,'face',1:pdem.Geometry.NumFaces,'h',1,'r',0);
 
 % Backplane
-applyBoundaryCondition(pdem,'face',1,'h',1,'r',BiasB);
+applyBoundaryCondition(pdem,'face',6,'h',1,'r',BiasB);
 
 % Central pixel
-applyBoundaryCondition(pdem,'face',76,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',29,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',68,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',54,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',1,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',26,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',59,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',84,'h',1,'r',BiasW);
 
 
 %%%%%%%%%%%%%%%

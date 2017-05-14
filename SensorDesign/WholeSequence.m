@@ -17,32 +17,31 @@ clc;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Variable initialization %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-BiasV = -300; % Sensor backplane voltage [V]
+BiasV = -500; % Sensor backplane voltage [V]
+
+Fluence = 0.12; % Irradiation fluence [10^16 1MeV n.eq./cm^2]
+                % 1/tau = c*Fluence/(1 + c*Fluence/t), extracted from fit to data [ns^-1]
+ce = 5.36;
+te = 0.8295;
+ch = 3.361;
+th = 107.6;
+TauBe = (1 + ce*Fluence/te)/(ce*Fluence); % Life-time on the backplane side [ns]
+TauSe = (1 + ce*Fluence/te)/(ce*Fluence); % Life-time on the strip side [ns]
+TauBh = (1 + ch*Fluence/th)/(ch*Fluence); % Life-time on the backplane side [ns]
+TauSh = (1 + ch*Fluence/th)/(ch*Fluence); % Life-time on the strip side [ns]
 
 Bulk   = 120; % Bulk thickness [um]
-PitchX = 100; % Pitch along X [um] (for 2D geometry)
+PitchX = 100; % Pitch along X [um] (for 2D&3D geometry)
 PitchY = 150; % Pitch along Y [um] (for 3D geometry)
 
-DeplV = -400;     % Sensor full depletion voltage [V]
 qe    = -1.6e-19; % Electron charge [Coulomb]
 eps0  = 8.85e-18; % Vacuum permittivity [F/um]
 epsR  = 3.9;      % Relative permittivity [3.9 Silicon, 5.7 Diamond]
+dN_dPhi = 30;     % dN/dPhi [#/(um^3 10^16)]
+DeplV = qe*Bulk^2/(2*epsR*eps0)*dN_dPhi*Fluence - 50; % Sensor full depletion voltage [V]
 rho   = 2*DeplV*epsR*eps0/(qe*Bulk^2); % Bulk doping concentration [#/um^3]
 
-BField = 0.0; % Magnetic field (orthogonal+outgoing from the 2D geometry) [T]
-
-Fluence = 0.12; % Irradiation fluence [10^16 1MeV eq.n./cm^2]
-                % 1/tau = c*(1-exp(-(Fluence-s)/t)), extracted from fit to data [ns^-1]
-ce = 0.6735;
-se = -0.01235;
-te = 0.1772;
-ch = 2.586;
-sh = 0.008732;
-th = 0.6264;
-TauBe = 1/(ce*(1 - exp(-(Fluence - se)/te))); % Life-time on the backplane side [ns]
-TauSe = 1/(ce*(1 - exp(-(Fluence - se)/te))); % Life-time on the strip side [ns]
-TauBh = 1/(ch*(1 - exp(-(Fluence - sh)/th))); % Life-time on the backplane side [ns]
-TauSh = 1/(ch*(1 - exp(-(Fluence - sh)/th))); % Life-time on the strip side [ns]
+BField = 0.0; % Magnetic field (orthogonal+outgoing from 2D geometry) [T]
 
 mu_e   = 140; % Electron mobility [um^2/(V*ns)] [140 Silicon, 180 Diamond]
 RH_e   = 1;   % Relative Hall electron mobility [1 Silicon, 1 Diamond]
@@ -54,7 +53,7 @@ RH_h   = 1;   % Relative Hall hole mobility in [1 Silicon, 1 Diamond]
 vs_h   = 50;  % Saturation velocity of the holes [um/ns] [50 Silicon, 160 Diamond]
 beta_h = 1;   % Exponent for the electric field dependence of the mobility [0.42 Silicon, 0.42 Diamond]
 
-Step   = 2;       % Unit step of the lattice on which the field is computed [um]
+Step   = 1;       % Unit step of the lattice on which the field is computed [um]
 Radius = Step/10; % Unit step of the movements and field interpolation [um]
 
 XQ = 0; % Coordinate for potential query along z [um]
@@ -67,6 +66,7 @@ PType      = 'beta'; % Particle type ['alpha' 'beta' 'gamma']
 fprintf('@@@ Derived parameters @@@\n');
 fprintf('@@@ Electron''s life-time: %.2f ns, %.2f [ns] @@@\n',TauBe,TauSe);
 fprintf('@@@ Hole''s life-time: %.2f ns, %.2f [ns] @@@\n',TauBh,TauSh);
+fprintf('@@@ Full depletion voltage: %.2f [V] @@@\n',DeplV);
 fprintf('@@@ Doping concentration: %.2E [#/cm^3] @@@\n',rho*1e12);
 fprintf('@@@ Resistivity: %.2E [Ohm cm] @@@\n\n',-1/(qe*mu_h*rho)*1e-13);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -86,17 +86,17 @@ ItFig = 1;   % Figure iterator
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Compare the potential in 2D and 3D %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%fprintf('@@@ I''m comparing the potential in 2D and 3D @@@\n');
-%[~, Sq3D, xq3D, ItFig] = SolvePoissonPDE3D(Bulk,PitchX,PitchY,0,1,epsR,0,XQ,YQ,ItFig);
-%Diff2D3D = (Sq2D - Sq3D) ./ Sq3D * 100;
+fprintf('@@@ I''m comparing the potential for 2D and 3D @@@\n');
+[~, Sq3D, xq3D, ItFig] = SolvePoissonPDE3D(Bulk,PitchX,PitchY,0,1,epsR,0,XQ,YQ,ItFig);
+Diff2D3D = (Sq2D - Sq3D) ./ Sq3D * 100;
 
-%figure(ItFig);
-%plot(xq2D,Diff2D3D);
-%title(sprintf('Potential difference (2D - 3D) / 3D at x = %.2f um y = %.2f um',XQ,YQ));
-%xlabel('Z [\mum]');
-%ylabel('Percentage [%]');
-%grid on;
-%ItFig = ItFig + 1;
+figure(ItFig);
+plot(xq2D,Diff2D3D);
+title(sprintf('Potential difference (2D - 3D) / 3D at x = %.2f um y = %.2f um',XQ,YQ));
+xlabel('Z [\mum]');
+ylabel('Percentage [%]');
+grid on;
+ItFig = ItFig + 1;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
