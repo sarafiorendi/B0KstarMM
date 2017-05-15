@@ -173,5 +173,5 @@ ylabel('Z [\mum]');
 zlabel('Velocity Field [\mum / ns]');
 
 ItFigOut = ItFigIn + 1;
-fprintf('CPU time --> %.2f[min]\n\n',(cputime-TStart)/60);
+fprintf('CPU time --> %.2f [min]\n\n',(cputime-TStart)/60);
 end

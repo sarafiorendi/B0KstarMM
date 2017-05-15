@@ -64,11 +64,11 @@ NParticles = 10000;  % Total number of particles to be simulated
 PType      = 'beta'; % Particle type ['alpha' 'beta' 'gamma']
 
 fprintf('@@@ Derived parameters @@@\n');
-fprintf('\t- Electron''s life-time: %.2f ns, %.2f [ns]\n',TauBe,TauSe);
-fprintf('\t- Hole''s life-time: %.2f ns, %.2f [ns]\n',TauBh,TauSh);
-fprintf('\t- Full depletion voltage: %.1f [V]\n',DeplV);
-fprintf('\t- Doping concentration: %.1E [#/cm^3]\n',rho*1e12);
-fprintf('\t- Resistivity: %.1E [Ohm cm]\n\n',-1/(qe*mu_h*rho)*1e-13);
+fprintf('\t- Electron''s life-time --> %.2f ns, %.2f [ns]\n',TauBe,TauSe);
+fprintf('\t- Hole''s life-time --> %.2f ns, %.2f [ns]\n',TauBh,TauSh);
+fprintf('\t- Full depletion voltage --> %.1f [V]\n',DeplV);
+fprintf('\t- Doping concentration --> %.1E [#/cm^3]\n',rho*1e12);
+fprintf('\t- Resistivity --> %.1E [Ohm cm]\n\n',-1/(qe*mu_h*rho)*1e-13);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 

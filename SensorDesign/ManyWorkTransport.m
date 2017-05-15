@@ -44,5 +44,5 @@ ylabel('Z [\mum]');
 zlabel('Work / q [#charges * V]');
 
 ItFigOut = ItFigOut + 1;
-fprintf('CPU time --> %.2f[min]\n\n',(cputime-TStart)/60);
+fprintf('CPU time --> %.2f [min]\n\n',(cputime-TStart)/60);
 end

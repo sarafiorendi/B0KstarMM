@@ -149,5 +149,5 @@ fprintf(fileID,'%12.2f %12.2f %12.2f %12.2f\n',[EnergyScale; histo;...
 fclose(fileID);
 
 ItFigOut = ItFigIn + 1;
-fprintf('CPU time --> %.2f[min]\n\n',(cputime-TStart)/60);
+fprintf('CPU time --> %.2f [min]\n\n',(cputime-TStart)/60);
 end
