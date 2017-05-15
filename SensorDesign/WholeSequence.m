@@ -1,7 +1,8 @@
-%%%%%%%%%
-% TO DO %
-%%%%%%%%%
-% Define Sensor&Air volumes in SolvePoisson3D - not available in MATLAB 2016
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TO DO                                         %
+% - Define Sensor&Air volumes in SolvePoisson3D %
+%   (not available in MATLAB 2016)              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % Clean up everything
@@ -88,22 +89,13 @@ ItFig = 1;   % Figure iterator
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fprintf('@@@ I''m comparing the potential for 2D and 3D @@@\n');
 [~, Sq3D, xq3D, ItFig] = SolvePoissonPDE3D(Bulk,PitchX,PitchY,0,1,epsR,0,XQ,YQ,ItFig);
-Diff2D3D = (Sq2D - Sq3D) ./ Sq3D * 100;
-sum2D = 0;
-sum3D = 0;
-for i = 1:length(Sq2D)
-    if ((Sq2D(i) < 1) && (Sq3D(i) < 1))
-        sum2D = sum2D + Sq2D(i);
-        sum3D = sum3D + Sq3D(i);
-        else break;
-    end;
-end;
-fprintf('@@@ Total potential difference: sum(2D - 3D) / sum(3D) * 100 = %.1f%% @@@\n\n',...
-    (sum2D - sum3D) / sum3D * 100);
+Diff2D3D = ((Sq2D ./ xq2D' + Sq2D ./ (Bulk - xq2D')) ./...
+    (Sq3D ./ xq3D' + Sq3D ./ (Bulk - xq3D')) - 1) * 100;
+fprintf('@@@ Weighted potential difference %.1f%% @@@\n\n',mean(Diff2D3D,'omitnan'));
 
 figure(ItFig);
 plot(xq2D,Diff2D3D);
-title(sprintf('Potential difference (2D - 3D) / 3D at x = %.2f um y = %.2f um',XQ,YQ));
+title(sprintf('Weighted potential difference at x = %.2f um y = %.2f um',XQ,YQ));
 xlabel('Z [\mum]');
 ylabel('Percentage [%]');
 grid on;

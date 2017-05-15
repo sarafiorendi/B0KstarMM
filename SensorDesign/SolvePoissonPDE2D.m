@@ -25,10 +25,10 @@ ContLevel      = 40;  % Contour plot levels
 MagnVector     = 1.5; % Vector field magnification
 MeshMax        = 15;  % Maximum mesh edge length [um]
 
+SHeight      = 2;        % Sensor height [units of bulk thickness]
 MetalThick   = 5;        % Metalization thickness [um]
 MetalWidthHV = Pitch-10; % Metalization width HV strip [um]
 MetalWidthSg = Pitch-10; % Metalization width Signal strip [um]
-SHeight      = 2;        % Sensor height [units of bulk thickness]
 NStrips      = 13;       % Total number of strips
 
 
@@ -251,7 +251,7 @@ ylabel('Z [\mum]');
 
 ItFigIn = ItFigIn + 1;
 figure(ItFigIn);
-yq = 0:ReSampleFine:Bulk*3/2;
+yq = 0:ReSampleFine:Bulk;
 xq = XQ * ones(1,length(yq));
 Sq = interpolateSolution(potential,xq,yq);
 plot(yq,Sq);

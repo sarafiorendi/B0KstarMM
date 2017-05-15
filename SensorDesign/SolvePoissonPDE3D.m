@@ -27,10 +27,10 @@ StepMeshHol  = 1; % Step to build mesh hollow volume [um]
 StepMeshVol  = 4; % Step to build mesh whole volume [um]
 StepSlices   = Bulk/10; % Step to build slices along z [um]
 
-SHeight     = 2; % Sensor height [units of bulk thickness]
-MetalThick  = 5; % Metalization thickness [um]
-MetalWidthX = PitchX/2; % Metalization width along X [um]
-MetalWidthY = PitchY/2; % Metalization width along Y [um]
+SHeight     = 2;         % Sensor height [units of bulk thickness]
+MetalThick  = 5;         % Metalization thickness [um]
+MetalWidthX = PitchX-10; % Metalization width along X [um]
+MetalWidthY = PitchY-10; % Metalization width along Y [um]
 
 
 %%%%%%%%%%%%%%%%%%%%
@@ -520,13 +520,13 @@ geometryFromMesh(pdem,nodes,elements);
 applyBoundaryCondition(pdem,'face',1:pdem.Geometry.NumFaces,'h',1,'r',0);
 
 % Backplane
-applyBoundaryCondition(pdem,'face',2,'h',1,'r',BiasB);
+applyBoundaryCondition(pdem,'face',1,'h',1,'r',BiasB);
 
 % Central pixel
-applyBoundaryCondition(pdem,'face',16,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',25,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',46,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',68,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',20,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',54,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',38,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',99,'h',1,'r',BiasW);
 
 
 %%%%%%%%%%%%%%%
@@ -581,7 +581,7 @@ colorbar;
 
 ItFigIn = ItFigIn + 1;
 figure(ItFigIn);
-zq = 0:ReSampleFine:Bulk*3/2;
+zq = 0:ReSampleFine:Bulk;
 xq = XQ * ones(1,length(zq));
 yq = YQ * ones(1,length(zq));
 Sq = interpolateSolution(potential,xq,yq,zq);
