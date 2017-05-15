@@ -22,15 +22,15 @@ TStart = cputime; % CPU time at start
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Variable initialization %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-ReSampleFine = 1;  % Used in order to make nice plots [um]
-StepMeshHol  = 1;  % Step to build mesh hollow volume [um]
-StepMeshVol  = 4;  % Step to build mesh whole volume [um]
-StepSlices   = 10; % Step to build slices along z [um]
+ReSampleFine = 1; % Used in order to make nice plots [um]
+StepMeshHol  = 1; % Step to build mesh hollow volume [um]
+StepMeshVol  = 4; % Step to build mesh whole volume [um]
+StepSlices   = Bulk/10; % Step to build slices along z [um]
 
-MetalThick  = 5;   % Metalization thickness [um]
-MetalWidthX = 50;  % Metalization width along X [um]
-MetalWidthY = 100; % Metalization width along Y [um]
-SHeight     = 2;   % Sensor height [units of bulk thickness]
+SHeight     = 2; % Sensor height [units of bulk thickness]
+MetalThick  = 5; % Metalization thickness [um]
+MetalWidthX = PitchX/2; % Metalization width along X [um]
+MetalWidthY = PitchY/2; % Metalization width along Y [um]
 
 
 %%%%%%%%%%%%%%%%%%%%

@@ -17,7 +17,7 @@ clc;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Variable initialization %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-BiasV = -500; % Sensor backplane voltage [V]
+BiasV = -300; % Sensor backplane voltage [V]
 
 Fluence = 0.12; % Irradiation fluence [10^16 1MeV n.eq./cm^2]
                 % 1/tau = c*Fluence/(1 + c*Fluence/t), extracted from fit to data [ns^-1]
@@ -37,38 +37,38 @@ PitchY = 150; % Pitch along Y [um] (for 3D geometry)
 qe    = -1.6e-19; % Electron charge [Coulomb]
 eps0  = 8.85e-18; % Vacuum permittivity [F/um]
 epsR  = 3.9;      % Relative permittivity [3.9 Silicon, 5.7 Diamond]
-dN_dPhi = 30;     % dN/dPhi [#/(um^3 10^16)]
-DeplV = qe*Bulk^2/(2*epsR*eps0)*dN_dPhi*Fluence - 50; % Sensor full depletion voltage [V]
+dN_dPhi = 30;     % dN/dPhi extracted from data [#/(um^3 10^16)]
+DeplV = qe*Bulk^2/(2*epsR*eps0)*dN_dPhi*Fluence - 20; % Sensor full depletion voltage [V]
 rho   = 2*DeplV*epsR*eps0/(qe*Bulk^2); % Bulk doping concentration [#/um^3]
 
 BField = 0.0; % Magnetic field (orthogonal+outgoing from 2D geometry) [T]
 
 mu_e   = 140; % Electron mobility [um^2/(V*ns)] [140 Silicon, 180 Diamond]
 RH_e   = 1;   % Relative Hall electron mobility [1 Silicon, 1 Diamond]
-vs_e   = 90;  % Saturation velocity of the electrons [um/ns] [90 Silicon, 260 Diamond]
+vs_e   = 110; % Saturation velocity of the electrons [um/ns] [110 Silicon, 260 Diamond]
 beta_e = 1;   % Exponent for the electric field dependence of the mobility [0.81 Silicon, 0.81 Diamond]
 
 mu_h   = 45;  % Hole mobility in [um^2/(V*ns)] [45 Silicon, 120 Diamond]
 RH_h   = 1;   % Relative Hall hole mobility in [1 Silicon, 1 Diamond] 
-vs_h   = 50;  % Saturation velocity of the holes [um/ns] [50 Silicon, 160 Diamond]
+vs_h   = 95;  % Saturation velocity of the holes [um/ns] [95 Silicon, 160 Diamond]
 beta_h = 1;   % Exponent for the electric field dependence of the mobility [0.42 Silicon, 0.42 Diamond]
 
-Step   = 1;       % Unit step of the lattice on which the field is computed [um]
+Step   = 2;       % Unit step of the lattice on which the field is computed [um]
 Radius = Step/10; % Unit step of the movements and field interpolation [um]
 
 XQ = 0; % Coordinate for potential query along z [um]
 YQ = 0; % Coordinate for potential query along z [um]
 
-NAverage   = 20;     % Generate NAverage "Work-Transport" matrices and average them
+NAverage   = 10;     % Generate NAverage "Work-Transport" matrices and average them
 NParticles = 10000;  % Total number of particles to be simulated
 PType      = 'beta'; % Particle type ['alpha' 'beta' 'gamma']
 
 fprintf('@@@ Derived parameters @@@\n');
-fprintf('@@@ Electron''s life-time: %.2f ns, %.2f [ns] @@@\n',TauBe,TauSe);
-fprintf('@@@ Hole''s life-time: %.2f ns, %.2f [ns] @@@\n',TauBh,TauSh);
-fprintf('@@@ Full depletion voltage: %.2f [V] @@@\n',DeplV);
-fprintf('@@@ Doping concentration: %.2E [#/cm^3] @@@\n',rho*1e12);
-fprintf('@@@ Resistivity: %.2E [Ohm cm] @@@\n\n',-1/(qe*mu_h*rho)*1e-13);
+fprintf('\t- Electron''s life-time: %.2f ns, %.2f [ns]\n',TauBe,TauSe);
+fprintf('\t- Hole''s life-time: %.2f ns, %.2f [ns]\n',TauBh,TauSh);
+fprintf('\t- Full depletion voltage: %.1f [V]\n',DeplV);
+fprintf('\t- Doping concentration: %.1E [#/cm^3]\n',rho*1e12);
+fprintf('\t- Resistivity: %.1E [Ohm cm]\n\n',-1/(qe*mu_h*rho)*1e-13);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -89,6 +89,17 @@ ItFig = 1;   % Figure iterator
 fprintf('@@@ I''m comparing the potential for 2D and 3D @@@\n');
 [~, Sq3D, xq3D, ItFig] = SolvePoissonPDE3D(Bulk,PitchX,PitchY,0,1,epsR,0,XQ,YQ,ItFig);
 Diff2D3D = (Sq2D - Sq3D) ./ Sq3D * 100;
+sum2D = 0;
+sum3D = 0;
+for i = 1:length(Sq2D)
+    if ((Sq2D(i) < 1) && (Sq3D(i) < 1))
+        sum2D = sum2D + Sq2D(i);
+        sum3D = sum3D + Sq3D(i);
+        else break;
+    end;
+end;
+fprintf('@@@ Total potential difference: sum(2D - 3D) / sum(3D) * 100 = %.1f%% @@@\n\n',...
+    (sum2D - sum3D) / sum3D * 100);
 
 figure(ItFig);
 plot(xq2D,Diff2D3D);
