@@ -3,7 +3,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NAverage = Generate NAverage WorkTransportTotal and average them
 
-function [WorkTransportTotal, x, y, ItFigOut] = ...
+function [WorkTransportTotal, x, y, ItFigOut] =...
     ManyWorkTransport(potential,VFieldx_e,VFieldy_e,VFieldx_h,VFieldy_h,...
     x,y,Step,Bulk,Radius,TauBe,TauSe,TauBh,TauSh,NAverage,ItFigIn)
 TStart = cputime; % CPU time at start
@@ -44,5 +44,5 @@ ylabel('Z [\mum]');
 zlabel('Work / q [#charges * V]');
 
 ItFigOut = ItFigOut + 1;
-fprintf('CPU time --> %.2f[min]\n\n',(cputime-TStart)/60);
+fprintf('CPU time --> %.2f [min]\n\n',(cputime-TStart)/60);
 end

@@ -4,11 +4,11 @@
 % Bulk    = Bulk thickness [um]
 % PitchX  = Pitch along X [um]
 % PitchY  = Pitch along Y [um]
-% BiasB   = Sensor backplane voltage [V] [0 Weighting; -200 All]
+% BiasB   = Sensor backplane voltage [V] [0 Weighting; -V All]
 % BiasS   = Sensor piel voltage [V]
 % BiasW   = Sensor central pixel voltage [V] [1 Weighting; 0 All]
-% epsR    = Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
-% rho     = Charge denisty in the bulk [(Coulomb / um^3) / eps0 [F/um]]
+% epsR    = Relative permittivity
+% rho     = Charge denisty in the bulk [(Coulomb/um^3) / eps0 [F/um]]
 % XQ      = Coordinate for potential query along z [um]
 % YQ      = Coordinate for potential query along z [um]
 % ItFigIn = Figure iterator input
@@ -22,15 +22,15 @@ TStart = cputime; % CPU time at start
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Variable initialization %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-ReSampleFine = 1;  % Used in order to make nice plots [um]
-StepMeshHol  = 1;  % Step to build mesh hollow volume [um]
-StepMeshVol  = 4;  % Step to build mesh whole volume [um]
-StepSlices   = 10; % Step to build slices along z [um]
+ReSampleFine = 1; % Used in order to make nice plots [um]
+StepMeshHol  = 1; % Step to build mesh hollow volume [um]
+StepMeshVol  = 4; % Step to build mesh whole volume [um]
+StepSlices   = Bulk/10; % Step to build slices along z [um]
 
-MetalThick  = 5;   % Metalization thickness [um]
-MetalWidthX = 50;  % Metalization width along X [um]
-MetalWidthY = 100; % Metalization width along Y [um]
-SHeight     = 2;   % Sensor height [units of bulk thickness]
+SHeight     = 2;         % Sensor height [units of bulk thickness]
+MetalThick  = 5;         % Metalization thickness [um]
+MetalWidthX = PitchX-10; % Metalization width along X [um]
+MetalWidthY = PitchY-10; % Metalization width along Y [um]
 
 
 %%%%%%%%%%%%%%%%%%%%
@@ -523,10 +523,10 @@ applyBoundaryCondition(pdem,'face',1:pdem.Geometry.NumFaces,'h',1,'r',0);
 applyBoundaryCondition(pdem,'face',1,'h',1,'r',BiasB);
 
 % Central pixel
-applyBoundaryCondition(pdem,'face',76,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',29,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',68,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',20,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',38,'h',1,'r',BiasW);
 applyBoundaryCondition(pdem,'face',54,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',99,'h',1,'r',BiasW);
 
 
 %%%%%%%%%%%%%%%
@@ -581,7 +581,7 @@ colorbar;
 
 ItFigIn = ItFigIn + 1;
 figure(ItFigIn);
-zq = 0:ReSampleFine:Bulk*3/2;
+zq = 0:ReSampleFine:Bulk;
 xq = XQ * ones(1,length(zq));
 yq = YQ * ones(1,length(zq));
 Sq = interpolateSolution(potential,xq,yq,zq);
@@ -592,5 +592,5 @@ ylabel('Potential');
 grid on;
 
 ItFigOut = ItFigIn + 1;
-fprintf('CPU time --> %.2f[min]\n\n',(cputime-TStart)/60);
+fprintf('CPU time --> %.2f [min]\n\n',(cputime-TStart)/60);
 end

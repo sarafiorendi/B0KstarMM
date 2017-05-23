@@ -9,32 +9,27 @@
 % --> vy = mu / [(1+(mu*R*B)^2) * (1+mu*E/vs)] * (Ey - mu*R*B*Ex)
 
 % Potential = Solution of the Poisson equation
-% Step    = Unit step of the lattice on which the field is computed [um]
-% Bulk    = Bulk thickness [um]
-% BField  = Magnetic field (orthogonal+outgoing from the 2D geometry) [T]
-% Pitch   = Strip pitch [um]
-% ItFigIn = Figure iterator input
+% Step      = Unit step of the lattice on which the field is computed [um]
+% Bulk      = Bulk thickness [um]
+% BField    = Magnetic field (orthogonal+outgoing from the 2D geometry) [T]
+% Pitch     = Strip pitch [um]
 
-function [VFieldx_e, VFieldy_e, VFieldx_h, VFieldy_h, x, y, ItFigOut] = ...
-    VelocityField(Potential,Step,Bulk,BField,Pitch,ItFigIn)
+% mu_e      = Electron mobility [um^2/(V*ns)]
+% RH_e      = Relative Hall electron mobility
+% vs_e      = Saturation velocity of the electrons [um/ns]
+% beta_e    = Exponent for the electric field dependence of mobility
+
+% mu_h      = Hole mobility in [um^2/(V*ns)]
+% RH_h      = Relative Hall hole mobility
+% vs_h      = Saturation velocity of the holes [um/ns]
+% beta_h    = Exponent for the electric field dependence of mobility
+
+% ItFigIn   = Figure iterator input
+
+function [VFieldx_e, VFieldy_e, VFieldx_h, VFieldy_h, x, y, ItFigOut] =...
+    VelocityField(Potential,Step,Bulk,BField,Pitch,...
+    mu_e,RH_e,vs_e,beta_e,mu_h,RH_h,vs_h,beta_h,ItFigIn)
 TStart = cputime; % CPU time at start
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Parameters of the sensor: they are all temperature-dependent %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-mu_e   = 140; % Electron mobility [um^2/(V*ns)] [140 Silicon, 180 Diamond]
-RH_e   = 1;   % Relative Hall electron mobility [1 Silicon, 1 Diamond]
-vs_e   = 100; % Saturation velocity of the electrons
-              % [um/ns] [100 Silicon, 260 Diamond]
-beta_e = 1;   % Exponent for the electric field dependence
-              % of the mobility [0.81 Silicon, 0.81 Diamond]
-
-mu_h   = 45;  % Hole mobility in [um^2/(V*ns)] [45 Silicon, 120 Diamond]
-RH_h   = 1;   % Relative Hall hole mobility in [1 Silicon, 1 Diamond]
-vs_h   = 80;  % Saturation velocity of the holes
-              % [um/ns] [80 Silicon, 160 Diamond]
-beta_h = 1;   % Exponent for the electric field dependence
-              % of the mobility [0.42 Silicon, 0.42 Diamond]
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -178,5 +173,5 @@ ylabel('Z [\mum]');
 zlabel('Velocity Field [\mum / ns]');
 
 ItFigOut = ItFigIn + 1;
-fprintf('CPU time --> %.2f[min]\n\n',(cputime-TStart)/60);
+fprintf('CPU time --> %.2f [min]\n\n',(cputime-TStart)/60);
 end

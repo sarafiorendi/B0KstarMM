@@ -1,7 +1,8 @@
-%%%%%%%%%
-% TO DO %
-%%%%%%%%%
-% Define Sensor&Air volumes in SolvePoisson3D - not available in MATLAB 2016
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TO DO                                         %
+% - Define Sensor&Air volumes in SolvePoisson3D %
+%   (not available in MATLAB 2016)              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 % Clean up everything
@@ -14,38 +15,65 @@ clc;
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%% Variable initialization %%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-epsR = 3.9;                    % Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
-rho = -4 * 1.6e-19 / 8.85e-18; % Charge denisty in the bulk [(Coulomb / um^3) / eps0 [F/um]]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Variable initialization %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+BiasV = -500; % Sensor backplane voltage [V]
 
-Step   = 2;       % Unit step of the lattice on which the field is computed [um]
+Fluence = 0.3; % Irradiation fluence [10^16 1MeV n.eq./cm^2]
+               % 1/tau = c*Fluence/(1 + c*Fluence/t), extracted from fit to data [ns^-1]
+ce = 5.36;
+te = 0.8295;
+ch = 3.361;
+th = 107.6;
+TauBe = (1 + ce*Fluence/te)/(ce*Fluence); % Life-time on the backplane side [ns]
+TauSe = (1 + ce*Fluence/te)/(ce*Fluence); % Life-time on the strip side [ns]
+TauBh = (1 + ch*Fluence/th)/(ch*Fluence); % Life-time on the backplane side [ns]
+TauSh = (1 + ch*Fluence/th)/(ch*Fluence); % Life-time on the strip side [ns]
+
+Bulk   = 120; % Bulk thickness [um]
+PitchX = 100; % Pitch along X [um] (for 2D&3D geometry)
+PitchY = 150; % Pitch along Y [um] (for 3D geometry)
+
+qe    = -1.6e-19; % Electron charge [Coulomb]
+eps0  = 8.85e-18; % Vacuum permittivity [F/um]
+epsR  = 3.9;      % Relative permittivity [3.9 Silicon, 5.7 Diamond]
+dN_dPhi = 30;     % dN/dPhi extracted from data [#/(um^3 10^16)]
+DeplV = qe*Bulk^2/(2*epsR*eps0)*dN_dPhi*Fluence - 20; % Sensor full depletion voltage [V]
+rho   = 2*DeplV*epsR*eps0/(qe*Bulk^2); % Bulk doping concentration [#/um^3]
+
+BField = 0.0; % Magnetic field (orthogonal+outgoing from 2D geometry) [T]
+
+T = 260; % Sensor temperature [Kelvin]
+
+mu_e   = 140*(T/300)^(-2.4); % Electron mobility [um^2/(V*ns)] [140 Silicon, 180 Diamond]
+RH_e   = 1;   % Relative Hall electron mobility [1 Silicon, 1 Diamond]
+vs_e   = 110; % Saturation velocity of the electrons [um/ns] [110 Silicon, 260 Diamond]
+beta_e = 1;   % Exponent for the electric field dependence of the mobility [0.81 Silicon, 0.81 Diamond]
+
+mu_h   = 45*(T/300)^(-2.2); % Hole mobility in [um^2/(V*ns)] [45 Silicon, 120 Diamond]
+RH_h   = 1;  % Relative Hall hole mobility in [1 Silicon, 1 Diamond] 
+vs_h   = 95; % Saturation velocity of the holes [um/ns] [95 Silicon, 160 Diamond]
+beta_h = 1;  % Exponent for the electric field dependence of the mobility [0.42 Silicon, 0.42 Diamond]
+
+Step   = 1;       % Unit step of the lattice on which the field is computed [um]
 Radius = Step/10; % Unit step of the movements and field interpolation [um]
-
-BiasV  = -900; % Sensor backplane voltage [V]
-Bulk   = 100;  % Bulk thickness [um]
-PitchX = 100;  % Pitch along X [um] (for 2D geometry)
-PitchY = 150;  % Pitch along Y [um] (for 3D geometry)
 
 XQ = 0; % Coordinate for potential query along z [um]
 YQ = 0; % Coordinate for potential query along z [um]
 
-BField = 0.0; % Magnetic field (orthogonal+outgoing from the 2D geometry) [T]
-
-Fluence = 1.0; % Irradiation fluence [10^16 1 MeV eq. n / cm^2]
-betaE   = 1.8; % Conversion factor life-time - fluence [10^16 / ns]
-betaH   = 3.2; % Conversion factor life-time - fluence [10^16 / ns]
-TauBe   = 1 / (betaE*Fluence); % Life-time on the backplane side [ns]
-TauSe   = 1 / (betaE*Fluence); % Life-time on the strip side [ns]
-TauBh   = 1 / (betaH*Fluence); % Life-time on the backplane side [ns]
-TauSh   = 1 / (betaH*Fluence); % Life-time on the strip side [ns]
-fprintf('@@@ Electron''s life-time: %.2f ns, %.2f ns @@@\n',TauBe,TauSe);
-fprintf('@@@ Hole''s life-time: %.2f ns, %.2f ns @@@\n\n',TauBh,TauSh);
-
-NAverage   = 100;    % Generate NAverage "Work-Transport" matrices and average them
+NAverage   = 20;     % Generate NAverage "Work-Transport" matrices and average them
 NParticles = 10000;  % Total number of particles to be simulated
 PType      = 'beta'; % Particle type ['alpha' 'beta' 'gamma']
+
+fprintf('@@@ Derived parameters @@@\n');
+fprintf('\t- Electron''s mobility --> %.2f(T=%.2f) [um^2/(V ns)]\n',mu_e,T);
+fprintf('\t- Hole''s mobility --> %.2f(T=%.2f) [um^2/(V ns)]\n',mu_h,T);
+fprintf('\t- Electron''s life-time --> %.2f [ns], %.2f [ns]\n',TauBe,TauSe);
+fprintf('\t- Hole''s life-time --> %.2f [ns], %.2f [ns]\n',TauBh,TauSh);
+fprintf('\t- Full depletion voltage --> %.1f [V]\n',DeplV);
+fprintf('\t- Doping concentration --> %.1E [#/cm^3]\n',rho*1e12);
+fprintf('\t- Resistivity --> %.1E [Ohm cm]\n\n',-1/(qe*mu_h*rho)*1e-13);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -56,20 +84,22 @@ ItFig = 1;   % Figure iterator
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 % Compute the potentials %
 %%%%%%%%%%%%%%%%%%%%%%%%%%
-[TotalPot,  ~,       ~, ItFig] = SolvePoissonPDE2D(Bulk,PitchX,BiasV,0,0,epsR,rho,XQ,ItFig);
+[TotalPot,  ~,       ~, ItFig] = SolvePoissonPDE2D(Bulk,PitchX,BiasV,0,0,epsR,rho*qe/eps0,XQ,ItFig);
 [WeightPot, Sq2D, xq2D, ItFig] = SolvePoissonPDE2D(Bulk,PitchX,0,0,1,epsR,0,XQ,ItFig);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Compare the potential in 2D and 3D %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-fprintf('@@@ I''m comparing the potential in 2D and 3D @@@\n');
+fprintf('@@@ I''m comparing the potential for 2D and 3D @@@\n');
 [~, Sq3D, xq3D, ItFig] = SolvePoissonPDE3D(Bulk,PitchX,PitchY,0,1,epsR,0,XQ,YQ,ItFig);
-Diff2D3D = (Sq2D - Sq3D) ./ Sq3D * 100;
+Diff2D3D = ((Sq2D ./ xq2D' + Sq2D ./ (Bulk - xq2D')) ./...
+    (Sq3D ./ xq3D' + Sq3D ./ (Bulk - xq3D')) - 1) * 100;
+fprintf('@@@ Potential percentage difference %.1f%% @@@\n\n',mean(Diff2D3D,'omitnan'));
 
 figure(ItFig);
 plot(xq2D,Diff2D3D);
-title(sprintf('Potential difference (2D - 3D) / 3D at x = %.2f um y = %.2f um',XQ,YQ));
+title(sprintf('Potential percentage difference at x = %.2f um y = %.2f um',XQ,YQ));
 xlabel('Z [\mum]');
 ylabel('Percentage [%]');
 grid on;
@@ -80,7 +110,8 @@ ItFig = ItFig + 1;
 % Compute the velocity field %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [VFieldx_e, VFieldy_e, VFieldx_h, VFieldy_h, x, y, ItFig] =...
-    VelocityField(TotalPot,Step,Bulk,BField,PitchX,ItFig);
+    VelocityField(TotalPot,Step,Bulk,BField,PitchX,...
+    mu_e,RH_e,vs_e,beta_e,mu_h,RH_h,vs_h,beta_h,ItFig);
 
 
 %%%%%%%%%%%%%%%%%%%%
