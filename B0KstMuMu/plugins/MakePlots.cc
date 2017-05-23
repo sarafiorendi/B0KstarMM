@@ -2925,16 +2925,27 @@ void PlotB0mass (string fileName)
 
 
   TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
+  TCanvas* c1 = new TCanvas("c1","c1",10,10,700,500);
   
   TH1D* hBSig = new TH1D("hBSig","hBSig",nBins,BminX,BmaxX);
   hBSig->SetXTitle("m(K #pi #mu #mu) (GeV)");
   hBSig->SetYTitle("Entries");
   hBSig->SetFillColor(kAzure+6);
 
+  TH1D* hNoBSig = new TH1D("hNoBSig","hNoBSigg",nBins,BminX,BmaxX);
+  hNoBSig->SetXTitle("m(K #pi #mu #mu) (GeV)");
+  hNoBSig->SetYTitle("Entries");
+  hNoBSig->SetFillColor(kAzure+6);
+
   TF1* myLinFit = new TF1("myLinFit","[0] + x*[1]",BminX,Utility->B0Mass-atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()));
   myLinFit->SetParName(0,"Intercept");
   myLinFit->SetParName(1,"Slope");
   myLinFit->SetLineColor(kRed);
+
+  TF1* myLinFit2 = new TF1("myLinFit2","[0] + x*[1]",5.1,Utility->B0Mass+atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()));
+  myLinFit2->SetParName(0,"Intercept");
+  myLinFit2->SetParName(1,"Slope");
+  myLinFit2->SetLineColor(kGreen);
 
   TF1* myGaussFit = new TF1("myGaussFit","[0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2]))",Utility->B0Mass-atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),Utility->B0Mass+atof(Utility->GetGenericParam("B0MassIntervalRight").c_str()));
   myGaussFit->SetParName(0,"Ampl.");
@@ -2970,6 +2981,10 @@ void PlotB0mass (string fileName)
       if (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"rejectPsi",true) == true)
 	{
 	  hBSig->Fill(NTuple->B0MassArb);
+	  
+	  if (NTuple->B0MassArb < Utility->B0Mass - atof(Utility->GetGenericParam("NSigmaB0").c_str())*Utility->GetB0Width() ||
+	      NTuple->B0MassArb > Utility->B0Mass + atof(Utility->GetGenericParam("NSigmaB0").c_str())*Utility->GetB0Width())
+	    hNoBSig->Fill(NTuple->B0MassArb);
 	}
     }
 
@@ -2979,12 +2994,21 @@ void PlotB0mass (string fileName)
   DrawExclusion(BminX,Utility->B0Mass-atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),0,500,"LinFitRange",3001,kRed);
   hBSig->Fit("myLinFit","R0");
   myLinFit->DrawF1(BminX,BmaxX,"same");
+  hNoBSig->Fit("myLinFit2","R0");
+  myLinFit2->DrawF1(BminX,Utility->B0Mass+atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),"same");
   hBSig->Fit("myTotalFit","R0");
   hBSig->GetFunction("myTotalFit")->Draw("same");
   myGaussFit->SetParameters(myTotalFit->GetParameter(0),myTotalFit->GetParameter(1),myTotalFit->GetParameter(2));
   myGaussFit->Draw("same");
   c0->Modified();
   c0->Update();
+
+  c1->cd();
+  hNoBSig->Draw();
+  DrawExclusion(BminX,Utility->B0Mass-atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),0,500,"LinFitRange",3001,kRed);
+  myLinFit2->DrawF1(BminX,Utility->B0Mass+atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),"same");
+  c1->Modified();
+  c1->Update();
 }
 
 
