@@ -2991,7 +2991,7 @@ void PlotB0mass (string fileName)
 
   c0->cd();
   hBSig->Draw();
-  DrawExclusion(BminX,Utility->B0Mass-atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),0,500,"LinFitRange",3001,kRed);
+  DrawExclusion(BminX,Utility->B0Mass-atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),0,500,"LinFitRange",3003,kRed);
   hBSig->Fit("myLinFit","R0");
   myLinFit->DrawF1(BminX,BmaxX,"same");
   hNoBSig->Fit("myLinFit2","R0");
@@ -3005,7 +3005,7 @@ void PlotB0mass (string fileName)
 
   c1->cd();
   hNoBSig->Draw();
-  DrawExclusion(BminX,Utility->B0Mass-atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),0,500,"LinFitRange",3001,kRed);
+  DrawExclusion(BminX,Utility->B0Mass-atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),0,500,"LinFitRange",3003,kRed);
   myLinFit2->DrawF1(BminX,Utility->B0Mass+atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),"same");
   c1->Modified();
   c1->Update();
