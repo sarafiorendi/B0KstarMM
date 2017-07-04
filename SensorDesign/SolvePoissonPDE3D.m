@@ -8,7 +8,7 @@
 % BiasS   = Sensor piel voltage [V]
 % BiasW   = Sensor central pixel voltage [V] [1 Weighting; 0 All]
 % epsR    = Relative permittivity
-% rho     = Charge denisty in the bulk [(Coulomb/um^3) / eps0 [F/um]]
+% rho     = Charge density in the bulk [(Coulomb/um^3) / eps0 [F/um]]
 % XQ      = Coordinate for potential query along z [um]
 % YQ      = Coordinate for potential query along z [um]
 % ItFigIn = Figure iterator input
@@ -29,8 +29,8 @@ StepSlices   = Bulk/10; % Step to build slices along z [um]
 
 SHeight     = 2;         % Sensor height [units of bulk thickness]
 MetalThick  = 5;         % Metalization thickness [um]
-MetalWidthX = PitchX-10; % Metalization width along X [um]
-MetalWidthY = PitchY-10; % Metalization width along Y [um]
+MetalWidthX = PitchX-20; % Metalization width along X [um]
+MetalWidthY = PitchY-20; % Metalization width along Y [um]
 
 
 %%%%%%%%%%%%%%%%%%%%
@@ -523,10 +523,10 @@ applyBoundaryCondition(pdem,'face',1:pdem.Geometry.NumFaces,'h',1,'r',0);
 applyBoundaryCondition(pdem,'face',1,'h',1,'r',BiasB);
 
 % Central pixel
-applyBoundaryCondition(pdem,'face',20,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',38,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',54,'h',1,'r',BiasW);
-applyBoundaryCondition(pdem,'face',99,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',6,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',31,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',76,'h',1,'r',BiasW);
+applyBoundaryCondition(pdem,'face',82,'h',1,'r',BiasW);
 
 
 %%%%%%%%%%%%%%%

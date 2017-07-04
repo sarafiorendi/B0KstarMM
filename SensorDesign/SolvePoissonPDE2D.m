@@ -7,7 +7,7 @@
 % BiasS   = Sensor strip voltage [V]
 % BiasW   = Sensor central strip voltage [V] [1 Weighting; 0 All]
 % epsR    = Relative permittivity
-% rho     = Charge denisty in the bulk [(Coulomb/um^3) / eps0 [F/um]]
+% rho     = Charge density in the bulk [(Coulomb/um^3) / eps0 [F/um]]
 % XQ      = Coordinate for potential query along y [um]
 % ItFigIn = Figure iterator input
 
@@ -27,8 +27,8 @@ MeshMax        = 15;  % Maximum mesh edge length [um]
 
 SHeight      = 2;        % Sensor height [units of bulk thickness]
 MetalThick   = 5;        % Metalization thickness [um]
-MetalWidthHV = Pitch-10; % Metalization width HV strip [um]
-MetalWidthSg = Pitch-10; % Metalization width Signal strip [um]
+MetalWidthHV = Pitch-20; % Metalization width HV strip [um]
+MetalWidthSg = Pitch-20; % Metalization width Signal strip [um]
 NStrips      = 13;       % Total number of strips
 
 

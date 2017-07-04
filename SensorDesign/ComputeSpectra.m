@@ -18,7 +18,7 @@ TStart = cputime; % CPU time at start
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Variable initialization %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-eNoise  = 1200;  % Electronic noise [electrons]
+eNoise  = 1000;  % Electronic noise [electrons]
 nBins   = 100;   % Spectrum's number of bins
 IsGamma = false; % Define whether the particle is a gamma or not
 
@@ -26,7 +26,7 @@ if strcmp(PType,'beta') == true
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Charge spectrum for Beta %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    ehLength = 70;            % Electron-holes pairs per unit length [electrons/um]
+    ehLength = 64;            % Electron-holes pairs per unit length [electrons/um]
     depth    = Bulk;          % Source penetration depth [um]
     eMax     = ehLength*Bulk; % Maximum released charge [electrons]
 elseif strcmp(PType,'alpha') == true || strcmp(PType,'gamma') == true
