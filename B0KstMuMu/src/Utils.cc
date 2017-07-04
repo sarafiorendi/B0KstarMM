@@ -3465,7 +3465,7 @@ std::string Utils::Transformer (std::string varName, bool doIt, double& varValOu
     {
       if (varName == "FlS")
 	{
-	  if (doIt == true) myString << "(1/2 + TMath::ATan(" << varName << ")/TMath::Pi())";
+	  if (doIt == true) myString << "(1./2. + TMath::ATan(" << varName << ")/TMath::Pi())";
 	  else              myString << "(" << varName << ")";
 	  std::cout << "[Utils::Transformer]\tTransformer function: " << myString.str().c_str() << std::endl;
 	  return myString.str();
@@ -3474,7 +3474,7 @@ std::string Utils::Transformer (std::string varName, bool doIt, double& varValOu
 	{
 	  sVal1 = Transformer("FlS",doIt,val1,val1ELo,val1EHi);
 
-	  if (doIt == true) myString << "(3/4*(1 - " << sVal1 << ") * 2*TMath::ATan(" << varName << ")/TMath::Pi())";
+	  if (doIt == true) myString << "(3./4.*(1 - " << sVal1 << ") * 2.*TMath::ATan(" << varName << ")/TMath::Pi())";
 	  else              myString << "(" << varName << ")";
 	  std::cout << "[Utils::Transformer]\tTransformer function: " << myString.str().c_str() << std::endl;
 	  return myString.str();
@@ -3490,7 +3490,7 @@ std::string Utils::Transformer (std::string varName, bool doIt, double& varValOu
 	  sVal1 = Transformer("FlS",doIt,val1,val1ELo,val1EHi);
 	  sVal2 = Transformer("FsS",doIt,val2,val2ELo,val2EHi);
 
-	  myString << "(" << varName << "*2*" << theorCoeff << "*sqrt(3*" << sVal2 << "*(1-" << sVal2 << ")*" << sVal1 << "))";
+	  myString << "(" << varName << "*2.*" << theorCoeff << "*sqrt(3.*" << sVal2 << "*(1-" << sVal2 << ")*" << sVal1 << "))";
 	  std::cout << "[Utils::Transformer]\tTransformer function: " << myString.str().c_str() << std::endl;
 	  return myString.str();
 	}

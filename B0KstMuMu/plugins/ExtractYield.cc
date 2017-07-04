@@ -3,7 +3,6 @@
 // # Author: Mauro Dinardo                                                        #
 // ################################################################################
 // # N. B.:                                                                       #
-// # - compile root and the analysis with the same C++ compiler                   #
 // # - search @TMP@ to look for temporary code options                            #
 // ################################################################################
 // # To use pre-compiled code for the p.d.f. (right now still using RooGenericPdf)#
