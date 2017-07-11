@@ -18,9 +18,9 @@ clc;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Variable initialization %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-BiasV = -300; % Sensor backplane voltage [V]
+BiasV = -250; % Sensor backplane voltage [V]
 
-Fluence = 0.3; % Irradiation fluence [10^16 1MeV n.eq./cm^2]
+Fluence = 0.5; % Irradiation fluence [10^16 1MeV n.eq./cm^2]
                % 1/tau = c*Fluence/(1 + c*Fluence/t), extracted from fit to data [ns^-1]
 ce = 5.36;
 te = 0.8295;
@@ -31,7 +31,7 @@ TauSe = (1 + ce*Fluence/te)/(ce*Fluence); % Life-time on the strip side [ns]
 TauBh = (1 + ch*Fluence/th)/(ch*Fluence); % Life-time on the backplane side [ns]
 TauSh = (1 + ch*Fluence/th)/(ch*Fluence); % Life-time on the strip side [ns]
 
-Bulk   =  90; % Bulk thickness [um]
+Bulk   = 90;  % Bulk thickness [um]
 PitchX = 100; % Pitch along X [um] (for 2D&3D geometry)
 PitchY = 150; % Pitch along Y [um] (for 3D geometry)
 
@@ -39,7 +39,7 @@ qe       = -1.6e-19; % Electron charge [Coulomb]
 eps0     = 8.85e-18; % Vacuum permittivity [F/um]
 epsR     = 3.9;      % Relative permittivity [3.9 Silicon, 5.7 Diamond]
 dN_dPhi  = 35;       % dN/dPhi extracted from data [#/(um^3 10^16)]
-DeplVnoF = 20;       % Sensor full depletion voltage at no-fluence [V]
+DeplVnoF = 40;       % Full depletion voltage for non irradiated sensors [V]
 DeplV    = qe*Bulk^2/(2*epsR*eps0)*dN_dPhi*Fluence - DeplVnoF; % Sensor full depletion voltage [V]
 rho      = 2*DeplV*epsR*eps0/(qe*Bulk^2); % Bulk doping concentration [#/um^3]
 
@@ -68,20 +68,30 @@ NParticles = 10000;  % Total number of particles to be simulated
 PType      = 'beta'; % Particle type ['alpha' 'beta' 'gamma']
 
 fprintf('@@@ Derived parameters @@@\n');
-fprintf('\t- Electron''s mobility --> %.2f(T=%.1f) [um^2/(V ns)]\n',mu_e,T);
-fprintf('\t- Hole''s mobility --> %.2f(T=%.1f) [um^2/(V ns)]\n',mu_h,T);
+fprintf('\t- Electron''s mobility --> %.1f(T=%.1f) [um^2/(V ns)]\n',mu_e,T);
+fprintf('\t- Hole''s mobility --> %.1f(T=%.1f) [um^2/(V ns)]\n',mu_h,T);
 fprintf('\t- Electron''s life-time --> %.2f [ns], %.2f [ns]\n',TauBe,TauSe);
 fprintf('\t- Hole''s life-time --> %.2f [ns], %.2f [ns]\n',TauBh,TauSh);
 fprintf('\t- Full depletion voltage --> %.1f [V]\n',DeplV);
+fprintf('\t- Depleted depth --> %.1f [um]\n',Bulk*sqrt(BiasV/DeplV));
 fprintf('\t- Doping concentration --> %.1E [#/cm^3]\n',rho*1e12);
 fprintf('\t- Resistivity --> %.1E [Ohm cm]\n\n',-1/(qe*mu_h*rho)*1e-13);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-do2D3Dcheck = true;
+do2D3Dcheck = false;
 doSignal    = false;
 rng default; % Reset random seed
 ItFig = 1;   % Figure iterator
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Recompute sensor thickness based on the depth of depleted region %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if Bulk * sqrt(BiasV/DeplV) < Bulk
+    Bulk = Bulk * sqrt(BiasV/DeplV);
+    fprintf('@@@ Changed bulk thickness to %.1f [um] @@@\n\n',Bulk);
+end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
