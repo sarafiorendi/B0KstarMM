@@ -18,7 +18,7 @@ clc;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Variable initialization %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-BiasV = -250; % Sensor backplane voltage [V]
+BiasV = -1000; % Sensor backplane voltage [V]
 
 Fluence = 0.5; % Irradiation fluence [10^16 1MeV n.eq./cm^2]
                % 1/tau = c*Fluence/(1 + c*Fluence/t), extracted from fit to data [ns^-1]
@@ -37,7 +37,7 @@ PitchY = 150; % Pitch along Y [um] (for 3D geometry)
 
 qe       = -1.6e-19; % Electron charge [Coulomb]
 eps0     = 8.85e-18; % Vacuum permittivity [F/um]
-epsR     = 3.9;      % Relative permittivity [3.9 Silicon, 5.7 Diamond]
+epsR     = 11.7;     % Relative permittivity [11.7 Silicon, 5.7 Diamond]
 dN_dPhi  = 35;       % dN/dPhi extracted from data [#/(um^3 10^16)]
 DeplVnoF = 40;       % Full depletion voltage for non irradiated sensors [V]
 DeplV    = qe*Bulk^2/(2*epsR*eps0)*dN_dPhi*Fluence - DeplVnoF; % Sensor full depletion voltage [V]
@@ -80,7 +80,7 @@ fprintf('\t- Resistivity --> %.1E [Ohm cm]\n\n',-1/(qe*mu_h*rho)*1e-13);
 
 
 do2D3Dcheck = false;
-doSignal    = false;
+doSignal    = true;
 rng default; % Reset random seed
 ItFig = 1;   % Figure iterator
 
