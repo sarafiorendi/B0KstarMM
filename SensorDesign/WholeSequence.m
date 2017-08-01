@@ -18,7 +18,7 @@ clc;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Variable initialization %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-BiasV = -1000; % Sensor backplane voltage [V]
+BiasV = -300; % Sensor backplane voltage [V]
 
 Fluence = 0.5; % Irradiation fluence [10^16 1MeV n.eq./cm^2]
                % 1/tau = c*Fluence/(1 + c*Fluence/t), extracted from fit to data [ns^-1]
@@ -26,10 +26,11 @@ ce = 5.36;
 te = 0.8295;
 ch = 3.361;
 th = 107.6;
-TauBe = (1 + ce*Fluence/te)/(ce*Fluence); % Life-time on the backplane side [ns]
-TauSe = (1 + ce*Fluence/te)/(ce*Fluence); % Life-time on the strip side [ns]
-TauBh = (1 + ch*Fluence/th)/(ch*Fluence); % Life-time on the backplane side [ns]
-TauSh = (1 + ch*Fluence/th)/(ch*Fluence); % Life-time on the strip side [ns]
+scale = 1.3; % Scale factor to correct the data life-time [tuned on ATLAS results]
+TauBe = scale * (1 + ce*Fluence/te)/(ce*Fluence); % Life-time on the backplane side [ns]
+TauSe = scale * (1 + ce*Fluence/te)/(ce*Fluence); % Life-time on the strip side [ns]
+TauBh = scale * (1 + ch*Fluence/th)/(ch*Fluence); % Life-time on the backplane side [ns]
+TauSh = scale * (1 + ch*Fluence/th)/(ch*Fluence); % Life-time on the strip side [ns]
 
 Bulk   = 90;  % Bulk thickness [um]
 PitchX = 100; % Pitch along X [um] (for 2D&3D geometry)
@@ -79,8 +80,8 @@ fprintf('\t- Resistivity --> %.1E [Ohm cm]\n\n',-1/(qe*mu_h*rho)*1e-13);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-do2D3Dcheck = false;
-doSignal    = true;
+do2D3Dcheck = true;
+doSignal    = false;
 rng default; % Reset random seed
 ItFig = 1;   % Figure iterator
 
