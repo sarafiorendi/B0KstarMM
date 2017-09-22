@@ -14,7 +14,6 @@ Before running check hyper-parameter space:
 
 To-do:
   - activation function: ReLU and softmax&logLikelihood
-  - porting in pyCUDA
 #######################################################
 e.g.: python MVA.py -nv 2 -np 5 -nn 2 3 3 2 1 -sc True
 #######################################################
