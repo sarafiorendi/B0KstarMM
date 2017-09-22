@@ -26,7 +26,7 @@ if strcmp(PType,'beta') == true
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Charge spectrum for Beta %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    ehLength = 70;            % Electron-holes pairs per unit length [electrons/um]
+    ehLength = 67;            % Electron-holes pairs per unit length [electrons/um]
     depth    = Bulk;          % Source penetration depth [um]
     eMax     = ehLength*Bulk; % Maximum released charge [electrons]
 elseif strcmp(PType,'alpha') == true || strcmp(PType,'gamma') == true
@@ -50,7 +50,7 @@ else
     return;
 end
 
-eMax = eMax * 2; % @TMP@
+eMax = eMax * 2;
 EnergyScale = 0:eMax/nBins:eMax; % Spectrum energy axis [electrons]
 
 
@@ -71,7 +71,7 @@ for i = 1:NParticles
         enter = 30 * (2*rand(1,1) - 1);
         exit  = enter;
         mean  = ehLength*sqrt(depth^2 + (exit-enter)^2); % Landau MPV [electrons]
-        sigma = mean / 8; % Scale factor between MPV and sigma of Landau [electrons]
+        sigma = mean / 12; % Scale factor between MPV and sigma of Landau [electrons]
         ChargeDensity = LandauRND(mean,sigma);
     elseif strcmp(PType,'alpha') == true || strcmp(PType,'gamma') == true
     % Particles enter randomly between -Pitch/2 -- +Pitch/2
@@ -149,5 +149,5 @@ fprintf(fileID,'%12.2f %12.2f %12.2f %12.2f\n',[EnergyScale; histo;...
 fclose(fileID);
 
 ItFigOut = ItFigIn + 1;
-fprintf('CPU time --> %.2f[min]\n\n',(cputime-TStart)/60);
+fprintf('CPU time --> %.2f [min]\n\n',(cputime-TStart)/60);
 end

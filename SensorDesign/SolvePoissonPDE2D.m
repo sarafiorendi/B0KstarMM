@@ -3,11 +3,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Bulk    = Bulk thickness [um]
 % Pitch   = Strip pitch [um]
-% BiasB   = Sensor backplane voltage [V] [0 Weighting; -200 All]
+% BiasB   = Sensor backplane voltage [V] [0 Weighting; -V All]
 % BiasS   = Sensor strip voltage [V]
 % BiasW   = Sensor central strip voltage [V] [1 Weighting; 0 All]
-% epsR    = Relative dielectric constant [3.9 Silicon, 5.7 Diamond]
-% rho     = Charge denisty in the bulk [(Coulomb / um^3) / eps0 [F/um]]
+% epsR    = Relative permittivity
+% rho     = Charge density in the bulk [(Coulomb/um^3) / eps0 [F/um]]
 % XQ      = Coordinate for potential query along y [um]
 % ItFigIn = Figure iterator input
 
@@ -25,10 +25,10 @@ ContLevel      = 40;  % Contour plot levels
 MagnVector     = 1.5; % Vector field magnification
 MeshMax        = 15;  % Maximum mesh edge length [um]
 
-MetalThick   = 5;        % Metalization thickness [um]
-MetalWidthHV = Pitch-10; % Metalization width HV strip [um]
-MetalWidthSg = Pitch-10; % Metalization width Signal strip [um]
 SHeight      = 2;        % Sensor height [units of bulk thickness]
+MetalThick   = 5;        % Metalization thickness [um]
+MetalWidthHV = Pitch-20; % Metalization width HV strip [um]
+MetalWidthSg = Pitch-20; % Metalization width Signal strip [um]
 NStrips      = 13;       % Total number of strips
 
 
@@ -251,7 +251,7 @@ ylabel('Z [\mum]');
 
 ItFigIn = ItFigIn + 1;
 figure(ItFigIn);
-yq = 0:ReSampleFine:Bulk*3/2;
+yq = 0:ReSampleFine:Bulk;
 xq = XQ * ones(1,length(yq));
 Sq = interpolateSolution(potential,xq,yq);
 plot(yq,Sq);
@@ -261,5 +261,5 @@ ylabel('Potential');
 grid on;
 
 ItFigOut = ItFigIn + 1;
-fprintf('CPU time --> %.2f[min]\n\n',(cputime-TStart)/60);
+fprintf('CPU time --> %.2f [min]\n\n',(cputime-TStart)/60);
 end

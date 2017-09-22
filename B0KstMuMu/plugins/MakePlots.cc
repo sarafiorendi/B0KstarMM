@@ -100,6 +100,9 @@ void MakePhysicsPlots      (unsigned int PlotType);
 void GenNTupleFromMultyRun (string fileName, unsigned int q2BinIndx);
 void PlotMuMu              (string fileName, bool bkgSub);
 void PlotKst               (string fileName, bool bkgSub, bool fitParamAreFixed);
+void PlotDmass             (string fileName);
+void PlotLambda_bmass      (string fileName);
+void PlotB0mass            (string fileName);
 void PlotKK                (string fileName, bool bkgSub, string RECOorGEN);
 void PlotMuHadMass         (string fileName);
 void MakeFitResPlots       (string fileName, string plotType, int specBin, string varName, double lowBound, double highBound);
@@ -170,12 +173,12 @@ void DrawString (double Lumi)
 
   myString.clear(); myString.str("");
   myString << Lumi <<  " fb#lower[0.4]{^{#font[122]{\55}1}} (8 TeV)";
-  TLatex* LumiTex3 = new TLatex(0.76,0.9,myString.str().c_str());
+  TLatex* LumiTex3 = new TLatex(0.78,0.9,myString.str().c_str());
   LumiTex3->SetTextFont(42);
   LumiTex3->SetTextSize(0.06 * scaleRespect2CMS);
   LumiTex3->SetTextColor(kBlack);
   LumiTex3->SetNDC(true);
-  LumiTex3->DrawLatex(0.76,0.9,myString.str().c_str());
+  LumiTex3->DrawLatex(0.78,0.9,myString.str().c_str());
 }
 
 
@@ -2440,9 +2443,12 @@ void PlotMuMu (string fileName, bool bkgSub)
   string sigMassQuery = "";
   string bkgMassQuery = "";
 
+  double LUMI = Utility->ReadLumi(Utility->MakeAnalysisPATH(PARAMETERFILEIN).c_str());
+
   double signalSigma = sqrt( atof(Utility->GetGenericParam("FRACMASSS").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) +
 			     (1. - atof(Utility->GetGenericParam("FRACMASSS").c_str())) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) );
   cout << "\n[MakePlots::PlotMuMu]\t@@@ Signal sigma: " << signalSigma << " @@@" << endl;
+
 
 
   if (bkgSub == true)
@@ -2496,6 +2502,8 @@ void PlotMuMu (string fileName, bool bkgSub)
   if (bkgSub == true) hDsig->Add(hDbkg, -1.0);
  
   hDsig->Draw("e1p");
+
+  DrawString(LUMI);
   c0->Modified();
   c0->Update();
 }
@@ -2724,6 +2732,295 @@ void PlotKst (string fileName, bool bkgSub, bool fitParamAreFixed)
 }
 
 
+void PlotDmass (string fileName)
+{
+  // ##########################
+  // # Set histo layout style #
+  // ##########################
+  SetStyle();
+  gStyle->SetPadRightMargin(0.14);
+
+
+  int nEntries;
+  unsigned int nBins = 100;
+  double DminX = 0.0;
+  double DmaxX = 3.0;
+  double Dmass = 0.0;
+  double Bmass = 0.0;
+
+  
+  TFile* file0 = TFile::Open(fileName.c_str(),"READ");
+  TTree* theTree = (TTree*)file0->Get("B0KstMuMu/B0KstMuMuNTuple");
+
+  B0KstMuMuSingleCandTreeContent* NTuple = new B0KstMuMuSingleCandTreeContent();
+  NTuple->Init();
+  NTuple->ClearNTuple();
+  NTuple->SetBranchAddresses(theTree);
+  
+  nEntries = theTree->GetEntries();
+  cout << "\n[MakePlots::PlotDmass]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
+
+
+  TCanvas* c0 = new TCanvas("c0","c0",10,10,700,1000);
+  c0->Divide(1,2);
+  
+  TH1D* hDSig = new TH1D("hDSig","hDSig",nBins,DminX,DmaxX);
+  hDSig->SetXTitle("m(K #pi) (GeV)");
+  hDSig->SetYTitle("Entries");
+  hDSig->SetFillColor(kAzure+6);
+
+  TH1D* hBSig = new TH1D("hBSig","hBSig",nBins,
+			 Utility->B0Mass - atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),
+			 Utility->B0Mass + atof(Utility->GetGenericParam("B0MassIntervalRight").c_str()));
+  hBSig->SetXTitle("m(K #pi #mu #mu) (GeV)");
+  hBSig->SetYTitle("Entries");
+  hBSig->SetFillColor(kAzure+6);
+
+
+  for (int entry = 0; entry < nEntries; entry++)
+    {
+      theTree->GetEntry(entry);
+
+      // ##############
+      // # Reject psi #
+      // ##############
+      if (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"rejectPsi",true) == true)
+	{
+	  // #################################
+	  // # Reject outside B0 mass window #
+	  // #################################
+	  if ((NTuple->B0MassArb > Utility->B0Mass - atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str())) &&
+	      (NTuple->B0MassArb < Utility->B0Mass + atof(Utility->GetGenericParam("B0MassIntervalRight").c_str())))
+	    {
+	      if (NTuple->B0notB0bar == true)
+		{
+		  Dmass = NTuple->kstBarMass->at(0);
+		}
+	      else
+		{
+		  Dmass = NTuple->kstMass->at(0);
+		}
+	      
+	      if (fabs(NTuple->kstBarMass->at(0) - Utility->D0Mass) < fabs(NTuple->kstMass->at(0) - Utility->D0Mass)) Bmass = NTuple->bBarMass->at(0);
+	      else Bmass = NTuple->bMass->at(0);
+	      
+	      
+	      // ####################
+	      // # Make signal plot #
+	      // ####################
+	      hDSig->Fill(Dmass);
+	      hBSig->Fill(Bmass);
+	    }
+	}
+    }
+  
+  
+  c0->cd(1);
+  hDSig->Draw();
+  c0->cd(2);
+  hBSig->Draw();
+  
+  c0->Modified();
+  c0->Update();
+}
+
+
+void PlotLambda_bmass (string fileName)
+{
+  // ##########################
+  // # Set histo layout style #
+  // ##########################
+  SetStyle();
+  gStyle->SetPadRightMargin(0.14);
+
+
+  int nEntries;
+  unsigned int nBins = 200;
+  double LminX = 5.4;
+  double LmaxX = 5.9;
+  double Lmass = 0.0;
+
+  
+  TFile* file0 = TFile::Open(fileName.c_str(),"READ");
+  TTree* theTree = (TTree*)file0->Get("B0KstMuMu/B0KstMuMuNTuple");
+
+  B0KstMuMuSingleCandTreeContent* NTuple = new B0KstMuMuSingleCandTreeContent();
+  NTuple->Init();
+  NTuple->ClearNTuple();
+  NTuple->SetBranchAddresses(theTree);
+  
+  nEntries = theTree->GetEntries();
+  cout << "\n[MakePlots::PlotLambda_bmass]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
+
+
+  TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
+  
+  TH1D* hLSig = new TH1D("hLSig","hLSig",nBins,LminX,LmaxX);
+  hLSig->SetXTitle("m(K p #mu #mu) (GeV)");
+  hLSig->SetYTitle("Entries");
+  hLSig->SetFillColor(kAzure+6);
+
+
+  for (int entry = 0; entry < nEntries; entry++)
+    {
+      theTree->GetEntry(entry);
+
+      // ##############
+      // # Reject psi #
+      // ##############
+      if (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"rejectPsi",true) == true)
+	{
+	  // #################################
+	  // # Reject outside B0 mass window #
+	  // #################################
+	  if ((NTuple->B0MassArb > Utility->B0Mass - atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str())) &&
+	      (NTuple->B0MassArb < Utility->B0Mass + atof(Utility->GetGenericParam("B0MassIntervalRight").c_str())))
+	    {
+	      Lmass = Utility->computeInvMass(NTuple->mumuPx->at(0),NTuple->mumuPy->at(0),NTuple->mumuPz->at(0),NTuple->mumuMass->at(0),
+	  				      NTuple->kstTrkmPx->at(0),NTuple->kstTrkmPy->at(0),NTuple->kstTrkmPz->at(0),Utility->kaonMass,
+	  				      NTuple->kstTrkpPx->at(0),NTuple->kstTrkpPy->at(0),NTuple->kstTrkpPz->at(0),Utility->protonMass);
+
+	      // ####################
+	      // # Make signal plot #
+	      // ####################
+	      hLSig->Fill(Lmass);
+
+
+	      Lmass = Utility->computeInvMass(NTuple->mumuPx->at(0),NTuple->mumuPy->at(0),NTuple->mumuPz->at(0),NTuple->mumuMass->at(0),
+					      NTuple->kstTrkmPx->at(0),NTuple->kstTrkmPy->at(0),NTuple->kstTrkmPz->at(0),Utility->protonMass,
+	  				      NTuple->kstTrkpPx->at(0),NTuple->kstTrkpPy->at(0),NTuple->kstTrkpPz->at(0),Utility->kaonMass);
+
+	      // ####################
+	      // # Make signal plot #
+	      // ####################
+	      hLSig->Fill(Lmass);
+	    }
+	}
+    }
+
+
+  c0->cd();
+  hLSig->Draw();
+  c0->Modified();
+  c0->Update();
+}
+
+
+void PlotB0mass (string fileName)
+{
+  // ##########################
+  // # Set histo layout style #
+  // ##########################
+  SetStyle();
+  gStyle->SetPadRightMargin(0.14);
+
+
+  int nEntries;
+  unsigned int nBins = 150;
+  double BminX = 4.7;
+  double BmaxX = 5.9;
+
+  
+  TFile* file0 = TFile::Open(fileName.c_str(),"READ");
+  TTree* theTree = (TTree*)file0->Get("B0KstMuMu/B0KstMuMuNTuple");
+
+  B0KstMuMuSingleCandTreeContent* NTuple = new B0KstMuMuSingleCandTreeContent();
+  NTuple->Init();
+  NTuple->ClearNTuple();
+  NTuple->SetBranchAddresses(theTree);
+  
+  nEntries = theTree->GetEntries();
+  cout << "\n[MakePlots::PlotB0mass]\t@@@ Total number of events in the tree: " << nEntries << " @@@" << endl;
+
+
+  TCanvas* c0 = new TCanvas("c0","c0",10,10,700,500);
+  TCanvas* c1 = new TCanvas("c1","c1",10,10,700,500);
+  
+  TH1D* hBSig = new TH1D("hBSig","hBSig",nBins,BminX,BmaxX);
+  hBSig->SetXTitle("m(K #pi #mu #mu) (GeV)");
+  hBSig->SetYTitle("Entries");
+  hBSig->SetFillColor(kAzure+6);
+
+  TH1D* hNoBSig = new TH1D("hNoBSig","hNoBSigg",nBins,BminX,BmaxX);
+  hNoBSig->SetXTitle("m(K #pi #mu #mu) (GeV)");
+  hNoBSig->SetYTitle("Entries");
+  hNoBSig->SetFillColor(kAzure+6);
+
+  TF1* myLinFit = new TF1("myLinFit","[0] + x*[1]",BminX,Utility->B0Mass-atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()));
+  myLinFit->SetParName(0,"Intercept");
+  myLinFit->SetParName(1,"Slope");
+  myLinFit->SetLineColor(kRed);
+
+  TF1* myLinFit2 = new TF1("myLinFit2","[0] + x*[1]",5.1,Utility->B0Mass+atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()));
+  myLinFit2->SetParName(0,"Intercept");
+  myLinFit2->SetParName(1,"Slope");
+  myLinFit2->SetLineColor(kGreen);
+
+  TF1* myGaussFit = new TF1("myGaussFit","[0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2]))",Utility->B0Mass-atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),Utility->B0Mass+atof(Utility->GetGenericParam("B0MassIntervalRight").c_str()));
+  myGaussFit->SetParName(0,"Ampl.");
+  myGaussFit->SetParName(1,"#mu");
+  myGaussFit->SetParName(2,"#sigma");
+  myGaussFit->SetLineColor(kBlue);
+
+  TF1* myExpFit = new TF1("myExpFit","[0]*exp(-(x-[1])/[2])",Utility->B0Mass-atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),Utility->B0Mass+atof(Utility->GetGenericParam("B0MassIntervalRight").c_str()));
+  myExpFit->SetParName(0,"Ampl.");
+  myExpFit->SetParName(1,"Transl.");
+  myExpFit->SetParName(2,"#tau");
+  myExpFit->SetLineColor(kRed);
+
+  TF1* myTotalFit = new TF1("myTotalFit","[0]*exp(-(x-[1])*(x-[1])/(2*[2]*[2])) + [3]*exp(-(x-[4])/[5])",Utility->B0Mass-atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),Utility->B0Mass+atof(Utility->GetGenericParam("B0MassIntervalRight").c_str()));
+  myTotalFit->SetParName(0,"AmpG.");
+  myTotalFit->SetParName(1,"#mu");
+  myTotalFit->SetParName(2,"#sigma");
+  myTotalFit->SetParName(3,"AmpE.");
+  myTotalFit->SetParName(4,"Transl.");
+  myTotalFit->SetParName(5,"#tau");
+  myTotalFit->SetParameters(200,Utility->B0Mass,Utility->GetB0Width(),20,Utility->B0Mass,0.2);
+  myTotalFit->FixParameter(1,Utility->B0Mass);
+  myTotalFit->SetLineColor(kBlack);
+
+
+  for (int entry = 0; entry < nEntries; entry++)
+    {
+      theTree->GetEntry(entry);
+
+      // ##############
+      // # Reject psi #
+      // ##############
+      if (Utility->PsiRejection(NTuple->B0MassArb,NTuple->mumuMass->at(0),NTuple->mumuMassE->at(0),"rejectPsi",true) == true)
+	{
+	  hBSig->Fill(NTuple->B0MassArb);
+	  
+	  if (NTuple->B0MassArb < Utility->B0Mass - atof(Utility->GetGenericParam("NSigmaB0").c_str())*Utility->GetB0Width() ||
+	      NTuple->B0MassArb > Utility->B0Mass + atof(Utility->GetGenericParam("NSigmaB0").c_str())*Utility->GetB0Width())
+	    hNoBSig->Fill(NTuple->B0MassArb);
+	}
+    }
+
+
+  c0->cd();
+  hBSig->Draw();
+  DrawExclusion(BminX,Utility->B0Mass-atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),0,500,"LinFitRange",3003,kRed);
+  hBSig->Fit("myLinFit","R0");
+  myLinFit->DrawF1(BminX,BmaxX,"same");
+  hNoBSig->Fit("myLinFit2","R0");
+  myLinFit2->DrawF1(BminX,Utility->B0Mass+atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),"same");
+  hBSig->Fit("myTotalFit","R0");
+  hBSig->GetFunction("myTotalFit")->Draw("same");
+  myGaussFit->SetParameters(myTotalFit->GetParameter(0),myTotalFit->GetParameter(1),myTotalFit->GetParameter(2));
+  myGaussFit->Draw("same");
+  c0->Modified();
+  c0->Update();
+
+  c1->cd();
+  hNoBSig->Draw();
+  DrawExclusion(BminX,Utility->B0Mass-atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),0,500,"LinFitRange",3003,kRed);
+  myLinFit2->DrawF1(BminX,Utility->B0Mass+atof(Utility->GetGenericParam("B0MassIntervalLeft").c_str()),"same");
+  c1->Modified();
+  c1->Update();
+}
+
+
 void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
 {
   // ##########################
@@ -2749,8 +3046,7 @@ void PlotKK (string fileName, bool bkgSub, string RECOorGEN)
   double massPsiK    = 0.0;
   double massKpi     = 0.0;
 
-  double signalSigma = sqrt( atof(Utility->GetGenericParam("FRACMASSS").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) * atof(Utility->GetGenericParam("SIGMAS1").c_str()) +
-			     (1. - atof(Utility->GetGenericParam("FRACMASSS").c_str())) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) * atof(Utility->GetGenericParam("SIGMAS2").c_str()) );
+  double signalSigma = Utility->GetB0Width();
   cout << "\n[MakePlots::PlotKK]\t@@@ Signal sigma: " << signalSigma << " @@@" << endl;
 
 
@@ -3390,6 +3686,10 @@ int main (int argc, char** argv)
 	  fileName = argv[2];
 	  intVal   = atoi(argv[3]);
 	}
+      else if ((option == "DMass") || (option == "LambdaMass") || (option == "B0Mass"))
+	{
+	  fileName = argv[2];
+	}
       else if ((option == "KKMass") && (argc == 5))
 	{
 	  fileName = argv[2];
@@ -3408,13 +3708,14 @@ int main (int argc, char** argv)
 	}
       else if (option != "PhyRegion")
 	{
-	  cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass ScatB0MuMu ContPlot]" << endl;
+	  cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass DMass LambdaMass B0Mass KKMass KstMass MuHadMass ScatB0MuMu ContPlot]" << endl;
 	  cout << "            [Phy: 0-2||10-14]" << endl;
 	  cout << "            [GenMultyRun: fileName q^2_bin_index]" << endl;
 	  cout << "            [DataMC: 0-27]" << endl;
 	  cout << "            [Pval: toyFileName q^2_bin_index]" << endl;
 	  cout << "            [FitRes: toyFileName plotType q^2_bin_index varName lowBound highBound]" << endl;
 	  cout << "            [MuMuMass OR KstMass: dataFileName bkgSub]" << endl;
+	  cout << "            [DMass OR LambdaMass OR B0Mass: dataFileName]" << endl;
 	  cout << "            [KKMass: dataFileName bkgSub RECOorGEN]" << endl;
 	  cout << "            [MuHadMass: dataFileName]" << endl;
 	  cout << "            [ScatB0MuMu: dataFileName option]" << endl;
@@ -3465,25 +3766,29 @@ int main (int argc, char** argv)
       else if (option == "Pval")        MakePvaluePlot(fileName,intVal);
       else if (option == "FitRes")      MakeFitResPlots(fileName,tmpStr1,intVal,tmpStr2,realVal1,realVal2);
       else if (option == "MuMuMass")    PlotMuMu(fileName,intVal);
+      else if (option == "DMass")       PlotDmass(fileName);
+      else if (option == "LambdaMass")  PlotLambda_bmass(fileName);
+      else if (option == "B0Mass")      PlotB0mass(fileName);
       else if (option == "KKMass")      PlotKK(fileName,intVal,tmpStr1);
       else if (option == "KstMass")     PlotKst(fileName,intVal,true);
       else if (option == "MuHadMass")   PlotMuHadMass(fileName);
       else if (option == "ScatB0MuMu")  ScatterPlotB0MuMu(fileName,intVal);
       else if (option == "ContPlot")    MakeContPlot(tmpStr1);
-  
+
       delete Utility;
       if (option != "GenMultyRun") theApp.Run (); // Eventloop on air
       return EXIT_SUCCESS;
     }
   else
     {
-      cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass KKMass KstMass MuHadMass ScatB0MuMu ContPlot]" << endl;
+      cout << "./MakePlots [Phy GenMultyRun DataMC PhyRegion Pval FitRes MuMuMass DMass LambdaMass B0Mass KKMass KstMass MuHadMass ScatB0MuMu ContPlot]" << endl;
       cout << "            [Phy: 0-2||10-14]" << endl;
       cout << "            [GenMultyRun: fileName q^2_bin_index]" << endl;
       cout << "            [DataMC: 0-27]" << endl;
       cout << "            [Pval: toyFileName q^2_bin_index]" << endl;
       cout << "            [FitRes: toyFileName plotType q^2_bin_index varName lowBound highBound]" << endl;
       cout << "            [MuMuMass OR KstMass: dataFileName bkgSub]" << endl;
+      cout << "            [DMass OR LambdaMass OR B0Mass: dataFileName]" << endl;
       cout << "            [KKMass: dataFileName bkgSub RECOorGEN]" << endl;
       cout << "            [MuHadMass: dataFileName]" << endl;
       cout << "            [ScatB0MuMu: dataFileName cutType]" << endl;

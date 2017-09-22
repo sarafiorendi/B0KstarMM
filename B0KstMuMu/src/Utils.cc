@@ -22,10 +22,12 @@ Utils::Utils (bool rightFlavorTag)
   muonMass     = 0.10565837;
   pionMass     = 0.13957018;
   kaonMass     = 0.493677;
+  protonMass   = 0.93827;
   kstMass      = 0.896;
   B0Mass       = 5.27958;
   JPsiMass     = 3.096916;
   PsiPMass     = 3.686109;
+  D0Mass       = 1.86483;
 
   JPsiBF       =  7.87e-5; // B0 --> J/psi(mu+mu-) K*0          (1.32+/-0.06 * 5.96+/-0.03)
   JPsiKpiBF    =  5.25e-5; // B0 --> J/psi(mu+mu-) K*0(K+pi-)   (1.32+/-0.06 * 5.96+/-0.03 * 2/3)
@@ -155,11 +157,16 @@ double Utils::computeInvMass (double Px1,
 			      double Px2,
 			      double Py2,
 			      double Pz2,
-			      double mass2)
+			      double mass2,
+			      double Px3,
+			      double Py3,
+			      double Pz3,
+			      double mass3)
 {
   double Energy1 = sqrt(Px1*Px1 + Py1*Py1 + Pz1*Pz1 + mass1*mass1);
   double Energy2 = sqrt(Px2*Px2 + Py2*Py2 + Pz2*Pz2 + mass2*mass2);
-  return sqrt((Energy1+Energy2) * (Energy1+Energy2) - ((Px1+Px2) * (Px1+Px2) + (Py1+Py2) * (Py1+Py2) + (Pz1+Pz2) * (Pz1+Pz2)));
+  double Energy3 = sqrt(Px3*Px3 + Py3*Py3 + Pz3*Pz3 + mass3*mass3);
+  return sqrt((Energy1+Energy2+Energy3) * (Energy1+Energy2+Energy3) - ((Px1+Px2+Px3) * (Px1+Px2+Px3) + (Py1+Py2+Py3) * (Py1+Py2+Py3) + (Pz1+Pz2+Pz3) * (Pz1+Pz2+Pz3)));
 }
 
 double Utils::computeEta (double Px,
@@ -3458,7 +3465,7 @@ std::string Utils::Transformer (std::string varName, bool doIt, double& varValOu
     {
       if (varName == "FlS")
 	{
-	  if (doIt == true) myString << "(1/2 + TMath::ATan(" << varName << ")/TMath::Pi())";
+	  if (doIt == true) myString << "(1./2. + TMath::ATan(" << varName << ")/TMath::Pi())";
 	  else              myString << "(" << varName << ")";
 	  std::cout << "[Utils::Transformer]\tTransformer function: " << myString.str().c_str() << std::endl;
 	  return myString.str();
@@ -3467,7 +3474,7 @@ std::string Utils::Transformer (std::string varName, bool doIt, double& varValOu
 	{
 	  sVal1 = Transformer("FlS",doIt,val1,val1ELo,val1EHi);
 
-	  if (doIt == true) myString << "(3/4*(1 - " << sVal1 << ") * 2*TMath::ATan(" << varName << ")/TMath::Pi())";
+	  if (doIt == true) myString << "(3./4.*(1 - " << sVal1 << ") * 2.*TMath::ATan(" << varName << ")/TMath::Pi())";
 	  else              myString << "(" << varName << ")";
 	  std::cout << "[Utils::Transformer]\tTransformer function: " << myString.str().c_str() << std::endl;
 	  return myString.str();
@@ -3483,7 +3490,7 @@ std::string Utils::Transformer (std::string varName, bool doIt, double& varValOu
 	  sVal1 = Transformer("FlS",doIt,val1,val1ELo,val1EHi);
 	  sVal2 = Transformer("FsS",doIt,val2,val2ELo,val2EHi);
 
-	  myString << "(" << varName << "*2*" << theorCoeff << "*sqrt(3*" << sVal2 << "*(1-" << sVal2 << ")*" << sVal1 << "))";
+	  myString << "(" << varName << "*2.*" << theorCoeff << "*sqrt(3.*" << sVal2 << "*(1-" << sVal2 << ")*" << sVal1 << "))";
 	  std::cout << "[Utils::Transformer]\tTransformer function: " << myString.str().c_str() << std::endl;
 	  return myString.str();
 	}

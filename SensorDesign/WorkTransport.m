@@ -12,7 +12,7 @@
 % TauSe/h = Life-time on the strip side [ns]
 % ItFigIn = Figure iterator input
 
-function [WorkTransportTotal, x, y, ItFigOut] = ...
+function [WorkTransportTotal, x, y, ItFigOut] =...
     WorkTransport(Potential,VFieldx_e,VFieldy_e,VFieldx_h,VFieldy_h,...
     x,y,Step,Bulk,Radius,TauBe,TauSe,TauBh,TauSh,ItFigIn)
 TStart = cputime; % CPU time at start
@@ -84,5 +84,5 @@ ylabel('Z [\mum]');
 zlabel('Work / q [#charges * V]');
 
 ItFigOut = ItFigIn + 1;
-fprintf('CPU time --> %.2f[min]\n',(cputime-TStart)/60);
+fprintf('CPU time --> %.2f [min]\n',(cputime-TStart)/60);
 end
