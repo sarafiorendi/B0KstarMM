@@ -1,3 +1,8 @@
+"""
+###########################################
+                        by Mauro E. Dinardo
+###########################################
+"""
 from random import gauss
 from math   import sqrt, log, tanh, atanh
 """

@@ -1,3 +1,8 @@
+"""
+###########################################
+                        by Mauro E. Dinardo
+###########################################
+"""
 from math   import sqrt
 from Neuron import Neuron
 
