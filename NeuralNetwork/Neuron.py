@@ -1,6 +1,6 @@
 """
 ###########################################
-                        by Mauro E. Dinardo
+Neuron.py               by Mauro E. Dinardo
 ###########################################
 """
 from random import gauss

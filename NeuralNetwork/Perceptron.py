@@ -1,6 +1,6 @@
 """
 ###########################################
-                        by Mauro E. Dinardo
+Perceptron.py           by Mauro E. Dinardo
 ###########################################
 """
 from math   import sqrt

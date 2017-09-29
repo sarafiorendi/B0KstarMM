@@ -1,7 +1,7 @@
 """""
 #######################################################
 MVA implementation with Neural Network
-                                    by Mauro E. Dinardo
+MVA.py                              by Mauro E. Dinardo
 #######################################################
 Before running check hyper-parameter space:
   .number of perceptrons & neurons

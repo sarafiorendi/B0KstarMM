@@ -3,7 +3,7 @@
 .Neural Network type: feedforward
 .Learning algorithm:  online/incremental
                       with gradient descent
-                        by Mauro E. Dinardo
+NeuralNet.py            by Mauro E. Dinardo
 ###########################################
 """
 import os
