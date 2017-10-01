@@ -16,6 +16,7 @@ To-do:
   - activation function: ReLU and softmax&logLikelihood
 #######################################################
 e.g.: python MVA.py -nv 2 -np 5 -nn 2 3 3 2 1 -sc True
+      Neural Network with two inputs and one output
 #######################################################
 """
 from argparse  import ArgumentParser

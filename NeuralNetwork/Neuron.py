@@ -9,14 +9,14 @@ from math   import sqrt, log, tanh, atanh
 #########################################
 .Activation function: 'tanh', 'BPN'
 .Cost functions:
-  1/2 (result - target)^2
-  -log(sqrt(result))-target*atanh(result)
+  .1/2 (result - target)^2
+  .-log(sqrt(result))-target*atanh(result)
 .Regularization: L2
 #########################################
 """
 class Neuron(object):
     learnRate  =  0.001
-    rmsPrDecay =  1. # If = 1 then no RMSprop
+    rmsPrDecay =  1. # If = 1 then no RMSprop, otherwise > 1
     regular    =  0. # If = 0 then no reguarization
 
     aFunMin    = -1.
@@ -51,10 +51,9 @@ class Neuron(object):
 
     def eval(self,invec):
         """
-        ##################################
-        Return the value of the activation
-        function and its derivative
-        ##################################
+        ##############################################################
+        Return the value of the activation function and its derivative
+        ##############################################################
         """
         wsum  = sum(W * i for W,i in zip(self.weights,invec))
         wsum += self.weights[self.Nvars]
