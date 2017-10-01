@@ -9,14 +9,14 @@ from math   import sqrt, log, tanh, atanh
 #########################################
 .Activation function: 'tanh', 'BPN'
 .Cost functions:
-  .1/2 (result - target)^2 (i.e. quadratic cost function)
-  .-log(sqrt(dresult/dz))-target*atanh(result) (i.e. cross-entropy cost function,
-   derived from imposing d(Cost function) / dz =  result - target)
+  .1/2 (result - target)^2                     (i.e. quadratic cost function)
+  .-log(sqrt(dresult/dz))-target*atanh(result) (i.e. cross-entropy cost function, derived by
+                                                imposing d(Cost function) / dz =  result - target)
 .Regularization: L2
 #########################################
 """
 class Neuron(object):
-    learnRate  =  0.001
+    learnRate  =  0.01
     rmsPrDecay =  1. # If = 1 then no RMSprop, otherwise 0 < rmsPrDecay < 1
     regular    =  0. # If = 0 then no reguarization, otherwise > 0 (e.g. 0.1)
 
@@ -72,9 +72,10 @@ class Neuron(object):
         ######################################
         """
         self.rmsProp = self.rmsPrDecay * self.rmsProp + (1 - self.rmsPrDecay) * dCdZ * dCdZ
+        rmsProp_ = self.rmsProp if self.rmsProp != 0 else 1.
 
         self.dCdZ += dCdZ
-        self.dCdW = [ a + dCdZ * b / sqrt(self.rmsProp) for a,b in zip(self.dCdW,invec) ]
+        self.dCdW = [ a + dCdZ * b / sqrt(rmsProp_) for a,b in zip(self.dCdW,invec) ]
 
         if miniBatch != 0 and self.amIfixed == False:
             for k in xrange(self.Nvars):

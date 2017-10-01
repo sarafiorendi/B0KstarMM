@@ -13,15 +13,18 @@ Before running check hyper-parameter space:
   .cost function: quadratic / cross-entropy
 
 To-do:
+  - add ROC curve
+  - test reguarization
+  - test RMSprop
   - activation function: ReLU and softmax&logLikelihood
 #######################################################
-e.g.: python MVA.py -nv 2 -np 5 -nn 2 3 3 2 1 -sc True
+e.g.: python MVA.py -nv 2 -np 5 -nn 2 3 3 2 1 -sc
       Neural Network with two inputs and one output
 #######################################################
 """
 from argparse  import ArgumentParser
 from random    import seed, random, gauss
-from math      import exp
+from math      import sqrt, exp
 from os        import system
 from timeit    import default_timer
 
@@ -37,17 +40,17 @@ def ArgParser():
     ###############
     """
     parser = ArgumentParser()
-    parser.add_argument('-in', '--infile',       dest = 'infile',       type = str,  help = 'Input neural network',             required=False, default='')
-    parser.add_argument('-nv', '--Nvars',        dest = 'Nvars',        type = int,  help = 'Number of variables',              required=False)
-    parser.add_argument('-np', '--Nperceptrons', dest = 'Nperceptrons', type = int,  help = 'Number of perceptrons',            required=False)
-    parser.add_argument('-nn', '--Nneurons',     dest = 'Nneurons',     type = int,  help = 'Number of neurons per perceptron', required=False, nargs='*')
-    parser.add_argument('-sc', '--Scramble',     dest = 'scramble',     type = bool, help = 'Do scramble',                      required=False, default=False)
+    parser.add_argument('-in', '--inFile',       dest = 'inFile',       type = str,          help = 'Input neural network',             required=False, default='')
+    parser.add_argument('-nv', '--Nvars',        dest = 'Nvars',        type = int,          help = 'Number of variables',              required=False)
+    parser.add_argument('-np', '--Nperceptrons', dest = 'Nperceptrons', type = int,          help = 'Number of perceptrons',            required=False)
+    parser.add_argument('-nn', '--Nneurons',     dest = 'Nneurons',     type = int,          help = 'Number of neurons per perceptron', required=False, nargs='*')
+    parser.add_argument('-sc', '--Scramble',     dest = 'scramble',     action='store_true', help = 'Do scramble',                      required=False)
 
     options = parser.parse_args()
 
     print ''
-    if options.infile:
-        print '--> I\'m reading the input file:', options.infile
+    if options.inFile:
+        print '--> I\'m reading the input file:', options.inFile
 
     if options.Nvars:
         print '--> I\'m reading the variable number:', options.Nvars
@@ -122,9 +125,9 @@ Neural net: initialization
 """
 seed(0)
 
-if cmd.infile:
+if cmd.inFile:
     NN = NeuralNet()
-    NN.read(cmd.infile)
+    NN.read(cmd.inFile)
 else:
     NN = NeuralNet(cmd.Nvars,cmd.Nperceptrons,cmd.Nneurons)
 NN.printParams()
@@ -135,15 +138,15 @@ NN.printParams()
 Hyperparameters
 ###############
 """
-nRunTrainingLn = 10010000
+nRunTrainingLn = 10000000
 nRunTrainingSt = 0
-nRunTest       = 100000
+nRunTest       = 10000
 miniBatch      = 1
 
 toScramble     = {3:[2]}
 
 learnRateStart = 0.01
-learnRateEnd   = 0.001
+learnRateEnd   = 0.01
 learnRateTau   = 1
 
 
@@ -152,8 +155,8 @@ learnRateTau   = 1
 Read additional hyper-parameter information
 ###########################################
 """
-if cmd.infile:
-    nRunTrainingSt,miniBatch,learnRateStart,learnRateEnd,learnRateTau,toScramble = NN.readHypPar(cmd.infile)
+if cmd.inFile:
+    nRunTrainingSt,miniBatch,learnRateStart,learnRateEnd,learnRateTau,toScramble = NN.readHypPar(cmd.inFile)
 
 
 """
@@ -167,16 +170,16 @@ NNoutMin  = NN.aFunMin(NN.Nperceptrons-1)
 NNoutMax  = NN.aFunMax(NN.Nperceptrons-1)
 NNthr     = (NNoutMin + NNoutMax) / 2.
 
-xRange    = 3.
-xOffset   = 3.
-yRange    = 3.
-yOffset   = 0.
+xRange    = 2.
+xOffset   = 0.2
+yRange    = 2.
+yOffset   = 0.2
 
-noiseBand = 0.1
-loR       = 0.5
-hiR       = 1.
+noiseBand = 0.05
+loR       = 0.2
+hiR       = 0.5
 
-xyCorr    = lambda x,y: ((x-xOffset)*(x-xOffset) + (y-yOffset)*(y-yOffset))
+xyDist    = lambda x,y: sqrt((x-xOffset)*(x-xOffset) + (y-yOffset)*(y-yOffset))
 
 
 """
@@ -261,14 +264,14 @@ count   = 0.
 startClock = default_timer()
 for n in xrange(nRunTrainingSt+1,nRunTrainingSt+1 + nRunTrainingLn):
     """
-    ####################
+    ####################p
     Neural net: training
     ####################
     """
-    x = random() * xRange + xOffset - xRange/2
-    y = random() * yRange + yOffset - yRange/2
+    x = random() * xRange - xRange/2
+    y = random() * yRange - yRange/2
 
-    if gauss(loR,noiseBand) <= xyCorr(x,y) < gauss(hiR,noiseBand):
+    if gauss(loR,noiseBand) <= xyDist(x,y) < gauss(hiR,noiseBand):
         target = NNoutMax
         if n % saveEvery == 0:
             graphSin.SetPoint((n-nRunTrainingSt) / saveEvery - 1,x,y)
@@ -331,14 +334,14 @@ for n in xrange(nRunTrainingSt+1,nRunTrainingSt+1 + nRunTrainingLn):
     Neural net: test
     ################
     """
-    x = random() * xRange + xOffset - xRange/2
-    y = random() * yRange + yOffset - yRange/2
+    x = random() * xRange - xRange/2
+    y = random() * yRange - yRange/2
 
     
     NNout = NN.eval([x,y])
-     
 
-    if ((NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR) or (NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y)))):        
+
+    if ((NNout[0] > NNthr and loR <= xyDist(x,y) < hiR) or (NNout[0] <= NNthr and (xyDist(x,y) < loR or hiR <= xyDist(x,y)))):
         count += 1.
 
     if n % saveEvery == 0:
@@ -368,17 +371,17 @@ Neural net: test
 print '\n\n=== Testing neural network ==='
 startClock = default_timer()
 for n in xrange(0,nRunTest):
-    x = random() * xRange + xOffset - xRange/2
-    y = random() * yRange + yOffset - yRange/2
+    x = random() * xRange - xRange/2
+    y = random() * yRange - yRange/2
 
 
     NNout = NN.eval([x,y])
 
 
-    if NNout[0] > NNthr and loR <= xyCorr(x,y) < hiR:
+    if NNout[0] > NNthr and loR <= xyDist(x,y) < hiR:
         graphSout.SetPoint(n,x,y)
         histoNNS.Fill(NNout[0])
-    elif NNout[0] <= NNthr and (xyCorr(x,y) < loR or hiR <= xyCorr(x,y)):
+    elif NNout[0] <= NNthr and (xyDist(x,y) < loR or hiR <= xyDist(x,y)):
         graphBout.SetPoint(n,x,y)
         histoNNB.Fill(NNout[0])
     else:
@@ -418,14 +421,14 @@ cSpeed.Modified()
 cSpeed.Update()
 
 cNNin.cd()
-cNNin.DrawFrame(xOffset - xRange/2 - xRange/20,yOffset - yRange/2 - xRange/20,xOffset + xRange/2 + xRange/20,yOffset + yRange/2 + xRange/20)
+cNNin.DrawFrame(-xRange/2 - xRange/20,-yRange/2 - xRange/20,+xRange/2 + xRange/20,+yRange/2 + xRange/20)
 graphSin.Draw('P')
 graphBin.Draw('P same')
 cNNin.Modified()
 cNNin.Update()
 
 cNNout.cd()
-cNNout.DrawFrame(xOffset - xRange/2 - xRange/20,yOffset - yRange/2 - xRange/20,xOffset + xRange/2 + xRange/20,yOffset + yRange/2 + xRange/20)
+cNNout.DrawFrame(-xRange/2 - xRange/20,-yRange/2 - xRange/20,+xRange/2 + xRange/20,+yRange/2 + xRange/20)
 graphSout.Draw('P')
 graphBout.Draw('P same')
 graphNNerr.Draw('P same')

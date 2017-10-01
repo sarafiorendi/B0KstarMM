@@ -19,9 +19,20 @@ class NeuralNet(object):
     Nperceptrons = number of perceptrons of neural net (must be > 1)
     Nneurons     = list of number of neurons for each perceptron    
     ################################################################
-    e.g.: a network with 2 inputs, a first layer of 2 neurons, an
-          intermediate layer of 2 neurons, and an output layer of 1
-          neuron 2, 3, [2, 2, 1]
+    e.g.: a network with 2 inputs, a first layer of 3 neurons, an
+          intermediate layer of 4 neurons, and an output layer of 1
+          neuron 2, 3, [3, 4, 1]
+
+            3       4       1
+                    _
+            _   |--|_|--|
+        |--|_|--|   _   |
+      --|   _   |--|_|--|   _
+    2   |--|_|--|   _   |--|_|--
+      --|   _   |--|_|--|
+        |--|_|--|   _   |
+                |--|_|--|
+
     ################################################################
     """
     def __init__(self,Nvars=2,Nperceptrons=2,Nneurons=[2,1]):
