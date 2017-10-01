@@ -14,6 +14,7 @@ Before running check hyper-parameter space:
 
 To-do:
   - add ROC curve
+  - test mini-batch
   - test reguarization
   - test RMSprop
   - activation function: ReLU and softmax&logLikelihood
@@ -138,7 +139,7 @@ NN.printParams()
 Hyperparameters
 ###############
 """
-nRunTrainingLn = 10000000
+nRunTrainingLn = 100000
 nRunTrainingSt = 0
 nRunTest       = 10000
 miniBatch      = 1

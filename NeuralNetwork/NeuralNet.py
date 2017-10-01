@@ -324,16 +324,16 @@ class NeuralNet(object):
         f = open(args[0],'a')
 
         f.write('\n# Hyper-parameter information\n')
-        f.write('  Number of runs: {:_^20d}\n'.format(args[1]))
-        f.write('  Mini-batch: {:_^20d}\n'.format(args[2]))
+        f.write('  Number of runs:\t{:_^20d}\n'.format(args[1]))
+        f.write('  Mini-batch:\t\t{:_^20d}\n'.format(args[2]))
 
         f.write('\n  # Learn rate parameters\n')
-        f.write('  Learn rate start: {:_^20f}\n'.format(args[3]))
-        f.write('  Learn rate end: {:_^20f}\n'.format(args[4]))
-        f.write('  Learn rate tau: {:_^20d}\n'.format(args[5]))
+        f.write('  Learn rate start:\t{:_^20f}\n'.format(args[3]))
+        f.write('  Learn rate end:\t{:_^20f}\n'.format(args[4]))
+        f.write('  Learn rate tau:\t{:_^20d}\n'.format(args[5]))
 
         f.write('\n  # Scramble parameters\n')
-        f.write('  Neuron to scramble: {:_^20s}\n'.format(str(args[7]))) if args[6] == True else f.write('  Neuron to scramble: {:_^20s}\n'.format(''))
+        f.write('  Neuron to scramble:\t{:_^20s}\n'.format(str(args[7]))) if args[6] == True else f.write('  Neuron to scramble:\t{:_^20s}\n'.format(''))
 
         f.close()
 
