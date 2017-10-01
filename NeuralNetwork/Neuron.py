@@ -9,8 +9,9 @@ from math   import sqrt, log, tanh, atanh
 #########################################
 .Activation function: 'tanh', 'BPN'
 .Cost functions:
-  .1/2 (result - target)^2
-  .-log(sqrt(result))-target*atanh(result)
+  .1/2 (result - target)^2 (i.e. quadratic cost function)
+  .-log(sqrt(dresult/dz))-target*atanh(result) (i.e. cross-entropy cost function,
+   derived from imposing d(Cost function) / dz =  result - target)
 .Regularization: L2
 #########################################
 """
