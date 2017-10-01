@@ -16,8 +16,8 @@ from math   import sqrt, log, tanh, atanh
 """
 class Neuron(object):
     learnRate  =  0.001
-    rmsPrDecay =  1. # If = 1 then no RMSprop, otherwise > 1
-    regular    =  0. # If = 0 then no reguarization
+    rmsPrDecay =  1. # If = 1 then no RMSprop, otherwise 0 < rmsPrDecay < 1
+    regular    =  0. # If = 0 then no reguarization, otherwise > 0 (e.g. 0.1)
 
     aFunMin    = -1.
     aFunMax    = +1.
