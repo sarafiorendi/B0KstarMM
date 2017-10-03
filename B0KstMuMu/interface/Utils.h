@@ -88,14 +88,18 @@ class Utils
 
 
   double computeInvMass (double Px1,
-                         double Py1,
-                         double Pz1,
-                         double mass1,
-                         double Px2,
-                         double Py2,
-                         double Pz2,
-                         double mass2);
-  
+			 double Py1,
+			 double Pz1,
+			 double mass1,
+			 double Px2,
+			 double Py2,
+			 double Pz2,
+			 double mass2,
+			 double Px3 = 0,
+			 double Py3 = 0,
+			 double Pz3 = 0,
+			 double mass3 = 0);
+
   double computeEta (double Px,
                      double Py,
                      double Pz);
@@ -284,11 +288,13 @@ class Utils
   double muonMass;
   double pionMass;
   double kaonMass;
+  double protonMass;
   double kstMass;
   double B0Mass;
   double JPsiMass;
   double PsiPMass;
-
+  double D0Mass;
+  
   double JPsiBF;
   double JPsiKpiBF;
   double KstMuMuBF;
