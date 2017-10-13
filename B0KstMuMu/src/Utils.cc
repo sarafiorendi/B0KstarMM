@@ -1,5 +1,7 @@
-#include "B0KstarMM/B0KstMuMu/interface/Utils.h"
-#include "B0KstarMM/B0KstMuMu/interface/ReadParameters.h"
+#include "../interface/Utils.h"
+#include "../interface/ReadParameters.h"
+// #include "B0KstarMM/B0KstMuMu/interface/Utils.h"
+// #include "B0KstarMM/B0KstMuMu/interface/ReadParameters.h"
 
 #include <TAxis.h>
 #include <TMath.h>
@@ -1946,7 +1948,13 @@ unsigned int Utils::IsInTriggerTable (B0KstMuMuTreeContent* NTupleIn, double* HL
       // ######################
       if ((it < NTupleIn->TrigTable->size()) &&
 	  ((index == -2) ||
-	   ((NTupleIn->mumTrig->at(index).find(HLTpath[HLTpathIndx].c_str()) != std::string::npos) && (NTupleIn->mupTrig->at(index).find(HLTpath[HLTpathIndx].c_str()) != std::string::npos))))
+	   ((NTupleIn->mumTrig->at(index).find(HLTpath[HLTpathIndx].c_str()) != std::string::npos) && 
+	    (NTupleIn->mupTrig->at(index).find(HLTpath[HLTpathIndx].c_str()) != std::string::npos) &&
+	    // sara: add trigger matching for the track
+	    ( (NTupleIn->kstTrkpTrig->at(index).find(HLTpath[HLTpathIndx].c_str()) != std::string::npos) || (NTupleIn->kstTrkmTrig->at(index).find(HLTpath[HLTpathIndx].c_str()) != std::string::npos) )
+	   )
+	  )
+	 )
 	return HLTpathIndx+1;
       
       if (evtFrac >= 0.0) break;
@@ -3932,6 +3940,7 @@ bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigChe
 	  (fabs(NTuple->mumdxyVtx->at(i)) < GetSeleCut("dxyVtx"))                           &&
 	  (fabs(NTuple->mumdzVtx->at(i)) < GetSeleCut("dzVtx"))                             &&
 	  (NTuple->mumCat->at(i).find("TMOneStationTight") != std::string::npos)            &&
+	  (NTuple->mumHighPurity->at(i) > 0)                                                &&
 	  
 	  (NTuple->mupNTrkLayers->at(i) > static_cast<int>(rint(GetSeleCut("NTrkLayers")))) &&
 	  (NTuple->mupNPixLayers->at(i) > static_cast<int>(rint(GetSeleCut("NPixLayers")))) &&
@@ -3939,6 +3948,7 @@ bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigChe
 	  (fabs(NTuple->mupdxyVtx->at(i)) < GetSeleCut("dxyVtx"))                           &&
 	  (fabs(NTuple->mupdzVtx->at(i)) < GetSeleCut("dzVtx"))                             &&
 	  (NTuple->mupCat->at(i).find("TMOneStationTight") != std::string::npos)            &&
+	  (NTuple->mupHighPurity->at(i) > 0)                                                &&
 	  
 	  // #########################################
 	  // # Check that hadron track is NOT a muon #

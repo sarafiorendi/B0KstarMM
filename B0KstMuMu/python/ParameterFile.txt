@@ -16,7 +16,9 @@
 #HLT_DoubleMu4_JpsiTrk_Displaced_v
 
 # HLT path 2012:
-HLT_DoubleMu4_JpsiTrk_Displaced_v
+#HLT_DoubleMu4_JpsiTrk_Displaced_v
+HLT_DoubleMu4_LowMassNonResonantTrk_Displaced_v
+#HLT_DoubleMu4_PsiPrimeTrk_Displaced_v
 
 
 ###########################
@@ -44,8 +46,8 @@ HLT_DoubleMu4_JpsiTrk_Displaced_v
 # mu min pT [4.0 GeV/c]
 4.0
 
-# mu max eta [2.2]
-2.2
+# mu max eta [2.4]
+2.4
 
 # mu-mu min pT [6.9 GeV/c]
 6.9
@@ -100,8 +102,8 @@ HLT_DoubleMu4_JpsiTrk_Displaced_v
 # B0 pT [8.0 GeV/c]
 8.0
 
-# B0 eta [2.2]
-2.2
+# B0 eta [2.4]
+2.4
 
 # hadron DCA/sigma w/respect to BS [2.0]
 2.0
@@ -120,13 +122,13 @@ HLT_DoubleMu4_JpsiTrk_Displaced_v
 5.0
 
 # Muon selection: n. pixel layers [1.0]
-1.0
+0.0
 
 # Muon selection: track chi2 [1.8]
-1.8
+1000000
 
 # Muon selection: dxy w/respect to primary vtx [3.0]
-3.0
+0.3
 
 # Muon selection: dz w/respect to primary vtx [20.0]
 20.0
@@ -323,7 +325,8 @@ HLT_DoubleMu4_JpsiTrk_Displaced_v
 4
 
 # HLT path:
-HLT_DoubleMu4_JpsiTrk_Displaced_v
+HLT_DoubleMu4_LowMassNonResonantTrk_Displaced_
+#HLT_DoubleMu4_JpsiTrk_Displaced_v
 # mu-mu Vtx CL
 0.1
 # mu min pT [GeV/c]
