@@ -39,8 +39,8 @@ process.MessageLogger.suppressWarning = cms.untracked.vstring('B0KstMuMu')
 #################
 if (runDataMC == 1):
 #     if (run2012not2011 == True):
-    process.GlobalTag.globaltag = cms.string('80X_dataRun2_2016SeptRepro_v7') 
-#     process.GlobalTag.globaltag = cms.string('80X_dataRun2_Prompt_v16')
+#     process.GlobalTag.globaltag = cms.string('80X_dataRun2_2016SeptRepro_v7') 
+    process.GlobalTag.globaltag = cms.string('80X_dataRun2_Prompt_v16')
 #     else:
 #         process.GlobalTag.globaltag = cms.string('START53_LV6::All')
 else:
@@ -297,6 +297,10 @@ process.B0KstMuMu = cms.EDAnalyzer('B0KstMuMu',
                                    GenFilterTag     = cms.untracked.InputTag("genFilterEfficiencyProducer"),
                                    ParameterFile    = cms.untracked.string('ParameterFile.txt'),
                                    doGenReco        = cms.untracked.uint32(runDataMC),
+                                   TriggerNames     = cms.vstring("HLT_DoubleMu4_LowMassNonResonantTrk_Displaced_v", 
+                                                                  "HLT_DoubleMu4_JpsiTrk_Displaced_v",
+                                                                  "HLT_DoubleMu4_PsiPrimeTrk_Displaced_v"
+                                                                  ),
                                    printMsg         = cms.untracked.bool(printMsg))
 # 
 # 

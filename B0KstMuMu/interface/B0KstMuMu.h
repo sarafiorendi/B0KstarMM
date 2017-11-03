@@ -132,6 +132,8 @@ class B0KstMuMu : public edm::EDAnalyzer
 //   std::string trackType_;
   std::string parameterFile_;
   unsigned int doGenReco_;
+
+  std::vector<std::string> TrigTable_;
   bool printMsg;
   
   ReadParameters* ParameterFile;

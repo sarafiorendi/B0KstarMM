@@ -84,11 +84,15 @@ B0KstMuMu::B0KstMuMu (const edm::ParameterSet& iConfig) :
   puTag_             (iConfig.getUntrackedParameter<edm::InputTag>("PuInfoTag")),
     puToken_            (consumes<std::vector< PileupSummaryInfo>>(puTag_)), 
   genFilterTag_      (iConfig.getUntrackedParameter<edm::InputTag>("GenFilterTag")),
-    genFilterToken_     (consumes<GenFilterInfo>(genFilterTag_)), 
+    genFilterToken_     (consumes<GenFilterInfo,edm::InLumi>(genFilterTag_)),
 
   parameterFile_     ( iConfig.getUntrackedParameter<std::string>("ParameterFile",    std::string("ParameterFile.txt")) ),
   doGenReco_         ( iConfig.getUntrackedParameter<unsigned int>("doGenReco",       1) ),
+
+  TrigTable_         ( iConfig.getParameter<std::vector<std::string> >("TriggerNames")),   
+
   printMsg           ( iConfig.getUntrackedParameter<bool>("printMsg",                false) ),
+  
   
   theTree(0)
 {
@@ -99,9 +103,11 @@ B0KstMuMu::B0KstMuMu (const edm::ParameterSet& iConfig) :
 //   std::cout << __LINE__ << " : genParticles  = " << genParticles_ << std::endl;
 //   std::cout << __LINE__ << " : trackType     = " << trackType_ << std::endl;
   std::cout << __LINE__ << " : parameterFile = " << parameterFile_ << std::endl;
-  std::cout << __LINE__ << " : doGenReco     = " << doGenReco_ << std::endl;
-  std::cout << __LINE__ << " : printMsg      = " << printMsg << std::endl;
-
+  std::cout << __LINE__ << " : doGenReco     = " << doGenReco_     << std::endl;
+  std::cout << __LINE__ << " : printMsg      = " << printMsg       << std::endl;
+  for (auto itrig : TrigTable_ ) std::cout << __LINE__ << " : HLT paths     = " << itrig << std::endl;
+  
+  
   NTuple = new B0KstMuMuTreeContent();
   NTuple->Init();
   NTuple->ClearNTuple();
@@ -226,8 +232,8 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      // ################################
 	      // # Save HLT trigger information #
 	      // ################################
-	      for (unsigned int it = 0; it < TrigTable.size(); it++)
-		if (trigName.find(TrigTable[it]) != std::string::npos)
+	      for (unsigned int it = 0; it < TrigTable_.size(); it++)
+		if (trigName.find(TrigTable_[it]) != std::string::npos)
 		  {
 		    NTuple->TrigTable->push_back(trigName);
 		    NTuple->TrigPrescales->push_back(trigPrescale);
@@ -1215,10 +1221,10 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 			  tmpString.clear();
 			  const pat::Muon* patMuonM = &(*iMuonM);
-			  for (unsigned int i = 0; i < TrigTable.size(); i++)
+			  for (unsigned int i = 0; i < TrigTable_.size(); i++)
 			    {
-			      myString.clear(); myString.str(""); myString << TrigTable[i].c_str() << "*";
-			      if (patMuonM->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString.append(TrigTable[i]+" ");
+			      myString.clear(); myString.str(""); myString << TrigTable_[i].c_str() << "*";
+			      if (patMuonM->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString.append(TrigTable_[i]+" ");
 			    }
 			  if (tmpString.size() == 0) tmpString.append("NotInTable");
 			  NTuple->mumTrig->push_back(tmpString);
@@ -1260,10 +1266,10 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
  			  tmpString.clear();
 			  const pat::Muon* patMuonP = &(*iMuonP);
-			  for (unsigned int i = 0; i < TrigTable.size(); i++)
+			  for (unsigned int i = 0; i < TrigTable_.size(); i++)
 			    {
-			      myString.clear(); myString.str(""); myString << TrigTable[i].c_str() << "*";
-			      if (patMuonP->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString.append(TrigTable[i]+" ");
+			      myString.clear(); myString.str(""); myString << TrigTable_[i].c_str() << "*";
+			      if (patMuonP->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString.append(TrigTable_[i]+" ");
 			    }
 			  if (tmpString.size() == 0) tmpString.append("NotInTable");
 			  NTuple->mupTrig->push_back(tmpString);
@@ -1301,10 +1307,10 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 			  tmpString.clear();
 			  const pat::GenericParticle* patTrkm = &(*iTrackM);
-			  for (unsigned int i = 0; i < TrigTable.size(); i++)
+			  for (unsigned int i = 0; i < TrigTable_.size(); i++)
 			    {
-			      myString.clear(); myString.str(""); myString << TrigTable[i].c_str() << "*";
-			      if (patTrkm->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString.append(TrigTable[i]+" ");
+			      myString.clear(); myString.str(""); myString << TrigTable_[i].c_str() << "*";
+			      if (patTrkm->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString.append(TrigTable_[i]+" ");
 			    }
 			  if (tmpString.size() == 0) tmpString.append("NotInTable");
 			  NTuple->kstTrkmTrig->push_back(tmpString);
@@ -1342,10 +1348,10 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 			  tmpString.clear();
 			  const pat::GenericParticle* patTrkp = &(*iTrackP);
-			  for (unsigned int i = 0; i < TrigTable.size(); i++)
+			  for (unsigned int i = 0; i < TrigTable_.size(); i++)
 			    {
-			      myString.clear(); myString.str(""); myString << TrigTable[i].c_str() << "*";
-			      if (patTrkp->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString.append(TrigTable[i]+" ");
+			      myString.clear(); myString.str(""); myString << TrigTable_[i].c_str() << "*";
+			      if (patTrkp->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString.append(TrigTable_[i]+" ");
 			    }
 			  if (tmpString.size() == 0) tmpString.append("NotInTable");
 			  NTuple->kstTrkpTrig->push_back(tmpString);
@@ -2282,12 +2288,6 @@ void B0KstMuMu::beginJob ()
   edm::Service<TFileService> fs;
   theTree = fs->make<TTree>("B0KstMuMuNTuple","B0KstMuMuNTuple");
   NTuple->MakeTreeBranches(theTree);
-
-
-  // #####################
-  // # Loading HLT-paths #
-  // #####################
-  Utility->ReadHLTpaths(parameterFile_.c_str(),&TrigTable);
 
 
   // ############################
