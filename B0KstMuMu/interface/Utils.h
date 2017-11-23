@@ -18,6 +18,10 @@
 #include <string>
 #include <vector>
 
+#include "TrackingTools/IPTools/interface/IPTools.h"
+#include "TrackingTools/TransientTrack/interface/TransientTrack.h"
+#include "RecoVertex/VertexPrimitives/interface/TransientVertex.h"
+
 #include "B0KstMuMuSingleCandTreeContent.h"
 #include "B0KstMuMuTreeContent.h"
 
@@ -283,6 +287,10 @@ class Utils
   std::string GetHisto3DEffName (int SignalType);
   void        SetHisto3DEffName (int SignalType, std::string newName);
   void        SetDirEfficiency (std::string newName);
+
+  //sara
+  std::pair<double,double> pionImpactParameter(reco::TransientTrack , TransientVertex );
+  std::pair<double,double> pionImpactParameter(reco::TransientTrack , reco::Vertex );
 
 
   double muonMass;

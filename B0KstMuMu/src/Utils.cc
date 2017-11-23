@@ -2069,6 +2069,7 @@ void Utils::ReadTriggerPathsANDCutsANDEntries (std::string fileName)
   // # Read HLT-trigger paths and relative cuts #
   // ############################################
   ParameterFile->ReadFromFile(ParFileBlockN("HLTcuts"),&ParVector);
+  
   for (unsigned int i = 0; i < ParVector.size(); i=i+4)
     {
       HLTpath.push_back(ParVector[i]);
@@ -3917,11 +3918,13 @@ bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigChe
   double BestVal   = 0.0;
   double BestValTmp;
 
+  
   *countCands   =  0;
   *BestCandIndx = -1;
   *TrigCat      =  0;
   for (unsigned int i = 0; i < NTuple->bMass->size(); i++)
     {
+    
       // ##############################################
       // # Candidate selection through kinematic cuts #
       // ##############################################
@@ -4016,7 +4019,9 @@ bool Utils::ChooseBestCand (B0KstMuMuTreeContent* NTuple, unsigned int DoTrigChe
     }
 
 
-  if ((*BestCandIndx != -1) && (FlavorTagger(NTuple, *BestCandIndx, B0notB0bar) == true)) return true;
+  if ((*BestCandIndx != -1) && (FlavorTagger(NTuple, *BestCandIndx, B0notB0bar) == true)) {
+    return true;
+  }  
   return false;
 }
 
@@ -4305,7 +4310,7 @@ void Utils::ReadGenericParam (std::string fileName)
 // # NSigmaB0B           = GenericPars[14] #
 // # NSigmaPsi           = GenericPars[15] #
 // # B&psiMassJpsiLo     = GenericPars[16] #
-// # B&psiMassJpsiHi     = GenericPars[17] #
+// # B&psiMassJpsiHi     = GenericPars[17] # 
 // # B&psiMassPsiPLo     = GenericPars[18] #
 // # B&psiMassPsiPHi     = GenericPars[19] #
 // # SIGMAS1             = GenericPars[20] #
@@ -4555,3 +4560,40 @@ void Utils::SetDirEfficiency (std::string newName)
 {
   DirEfficiency = newName;
 }
+
+//Compute impact parameter 3D wrt Transient Vtx
+std::pair<double,double> Utils::pionImpactParameter(reco::TransientTrack piTT, TransientVertex jpsiVtx)
+{
+    std::pair<double,double> measure;
+	std::pair<bool,Measurement1D>  piIP_pair = IPTools::absoluteImpactParameter3D(piTT, jpsiVtx);
+	if (piIP_pair.first)
+	{
+	  measure.first  = piIP_pair.second.value();
+	  measure.second = piIP_pair.second.significance();
+	}
+    else 
+    {
+	  measure.first  = 0;
+	  measure.second = 0;
+    } 
+	return measure;
+}
+
+//Compute impact parameter 3D wrt Reco Vtx
+std::pair<double,double> Utils::pionImpactParameter(reco::TransientTrack piTT, reco::Vertex myVtx)
+{
+    std::pair<double,double> measure;
+	std::pair<bool,Measurement1D>  piIP_pair = IPTools::absoluteImpactParameter3D(piTT, myVtx);
+	if (piIP_pair.first)
+	{
+	  measure.first  = piIP_pair.second.value();
+	  measure.second = piIP_pair.second.significance();
+	}
+    else 
+    {
+	  measure.first  = 0;
+	  measure.second = 0;
+    } 
+	return measure;
+}
+

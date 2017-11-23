@@ -39,6 +39,7 @@
 
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
+#include "DataFormats/Math/interface/LorentzVector.h"
 
 #include "TMath.h"
 
@@ -86,13 +87,33 @@ B0KstMuMu::B0KstMuMu (const edm::ParameterSet& iConfig) :
   genFilterTag_      (iConfig.getUntrackedParameter<edm::InputTag>("GenFilterTag")),
     genFilterToken_     (consumes<GenFilterInfo,edm::InLumi>(genFilterTag_)),
 
-  parameterFile_     ( iConfig.getUntrackedParameter<std::string>("ParameterFile",    std::string("ParameterFile.txt")) ),
+//   parameterFile_     ( iConfig.getUntrackedParameter<std::string>("ParameterFile",    std::string("ParameterFile.txt")) ),
   doGenReco_         ( iConfig.getUntrackedParameter<unsigned int>("doGenReco",       1) ),
-
   TrigTable_         ( iConfig.getParameter<std::vector<std::string> >("TriggerNames")),   
 
-  printMsg           ( iConfig.getUntrackedParameter<bool>("printMsg",                false) ),
+  // # Load HLT-trigger cuts #
+  CLMUMUVTX          ( iConfig.getUntrackedParameter<double>("MuMuVtxCL")      ),
+  LSMUMUBS           ( iConfig.getUntrackedParameter<double>("MuMuLsBS")       ),
+  DCAMUMU            ( iConfig.getUntrackedParameter<double>("DCAMuMu")        ),
+  DCAMUBS            ( iConfig.getUntrackedParameter<double>("DCAMuBS")        ),
+  COSALPHAMUMUBS     ( iConfig.getUntrackedParameter<double>("cosAlphaMuMuBS") ),
+  MUMINPT            ( iConfig.getUntrackedParameter<double>("MinMupT")        ),
+  MUMAXETA           ( iConfig.getUntrackedParameter<double>("MuEta")          ),
+  MINMUMUPT          ( iConfig.getUntrackedParameter<double>("MuMupT")         ),
+  MINMUMUINVMASS     ( iConfig.getUntrackedParameter<double>("MinMuMuMass")    ),
+  MAXMUMUINVMASS     ( iConfig.getUntrackedParameter<double>("MaxMuMuMass")    ),
+ 
+  // # Load pre-selection cuts #
+  B0MASSLOWLIMIT     ( iConfig.getUntrackedParameter<double>("MinB0Mass")      ),
+  B0MASSUPLIMIT      ( iConfig.getUntrackedParameter<double>("MaxB0Mass")      ),
+  CLB0VTX            ( iConfig.getUntrackedParameter<double>("B0VtxCL")        ),
+  KSTMASSWINDOW      ( iConfig.getUntrackedParameter<double>("KstMass")        ),
+  HADDCASBS          ( iConfig.getUntrackedParameter<double>("HadDCASBS")      ),
+  MINHADPT           ( iConfig.getUntrackedParameter<double>("HadpT")          ),
+  MAXB0PREMASS       ( iConfig.getUntrackedParameter<double>("MaxB0RoughMass") ),
   
+
+  printMsg           ( iConfig.getUntrackedParameter<bool>("printMsg",                false) ),
   
   theTree(0)
 {
@@ -102,11 +123,10 @@ B0KstMuMu::B0KstMuMu (const edm::ParameterSet& iConfig) :
 //   std::cout << __LINE__ << " : beamSpot      = " << beamSpot_ << std::endl;
 //   std::cout << __LINE__ << " : genParticles  = " << genParticles_ << std::endl;
 //   std::cout << __LINE__ << " : trackType     = " << trackType_ << std::endl;
-  std::cout << __LINE__ << " : parameterFile = " << parameterFile_ << std::endl;
+//   std::cout << __LINE__ << " : parameterFile = " << parameterFile_ << std::endl;
   std::cout << __LINE__ << " : doGenReco     = " << doGenReco_     << std::endl;
   std::cout << __LINE__ << " : printMsg      = " << printMsg       << std::endl;
   for (auto itrig : TrigTable_ ) std::cout << __LINE__ << " : HLT paths     = " << itrig << std::endl;
-  
   
   NTuple = new B0KstMuMuTreeContent();
   NTuple->Init();
@@ -114,7 +134,7 @@ B0KstMuMu::B0KstMuMu (const edm::ParameterSet& iConfig) :
 
   Utility = new Utils();
 
-  ParameterFile = new ReadParameters(parameterFile_.c_str());
+//   ParameterFile = new ReadParameters(parameterFile_.c_str());
 }
 
 
@@ -122,7 +142,7 @@ B0KstMuMu::~B0KstMuMu ()
 {
   delete NTuple;
   delete Utility;
-  delete ParameterFile;
+//   delete ParameterFile;
 }
 
 
@@ -133,7 +153,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
   // # Internal Variables #
   // ######################
   std::stringstream myString;
-  std::string tmpString;
+  std::string tmpString1, tmpString2, tmpString3, tmpString4;
 
   std::string MuMCat;
   std::string MuPCat;
@@ -182,9 +202,18 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
   std::pair <bool,Measurement1D> theDCAXVtx;
   TrajectoryStateClosestToPoint theDCAXBS;
+  
+  reco::Candidate::LorentzVector  mum_lv;
+  reco::Candidate::LorentzVector  mup_lv;
+  reco::Candidate::LorentzVector jpsi_lv;
+
+  reco::Candidate::LorentzVector tkm_lv;
+  reco::Candidate::LorentzVector tkp_lv;
+  reco::Candidate::LorentzVector kst_lv;
+  reco::Candidate::LorentzVector kstbar_lv;
 
 
-  if (printMsg == true) std::cout << "\n\n" << __LINE__ << " : @@@@@@ Start Analyzer @@@@@@" << std::endl;
+  if (printMsg) std::cout << "\n\n" << __LINE__ << " : @@@@@@ Start Analyzer @@@@@@" << std::endl;
 
 
   // Get Gen-Particles
@@ -198,13 +227,13 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
   // Get HLT results
   edm::Handle<edm::TriggerResults> hltTriggerResults;
   try
-    {
-      iEvent.getByToken(triggerResultToken_, hltTriggerResults);
-    }
+  {
+    iEvent.getByToken(triggerResultToken_, hltTriggerResults);
+  }
   catch ( ... )
-    {
-      if (printMsg == true) std::cout << __LINE__ << " : couldn't get handle on HLT Trigger" << std::endl;
-    }
+  {
+    if (printMsg) std::cout << __LINE__ << " : couldn't get handle on HLT Trigger" << std::endl;
+  }
   
 
   // ############################
@@ -213,130 +242,122 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
   HLTConfigProvider hltConfig_;
   bool changed = true;
   if (((hltTriggerResults.isValid() == false) || (hltConfig_.init(iEvent.getRun(), iSetup, hltTriggerResults_, changed) == false)) &&
-      (printMsg == true)) std::cout << __LINE__ << " : no trigger results" << std::endl;
+      (printMsg)) std::cout << __LINE__ << " : no trigger results" << std::endl;
   else
-    {
-      // Get hold of trigger names - based on TriggerResults object
-      const edm::TriggerNames& triggerNames_ = iEvent.triggerNames(*hltTriggerResults);
+  {
+    // Get hold of trigger names - based on TriggerResults object
+    const edm::TriggerNames& triggerNames_ = iEvent.triggerNames(*hltTriggerResults);
       
-      for (unsigned int itrig = 0; itrig < hltTriggerResults->size(); itrig++)
+    for (unsigned int itrig = 0; itrig < hltTriggerResults->size(); itrig++)
 	{
 	  if ((*hltTriggerResults)[itrig].accept() == 1)
-	    {
-	      std::string trigName = triggerNames_.triggerName(itrig);
-	      int trigPrescale = hltConfig_.prescaleValue(itrig, trigName);
+      {
+	    std::string trigName = triggerNames_.triggerName(itrig);
+	    int trigPrescale = hltConfig_.prescaleValue(itrig, trigName);
 	      
-	      if (printMsg == true) std::cout << __LINE__ << " : Trigger name in the event: "  << trigName << "\twith prescale: " << trigPrescale << std::endl;
+	    if (printMsg) std::cout << __LINE__ << " : Trigger name in the event: "  << trigName << "\twith prescale: " << trigPrescale << std::endl;
 	      
-	      
-	      // ################################
-	      // # Save HLT trigger information #
-	      // ################################
-	      for (unsigned int it = 0; it < TrigTable_.size(); it++)
-		if (trigName.find(TrigTable_[it]) != std::string::npos)
+	    // ################################
+	    // # Save HLT trigger information #
+	    // ################################
+	    for (unsigned int it = 0; it < TrigTable_.size(); it++){
+		  if (trigName.find(TrigTable_[it]) != std::string::npos)
 		  {
 		    NTuple->TrigTable->push_back(trigName);
 		    NTuple->TrigPrescales->push_back(trigPrescale);
-		    
-		    break;
+   	        break;
 		  }
 	    }
+	  }  
 	}
-      if (NTuple->TrigTable->size() == 0)
+    if (NTuple->TrigTable->size() == 0)
 	{
 	  NTuple->TrigTable->push_back("NotInTable");
 	  NTuple->TrigPrescales->push_back(-1);
-	  
-	  if (printMsg == true) std::cout << __LINE__ << " : no trigger path in " << parameterFile_ << " have been found in the event" << std::endl;
 	}
-      else if (printMsg == true) std::cout << __LINE__ << " : some trigger paths in " << parameterFile_ << " have been found in the event" << std::endl;
-    }
+  }
 
 
   if ((doGenReco_ == 1) || (doGenReco_ == 2))
-    {
-      // Get BeamSpot
-      edm::Handle<reco::BeamSpot> beamSpotH;
-      iEvent.getByToken(beamSpotToken_, beamSpotH);
-      reco::BeamSpot beamSpot = *beamSpotH;
+  {
+    // Get BeamSpot
+    edm::Handle<reco::BeamSpot> beamSpotH;
+    iEvent.getByToken(beamSpotToken_, beamSpotH);
+    reco::BeamSpot beamSpot = *beamSpotH;
       
-      // Get primary vertex with BeamSpot constraint: ordered by the scalar sum of the |pT|^2 of the tracks that compose the vertex
-      edm::Handle<reco::VertexCollection> recVtx;
-      iEvent.getByToken(vtxSampleToken_, recVtx);
-      reco::Vertex bestVtx = *(recVtx->begin());
-      reco::Vertex bestVtxReFit;
+    // Get primary vertex with BeamSpot constraint: ordered by the scalar sum of the |pT|^2 of the tracks that compose the vertex
+    edm::Handle<reco::VertexCollection> recVtx;
+    iEvent.getByToken(vtxSampleToken_, recVtx);
+    reco::Vertex bestVtx = *(recVtx->begin());
+    reco::Vertex bestVtxReFit;
       
-      // Get PAT Muons
-      edm::Handle< std::vector<pat::Muon> > thePATMuonHandle;
-      iEvent.getByToken(muonTypeToken_, thePATMuonHandle);
+    // Get PAT Muons
+    edm::Handle< std::vector<pat::Muon> > thePATMuonHandle;
+    iEvent.getByToken(muonTypeToken_, thePATMuonHandle);
       
-      // Get PAT Tracks
-      edm::Handle< std::vector<pat::GenericParticle> > thePATTrackHandle;
-      iEvent.getByToken(trackTypeToken_, thePATTrackHandle);
+    // Get PAT Tracks
+    edm::Handle< std::vector<pat::GenericParticle> > thePATTrackHandle;
+    iEvent.getByToken(trackTypeToken_, thePATTrackHandle);
+
+    if (printMsg) std::cout << __LINE__ << " : the event has: " << thePATMuonHandle->size() << " muons AND " << thePATTrackHandle->size() << " tracks" << std::endl;
 
 
-      if (printMsg == true) std::cout << __LINE__ << " : the event has: " << thePATMuonHandle->size() << " muons AND " << thePATTrackHandle->size() << " tracks" << std::endl;
+    // #################################
+    // # Search for first valid vertex #
+    // #################################
+    for (std::vector<reco::Vertex>::const_iterator iVertex = recVtx->begin(); iVertex != recVtx->end(); iVertex++) { bestVtx = *(iVertex); if (bestVtx.isValid() == true) break; }
 
 
-      // #################################
-      // # Search for first valid vertex #
-      // #################################
-      for (std::vector<reco::Vertex>::const_iterator iVertex = recVtx->begin(); iVertex != recVtx->end(); iVertex++) { bestVtx = *(iVertex); if (bestVtx.isValid() == true) break; }
-
-
-      if (bestVtx.isValid() == true)
+    if (bestVtx.isValid() == true)
 	{
 	  // ###########
 	  // # Get mu- #
 	  // ###########
 	  for (std::vector<pat::Muon>::const_iterator iMuonM = thePATMuonHandle->begin(); iMuonM != thePATMuonHandle->end(); iMuonM++)
-	    {
-	      bool skip = false;
+	  {
+	    bool skip = false;
 
-
-	      // ########################
-	      // # Check mu- kinematics #
-	      // ########################
-	      muTrackm = iMuonM->innerTrack();
-	      if ((muTrackm.isNull() == true) || (muTrackm->charge() != -1)) continue;
+        // ########################
+	    // # Check mu- kinematics #
+	    // ########################
+	    muTrackm = iMuonM->innerTrack();
+	    if ((muTrackm.isNull() == true) || (muTrackm->charge() != -1)) continue;
  
-	      const reco::TransientTrack muTrackmTT(muTrackm, &(*bFieldHandle));
-
-		
-	      // #########################
-	      // # Muon- pT and eta cuts #
-	      // #########################
-	      pT  = muTrackm->pt();
-	      eta = Utility->computeEta (muTrackmTT.track().momentum().x(),muTrackmTT.track().momentum().y(),muTrackmTT.track().momentum().z());
-	      if ((pT < (MUMINPT*(1.0-MUVARTOLE))) || (fabs(eta) > (MUMAXETA*(1.0+MUVARTOLE))))
+        // #########################
+	    // # Muon- pT and eta cuts #
+	    // #########################
+	    pT  = muTrackm -> pt();
+	    eta = muTrackm -> eta();
+	    if ((pT < (MUMINPT*(1.0-MUVARTOLE))) || (fabs(eta) > (MUMAXETA*(1.0+MUVARTOLE))))
 		{
-		  if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu- : " << pT << " or too high eta : " << eta << std::endl;
+		  if (printMsg) std::cout << __LINE__ << " : break --> too low pT of mu- : " << pT << " or too high eta : " << eta << std::endl;
 		  break;
 		}
 
-
-	      // ###############################
-	      // # Compute mu- DCA to BeamSpot #
-	      // ###############################
-	      theDCAXBS = muTrackmTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
-	      if (theDCAXBS.isValid() == false)
+	    const reco::TransientTrack muTrackmTT(muTrackm, &(*bFieldHandle));
+         
+	    // ###############################
+	    // # Compute mu- DCA to BeamSpot #
+	    // ###############################
+	    theDCAXBS = muTrackmTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
+	    if (theDCAXBS.isValid() == false)
 		{
-		  if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for mu-" << std::endl;
+		  if (printMsg) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for mu-" << std::endl;
 		  continue;
 		}
-	      double DCAmumBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
-	      double DCAmumBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
-	      if (fabs(DCAmumBS) > DCAMUBS)
+	    double DCAmumBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
+	    double DCAmumBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
+	    if (fabs(DCAmumBS) > DCAMUBS)
 		{
-		  if (printMsg == true) std::cout << __LINE__ << " : continue --> bad absolute impact parameter 2D for mu- : " << DCAmumBS << std::endl;
+		  if (printMsg) std::cout << __LINE__ << " : continue --> bad absolute impact parameter 2D for mu- : " << DCAmumBS << std::endl;
 		  continue;
 		}
 
 
-	      // ###########
-	      // # Get mu+ #
-	      // ###########
-	      for (std::vector<pat::Muon>::const_iterator iMuonP = thePATMuonHandle->begin(); iMuonP != thePATMuonHandle->end(); iMuonP++)
+	    // ###########
+	    // # Get mu+ #
+	    // ###########
+	    for (std::vector<pat::Muon>::const_iterator iMuonP = thePATMuonHandle->begin(); iMuonP != thePATMuonHandle->end(); iMuonP++)
 		{
 		  // ########################
 		  // # Check mu+ kinematics #
@@ -344,37 +365,35 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  muTrackp = iMuonP->innerTrack();
 		  if ((muTrackp.isNull() == true) || (muTrackp->charge() != 1)) continue;
 
-		  const reco::TransientTrack muTrackpTT(muTrackp, &(*bFieldHandle));
-
-
 		  // #########################
 		  // # Muon+ pT and eta cuts #
 		  // #########################
 		  pT  = muTrackp->pt();
-		  eta = Utility->computeEta (muTrackpTT.track().momentum().x(),muTrackpTT.track().momentum().y(),muTrackpTT.track().momentum().z());
+		  eta = muTrackp->eta();
 		  if ((pT < (MUMINPT*(1.0-MUVARTOLE))) || (fabs(eta) > (MUMAXETA*(1.0+MUVARTOLE))))
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of mu+ : " << pT << " or too high eta : " << eta << std::endl;
-		      break;
-		    }
+          {
+	        if (printMsg) std::cout << __LINE__ << " : break --> too low pT of mu+ : " << pT << " or too high eta : " << eta << std::endl;
+		    break;
+		  }
 
+		  const reco::TransientTrack muTrackpTT(muTrackp, &(*bFieldHandle));
 
 		  // ###############################
 		  // # Compute mu+ DCA to BeamSpot #
 		  // ###############################
 		  theDCAXBS = muTrackpTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
 		  if (theDCAXBS.isValid() == false)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for mu+" << std::endl;
-		      continue;
-		    }
+          {
+	        if (printMsg) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for mu+" << std::endl;
+	        continue;
+	      }
 		  double DCAmupBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
 		  double DCAmupBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
 		  if (fabs(DCAmupBS) > DCAMUBS)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad absolute impact parameter 2D for mu+: " << DCAmupBS << std::endl;
-		      continue;
-		    }
+		  {
+		    if (printMsg) std::cout << __LINE__ << " : continue --> bad absolute impact parameter 2D for mu+: " << DCAmupBS << std::endl;
+		    continue;
+		  }
 
 
 		  // ############################################
@@ -382,16 +401,16 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  // ############################################
 		  ClosestApp.calculate(muTrackpTT.initialFreeState(),muTrackmTT.initialFreeState());
 		  if (ClosestApp.status() == false)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad status of closest approach" << std::endl;
-		      continue;
-		    }
+		  {
+		    if (printMsg) std::cout << __LINE__ << " : continue --> bad status of closest approach" << std::endl;
+		    continue;
+		  }
 		  XingPoint = ClosestApp.crossingPoint();
 		  if ((sqrt(XingPoint.x()*XingPoint.x() + XingPoint.y()*XingPoint.y()) > TRKMAXR) || (fabs(XingPoint.z()) > TRKMAXZ))
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> closest approach crossing point outside the tracker volume" << std::endl;
-		      continue;
-		    }
+		  {
+		    if (printMsg) std::cout << __LINE__ << " : continue --> closest approach crossing point outside the tracker volume" << std::endl;
+		    continue;
+		  }
 
 
 		  // #####################################################
@@ -399,32 +418,37 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  // #####################################################
 		  double mumuDCA = ClosestApp.distance();
 		  if (mumuDCA > DCAMUMU)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad 3D-DCA of mu+(-) with respect to mu-(+): " << mumuDCA << std::endl;
-		      continue;
-		    }
+		  {
+		    if (printMsg) std::cout << __LINE__ << " : continue --> bad 3D-DCA of mu+(-) with respect to mu-(+): " << mumuDCA << std::endl;
+		    continue;
+		  }
 
 
 		  // ############################################
 		  // # Cut on the dimuon inviariant mass and pT #
 		  // ############################################
-		  pT = sqrt((muTrackmTT.track().momentum().x() + muTrackpTT.track().momentum().x()) * (muTrackmTT.track().momentum().x() + muTrackpTT.track().momentum().x()) +
-			    (muTrackmTT.track().momentum().y() + muTrackpTT.track().momentum().y()) * (muTrackmTT.track().momentum().y() + muTrackpTT.track().momentum().y()));
-		  double MuMuInvMass = Utility->computeInvMass (muTrackmTT.track().momentum().x(),muTrackmTT.track().momentum().y(),muTrackmTT.track().momentum().z(),Utility->muonMass,
-								muTrackpTT.track().momentum().x(),muTrackpTT.track().momentum().y(),muTrackpTT.track().momentum().z(),Utility->muonMass);
-		  if ((pT < (MINMUMUPT*(1.0-MUVARTOLE))) || (MuMuInvMass < (MINMUMUINVMASS*(1.0-MUVARTOLE))) || (MuMuInvMass > (MAXMUMUINVMASS*(1.0+MUVARTOLE))))
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> no good mumu pair pT: " << pT << "\tinv. mass: " << MuMuInvMass << std::endl;
-		      continue;
-		    }
-
-
+ 
+          mum_lv.SetPxPyPzE( muTrackmTT.track().px(), 
+                             muTrackmTT.track().py(),
+                             muTrackmTT.track().pz(),
+                             sqrt( pow(muTrackmTT.track().p(),2) + pow(Utility->muonMass,2) ));
+          mup_lv.SetPxPyPzE( muTrackpTT.track().px(), 
+                             muTrackpTT.track().py(),
+                             muTrackpTT.track().pz(),
+                             sqrt( pow(muTrackpTT.track().p(),2) + pow(Utility->muonMass,2) ));
+          jpsi_lv = mup_lv + mum_lv;
+ 
+		  if ((jpsi_lv.pt() < (MINMUMUPT*(1.0-MUVARTOLE))) || (jpsi_lv.M() < (MINMUMUINVMASS*(1.0-MUVARTOLE))) || (jpsi_lv.M() > (MAXMUMUINVMASS*(1.0+MUVARTOLE))))
+		  {
+		    if (printMsg) std::cout << __LINE__ << " : continue --> no good mumu pair pT: " << jpsi_lv.pt() << "\tinv. mass: " << jpsi_lv.M() << std::endl;
+		    continue;
+		  }
 
 
 		  // #######################################################
 		  // # @@@ Make mu-mu and implement pre-selection cuts @@@ #
 		  // #######################################################
-		  if (printMsg == true) std::cout << "\n" << __LINE__ << " : @@@ I have 2 good oppositely-charged muons. I'm trying to vertex them @@@" << std::endl;
+		  if (printMsg) std::cout << "\n" << __LINE__ << " : @@@ I have 2 good oppositely-charged muons. I'm trying to vertex them @@@" << std::endl;
 
 
 		  chi = 0.;
@@ -438,30 +462,29 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	  
 		  RefCountedKinematicTree mumuVertexFitTree = PartVtxFitter.fit(muonParticles);
 		  if (mumuVertexFitTree->isValid() == false)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the mu+ mu- vertex fit" << std::endl;
-		      continue; 
-		    }
+		  {
+		    if (printMsg) std::cout << __LINE__ << " : continue --> invalid vertex from the mu+ mu- vertex fit" << std::endl;
+		    continue; 
+		  }
 	  
 		  mumuVertexFitTree->movePointerToTheTop();
-		  RefCountedKinematicParticle mumu_KP = mumuVertexFitTree->currentParticle();
 		  RefCountedKinematicVertex mumu_KV   = mumuVertexFitTree->currentDecayVertex();
 		  if (mumu_KV->vertexIsValid() == false)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the mu+ mu- vertex fit" << std::endl;
-		      continue;
-		    }
-	  
+          {
+	        if (printMsg) std::cout << __LINE__ << " : continue --> invalid vertex from the mu+ mu- vertex fit" << std::endl;
+	        continue;
+	      }
 		  if (TMath::Prob(static_cast<double>(mumu_KV->chiSquared()), static_cast<int>(rint(mumu_KV->degreesOfFreedom()))) < CLMUMUVTX)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad vtx CL from mu+ mu- fit: " << TMath::Prob(static_cast<double>(mumu_KV->chiSquared()), static_cast<int>(rint(mumu_KV->degreesOfFreedom()))) << std::endl;
-		      continue;
-		    }
+  	      {
+		    if (printMsg) std::cout << __LINE__ << " : continue --> bad vtx CL from mu+ mu- fit: " << TMath::Prob(static_cast<double>(mumu_KV->chiSquared()), static_cast<int>(rint(mumu_KV->degreesOfFreedom()))) << std::endl;
+		    continue;
+		  }
 
 
 		  // #########################################################
 		  // # Extract the re-fitted tracks after the dimuon vtx fit #
 		  // #########################################################
+		  RefCountedKinematicParticle mumu_KP = mumuVertexFitTree->currentParticle();
 		  mumuVertexFitTree->movePointerToTheTop();
 
 		  mumuVertexFitTree->movePointerToTheFirstChild();
@@ -476,35 +499,35 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  // ########################
 		  // # Muon pT and eta cuts #
 		  // ########################
-		  pT  = sqrt(refitMupTT.track().momentum().x()*refitMupTT.track().momentum().x() + refitMupTT.track().momentum().y()*refitMupTT.track().momentum().y());
-		  eta = Utility->computeEta (refitMupTT.track().momentum().x(),refitMupTT.track().momentum().y(),refitMupTT.track().momentum().z());
+		  pT  = refitMupTT.track().pt();
+		  eta = refitMupTT.track().eta();
 		  if ((pT < MUMINPT) || (fabs(eta) > MUMAXETA))
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> too low pT of mu+ : " << pT << " or too high eta : " << eta << std::endl;
-		      continue;
-		    }
+		  {
+		    if (printMsg) std::cout << __LINE__ << " : continue --> too low pT of mu+ : " << pT << " or too high eta : " << eta << std::endl;
+		    continue;
+		  }
 
-		  pT  = sqrt(refitMumTT.track().momentum().x()*refitMumTT.track().momentum().x() + refitMumTT.track().momentum().y()*refitMumTT.track().momentum().y());
-		  eta = Utility->computeEta (refitMumTT.track().momentum().x(),refitMumTT.track().momentum().y(),refitMumTT.track().momentum().z());
+		  pT  = refitMumTT.track().pt();
+		  eta = refitMumTT.track().eta();
 		  if ((pT < MUMINPT) || (fabs(eta) > MUMAXETA))
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> too low pT of mu- : " << pT << " or too high eta : " << eta << std::endl;
-		      skip = true;
-		      continue;
-		    }
+		  {
+		    if (printMsg) std::cout << __LINE__ << " : continue --> too low pT of mu- : " << pT << " or too high eta : " << eta << std::endl;
+		    skip = true;
+		    continue;
+		  }
 
 
 		  // ############################################
-		  // # Cut on the dimuon inviariant mass and pT #
+		  // # Cut on the dimuon invariant mass and pT #
 		  // ############################################
 		  pT = sqrt((refitMumTT.track().momentum().x() + refitMupTT.track().momentum().x()) * (refitMumTT.track().momentum().x() + refitMupTT.track().momentum().x()) +
 			    (refitMumTT.track().momentum().y() + refitMupTT.track().momentum().y()) * (refitMumTT.track().momentum().y() + refitMupTT.track().momentum().y()));
-		  MuMuInvMass = mumu_KP->currentState().mass();
+		  double MuMuInvMass = mumu_KP->currentState().mass();
 		  if ((pT < MINMUMUPT) || (MuMuInvMass < MINMUMUINVMASS) || (MuMuInvMass > MAXMUMUINVMASS))
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> no good mumu pair pT: " << pT << "\tinv. mass: " << MuMuInvMass << std::endl;
-		      continue;
-		    }
+		  {
+		    if (printMsg) std::cout << __LINE__ << " : continue --> no good mumu pair pT: " << pT << "\tinv. mass: " << MuMuInvMass << std::endl;
+		    continue;
+		  }
 
 
 		  // ######################################################
@@ -519,11 +542,11 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 				      beamSpot.covariance()(0,0),beamSpot.covariance()(1,1),0.0,
 				      beamSpot.covariance()(0,1),0.0,0.0,
 				      &MuMuLSBS,&MuMuLSBSErr);
-		  if (MuMuLSBS/MuMuLSBSErr < LSMUMUBS)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad mumu L/sigma with respect to BeamSpot: " << MuMuLSBS << "+/-" << MuMuLSBSErr << std::endl;
-		      continue;
-		    }
+		  if (MuMuLSBS/MuMuLSBSErr < LSMUMUBS)     
+		  {
+		    if (printMsg) std::cout << __LINE__ << " : continue --> bad mumu L/sigma with respect to BeamSpot: " << MuMuLSBS << "+/-" << MuMuLSBSErr << std::endl;
+		    continue;
+		  }
 	  
 
 		  // ###################################################################
@@ -539,11 +562,18 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 					    mumu_KV->error().matrix()(0,1) + beamSpot.covariance()(0,1),0.0,0.0,
 					    &MuMuCosAlphaBS,&MuMuCosAlphaBSErr);
 		  if (MuMuCosAlphaBS < COSALPHAMUMUBS)
-		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad mumu cos(alpha) with respect to BeamSpot: " << MuMuCosAlphaBS << "+/-" << MuMuCosAlphaBSErr << std::endl;
-		      continue;
-		    }
+		  {
+		    if (printMsg) std::cout << __LINE__ << " : continue --> bad mumu cos(alpha) with respect to BeamSpot: " << MuMuCosAlphaBS << "+/-" << MuMuCosAlphaBSErr << std::endl;
+		    continue;
+		  }
 
+
+		  // ########################### convert KinFit vertex to reco Vertex
+		  reco::Vertex::Point mumu_GP  = reco::Vertex::Point(mumu_KV->position().x(), mumu_KV->position().y(), mumu_KV->position().z());
+		  const reco::Vertex::Error mumu_error = mumu_KV->vertexState().error().matrix();
+		  float mumu_chi2      = mumu_KV -> chiSquared();
+		  float mumu_ndof      = mumu_KV -> degreesOfFreedom();
+		  reco::Vertex mumu_rv =  reco::Vertex( mumu_GP, mumu_error, mumu_chi2, mumu_ndof, 2 );
 
 		  // ##############
 		  // # Get Track- #
@@ -561,812 +591,835 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 		      const reco::TransientTrack TrackmTT(Trackm, &(*bFieldHandle));
 
-
 		      // ##########################
 		      // # Track- pT and eta cuts #
 		      // ##########################
-		      pT = sqrt(TrackmTT.track().momentum().x()*TrackmTT.track().momentum().x() + TrackmTT.track().momentum().y()*TrackmTT.track().momentum().y());
+		      pT = TrackmTT.track().pt();
 		      if (pT < (MINHADPT*(1.0-HADVARTOLE)))
-			{
-			  if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track- : " << pT << std::endl;
-			  break;
-			}
+			  {
+			    if (printMsg) std::cout << __LINE__ << " : break --> too low pT of track- : " << pT << std::endl;
+			    break;
+		  	  }
 		      
+//               std::pair<double,double>  trkm_IPPair = Utility->pionImpactParameter(TrackmTT,mumu_rv);
+//               double trkm_3DIpSignificance       = trkm_IPPair.second;
+//               if (trkm_3DIpSignificance > 1000)                 continue;
 
 		      // ######################################
 		      // # Compute K*0 track- DCA to BeamSpot #
 		      // ######################################
 		      theDCAXBS = TrackmTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
 		      if (theDCAXBS.isValid() == false)
-			{
-			  if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for track-" << std::endl;
-			  continue;
-			}
+			  {
+			    if (printMsg) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for track-" << std::endl;
+			    continue;
+		      }
 		      double DCAKstTrkmBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
 		      double DCAKstTrkmBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
 		      if (fabs(DCAKstTrkmBS/DCAKstTrkmBSErr) < HADDCASBS)
-			{
-			  if (printMsg == true) std::cout << __LINE__ << " : continue --> track- DCA/sigma with respect to BeamSpot is too small: " << DCAKstTrkmBS << "+/-" << DCAKstTrkmBSErr << std::endl;
-			  continue;
-			}
+			  {
+			    if (printMsg) std::cout << __LINE__ << " : continue --> track- DCA/sigma with respect to BeamSpot is too small: " << DCAKstTrkmBS << "+/-" << DCAKstTrkmBSErr << std::endl;
+			    continue;
+			  }
 		      
 		      
 		      // ##############
 		      // # Get Track+ #
 		      // ##############
 		      for (std::vector<pat::GenericParticle>::const_iterator iTrackP = thePATTrackHandle->begin(); iTrackP != thePATTrackHandle->end(); iTrackP++)
-			{
-			  // ###########################
-			  // # Check Track+ kinematics #
-			  // ###########################
-			  Trackp = iTrackP->track();
-			  if ((Trackp.isNull() == true) || (Trackp->charge() != 1)) continue;
+			  {
+			    // ###########################
+			    // # Check Track+ kinematics #
+			    // ###########################
+			    Trackp = iTrackP->track();
+			    if ((Trackp.isNull() == true) || (Trackp->charge() != 1)) continue;
+  
+			    const reco::TransientTrack TrackpTT(Trackp, &(*bFieldHandle));
 
-			  const reco::TransientTrack TrackpTT(Trackp, &(*bFieldHandle));
+			    // ##########################
+			    // # Track+ pT and eta cuts #
+			    // ##########################
+			    pT = TrackpTT.track().pt();
+			    if (pT < (MINHADPT*(1.0-HADVARTOLE)))
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : break --> too low pT of track+ : " << pT << std::endl;
+			        break;
+			      }
+
+              
+//               std::pair<double,double>  trkp_IPPair = Utility->pionImpactParameter(TrackpTT,mumu_rv);
+//               double trkp_3DIpSignificance       = trkp_IPPair.second;
+//               if (trkp_3DIpSignificance > 1000)                 continue;
 
 
-			  // ##########################
-			  // # Track+ pT and eta cuts #
-			  // ##########################
-			  pT = sqrt(TrackpTT.track().momentum().x()*TrackpTT.track().momentum().x() + TrackpTT.track().momentum().y()*TrackpTT.track().momentum().y());
-			  if (pT < (MINHADPT*(1.0-HADVARTOLE)))
+			    // ######################################
+			    // # Compute K*0 track+ DCA to BeamSpot #
+			    // ######################################
+			    theDCAXBS = TrackpTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
+			    if (theDCAXBS.isValid() == false)
 			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track+ : " << pT << std::endl;
-			      break;
-			    }
-
-
-			  // ######################################
-			  // # Compute K*0 track+ DCA to BeamSpot #
-			  // ######################################
-			  theDCAXBS = TrackpTT.trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
-			  if (theDCAXBS.isValid() == false)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for track+" << std::endl;
+			      if (printMsg) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for track+" << std::endl;
 			      continue;
 			    }
-			  double DCAKstTrkpBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
-			  double DCAKstTrkpBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
-			  if (fabs(DCAKstTrkpBS/DCAKstTrkpBSErr) < HADDCASBS)
+			    double DCAKstTrkpBS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
+			    double DCAKstTrkpBSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
+			    if (fabs(DCAKstTrkpBS/DCAKstTrkpBSErr) < HADDCASBS)
 			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> track+ DCA/sigma with respect to BeamSpot is too small: " << DCAKstTrkpBS << "+/-" << DCAKstTrkpBSErr << std::endl;
-			      continue;
-			    }
-
-
-			  // ##############################################
-			  // # Check goodness of hadrons closest approach #
-			  // ##############################################
-			  ClosestApp.calculate(TrackpTT.initialFreeState(),TrackmTT.initialFreeState());
-			  if (ClosestApp.status() == false)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad status of closest approach" << std::endl;
-			      continue;
-			    }
-			  XingPoint = ClosestApp.crossingPoint();
-			  if ((sqrt(XingPoint.x()*XingPoint.x() + XingPoint.y()*XingPoint.y()) > TRKMAXR) || (fabs(XingPoint.z()) > TRKMAXZ))
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> closest approach crossing point outside the tracker volume" << std::endl;
+			      if (printMsg) std::cout << __LINE__ << " : continue --> track+ DCA/sigma with respect to BeamSpot is too small: " << DCAKstTrkpBS << "+/-" << DCAKstTrkpBSErr << std::endl;
 			      continue;
 			    }
 
 
-			  // ######################################################
-			  // # Check if K*0 (OR K*0bar) mass is within acceptance #
-			  // ######################################################
-			  double kstInvMass    = Utility->computeInvMass (TrackmTT.track().momentum().x(),TrackmTT.track().momentum().y(),TrackmTT.track().momentum().z(),Utility->pionMass,
-									  TrackpTT.track().momentum().x(),TrackpTT.track().momentum().y(),TrackpTT.track().momentum().z(),Utility->kaonMass);
-			  double kstBarInvMass = Utility->computeInvMass (TrackmTT.track().momentum().x(),TrackmTT.track().momentum().y(),TrackmTT.track().momentum().z(),Utility->kaonMass,
-									  TrackpTT.track().momentum().x(),TrackpTT.track().momentum().y(),TrackpTT.track().momentum().z(),Utility->pionMass);
-			  if ((fabs(kstInvMass - Utility->kstMass)    > (KSTMASSWINDOW*Utility->kstSigma*(1.0+HADVARTOLE))) &&
-			      (fabs(kstBarInvMass - Utility->kstMass) > (KSTMASSWINDOW*Utility->kstSigma*(1.0+HADVARTOLE))))
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad K*0 mass: " << kstInvMass << " AND K*0bar mass: " << kstBarInvMass << std::endl;
-			      continue;
-			    }
+			    // ##############################################
+			    // # Check goodness of hadrons closest approach #
+			    // ##############################################
+			    ClosestApp.calculate(TrackpTT.initialFreeState(),TrackmTT.initialFreeState());
+			    if (ClosestApp.status() == false)
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> bad status of closest approach" << std::endl;
+			        continue;
+			      }
+			    XingPoint = ClosestApp.crossingPoint();
+			    if ((sqrt(XingPoint.x()*XingPoint.x() + XingPoint.y()*XingPoint.y()) > TRKMAXR) || (fabs(XingPoint.z()) > TRKMAXZ))
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> closest approach crossing point outside the tracker volume" << std::endl;
+			        continue;
+			      }
+
+
+			    // ######################################################
+			    // # Check if K*0 (OR K*0bar) mass is within acceptance #
+			    // ######################################################
+			    tkm_lv.SetPxPyPzE(TrackmTT.track().momentum().x(),
+			                      TrackmTT.track().momentum().y(),
+			                      TrackmTT.track().momentum().z(),
+                                  sqrt( pow(TrackmTT.track().p(),2) + pow(Utility->pionMass,2) ));
+			    tkp_lv.SetPxPyPzE(TrackpTT.track().momentum().x(),
+			                      TrackpTT.track().momentum().y(),
+			                      TrackpTT.track().momentum().z(),
+                                  sqrt( pow(TrackpTT.track().p(),2) + pow(Utility->kaonMass,2) ) );
+			    double kstInvMass = (tkm_lv + tkp_lv).M();
+			    
+			    tkm_lv.SetE(sqrt( pow(TrackmTT.track().p(),2) + pow(Utility->kaonMass,2) ));
+			    tkp_lv.SetE(sqrt( pow(TrackpTT.track().p(),2) + pow(Utility->pionMass,2) ));
+			    double kstBarInvMass = (tkm_lv + tkp_lv).M();
+			    
+			    if ((fabs(kstInvMass - Utility->kstMass)    > (KSTMASSWINDOW*Utility->kstSigma*(1.0+HADVARTOLE))) &&
+			        (fabs(kstBarInvMass - Utility->kstMass) > (KSTMASSWINDOW*Utility->kstSigma*(1.0+HADVARTOLE))))
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> bad K*0 mass: " << kstInvMass << " AND K*0bar mass: " << kstBarInvMass << std::endl;
+			        continue;
+			      }
 
 
 
+			    // ####################################################
+			    // # @@@ Make K* and implement pre-selection cuts @@@ #
+			    // ####################################################
+			    if (printMsg) std::cout << "\n" << __LINE__ << " : @@@ I have 2 good oppositely-charged tracks. I'm trying to vertex them @@@" << std::endl;
+  
+//                             double myDZ = fabs( TrackmTT.track().vz() -  TrackpTT.track().vz());
+//                             std::cout << "before fit: " << myDZ << std::endl;
 
-			  // ####################################################
-			  // # @@@ Make K* and implement pre-selection cuts @@@ #
-			  // ####################################################
-			  if (printMsg == true) std::cout << "\n" << __LINE__ << " : @@@ I have 2 good oppositely-charged tracks. I'm trying to vertex them @@@" << std::endl;
-
-
-			  chi = 0.;
-			  ndf = 0.;
-			  // ##############################################################################
-			  // # Try to vertex the two Tracks to get K*0 vertex: pion = track- | k = track+ #
-			  // ##############################################################################
-			  std::vector<RefCountedKinematicParticle> kstParticles;
-			  kstParticles.push_back(partFactory.particle(TrackmTT,pionMass,chi,ndf,pionMassErr));
-			  kstParticles.push_back(partFactory.particle(TrackpTT,kaonMass,chi,ndf,kaonMassErr));
-			  
-			  RefCountedKinematicTree kstVertexFitTree = PartVtxFitter.fit(kstParticles);
-			  if (kstVertexFitTree->isValid() == false)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the K*0 vertex fit" << std::endl;
-			      continue;
-			    }
-			  
-			  kstVertexFitTree->movePointerToTheTop();
-			  RefCountedKinematicParticle kst_KP = kstVertexFitTree->currentParticle();
-			  RefCountedKinematicVertex kst_KV   = kstVertexFitTree->currentDecayVertex();
-			  if (kst_KV->vertexIsValid() == false)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the K*0 vertex fit" << std::endl;
-			      continue;
-			    }
-
-
-			  chi = 0.;
-			  ndf = 0.;
-			  // #################################################################################
-			  // # Try to vertex the two Tracks to get K*0bar vertex: pion = track+ | k = track- #
-			  // #################################################################################
-			  std::vector<RefCountedKinematicParticle> kstBarParticles;
-			  kstBarParticles.push_back(partFactory.particle(TrackmTT,kaonMass,chi,ndf,kaonMassErr));
-			  kstBarParticles.push_back(partFactory.particle(TrackpTT,pionMass,chi,ndf,pionMassErr));
-			  
-			  RefCountedKinematicTree kstBarVertexFitTree = PartVtxFitter.fit(kstBarParticles);
-			  if (kstBarVertexFitTree->isValid() == false)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the K*0bar vertex fit" << std::endl;
-			      continue;
-			    }
-			  
-			  kstBarVertexFitTree->movePointerToTheTop();
-			  RefCountedKinematicParticle kstBar_KP = kstBarVertexFitTree->currentParticle();
-			  RefCountedKinematicVertex kstBar_KV   = kstBarVertexFitTree->currentDecayVertex();
-			  if (kstBar_KV->vertexIsValid() == false)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the K*0bar vertex fit" << std::endl;
-			      continue;
-			    }
+			    chi = 0.;
+			    ndf = 0.;
+			    // ##############################################################################
+			    // # Try to vertex the two Tracks to get K*0 vertex: pion = track- | k = track+ #
+			    // ##############################################################################
+			    std::vector<RefCountedKinematicParticle> kstParticles;
+			    kstParticles.push_back(partFactory.particle(TrackmTT,pionMass,chi,ndf,pionMassErr));
+			    kstParticles.push_back(partFactory.particle(TrackpTT,kaonMass,chi,ndf,kaonMassErr));
+			    
+			    RefCountedKinematicTree kstVertexFitTree = PartVtxFitter.fit(kstParticles);
+			    if (kstVertexFitTree->isValid() == false)
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid vertex from the K*0 vertex fit" << std::endl;
+			        continue;
+			      }
+			    
+			    kstVertexFitTree->movePointerToTheTop();
+			    RefCountedKinematicParticle kst_KP = kstVertexFitTree->currentParticle();
+			    RefCountedKinematicVertex kst_KV   = kstVertexFitTree->currentDecayVertex();
+			    if (kst_KV->vertexIsValid() == false)
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid vertex from the K*0 vertex fit" << std::endl;
+			        continue;
+			      }
 
 
-			  // ######################################################
-			  // # Check if K*0 (OR K*0bar) mass is within acceptance #
-			  // ######################################################
-			  kstInvMass    = kst_KP->currentState().mass();
-			  kstBarInvMass = kstBar_KP->currentState().mass();
-			  if ((fabs(kstInvMass - Utility->kstMass) > KSTMASSWINDOW*Utility->kstSigma) && (fabs(kstBarInvMass - Utility->kstMass) > KSTMASSWINDOW*Utility->kstSigma))
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad K*0 mass: " << kstInvMass << " AND K*0bar mass: " << kstBarInvMass << std::endl;
-			      continue;
-			    }
+			    chi = 0.;
+			    ndf = 0.;
+			    // #################################################################################
+			    // # Try to vertex the two Tracks to get K*0bar vertex: pion = track+ | k = track- #
+			    // #################################################################################
+			    std::vector<RefCountedKinematicParticle> kstBarParticles;
+			    kstBarParticles.push_back(partFactory.particle(TrackmTT,kaonMass,chi,ndf,kaonMassErr));
+			    kstBarParticles.push_back(partFactory.particle(TrackpTT,pionMass,chi,ndf,pionMassErr));
+			    
+			    RefCountedKinematicTree kstBarVertexFitTree = PartVtxFitter.fit(kstBarParticles);
+			    if (kstBarVertexFitTree->isValid() == false)
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid vertex from the K*0bar vertex fit" << std::endl;
+			        continue;
+			      }
+			    
+			    kstBarVertexFitTree->movePointerToTheTop();
+			    RefCountedKinematicParticle kstBar_KP = kstBarVertexFitTree->currentParticle();
+			    RefCountedKinematicVertex kstBar_KV   = kstBarVertexFitTree->currentDecayVertex();
+			    if (kstBar_KV->vertexIsValid() == false)
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid vertex from the K*0bar vertex fit" << std::endl;
+			        continue;
+			      }
+  
+			    // ######################################################
+			    // # Check if K*0 (OR K*0bar) mass is within acceptance #
+			    // ######################################################
+			    kstInvMass    = kst_KP->currentState().mass();
+			    kstBarInvMass = kstBar_KP->currentState().mass();
+			    if ((fabs(kstInvMass - Utility->kstMass) > KSTMASSWINDOW*Utility->kstSigma) && (fabs(kstBarInvMass - Utility->kstMass) > KSTMASSWINDOW*Utility->kstSigma))
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> bad K*0 mass: " << kstInvMass << " AND K*0bar mass: " << kstBarInvMass << std::endl;
+			        continue;
+			      }
+  
+  
+			    // ###########################################################
+			    // # Extract the re-fitted tracks after the dihadron vtx fit #
+			    // ###########################################################
+			    kstVertexFitTree->movePointerToTheTop();
+  
+			    kstVertexFitTree->movePointerToTheFirstChild();
+			    RefCountedKinematicParticle refitTrkm  = kstVertexFitTree->currentParticle();
+			    const reco::TransientTrack refitTrkmTT = refitTrkm->refittedTransientTrack();
+  
+			    kstVertexFitTree->movePointerToTheNextChild();
+			    RefCountedKinematicParticle refitTrkp  = kstVertexFitTree->currentParticle();
+			    const reco::TransientTrack refitTrkpTT = refitTrkp->refittedTransientTrack();
 
 
-			  // ###########################################################
-			  // # Extract the re-fitted tracks after the dihadron vtx fit #
-			  // ###########################################################
-			  kstVertexFitTree->movePointerToTheTop();
-
-			  kstVertexFitTree->movePointerToTheFirstChild();
-			  RefCountedKinematicParticle refitTrkm  = kstVertexFitTree->currentParticle();
-			  const reco::TransientTrack refitTrkmTT = refitTrkm->refittedTransientTrack();
-
-			  kstVertexFitTree->movePointerToTheNextChild();
-			  RefCountedKinematicParticle refitTrkp  = kstVertexFitTree->currentParticle();
-			  const reco::TransientTrack refitTrkpTT = refitTrkp->refittedTransientTrack();
-
-
-			  // ##########################
-			  // # Hadron pT and eta cuts #
-			  // ##########################
-			  pT = sqrt(refitTrkpTT.track().momentum().x()*refitTrkpTT.track().momentum().x() + refitTrkpTT.track().momentum().y()*refitTrkpTT.track().momentum().y());
-			  if (pT < MINHADPT)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track+ : " << pT << std::endl;
-			      continue;
-			    }
-
-			  pT = sqrt(refitTrkmTT.track().momentum().x()*refitTrkmTT.track().momentum().x() + refitTrkmTT.track().momentum().y()*refitTrkmTT.track().momentum().y());
-			  if (pT < MINHADPT)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : break --> too low pT of track- : " << pT << std::endl;
-			      skip = true;
-			      continue;
-			    }
-
-
-			  // #################################################
-			  // # Check if the hadron Track- is actually a muon #
-			  // #################################################
-			  MuMCat.clear();
-			  MuMCat = "NotMatched";
-			  for (std::vector<pat::Muon>::const_iterator iMuon = thePATMuonHandle->begin(); iMuon != thePATMuonHandle->end(); iMuon++)
+			    // ##########################
+			    // # Hadron pT and eta cuts #
+			    // ##########################
+			    pT = refitTrkpTT.track().pt();
+			    if (pT < MINHADPT)
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : break --> too low pT of track+ : " << pT << std::endl;
+			        continue;
+			      }
+  
+			    pT = refitTrkmTT.track().pt();
+			    if (pT < MINHADPT)
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : break --> too low pT of track- : " << pT << std::endl;
+			        skip = true;
+			        continue;
+			      }
+  
+  
+			    // ####################################################
+			    // # @@@ Make B0 and implement pre-selection cuts @@@ #
+			    // ####################################################
+			    if (printMsg) std::cout << "\n" << __LINE__ << " : @@@ I have 4 good charged tracks. I'm trying to vertex them @@@" << std::endl;
+  
+                reco::Candidate::LorentzVector a_lv, b_lv, c_lv, d_lv, tot_lv;
+			    a_lv.SetPxPyPzE(muTrackmTT.track().momentum().x(),
+			                    muTrackmTT.track().momentum().y(),
+			                    muTrackmTT.track().momentum().z(),
+                                  sqrt( pow(muTrackmTT.track().p(),2) + pow(Utility->muonMass,2) ));
+			    b_lv.SetPxPyPzE(muTrackpTT.track().momentum().x(),
+			                    muTrackpTT.track().momentum().y(),
+			                    muTrackpTT.track().momentum().z(),
+                                  sqrt( pow(muTrackpTT.track().p(),2) + pow(Utility->muonMass,2) ));
+			    c_lv.SetPxPyPzE(TrackmTT.track().momentum().x(),
+			                    TrackmTT.track().momentum().y(),
+			                    TrackmTT.track().momentum().z(),
+                                  sqrt( pow(TrackmTT.track().p(),2) + pow(Utility->pionMass,2) ));
+			    d_lv.SetPxPyPzE(TrackpTT.track().momentum().x(),
+			                    TrackpTT.track().momentum().y(),
+			                    TrackpTT.track().momentum().z(),
+                                  sqrt( pow(TrackpTT.track().p(),2) + pow(Utility->kaonMass,2) ));
+                            
+                            tot_lv = a_lv + b_lv + c_lv + d_lv;
+                            if  (tot_lv.M() > MAXB0PREMASS) {
+                   	      if (printMsg) std::cout << __LINE__ << " : continue --> b0 mass before fit is > max value" << std::endl;
+                                continue;    
+                            }         
+  
+  
+  
+			    // #################################################
+			    // # Check if the hadron Track- is actually a muon #
+			    // #################################################
+			    MuMCat.clear();
+			    MuMCat = "NotMatched";
+			    for (std::vector<pat::Muon>::const_iterator iMuon = thePATMuonHandle->begin(); iMuon != thePATMuonHandle->end(); iMuon++)
 			    {
 			      muTrackTmp = iMuon->innerTrack();
 			      if ((muTrackTmp.isNull() == true) || (muTrackTmp->charge() != -1)) continue;
 			      if (Trackm == muTrackTmp)
-				{
-				  MuMCat.clear();
-				  MuMCat.append(getMuCat(*iMuon));
-				  if (printMsg == true) std::cout << __LINE__ << " : negative charged hadron is actually a muon (momentum: " << Trackm->p() << ") whose category is: " << MuMCat.c_str() << std::endl;
-				  break;
-				}
+			  	  {
+			  	    MuMCat.clear();
+			  	    MuMCat.append(getMuCat(*iMuon));
+			  	    if (printMsg) std::cout << __LINE__ << " : negative charged hadron is actually a muon (momentum: " << Trackm->p() << ") whose category is: " << MuMCat.c_str() << std::endl;
+			  	    break;
+			  	  }
 			    }
-
-
-			  // #################################################
-			  // # Check if the hadron Track+ is actually a muon #
-			  // #################################################
-			  MuPCat.clear();
-			  MuPCat = "NotMatched";
-			  for (std::vector<pat::Muon>::const_iterator iMuon = thePATMuonHandle->begin(); iMuon != thePATMuonHandle->end(); iMuon++)
+  
+  
+			    // #################################################
+			    // # Check if the hadron Track+ is actually a muon #
+			    // #################################################
+			    MuPCat.clear();
+			    MuPCat = "NotMatched";
+			    for (std::vector<pat::Muon>::const_iterator iMuon = thePATMuonHandle->begin(); iMuon != thePATMuonHandle->end(); iMuon++)
 			    {
 			      muTrackTmp = iMuon->innerTrack();
 			      if ((muTrackTmp.isNull() == true) || (muTrackTmp->charge() != 1)) continue;
 			      if (Trackp == muTrackTmp)
-				{
-				  MuPCat.clear();
-				  MuPCat.append(getMuCat(*iMuon));
-				  if (printMsg == true) std::cout << __LINE__ << " : positive charged hadron is actually a muon (momentum: " << Trackp->p() << ") whose category is: " << MuPCat.c_str() << std::endl;
-				  break;
-				}
+				  {
+				    MuPCat.clear();
+				    MuPCat.append(getMuCat(*iMuon));
+				    if (printMsg) std::cout << __LINE__ << " : positive charged hadron is actually a muon (momentum: " << Trackp->p() << ") whose category is: " << MuPCat.c_str() << std::endl;
+				    break;
+				  }
 			    }
 
 
-
-
-			  // ####################################################
-			  // # @@@ Make B0 and implement pre-selection cuts @@@ #
-			  // ####################################################
-			  if (printMsg == true) std::cout << "\n" << __LINE__ << " : @@@ I have 4 good charged tracks. I'm trying to vertex them @@@" << std::endl;
-
-
-			  chi = 0.;
-			  ndf = 0.;
-			  // #####################################
-			  // # B0 vertex fit with vtx constraint #
-			  // #####################################
-			  std::vector<RefCountedKinematicParticle> bParticles;
-			  bParticles.push_back(partFactory.particle(muTrackmTT,muonMass,chi,ndf,muonMassErr));
-			  bParticles.push_back(partFactory.particle(muTrackpTT,muonMass,chi,ndf,muonMassErr));
-			  bParticles.push_back(partFactory.particle(TrackmTT,pionMass,chi,ndf,pionMassErr));
-			  bParticles.push_back(partFactory.particle(TrackpTT,kaonMass,chi,ndf,kaonMassErr));
-
-			  RefCountedKinematicTree bVertexFitTree = PartVtxFitter.fit(bParticles);
-			  if (bVertexFitTree->isValid() == false)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the B0 vertex fit" << std::endl;
-			      continue;
-			    }
-
-			  bVertexFitTree->movePointerToTheTop();
-			  RefCountedKinematicParticle b_KP = bVertexFitTree->currentParticle();
-			  RefCountedKinematicVertex b_KV   = bVertexFitTree->currentDecayVertex();
-			  if (b_KV->vertexIsValid() == false)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the B0 vertex fit" << std::endl;
-			      continue;
-			    }
-
-
-			  chi = 0.;
-			  ndf = 0.;
-			  // ########################################
-			  // # B0bar vertex fit with vtx constraint #
-			  // ########################################
-			  std::vector<RefCountedKinematicParticle> bBarParticles;
-			  bBarParticles.push_back(partFactory.particle(muTrackmTT,muonMass,chi,ndf,muonMassErr));
-			  bBarParticles.push_back(partFactory.particle(muTrackpTT,muonMass,chi,ndf,muonMassErr));
-			  bBarParticles.push_back(partFactory.particle(TrackmTT,kaonMass,chi,ndf,kaonMassErr));
-			  bBarParticles.push_back(partFactory.particle(TrackpTT,pionMass,chi,ndf,pionMassErr));
-				      
-			  RefCountedKinematicTree bBarVertexFitTree = PartVtxFitter.fit(bBarParticles);
-			  if (bBarVertexFitTree->isValid() == false)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the B0bar vertex fit" << std::endl;
-			      continue;
-			    }
-
-			  bBarVertexFitTree->movePointerToTheTop();
-			  RefCountedKinematicParticle bBar_KP = bBarVertexFitTree->currentParticle();
-			  RefCountedKinematicVertex bBar_KV   = bBarVertexFitTree->currentDecayVertex();
-			  if (bBar_KV->vertexIsValid() == false)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid vertex from the B0bar vertex fit" << std::endl;
-			      continue;
-			    }
-
-
-			  // ########################
-			  // # Cuts on B0 AND B0bar #
-			  // ########################
-			  if (((b_KP->currentState().mass() < B0MASSLOWLIMIT) || (b_KP->currentState().mass() > B0MASSUPLIMIT)) &&
+			    chi = 0.;
+			    ndf = 0.;
+			    // #####################################
+			    // # B0 vertex fit with vtx constraint #
+			    // #####################################
+			    std::vector<RefCountedKinematicParticle> bParticles;
+			    bParticles.push_back(partFactory.particle(muTrackmTT,muonMass,chi,ndf,muonMassErr));
+			    bParticles.push_back(partFactory.particle(muTrackpTT,muonMass,chi,ndf,muonMassErr));
+			    bParticles.push_back(partFactory.particle(TrackmTT,pionMass,chi,ndf,pionMassErr));
+			    bParticles.push_back(partFactory.particle(TrackpTT,kaonMass,chi,ndf,kaonMassErr));
+  
+			    RefCountedKinematicTree bVertexFitTree = PartVtxFitter.fit(bParticles);
+			    if (bVertexFitTree->isValid() == false)
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid vertex from the B0 vertex fit" << std::endl;
+			        continue;
+			      }
+  
+			    bVertexFitTree->movePointerToTheTop();
+			    RefCountedKinematicParticle b_KP = bVertexFitTree->currentParticle();
+			    RefCountedKinematicVertex b_KV   = bVertexFitTree->currentDecayVertex();
+			    if (b_KV->vertexIsValid() == false)
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid vertex from the B0 vertex fit" << std::endl;
+			        continue;
+			      }
+  
+  
+			    chi = 0.;
+			    ndf = 0.;
+			    // ########################################
+			    // # B0bar vertex fit with vtx constraint #
+			    // ########################################
+			    std::vector<RefCountedKinematicParticle> bBarParticles;
+			    bBarParticles.push_back(partFactory.particle(muTrackmTT,muonMass,chi,ndf,muonMassErr));
+			    bBarParticles.push_back(partFactory.particle(muTrackpTT,muonMass,chi,ndf,muonMassErr));
+			    bBarParticles.push_back(partFactory.particle(TrackmTT,kaonMass,chi,ndf,kaonMassErr));
+			    bBarParticles.push_back(partFactory.particle(TrackpTT,pionMass,chi,ndf,pionMassErr));
+			        
+			    RefCountedKinematicTree bBarVertexFitTree = PartVtxFitter.fit(bBarParticles);
+			    if (bBarVertexFitTree->isValid() == false)
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid vertex from the B0bar vertex fit" << std::endl;
+			        continue;
+			      }
+  
+			    bBarVertexFitTree->movePointerToTheTop();
+			    RefCountedKinematicParticle bBar_KP = bBarVertexFitTree->currentParticle();
+			    RefCountedKinematicVertex bBar_KV   = bBarVertexFitTree->currentDecayVertex();
+			    if (bBar_KV->vertexIsValid() == false)
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid vertex from the B0bar vertex fit" << std::endl;
+			        continue;
+			      }
+  
+//                             std::cout << "mass after fit: " << b_KP->currentState().mass() << std::endl;      
+  
+			    // ########################
+			    // # Cuts on B0 AND B0bar #
+			    // ########################
+			    if (((b_KP->currentState().mass() < B0MASSLOWLIMIT) || (b_KP->currentState().mass() > B0MASSUPLIMIT)) &&
 			      ((bBar_KP->currentState().mass() < B0MASSLOWLIMIT) || (bBar_KP->currentState().mass() > B0MASSUPLIMIT)))
 			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> bad B0 mass: " << b_KP->currentState().mass() << " AND B0bar mass: " << bBar_KP->currentState().mass() << std::endl;
+			      if (printMsg) std::cout << __LINE__ << " : continue --> bad B0 mass: " << b_KP->currentState().mass() << " AND B0bar mass: " << bBar_KP->currentState().mass() << std::endl;
 			      continue;
 			    }
-			  if ((TMath::Prob(static_cast<double>(b_KV->chiSquared()), static_cast<int>(rint(b_KV->degreesOfFreedom()))) < CLB0VTX) &&
-			      (TMath::Prob(static_cast<double>(bBar_KV->chiSquared()), static_cast<int>(rint(bBar_KV->degreesOfFreedom()))) < CLB0VTX))
+			    if ((TMath::Prob(static_cast<double>(b_KV->chiSquared()), static_cast<int>(rint(b_KV->degreesOfFreedom()))) < CLB0VTX) &&
+			        (TMath::Prob(static_cast<double>(bBar_KV->chiSquared()), static_cast<int>(rint(bBar_KV->degreesOfFreedom()))) < CLB0VTX))
 			    {
-			      if (printMsg == true)
-				{
-				  std::cout << __LINE__ << " : continue --> bad vtx CL from B0 fit: " << TMath::Prob(static_cast<double>(b_KV->chiSquared()), static_cast<int>(rint(b_KV->degreesOfFreedom())));
-				  std::cout << " AND bad vtx CL from B0bar fit: " << TMath::Prob(static_cast<double>(bBar_KV->chiSquared()), static_cast<int>(rint(bBar_KV->degreesOfFreedom()))) << std::endl;
-				}
+			      if (printMsg)
+				  {
+				    std::cout << __LINE__ << " : continue --> bad vtx CL from B0 fit: " << TMath::Prob(static_cast<double>(b_KV->chiSquared()), static_cast<int>(rint(b_KV->degreesOfFreedom())));
+				    std::cout << " AND bad vtx CL from B0bar fit: " << TMath::Prob(static_cast<double>(bBar_KV->chiSquared()), static_cast<int>(rint(bBar_KV->degreesOfFreedom()))) << std::endl;
+			      }
 			      continue;
 			    }
 
 
-			  // ###############################
-			  // # Cuts on B0 L/sigma BeamSpot #
-			  // ###############################
-			  Utility->computeLS (b_KV->position().x(),b_KV->position().y(),0.0,
-					      beamSpot.position().x(),beamSpot.position().y(),0.0,
-					      b_KV->error().cxx(),b_KV->error().cyy(),0.0,
-					      b_KV->error().matrix()(0,1),0.0,0.0,
-					      beamSpot.covariance()(0,0),beamSpot.covariance()(1,1),0.0,
-					      beamSpot.covariance()(0,1),0.0,0.0,
-					      &LSBS,&LSBSErr);
-
-
-			  // ##############################
-			  // # Compute B0 DCA to BeamSpot #
-			  // ##############################
-			  theDCAXBS = b_KP->refittedTransientTrack().trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
-			  if (theDCAXBS.isValid() == false)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for B0" << std::endl;
-			      continue;
-			    }
-			  double DCAB0BS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
-			  double DCAB0BSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
-
-		
-			  // #####################################
-			  // # Compute B0 cos(alpha) to BeamSpot #
-			  // #####################################
-			  Utility->computeCosAlpha (b_KP->currentState().globalMomentum().x(),b_KP->currentState().globalMomentum().y(),0.0,
-						    b_KV->position().x() - beamSpot.position().x(),b_KV->position().y() - beamSpot.position().y(),0.0,
-						    b_KP->currentState().kinematicParametersError().matrix()(3,3),b_KP->currentState().kinematicParametersError().matrix()(4,4),0.0,
-						    b_KP->currentState().kinematicParametersError().matrix()(3,4),0.0,0.0,
-						    b_KV->error().cxx() + beamSpot.covariance()(0,0),b_KV->error().cyy() + beamSpot.covariance()(1,1),0.0,
-						    b_KV->error().matrix()(0,1) + beamSpot.covariance()(0,1),0.0,0.0,
-						    &cosAlphaBS,&cosAlphaBSErr);
-
-
-
-
-			  // #############################################################################################################
-			  // # If the tracks in the B reco candidate belongs to the primary vertex, then remove them and redo the Vertex #
-			  // #############################################################################################################
-			  std::vector<reco::TransientTrack> vertexTracks;
-			  for (std::vector<reco::TrackBaseRef>::const_iterator iTrack = bestVtx.tracks_begin(); iTrack != bestVtx.tracks_end(); iTrack++)
-			    {
-			      // Compare primary tracks to check for matches with B candidate
-			      reco::TrackRef trackRef = iTrack->castTo<reco::TrackRef>();
-					  
-			      if ((Trackm != trackRef) && (Trackp != trackRef) && (muTrackm != trackRef) && (muTrackp != trackRef))
-				{
-				  reco::TransientTrack TT(trackRef, &(*bFieldHandle));
-				  vertexTracks.push_back(TT);
-				}
-			      else if (printMsg == true) std::cout << __LINE__ << " : some of the B0 reco candidate tracks belong to the Pri.Vtx" << std::endl;
-			    }
-
-			  if (vertexTracks.size() < 2)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> number of tracks of the new Pri.Vtx is too small: " << vertexTracks.size() << std::endl;
-			      continue;
-			    }
-				      
-			  TransientVertex bestTransVtx = theVtxFitter.vertex(vertexTracks);
-			  if (bestTransVtx.isValid() == false)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid new Pri.Vtx" << std::endl;
-			      continue;
-			    }
-			  bestVtxReFit = (reco::Vertex)bestTransVtx;
-
-
-
-
-			  // ##########################
-			  // # Compute mu- DCA to Vtx #
-			  // ##########################
-			  theDCAXVtx = IPTools::absoluteImpactParameter3D(muTrackmTT, bestVtxReFit);
-			  if (theDCAXVtx.first == false)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for mu-" << std::endl;
-			      continue;
-			    }
-			  double DCAmumVtx    = theDCAXVtx.second.value();
-			  double DCAmumVtxErr = theDCAXVtx.second.error();
+			    // ###############################
+			    // # Cuts on B0 L/sigma BeamSpot #
+			    // ###############################
+			    Utility->computeLS (b_KV->position().x(),b_KV->position().y(),0.0,
+			  		             beamSpot.position().x(),beamSpot.position().y(),0.0,
+			  		             b_KV->error().cxx(),b_KV->error().cyy(),0.0,
+			  		             b_KV->error().matrix()(0,1),0.0,0.0,
+			  		             beamSpot.covariance()(0,0),beamSpot.covariance()(1,1),0.0,
+			  		             beamSpot.covariance()(0,1),0.0,0.0,
+			  		             &LSBS,&LSBSErr);
+  
+  
+			    // ##############################
+			    // # Compute B0 DCA to BeamSpot #
+			    // ##############################
+			    theDCAXBS = b_KP->refittedTransientTrack().trajectoryStateClosestToPoint(GlobalPoint(beamSpot.position().x(),beamSpot.position().y(),beamSpot.position().z()));
+			    if (theDCAXBS.isValid() == false)
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 2D for B0" << std::endl;
+			        continue;
+			      }  	
+			    double DCAB0BS    = theDCAXBS.perigeeParameters().transverseImpactParameter();
+			    double DCAB0BSErr = theDCAXBS.perigeeError().transverseImpactParameterError();
+  
+		  
+			    // #####################################
+			    // # Compute B0 cos(alpha) to BeamSpot #
+			    // #####################################
+			    Utility->computeCosAlpha (b_KP->currentState().globalMomentum().x(),b_KP->currentState().globalMomentum().y(),0.0,
+			  			    b_KV->position().x() - beamSpot.position().x(),b_KV->position().y() - beamSpot.position().y(),0.0,
+			  			    b_KP->currentState().kinematicParametersError().matrix()(3,3),b_KP->currentState().kinematicParametersError().matrix()(4,4),0.0,
+			  			    b_KP->currentState().kinematicParametersError().matrix()(3,4),0.0,0.0,
+			  			    b_KV->error().cxx() + beamSpot.covariance()(0,0),b_KV->error().cyy() + beamSpot.covariance()(1,1),0.0,
+			  			    b_KV->error().matrix()(0,1) + beamSpot.covariance()(0,1),0.0,0.0,
+			  			    &cosAlphaBS,&cosAlphaBSErr);
+  
+  
+  
+  
+			    // #############################################################################################################
+			    // # If the tracks in the B reco candidate belongs to the primary vertex, then remove them and redo the Vertex #
+			    // #############################################################################################################
+			    std::vector<reco::TransientTrack> vertexTracks;
+			    for (std::vector<reco::TrackBaseRef>::const_iterator iTrack = bestVtx.tracks_begin(); iTrack != bestVtx.tracks_end(); iTrack++)
+			      {
+			        // Compare primary tracks to check for matches with B candidate
+			        reco::TrackRef trackRef = iTrack->castTo<reco::TrackRef>();
+			  		  
+			        if ((Trackm != trackRef) && (Trackp != trackRef) && (muTrackm != trackRef) && (muTrackp != trackRef))
+			  	{
+			  	  reco::TransientTrack TT(trackRef, &(*bFieldHandle));
+			  	  vertexTracks.push_back(TT);
+			  	}
+			        else if (printMsg) std::cout << __LINE__ << " : some of the B0 reco candidate tracks belong to the Pri.Vtx" << std::endl;
+			      }
+  
+			    if (vertexTracks.size() < 2)
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> number of tracks of the new Pri.Vtx is too small: " << vertexTracks.size() << std::endl;
+			        continue;
+			      }
+			  	      
+			    TransientVertex bestTransVtx = theVtxFitter.vertex(vertexTracks);
+			    if (bestTransVtx.isValid() == false)
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid new Pri.Vtx" << std::endl;
+			        continue;
+			      }
+			    bestVtxReFit = (reco::Vertex)bestTransVtx;
+  
+  
+  
+  
+			    // ##########################
+			    // # Compute mu- DCA to Vtx #
+			    // ##########################
+			    theDCAXVtx = IPTools::absoluteImpactParameter3D(muTrackmTT, bestVtxReFit);
+			    if (theDCAXVtx.first == false)
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for mu-" << std::endl;
+			        continue;
+			      }
+			    double DCAmumVtx    = theDCAXVtx.second.value();
+			    double DCAmumVtxErr = theDCAXVtx.second.error();
 			  
 			  					  
-			  // ##########################
-			  // # Compute mu+ DCA to Vtx #
-			  // ##########################
-			  theDCAXVtx = IPTools::absoluteImpactParameter3D(muTrackpTT, bestVtxReFit);
-			  if (theDCAXVtx.first == false)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for mu+" << std::endl;
-			      continue;
-			    }
-			  double DCAmupVtx    = theDCAXVtx.second.value();
-			  double DCAmupVtxErr = theDCAXVtx.second.error();
-
-			
-			  // #################################
-			  // # Compute K*0 track- DCA to Vtx #
-			  // #################################
-			  theDCAXVtx = IPTools::absoluteImpactParameter3D(TrackmTT, bestVtxReFit);
-			  if (theDCAXVtx.first == false)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for track-" << std::endl;
-			      continue;
-			    }
-			  double DCAKstTrkmVtx    = theDCAXVtx.second.value();
-			  double DCAKstTrkmVtxErr = theDCAXVtx.second.error();
-
-
-			  // #################################
-			  // # Compute K*0 track+ DCA to Vtx #
-			  // #################################
-			  theDCAXVtx = IPTools::absoluteImpactParameter3D(TrackpTT, bestVtxReFit);
-			  if (theDCAXVtx.first == false)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for track+" << std::endl;
-			      continue;
-			    }
-			  double DCAKstTrkpVtx    = theDCAXVtx.second.value();
-			  double DCAKstTrkpVtxErr = theDCAXVtx.second.error();
-
-
-			  // #########################
-			  // # Compute B0 DCA to Vtx #
-			  // #########################
-			  theDCAXVtx = IPTools::absoluteImpactParameter3D(b_KP->refittedTransientTrack(), bestVtxReFit);
-			  if (theDCAXVtx.first == false)
-			    {
-			      if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for B0" << std::endl;
-			      continue;
-			    }
-			  double DCAB0Vtx    = theDCAXVtx.second.value();
-			  double DCAB0VtxErr = theDCAXVtx.second.error();
-
-
-			  // ################################
-			  // # Compute B0 cos(alpha) to Vtx #
-			  // ################################
-			  Utility->computeCosAlpha (b_KP->currentState().globalMomentum().x(),b_KP->currentState().globalMomentum().y(),b_KP->currentState().globalMomentum().z(),
-						    b_KV->position().x() - bestVtxReFit.x(),b_KV->position().y() - bestVtxReFit.y(), b_KV->position().z() - bestVtxReFit.z(),
-						    b_KP->currentState().kinematicParametersError().matrix()(3,3),b_KP->currentState().kinematicParametersError().matrix()(4,4),b_KP->currentState().kinematicParametersError().matrix()(5,5),
-						    b_KP->currentState().kinematicParametersError().matrix()(3,4),b_KP->currentState().kinematicParametersError().matrix()(3,5),b_KP->currentState().kinematicParametersError().matrix()(4,5),
-						    b_KV->error().cxx() + bestVtxReFit.error()(0,0),b_KV->error().cyy() + bestVtxReFit.error()(1,1),b_KV->error().czz() + bestVtxReFit.error()(2,2),
-						    b_KV->error().matrix()(0,1) + bestVtxReFit.error()(0,1),b_KV->error().matrix()(0,2) + bestVtxReFit.error()(0,2),b_KV->error().matrix()(1,2) + bestVtxReFit.error()(1,2),
-						    &cosAlphaVtx,&cosAlphaVtxErr);
-
-
-			  // #############################
-			  // # Compute B0 L/sigma to Vtx #
-			  // #############################
-			  Utility->computeLS (b_KV->position().x(),b_KV->position().y(),b_KV->position().z(),
-					      bestVtxReFit.x(),bestVtxReFit.y(),bestVtxReFit.z(),
-					      b_KV->error().cxx(),b_KV->error().cyy(),b_KV->error().czz(),
-					      b_KV->error().matrix()(0,1),b_KV->error().matrix()(0,2),b_KV->error().matrix()(1,2),
-					      bestVtxReFit.error()(0,0),bestVtxReFit.error()(1,1),bestVtxReFit.error()(2,2),
-					      bestVtxReFit.error()(0,1),bestVtxReFit.error()(0,2),bestVtxReFit.error()(1,2),
-					      &LSVtx,&LSVtxErr);
-
-
-			  // #####################################################
-			  // # Compute ctau = mB * (BVtx - PVtx) dot pB / |pB|^2 #
-			  // #####################################################
-			  GlobalVector Bmomentum = b_KP->currentState().globalMomentum();
-			  double Bmomentum2 = Bmomentum.dot(Bmomentum);
-			  AlgebraicSymMatrix33 BmomentumErr2;
-			  BmomentumErr2(0,0) = b_KP->currentState().kinematicParametersError().matrix()(3,3);
-			  BmomentumErr2(0,1) = b_KP->currentState().kinematicParametersError().matrix()(3,4);
-			  BmomentumErr2(0,2) = b_KP->currentState().kinematicParametersError().matrix()(3,5);
-			  BmomentumErr2(1,0) = b_KP->currentState().kinematicParametersError().matrix()(4,3);
-			  BmomentumErr2(1,1) = b_KP->currentState().kinematicParametersError().matrix()(4,4);
-			  BmomentumErr2(1,2) = b_KP->currentState().kinematicParametersError().matrix()(4,5);
-			  BmomentumErr2(2,0) = b_KP->currentState().kinematicParametersError().matrix()(5,3);
-			  BmomentumErr2(2,1) = b_KP->currentState().kinematicParametersError().matrix()(5,4);
-			  BmomentumErr2(2,2) = b_KP->currentState().kinematicParametersError().matrix()(5,5);
-
-			  GlobalVector BVtxPVtxSep = GlobalPoint(b_KV->position()) - GlobalPoint(bestVtxReFit.position().x(), bestVtxReFit.position().y(), bestVtxReFit.position().z());
-			  double BVtxPVtxSepDOTBmomentum = BVtxPVtxSep.dot(Bmomentum);
-
-			  double bctauPVBS = Utility->B0Mass * BVtxPVtxSepDOTBmomentum / Bmomentum2;
-			  double bctauPVBSErr = sqrt(Utility->B0Mass * Utility->B0Mass / (Bmomentum2 * Bmomentum2) *
-					   
-						     (Bmomentum.x() * Bmomentum.x() * bestVtxReFit.error()(0,0) +
-						      Bmomentum.y() * Bmomentum.y() * bestVtxReFit.error()(1,1) +
-						      Bmomentum.z() * Bmomentum.z() * bestVtxReFit.error()(2,2) +
-					    
-						      ((BVtxPVtxSep.x()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.x()) *
-						       (BVtxPVtxSep.x()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.x()) *
-						       BmomentumErr2(0,0) +
-						       (BVtxPVtxSep.y()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.y()) *
-						       (BVtxPVtxSep.y()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.y()) *
-						       BmomentumErr2(1,1) +
-						       (BVtxPVtxSep.z()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.z()) *
-						       (BVtxPVtxSep.z()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.z()) *	
-						       BmomentumErr2(2,2) +
-					   
-						       (BVtxPVtxSep.x()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.x()) * (BVtxPVtxSep.y()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.y()) * 2.*BmomentumErr2(0,1) +
-						       (BVtxPVtxSep.x()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.x()) * (BVtxPVtxSep.z()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.z()) * 2.*BmomentumErr2(0,2) +
-						       (BVtxPVtxSep.y()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.y()) * (BVtxPVtxSep.z()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.z()) * 2.*BmomentumErr2(1,2)) /
-
-						      (Bmomentum2 * Bmomentum2)));
-
-
-
-
-			  // #######################################
-			  // # @@@ Fill B0-candidate variables @@@ #
-			  // #######################################
-			  if (printMsg == true) std::cout << __LINE__ << " : @@@ Filling B0 candidate variables @@@\n\n" << std::endl;
-
-
-			  // ############
-			  // # Save: B0 #
-			  // ############
-			  NTuple->nB++;
-
-			  NTuple->bMass->push_back(b_KP->currentState().mass());
-			  NTuple->bMassE->push_back(sqrt(b_KP->currentState().kinematicParametersError().matrix()(6,6)));
-			  NTuple->bBarMass->push_back(bBar_KP->currentState().mass());
-			  NTuple->bBarMassE->push_back(sqrt(bBar_KP->currentState().kinematicParametersError().matrix()(6,6)));
-
-			  NTuple->bPx->push_back(b_KP->currentState().globalMomentum().x());
-			  NTuple->bPy->push_back(b_KP->currentState().globalMomentum().y());
-			  NTuple->bPz->push_back(b_KP->currentState().globalMomentum().z());	      
-
-			  NTuple->bVtxCL->push_back(TMath::Prob(static_cast<double>(b_KV->chiSquared()), static_cast<int>(rint(b_KV->degreesOfFreedom()))));
-			  NTuple->bVtxX->push_back(b_KV->position().x());
-			  NTuple->bVtxY->push_back(b_KV->position().y());
-			  NTuple->bVtxZ->push_back(b_KV->position().z());
-	
-			  NTuple->bCosAlphaVtx->push_back(cosAlphaVtx);
-			  NTuple->bCosAlphaVtxE->push_back(cosAlphaVtxErr);
-			  NTuple->bCosAlphaBS->push_back(cosAlphaBS);
-			  NTuple->bCosAlphaBSE->push_back(cosAlphaBSErr);
-
-			  NTuple->bLVtx->push_back(LSVtx);
-			  NTuple->bLVtxE->push_back(LSVtxErr);
-			  NTuple->bLBS->push_back(LSBS);
-			  NTuple->bLBSE->push_back(LSBSErr);
-
-			  NTuple->bDCAVtx->push_back(DCAB0Vtx);
-			  NTuple->bDCAVtxE->push_back(DCAB0VtxErr);
-			  NTuple->bDCABS->push_back(DCAB0BS);
-			  NTuple->bDCABSE->push_back(DCAB0BSErr);
- 
-			  NTuple->bctauPVBS->push_back(bctauPVBS);
-			  NTuple->bctauPVBSE->push_back(bctauPVBSErr);
-
-
-			  // #############
-			  // # Save: K*0 #
-			  // #############
-			  NTuple->kstMass->push_back(kstInvMass);
-			  NTuple->kstMassE->push_back(sqrt(kst_KP->currentState().kinematicParametersError().matrix()(6,6)));
-			  NTuple->kstBarMass->push_back(kstBarInvMass);
-			  NTuple->kstBarMassE->push_back(sqrt(kstBar_KP->currentState().kinematicParametersError().matrix()(6,6)));
-
-			  NTuple->kstPx->push_back(kst_KP->currentState().globalMomentum().x());
-			  NTuple->kstPy->push_back(kst_KP->currentState().globalMomentum().y());
-			  NTuple->kstPz->push_back(kst_KP->currentState().globalMomentum().z());
-
-			  NTuple->kstVtxCL->push_back(TMath::Prob(static_cast<double>(kst_KV->chiSquared()), static_cast<int>(rint(kst_KV->degreesOfFreedom()))));
-			  NTuple->kstVtxX->push_back(kst_KV->position().x());
-			  NTuple->kstVtxY->push_back(kst_KV->position().y());
-			  NTuple->kstVtxZ->push_back(kst_KV->position().z());
-
-
-			  // #################
-			  // # Save: mu+ mu- #
-			  // #################
-			  NTuple->mumuMass->push_back(MuMuInvMass);
-			  NTuple->mumuMassE->push_back(sqrt(mumu_KP->currentState().kinematicParametersError().matrix()(6,6)));
-
-			  NTuple->mumuPx->push_back(mumu_KP->currentState().globalMomentum().x());
-			  NTuple->mumuPy->push_back(mumu_KP->currentState().globalMomentum().y());
-			  NTuple->mumuPz->push_back(mumu_KP->currentState().globalMomentum().z());
-
-			  NTuple->mumuVtxCL->push_back(TMath::Prob(static_cast<double>(mumu_KV->chiSquared()), static_cast<int>(rint(mumu_KV->degreesOfFreedom()))));
-			  NTuple->mumuVtxX->push_back(mumu_KV->position().x());
-			  NTuple->mumuVtxY->push_back(mumu_KV->position().y());
-			  NTuple->mumuVtxZ->push_back(mumu_KV->position().z());
-
-			  NTuple->mumuCosAlphaBS->push_back(MuMuCosAlphaBS);
-			  NTuple->mumuCosAlphaBSE->push_back(MuMuCosAlphaBSErr);
-			  NTuple->mumuLBS->push_back(MuMuLSBS);
-			  NTuple->mumuLBSE->push_back(MuMuLSBSErr);
-			  NTuple->mumuDCA->push_back(mumuDCA);
-
-
-			  // #############
-			  // # Save: mu- #
-			  // #############
-			  NTuple->mumHighPurity->push_back(muTrackm->quality(reco::Track::highPurity));
-			  NTuple->mumCL->push_back(TMath::Prob(muTrackmTT.chi2(), static_cast<int>(rint(muTrackmTT.ndof()))));
-			  NTuple->mumNormChi2->push_back(muTrackm->normalizedChi2());
-			  NTuple->mumPx->push_back(refitMumTT.track().momentum().x());
-			  NTuple->mumPy->push_back(refitMumTT.track().momentum().y());
-			  NTuple->mumPz->push_back(refitMumTT.track().momentum().z());
-
-			  NTuple->mumDCAVtx->push_back(DCAmumVtx);
-			  NTuple->mumDCAVtxE->push_back(DCAmumVtxErr);
-			  NTuple->mumDCABS->push_back(DCAmumBS);
-			  NTuple->mumDCABSE->push_back(DCAmumBSErr);
-
-			  NTuple->mumKinkChi2->push_back(iMuonM->combinedQuality().trkKink);
-			  NTuple->mumFracHits->push_back(static_cast<double>(muTrackm->hitPattern().numberOfValidHits()) / static_cast<double>(muTrackm->hitPattern().numberOfValidHits() +
-																	       muTrackm->hitPattern().numberOfLostHits(reco::HitPattern::TRACK_HITS) +
-																	       muTrackm->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS) +
-																	       muTrackm->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_OUTER_HITS)));
-			  theDCAXVtx = IPTools::absoluteTransverseImpactParameter(muTrackmTT, bestVtxReFit);
-			  NTuple->mumdxyVtx->push_back(theDCAXVtx.second.value());
-			  NTuple->mumdzVtx->push_back(muTrackmTT.track().dz(bestVtxReFit.position()));
-
-			  NTuple->mumCat->push_back(getMuCat(*iMuonM));
-
-			  NTuple->mumNPixHits->push_back(muTrackm->hitPattern().numberOfValidPixelHits());
-			  NTuple->mumNPixLayers->push_back(muTrackm->hitPattern().pixelLayersWithMeasurement());  
-			  NTuple->mumNTrkHits->push_back(muTrackm->hitPattern().numberOfValidTrackerHits());
-			  NTuple->mumNTrkLayers->push_back(muTrackm->hitPattern().trackerLayersWithMeasurement());
- 			  if (iMuonM->isGlobalMuon() == true) NTuple->mumNMuonHits->push_back(iMuonM->globalTrack()->hitPattern().numberOfValidMuonHits());
-			  else NTuple->mumNMuonHits->push_back(0);
-			  NTuple->mumNMatchStation->push_back(iMuonM->numberOfMatchedStations());
-
-			  tmpString.clear();
-			  const pat::Muon* patMuonM = &(*iMuonM);
-			  for (unsigned int i = 0; i < TrigTable_.size(); i++)
-			    {
-			      myString.clear(); myString.str(""); myString << TrigTable_[i].c_str() << "*";
-			      if (patMuonM->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString.append(TrigTable_[i]+" ");
-			    }
-			  if (tmpString.size() == 0) tmpString.append("NotInTable");
-			  NTuple->mumTrig->push_back(tmpString);
-
-
-			  // #############
-			  // # Save: mu+ #
-			  // #############
-			  NTuple->mupHighPurity->push_back(muTrackp->quality(reco::Track::highPurity));
-			  NTuple->mupCL->push_back(TMath::Prob(muTrackpTT.chi2(), static_cast<int>(rint(muTrackpTT.ndof()))));
-			  NTuple->mupNormChi2->push_back(muTrackp->normalizedChi2());
-			  NTuple->mupPx->push_back(refitMupTT.track().momentum().x());
-			  NTuple->mupPy->push_back(refitMupTT.track().momentum().y());
-			  NTuple->mupPz->push_back(refitMupTT.track().momentum().z());
-
-			  NTuple->mupDCAVtx->push_back(DCAmupVtx);
-			  NTuple->mupDCAVtxE->push_back(DCAmupVtxErr);
-			  NTuple->mupDCABS->push_back(DCAmupBS);
-			  NTuple->mupDCABSE->push_back(DCAmupBSErr);
+			    // ##########################
+			    // # Compute mu+ DCA to Vtx #
+			    // ##########################
+			    theDCAXVtx = IPTools::absoluteImpactParameter3D(muTrackpTT, bestVtxReFit);
+			    if (theDCAXVtx.first == false)
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for mu+" << std::endl;
+			        continue;
+			      }
+			    double DCAmupVtx    = theDCAXVtx.second.value();
+			    double DCAmupVtxErr = theDCAXVtx.second.error();
+  
 			  
-			  NTuple->mupKinkChi2->push_back(iMuonP->combinedQuality().trkKink);
-			  NTuple->mupFracHits->push_back(static_cast<double>(muTrackp->hitPattern().numberOfValidHits()) / static_cast<double>(muTrackp->hitPattern().numberOfValidHits() +
-																	       muTrackp->hitPattern().numberOfLostHits(reco::HitPattern::TRACK_HITS) +
-																	       muTrackp->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS) +
-																	       muTrackp->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_OUTER_HITS)));
-			  theDCAXVtx = IPTools::absoluteTransverseImpactParameter(muTrackpTT, bestVtxReFit);
-			  NTuple->mupdxyVtx->push_back(theDCAXVtx.second.value());
-			  NTuple->mupdzVtx->push_back(muTrackpTT.track().dz(bestVtxReFit.position()));
-
-			  NTuple->mupCat->push_back(getMuCat(*iMuonP));
-
-			  NTuple->mupNPixHits->push_back(muTrackp->hitPattern().numberOfValidPixelHits());
-			  NTuple->mupNPixLayers->push_back(muTrackp->hitPattern().pixelLayersWithMeasurement());  
-			  NTuple->mupNTrkHits->push_back(muTrackp->hitPattern().numberOfValidTrackerHits());
-			  NTuple->mupNTrkLayers->push_back(muTrackp->hitPattern().trackerLayersWithMeasurement());
-			  if (iMuonP->isGlobalMuon() == true) NTuple->mupNMuonHits->push_back(iMuonP->globalTrack()->hitPattern().numberOfValidMuonHits());
-			  else NTuple->mupNMuonHits->push_back(0);
-			  NTuple->mupNMatchStation->push_back(iMuonP->numberOfMatchedStations());
-
- 			  tmpString.clear();
-			  const pat::Muon* patMuonP = &(*iMuonP);
-			  for (unsigned int i = 0; i < TrigTable_.size(); i++)
-			    {
-			      myString.clear(); myString.str(""); myString << TrigTable_[i].c_str() << "*";
-			      if (patMuonP->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString.append(TrigTable_[i]+" ");
-			    }
-			  if (tmpString.size() == 0) tmpString.append("NotInTable");
-			  NTuple->mupTrig->push_back(tmpString);
-
-
-			  // ################
-			  // # Save: Track- #
-			  // ################
-			  NTuple->kstTrkmHighPurity->push_back(Trackm->quality(reco::Track::highPurity));
-			  NTuple->kstTrkmCL->push_back(TMath::Prob(TrackmTT.chi2(), static_cast<int>(rint(TrackmTT.ndof()))));
-			  NTuple->kstTrkmNormChi2->push_back(Trackm->normalizedChi2());
-			  NTuple->kstTrkmPx->push_back(refitTrkmTT.track().momentum().x());
-			  NTuple->kstTrkmPy->push_back(refitTrkmTT.track().momentum().y());
-			  NTuple->kstTrkmPz->push_back(refitTrkmTT.track().momentum().z());
-
-			  NTuple->kstTrkmDCAVtx->push_back(DCAKstTrkmVtx);
-			  NTuple->kstTrkmDCAVtxE->push_back(DCAKstTrkmVtxErr);
-			  NTuple->kstTrkmDCABS->push_back(DCAKstTrkmBS);
-			  NTuple->kstTrkmDCABSE->push_back(DCAKstTrkmBSErr);
-
-			  NTuple->kstTrkmFracHits->push_back(static_cast<double>(Trackm->hitPattern().numberOfValidHits()) / static_cast<double>(Trackm->hitPattern().numberOfValidHits() +
-																		 Trackm->hitPattern().numberOfLostHits(reco::HitPattern::TRACK_HITS) +
-																		 Trackm->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS)));
-			  theDCAXVtx = IPTools::absoluteTransverseImpactParameter(TrackmTT, bestVtxReFit);
-			  NTuple->kstTrkmdxyVtx->push_back(theDCAXVtx.second.value());
-			  NTuple->kstTrkmdzVtx->push_back(TrackmTT.track().dz(bestVtxReFit.position()));
-
-			  NTuple->kstTrkmMuMatch->push_back(MuMCat);
-
-			  // I do NOT include the number of missing outer hits because the hadron might interact
-			  NTuple->kstTrkmNPixHits->push_back(Trackm->hitPattern().numberOfValidPixelHits());
-			  NTuple->kstTrkmNPixLayers->push_back(Trackm->hitPattern().pixelLayersWithMeasurement());  
-			  NTuple->kstTrkmNTrkHits->push_back(Trackm->hitPattern().numberOfValidTrackerHits());
-			  NTuple->kstTrkmNTrkLayers->push_back(Trackm->hitPattern().trackerLayersWithMeasurement());
-
-			  tmpString.clear();
-			  const pat::GenericParticle* patTrkm = &(*iTrackM);
-			  for (unsigned int i = 0; i < TrigTable_.size(); i++)
-			    {
-			      myString.clear(); myString.str(""); myString << TrigTable_[i].c_str() << "*";
-			      if (patTrkm->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString.append(TrigTable_[i]+" ");
-			    }
-			  if (tmpString.size() == 0) tmpString.append("NotInTable");
-			  NTuple->kstTrkmTrig->push_back(tmpString);
-
-			  // ################
-			  // # Save: Track+ #
-			  // ################
-			  NTuple->kstTrkpHighPurity->push_back(Trackp->quality(reco::Track::highPurity));
-			  NTuple->kstTrkpCL->push_back(TMath::Prob(TrackpTT.chi2(), static_cast<int>(rint(TrackpTT.ndof()))));
-			  NTuple->kstTrkpNormChi2->push_back(Trackp->normalizedChi2());
-			  NTuple->kstTrkpPx->push_back(refitTrkpTT.track().momentum().x());
-			  NTuple->kstTrkpPy->push_back(refitTrkpTT.track().momentum().y());
-			  NTuple->kstTrkpPz->push_back(refitTrkpTT.track().momentum().z());
-
-			  NTuple->kstTrkpDCAVtx->push_back(DCAKstTrkpVtx);
-			  NTuple->kstTrkpDCAVtxE->push_back(DCAKstTrkpVtxErr);
-			  NTuple->kstTrkpDCABS->push_back(DCAKstTrkpBS);
-			  NTuple->kstTrkpDCABSE->push_back(DCAKstTrkpBSErr);
-
-			  NTuple->kstTrkpFracHits->push_back(static_cast<double>(Trackp->hitPattern().numberOfValidHits()) / static_cast<double>(Trackp->hitPattern().numberOfValidHits() +
-																		 Trackp->hitPattern().numberOfLostHits(reco::HitPattern::TRACK_HITS) +
-																		 Trackp->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS)));
-			  theDCAXVtx = IPTools::absoluteTransverseImpactParameter(TrackpTT, bestVtxReFit);
-			  NTuple->kstTrkpdxyVtx->push_back(theDCAXVtx.second.value());
-			  NTuple->kstTrkpdzVtx->push_back(TrackpTT.track().dz(bestVtxReFit.position()));
-
-			  NTuple->kstTrkpMuMatch->push_back(MuPCat);
-
-			  // I do NOT include the number of missing outer hits because the hadron might interact
-			  NTuple->kstTrkpNPixHits->push_back(Trackp->hitPattern().numberOfValidPixelHits());
-			  NTuple->kstTrkpNPixLayers->push_back(Trackp->hitPattern().pixelLayersWithMeasurement());  
-			  NTuple->kstTrkpNTrkHits->push_back(Trackp->hitPattern().numberOfValidTrackerHits());
-			  NTuple->kstTrkpNTrkLayers->push_back(Trackp->hitPattern().trackerLayersWithMeasurement());
-
-
-			  tmpString.clear();
-			  const pat::GenericParticle* patTrkp = &(*iTrackP);
-			  for (unsigned int i = 0; i < TrigTable_.size(); i++)
-			    {
-			      myString.clear(); myString.str(""); myString << TrigTable_[i].c_str() << "*";
-			      if (patTrkp->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString.append(TrigTable_[i]+" ");
-			    }
-			  if (tmpString.size() == 0) tmpString.append("NotInTable");
-			  NTuple->kstTrkpTrig->push_back(tmpString);
-
-
-
-			  // #####################
-			  // # Clear all vectors #
-			  // #####################
-			  vertexTracks.clear();
-			  bParticles.clear();
-			  bBarParticles.clear();
-			  kstParticles.clear();
-			  kstBarParticles.clear();
-			} // End for Track+
+			    // #################################
+			    // # Compute K*0 track- DCA to Vtx #
+			    // #################################
+			    theDCAXVtx = IPTools::absoluteImpactParameter3D(TrackmTT, bestVtxReFit);
+			    if (theDCAXVtx.first == false)
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for track-" << std::endl;
+			        continue;
+			      }
+			    double DCAKstTrkmVtx    = theDCAXVtx.second.value();
+			    double DCAKstTrkmVtxErr = theDCAXVtx.second.error();
+  
+  
+			    // #################################
+			    // # Compute K*0 track+ DCA to Vtx #
+			    // #################################
+			    theDCAXVtx = IPTools::absoluteImpactParameter3D(TrackpTT, bestVtxReFit);
+			    if (theDCAXVtx.first == false)
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for track+" << std::endl;
+			        continue;
+			      }
+			    double DCAKstTrkpVtx    = theDCAXVtx.second.value();
+			    double DCAKstTrkpVtxErr = theDCAXVtx.second.error();
+  
+  
+			    // #########################
+			    // # Compute B0 DCA to Vtx #
+			    // #########################
+			    theDCAXVtx = IPTools::absoluteImpactParameter3D(b_KP->refittedTransientTrack(), bestVtxReFit);
+			    if (theDCAXVtx.first == false)
+			      {
+			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for B0" << std::endl;
+			        continue;
+			      }
+			    double DCAB0Vtx    = theDCAXVtx.second.value();
+			    double DCAB0VtxErr = theDCAXVtx.second.error();
+  
+  
+			    // ################################
+			    // # Compute B0 cos(alpha) to Vtx #
+			    // ################################
+			    Utility->computeCosAlpha (b_KP->currentState().globalMomentum().x(),b_KP->currentState().globalMomentum().y(),b_KP->currentState().globalMomentum().z(),
+			  			    b_KV->position().x() - bestVtxReFit.x(),b_KV->position().y() - bestVtxReFit.y(), b_KV->position().z() - bestVtxReFit.z(),
+			  			    b_KP->currentState().kinematicParametersError().matrix()(3,3),b_KP->currentState().kinematicParametersError().matrix()(4,4),b_KP->currentState().kinematicParametersError().matrix()(5,5),
+			  			    b_KP->currentState().kinematicParametersError().matrix()(3,4),b_KP->currentState().kinematicParametersError().matrix()(3,5),b_KP->currentState().kinematicParametersError().matrix()(4,5),
+			  			    b_KV->error().cxx() + bestVtxReFit.error()(0,0),b_KV->error().cyy() + bestVtxReFit.error()(1,1),b_KV->error().czz() + bestVtxReFit.error()(2,2),
+			  			    b_KV->error().matrix()(0,1) + bestVtxReFit.error()(0,1),b_KV->error().matrix()(0,2) + bestVtxReFit.error()(0,2),b_KV->error().matrix()(1,2) + bestVtxReFit.error()(1,2),
+			  			    &cosAlphaVtx,&cosAlphaVtxErr);
+  
+  
+			    // #############################
+			    // # Compute B0 L/sigma to Vtx #
+			    // #############################
+			    Utility->computeLS (b_KV->position().x(),b_KV->position().y(),b_KV->position().z(),
+			  		      bestVtxReFit.x(),bestVtxReFit.y(),bestVtxReFit.z(),
+			  		      b_KV->error().cxx(),b_KV->error().cyy(),b_KV->error().czz(),
+			  		      b_KV->error().matrix()(0,1),b_KV->error().matrix()(0,2),b_KV->error().matrix()(1,2),
+			  		      bestVtxReFit.error()(0,0),bestVtxReFit.error()(1,1),bestVtxReFit.error()(2,2),
+			  		      bestVtxReFit.error()(0,1),bestVtxReFit.error()(0,2),bestVtxReFit.error()(1,2),
+			  		      &LSVtx,&LSVtxErr);
+  
+  
+			    // #####################################################
+			    // # Compute ctau = mB * (BVtx - PVtx) dot pB / |pB|^2 #
+			    // #####################################################
+			    GlobalVector Bmomentum = b_KP->currentState().globalMomentum();
+			    double Bmomentum2 = Bmomentum.dot(Bmomentum);
+			    AlgebraicSymMatrix33 BmomentumErr2;
+			    BmomentumErr2(0,0) = b_KP->currentState().kinematicParametersError().matrix()(3,3);
+			    BmomentumErr2(0,1) = b_KP->currentState().kinematicParametersError().matrix()(3,4);
+			    BmomentumErr2(0,2) = b_KP->currentState().kinematicParametersError().matrix()(3,5);
+			    BmomentumErr2(1,0) = b_KP->currentState().kinematicParametersError().matrix()(4,3);
+			    BmomentumErr2(1,1) = b_KP->currentState().kinematicParametersError().matrix()(4,4);
+			    BmomentumErr2(1,2) = b_KP->currentState().kinematicParametersError().matrix()(4,5);
+			    BmomentumErr2(2,0) = b_KP->currentState().kinematicParametersError().matrix()(5,3);
+			    BmomentumErr2(2,1) = b_KP->currentState().kinematicParametersError().matrix()(5,4);
+			    BmomentumErr2(2,2) = b_KP->currentState().kinematicParametersError().matrix()(5,5);
+  
+			    GlobalVector BVtxPVtxSep = GlobalPoint(b_KV->position()) - GlobalPoint(bestVtxReFit.position().x(), bestVtxReFit.position().y(), bestVtxReFit.position().z());
+			    double BVtxPVtxSepDOTBmomentum = BVtxPVtxSep.dot(Bmomentum);
+  
+			    double bctauPVBS = Utility->B0Mass * BVtxPVtxSepDOTBmomentum / Bmomentum2;
+			    double bctauPVBSErr = sqrt(Utility->B0Mass * Utility->B0Mass / (Bmomentum2 * Bmomentum2) *
+			  		   
+			  			     (Bmomentum.x() * Bmomentum.x() * bestVtxReFit.error()(0,0) +
+			  			      Bmomentum.y() * Bmomentum.y() * bestVtxReFit.error()(1,1) +
+			  			      Bmomentum.z() * Bmomentum.z() * bestVtxReFit.error()(2,2) +
+			  		    
+			  			      ((BVtxPVtxSep.x()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.x()) *
+			  			       (BVtxPVtxSep.x()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.x()) *
+			  			       BmomentumErr2(0,0) +
+			  			       (BVtxPVtxSep.y()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.y()) *
+			  			       (BVtxPVtxSep.y()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.y()) *
+			  			       BmomentumErr2(1,1) +
+			  			       (BVtxPVtxSep.z()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.z()) *
+			  			       (BVtxPVtxSep.z()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.z()) *	
+			  			       BmomentumErr2(2,2) +
+			  		   
+			  			       (BVtxPVtxSep.x()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.x()) * (BVtxPVtxSep.y()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.y()) * 2.*BmomentumErr2(0,1) +
+			  			       (BVtxPVtxSep.x()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.x()) * (BVtxPVtxSep.z()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.z()) * 2.*BmomentumErr2(0,2) +
+			  			       (BVtxPVtxSep.y()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.y()) * (BVtxPVtxSep.z()*Bmomentum2 - 2.*BVtxPVtxSepDOTBmomentum*Bmomentum.z()) * 2.*BmomentumErr2(1,2)) /
+  
+			  			      (Bmomentum2 * Bmomentum2)));
+  
+  
+  
+  
+			    // #######################################
+			    // # @@@ Fill B0-candidate variables @@@ #
+			    // #######################################
+			    if (printMsg) std::cout << __LINE__ << " : @@@ Filling B0 candidate variables @@@\n\n" << std::endl;
+  
+  
+			    // ############
+			    // # Save: B0 #
+			    // ############
+			    NTuple->nB++;
+  
+			    NTuple->bMass->push_back(b_KP->currentState().mass());
+			    NTuple->bMassE->push_back(sqrt(b_KP->currentState().kinematicParametersError().matrix()(6,6)));
+			    NTuple->bBarMass->push_back(bBar_KP->currentState().mass());
+			    NTuple->bBarMassE->push_back(sqrt(bBar_KP->currentState().kinematicParametersError().matrix()(6,6)));
+  
+			    NTuple->bPx->push_back(b_KP->currentState().globalMomentum().x());
+			    NTuple->bPy->push_back(b_KP->currentState().globalMomentum().y());
+			    NTuple->bPz->push_back(b_KP->currentState().globalMomentum().z());	      
+  
+			    NTuple->bVtxCL->push_back(TMath::Prob(static_cast<double>(b_KV->chiSquared()), static_cast<int>(rint(b_KV->degreesOfFreedom()))));
+			    NTuple->bVtxX->push_back(b_KV->position().x());
+			    NTuple->bVtxY->push_back(b_KV->position().y());
+			    NTuple->bVtxZ->push_back(b_KV->position().z());
+	  
+			    NTuple->bCosAlphaVtx->push_back(cosAlphaVtx);
+			    NTuple->bCosAlphaVtxE->push_back(cosAlphaVtxErr);
+			    NTuple->bCosAlphaBS->push_back(cosAlphaBS);
+			    NTuple->bCosAlphaBSE->push_back(cosAlphaBSErr);
+  
+			    NTuple->bLVtx->push_back(LSVtx);
+			    NTuple->bLVtxE->push_back(LSVtxErr);
+			    NTuple->bLBS->push_back(LSBS);
+			    NTuple->bLBSE->push_back(LSBSErr);
+  
+			    NTuple->bDCAVtx->push_back(DCAB0Vtx);
+			    NTuple->bDCAVtxE->push_back(DCAB0VtxErr);
+			    NTuple->bDCABS->push_back(DCAB0BS);
+			    NTuple->bDCABSE->push_back(DCAB0BSErr);
+   
+			    NTuple->bctauPVBS->push_back(bctauPVBS);
+			    NTuple->bctauPVBSE->push_back(bctauPVBSErr);
+  
+  
+			    // #############
+			    // # Save: K*0 #
+			    // #############
+			    NTuple->kstMass->push_back(kstInvMass);
+			    NTuple->kstMassE->push_back(sqrt(kst_KP->currentState().kinematicParametersError().matrix()(6,6)));
+			    NTuple->kstBarMass->push_back(kstBarInvMass);
+			    NTuple->kstBarMassE->push_back(sqrt(kstBar_KP->currentState().kinematicParametersError().matrix()(6,6)));
+  
+			    NTuple->kstPx->push_back(kst_KP->currentState().globalMomentum().x());
+			    NTuple->kstPy->push_back(kst_KP->currentState().globalMomentum().y());
+			    NTuple->kstPz->push_back(kst_KP->currentState().globalMomentum().z());
+  
+			    NTuple->kstVtxCL->push_back(TMath::Prob(static_cast<double>(kst_KV->chiSquared()), static_cast<int>(rint(kst_KV->degreesOfFreedom()))));
+			    NTuple->kstVtxX->push_back(kst_KV->position().x());
+			    NTuple->kstVtxY->push_back(kst_KV->position().y());
+			    NTuple->kstVtxZ->push_back(kst_KV->position().z());
+  
+  
+			    // #################
+			    // # Save: mu+ mu- #
+			    // #################
+			    NTuple->mumuMass->push_back(MuMuInvMass);
+			    NTuple->mumuMassE->push_back(sqrt(mumu_KP->currentState().kinematicParametersError().matrix()(6,6)));
+  
+			    NTuple->mumuPx->push_back(mumu_KP->currentState().globalMomentum().x());
+			    NTuple->mumuPy->push_back(mumu_KP->currentState().globalMomentum().y());
+			    NTuple->mumuPz->push_back(mumu_KP->currentState().globalMomentum().z());
+  
+			    NTuple->mumuVtxCL->push_back(TMath::Prob(static_cast<double>(mumu_KV->chiSquared()), static_cast<int>(rint(mumu_KV->degreesOfFreedom()))));
+			    NTuple->mumuVtxX->push_back(mumu_KV->position().x());
+			    NTuple->mumuVtxY->push_back(mumu_KV->position().y());
+			    NTuple->mumuVtxZ->push_back(mumu_KV->position().z());
+  
+			    NTuple->mumuCosAlphaBS->push_back(MuMuCosAlphaBS);
+			    NTuple->mumuCosAlphaBSE->push_back(MuMuCosAlphaBSErr);
+			    NTuple->mumuLBS->push_back(MuMuLSBS);
+			    NTuple->mumuLBSE->push_back(MuMuLSBSErr);
+			    NTuple->mumuDCA->push_back(mumuDCA);
+  
+  
+			    // #############
+			    // # Save: mu- #
+			    // #############
+			    NTuple->mumHighPurity->push_back( (int)muTrackm->quality(reco::Track::highPurity));
+			    NTuple->mumCL->push_back(TMath::Prob(muTrackmTT.chi2(), static_cast<int>(rint(muTrackmTT.ndof()))));
+			    NTuple->mumNormChi2->push_back(muTrackm->normalizedChi2());
+			    NTuple->mumPx->push_back(refitMumTT.track().momentum().x());
+			    NTuple->mumPy->push_back(refitMumTT.track().momentum().y());
+			    NTuple->mumPz->push_back(refitMumTT.track().momentum().z());
+  
+			    NTuple->mumDCAVtx->push_back(DCAmumVtx);
+			    NTuple->mumDCAVtxE->push_back(DCAmumVtxErr);
+			    NTuple->mumDCABS->push_back(DCAmumBS);
+			    NTuple->mumDCABSE->push_back(DCAmumBSErr);
+  
+			    NTuple->mumKinkChi2->push_back(iMuonM->combinedQuality().trkKink);
+			    NTuple->mumFracHits->push_back(static_cast<double>(muTrackm->hitPattern().numberOfValidHits()) / static_cast<double>(muTrackm->hitPattern().numberOfValidHits() +
+			  														       muTrackm->hitPattern().numberOfLostHits(reco::HitPattern::TRACK_HITS) +
+			  														       muTrackm->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS) +
+			  														       muTrackm->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_OUTER_HITS)));
+			    theDCAXVtx = IPTools::absoluteTransverseImpactParameter(muTrackmTT, bestVtxReFit);
+			    NTuple->mumdxyVtx->push_back(theDCAXVtx.second.value());
+			    NTuple->mumdzVtx->push_back(muTrackmTT.track().dz(bestVtxReFit.position()));
+  
+			    NTuple->mumCat->push_back(getMuCat(*iMuonM));
+  
+			    NTuple->mumNPixHits->push_back(muTrackm->hitPattern().numberOfValidPixelHits());
+			    NTuple->mumNPixLayers->push_back(muTrackm->hitPattern().pixelLayersWithMeasurement());  
+			    NTuple->mumNTrkHits->push_back(muTrackm->hitPattern().numberOfValidTrackerHits());
+			    NTuple->mumNTrkLayers->push_back(muTrackm->hitPattern().trackerLayersWithMeasurement());
+ 			    if (iMuonM->isGlobalMuon() == true) NTuple->mumNMuonHits->push_back(iMuonM->globalTrack()->hitPattern().numberOfValidMuonHits());
+			    else NTuple->mumNMuonHits->push_back(0);
+			    NTuple->mumNMatchStation->push_back(iMuonM->numberOfMatchedStations());
+  
+  
+  
+			    // #############
+			    // # Save: mu+ #
+			    // #############
+			    NTuple->mupHighPurity->push_back( (int) muTrackp->quality(reco::Track::highPurity));
+			    NTuple->mupCL->push_back(TMath::Prob(muTrackpTT.chi2(), static_cast<int>(rint(muTrackpTT.ndof()))));
+			    NTuple->mupNormChi2->push_back(muTrackp->normalizedChi2());
+			    NTuple->mupPx->push_back(refitMupTT.track().momentum().x());
+			    NTuple->mupPy->push_back(refitMupTT.track().momentum().y());
+			    NTuple->mupPz->push_back(refitMupTT.track().momentum().z());
+  
+			    NTuple->mupDCAVtx->push_back(DCAmupVtx);
+			    NTuple->mupDCAVtxE->push_back(DCAmupVtxErr);
+			    NTuple->mupDCABS->push_back(DCAmupBS);
+			    NTuple->mupDCABSE->push_back(DCAmupBSErr);
+			    
+			    NTuple->mupKinkChi2->push_back(iMuonP->combinedQuality().trkKink);
+			    NTuple->mupFracHits->push_back(static_cast<double>(muTrackp->hitPattern().numberOfValidHits()) / static_cast<double>(muTrackp->hitPattern().numberOfValidHits() +
+			  														       muTrackp->hitPattern().numberOfLostHits(reco::HitPattern::TRACK_HITS) +
+			  														       muTrackp->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS) +
+			  														       muTrackp->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_OUTER_HITS)));
+			    theDCAXVtx = IPTools::absoluteTransverseImpactParameter(muTrackpTT, bestVtxReFit);
+			    NTuple->mupdxyVtx->push_back(theDCAXVtx.second.value());
+			    NTuple->mupdzVtx->push_back(muTrackpTT.track().dz(bestVtxReFit.position()));
+  
+			    NTuple->mupCat->push_back(getMuCat(*iMuonP));
+  
+			    NTuple->mupNPixHits->push_back(muTrackp->hitPattern().numberOfValidPixelHits());
+			    NTuple->mupNPixLayers->push_back(muTrackp->hitPattern().pixelLayersWithMeasurement());  
+			    NTuple->mupNTrkHits->push_back(muTrackp->hitPattern().numberOfValidTrackerHits());
+			    NTuple->mupNTrkLayers->push_back(muTrackp->hitPattern().trackerLayersWithMeasurement());
+			    if (iMuonP->isGlobalMuon() == true) NTuple->mupNMuonHits->push_back(iMuonP->globalTrack()->hitPattern().numberOfValidMuonHits());
+			    else NTuple->mupNMuonHits->push_back(0);
+			    NTuple->mupNMatchStation->push_back(iMuonP->numberOfMatchedStations());
+  
+  
+			    // ################
+			    // # Save: Track- #
+			    // ################
+			    NTuple->kstTrkmHighPurity->push_back( (int)Trackm->quality(reco::Track::highPurity));
+			    NTuple->kstTrkmCL->push_back(TMath::Prob(TrackmTT.chi2(), static_cast<int>(rint(TrackmTT.ndof()))));
+			    NTuple->kstTrkmNormChi2->push_back(Trackm->normalizedChi2());
+			    NTuple->kstTrkmPx->push_back(refitTrkmTT.track().momentum().x());
+			    NTuple->kstTrkmPy->push_back(refitTrkmTT.track().momentum().y());
+			    NTuple->kstTrkmPz->push_back(refitTrkmTT.track().momentum().z());
+  
+			    NTuple->kstTrkmDCAVtx->push_back(DCAKstTrkmVtx);
+			    NTuple->kstTrkmDCAVtxE->push_back(DCAKstTrkmVtxErr);
+			    NTuple->kstTrkmDCABS->push_back(DCAKstTrkmBS);
+			    NTuple->kstTrkmDCABSE->push_back(DCAKstTrkmBSErr);
+  
+			    NTuple->kstTrkmFracHits->push_back(static_cast<double>(Trackm->hitPattern().numberOfValidHits()) / static_cast<double>(Trackm->hitPattern().numberOfValidHits() +
+			  															 Trackm->hitPattern().numberOfLostHits(reco::HitPattern::TRACK_HITS) +
+			  															 Trackm->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS)));
+			    theDCAXVtx = IPTools::absoluteTransverseImpactParameter(TrackmTT, bestVtxReFit);
+			    NTuple->kstTrkmdxyVtx->push_back(theDCAXVtx.second.value());
+			    NTuple->kstTrkmdzVtx->push_back(TrackmTT.track().dz(bestVtxReFit.position()));
+  
+			    NTuple->kstTrkmMuMatch->push_back(MuMCat);
+  
+			    // I do NOT include the number of missing outer hits because the hadron might interact
+			    NTuple->kstTrkmNPixHits->push_back(Trackm->hitPattern().numberOfValidPixelHits());
+			    NTuple->kstTrkmNPixLayers->push_back(Trackm->hitPattern().pixelLayersWithMeasurement());  
+			    NTuple->kstTrkmNTrkHits->push_back(Trackm->hitPattern().numberOfValidTrackerHits());
+			    NTuple->kstTrkmNTrkLayers->push_back(Trackm->hitPattern().trackerLayersWithMeasurement());
+  
+  
+			    // ################
+			    // # Save: Track+ #
+			    // ################
+			    NTuple->kstTrkpHighPurity->push_back((int)Trackp->quality(reco::Track::highPurity));
+			    NTuple->kstTrkpCL->push_back(TMath::Prob(TrackpTT.chi2(), static_cast<int>(rint(TrackpTT.ndof()))));
+			    NTuple->kstTrkpNormChi2->push_back(Trackp->normalizedChi2());
+			    NTuple->kstTrkpPx->push_back(refitTrkpTT.track().momentum().x());
+			    NTuple->kstTrkpPy->push_back(refitTrkpTT.track().momentum().y());
+			    NTuple->kstTrkpPz->push_back(refitTrkpTT.track().momentum().z());
+  
+			    NTuple->kstTrkpDCAVtx->push_back(DCAKstTrkpVtx);
+			    NTuple->kstTrkpDCAVtxE->push_back(DCAKstTrkpVtxErr);
+			    NTuple->kstTrkpDCABS->push_back(DCAKstTrkpBS);
+			    NTuple->kstTrkpDCABSE->push_back(DCAKstTrkpBSErr);
+  
+			    NTuple->kstTrkpFracHits->push_back(static_cast<double>(Trackp->hitPattern().numberOfValidHits()) / static_cast<double>(Trackp->hitPattern().numberOfValidHits() +
+			  															 Trackp->hitPattern().numberOfLostHits(reco::HitPattern::TRACK_HITS) +
+			  															 Trackp->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS)));
+			    theDCAXVtx = IPTools::absoluteTransverseImpactParameter(TrackpTT, bestVtxReFit);
+			    NTuple->kstTrkpdxyVtx->push_back(theDCAXVtx.second.value());
+			    NTuple->kstTrkpdzVtx->push_back(TrackpTT.track().dz(bestVtxReFit.position()));
+  
+			    NTuple->kstTrkpMuMatch->push_back(MuPCat);
+  
+			    // I do NOT include the number of missing outer hits because the hadron might interact
+			    NTuple->kstTrkpNPixHits->push_back(Trackp->hitPattern().numberOfValidPixelHits());
+			    NTuple->kstTrkpNPixLayers->push_back(Trackp->hitPattern().pixelLayersWithMeasurement());  
+			    NTuple->kstTrkpNTrkHits->push_back(Trackp->hitPattern().numberOfValidTrackerHits());
+			    NTuple->kstTrkpNTrkLayers->push_back(Trackp->hitPattern().trackerLayersWithMeasurement());
+  
+  
+			    tmpString1.clear(); tmpString2.clear(); tmpString3.clear(); tmpString4.clear();
+			    const pat::Muon* patMuonM = &(*iMuonM);
+			    const pat::Muon* patMuonP = &(*iMuonP);
+			    const pat::GenericParticle* patTrkm = &(*iTrackM);
+			    const pat::GenericParticle* patTrkp = &(*iTrackP);
+			    for (unsigned int i = 0; i < TrigTable_.size(); i++)
+			      {
+			        myString.clear(); myString.str(""); myString << TrigTable_[i].c_str() << "*";
+			        if (patMuonM->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString1.append(TrigTable_[i]+" ");
+			        if (patMuonP->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString2.append(TrigTable_[i]+" ");
+			        if (patTrkm ->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString3.append(TrigTable_[i]+" ");
+			        if (patTrkp ->triggerObjectMatchesByPath(myString.str().c_str()).empty() == false) tmpString4.append(TrigTable_[i]+" ");
+			      }
+			    if (tmpString1.size() == 0) tmpString1.append("NotInTable");
+			    if (tmpString2.size() == 0) tmpString2.append("NotInTable");
+			    if (tmpString3.size() == 0) tmpString3.append("NotInTable");
+			    if (tmpString4.size() == 0) tmpString4.append("NotInTable");
+			    NTuple->mumTrig    ->push_back(tmpString1);
+			    NTuple->mupTrig    ->push_back(tmpString2);
+			    NTuple->kstTrkmTrig->push_back(tmpString3);
+			    NTuple->kstTrkpTrig->push_back(tmpString4);
+  
+  
+			    // #####################
+			    // # Clear all vectors #
+			    // #####################
+			    vertexTracks.clear();
+			    bParticles.clear();
+			    bBarParticles.clear();
+			    kstParticles.clear();
+			    kstBarParticles.clear();
+			  } // End for Track+
 		      if (skip == true) continue;
 		    } // End for Track-
 		  muonParticles.clear(); 
@@ -1374,7 +1427,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      if (skip == true) continue;
 	    } // End for mu-
 	} // End if bestVtx is true
-      else if (printMsg == true) std::cout << __LINE__ << " : continue --> invalid Pri.Vtx" << std::endl;
+      else if (printMsg) std::cout << __LINE__ << " : continue --> invalid Pri.Vtx" << std::endl;
       if (B0MassConstraint != NULL) delete B0MassConstraint;
 
 
@@ -1399,9 +1452,9 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	  NTuple->priVtxY  = bestVtx.y();
 	  NTuple->priVtxZ  = bestVtx.z();
 	  NTuple->bsX      = beamSpot.position().x();
-	  NTuple->bsY      = beamSpot.position().y();
+	  NTuple->bsY      = beamSpot.position().y();  
 	}
-      else if (printMsg == true) std::cout << __LINE__ << " : @@@ No B0 --> K*0 (K pi) mu+ mu- candidate were found in the event @@@" << std::endl;
+      else if (printMsg) std::cout << __LINE__ << " : @@@ No B0 --> K*0 (K pi) mu+ mu- candidate were found in the event @@@" << std::endl;
     } // End if doGenReco_ == 1 || doGenReco_ == 2
 
 
@@ -1469,7 +1522,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	  // ##########################
 	  if ((abs(FirstPart->pdgId()) == 511) || (abs(FirstPart->pdgId()) == 531) || (abs(FirstPart->pdgId()) == 5122) || (abs(FirstPart->pdgId()) == 521))
 	    {	     
-	      if (printMsg == true) std::cout << "\n" << __LINE__ << " : @@@ Found B0/B0bar OR Bs/Bsbar OR Lambda_b/Lambda_bbar OR B+/B- in MC @@@" << std::endl;
+	      if (printMsg) std::cout << "\n" << __LINE__ << " : @@@ Found B0/B0bar OR Bs/Bsbar OR Lambda_b/Lambda_bbar OR B+/B- in MC @@@" << std::endl;
 
 
 	      // ########################################################
@@ -1507,26 +1560,26 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		      if (genDau->pdgId() == 22)
 			{
 			  PhotonB0 = true;
-			  if (printMsg == true) std::cout << __LINE__ << " : found B0/B0bar photon" << std::endl;
+			  if (printMsg) std::cout << __LINE__ << " : found B0/B0bar photon" << std::endl;
 			  continue;
 			}
 		      if (genDau->pdgId() == 13)
 			{
 			  imum = i;
-			  if (printMsg == true) std::cout << __LINE__ << " : found mu-" << std::endl;
+			  if (printMsg) std::cout << __LINE__ << " : found mu-" << std::endl;
 			  continue;
 			}
 		      if (genDau->pdgId() == -13)
 			{
 			  imup = i;
-			  if (printMsg == true) std::cout << __LINE__ << " : found mu+" << std::endl;
+			  if (printMsg) std::cout << __LINE__ << " : found mu+" << std::endl;
 			  continue;
 			}
 		      if (abs(genDau->pdgId()) == 313)
 			{
 			  ikst = i;
 
-			  if (printMsg == true) std::cout << __LINE__ << " : found K*0/K*0bar" << std::endl;
+			  if (printMsg) std::cout << __LINE__ << " : found K*0/K*0bar" << std::endl;
 
 			  for (unsigned int j = 0; j < genDau->numberOfDaughters(); j++)
 			    {
@@ -1535,19 +1588,19 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			      if (genDau2->pdgId() == 22)
 				{
 				  PhotonKst = true;
-				  if (printMsg == true) std::cout << __LINE__ << " : found K*0/K*0bar photon" << std::endl;
+				  if (printMsg) std::cout << __LINE__ << " : found K*0/K*0bar photon" << std::endl;
 				  continue;
 				}
 			      if ((genDau2->pdgId() == -211) || (genDau2->pdgId() == -321))
 				{
 				  ikst_trkm = j;
-				  if (printMsg == true) std::cout << __LINE__ << " : found K*0/K*0bar track-" << std::endl;
+				  if (printMsg) std::cout << __LINE__ << " : found K*0/K*0bar track-" << std::endl;
 				  continue;
 				}
 			      if ((genDau2->pdgId() == 211) || (genDau2->pdgId() == 321))
 				{
 				  ikst_trkp = j;
-				  if (printMsg == true) std::cout << __LINE__ << " : found K*0/K*0bar track+" << std::endl;
+				  if (printMsg) std::cout << __LINE__ << " : found K*0/K*0bar track+" << std::endl;
 				  continue;
 				}
 			      isSignal = false;
@@ -1562,7 +1615,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 			  ipsi = i;
 		      
-			  if (printMsg == true) std::cout << __LINE__ << " : found J/psi or psi(2S)" << std::endl;
+			  if (printMsg) std::cout << __LINE__ << " : found J/psi or psi(2S)" << std::endl;
 
 			  for (unsigned int j = 0; j < genDau->numberOfDaughters(); j++)
 			    {
@@ -1571,19 +1624,19 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			      if (genDau2->pdgId() == 22)
 				{
 				  PhotonPsi = true;
-				  if (printMsg == true) std::cout << __LINE__ << " : found J/psi or psi(2S) photon" << std::endl;
+				  if (printMsg) std::cout << __LINE__ << " : found J/psi or psi(2S) photon" << std::endl;
 				  continue;
 				}
 			      if (genDau2->pdgId() == 13)
 				{
 				  ipsi_mum = j;
-				  if (printMsg == true) std::cout << __LINE__ << " : found J/psi or psi(2S) mu-" << std::endl;
+				  if (printMsg) std::cout << __LINE__ << " : found J/psi or psi(2S) mu-" << std::endl;
 				  continue;
 				}
 			      if (genDau2->pdgId() == -13)
 				{
 				  ipsi_mup = j;
-				  if (printMsg == true) std::cout << __LINE__ << " : found J/psi or psi(2S) mu+" << std::endl;
+				  if (printMsg) std::cout << __LINE__ << " : found J/psi or psi(2S) mu+" << std::endl;
 				  continue;
 				}
 			      isSignal = false;
@@ -1621,7 +1674,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 		  if ((imum != -1) && (imup != -1) && (ikst != -1) && (ikst_trkm != -1) && (ikst_trkp != -1))
 		    {
-		      if (printMsg == true) std::cout << __LINE__ << " : @@@ Found B0/B0bar --> K*0/K*0bar (K pi) mu+ mu- @@@" << std::endl;
+		      if (printMsg) std::cout << __LINE__ << " : @@@ Found B0/B0bar --> K*0/K*0bar (K pi) mu+ mu- @@@" << std::endl;
 		      
 		      if      (FirstPart->daughter(ikst)->pdgId() == 313)  NTuple->genSignal = 1;
 		      else if (FirstPart->daughter(ikst)->pdgId() == -313) NTuple->genSignal = 2;
@@ -1633,14 +1686,14 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		    {
 		      if (isPsi2SnotJPsi == false)
 			{
-			  if (printMsg == true) std::cout << __LINE__ << " : @@@ Found B0/B0bar --> K*0/K*0bar (K pi) J/psi (mu+mu-) @@@" << std::endl;
+			  if (printMsg) std::cout << __LINE__ << " : @@@ Found B0/B0bar --> K*0/K*0bar (K pi) J/psi (mu+mu-) @@@" << std::endl;
 		      
 			  if      (FirstPart->daughter(ikst)->pdgId() == 313)  NTuple->genSignal = 3;
 			  else if (FirstPart->daughter(ikst)->pdgId() == -313) NTuple->genSignal = 4;
 			}
 		      else
 			{
-			  if (printMsg == true) std::cout << __LINE__ << " : @@@ Found B0/B0bar --> K*0/K*0bar (K pi) psi(2S) (mu+mu-) @@@" << std::endl;
+			  if (printMsg) std::cout << __LINE__ << " : @@@ Found B0/B0bar --> K*0/K*0bar (K pi) psi(2S) (mu+mu-) @@@" << std::endl;
 		      
 			  if      (FirstPart->daughter(ikst)->pdgId() == 313)  NTuple->genSignal = 5;
 			  else if (FirstPart->daughter(ikst)->pdgId() == -313) NTuple->genSignal = 6;
@@ -1669,7 +1722,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		} // End if B0/B0bar signal
 	      else
 		{
-		  if (printMsg == true) std::cout << __LINE__ << " : @@@ Start particle decay-tree scan for opposite charged stable particles for background search @@@" << std::endl;
+		  if (printMsg) std::cout << __LINE__ << " : @@@ Start particle decay-tree scan for opposite charged stable particles for background search @@@" << std::endl;
 		  searchForStableChargedDaughters (FirstPart, itGen, &posDau, &negDau);
 
 
@@ -1693,7 +1746,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 				  genMup = findDaughter (genParticles, &posDau, j);
 				  if (genMup->pdgId() == -13)
 				    {
-				      if (printMsg == true) std::cout << __LINE__ << " : found dimuons for possible background" << std::endl;
+				      if (printMsg) std::cout << __LINE__ << " : found dimuons for possible background" << std::endl;
 				      foundSomething = true;
 				      break;
 				    }
@@ -1715,7 +1768,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 				  NTuple->genMuMuBG = FirstPart->pdgId();
 				  NTuple->genMuMuBGnTrksp = 1;
 				  foundSomething = true;
-				  if (printMsg == true) std::cout << __LINE__ << " : get background positive track: " << genKst_trkp->pdgId() << "\tfrom mother: " << genKst_trkp->mother()->pdgId() << std::endl;
+				  if (printMsg) std::cout << __LINE__ << " : get background positive track: " << genKst_trkp->pdgId() << "\tfrom mother: " << genKst_trkp->mother()->pdgId() << std::endl;
 				}
 			    }
 			}
@@ -1732,7 +1785,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 				  NTuple->genMuMuBG = FirstPart->pdgId();			  
 				  NTuple->genMuMuBGnTrksm = 1;
 				  foundSomething = true;
-				  if (printMsg == true) std::cout << __LINE__ << " : get background negative track: " << genKst_trkm->pdgId() << "\tfrom mother: " << genKst_trkm->mother()->pdgId() << std::endl;
+				  if (printMsg) std::cout << __LINE__ << " : get background negative track: " << genKst_trkm->pdgId() << "\tfrom mother: " << genKst_trkm->mother()->pdgId() << std::endl;
 				}
 			    }
 			}
@@ -1755,7 +1808,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 					  NTuple->genMuMuBGnTrksp = 1;
 					  NTuple->genMuMuBGnTrksm = 1;
 					  foundSomething = true;
-					  if (printMsg == true)
+					  if (printMsg)
 					    {
 					      std::cout << __LINE__ << " : get background negative track: " << genKst_trkm->pdgId() << "\tfrom mother: " << genKst_trkm->mother()->pdgId();
 					      std::cout << "\tand positive track: " << genKst_trkp->pdgId() << "\tfrom mother: " << genKst_trkp->mother()->pdgId() << std::endl;
@@ -1808,7 +1861,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			      NTuple->genMuMuBGnTrksp = 1;
 			      NTuple->genMuMuBGnTrksm = 1;
 			      foundSomething = true;
-			      if (printMsg == true)
+			      if (printMsg)
 				{
 				  std::cout << __LINE__ << " : get background negative track: " << genKst_trkm->pdgId() << "\tfrom mother: " << genKst_trkm->mother()->pdgId();
 				  std::cout << "\tand positive track: " << genKst_trkp->pdgId() << "\tfrom mother: " << genKst_trkp->mother()->pdgId() << std::endl;
@@ -1818,10 +1871,10 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		      else
 			{
 			  foundSomething = false;
-			  if (printMsg == true) std::cout << __LINE__ << " : @@@ No background found @@@" << std::endl;
+			  if (printMsg) std::cout << __LINE__ << " : @@@ No background found @@@" << std::endl;
 			}
 		    }
-		  else if (printMsg == true) std::cout << __LINE__ << " : @@@ No possible background found @@@" << std::endl;
+		  else if (printMsg) std::cout << __LINE__ << " : @@@ No possible background found @@@" << std::endl;
 		} // End else background
 
 
@@ -1830,7 +1883,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      // ########################
 	      if (foundSomething == true)
 		{
-		  if (printMsg == true) std::cout << __LINE__ << " : @@@ Saving signal OR background compatible with signal @@@" << std::endl;
+		  if (printMsg) std::cout << __LINE__ << " : @@@ Saving signal OR background compatible with signal @@@" << std::endl;
 
 
 		  // #############################
@@ -2032,7 +2085,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      if (isPrompt == true)
 		{
 		  NTuple->genPsiPrompt = 1;
-		  if (printMsg == true) std::cout << __LINE__ << " : found prompt J/psi or psi(2S)" << std::endl;
+		  if (printMsg) std::cout << __LINE__ << " : found prompt J/psi or psi(2S)" << std::endl;
 		}
 	      continue;
 	    }
@@ -2068,10 +2121,10 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	NTuple->mumDeltaRwithMC->push_back(deltaEtaPhi);
 	if (deltaEtaPhi < RCUTMU)
 	  {
-	    NTuple->truthMatchMum->push_back(true);
-	    if (printMsg == true) std::cout << __LINE__ << " : found matched mu-" << std::endl;
+	    NTuple->truthMatchMum->push_back(1);
+	    if (printMsg) std::cout << __LINE__ << " : found matched mu-" << std::endl;
 	  }
-	else NTuple->truthMatchMum->push_back(false);
+	else NTuple->truthMatchMum->push_back(0);
 		      
 
 	// ###########################
@@ -2081,10 +2134,10 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	NTuple->mupDeltaRwithMC->push_back(deltaEtaPhi);
 	if (deltaEtaPhi < RCUTMU)
 	  {
-	    NTuple->truthMatchMup->push_back(true);
-	    if (printMsg == true) std::cout << __LINE__ << " : found matched mu+" << std::endl;
+	    NTuple->truthMatchMup->push_back(1);
+	    if (printMsg) std::cout << __LINE__ << " : found matched mu+" << std::endl;
 	  }
-	else NTuple->truthMatchMup->push_back(false);
+	else NTuple->truthMatchMup->push_back(0);
 		      
 
 	// ##################################
@@ -2096,14 +2149,14 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	    NTuple->kstTrkmDeltaRwithMC->push_back(deltaEtaPhi);
 	    if (deltaEtaPhi < RCUTTRK)
 	      {
-		NTuple->truthMatchTrkm->push_back(true);
-		if (printMsg == true) std::cout << __LINE__ << " : found matched track-" << std::endl;
+		NTuple->truthMatchTrkm->push_back(1);
+		if (printMsg) std::cout << __LINE__ << " : found matched track-" << std::endl;
 	      }
-	    else NTuple->truthMatchTrkm->push_back(false);
+	    else NTuple->truthMatchTrkm->push_back(0);
 	  }
 	else
 	  {
-	    NTuple->truthMatchTrkm->push_back(false);
+	    NTuple->truthMatchTrkm->push_back(0);
 	    NTuple->kstTrkmDeltaRwithMC->push_back(-1.0);
 	  }
 
@@ -2117,14 +2170,14 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	    NTuple->kstTrkpDeltaRwithMC->push_back(deltaEtaPhi);
 	    if (deltaEtaPhi < RCUTTRK) 
 	      {
-		NTuple->truthMatchTrkp->push_back(true);
-		if (printMsg == true) std::cout << __LINE__ << " : found matched track+" << std::endl;
+		NTuple->truthMatchTrkp->push_back(1);
+		if (printMsg) std::cout << __LINE__ << " : found matched track+" << std::endl;
 	      }
-	    else NTuple->truthMatchTrkp->push_back(false);
+	    else NTuple->truthMatchTrkp->push_back(0);
 	  }
 	else
 	  {
-	    NTuple->truthMatchTrkp->push_back(false);
+	    NTuple->truthMatchTrkp->push_back(0);
 	    NTuple->kstTrkpDeltaRwithMC->push_back(-1.0);
 	  }
 
@@ -2132,13 +2185,13 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	// ####################################################
 	// # Check matching with B0 --> track+ track- mu+ mu- #
 	// ####################################################
-	if ((NTuple->truthMatchTrkm->back() == true) && (NTuple->truthMatchTrkp->back() == true) &&
-	    (NTuple->truthMatchMum->back() == true) && (NTuple->truthMatchMup->back() == true))
+	if ((NTuple->truthMatchTrkm->back() == 1) && (NTuple->truthMatchTrkp->back() == 1) &&
+	    (NTuple->truthMatchMum->back() == 1) && (NTuple->truthMatchMup->back() == 1))
 	  {
-	    NTuple->truthMatchSignal->push_back(true);
-	    if (printMsg == true) std::cout << __LINE__ << " : @@@ Found matched B0 --> track+ track- mu+ mu- @@@" << std::endl;
+	    NTuple->truthMatchSignal->push_back(1);
+	    if (printMsg) std::cout << __LINE__ << " : @@@ Found matched B0 --> track+ track- mu+ mu- @@@" << std::endl;
 	  }
-	else NTuple->truthMatchSignal->push_back(false);
+	else NTuple->truthMatchSignal->push_back(0);
       }
   else
     for (unsigned int i = 0; i < NTuple->nB; i++)
@@ -2148,11 +2201,11 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	NTuple->kstTrkmDeltaRwithMC->push_back(-1.0);
 	NTuple->kstTrkpDeltaRwithMC->push_back(-1.0);
 	
-	NTuple->truthMatchMum->push_back(false);
-	NTuple->truthMatchMup->push_back(false);
-	NTuple->truthMatchTrkm->push_back(false);
-	NTuple->truthMatchTrkp->push_back(false);
-	NTuple->truthMatchSignal->push_back(false);
+	NTuple->truthMatchMum->push_back(0);
+	NTuple->truthMatchMup->push_back(0);
+	NTuple->truthMatchTrkm->push_back(0);
+	NTuple->truthMatchTrkp->push_back(0);
+	NTuple->truthMatchSignal->push_back(0);
       }
 
 
@@ -2161,7 +2214,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
   // ###################
   // # Fill the ntuple #
   // ###################
-  if (printMsg == true) std::cout << __LINE__ << " : @@@ Filling the tree @@@" << std::endl;
+  if (printMsg) std::cout << __LINE__ << " : @@@ Filling the tree @@@" << std::endl;
   theTree->Fill();
   NTuple->ClearNTuple();
 }
@@ -2207,7 +2260,7 @@ const reco::Candidate* B0KstMuMu::skipOscillations (const reco::Candidate* Mothe
     for (unsigned int i = 0; i < Mother->numberOfDaughters(); i++)
       if ((abs(Mother->daughter(i)->pdgId()) == 511) || (abs(Mother->daughter(i)->pdgId()) == 531) || (abs(Mother->daughter(i)->pdgId()) == 5122))
 	{
-	  if (printMsg == true) std::cout << __LINE__ << " : @@@ Found oscillating B0/B0bar OR Bs/Bsbar OR Lambda_b/Lambda_bbar @@@" << std::endl;
+	  if (printMsg) std::cout << __LINE__ << " : @@@ Found oscillating B0/B0bar OR Bs/Bsbar OR Lambda_b/Lambda_bbar @@@" << std::endl;
 	  Mother = Mother->daughter(i);
 	}
 
@@ -2243,7 +2296,7 @@ void B0KstMuMu::searchForStableChargedDaughters (const reco::Candidate* Mother,
     {
       genDau = Mother->daughter(i);
 
-      if (printMsg == true) std::cout << __LINE__ << " : start exploring daughter: " << genDau->pdgId() << "\tindex: " << i << "\tof mother: " << Mother->pdgId() << std::endl;
+      if (printMsg) std::cout << __LINE__ << " : start exploring daughter: " << genDau->pdgId() << "\tindex: " << i << "\tof mother: " << Mother->pdgId() << std::endl;
 
       if ((genDau->pdgId() == 11) ||
 	  (genDau->pdgId() == 13) ||
@@ -2254,7 +2307,7 @@ void B0KstMuMu::searchForStableChargedDaughters (const reco::Candidate* Mother,
 	  std::vector<unsigned int>* vecDau = new std::vector<unsigned int>;
 	  vecDau->push_back(i);
 	  negDau->push_back(vecDau);
-	  if (printMsg == true) std::cout << __LINE__ << " : found possible background negative track: " << genDau->pdgId() << "\tfrom mother: " << genDau->mother()->pdgId() << std::endl;
+	  if (printMsg) std::cout << __LINE__ << " : found possible background negative track: " << genDau->pdgId() << "\tfrom mother: " << genDau->mother()->pdgId() << std::endl;
 	}
       else if ((genDau->pdgId() == -11) ||
 	       (genDau->pdgId() == -13) ||
@@ -2265,7 +2318,7 @@ void B0KstMuMu::searchForStableChargedDaughters (const reco::Candidate* Mother,
 	  std::vector<unsigned int>* vecDau = new std::vector<unsigned int>;
 	  vecDau->push_back(i);
 	  posDau->push_back(vecDau);
-	  if (printMsg == true) std::cout << __LINE__ << " : found possible background positive track: " << genDau->pdgId() << "\tfrom mother: " << genDau->mother()->pdgId() << std::endl;
+	  if (printMsg) std::cout << __LINE__ << " : found possible background positive track: " << genDau->pdgId() << "\tfrom mother: " << genDau->mother()->pdgId() << std::endl;
 	}
       else if ((abs(genDau->pdgId()) != 311) &&
 	       (abs(genDau->pdgId()) != 310) &&
@@ -2275,7 +2328,7 @@ void B0KstMuMu::searchForStableChargedDaughters (const reco::Candidate* Mother,
 	       (abs(genDau->pdgId()) != 14) &&
 	       (abs(genDau->pdgId()) != 16))
 	searchForStableChargedDaughters (genDau, i, posDau, negDau);
-      else if (printMsg == true) std::cout << __LINE__ << " : found long living neutral particle: " << genDau->pdgId() << std::endl;
+      else if (printMsg) std::cout << __LINE__ << " : found long living neutral particle: " << genDau->pdgId() << std::endl;
     }
 
   for (unsigned int it = negDau->size(); it > sizeNegVec; it--) negDau->operator[](it-1)->insert(negDau->operator[](it-1)->begin(), motherIndex);
@@ -2289,32 +2342,31 @@ void B0KstMuMu::beginJob ()
   theTree = fs->make<TTree>("B0KstMuMuNTuple","B0KstMuMuNTuple");
   NTuple->MakeTreeBranches(theTree);
 
-
   // ############################
-  // # Loading HLT-trigger cuts #
+  // # Print out HLT-trigger cuts #
   // ############################
-  Utility->ReadPreselectionCut(parameterFile_.c_str());
   std::cout << "\n@@@ Pre-selection cuts @@@" << std::endl;
-  CLMUMUVTX      = Utility->GetPreCut("MuMuVtxCL");      std::cout << __LINE__ << " : CLMUMUVTX      = " << CLMUMUVTX << std::endl;
-  LSMUMUBS       = Utility->GetPreCut("MuMuLsBS");       std::cout << __LINE__ << " : LSMUMUBS       = " << LSMUMUBS << std::endl;
-  DCAMUMU        = Utility->GetPreCut("DCAMuMu");        std::cout << __LINE__ << " : DCAMUMU        = " << DCAMUMU << std::endl;
-  DCAMUBS        = Utility->GetPreCut("DCAMuBS");        std::cout << __LINE__ << " : DCAMUBS        = " << DCAMUBS << std::endl;
-  COSALPHAMUMUBS = Utility->GetPreCut("cosAlphaMuMuBS"); std::cout << __LINE__ << " : COSALPHAMUMUBS = " << COSALPHAMUMUBS << std::endl;
-  MUMINPT        = Utility->GetPreCut("MinMupT");        std::cout << __LINE__ << " : MUMINPT        = " << MUMINPT << std::endl;
-  MUMAXETA       = Utility->GetPreCut("MuEta");          std::cout << __LINE__ << " : MUMAXETA       = " << MUMAXETA << std::endl;
-  MINMUMUPT      = Utility->GetPreCut("MuMupT");         std::cout << __LINE__ << " : MINMUMUPT      = " << MINMUMUPT << std::endl;
-  MINMUMUINVMASS = Utility->GetPreCut("MinMuMuMass");    std::cout << __LINE__ << " : MINMUMUINVMASS = " << MINMUMUINVMASS << std::endl;
-  MAXMUMUINVMASS = Utility->GetPreCut("MaxMuMuMass");    std::cout << __LINE__ << " : MAXMUMUINVMASS = " << MAXMUMUINVMASS << std::endl;
+  std::cout << __LINE__ << " : CLMUMUVTX      = " << CLMUMUVTX      << std::endl;
+  std::cout << __LINE__ << " : LSMUMUBS       = " << LSMUMUBS       << std::endl;
+  std::cout << __LINE__ << " : DCAMUMU        = " << DCAMUMU        << std::endl;
+  std::cout << __LINE__ << " : DCAMUBS        = " << DCAMUBS        << std::endl;
+  std::cout << __LINE__ << " : COSALPHAMUMUBS = " << COSALPHAMUMUBS << std::endl;
+  std::cout << __LINE__ << " : MUMINPT        = " << MUMINPT        << std::endl;
+  std::cout << __LINE__ << " : MUMAXETA       = " << MUMAXETA       << std::endl;
+  std::cout << __LINE__ << " : MINMUMUPT      = " << MINMUMUPT      << std::endl;
+  std::cout << __LINE__ << " : MINMUMUINVMASS = " << MINMUMUINVMASS << std::endl;
+  std::cout << __LINE__ << " : MAXMUMUINVMASS = " << MAXMUMUINVMASS << std::endl;
   
   // ##############################
-  // # Loading pre-selection cuts #
+  // # Print out pre-selection cuts #
   // ##############################
-  B0MASSLOWLIMIT = Utility->GetPreCut("MinB0Mass"); std::cout << __LINE__ << " : B0MASSLOWLIMIT = " << B0MASSLOWLIMIT << std::endl;
-  B0MASSUPLIMIT  = Utility->GetPreCut("MaxB0Mass"); std::cout << __LINE__ << " : B0MASSUPLIMIT  = " << B0MASSUPLIMIT << std::endl;
-  CLB0VTX        = Utility->GetPreCut("B0VtxCL");   std::cout << __LINE__ << " : CLB0VTX        = " << CLB0VTX << std::endl;
-  KSTMASSWINDOW  = Utility->GetPreCut("KstMass");   std::cout << __LINE__ << " : KSTMASSWINDOW  = " << KSTMASSWINDOW << std::endl;
-  HADDCASBS      = Utility->GetPreCut("HadDCASBS"); std::cout << __LINE__ << " : HADDCASBS      = " << HADDCASBS << std::endl;
-  MINHADPT       = Utility->GetPreCut("HadpT");     std::cout << __LINE__ << " : MINHADPT       = " << MINHADPT << std::endl;
+  std::cout << __LINE__ << " : B0MASSLOWLIMIT = " << B0MASSLOWLIMIT << std::endl;
+  std::cout << __LINE__ << " : B0MASSUPLIMIT  = " << B0MASSUPLIMIT  << std::endl;
+  std::cout << __LINE__ << " : CLB0VTX        = " << CLB0VTX        << std::endl;
+  std::cout << __LINE__ << " : KSTMASSWINDOW  = " << KSTMASSWINDOW  << std::endl;
+  std::cout << __LINE__ << " : HADDCASBS      = " << HADDCASBS      << std::endl;
+  std::cout << __LINE__ << " : MINHADPT       = " << MINHADPT       << std::endl;
+
 
   std::cout << "\n@@@ Global constants @@@" << std::endl;
   std::cout << __LINE__ << " : TRKMAXR    = " << TRKMAXR << std::endl;
@@ -2348,7 +2400,7 @@ void B0KstMuMu::endLuminosityBlock(const edm::LuminosityBlock& lumiBlock, const 
       NTuple->numEventsTried  = genFilter->numEventsTried();
       NTuple->numEventsPassed = genFilter->numEventsPassed();
 
-      if (printMsg == true)
+      if (printMsg)
 	{
 	  std::cout << "\n@@@ End of a luminosity block @@@" << std::endl;
 	  std::cout << __LINE__ << " : number of events tried  = " << NTuple->numEventsTried << std::endl;

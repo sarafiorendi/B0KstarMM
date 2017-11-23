@@ -77,30 +77,6 @@ class B0KstMuMu : public edm::EDAnalyzer
   virtual void endJob ();
   virtual void endLuminosityBlock (const edm::LuminosityBlock& lumiBlock, const edm::EventSetup& iSetup);
 
-  // ####################
-  // # HLT-trigger cuts #
-  // ####################
-  double CLMUMUVTX;
-  double LSMUMUBS;
-  double DCAMUMU;
-  double DCAMUBS;
-  double COSALPHAMUMUBS;
-  double MUMINPT;
-  double MUMAXETA;
-  double MINMUMUPT;
-  double MINMUMUINVMASS;
-  double MAXMUMUINVMASS;
-
-  // ######################
-  // # Pre-selection cuts #
-  // ######################
-  double B0MASSUPLIMIT;
-  double B0MASSLOWLIMIT;
-  double CLB0VTX;
-  double KSTMASSWINDOW;
-  double HADDCASBS;
-  double MINHADPT;
-
   // ######################################
   // # Ntuplizer configuration parameters #
   // ######################################
@@ -134,10 +110,35 @@ class B0KstMuMu : public edm::EDAnalyzer
   unsigned int doGenReco_;
 
   std::vector<std::string> TrigTable_;
+
+  // ####################
+  // # HLT-trigger cuts #
+  // ####################
+  double CLMUMUVTX;
+  double LSMUMUBS;
+  double DCAMUMU;
+  double DCAMUBS;
+  double COSALPHAMUMUBS;
+  double MUMINPT;
+  double MUMAXETA;
+  double MINMUMUPT;
+  double MINMUMUINVMASS;
+  double MAXMUMUINVMASS;
+
+  // ######################
+  // # Pre-selection cuts #
+  // ######################
+  double B0MASSLOWLIMIT;
+  double B0MASSUPLIMIT;
+  double CLB0VTX;
+  double KSTMASSWINDOW;
+  double HADDCASBS;
+  double MINHADPT;
+  double MAXB0PREMASS;
+
   bool printMsg;
   
   ReadParameters* ParameterFile;
-  std::vector<std::string> TrigTable;
   
   TTree* theTree;
   B0KstMuMuTreeContent* NTuple;
