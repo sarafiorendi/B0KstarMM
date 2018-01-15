@@ -288,10 +288,10 @@ class Utils
   void        SetHisto3DEffName (int SignalType, std::string newName);
   void        SetDirEfficiency (std::string newName);
 
-  //sara
+  // various impact parameters
   std::pair<double,double> pionImpactParameter(reco::TransientTrack , TransientVertex );
-  std::pair<double,double> pionImpactParameter(reco::TransientTrack , reco::Vertex );
-
+  std::pair<double,double> pionImpactParameter(reco::TransientTrack , reco::Vertex    );
+  std::pair<double,double> LongitudinalIP     (reco::TransientTrack , reco::Vertex    );
 
   double muonMass;
   double pionMass;

@@ -12,8 +12,9 @@
 #include <memory>
 
 // User include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/Frameworkfwd.h"
 
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
@@ -33,15 +34,20 @@
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 
 #include "SimDataFormats/GeneratorProducts/interface/GenFilterInfo.h"
-#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
-#include "MagneticField/Engine/interface/MagneticField.h"
-
-#include "FWCore/Framework/interface/ConsumesCollector.h"
-
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
+#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
+
+#include "MagneticField/Engine/interface/MagneticField.h"
+#include "RecoVertex/KinematicFit/interface/KinematicParticleVertexFitter.h"
+#include "RecoVertex/KinematicFit/interface/KinematicParticleFitter.h"
+#include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticleFactoryFromTransientTrack.h"
+#include "TrackingTools/PatternTools/interface/ClosestApproachInRPhi.h"
+
 
 #include <vector>
 #include <string>
+#include <TVector3.h>
+#include "TLorentzVector.h"
 #include "TTree.h"
 
 #include "ReadParameters.h"
@@ -69,6 +75,11 @@ class B0KstMuMu : public edm::EDAnalyzer
 					std::vector<std::vector<unsigned int>* >* posDau,
 					std::vector<std::vector<unsigned int>* >* negDau);
 
+  float calculateIsolation(ClosestApproachInRPhi , 
+                           reco::TransientTrack, 
+                           reco::TransientTrack, 
+                           const ParticleMass,
+                           float, float, float );
 
  private:
 
@@ -93,7 +104,6 @@ class B0KstMuMu : public edm::EDAnalyzer
   edm::EDGetTokenT< std::vector<pat::Muon> > muonTypeToken_;
   edm::InputTag trackTypeTag_;   
   edm::EDGetTokenT< std::vector<pat::GenericParticle> > trackTypeToken_;
-
   edm::InputTag triggerResultTag_;
   edm::EDGetTokenT<edm::TriggerResults>   triggerResultToken_;
   edm::InputTag puTag_;

@@ -110,50 +110,58 @@ class B0KstMuMuTreeContent
   // #######
   // # mu- #
   // #######
+//   std::vector<int>         *mumHighPurity;
   std::vector<bool>         *mumHighPurity;
   std::vector<double>       *mumCL, *mumNormChi2, *mumPx, *mumPy, *mumPz;
   std::vector<double>       *mumDCAVtx, *mumDCAVtxE, *mumDCABS, *mumDCABSE, *mumKinkChi2, *mumFracHits;
-  std::vector<double>       *mumdxyVtx, *mumdzVtx;
+  std::vector<double>       *mumdxyVtx, *mumdzVtx, *mumMinIP2D, *mumMinIP2DE, *mumMinIP, *mumMinIPE;
   std::vector<double>       *mumDeltaRwithMC;
   std::vector<std::string>  *mumCat;
   std::vector<int>          *mumNPixHits, *mumNPixLayers, *mumNTrkHits, *mumNTrkLayers, *mumNMuonHits, *mumNMatchStation;
   std::vector<std::string>  *mumTrig;
+  std::vector<std::vector<float>> *mumIso;
 
   // #######
   // # mu+ #
   // #######
+//   std::vector<int>         *mupHighPurity;
   std::vector<bool>         *mupHighPurity;
   std::vector<double>       *mupCL, *mupNormChi2, *mupPx, *mupPy, *mupPz;
   std::vector<double>       *mupDCAVtx, *mupDCAVtxE, *mupDCABS, *mupDCABSE, *mupKinkChi2, *mupFracHits;
-  std::vector<double>       *mupdxyVtx, *mupdzVtx;
+  std::vector<double>       *mupdxyVtx, *mupdzVtx, *mupMinIP2D, *mupMinIP2DE, *mupMinIP, *mupMinIPE;
   std::vector<double>       *mupDeltaRwithMC;
   std::vector<std::string>  *mupCat;
   std::vector<int>          *mupNPixHits, *mupNPixLayers, *mupNTrkHits, *mupNTrkLayers, *mupNMuonHits, *mupNMatchStation;
   std::vector<std::string>  *mupTrig;
+  std::vector<std::vector<float>> *mupIso;
 
   // ##############
   // # K*0 track- #
   // ##############
+//   std::vector<int>         *kstTrkmHighPurity;
   std::vector<bool>         *kstTrkmHighPurity;
   std::vector<double>       *kstTrkmCL, *kstTrkmNormChi2, *kstTrkmPx, *kstTrkmPy, *kstTrkmPz;
   std::vector<double>       *kstTrkmDCAVtx, *kstTrkmDCAVtxE, *kstTrkmDCABS, *kstTrkmDCABSE, *kstTrkmFracHits;
-  std::vector<double>       *kstTrkmdxyVtx, *kstTrkmdzVtx;
+  std::vector<double>       *kstTrkmdxyVtx, *kstTrkmdzVtx, *kstTrkmMinIP2D, *kstTrkmMinIP2DE, *kstTrkmMinIP, *kstTrkmMinIPE;
   std::vector<double>       *kstTrkmDeltaRwithMC;
   std::vector<int>          *kstTrkmNPixHits, *kstTrkmNPixLayers, *kstTrkmNTrkHits, *kstTrkmNTrkLayers;
   std::vector<std::string>  *kstTrkmMuMatch;
   std::vector<std::string>  *kstTrkmTrig;
+  std::vector<std::vector<float>> *kstTrkmIso;
 
   // ##############
   // # K*0 track+ #
   // ##############
+//   std::vector<int>         *kstTrkpHighPurity;
   std::vector<bool>         *kstTrkpHighPurity;
   std::vector<double>       *kstTrkpCL, *kstTrkpNormChi2, *kstTrkpPx, *kstTrkpPy, *kstTrkpPz;
   std::vector<double>       *kstTrkpDCAVtx, *kstTrkpDCAVtxE, *kstTrkpDCABS, *kstTrkpDCABSE, *kstTrkpFracHits;
-  std::vector<double>       *kstTrkpdxyVtx, *kstTrkpdzVtx;
+  std::vector<double>       *kstTrkpdxyVtx, *kstTrkpdzVtx, *kstTrkpMinIP2D, *kstTrkpMinIP2DE, *kstTrkpMinIP, *kstTrkpMinIPE;
   std::vector<double>       *kstTrkpDeltaRwithMC;
   std::vector<int>          *kstTrkpNPixHits, *kstTrkpNPixLayers, *kstTrkpNTrkHits, *kstTrkpNTrkLayers;
   std::vector<std::string>  *kstTrkpMuMatch;
   std::vector<std::string>  *kstTrkpTrig;
+  std::vector<std::vector<float>> *kstTrkpIso;
 
   // #########################
   // # Generated Observables #
@@ -227,6 +235,7 @@ class B0KstMuMuTreeContent
   // ################################################
   // # Matching Between Reconstructed and Generated #
   // ################################################
+//   std::vector<int>         *truthMatchSignal, *truthMatchMum, *truthMatchMup, *truthMatchTrkm, *truthMatchTrkp;
   std::vector<bool>         *truthMatchSignal, *truthMatchMum, *truthMatchMup, *truthMatchTrkm, *truthMatchTrkp;
 
   

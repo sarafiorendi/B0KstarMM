@@ -4561,7 +4561,7 @@ void Utils::SetDirEfficiency (std::string newName)
   DirEfficiency = newName;
 }
 
-//Compute impact parameter 3D wrt Transient Vtx
+// Compute impact parameter 3D wrt Transient Vtx
 std::pair<double,double> Utils::pionImpactParameter(reco::TransientTrack piTT, TransientVertex jpsiVtx)
 {
     std::pair<double,double> measure;
@@ -4579,7 +4579,7 @@ std::pair<double,double> Utils::pionImpactParameter(reco::TransientTrack piTT, T
 	return measure;
 }
 
-//Compute impact parameter 3D wrt Reco Vtx
+// Compute impact parameter 3D wrt Reco Vtx
 std::pair<double,double> Utils::pionImpactParameter(reco::TransientTrack piTT, reco::Vertex myVtx)
 {
     std::pair<double,double> measure;
@@ -4597,3 +4597,26 @@ std::pair<double,double> Utils::pionImpactParameter(reco::TransientTrack piTT, r
 	return measure;
 }
 
+
+// Compute longitudinal impact parameter wrt vertex
+// https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideTransientTracks#Examples_including_calculation_o
+std::pair<double,double> Utils::LongitudinalIP(reco::TransientTrack transientTrk, reco::Vertex myVtx)
+{
+    GlobalPoint VtxGP(myVtx.x(), myVtx.y(), myVtx.z()); 
+    std::pair<double,double> measureL;
+    TrajectoryStateClosestToPoint TSC = transientTrk.trajectoryStateClosestToPoint(VtxGP);
+    if(TSC.isValid())
+    {
+      measureL.first = TSC.perigeeParameters().longitudinalImpactParameter();
+      if(TSC.hasError() && !(TSC.hasError()==0)) 
+      {
+        measureL.second = measureL.first/TSC.perigeeError().longitudinalImpactParameterError();
+      }
+	}
+	else
+	{
+	  measureL.first  = 99999;
+	  measureL.second = 99999;
+	}
+	return measureL;      
+}

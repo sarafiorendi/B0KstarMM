@@ -25,15 +25,11 @@
 #include "RecoVertex/KinematicFit/interface/KinematicConstrainedVertexFitter.h"
 #include "RecoVertex/KinematicFit/interface/TwoTrackMassKinematicConstraint.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/MultiTrackKinematicConstraint.h"
-#include "RecoVertex/KinematicFit/interface/KinematicParticleVertexFitter.h"
-#include "RecoVertex/KinematicFit/interface/KinematicParticleFitter.h"
 #include "RecoVertex/KinematicFit/interface/MassKinematicConstraint.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticle.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/RefCountedKinematicParticle.h"
 #include "RecoVertex/KinematicFitPrimitives/interface/TransientTrackKinematicParticle.h"
-#include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticleFactoryFromTransientTrack.h"
 
-#include "TrackingTools/PatternTools/interface/ClosestApproachInRPhi.h"
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
 #include "TrackingTools/IPTools/interface/IPTools.h"
 
@@ -134,7 +130,6 @@ B0KstMuMu::B0KstMuMu (const edm::ParameterSet& iConfig) :
 
   Utility = new Utils();
 
-//   ParameterFile = new ReadParameters(parameterFile_.c_str());
 }
 
 
@@ -142,13 +137,11 @@ B0KstMuMu::~B0KstMuMu ()
 {
   delete NTuple;
   delete Utility;
-//   delete ParameterFile;
 }
 
 
 void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-  std::cout << __LINE__<< std::endl;
   // ######################
   // # Internal Variables #
   // ######################
@@ -189,7 +182,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
   // KinematicParticleFitter PartVtxFitterMassVtxConst;              // Vertex fit with constraint on the vtx and on the vtx mass
   // KinematicConstrainedVertexFitter PartVtxFitterMassPartConst;    // Vertex fit with more than 3 tracks and with a constraint on the vtx and on the mass of 2 of the tracks
 
-  KinematicConstraint* B0MassConstraint = new MassKinematicConstraint(Utility->B0Mass, Utility->B0MassErr);
+//   KinematicConstraint* B0MassConstraint = new MassKinematicConstraint(Utility->B0Mass, Utility->B0MassErr);
 
   ClosestApproachInRPhi ClosestApp;
   GlobalPoint XingPoint;
@@ -203,14 +196,31 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
   std::pair <bool,Measurement1D> theDCAXVtx;
   TrajectoryStateClosestToPoint theDCAXBS;
   
-  reco::Candidate::LorentzVector  mum_lv;
-  reco::Candidate::LorentzVector  mup_lv;
-  reco::Candidate::LorentzVector jpsi_lv;
+  TrajectoryStateClosestToPoint traj;
+  double mumMind0  = 100;
+  double mupMind0  = 100;
+  double TrkmMind0 = 100;
+  double TrkpMind0 = 100;
+  double mumMind0E, mupMind0E, TrkmMind0E, TrkpMind0E;
+  double mumMinIP  = 100;
+  double mupMinIP  = 100;
+  double TrkmMinIP = 100;
+  double TrkpMinIP = 100;
+  double mumMinIPE, mupMinIPE, TrkmMinIPE, TrkpMinIPE;
+  GlobalPoint vert;
 
-  reco::Candidate::LorentzVector tkm_lv;
-  reco::Candidate::LorentzVector tkp_lv;
-  reco::Candidate::LorentzVector kst_lv;
-  reco::Candidate::LorentzVector kstbar_lv;
+  
+  TLorentzVector  mum_lv;
+  TLorentzVector  mup_lv;
+  TLorentzVector jpsi_lv;
+
+  TLorentzVector tkm_lv;
+  TLorentzVector tkp_lv;
+  TLorentzVector kst_lv;
+  TLorentzVector kstbar_lv;
+
+  std::vector<float> mum_isovec, mup_isovec, trkm_isovec, trkp_isovec; 
+  
 
 
   if (printMsg) std::cout << "\n\n" << __LINE__ << " : @@@@@@ Start Analyzer @@@@@@" << std::endl;
@@ -305,11 +315,13 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
     // #################################
     // # Search for first valid vertex #
     // #################################
-    for (std::vector<reco::Vertex>::const_iterator iVertex = recVtx->begin(); iVertex != recVtx->end(); iVertex++) { bestVtx = *(iVertex); if (bestVtx.isValid() == true) break; }
+    for (std::vector<reco::Vertex>::const_iterator iVertex = recVtx->begin(); iVertex != recVtx->end(); iVertex++) { 
+      bestVtx = *(iVertex); if (bestVtx.isValid() == true) break; 
+    }
 
 
     if (bestVtx.isValid() == true)
-	{
+    {
 	  // ###########
 	  // # Get mu- #
 	  // ###########
@@ -438,9 +450,9 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
                              sqrt( pow(muTrackpTT.track().p(),2) + pow(Utility->muonMass,2) ));
           jpsi_lv = mup_lv + mum_lv;
  
-		  if ((jpsi_lv.pt() < (MINMUMUPT*(1.0-MUVARTOLE))) || (jpsi_lv.M() < (MINMUMUINVMASS*(1.0-MUVARTOLE))) || (jpsi_lv.M() > (MAXMUMUINVMASS*(1.0+MUVARTOLE))))
+		  if ((jpsi_lv.Pt() < (MINMUMUPT*(1.0-MUVARTOLE))) || (jpsi_lv.M() < (MINMUMUINVMASS*(1.0-MUVARTOLE))) || (jpsi_lv.M() > (MAXMUMUINVMASS*(1.0+MUVARTOLE))))
 		  {
-		    if (printMsg) std::cout << __LINE__ << " : continue --> no good mumu pair pT: " << jpsi_lv.pt() << "\tinv. mass: " << jpsi_lv.M() << std::endl;
+		    if (printMsg) std::cout << __LINE__ << " : continue --> no good mumu pair pT: " << jpsi_lv.Pt() << "\tinv. mass: " << jpsi_lv.M() << std::endl;
 		    continue;
 		  }
 
@@ -521,7 +533,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  // # Cut on the dimuon invariant mass and pT #
 		  // ############################################
 		  pT = sqrt((refitMumTT.track().momentum().x() + refitMupTT.track().momentum().x()) * (refitMumTT.track().momentum().x() + refitMupTT.track().momentum().x()) +
-			    (refitMumTT.track().momentum().y() + refitMupTT.track().momentum().y()) * (refitMumTT.track().momentum().y() + refitMupTT.track().momentum().y()));
+			        (refitMumTT.track().momentum().y() + refitMupTT.track().momentum().y()) * (refitMumTT.track().momentum().y() + refitMupTT.track().momentum().y()));
 		  double MuMuInvMass = mumu_KP->currentState().mass();
 		  if ((pT < MINMUMUPT) || (MuMuInvMass < MINMUMUINVMASS) || (MuMuInvMass > MAXMUMUINVMASS))
 		  {
@@ -822,7 +834,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    // ####################################################
 			    if (printMsg) std::cout << "\n" << __LINE__ << " : @@@ I have 4 good charged tracks. I'm trying to vertex them @@@" << std::endl;
   
-                reco::Candidate::LorentzVector a_lv, b_lv, c_lv, d_lv, tot_lv;
+                TLorentzVector a_lv, b_lv, c_lv, d_lv, tot_lv;
 			    a_lv.SetPxPyPzE(muTrackmTT.track().momentum().x(),
 			                    muTrackmTT.track().momentum().y(),
 			                    muTrackmTT.track().momentum().z(),
@@ -840,11 +852,11 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			                    TrackpTT.track().momentum().z(),
                                   sqrt( pow(TrackpTT.track().p(),2) + pow(Utility->kaonMass,2) ));
                             
-                            tot_lv = a_lv + b_lv + c_lv + d_lv;
-                            if  (tot_lv.M() > MAXB0PREMASS) {
-                   	      if (printMsg) std::cout << __LINE__ << " : continue --> b0 mass before fit is > max value" << std::endl;
-                                continue;    
-                            }         
+                tot_lv = a_lv + b_lv + c_lv + d_lv;
+                if  (tot_lv.M() > MAXB0PREMASS) {
+                  if (printMsg) std::cout << __LINE__ << " : continue --> b0 mass before fit is > max value" << std::endl;
+                    continue;    
+                }         
   
   
   
@@ -1002,36 +1014,35 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
   
   
   
-  
 			    // #############################################################################################################
 			    // # If the tracks in the B reco candidate belongs to the primary vertex, then remove them and redo the Vertex #
 			    // #############################################################################################################
 			    std::vector<reco::TransientTrack> vertexTracks;
 			    for (std::vector<reco::TrackBaseRef>::const_iterator iTrack = bestVtx.tracks_begin(); iTrack != bestVtx.tracks_end(); iTrack++)
-			      {
-			        // Compare primary tracks to check for matches with B candidate
-			        reco::TrackRef trackRef = iTrack->castTo<reco::TrackRef>();
+			    {
+			      // Compare primary tracks to check for matches with B candidate
+			      reco::TrackRef trackRef = iTrack->castTo<reco::TrackRef>();
 			  		  
-			        if ((Trackm != trackRef) && (Trackp != trackRef) && (muTrackm != trackRef) && (muTrackp != trackRef))
-			  	{
-			  	  reco::TransientTrack TT(trackRef, &(*bFieldHandle));
-			  	  vertexTracks.push_back(TT);
-			  	}
-			        else if (printMsg) std::cout << __LINE__ << " : some of the B0 reco candidate tracks belong to the Pri.Vtx" << std::endl;
-			      }
+			      if ((Trackm != trackRef) && (Trackp != trackRef) && (muTrackm != trackRef) && (muTrackp != trackRef))
+			  	  {
+			  	    reco::TransientTrack TT(trackRef, &(*bFieldHandle));
+			  	    vertexTracks.push_back(TT);
+			  	  }
+			      else if (printMsg) std::cout << __LINE__ << " : some of the B0 reco candidate tracks belong to the Pri.Vtx" << std::endl;
+			    }
   
 			    if (vertexTracks.size() < 2)
-			      {
-			        if (printMsg) std::cout << __LINE__ << " : continue --> number of tracks of the new Pri.Vtx is too small: " << vertexTracks.size() << std::endl;
-			        continue;
-			      }
+			    {
+			      if (printMsg) std::cout << __LINE__ << " : continue --> number of tracks of the new Pri.Vtx is too small: " << vertexTracks.size() << std::endl;
+			      continue;
+			    }
 			  	      
 			    TransientVertex bestTransVtx = theVtxFitter.vertex(vertexTracks);
 			    if (bestTransVtx.isValid() == false)
-			      {
-			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid new Pri.Vtx" << std::endl;
-			        continue;
-			      }
+			    {
+			      if (printMsg) std::cout << __LINE__ << " : continue --> invalid new Pri.Vtx" << std::endl;
+			      continue;
+			    }
 			    bestVtxReFit = (reco::Vertex)bestTransVtx;
   
   
@@ -1042,10 +1053,10 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    // ##########################
 			    theDCAXVtx = IPTools::absoluteImpactParameter3D(muTrackmTT, bestVtxReFit);
 			    if (theDCAXVtx.first == false)
-			      {
-			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for mu-" << std::endl;
-			        continue;
-			      }
+			    {
+			      if (printMsg) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for mu-" << std::endl;
+			      continue;
+			    }
 			    double DCAmumVtx    = theDCAXVtx.second.value();
 			    double DCAmumVtxErr = theDCAXVtx.second.error();
 			  
@@ -1388,6 +1399,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    NTuple->kstTrkpNTrkLayers->push_back(Trackp->hitPattern().trackerLayersWithMeasurement());
   
   
+			    // Save trigger matching for the 4 tracks
 			    tmpString1.clear(); tmpString2.clear(); tmpString3.clear(); tmpString4.clear();
 			    const pat::Muon* patMuonM = &(*iMuonM);
 			    const pat::Muon* patMuonP = &(*iMuonP);
@@ -1410,6 +1422,120 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    NTuple->kstTrkmTrig->push_back(tmpString3);
 			    NTuple->kstTrkpTrig->push_back(tmpString4);
   
+                // save minimum IP from any PV (2D and 3D)
+                mumMind0  = mupMind0 = 100;
+//                 mupMind0  = 100;
+                TrkmMind0 = 100;
+                TrkpMind0 = 100;
+                mumMinIP  = 100;
+                mupMinIP  = 100;
+                TrkmMinIP = 100;
+                TrkpMinIP = 100;
+                std::pair<double,double>  IPPair;
+
+                for (std::vector<reco::Vertex>::const_iterator ipv = recVtx->begin(); ipv != recVtx->end(); ipv++) { 
+                    vert = GlobalPoint(ipv->x(), ipv->y(), ipv->z());
+
+                    traj = muTrackmTT.trajectoryStateClosestToPoint(vert );
+                    if (fabs(traj.perigeeParameters().transverseImpactParameter()) < mumMind0){
+                      mumMind0  = fabs(traj.perigeeParameters().transverseImpactParameter());
+                      mumMind0E = traj.perigeeError().transverseImpactParameterError();
+                    }  
+
+                    traj = muTrackpTT.trajectoryStateClosestToPoint(vert );
+                    if (fabs(traj.perigeeParameters().transverseImpactParameter()) < mupMind0){
+                      mupMind0  = fabs(traj.perigeeParameters().transverseImpactParameter());
+                      mupMind0E = traj.perigeeError().transverseImpactParameterError();
+                    }  
+
+                    traj = TrackmTT.trajectoryStateClosestToPoint(vert );
+                    if (fabs(traj.perigeeParameters().transverseImpactParameter()) < TrkmMind0){
+                      TrkmMind0  = fabs(traj.perigeeParameters().transverseImpactParameter());
+                      TrkmMind0E = traj.perigeeError().transverseImpactParameterError();
+                    }  
+
+                    traj = TrackpTT.trajectoryStateClosestToPoint(vert );
+                    if (fabs(traj.perigeeParameters().transverseImpactParameter()) < TrkpMind0){
+                      TrkpMind0  = fabs(traj.perigeeParameters().transverseImpactParameter());
+                      TrkpMind0E = traj.perigeeError().transverseImpactParameterError();
+                    }  
+                    
+                    IPPair = Utility->pionImpactParameter(muTrackmTT,*ipv);
+                    if (IPPair.first < mumMinIP){
+                      mumMinIP  = IPPair.first;
+                      mumMinIPE = IPPair.second;
+                    }
+                    IPPair = Utility->pionImpactParameter(muTrackpTT,*ipv);
+                    if (IPPair.first < mupMinIP){
+                      mupMinIP  = IPPair.first;
+                      mupMinIPE = IPPair.second;
+                    }
+                    IPPair = Utility->pionImpactParameter(TrackmTT,*ipv);
+                    if (IPPair.first < TrkmMinIP){
+                      TrkmMinIP  = IPPair.first;
+                      TrkmMinIPE = IPPair.second;
+                    }
+                    IPPair = Utility->pionImpactParameter(TrackpTT,*ipv);
+                    if (IPPair.first < TrkpMinIP){
+                      TrkpMinIP  = IPPair.first;
+                      TrkpMinIPE = IPPair.second;
+                    }
+                }
+
+                // isolation
+                double iso;
+                chi = 0; ndf = 0;
+                mum_isovec.clear(); mup_isovec.clear(); trkm_isovec.clear(); trkp_isovec.clear();
+                float bestVtx_x = bestVtx.x();
+                float bestVtx_y = bestVtx.y();
+                float bestVtx_z = bestVtx.z();
+
+ 		        for (std::vector<pat::GenericParticle>::const_iterator iTrackIso = thePATTrackHandle->begin(); iTrackIso != thePATTrackHandle->end(); iTrackIso++)
+ 		        {
+ 		          if (iTrackIso == iTrackM || iTrackIso == iTrackP) continue;
+ 		          if (muTrackm == iTrackIso->track() || muTrackp == iTrackIso->track()) continue;
+                  const reco::TransientTrack TrackIsoTT(iTrackIso->track(), &(*bFieldHandle));
+                  
+                  iso = calculateIsolation(ClosestApp, muTrackmTT, TrackIsoTT, muonMass, bestVtx_x, bestVtx_y, bestVtx_z);
+                  if (iso > 0 ) mum_isovec.push_back(iso);
+
+                  iso = calculateIsolation(ClosestApp, muTrackpTT, TrackIsoTT, muonMass, bestVtx_x, bestVtx_y, bestVtx_z);
+                  if (iso > 0 ) mup_isovec.push_back(iso);
+
+                  iso = calculateIsolation(ClosestApp, TrackmTT, TrackIsoTT, muonMass, bestVtx_x, bestVtx_y, bestVtx_z);
+                  if (iso > 0 ) trkm_isovec.push_back(iso);
+
+                  iso = calculateIsolation(ClosestApp, TrackpTT, TrackIsoTT, muonMass, bestVtx_x, bestVtx_y, bestVtx_z);
+                  if (iso > 0 ) trkp_isovec.push_back(iso);
+
+//                   std::cout <<  "iso: " << iso << std::endl; 
+                  
+ 		        } 
+
+                NTuple->mumIso      -> push_back(mum_isovec);
+                NTuple->mupIso      -> push_back(mup_isovec);
+                NTuple->kstTrkmIso  -> push_back(trkm_isovec);
+                NTuple->kstTrkpIso  -> push_back(trkp_isovec);
+
+
+                NTuple->mumMinIP2D      -> push_back(mumMind0);
+                NTuple->mumMinIP2DE     -> push_back(mumMind0E);
+                NTuple->mupMinIP2D      -> push_back(mupMind0);
+                NTuple->mupMinIP2DE     -> push_back(mupMind0E);
+                NTuple->kstTrkmMinIP2D  -> push_back(TrkmMind0);
+                NTuple->kstTrkmMinIP2DE -> push_back(TrkmMind0E);
+                NTuple->kstTrkpMinIP2D  -> push_back(TrkpMind0);
+                NTuple->kstTrkpMinIP2DE -> push_back(TrkpMind0E);
+
+                NTuple->mumMinIP      -> push_back(mumMinIP);
+                NTuple->mumMinIPE     -> push_back(mumMinIPE);
+                NTuple->mupMinIP      -> push_back(mupMinIP);
+                NTuple->mupMinIPE     -> push_back(mupMinIPE);
+                NTuple->kstTrkmMinIP  -> push_back(TrkmMinIP);
+                NTuple->kstTrkmMinIPE -> push_back(TrkmMinIPE);
+                NTuple->kstTrkpMinIP  -> push_back(TrkpMinIP);
+                NTuple->kstTrkpMinIPE -> push_back(TrkpMinIPE);
+ 
   
 			    // #####################
 			    // # Clear all vectors #
@@ -1424,17 +1550,18 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		    } // End for Track-
 		  muonParticles.clear(); 
 		} // End for mu+
-	      if (skip == true) continue;
-	    } // End for mu-
+	    if (skip == true) continue;
+	  } // End for mu-
 	} // End if bestVtx is true
-      else if (printMsg) std::cout << __LINE__ << " : continue --> invalid Pri.Vtx" << std::endl;
-      if (B0MassConstraint != NULL) delete B0MassConstraint;
+    else if (printMsg) std::cout << __LINE__ << " : continue --> invalid Pri.Vtx" << std::endl;
+//     if (B0MassConstraint != NULL) delete B0MassConstraint;
 
 
-      if (NTuple->nB > 0)
+	NTuple->runN   = iEvent.id().run();
+	NTuple->eventN = iEvent.id().event();
+    
+    if (NTuple->nB > 0)
 	{
-	  NTuple->runN   = iEvent.id().run();
-	  NTuple->eventN = iEvent.id().event();
 	  for (std::vector<reco::Vertex>::const_iterator iVertex = recVtx->begin(); iVertex != recVtx->end(); iVertex++)
 	    {
 	      if(iVertex->ndof() < PRIVTXNDOF)                 continue;
@@ -1456,6 +1583,11 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	}
       else if (printMsg) std::cout << __LINE__ << " : @@@ No B0 --> K*0 (K pi) mu+ mu- candidate were found in the event @@@" << std::endl;
     } // End if doGenReco_ == 1 || doGenReco_ == 2
+
+
+
+
+
 
 
 
@@ -2408,6 +2540,57 @@ void B0KstMuMu::endLuminosityBlock(const edm::LuminosityBlock& lumiBlock, const 
 	}
     }
 }
+
+float B0KstMuMu::calculateIsolation( ClosestApproachInRPhi ClosestApp, 
+                                     reco::TransientTrack muTrackmTT, 
+                                     reco::TransientTrack TrackIsoTT,
+                                     const ParticleMass muonMass,
+                                     float vtx_x,
+                                     float vtx_y,
+                                     float vtx_z
+                                    )
+{
+  float iso = 0;
+
+  KinematicParticleVertexFitter KPVtxFitter; 
+  KinematicParticleFactoryFromTransientTrack partFactory;
+
+  float chi, ndf, alpha;
+  TLorentzVector tmp_trk_lv, tmp_cand_lv, tmp_lv;
+  ClosestApp.calculate(TrackIsoTT.initialFreeState(), muTrackmTT.initialFreeState());
+
+  if ( ClosestApp.status() && ClosestApp.distance() < 0.1 )
+  {
+  
+  	chi = 0.;
+    ndf = 0.;
+    float mumasserr = 3.5e-9;
+  	std::vector<RefCountedKinematicParticle> tmpParticles;
+  	tmpParticles.push_back(partFactory.particle(muTrackmTT, muonMass,chi,ndf, mumasserr) );
+  	tmpParticles.push_back(partFactory.particle(TrackIsoTT, muonMass,chi,ndf, mumasserr) );
+  	
+  	RefCountedKinematicTree tmpVertexFitTree = KPVtxFitter.fit(tmpParticles);
+  	if ( ! tmpVertexFitTree->isValid()) return 0;
+  	tmpVertexFitTree->movePointerToTheTop();
+  	RefCountedKinematicVertex tmpVertex   = tmpVertexFitTree->currentDecayVertex();
+  	if (tmpVertexFitTree->isValid() && tmpVertex -> vertexIsValid() )
+  	{
+      tmp_trk_lv .SetPtEtaPhiM( TrackIsoTT.track().pt(), TrackIsoTT.track().eta(), TrackIsoTT.track().phi(), Utility -> kaonMass);
+      tmp_cand_lv.SetPtEtaPhiM( muTrackmTT.track().pt(), muTrackmTT.track().eta(), muTrackmTT.track().phi(), Utility -> kaonMass);
+      tmp_lv =  tmp_trk_lv + tmp_cand_lv;
+      
+      alpha = tmp_lv.Angle(TVector3 ( tmpVertex->position().x() - vtx_x, 
+                                      tmpVertex->position().y() - vtx_y, 
+                                      tmpVertex->position().z() - vtx_z )
+                                    );
+      iso = (tmp_lv).P() * alpha / ( (tmp_lv).P() + tmp_cand_lv.Pt() + tmp_trk_lv.Pt() );
+    }
+  }
+
+  return iso;
+
+}
+
 
 
 // Define this as a plug-in

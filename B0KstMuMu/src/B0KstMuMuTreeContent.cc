@@ -94,6 +94,10 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   mumFracHits      = NULL;
   mumdxyVtx        = NULL;
   mumdzVtx         = NULL;
+  mumMinIP2D       = NULL;
+  mumMinIP2DE      = NULL;
+  mumMinIP         = NULL;
+  mumMinIPE        = NULL;
   mumDeltaRwithMC  = NULL;
   mumCat           = NULL;
   mumNPixHits      = NULL;
@@ -103,6 +107,7 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   mumNMuonHits     = NULL;
   mumNMatchStation = NULL;
   mumTrig          = NULL;
+  mumIso           = NULL;
 
   // ### mu+ ###
   mupHighPurity    = NULL;
@@ -119,6 +124,10 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   mupFracHits      = NULL;
   mupdxyVtx        = NULL;
   mupdzVtx         = NULL;
+  mupMinIP2D       = NULL;
+  mupMinIP2DE      = NULL;
+  mupMinIP         = NULL;
+  mupMinIPE        = NULL;
   mupDeltaRwithMC  = NULL;
   mupCat           = NULL;
   mupNPixHits      = NULL;
@@ -128,6 +137,7 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   mupNMuonHits     = NULL;
   mupNMatchStation = NULL;
   mupTrig          = NULL;
+  mupIso           = NULL;
 
   // ### K*0 track- ###
   kstTrkmHighPurity   = NULL;
@@ -143,6 +153,10 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   kstTrkmFracHits     = NULL;
   kstTrkmdxyVtx       = NULL;
   kstTrkmdzVtx        = NULL;
+  kstTrkmMinIP2D      = NULL;
+  kstTrkmMinIP2DE     = NULL;
+  kstTrkmMinIP        = NULL;
+  kstTrkmMinIPE       = NULL;
   kstTrkmDeltaRwithMC = NULL;
   kstTrkmNPixHits     = NULL;
   kstTrkmNPixLayers   = NULL;
@@ -150,6 +164,7 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   kstTrkmNTrkLayers   = NULL;
   kstTrkmMuMatch      = NULL;
   kstTrkmTrig         = NULL;
+  kstTrkmIso           = NULL;
 
   // ### K*0 track+ ###
   kstTrkpHighPurity   = NULL;
@@ -165,6 +180,10 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   kstTrkpFracHits     = NULL;
   kstTrkpdxyVtx       = NULL;
   kstTrkpdzVtx        = NULL;
+  kstTrkpMinIP2D      = NULL;
+  kstTrkpMinIP2DE     = NULL;
+  kstTrkpMinIP        = NULL;
+  kstTrkpMinIPE       = NULL;
   kstTrkpDeltaRwithMC = NULL;
   kstTrkpNPixHits     = NULL;
   kstTrkpNPixLayers   = NULL;
@@ -172,6 +191,7 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   kstTrkpNTrkLayers   = NULL;
   kstTrkpMuMatch      = NULL;
   kstTrkpTrig         = NULL;
+  kstTrkpIso           = NULL;
 
   // ### Matching Between Reconstructed and Generated ###
   truthMatchSignal = NULL;
@@ -257,6 +277,7 @@ void B0KstMuMuTreeContent::Init ()
   mumuDCA         = new std::vector<double>;
 
   // ### mu- ###
+//   mumHighPurity    = new std::vector<int>;
   mumHighPurity    = new std::vector<bool>;
   mumCL            = new std::vector<double>;
   mumNormChi2      = new std::vector<double>;
@@ -271,6 +292,10 @@ void B0KstMuMuTreeContent::Init ()
   mumFracHits      = new std::vector<double>;
   mumdxyVtx        = new std::vector<double>;
   mumdzVtx         = new std::vector<double>;
+  mumMinIP2D       = new std::vector<double>;
+  mumMinIP2DE      = new std::vector<double>;
+  mumMinIP         = new std::vector<double>;
+  mumMinIPE        = new std::vector<double>;
   mumDeltaRwithMC  = new std::vector<double>;
   mumCat           = new std::vector<std::string>;
   mumNPixHits      = new std::vector<int>;
@@ -280,8 +305,10 @@ void B0KstMuMuTreeContent::Init ()
   mumNMuonHits     = new std::vector<int>;
   mumNMatchStation = new std::vector<int>;
   mumTrig          = new std::vector<std::string>;
+  mumIso           = new std::vector<std::vector<float> >;
 
   // ### mu+ ###
+//   mupHighPurity    = new std::vector<int>;
   mupHighPurity    = new std::vector<bool>;
   mupCL            = new std::vector<double>; 
   mupNormChi2      = new std::vector<double>;
@@ -296,6 +323,10 @@ void B0KstMuMuTreeContent::Init ()
   mupFracHits      = new std::vector<double>;
   mupdxyVtx        = new std::vector<double>;
   mupdzVtx         = new std::vector<double>;
+  mupMinIP2D       = new std::vector<double>;
+  mupMinIP2DE      = new std::vector<double>;
+  mupMinIP         = new std::vector<double>;
+  mupMinIPE        = new std::vector<double>;
   mupDeltaRwithMC  = new std::vector<double>;
   mupCat           = new std::vector<std::string>;
   mupNPixHits      = new std::vector<int>;
@@ -305,8 +336,10 @@ void B0KstMuMuTreeContent::Init ()
   mupNMuonHits     = new std::vector<int>;
   mupNMatchStation = new std::vector<int>;
   mupTrig          = new std::vector<std::string>;
+  mupIso           = new std::vector<std::vector<float> >;
 
   // ### K*0 track- ###
+//   kstTrkmHighPurity   = new std::vector<int>;
   kstTrkmHighPurity   = new std::vector<bool>;
   kstTrkmCL           = new std::vector<double>;
   kstTrkmNormChi2     = new std::vector<double>;
@@ -320,6 +353,10 @@ void B0KstMuMuTreeContent::Init ()
   kstTrkmFracHits     = new std::vector<double>;
   kstTrkmdxyVtx       = new std::vector<double>;
   kstTrkmdzVtx        = new std::vector<double>;
+  kstTrkmMinIP2D      = new std::vector<double>;
+  kstTrkmMinIP2DE     = new std::vector<double>;
+  kstTrkmMinIP        = new std::vector<double>;
+  kstTrkmMinIPE       = new std::vector<double>;
   kstTrkmDeltaRwithMC = new std::vector<double>;
   kstTrkmNPixHits     = new std::vector<int>;
   kstTrkmNPixLayers   = new std::vector<int>;
@@ -327,8 +364,10 @@ void B0KstMuMuTreeContent::Init ()
   kstTrkmNTrkLayers   = new std::vector<int>;
   kstTrkmMuMatch      = new std::vector<std::string>;
   kstTrkmTrig         = new std::vector<std::string>;
+  kstTrkmIso          = new std::vector<std::vector<float> >;
 
   // ### K*0 track+ ###
+//   kstTrkpHighPurity   = new std::vector<int>;
   kstTrkpHighPurity   = new std::vector<bool>;
   kstTrkpCL           = new std::vector<double>;
   kstTrkpNormChi2     = new std::vector<double>;
@@ -342,6 +381,10 @@ void B0KstMuMuTreeContent::Init ()
   kstTrkpFracHits     = new std::vector<double>;
   kstTrkpdxyVtx       = new std::vector<double>;
   kstTrkpdzVtx        = new std::vector<double>;
+  kstTrkpMinIP2D      = new std::vector<double>;
+  kstTrkpMinIP2DE     = new std::vector<double>;
+  kstTrkpMinIP        = new std::vector<double>;
+  kstTrkpMinIPE       = new std::vector<double>;
   kstTrkpDeltaRwithMC = new std::vector<double>;
   kstTrkpNPixHits     = new std::vector<int>;
   kstTrkpNPixLayers   = new std::vector<int>;
@@ -349,8 +392,14 @@ void B0KstMuMuTreeContent::Init ()
   kstTrkpNTrkLayers   = new std::vector<int>;
   kstTrkpMuMatch      = new std::vector<std::string>;
   kstTrkpTrig         = new std::vector<std::string>;
+  kstTrkpIso          = new std::vector<std::vector<float> >;
 
   // ### Matching Between Reconstructed and Generated ###
+//   truthMatchSignal = new std::vector<int>;
+//   truthMatchMum    = new std::vector<int>;
+//   truthMatchMup    = new std::vector<int>;
+//   truthMatchTrkm   = new std::vector<int>;
+//   truthMatchTrkp   = new std::vector<int>;
   truthMatchSignal = new std::vector<bool>;
   truthMatchMum    = new std::vector<bool>;
   truthMatchMup    = new std::vector<bool>;
@@ -448,6 +497,10 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete mumFracHits;
   delete mumdxyVtx;
   delete mumdzVtx;
+  delete mumMinIP2D; 
+  delete mumMinIP2DE; 
+  delete mumMinIP; 
+  delete mumMinIPE; 
   delete mumDeltaRwithMC;
   delete mumCat;
   delete mumNPixHits;
@@ -457,6 +510,7 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete mumNMuonHits;
   delete mumNMatchStation;
   delete mumTrig;
+  delete mumIso;
 
   // ### mu+ ###
   delete mupHighPurity;
@@ -473,6 +527,10 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete mupFracHits;
   delete mupdxyVtx;
   delete mupdzVtx;
+  delete mupMinIP2D; 
+  delete mupMinIP2DE; 
+  delete mupMinIP; 
+  delete mupMinIPE; 
   delete mupDeltaRwithMC;
   delete mupCat;
   delete mupNPixHits;
@@ -482,6 +540,7 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete mupNMuonHits;
   delete mupNMatchStation;
   delete mupTrig;
+  delete mupIso;
       
   // ### K*0 track- ###
   delete kstTrkmHighPurity;
@@ -497,6 +556,10 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete kstTrkmFracHits;
   delete kstTrkmdxyVtx;
   delete kstTrkmdzVtx;
+  delete kstTrkmMinIP2D; 
+  delete kstTrkmMinIP2DE; 
+  delete kstTrkmMinIP; 
+  delete kstTrkmMinIPE; 
   delete kstTrkmDeltaRwithMC;
   delete kstTrkmNPixHits;
   delete kstTrkmNPixLayers;
@@ -504,6 +567,7 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete kstTrkmNTrkLayers;
   delete kstTrkmMuMatch;
   delete kstTrkmTrig;
+  delete kstTrkmIso;
 
   // ### K*0 track+ ###
   delete kstTrkpHighPurity;
@@ -519,6 +583,10 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete kstTrkpFracHits;
   delete kstTrkpdxyVtx;
   delete kstTrkpdzVtx;
+  delete kstTrkpMinIP2D; 
+  delete kstTrkpMinIP2DE; 
+  delete kstTrkpMinIP; 
+  delete kstTrkpMinIPE; 
   delete kstTrkpDeltaRwithMC;
   delete kstTrkpNPixHits;
   delete kstTrkpNPixLayers;
@@ -526,6 +594,7 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete kstTrkpNTrkLayers;
   delete kstTrkpMuMatch;
   delete kstTrkpTrig;
+  delete kstTrkpIso;
 
   // ### Matching Between Reconstructed and Generated ###
   delete truthMatchSignal;
@@ -723,6 +792,10 @@ void B0KstMuMuTreeContent::ClearVectors ()
   mumFracHits->clear();
   mumdxyVtx->clear();
   mumdzVtx->clear();
+  mumMinIP2D->clear();
+  mumMinIP2DE->clear();
+  mumMinIP->clear();
+  mumMinIPE->clear();
   mumDeltaRwithMC->clear();
   mumCat->clear();
   mumNPixHits->clear();
@@ -732,6 +805,7 @@ void B0KstMuMuTreeContent::ClearVectors ()
   mumNMuonHits->clear();
   mumNMatchStation->clear();
   mumTrig->clear();
+  mumIso->clear();
 
   // ### mu+ ###
   mupHighPurity->clear();
@@ -748,6 +822,10 @@ void B0KstMuMuTreeContent::ClearVectors ()
   mupFracHits->clear();
   mupdxyVtx->clear();
   mupdzVtx->clear();
+  mupMinIP2D->clear();
+  mupMinIP2DE->clear();
+  mupMinIP->clear();
+  mupMinIPE->clear();
   mupDeltaRwithMC->clear();
   mupCat->clear();
   mupNPixHits->clear();
@@ -757,6 +835,7 @@ void B0KstMuMuTreeContent::ClearVectors ()
   mupNMuonHits->clear();
   mupNMatchStation->clear();
   mupTrig->clear();
+  mupIso->clear();
 
   // ### K*0 track- ###
   kstTrkmHighPurity->clear();
@@ -772,6 +851,10 @@ void B0KstMuMuTreeContent::ClearVectors ()
   kstTrkmFracHits->clear();
   kstTrkmdxyVtx->clear();
   kstTrkmdzVtx->clear(); 
+  kstTrkmMinIP2D->clear();
+  kstTrkmMinIP2DE->clear();
+  kstTrkmMinIP->clear();
+  kstTrkmMinIPE->clear();
   kstTrkmDeltaRwithMC->clear();
   kstTrkmNPixHits->clear();
   kstTrkmNPixLayers->clear();
@@ -779,6 +862,7 @@ void B0KstMuMuTreeContent::ClearVectors ()
   kstTrkmNTrkLayers->clear();
   kstTrkmMuMatch->clear();
   kstTrkmTrig->clear();
+  kstTrkmIso->clear();
 
   // ### K*0 track+ ###
   kstTrkpHighPurity->clear();
@@ -794,6 +878,10 @@ void B0KstMuMuTreeContent::ClearVectors ()
   kstTrkpFracHits->clear();
   kstTrkpdxyVtx->clear();
   kstTrkpdzVtx->clear();
+  kstTrkpMinIP2D->clear();
+  kstTrkpMinIP2DE->clear();
+  kstTrkpMinIP->clear();
+  kstTrkpMinIPE->clear();
   kstTrkpDeltaRwithMC->clear();
   kstTrkpNPixHits->clear();
   kstTrkpNPixLayers->clear();
@@ -801,6 +889,7 @@ void B0KstMuMuTreeContent::ClearVectors ()
   kstTrkpNTrkLayers->clear();
   kstTrkpMuMatch->clear();
   kstTrkpTrig->clear();
+  kstTrkpIso->clear();
 
   ClearVectorsMonteCarlo();
 }
@@ -938,6 +1027,10 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("mumFracHits",      &mumFracHits);
   theTree->Branch("mumdxyVtx",        &mumdxyVtx);
   theTree->Branch("mumdzVtx",         &mumdzVtx);
+  theTree->Branch("mumMinIP2D",       &mumMinIP2D);
+  theTree->Branch("mumMinIP2DE",      &mumMinIP2DE);
+  theTree->Branch("mumMinIP",         &mumMinIP);
+  theTree->Branch("mumMinIPE",        &mumMinIPE);
   theTree->Branch("mumDeltaRwithMC",  &mumDeltaRwithMC);
   theTree->Branch("mumCat",           &mumCat);
   theTree->Branch("mumNPixHits",      &mumNPixHits);
@@ -947,6 +1040,7 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("mumNMuonHits",     &mumNMuonHits);
   theTree->Branch("mumNMatchStation", &mumNMatchStation);
   theTree->Branch("mumTrig",          &mumTrig);
+  theTree->Branch("mumIso",           &mumIso);
 
   // ### mu+ ###  
   theTree->Branch("mupHighPurity",    &mupHighPurity);
@@ -963,6 +1057,10 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("mupFracHits",      &mupFracHits);
   theTree->Branch("mupdxyVtx",        &mupdxyVtx);
   theTree->Branch("mupdzVtx",         &mupdzVtx);
+  theTree->Branch("mupMinIP2D",       &mupMinIP2D);
+  theTree->Branch("mupMinIP2DE",      &mupMinIP2DE);
+  theTree->Branch("mupMinIP",         &mupMinIP);
+  theTree->Branch("mupMinIPE",        &mupMinIPE);
   theTree->Branch("mupDeltaRwithMC",  &mupDeltaRwithMC);
   theTree->Branch("mupCat",           &mupCat);
   theTree->Branch("mupNPixHits",      &mupNPixHits);
@@ -972,6 +1070,7 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("mupNMuonHits",     &mupNMuonHits);
   theTree->Branch("mupNMatchStation", &mupNMatchStation);
   theTree->Branch("mupTrig",          &mupTrig);
+  theTree->Branch("mupIso",           &mupIso);
 
   // ### K*0 track- ###
   theTree->Branch("kstTrkmHighPurity",   &kstTrkmHighPurity);
@@ -987,6 +1086,10 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("kstTrkmFracHits",     &kstTrkmFracHits);
   theTree->Branch("kstTrkmdxyVtx",       &kstTrkmdxyVtx);
   theTree->Branch("kstTrkmdzVtx",        &kstTrkmdzVtx);
+  theTree->Branch("kstTrkmMinIP2D",      &kstTrkmMinIP2D);
+  theTree->Branch("kstTrkmMinIP2DE",     &kstTrkmMinIP2DE);
+  theTree->Branch("kstTrkmMinIP",        &kstTrkmMinIP);
+  theTree->Branch("kstTrkmMinIPE",       &kstTrkmMinIPE);
   theTree->Branch("kstTrkmDeltaRwithMC", &kstTrkmDeltaRwithMC);
   theTree->Branch("kstTrkmNPixHits",     &kstTrkmNPixHits);
   theTree->Branch("kstTrkmNPixLayers",   &kstTrkmNPixLayers);
@@ -994,6 +1097,7 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("kstTrkmNTrkLayers",   &kstTrkmNTrkLayers);
   theTree->Branch("kstTrkmMuMatch",      &kstTrkmMuMatch);
   theTree->Branch("kstTrkmTrig",         &kstTrkmTrig);
+  theTree->Branch("kstTrkmIso",          &kstTrkmIso);
 
   // ### K*0 track+ ### 
   theTree->Branch("kstTrkpHighPurity",   &kstTrkpHighPurity);
@@ -1009,6 +1113,10 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("kstTrkpFracHits",     &kstTrkpFracHits);
   theTree->Branch("kstTrkpdxyVtx",       &kstTrkpdxyVtx);
   theTree->Branch("kstTrkpdzVtx",        &kstTrkpdzVtx);
+  theTree->Branch("kstTrkpMinIP2D",      &kstTrkpMinIP2D);
+  theTree->Branch("kstTrkpMinIP2DE",     &kstTrkpMinIP2DE);
+  theTree->Branch("kstTrkpMinIP",        &kstTrkpMinIP);
+  theTree->Branch("kstTrkpMinIPE",       &kstTrkpMinIPE);
   theTree->Branch("kstTrkpDeltaRwithMC", &kstTrkpDeltaRwithMC);
   theTree->Branch("kstTrkpNPixHits",     &kstTrkpNPixHits);
   theTree->Branch("kstTrkpNPixLayers",   &kstTrkpNPixLayers);
@@ -1016,6 +1124,7 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("kstTrkpNTrkLayers",   &kstTrkpNTrkLayers);
   theTree->Branch("kstTrkpMuMatch",      &kstTrkpMuMatch);
   theTree->Branch("kstTrkpTrig",         &kstTrkpTrig);
+  theTree->Branch("kstTrkpIso",          &kstTrkpIso);
   
   // ### Generated Observables ###
   theTree->Branch("genSignal",        &genSignal,        "genSignal/I");
@@ -1205,6 +1314,10 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("mumFracHits",      &mumFracHits);
   theTree->SetBranchAddress("mumdxyVtx",        &mumdxyVtx);
   theTree->SetBranchAddress("mumdzVtx",         &mumdzVtx);
+  theTree->SetBranchAddress("mumMinIP2D",       &mumMinIP2D);
+  theTree->SetBranchAddress("mumMinIP2DE",      &mumMinIP2DE);
+  theTree->SetBranchAddress("mumMinIP",         &mumMinIP);
+  theTree->SetBranchAddress("mumMinIPE",        &mumMinIPE);
   theTree->SetBranchAddress("mumDeltaRwithMC",  &mumDeltaRwithMC);
   theTree->SetBranchAddress("mumCat",           &mumCat);
   theTree->SetBranchAddress("mumNPixHits",      &mumNPixHits);
@@ -1214,6 +1327,7 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("mumNMuonHits",     &mumNMuonHits);
   theTree->SetBranchAddress("mumNMatchStation", &mumNMatchStation);
   theTree->SetBranchAddress("mumTrig",          &mumTrig);
+  theTree->SetBranchAddress("mumIso",           &mumIso);
 
   // ### mu+ ###  
   theTree->SetBranchAddress("mupHighPurity",    &mupHighPurity);
@@ -1230,6 +1344,10 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("mupFracHits",      &mupFracHits);
   theTree->SetBranchAddress("mupdxyVtx",        &mupdxyVtx);
   theTree->SetBranchAddress("mupdzVtx",         &mupdzVtx);
+  theTree->SetBranchAddress("mupMinIP2D",       &mupMinIP2D);
+  theTree->SetBranchAddress("mupMinIP2DE",      &mupMinIP2DE);
+  theTree->SetBranchAddress("mupMinIP",         &mupMinIP);
+  theTree->SetBranchAddress("mupMinIPE",        &mupMinIPE);
   theTree->SetBranchAddress("mupDeltaRwithMC",  &mupDeltaRwithMC);
   theTree->SetBranchAddress("mupCat",           &mupCat);
   theTree->SetBranchAddress("mupNPixHits",      &mupNPixHits);
@@ -1239,6 +1357,7 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("mupNMuonHits",     &mupNMuonHits);
   theTree->SetBranchAddress("mupNMatchStation", &mupNMatchStation);
   theTree->SetBranchAddress("mupTrig",          &mupTrig);
+  theTree->SetBranchAddress("mupIso",           &mupIso);
 
   // ### K*0 track- ###
   theTree->SetBranchAddress("kstTrkmHighPurity",   &kstTrkmHighPurity);
@@ -1254,6 +1373,10 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("kstTrkmFracHits",     &kstTrkmFracHits);
   theTree->SetBranchAddress("kstTrkmdxyVtx",       &kstTrkmdxyVtx);
   theTree->SetBranchAddress("kstTrkmdzVtx",        &kstTrkmdzVtx);
+  theTree->SetBranchAddress("kstTrkmMinIP2D",      &kstTrkmMinIP2D);
+  theTree->SetBranchAddress("kstTrkmMinIP2DE",     &kstTrkmMinIP2DE);
+  theTree->SetBranchAddress("kstTrkmMinIP",        &kstTrkmMinIP);
+  theTree->SetBranchAddress("kstTrkmMinIPE",       &kstTrkmMinIPE);
   theTree->SetBranchAddress("kstTrkmDeltaRwithMC", &kstTrkmDeltaRwithMC);
   theTree->SetBranchAddress("kstTrkmNPixHits",     &kstTrkmNPixHits);
   theTree->SetBranchAddress("kstTrkmNPixLayers",   &kstTrkmNPixLayers);
@@ -1261,6 +1384,7 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("kstTrkmNTrkLayers",   &kstTrkmNTrkLayers);
   theTree->SetBranchAddress("kstTrkmMuMatch",      &kstTrkmMuMatch);
   theTree->SetBranchAddress("kstTrkmTrig",         &kstTrkmTrig);
+  theTree->SetBranchAddress("kstTrkmIso",          &kstTrkmIso);
 
   // ### K*0 track+ ### 
   theTree->SetBranchAddress("kstTrkpHighPurity",   &kstTrkpHighPurity);
@@ -1276,6 +1400,10 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("kstTrkpFracHits",     &kstTrkpFracHits);
   theTree->SetBranchAddress("kstTrkpdxyVtx",       &kstTrkpdxyVtx);
   theTree->SetBranchAddress("kstTrkpdzVtx",        &kstTrkpdzVtx);
+  theTree->SetBranchAddress("kstTrkpMinIP2D",      &kstTrkpMinIP2D);
+  theTree->SetBranchAddress("kstTrkpMinIP2DE",     &kstTrkpMinIP2DE);
+  theTree->SetBranchAddress("kstTrkpMinIP",        &kstTrkpMinIP);
+  theTree->SetBranchAddress("kstTrkpMinIPE",       &kstTrkpMinIPE);
   theTree->SetBranchAddress("kstTrkpDeltaRwithMC", &kstTrkpDeltaRwithMC);
   theTree->SetBranchAddress("kstTrkpNPixHits",     &kstTrkpNPixHits);
   theTree->SetBranchAddress("kstTrkpNPixLayers",   &kstTrkpNPixLayers);
@@ -1283,6 +1411,7 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("kstTrkpNTrkLayers",   &kstTrkpNTrkLayers);
   theTree->SetBranchAddress("kstTrkpMuMatch",      &kstTrkpMuMatch);
   theTree->SetBranchAddress("kstTrkpTrig",         &kstTrkpTrig);
+  theTree->SetBranchAddress("kstTrkpIso",          &kstTrkpIso);
 
   // ### Generated Observables ###
   theTree->SetBranchAddress("genSignal",        &genSignal);
@@ -1565,6 +1694,10 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       mumFracHits->push_back(NTupleIn->mumFracHits->at(index));
       mumdxyVtx->push_back(NTupleIn->mumdxyVtx->at(index));
       mumdzVtx->push_back(NTupleIn->mumdzVtx->at(index));
+      mumMinIP2D->push_back(NTupleIn->mumMinIP2D->at(index));
+      mumMinIP2DE->push_back(NTupleIn->mumMinIP2DE->at(index));
+      mumMinIP->push_back(NTupleIn->mumMinIP->at(index));
+      mumMinIPE->push_back(NTupleIn->mumMinIPE->at(index));
       mumDeltaRwithMC->push_back(NTupleIn->mumDeltaRwithMC->at(index));
       mumCat->push_back(NTupleIn->mumCat->at(index));
       mumNPixHits->push_back(NTupleIn->mumNPixHits->at(index));
@@ -1574,6 +1707,7 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       mumNMuonHits->push_back(NTupleIn->mumNMuonHits->at(index));
       mumNMatchStation->push_back(NTupleIn->mumNMatchStation->at(index));
       mumTrig->push_back(NTupleIn->mumTrig->at(index));
+      mumIso->push_back(NTupleIn->mumIso->at(index));
 
       // ### mu+ ###  
       mupHighPurity->push_back(NTupleIn->mupHighPurity->at(index));
@@ -1590,6 +1724,10 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       mupFracHits->push_back(NTupleIn->mupFracHits->at(index));
       mupdxyVtx->push_back(NTupleIn->mupdxyVtx->at(index));
       mupdzVtx->push_back(NTupleIn->mupdzVtx->at(index));
+      mupMinIP2D->push_back(NTupleIn->mupMinIP2D->at(index));
+      mupMinIP2DE->push_back(NTupleIn->mupMinIP2DE->at(index));
+      mupMinIP->push_back(NTupleIn->mupMinIP->at(index));
+      mupMinIPE->push_back(NTupleIn->mupMinIPE->at(index));
       mupDeltaRwithMC->push_back(NTupleIn->mupDeltaRwithMC->at(index));
       mupCat->push_back(NTupleIn->mupCat->at(index));
       mupNPixHits->push_back(NTupleIn->mupNPixHits->at(index));
@@ -1599,6 +1737,7 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       mupNMuonHits->push_back(NTupleIn->mupNMuonHits->at(index));
       mupNMatchStation->push_back(NTupleIn->mupNMatchStation->at(index));
       mupTrig->push_back(NTupleIn->mupTrig->at(index));
+      mupIso->push_back(NTupleIn->mupIso->at(index));
 
       // ### K*0 track- ###
       kstTrkmHighPurity->push_back(NTupleIn->kstTrkmHighPurity->at(index));
@@ -1614,6 +1753,10 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       kstTrkmFracHits->push_back(NTupleIn->kstTrkmFracHits->at(index));
       kstTrkmdxyVtx->push_back(NTupleIn->kstTrkmdxyVtx->at(index));
       kstTrkmdzVtx->push_back(NTupleIn->kstTrkmdzVtx->at(index));
+      kstTrkmMinIP2D->push_back(NTupleIn->kstTrkmMinIP2D->at(index));
+      kstTrkmMinIP2DE->push_back(NTupleIn->kstTrkmMinIP2DE->at(index));
+      kstTrkmMinIP->push_back(NTupleIn->kstTrkmMinIP->at(index));
+      kstTrkmMinIPE->push_back(NTupleIn->kstTrkmMinIPE->at(index));
       kstTrkmDeltaRwithMC->push_back(NTupleIn->kstTrkmDeltaRwithMC->at(index));
       kstTrkmNPixHits->push_back(NTupleIn->kstTrkmNPixHits->at(index));
       kstTrkmNPixLayers->push_back(NTupleIn->kstTrkmNPixLayers->at(index));
@@ -1621,7 +1764,8 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       kstTrkmNTrkLayers->push_back(NTupleIn->kstTrkmNTrkLayers->at(index));
       kstTrkmMuMatch->push_back(NTupleIn->kstTrkmMuMatch->at(index));
       kstTrkmTrig->push_back(NTupleIn->kstTrkmTrig->at(index));
- 
+      kstTrkmIso->push_back(NTupleIn->kstTrkmIso->at(index));
+
       // ### K*0 track+ ###
       kstTrkpHighPurity->push_back(NTupleIn->kstTrkpHighPurity->at(index));
       kstTrkpCL->push_back(NTupleIn->kstTrkpCL->at(index));
@@ -1636,6 +1780,10 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       kstTrkpFracHits->push_back(NTupleIn->kstTrkpFracHits->at(index));
       kstTrkpdxyVtx->push_back(NTupleIn->kstTrkpdxyVtx->at(index));
       kstTrkpdzVtx->push_back(NTupleIn->kstTrkpdzVtx->at(index));
+      kstTrkpMinIP2D->push_back(NTupleIn->kstTrkpMinIP2D->at(index));
+      kstTrkpMinIP2DE->push_back(NTupleIn->kstTrkpMinIP2DE->at(index));
+      kstTrkpMinIP->push_back(NTupleIn->kstTrkpMinIP->at(index));
+      kstTrkpMinIPE->push_back(NTupleIn->kstTrkpMinIPE->at(index));
       kstTrkpDeltaRwithMC->push_back(NTupleIn->kstTrkpDeltaRwithMC->at(index));
       kstTrkpNPixHits->push_back(NTupleIn->kstTrkpNPixHits->at(index));
       kstTrkpNPixLayers->push_back(NTupleIn->kstTrkpNPixLayers->at(index));
@@ -1643,6 +1791,7 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       kstTrkpNTrkLayers->push_back(NTupleIn->kstTrkpNTrkLayers->at(index));
       kstTrkpMuMatch->push_back(NTupleIn->kstTrkpMuMatch->at(index));
       kstTrkpTrig->push_back(NTupleIn->kstTrkpTrig->at(index));
+      kstTrkpIso->push_back(NTupleIn->kstTrkpIso->at(index));
   
       // ### Matching Between Reconstructed and Generated ###
       truthMatchSignal->push_back(NTupleIn->truthMatchSignal->at(index));
@@ -1655,6 +1804,8 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
 
 void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
 {
+  std::vector<float> nullVec; nullVec.push_back(0);
+
   // ### B0 Mass ###
   if (bMass->size() < upTo)     for (unsigned int i = bMass->size(); i < upTo; i++)     bMass->push_back(0);
   if (bMassE->size() < upTo)    for (unsigned int i = bMassE->size(); i < upTo; i++)    bMassE->push_back(0);
@@ -1734,6 +1885,10 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (mumFracHits->size() < upTo)        for (unsigned int i = mumFracHits->size(); i < upTo; i++)        mumFracHits->push_back(0);
   if (mumdxyVtx->size() < upTo)          for (unsigned int i = mumdxyVtx->size(); i < upTo; i++)          mumdxyVtx->push_back(0);
   if (mumdzVtx->size() < upTo)           for (unsigned int i = mumdzVtx->size(); i < upTo; i++)           mumdzVtx->push_back(0);
+  if (mumMinIP2D->size() < upTo)         for (unsigned int i = mumMinIP2D->size(); i < upTo; i++)         mumMinIP2D->push_back(0);
+  if (mumMinIP2DE->size() < upTo)        for (unsigned int i = mumMinIP2DE->size(); i < upTo; i++)        mumMinIP2DE->push_back(0);
+  if (mumMinIP->size() < upTo)           for (unsigned int i = mumMinIP->size(); i < upTo; i++)           mumMinIP->push_back(0);
+  if (mumMinIPE->size() < upTo)          for (unsigned int i = mumMinIPE->size(); i < upTo; i++)          mumMinIPE->push_back(0);
   if (mumDeltaRwithMC->size() < upTo)    for (unsigned int i = mumDeltaRwithMC->size(); i < upTo; i++)    mumDeltaRwithMC->push_back(0);
   if (mumCat->size() < upTo)             for (unsigned int i = mumCat->size(); i < upTo; i++)             mumCat->push_back("");
   if (mumNPixHits->size() < upTo)        for (unsigned int i = mumNPixHits->size(); i < upTo; i++)        mumNPixHits->push_back(0);
@@ -1743,6 +1898,7 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (mumNMuonHits->size() < upTo)       for (unsigned int i = mumNMuonHits->size(); i < upTo; i++)       mumNMuonHits->push_back(0);
   if (mumNMatchStation->size() < upTo)   for (unsigned int i = mumNMatchStation->size(); i < upTo; i++)   mumNMatchStation->push_back(0);
   if (mumTrig->size() < upTo)            for (unsigned int i = mumTrig->size(); i < upTo; i++)            mumTrig->push_back("");
+  if (mumIso->size() < upTo)             for (unsigned int i = mumIso->size(); i < upTo; i++)             mumIso->push_back(nullVec);
 
   // ### mu+ ###  
   if (mupHighPurity->size() < upTo)      for (unsigned int i = mupHighPurity->size(); i < upTo; i++)      mupHighPurity->push_back(0);
@@ -1759,6 +1915,10 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (mupFracHits->size() < upTo)        for (unsigned int i = mupFracHits->size(); i < upTo; i++)        mupFracHits->push_back(0);
   if (mupdxyVtx->size() < upTo)          for (unsigned int i = mupdxyVtx->size(); i < upTo; i++)          mupdxyVtx->push_back(0);
   if (mupdzVtx->size() < upTo)           for (unsigned int i = mupdzVtx->size(); i < upTo; i++)           mupdzVtx->push_back(0);
+  if (mupMinIP2D->size() < upTo)         for (unsigned int i = mupMinIP2D->size(); i < upTo; i++)         mupMinIP2D->push_back(0);
+  if (mupMinIP2DE->size() < upTo)        for (unsigned int i = mupMinIP2DE->size(); i < upTo; i++)        mupMinIP2DE->push_back(0);
+  if (mupMinIP->size() < upTo)           for (unsigned int i = mupMinIP->size(); i < upTo; i++)           mupMinIP->push_back(0);
+  if (mupMinIPE->size() < upTo)          for (unsigned int i = mupMinIPE->size(); i < upTo; i++)          mupMinIPE->push_back(0);
   if (mupDeltaRwithMC->size() < upTo)    for (unsigned int i = mupDeltaRwithMC->size(); i < upTo; i++)    mupDeltaRwithMC->push_back(0);
   if (mupCat->size() < upTo)             for (unsigned int i = mupCat->size(); i < upTo; i++)             mupCat->push_back("");
   if (mupNPixHits->size() < upTo)        for (unsigned int i = mupNPixHits->size(); i < upTo; i++)        mupNPixHits->push_back(0);
@@ -1768,6 +1928,7 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (mupNMuonHits->size() < upTo)       for (unsigned int i = mupNMuonHits->size(); i < upTo; i++)       mupNMuonHits->push_back(0);
   if (mupNMatchStation->size() < upTo)   for (unsigned int i = mupNMatchStation->size(); i < upTo; i++)   mupNMatchStation->push_back(0);
   if (mupTrig->size() < upTo)            for (unsigned int i = mupTrig->size(); i < upTo; i++)            mupTrig->push_back("");
+  if (mupIso->size() < upTo)             for (unsigned int i = mupIso->size(); i < upTo; i++)             mupIso->push_back(nullVec);
 
   // ### K*0 track- ###
   if (kstTrkmHighPurity->size() < upTo)   for (unsigned int i = kstTrkmHighPurity->size(); i < upTo; i++)   kstTrkmHighPurity->push_back(0);
@@ -1783,6 +1944,10 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (kstTrkmFracHits->size() < upTo)     for (unsigned int i = kstTrkmFracHits->size(); i < upTo; i++)     kstTrkmFracHits->push_back(0);
   if (kstTrkmdxyVtx->size() < upTo)       for (unsigned int i = kstTrkmdxyVtx->size(); i < upTo; i++)       kstTrkmdxyVtx->push_back(0);
   if (kstTrkmdzVtx->size() < upTo)        for (unsigned int i = kstTrkmdzVtx->size(); i < upTo; i++)        kstTrkmdzVtx->push_back(0);
+  if (kstTrkmMinIP2D->size() < upTo)      for (unsigned int i = kstTrkmMinIP2D->size(); i < upTo; i++)      kstTrkmMinIP2D->push_back(0);
+  if (kstTrkmMinIP2DE->size() < upTo)     for (unsigned int i = kstTrkmMinIP2DE->size(); i < upTo; i++)     kstTrkmMinIP2DE->push_back(0);
+  if (kstTrkmMinIP->size() < upTo)        for (unsigned int i = kstTrkmMinIP->size(); i < upTo; i++)        kstTrkmMinIP->push_back(0);
+  if (kstTrkmMinIPE->size() < upTo)       for (unsigned int i = kstTrkmMinIPE->size(); i < upTo; i++)       kstTrkmMinIPE->push_back(0);
   if (kstTrkmDeltaRwithMC->size() < upTo) for (unsigned int i = kstTrkmDeltaRwithMC->size(); i < upTo; i++) kstTrkmDeltaRwithMC->push_back(0);
   if (kstTrkmNPixHits->size() < upTo)     for (unsigned int i = kstTrkmNPixHits->size(); i < upTo; i++)     kstTrkmNPixHits->push_back(0);
   if (kstTrkmNPixLayers->size() < upTo)   for (unsigned int i = kstTrkmNPixLayers->size(); i < upTo; i++)   kstTrkmNPixLayers->push_back(0);
@@ -1790,6 +1955,7 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (kstTrkmNTrkLayers->size() < upTo)   for (unsigned int i = kstTrkmNTrkLayers->size(); i < upTo; i++)   kstTrkmNTrkLayers->push_back(0);
   if (kstTrkmMuMatch->size() < upTo)      for (unsigned int i = kstTrkmMuMatch->size(); i < upTo; i++)      kstTrkmMuMatch->push_back("");
   if (kstTrkmTrig->size() < upTo)         for (unsigned int i = kstTrkmTrig->size(); i < upTo; i++)         kstTrkmTrig->push_back("");
+  if (kstTrkmIso->size() < upTo)          for (unsigned int i = kstTrkmIso->size(); i < upTo; i++)          kstTrkmIso->push_back(nullVec);
  
   // ### K*0 track+ ###
   if (kstTrkpHighPurity->size() < upTo)   for (unsigned int i = kstTrkpHighPurity->size(); i < upTo; i++)   kstTrkpHighPurity->push_back(0);
@@ -1805,6 +1971,10 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (kstTrkpFracHits->size() < upTo)     for (unsigned int i = kstTrkpFracHits->size(); i < upTo; i++)     kstTrkpFracHits->push_back(0);
   if (kstTrkpdxyVtx->size() < upTo)       for (unsigned int i = kstTrkpdxyVtx->size(); i < upTo; i++)       kstTrkpdxyVtx->push_back(0);
   if (kstTrkpdzVtx->size() < upTo)        for (unsigned int i = kstTrkpdzVtx->size(); i < upTo; i++)        kstTrkpdzVtx->push_back(0);
+  if (kstTrkpMinIP2D->size() < upTo)      for (unsigned int i = kstTrkpMinIP2D->size(); i < upTo; i++)      kstTrkpMinIP2D->push_back(0);
+  if (kstTrkpMinIP2DE->size() < upTo)     for (unsigned int i = kstTrkpMinIP2DE->size(); i < upTo; i++)     kstTrkpMinIP2DE->push_back(0);
+  if (kstTrkpMinIP->size() < upTo)        for (unsigned int i = kstTrkpMinIP->size(); i < upTo; i++)        kstTrkpMinIP->push_back(0);
+  if (kstTrkpMinIPE->size() < upTo)       for (unsigned int i = kstTrkpMinIPE->size(); i < upTo; i++)       kstTrkpMinIPE->push_back(0);
   if (kstTrkpDeltaRwithMC->size() < upTo) for (unsigned int i = kstTrkpDeltaRwithMC->size(); i < upTo; i++) kstTrkpDeltaRwithMC->push_back(0);
   if (kstTrkpNPixHits->size() < upTo)     for (unsigned int i = kstTrkpNPixHits->size(); i < upTo; i++)     kstTrkpNPixHits->push_back(0);
   if (kstTrkpNPixLayers->size() < upTo)   for (unsigned int i = kstTrkpNPixLayers->size(); i < upTo; i++)   kstTrkpNPixLayers->push_back(0);
@@ -1812,6 +1982,7 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (kstTrkpNTrkLayers->size() < upTo)   for (unsigned int i = kstTrkpNTrkLayers->size(); i < upTo; i++)   kstTrkpNTrkLayers->push_back(0);
   if (kstTrkpMuMatch->size() < upTo)      for (unsigned int i = kstTrkpMuMatch->size(); i < upTo; i++)      kstTrkpMuMatch->push_back("");
   if (kstTrkpTrig->size() < upTo)         for (unsigned int i = kstTrkpTrig->size(); i < upTo; i++)         kstTrkpTrig->push_back("");
+  if (kstTrkpIso->size() < upTo)          for (unsigned int i = kstTrkpIso->size(); i < upTo; i++)          kstTrkpIso->push_back(nullVec);
   
   // ### Matching Between Reconstructed and Generated ###
   if (truthMatchSignal->size() < upTo) for (unsigned int i = truthMatchSignal->size(); i < upTo; i++) truthMatchSignal->push_back(0);
