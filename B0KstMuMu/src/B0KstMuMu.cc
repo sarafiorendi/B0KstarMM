@@ -64,6 +64,8 @@
 #define RCUTTRK 0.3  // [eta-phi]
 
 
+float mumasserr = 3.5e-9;
+
 B0KstMuMu::B0KstMuMu (const edm::ParameterSet& iConfig) :
   hltTriggerResults_ ( iConfig.getUntrackedParameter<std::string>("HLTriggerResults", std::string("HLT")) ),
   vtxSampleTag_      ( iConfig.getParameter<edm::InputTag>("VtxSample")), 
@@ -220,11 +222,11 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
   TLorentzVector kstbar_lv;
 
   std::vector<float> mum_isovec, mup_isovec, trkm_isovec, trkp_isovec; 
-  
-
+  std::vector<float> mum_isopts, mup_isopts, trkm_isopts, trkp_isopts; 
+  std::vector<float> mum_isomom, mup_isomom, trkm_isomom, trkp_isomom; 
+  std::vector<float> mum_isodr, mup_isodr, trkm_isodr, trkp_isodr; 
 
   if (printMsg) std::cout << "\n\n" << __LINE__ << " : @@@@@@ Start Analyzer @@@@@@" << std::endl;
-
 
   // Get Gen-Particles
   edm::Handle<reco::GenParticleCollection> genParticles;
@@ -298,9 +300,14 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
     // Get primary vertex with BeamSpot constraint: ordered by the scalar sum of the |pT|^2 of the tracks that compose the vertex
     edm::Handle<reco::VertexCollection> recVtx;
     iEvent.getByToken(vtxSampleToken_, recVtx);
-    reco::Vertex bestVtx = *(recVtx->begin());
+    if (recVtx->empty()) return; // skip the event if no PV found
+//     const reco::VertexCollection recVtxColl  = *(recVtx.product())  ;    
+    reco::Vertex bestVtx;
     reco::Vertex bestVtxReFit;
-      
+    for (std::vector<reco::Vertex>::const_iterator iVertex = recVtx->begin(); iVertex != recVtx->end(); iVertex++) { 
+      bestVtx = *(iVertex); if (bestVtx.isValid() == true) break; 
+    }
+    
     // Get PAT Muons
     edm::Handle< std::vector<pat::Muon> > thePATMuonHandle;
     iEvent.getByToken(muonTypeToken_, thePATMuonHandle);
@@ -311,29 +318,22 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
     if (printMsg) std::cout << __LINE__ << " : the event has: " << thePATMuonHandle->size() << " muons AND " << thePATTrackHandle->size() << " tracks" << std::endl;
 
-
-    // #################################
-    // # Search for first valid vertex #
-    // #################################
-    for (std::vector<reco::Vertex>::const_iterator iVertex = recVtx->begin(); iVertex != recVtx->end(); iVertex++) { 
-      bestVtx = *(iVertex); if (bestVtx.isValid() == true) break; 
-    }
-
-
-    if (bestVtx.isValid() == true)
-    {
-	  // ###########
-	  // # Get mu- #
-	  // ###########
-	  for (std::vector<pat::Muon>::const_iterator iMuonM = thePATMuonHandle->begin(); iMuonM != thePATMuonHandle->end(); iMuonM++)
-	  {
+	// ###########
+	// # Get mu- #
+	// ###########
+	for (std::vector<pat::Muon>::const_iterator iMuonM = thePATMuonHandle->begin(); iMuonM != thePATMuonHandle->end(); iMuonM++)
+	{
 	    bool skip = false;
+	    
+// 	    if (! iMuonM->isSoftMuon( bestVtx ) ) continue;
 
         // ########################
 	    // # Check mu- kinematics #
 	    // ########################
 	    muTrackm = iMuonM->innerTrack();
 	    if ((muTrackm.isNull() == true) || (muTrackm->charge() != -1)) continue;
+        if (muTrackm->hitPattern().trackerLayersWithMeasurement() < 6) continue;        
+        if (muTrackm->hitPattern().pixelLayersWithMeasurement()   < 1) continue;        
  
         // #########################
 	    // # Muon- pT and eta cuts #
@@ -371,11 +371,14 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	    // ###########
 	    for (std::vector<pat::Muon>::const_iterator iMuonP = thePATMuonHandle->begin(); iMuonP != thePATMuonHandle->end(); iMuonP++)
 		{
+// 	      if (! iMuonP->isSoftMuon( bestVtx ) ) continue;
 		  // ########################
 		  // # Check mu+ kinematics #
 		  // ########################
 		  muTrackp = iMuonP->innerTrack();
 		  if ((muTrackp.isNull() == true) || (muTrackp->charge() != 1)) continue;
+          if (muTrackp->hitPattern().trackerLayersWithMeasurement() < 6) continue;        
+          if (muTrackp->hitPattern().pixelLayersWithMeasurement()   < 1) continue;        
 
 		  // #########################
 		  // # Muon+ pT and eta cuts #
@@ -424,7 +427,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		    continue;
 		  }
 
-
 		  // #####################################################
 		  // # Cut on the mumu 3D-DCA with respect to each other #
 		  // #####################################################
@@ -434,7 +436,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		    if (printMsg) std::cout << __LINE__ << " : continue --> bad 3D-DCA of mu+(-) with respect to mu-(+): " << mumuDCA << std::endl;
 		    continue;
 		  }
-
 
 		  // ############################################
 		  // # Cut on the dimuon inviariant mass and pT #
@@ -492,55 +493,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		    continue;
 		  }
 
-
-		  // #########################################################
-		  // # Extract the re-fitted tracks after the dimuon vtx fit #
-		  // #########################################################
-		  RefCountedKinematicParticle mumu_KP = mumuVertexFitTree->currentParticle();
-		  mumuVertexFitTree->movePointerToTheTop();
-
-		  mumuVertexFitTree->movePointerToTheFirstChild();
-		  RefCountedKinematicParticle refitMum  = mumuVertexFitTree->currentParticle();
-		  const reco::TransientTrack refitMumTT = refitMum->refittedTransientTrack();
-
-		  mumuVertexFitTree->movePointerToTheNextChild();
-		  RefCountedKinematicParticle refitMup  = mumuVertexFitTree->currentParticle();
-		  const reco::TransientTrack refitMupTT = refitMup->refittedTransientTrack();
-
-
-		  // ########################
-		  // # Muon pT and eta cuts #
-		  // ########################
-		  pT  = refitMupTT.track().pt();
-		  eta = refitMupTT.track().eta();
-		  if ((pT < MUMINPT) || (fabs(eta) > MUMAXETA))
-		  {
-		    if (printMsg) std::cout << __LINE__ << " : continue --> too low pT of mu+ : " << pT << " or too high eta : " << eta << std::endl;
-		    continue;
-		  }
-
-		  pT  = refitMumTT.track().pt();
-		  eta = refitMumTT.track().eta();
-		  if ((pT < MUMINPT) || (fabs(eta) > MUMAXETA))
-		  {
-		    if (printMsg) std::cout << __LINE__ << " : continue --> too low pT of mu- : " << pT << " or too high eta : " << eta << std::endl;
-		    skip = true;
-		    continue;
-		  }
-
-
-		  // ############################################
-		  // # Cut on the dimuon invariant mass and pT #
-		  // ############################################
-		  pT = sqrt((refitMumTT.track().momentum().x() + refitMupTT.track().momentum().x()) * (refitMumTT.track().momentum().x() + refitMupTT.track().momentum().x()) +
-			        (refitMumTT.track().momentum().y() + refitMupTT.track().momentum().y()) * (refitMumTT.track().momentum().y() + refitMupTT.track().momentum().y()));
-		  double MuMuInvMass = mumu_KP->currentState().mass();
-		  if ((pT < MINMUMUPT) || (MuMuInvMass < MINMUMUINVMASS) || (MuMuInvMass > MAXMUMUINVMASS))
-		  {
-		    if (printMsg) std::cout << __LINE__ << " : continue --> no good mumu pair pT: " << pT << "\tinv. mass: " << MuMuInvMass << std::endl;
-		    continue;
-		  }
-
+          RefCountedKinematicParticle mumu_KP = mumuVertexFitTree->currentParticle();
 
 		  // ######################################################
 		  // # Compute the distance between mumu vtx and BeamSpot #
@@ -580,12 +533,12 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  }
 
 
-		  // ########################### convert KinFit vertex to reco Vertex
-		  reco::Vertex::Point mumu_GP  = reco::Vertex::Point(mumu_KV->position().x(), mumu_KV->position().y(), mumu_KV->position().z());
-		  const reco::Vertex::Error mumu_error = mumu_KV->vertexState().error().matrix();
-		  float mumu_chi2      = mumu_KV -> chiSquared();
-		  float mumu_ndof      = mumu_KV -> degreesOfFreedom();
-		  reco::Vertex mumu_rv =  reco::Vertex( mumu_GP, mumu_error, mumu_chi2, mumu_ndof, 2 );
+		  // ########################### convert KinFit vertex to reco Vertex (needed only to calculate pion IP from this vtx)
+          // reco::Vertex::Point mumu_GP  = reco::Vertex::Point(mumu_KV->position().x(), mumu_KV->position().y(), mumu_KV->position().z());
+          // const reco::Vertex::Error mumu_error = mumu_KV->vertexState().error().matrix();
+          // float mumu_chi2      = mumu_KV -> chiSquared();
+          // float mumu_ndof      = mumu_KV -> degreesOfFreedom();
+          // reco::Vertex mumu_rv =  reco::Vertex( mumu_GP, mumu_error, mumu_chi2, mumu_ndof, 2 );
 
 		  // ##############
 		  // # Get Track- #
@@ -594,12 +547,12 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		    {
 		      bool skip = false;
 
-
 		      // ###########################
 		      // # Check Track- kinematics #
 		      // ###########################
 		      Trackm = iTrackM->track();
 		      if ((Trackm.isNull() == true) || (Trackm->charge() != -1)) continue;
+              if (! Trackm->quality(reco::Track::highPurity)) continue;
 
 		      const reco::TransientTrack TrackmTT(Trackm, &(*bFieldHandle));
 
@@ -613,10 +566,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    break;
 		  	  }
 		      
-//               std::pair<double,double>  trkm_IPPair = Utility->pionImpactParameter(TrackmTT,mumu_rv);
-//               double trkm_3DIpSignificance       = trkm_IPPair.second;
-//               if (trkm_3DIpSignificance > 1000)                 continue;
-
 		      // ######################################
 		      // # Compute K*0 track- DCA to BeamSpot #
 		      // ######################################
@@ -645,6 +594,10 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    // ###########################
 			    Trackp = iTrackP->track();
 			    if ((Trackp.isNull() == true) || (Trackp->charge() != 1)) continue;
+                if (! Trackp->quality(reco::Track::highPurity)) continue;
+
+			    // same sign requirement for checks!
+// 			    if (Trackp->charge()* Trackm->charge() != 1) continue;
   
 			    const reco::TransientTrack TrackpTT(Trackp, &(*bFieldHandle));
 
@@ -657,11 +610,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			        if (printMsg) std::cout << __LINE__ << " : break --> too low pT of track+ : " << pT << std::endl;
 			        break;
 			      }
-
-              
-//               std::pair<double,double>  trkp_IPPair = Utility->pionImpactParameter(TrackpTT,mumu_rv);
-//               double trkp_3DIpSignificance       = trkp_IPPair.second;
-//               if (trkp_3DIpSignificance > 1000)                 continue;
 
 
 			    // ######################################
@@ -680,7 +628,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			      if (printMsg) std::cout << __LINE__ << " : continue --> track+ DCA/sigma with respect to BeamSpot is too small: " << DCAKstTrkpBS << "+/-" << DCAKstTrkpBSErr << std::endl;
 			      continue;
 			    }
-
 
 			    // ##############################################
 			    // # Check goodness of hadrons closest approach #
@@ -730,9 +677,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    // ####################################################
 			    if (printMsg) std::cout << "\n" << __LINE__ << " : @@@ I have 2 good oppositely-charged tracks. I'm trying to vertex them @@@" << std::endl;
   
-//                             double myDZ = fabs( TrackmTT.track().vz() -  TrackpTT.track().vz());
-//                             std::cout << "before fit: " << myDZ << std::endl;
-
 			    chi = 0.;
 			    ndf = 0.;
 			    // ##############################################################################
@@ -796,39 +740,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			      }
   
   
-			    // ###########################################################
-			    // # Extract the re-fitted tracks after the dihadron vtx fit #
-			    // ###########################################################
-			    kstVertexFitTree->movePointerToTheTop();
-  
-			    kstVertexFitTree->movePointerToTheFirstChild();
-			    RefCountedKinematicParticle refitTrkm  = kstVertexFitTree->currentParticle();
-			    const reco::TransientTrack refitTrkmTT = refitTrkm->refittedTransientTrack();
-  
-			    kstVertexFitTree->movePointerToTheNextChild();
-			    RefCountedKinematicParticle refitTrkp  = kstVertexFitTree->currentParticle();
-			    const reco::TransientTrack refitTrkpTT = refitTrkp->refittedTransientTrack();
-
-
-			    // ##########################
-			    // # Hadron pT and eta cuts #
-			    // ##########################
-			    pT = refitTrkpTT.track().pt();
-			    if (pT < MINHADPT)
-			      {
-			        if (printMsg) std::cout << __LINE__ << " : break --> too low pT of track+ : " << pT << std::endl;
-			        continue;
-			      }
-  
-			    pT = refitTrkmTT.track().pt();
-			    if (pT < MINHADPT)
-			      {
-			        if (printMsg) std::cout << __LINE__ << " : break --> too low pT of track- : " << pT << std::endl;
-			        skip = true;
-			        continue;
-			      }
-  
-  
 			    // ####################################################
 			    // # @@@ Make B0 and implement pre-selection cuts @@@ #
 			    // ####################################################
@@ -868,6 +779,8 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    for (std::vector<pat::Muon>::const_iterator iMuon = thePATMuonHandle->begin(); iMuon != thePATMuonHandle->end(); iMuon++)
 			    {
 			      muTrackTmp = iMuon->innerTrack();
+			      // same sign check
+// 			      if ((muTrackTmp.isNull() == true)) continue;
 			      if ((muTrackTmp.isNull() == true) || (muTrackTmp->charge() != -1)) continue;
 			      if (Trackm == muTrackTmp)
 			  	  {
@@ -887,6 +800,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    for (std::vector<pat::Muon>::const_iterator iMuon = thePATMuonHandle->begin(); iMuon != thePATMuonHandle->end(); iMuon++)
 			    {
 			      muTrackTmp = iMuon->innerTrack();
+// 			      if ((muTrackTmp.isNull() == true) ) continue;
 			      if ((muTrackTmp.isNull() == true) || (muTrackTmp->charge() != 1)) continue;
 			      if (Trackp == muTrackTmp)
 				  {
@@ -953,7 +867,79 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			        continue;
 			      }
   
-//                             std::cout << "mass after fit: " << b_KP->currentState().mass() << std::endl;      
+                // ###########################################################
+                // # Extract the re-fitted tracks after the dihadron vtx fit #
+                // ###########################################################
+                bVertexFitTree->movePointerToTheTop();
+  
+				bVertexFitTree->movePointerToTheFirstChild();
+				RefCountedKinematicParticle refitMum  = bVertexFitTree->currentParticle();
+				const reco::TransientTrack refitMumTT = refitMum->refittedTransientTrack();
+                 
+				bVertexFitTree->movePointerToTheNextChild();
+				RefCountedKinematicParticle refitMup  = bVertexFitTree->currentParticle();
+				const reco::TransientTrack refitMupTT = refitMup->refittedTransientTrack();
+      
+                bVertexFitTree->movePointerToTheNextChild();
+                RefCountedKinematicParticle refitTrkm  = bVertexFitTree->currentParticle();
+                const reco::TransientTrack refitTrkmTT = refitTrkm->refittedTransientTrack();
+
+                bVertexFitTree->movePointerToTheNextChild();
+                RefCountedKinematicParticle refitTrkp  = bVertexFitTree->currentParticle();
+                const reco::TransientTrack refitTrkpTT = refitTrkp->refittedTransientTrack();
+  
+
+				// ########################
+				// # Muon pT and eta cuts #
+				// ########################
+				pT  = refitMupTT.track().pt();
+				eta = refitMupTT.track().eta();
+				if ((pT < MUMINPT) || (fabs(eta) > MUMAXETA))
+				{
+				  if (printMsg) std::cout << __LINE__ << " : continue --> too low pT of mu+ : " << pT << " or too high eta : " << eta << std::endl;
+				  continue;
+				}
+
+				pT  = refitMumTT.track().pt();
+				eta = refitMumTT.track().eta();
+				if ((pT < MUMINPT) || (fabs(eta) > MUMAXETA))
+				{
+				  if (printMsg) std::cout << __LINE__ << " : continue --> too low pT of mu- : " << pT << " or too high eta : " << eta << std::endl;
+				  skip = true;
+				  continue;
+				}
+
+
+				// ############################################
+				// # Cut on the dimuon invariant mass and pT #
+				// ############################################
+				pT = sqrt((refitMumTT.track().momentum().x() + refitMupTT.track().momentum().x()) * (refitMumTT.track().momentum().x() + refitMupTT.track().momentum().x()) +
+						  (refitMumTT.track().momentum().y() + refitMupTT.track().momentum().y()) * (refitMumTT.track().momentum().y() + refitMupTT.track().momentum().y()));
+				double MuMuInvMass = mumu_KP->currentState().mass();
+				if ((pT < MINMUMUPT) || (MuMuInvMass < MINMUMUINVMASS) || (MuMuInvMass > MAXMUMUINVMASS))
+				{
+				  if (printMsg) std::cout << __LINE__ << " : continue --> no good mumu pair pT: " << pT << "\tinv. mass: " << MuMuInvMass << std::endl;
+				  continue;
+				}
+
+			    // ##########################
+			    // # Hadron pT and eta cuts #
+			    // ##########################
+			    pT = refitTrkpTT.track().pt();
+			    if (pT < MINHADPT)
+			    {
+			        if (printMsg) std::cout << __LINE__ << " : break --> too low pT of track+ : " << pT << std::endl;
+			        continue;
+			    }
+  
+			    pT = refitTrkmTT.track().pt();
+			    if (pT < MINHADPT)
+			    {
+			        if (printMsg) std::cout << __LINE__ << " : break --> too low pT of track- : " << pT << std::endl;
+			        skip = true;
+			        continue;
+			    }
+
   
 			    // ########################
 			    // # Cuts on B0 AND B0bar #
@@ -979,13 +965,13 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    // ###############################
 			    // # Cuts on B0 L/sigma BeamSpot #
 			    // ###############################
-			    Utility->computeLS (b_KV->position().x(),b_KV->position().y(),0.0,
-			  		             beamSpot.position().x(),beamSpot.position().y(),0.0,
-			  		             b_KV->error().cxx(),b_KV->error().cyy(),0.0,
-			  		             b_KV->error().matrix()(0,1),0.0,0.0,
-			  		             beamSpot.covariance()(0,0),beamSpot.covariance()(1,1),0.0,
-			  		             beamSpot.covariance()(0,1),0.0,0.0,
-			  		             &LSBS,&LSBSErr);
+			    Utility->computeLS (b_KV->position().x(),   b_KV->position().y(),   0.0,
+			  		                beamSpot.position().x(),beamSpot.position().y(),0.0,
+			  		                b_KV->error().cxx(),b_KV->error().cyy(),0.0,
+			  		                b_KV->error().matrix()(0,1),0.0,0.0,
+			  		                beamSpot.covariance()(0,0),beamSpot.covariance()(1,1),0.0,
+			  		                beamSpot.covariance()(0,1),0.0,0.0,
+			  		                &LSBS,&LSBSErr);
   
   
 			    // ##############################
@@ -1046,17 +1032,10 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    bestVtxReFit = (reco::Vertex)bestTransVtx;
   
   
-  
-  
 			    // ##########################
 			    // # Compute mu- DCA to Vtx #
 			    // ##########################
-			    theDCAXVtx = IPTools::absoluteImpactParameter3D(muTrackmTT, bestVtxReFit);
-			    if (theDCAXVtx.first == false)
-			    {
-			      if (printMsg) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for mu-" << std::endl;
-			      continue;
-			    }
+			    theDCAXVtx = pionImpactParameter(muTrackmTT, bestVtxReFit);
 			    double DCAmumVtx    = theDCAXVtx.second.value();
 			    double DCAmumVtxErr = theDCAXVtx.second.error();
 			  
@@ -1064,12 +1043,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    // ##########################
 			    // # Compute mu+ DCA to Vtx #
 			    // ##########################
-			    theDCAXVtx = IPTools::absoluteImpactParameter3D(muTrackpTT, bestVtxReFit);
-			    if (theDCAXVtx.first == false)
-			      {
-			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for mu+" << std::endl;
-			        continue;
-			      }
+			    theDCAXVtx = pionImpactParameter(muTrackpTT, bestVtxReFit);
 			    double DCAmupVtx    = theDCAXVtx.second.value();
 			    double DCAmupVtxErr = theDCAXVtx.second.error();
   
@@ -1077,12 +1051,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    // #################################
 			    // # Compute K*0 track- DCA to Vtx #
 			    // #################################
-			    theDCAXVtx = IPTools::absoluteImpactParameter3D(TrackmTT, bestVtxReFit);
-			    if (theDCAXVtx.first == false)
-			      {
-			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for track-" << std::endl;
-			        continue;
-			      }
+			    theDCAXVtx = pionImpactParameter(TrackmTT, bestVtxReFit);
 			    double DCAKstTrkmVtx    = theDCAXVtx.second.value();
 			    double DCAKstTrkmVtxErr = theDCAXVtx.second.error();
   
@@ -1090,12 +1059,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    // #################################
 			    // # Compute K*0 track+ DCA to Vtx #
 			    // #################################
-			    theDCAXVtx = IPTools::absoluteImpactParameter3D(TrackpTT, bestVtxReFit);
-			    if (theDCAXVtx.first == false)
-			      {
-			        if (printMsg) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D for track+" << std::endl;
-			        continue;
-			      }
+			    theDCAXVtx = pionImpactParameter(TrackpTT, bestVtxReFit);
 			    double DCAKstTrkpVtx    = theDCAXVtx.second.value();
 			    double DCAKstTrkpVtxErr = theDCAXVtx.second.error();
   
@@ -1180,13 +1144,9 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  			      (Bmomentum2 * Bmomentum2)));
   
   
-  
-  
 			    // #######################################
 			    // # @@@ Fill B0-candidate variables @@@ #
 			    // #######################################
-			    if (printMsg) std::cout << __LINE__ << " : @@@ Filling B0 candidate variables @@@\n\n" << std::endl;
-  
   
 			    // ############
 			    // # Save: B0 #
@@ -1237,6 +1197,13 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    NTuple->kstPx->push_back(kst_KP->currentState().globalMomentum().x());
 			    NTuple->kstPy->push_back(kst_KP->currentState().globalMomentum().y());
 			    NTuple->kstPz->push_back(kst_KP->currentState().globalMomentum().z());
+
+			    NTuple->kstPxxE->push_back(kst_KP->currentState().kinematicParametersError().matrix()(3,3));
+			    NTuple->kstPyyE->push_back(kst_KP->currentState().kinematicParametersError().matrix()(4,4));
+			    NTuple->kstPzzE->push_back(kst_KP->currentState().kinematicParametersError().matrix()(5,5));
+			    NTuple->kstPxyE->push_back(kst_KP->currentState().kinematicParametersError().matrix()(3,4));
+			    NTuple->kstPxzE->push_back(kst_KP->currentState().kinematicParametersError().matrix()(3,5));
+			    NTuple->kstPyzE->push_back(kst_KP->currentState().kinematicParametersError().matrix()(4,5));
   
 			    NTuple->kstVtxCL->push_back(TMath::Prob(static_cast<double>(kst_KV->chiSquared()), static_cast<int>(rint(kst_KV->degreesOfFreedom()))));
 			    NTuple->kstVtxX->push_back(kst_KV->position().x());
@@ -1287,10 +1254,9 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  														       muTrackm->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS) +
 			  														       muTrackm->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_OUTER_HITS)));
 			    theDCAXVtx = IPTools::absoluteTransverseImpactParameter(muTrackmTT, bestVtxReFit);
-			    NTuple->mumdxyVtx->push_back(theDCAXVtx.second.value());
-			    NTuple->mumdzVtx->push_back(muTrackmTT.track().dz(bestVtxReFit.position()));
-  
-			    NTuple->mumCat->push_back(getMuCat(*iMuonM));
+			    NTuple->mumdxyVtx-> push_back(theDCAXVtx.second.value());
+			    NTuple->mumdzVtx -> push_back(muTrackmTT.track().dz(bestVtxReFit.position()));
+			    NTuple->mumCat   -> push_back(getMuCat(*iMuonM));
   
 			    NTuple->mumNPixHits->push_back(muTrackm->hitPattern().numberOfValidPixelHits());
 			    NTuple->mumNPixLayers->push_back(muTrackm->hitPattern().pixelLayersWithMeasurement());  
@@ -1299,7 +1265,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
  			    if (iMuonM->isGlobalMuon() == true) NTuple->mumNMuonHits->push_back(iMuonM->globalTrack()->hitPattern().numberOfValidMuonHits());
 			    else NTuple->mumNMuonHits->push_back(0);
 			    NTuple->mumNMatchStation->push_back(iMuonM->numberOfMatchedStations());
-  
   
   
 			    // #############
@@ -1324,8 +1289,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			  														       muTrackp->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_OUTER_HITS)));
 			    theDCAXVtx = IPTools::absoluteTransverseImpactParameter(muTrackpTT, bestVtxReFit);
 			    NTuple->mupdxyVtx->push_back(theDCAXVtx.second.value());
-			    NTuple->mupdzVtx->push_back(muTrackpTT.track().dz(bestVtxReFit.position()));
-  
+			    NTuple->mupdzVtx ->push_back(muTrackpTT.track().dz(bestVtxReFit.position()));
 			    NTuple->mupCat->push_back(getMuCat(*iMuonP));
   
 			    NTuple->mupNPixHits->push_back(muTrackp->hitPattern().numberOfValidPixelHits());
@@ -1346,6 +1310,13 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    NTuple->kstTrkmPx->push_back(refitTrkmTT.track().momentum().x());
 			    NTuple->kstTrkmPy->push_back(refitTrkmTT.track().momentum().y());
 			    NTuple->kstTrkmPz->push_back(refitTrkmTT.track().momentum().z());
+			    NTuple->kstTrkmPxxE->push_back( refitTrkm ->currentState().kinematicParametersError().matrix()(3,3) );
+			    NTuple->kstTrkmPyyE->push_back( refitTrkm ->currentState().kinematicParametersError().matrix()(4,4) );
+			    NTuple->kstTrkmPzzE->push_back( refitTrkm ->currentState().kinematicParametersError().matrix()(5,5) );
+			    NTuple->kstTrkmPxyE->push_back( refitTrkm ->currentState().kinematicParametersError().matrix()(3,4) );
+			    NTuple->kstTrkmPxzE->push_back( refitTrkm ->currentState().kinematicParametersError().matrix()(3,5) );
+			    NTuple->kstTrkmPyzE->push_back( refitTrkm ->currentState().kinematicParametersError().matrix()(4,5) );
+
   
 			    NTuple->kstTrkmDCAVtx->push_back(DCAKstTrkmVtx);
 			    NTuple->kstTrkmDCAVtxE->push_back(DCAKstTrkmVtxErr);
@@ -1367,7 +1338,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    NTuple->kstTrkmNTrkHits->push_back(Trackm->hitPattern().numberOfValidTrackerHits());
 			    NTuple->kstTrkmNTrkLayers->push_back(Trackm->hitPattern().trackerLayersWithMeasurement());
   
-  
 			    // ################
 			    // # Save: Track+ #
 			    // ################
@@ -1377,7 +1347,13 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    NTuple->kstTrkpPx->push_back(refitTrkpTT.track().momentum().x());
 			    NTuple->kstTrkpPy->push_back(refitTrkpTT.track().momentum().y());
 			    NTuple->kstTrkpPz->push_back(refitTrkpTT.track().momentum().z());
-  
+			    NTuple->kstTrkpPxxE->push_back( refitTrkp ->currentState().kinematicParametersError().matrix()(3,3) );
+			    NTuple->kstTrkpPyyE->push_back( refitTrkp ->currentState().kinematicParametersError().matrix()(4,4) );
+			    NTuple->kstTrkpPzzE->push_back( refitTrkp ->currentState().kinematicParametersError().matrix()(5,5) );
+			    NTuple->kstTrkpPxyE->push_back( refitTrkp ->currentState().kinematicParametersError().matrix()(3,4) );
+			    NTuple->kstTrkpPxzE->push_back( refitTrkp ->currentState().kinematicParametersError().matrix()(3,5) );
+			    NTuple->kstTrkpPyzE->push_back( refitTrkp ->currentState().kinematicParametersError().matrix()(4,5) );
+
 			    NTuple->kstTrkpDCAVtx->push_back(DCAKstTrkpVtx);
 			    NTuple->kstTrkpDCAVtxE->push_back(DCAKstTrkpVtxErr);
 			    NTuple->kstTrkpDCABS->push_back(DCAKstTrkpBS);
@@ -1393,10 +1369,10 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    NTuple->kstTrkpMuMatch->push_back(MuPCat);
   
 			    // I do NOT include the number of missing outer hits because the hadron might interact
-			    NTuple->kstTrkpNPixHits->push_back(Trackp->hitPattern().numberOfValidPixelHits());
-			    NTuple->kstTrkpNPixLayers->push_back(Trackp->hitPattern().pixelLayersWithMeasurement());  
-			    NTuple->kstTrkpNTrkHits->push_back(Trackp->hitPattern().numberOfValidTrackerHits());
-			    NTuple->kstTrkpNTrkLayers->push_back(Trackp->hitPattern().trackerLayersWithMeasurement());
+			    NTuple->kstTrkpNPixHits  -> push_back(Trackp->hitPattern().numberOfValidPixelHits());
+			    NTuple->kstTrkpNPixLayers-> push_back(Trackp->hitPattern().pixelLayersWithMeasurement());  
+			    NTuple->kstTrkpNTrkHits  -> push_back(Trackp->hitPattern().numberOfValidTrackerHits());
+			    NTuple->kstTrkpNTrkLayers-> push_back(Trackp->hitPattern().trackerLayersWithMeasurement());
   
   
 			    // Save trigger matching for the 4 tracks
@@ -1423,17 +1399,14 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 			    NTuple->kstTrkpTrig->push_back(tmpString4);
   
                 // save minimum IP from any PV (2D and 3D)
-                mumMind0  = mupMind0 = 100;
-//                 mupMind0  = 100;
-                TrkmMind0 = 100;
-                TrkpMind0 = 100;
-                mumMinIP  = 100;
-                mupMinIP  = 100;
-                TrkmMinIP = 100;
-                TrkpMinIP = 100;
+                mumMind0  = mupMind0  = 100;
+                TrkmMind0 = TrkpMind0 = 100;
+                mumMinIP  = mupMinIP  = 100;
+                TrkmMinIP = TrkpMinIP = 100;
                 std::pair<double,double>  IPPair;
 
                 for (std::vector<reco::Vertex>::const_iterator ipv = recVtx->begin(); ipv != recVtx->end(); ipv++) { 
+                    if (! ipv->isValid() ) continue; 
                     vert = GlobalPoint(ipv->x(), ipv->y(), ipv->z());
 
                     traj = muTrackmTT.trajectoryStateClosestToPoint(vert );
@@ -1460,22 +1433,22 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
                       TrkpMind0E = traj.perigeeError().transverseImpactParameterError();
                     }  
                     
-                    IPPair = Utility->pionImpactParameter(muTrackmTT,*ipv);
+                    IPPair = pionImpactParameter(muTrackmTT,*ipv);
                     if (IPPair.first < mumMinIP){
                       mumMinIP  = IPPair.first;
                       mumMinIPE = IPPair.second;
                     }
-                    IPPair = Utility->pionImpactParameter(muTrackpTT,*ipv);
+                    IPPair = pionImpactParameter(muTrackpTT,*ipv);
                     if (IPPair.first < mupMinIP){
                       mupMinIP  = IPPair.first;
                       mupMinIPE = IPPair.second;
                     }
-                    IPPair = Utility->pionImpactParameter(TrackmTT,*ipv);
+                    IPPair = pionImpactParameter(TrackmTT,*ipv);
                     if (IPPair.first < TrkmMinIP){
                       TrkmMinIP  = IPPair.first;
                       TrkmMinIPE = IPPair.second;
                     }
-                    IPPair = Utility->pionImpactParameter(TrackpTT,*ipv);
+                    IPPair = pionImpactParameter(TrackpTT,*ipv);
                     if (IPPair.first < TrkpMinIP){
                       TrkpMinIP  = IPPair.first;
                       TrkpMinIPE = IPPair.second;
@@ -1486,14 +1459,28 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
                 double iso;
                 chi = 0; ndf = 0;
                 mum_isovec.clear(); mup_isovec.clear(); trkm_isovec.clear(); trkp_isovec.clear();
-                float bestVtx_x = bestVtx.x();
-                float bestVtx_y = bestVtx.y();
-                float bestVtx_z = bestVtx.z();
+                mum_isopts.clear(); mup_isopts.clear(); trkm_isopts.clear(); trkp_isopts.clear();
+                mum_isomom.clear(); mup_isomom.clear(); trkm_isomom.clear(); trkp_isomom.clear();
+                mum_isodr.clear();  mup_isodr.clear();  trkm_isodr.clear();  trkp_isodr.clear();
 
+                float bestVtx_x = bestVtxReFit.x();
+                float bestVtx_y = bestVtxReFit.y();
+                float bestVtx_z = bestVtxReFit.z();
+
+                const reco::VertexCollection *recVtxColl  = recVtx.product()  ;    
+                int trk_index = -1;
  		        for (std::vector<pat::GenericParticle>::const_iterator iTrackIso = thePATTrackHandle->begin(); iTrackIso != thePATTrackHandle->end(); iTrackIso++)
  		        {
+ 		          trk_index++;
  		          if (iTrackIso == iTrackM || iTrackIso == iTrackP) continue;
  		          if (muTrackm == iTrackIso->track() || muTrackp == iTrackIso->track()) continue;
+                  
+                  if (! iTrackIso->track()->quality(reco::Track::highPurity)) continue;
+                  if (  iTrackIso->track()->pt() < 0.8) continue;
+                  
+                   // requirement that the track is not associated to any PV
+                  if (findPV(trk_index, recVtxColl) == 1 ) continue;
+                  
                   const reco::TransientTrack TrackIsoTT(iTrackIso->track(), &(*bFieldHandle));
                   
                   iso = calculateIsolation(ClosestApp, muTrackmTT, TrackIsoTT, muonMass, bestVtx_x, bestVtx_y, bestVtx_z);
@@ -1507,15 +1494,67 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
                   iso = calculateIsolation(ClosestApp, TrackpTT, TrackIsoTT, muonMass, bestVtx_x, bestVtx_y, bestVtx_z);
                   if (iso > 0 ) trkp_isovec.push_back(iso);
-
-//                   std::cout <<  "iso: " << iso << std::endl; 
                   
+                   // add new iso
+                  ClosestApp.calculate(TrackIsoTT.initialFreeState(), muTrackmTT.initialFreeState());
+                  if (ClosestApp.status() != false)
+                  {
+                    if ( ClosestApp.distance() < 0.1 ) {
+                      mum_isopts.push_back( iTrackIso->track()->pt() );
+                      mum_isomom.push_back( iTrackIso->track()->p()  );   
+                      mum_isodr.push_back ( deltaR(iTrackIso->track() ->eta(), iTrackIso->track()->phi(), refitMumTT.track().eta(), refitMumTT.track().phi() ));   
+                    }                 
+                  }
+                  ClosestApp.calculate(TrackIsoTT.initialFreeState(), muTrackpTT.initialFreeState());
+                  if (ClosestApp.status() != false)
+                  {
+                    if ( ClosestApp.distance() < 0.1 ) {
+                      mup_isopts.push_back( iTrackIso->track()->pt() );
+                      mup_isomom.push_back( iTrackIso->track()->p()  );   
+                      mup_isodr.push_back ( deltaR(iTrackIso->track() ->eta(), iTrackIso->track()->phi(), refitMupTT.track().eta(), refitMupTT.track().phi() ));   
+                     }                 
+                  }
+                  ClosestApp.calculate(TrackIsoTT.initialFreeState(), TrackmTT.initialFreeState());
+                  if (ClosestApp.status() != false)
+                  {
+                    if ( ClosestApp.distance() < 0.1 ) {
+                      trkm_isopts.push_back( iTrackIso->track()->pt() );
+                      trkm_isomom.push_back( iTrackIso->track()->p()  );   
+                      trkm_isodr.push_back ( deltaR(iTrackIso->track() ->eta(), iTrackIso->track()->phi(), refitTrkmTT.track().eta(), refitTrkmTT.track().phi() ));   
+                    }                 
+                  }
+                  ClosestApp.calculate(TrackIsoTT.initialFreeState(), TrackpTT.initialFreeState());
+                  if (ClosestApp.status() != false)
+                  {
+                    if ( ClosestApp.distance() < 0.1 ) {
+                      trkp_isopts.push_back( iTrackIso->track()->pt() );
+                      trkp_isomom.push_back( iTrackIso->track()->p()  );   
+                      trkp_isodr.push_back ( deltaR(iTrackIso->track() ->eta(), iTrackIso->track()->phi(), refitTrkpTT.track().eta(), refitTrkpTT.track().phi() ));   
+                    }                 
+                  }
+                
+
+                  
+
  		        } 
 
                 NTuple->mumIso      -> push_back(mum_isovec);
                 NTuple->mupIso      -> push_back(mup_isovec);
                 NTuple->kstTrkmIso  -> push_back(trkm_isovec);
                 NTuple->kstTrkpIso  -> push_back(trkp_isovec);
+                
+                NTuple->mumIsoPt       -> push_back(mum_isopts);
+                NTuple->mupIsoPt       -> push_back(mup_isopts);
+                NTuple->kstTrkmIsoPt   -> push_back(trkm_isopts);
+                NTuple->kstTrkpIsoPt   -> push_back(trkp_isopts);
+                NTuple->mumIsoMom      -> push_back(mum_isomom);
+                NTuple->mupIsoMom      -> push_back(mup_isomom);
+                NTuple->kstTrkmIsoMom  -> push_back(trkm_isomom);
+                NTuple->kstTrkpIsoMom  -> push_back(trkp_isomom);
+                NTuple->mumIsodR       -> push_back(mum_isodr);
+                NTuple->mupIsodR       -> push_back(mup_isodr);
+                NTuple->kstTrkmIsodR   -> push_back(trkm_isodr);
+                NTuple->kstTrkpIsodR   -> push_back(trkp_isodr);
 
 
                 NTuple->mumMinIP2D      -> push_back(mumMind0);
@@ -1552,9 +1591,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		} // End for mu+
 	    if (skip == true) continue;
 	  } // End for mu-
-	} // End if bestVtx is true
-    else if (printMsg) std::cout << __LINE__ << " : continue --> invalid Pri.Vtx" << std::endl;
-//     if (B0MassConstraint != NULL) delete B0MassConstraint;
 
 
 	NTuple->runN   = iEvent.id().run();
@@ -1583,10 +1619,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	}
       else if (printMsg) std::cout << __LINE__ << " : @@@ No B0 --> K*0 (K pi) mu+ mu- candidate were found in the event @@@" << std::endl;
     } // End if doGenReco_ == 1 || doGenReco_ == 2
-
-
-
-
 
 
 
@@ -2550,7 +2582,7 @@ float B0KstMuMu::calculateIsolation( ClosestApproachInRPhi ClosestApp,
                                      float vtx_z
                                     )
 {
-  float iso = 0;
+  float iso   = 0;
 
   KinematicParticleVertexFitter KPVtxFitter; 
   KinematicParticleFactoryFromTransientTrack partFactory;
@@ -2558,13 +2590,23 @@ float B0KstMuMu::calculateIsolation( ClosestApproachInRPhi ClosestApp,
   float chi, ndf, alpha;
   TLorentzVector tmp_trk_lv, tmp_cand_lv, tmp_lv;
   ClosestApp.calculate(TrackIsoTT.initialFreeState(), muTrackmTT.initialFreeState());
-
-  if ( ClosestApp.status() && ClosestApp.distance() < 0.1 )
+  if (ClosestApp.status() == false)
   {
-  
+	  if (printMsg) std::cout << __LINE__ << " : continue --> bad status of closest approach" << std::endl;
+	  return 0;
+  }
+
+  GlobalPoint XingPoint = ClosestApp.crossingPoint();
+  if ((sqrt(XingPoint.x()*XingPoint.x() + XingPoint.y()*XingPoint.y()) > TRKMAXR) || (fabs(XingPoint.z()) > TRKMAXZ))
+  {
+      if (printMsg) std::cout << __LINE__ << " : continue --> closest approach crossing point outside the tracker volume" << std::endl;
+	  return 0;
+  }
+
+  if ( ClosestApp.distance() < 0.1 )
+  {
   	chi = 0.;
     ndf = 0.;
-    float mumasserr = 3.5e-9;
   	std::vector<RefCountedKinematicParticle> tmpParticles;
   	tmpParticles.push_back(partFactory.particle(muTrackmTT, muonMass,chi,ndf, mumasserr) );
   	tmpParticles.push_back(partFactory.particle(TrackIsoTT, muonMass,chi,ndf, mumasserr) );
@@ -2583,13 +2625,69 @@ float B0KstMuMu::calculateIsolation( ClosestApproachInRPhi ClosestApp,
                                       tmpVertex->position().y() - vtx_y, 
                                       tmpVertex->position().z() - vtx_z )
                                     );
-      iso = (tmp_lv).P() * alpha / ( (tmp_lv).P() + tmp_cand_lv.Pt() + tmp_trk_lv.Pt() );
+      iso = (tmp_lv).P() * alpha / ( (tmp_lv).P()*alpha + tmp_cand_lv.Pt() + tmp_trk_lv.Pt() );
     }
   }
 
   return iso;
 
 }
+
+
+int B0KstMuMu::findPV(int tk_index, const reco::VertexCollection *vtx) {
+    for (unsigned int i = 0; i < vtx->size(); ++i) {
+        if (! vtx->at(i).isValid() )  continue;
+        for (std::vector<reco::TrackBaseRef>::const_iterator iTrack = vtx->at(i).tracks_begin(); iTrack != vtx->at(i).tracks_end(); iTrack++)
+        {
+            if (static_cast<unsigned int>(tk_index) == iTrack->key()) return 1;
+        }
+    }
+    return -1;
+}
+
+
+
+
+// Compute impact parameter 3D wrt Reco Vtx
+std::pair<double,double> B0KstMuMu::pionImpactParameter(reco::TransientTrack piTT, reco::Vertex myVtx)
+{
+    std::pair<double,double> measure;
+	std::pair<bool,Measurement1D>  piIP_pair = IPTools::absoluteImpactParameter3D(piTT, myVtx);
+	if (piIP_pair.first)
+	{
+	  measure.first  = piIP_pair.second.value();
+	  measure.second = piIP_pair.second.significance();
+	}
+    else 
+    {
+      if (printMsg) std::cout << __LINE__ << " : continue --> invalid absolute impact parameter 3D" << std::endl;
+	  measure.first  = 0;
+	  measure.second = 0;
+    } 
+	return measure;
+}
+
+
+
+
+// Compute impact parameter 3D wrt Transient Vtx
+// std::pair<double,double> Utils::pionImpactParameter(reco::TransientTrack piTT, TransientVertex jpsiVtx)
+// {
+//     std::pair<double,double> measure;
+// 	std::pair<bool,Measurement1D>  piIP_pair = IPTools::absoluteImpactParameter3D(piTT, jpsiVtx);
+// 	if (piIP_pair.first)
+// 	{
+// 	  measure.first  = piIP_pair.second.value();
+// 	  measure.second = piIP_pair.second.significance();
+// 	}
+//     else 
+//     {
+// 	  measure.first  = 0;
+// 	  measure.second = 0;
+//     } 
+// 	return measure;
+// }
+
 
 
 

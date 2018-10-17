@@ -111,45 +111,45 @@ Utils::Utils (bool rightFlavorTag)
   // ################################
   // # Print out internal variables #
   // ################################
-  std::cout << "\n@@@@@@ Utils class settings : private @@@@@@" << std::endl;
-  std::cout << "Analysis environment variable: " << ANALYPATH << std::endl;
-  std::cout << "nFitObserv: "                << nFitObserv << std::endl;
-  std::cout << "ProbThreshold: "             << ProbThreshold << std::endl;
-  std::cout << "scrambleFraction: "          << scrambleFraction << std::endl;
-  std::cout << "DirEfficiency: "             << DirEfficiency << std::endl;
+//   std::cout << "\n@@@@@@ Utils class settings : private @@@@@@" << std::endl;
+//   std::cout << "Analysis environment variable: " << ANALYPATH << std::endl;
+//   std::cout << "nFitObserv: "                << nFitObserv << std::endl;
+//   std::cout << "ProbThreshold: "             << ProbThreshold << std::endl;
+//   std::cout << "scrambleFraction: "          << scrambleFraction << std::endl;
+//   std::cout << "DirEfficiency: "             << DirEfficiency << std::endl;
+// 
+//   std::cout << "\nHisto2DEffNameOkTagSig: "  << Histo2DEffNameOkTagSig << std::endl;
+//   std::cout << "Histo2DEffNameOkTagJPsi: "   << Histo2DEffNameOkTagJPsi << std::endl;
+//   std::cout << "Histo2DEffNameOkTagPsi2S: "  << Histo2DEffNameOkTagPsi2S << std::endl;
+// 
+//   std::cout << "\nHisto3DEffNameOkTagSig: "  << Histo3DEffNameOkTagSig << std::endl;
+//   std::cout << "Histo3DEffNameOkTagJPsi: "   << Histo3DEffNameOkTagJPsi << std::endl;
+//   std::cout << "Histo3DEffNameOkTagPsi2S: "  << Histo3DEffNameOkTagPsi2S << std::endl;
+// 
+//   std::cout << "\nHisto2DEffNameMisTagSig: " << Histo2DEffNameMisTagSig << std::endl;
+//   std::cout << "Histo2DEffNameMisTagJPsi: "  << Histo2DEffNameMisTagJPsi << std::endl;
+//   std::cout << "Histo2DEffNameMisTagPsi2S: " << Histo2DEffNameMisTagPsi2S << std::endl;
+// 
+//   std::cout << "\nHisto3DEffNameMisTagSig: " << Histo3DEffNameMisTagSig << std::endl;
+//   std::cout << "Histo3DEffNameMisTagJPsi: "  << Histo3DEffNameMisTagJPsi << std::endl;
+//   std::cout << "Histo3DEffNameMisTagPsi2S: " << Histo3DEffNameMisTagPsi2S << std::endl;
 
-  std::cout << "\nHisto2DEffNameOkTagSig: "  << Histo2DEffNameOkTagSig << std::endl;
-  std::cout << "Histo2DEffNameOkTagJPsi: "   << Histo2DEffNameOkTagJPsi << std::endl;
-  std::cout << "Histo2DEffNameOkTagPsi2S: "  << Histo2DEffNameOkTagPsi2S << std::endl;
-
-  std::cout << "\nHisto3DEffNameOkTagSig: "  << Histo3DEffNameOkTagSig << std::endl;
-  std::cout << "Histo3DEffNameOkTagJPsi: "   << Histo3DEffNameOkTagJPsi << std::endl;
-  std::cout << "Histo3DEffNameOkTagPsi2S: "  << Histo3DEffNameOkTagPsi2S << std::endl;
-
-  std::cout << "\nHisto2DEffNameMisTagSig: " << Histo2DEffNameMisTagSig << std::endl;
-  std::cout << "Histo2DEffNameMisTagJPsi: "  << Histo2DEffNameMisTagJPsi << std::endl;
-  std::cout << "Histo2DEffNameMisTagPsi2S: " << Histo2DEffNameMisTagPsi2S << std::endl;
-
-  std::cout << "\nHisto3DEffNameMisTagSig: " << Histo3DEffNameMisTagSig << std::endl;
-  std::cout << "Histo3DEffNameMisTagJPsi: "  << Histo3DEffNameMisTagJPsi << std::endl;
-  std::cout << "Histo3DEffNameMisTagPsi2S: " << Histo3DEffNameMisTagPsi2S << std::endl;
-
-  std::cout << "\n@@@@@@ Utils class settings : public  @@@@@@" << std::endl;
-  std::cout << "NcoeffThetaL: "              << NcoeffThetaL << std::endl;
-  std::cout << "NcoeffThetaK: "              << NcoeffThetaK << std::endl;
-  std::cout << "NcoeffPhi: "                 << NcoeffPhi << std::endl;
-  std::cout << "RIGHTflavorTAG: "            << RIGHTflavorTAG << std::endl;
-  std::cout << "B0ToKstMuMu: "               << B0ToKstMuMu << std::endl;
-  std::cout << "B0ToJPsiKst: "               << B0ToJPsiKst << std::endl;
-  std::cout << "B0ToPsi2SKst: "              << B0ToPsi2SKst << std::endl;
-  std::cout << "nFitParam: "                 << nFitParam << std::endl;
-  std::cout << "nConfigParam: "              << nConfigParam << std::endl;
-  std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-  std::cout << "@@@ Consider to double-check values for: @@@" << std::endl;
-  std::cout << "- Utils::AddConstraintThetaL" << std::endl;
-  std::cout << "- Utils::AddConstraintThetaKThetaL" << std::endl;
-  std::cout << "- Utils::AddConstraintThetaKThetaLPhi" << std::endl;
-  std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+//   std::cout << "\n@@@@@@ Utils class settings : public  @@@@@@" << std::endl;
+//   std::cout << "NcoeffThetaL: "              << NcoeffThetaL << std::endl;
+//   std::cout << "NcoeffThetaK: "              << NcoeffThetaK << std::endl;
+//   std::cout << "NcoeffPhi: "                 << NcoeffPhi << std::endl;
+//   std::cout << "RIGHTflavorTAG: "            << RIGHTflavorTAG << std::endl;
+//   std::cout << "B0ToKstMuMu: "               << B0ToKstMuMu << std::endl;
+//   std::cout << "B0ToJPsiKst: "               << B0ToJPsiKst << std::endl;
+//   std::cout << "B0ToPsi2SKst: "              << B0ToPsi2SKst << std::endl;
+//   std::cout << "nFitParam: "                 << nFitParam << std::endl;
+//   std::cout << "nConfigParam: "              << nConfigParam << std::endl;
+//   std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+//   std::cout << "@@@ Consider to double-check values for: @@@" << std::endl;
+//   std::cout << "- Utils::AddConstraintThetaL" << std::endl;
+//   std::cout << "- Utils::AddConstraintThetaKThetaL" << std::endl;
+//   std::cout << "- Utils::AddConstraintThetaKThetaLPhi" << std::endl;
+//   std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 }
 
 double Utils::computeInvMass (double Px1,
@@ -4561,62 +4561,3 @@ void Utils::SetDirEfficiency (std::string newName)
   DirEfficiency = newName;
 }
 
-// Compute impact parameter 3D wrt Transient Vtx
-std::pair<double,double> Utils::pionImpactParameter(reco::TransientTrack piTT, TransientVertex jpsiVtx)
-{
-    std::pair<double,double> measure;
-	std::pair<bool,Measurement1D>  piIP_pair = IPTools::absoluteImpactParameter3D(piTT, jpsiVtx);
-	if (piIP_pair.first)
-	{
-	  measure.first  = piIP_pair.second.value();
-	  measure.second = piIP_pair.second.significance();
-	}
-    else 
-    {
-	  measure.first  = 0;
-	  measure.second = 0;
-    } 
-	return measure;
-}
-
-// Compute impact parameter 3D wrt Reco Vtx
-std::pair<double,double> Utils::pionImpactParameter(reco::TransientTrack piTT, reco::Vertex myVtx)
-{
-    std::pair<double,double> measure;
-	std::pair<bool,Measurement1D>  piIP_pair = IPTools::absoluteImpactParameter3D(piTT, myVtx);
-	if (piIP_pair.first)
-	{
-	  measure.first  = piIP_pair.second.value();
-	  measure.second = piIP_pair.second.significance();
-	}
-    else 
-    {
-	  measure.first  = 0;
-	  measure.second = 0;
-    } 
-	return measure;
-}
-
-
-// Compute longitudinal impact parameter wrt vertex
-// https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideTransientTracks#Examples_including_calculation_o
-std::pair<double,double> Utils::LongitudinalIP(reco::TransientTrack transientTrk, reco::Vertex myVtx)
-{
-    GlobalPoint VtxGP(myVtx.x(), myVtx.y(), myVtx.z()); 
-    std::pair<double,double> measureL;
-    TrajectoryStateClosestToPoint TSC = transientTrk.trajectoryStateClosestToPoint(VtxGP);
-    if(TSC.isValid())
-    {
-      measureL.first = TSC.perigeeParameters().longitudinalImpactParameter();
-      if(TSC.hasError() && !(TSC.hasError()==0)) 
-      {
-        measureL.second = measureL.first/TSC.perigeeError().longitudinalImpactParameterError();
-      }
-	}
-	else
-	{
-	  measureL.first  = 99999;
-	  measureL.second = 99999;
-	}
-	return measureL;      
-}

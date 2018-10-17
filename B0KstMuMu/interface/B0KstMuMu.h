@@ -43,6 +43,10 @@
 #include "RecoVertex/KinematicFitPrimitives/interface/KinematicParticleFactoryFromTransientTrack.h"
 #include "TrackingTools/PatternTools/interface/ClosestApproachInRPhi.h"
 
+#include "TrackingTools/IPTools/interface/IPTools.h"
+#include "TrackingTools/TransientTrack/interface/TransientTrack.h"
+#include "RecoVertex/VertexPrimitives/interface/TransientVertex.h"
+
 
 #include <vector>
 #include <string>
@@ -80,6 +84,10 @@ class B0KstMuMu : public edm::EDAnalyzer
                            reco::TransientTrack, 
                            const ParticleMass,
                            float, float, float );
+
+//   std::pair<double,double> pionImpactParameter(reco::TransientTrack , TransientVertex );
+  std::pair<double,double> pionImpactParameter(reco::TransientTrack , reco::Vertex    );
+  int findPV(int , const reco::VertexCollection* );
 
  private:
 

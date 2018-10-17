@@ -54,6 +54,12 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   kstPx       = NULL;
   kstPy       = NULL;
   kstPz       = NULL;
+  kstPxxE     = NULL;
+  kstPyyE     = NULL;
+  kstPzzE     = NULL;
+  kstPxyE     = NULL;
+  kstPxzE     = NULL;
+  kstPyzE     = NULL;
 
   // ### K*0 Vtx ###
   kstVtxCL = NULL;
@@ -108,6 +114,9 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   mumNMatchStation = NULL;
   mumTrig          = NULL;
   mumIso           = NULL;
+  mumIsoPt         = NULL;
+  mumIsoMom        = NULL;
+  mumIsodR         = NULL;
 
   // ### mu+ ###
   mupHighPurity    = NULL;
@@ -138,6 +147,9 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   mupNMatchStation = NULL;
   mupTrig          = NULL;
   mupIso           = NULL;
+  mupIsoPt         = NULL;
+  mupIsoMom        = NULL;
+  mupIsodR         = NULL;
 
   // ### K*0 track- ###
   kstTrkmHighPurity   = NULL;
@@ -146,6 +158,12 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   kstTrkmPx           = NULL;
   kstTrkmPy           = NULL;
   kstTrkmPz           = NULL;
+  kstTrkmPxxE         = NULL;
+  kstTrkmPyyE         = NULL;
+  kstTrkmPzzE         = NULL;
+  kstTrkmPxyE         = NULL;
+  kstTrkmPxzE         = NULL;
+  kstTrkmPyzE         = NULL;
   kstTrkmDCAVtx       = NULL;
   kstTrkmDCAVtxE      = NULL;
   kstTrkmDCABS        = NULL;
@@ -164,7 +182,10 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   kstTrkmNTrkLayers   = NULL;
   kstTrkmMuMatch      = NULL;
   kstTrkmTrig         = NULL;
-  kstTrkmIso           = NULL;
+  kstTrkmIso          = NULL;
+  kstTrkmIsoPt        = NULL;
+  kstTrkmIsoMom       = NULL;
+  kstTrkmIsodR        = NULL;
 
   // ### K*0 track+ ###
   kstTrkpHighPurity   = NULL;
@@ -173,6 +194,12 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   kstTrkpPx           = NULL;
   kstTrkpPy           = NULL;
   kstTrkpPz           = NULL;
+  kstTrkpPxxE         = NULL;
+  kstTrkpPyyE         = NULL;
+  kstTrkpPzzE         = NULL;
+  kstTrkpPxyE         = NULL;
+  kstTrkpPxzE         = NULL;
+  kstTrkpPyzE         = NULL;
   kstTrkpDCAVtx       = NULL;
   kstTrkpDCAVtxE      = NULL;
   kstTrkpDCABS        = NULL;
@@ -191,7 +218,10 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   kstTrkpNTrkLayers   = NULL;
   kstTrkpMuMatch      = NULL;
   kstTrkpTrig         = NULL;
-  kstTrkpIso           = NULL;
+  kstTrkpIso          = NULL;
+  kstTrkpIsoPt        = NULL;
+  kstTrkpIsoMom       = NULL;
+  kstTrkpIsodR        = NULL;
 
   // ### Matching Between Reconstructed and Generated ###
   truthMatchSignal = NULL;
@@ -251,6 +281,12 @@ void B0KstMuMuTreeContent::Init ()
   kstPx       = new std::vector<double>;
   kstPy       = new std::vector<double>;
   kstPz       = new std::vector<double>;
+  kstPxxE     = new std::vector<double>;
+  kstPyyE     = new std::vector<double>;
+  kstPzzE     = new std::vector<double>;
+  kstPxyE     = new std::vector<double>;
+  kstPxzE     = new std::vector<double>;
+  kstPyzE     = new std::vector<double>;
 
   // ### K*0 Vtx ###
   kstVtxCL = new std::vector<double>;
@@ -306,6 +342,9 @@ void B0KstMuMuTreeContent::Init ()
   mumNMatchStation = new std::vector<int>;
   mumTrig          = new std::vector<std::string>;
   mumIso           = new std::vector<std::vector<float> >;
+  mumIsoPt         = new std::vector<std::vector<float> >;
+  mumIsoMom        = new std::vector<std::vector<float> >;
+  mumIsodR         = new std::vector<std::vector<float> >;
 
   // ### mu+ ###
 //   mupHighPurity    = new std::vector<int>;
@@ -337,6 +376,9 @@ void B0KstMuMuTreeContent::Init ()
   mupNMatchStation = new std::vector<int>;
   mupTrig          = new std::vector<std::string>;
   mupIso           = new std::vector<std::vector<float> >;
+  mupIsoPt         = new std::vector<std::vector<float> >;
+  mupIsoMom        = new std::vector<std::vector<float> >;
+  mupIsodR         = new std::vector<std::vector<float> >;
 
   // ### K*0 track- ###
 //   kstTrkmHighPurity   = new std::vector<int>;
@@ -346,6 +388,12 @@ void B0KstMuMuTreeContent::Init ()
   kstTrkmPx           = new std::vector<double>;
   kstTrkmPy           = new std::vector<double>;
   kstTrkmPz           = new std::vector<double>;
+  kstTrkmPxxE         = new std::vector<double>;
+  kstTrkmPyyE         = new std::vector<double>;
+  kstTrkmPzzE         = new std::vector<double>;
+  kstTrkmPxyE         = new std::vector<double>;
+  kstTrkmPxzE         = new std::vector<double>;
+  kstTrkmPyzE         = new std::vector<double>;
   kstTrkmDCAVtx       = new std::vector<double>;
   kstTrkmDCAVtxE      = new std::vector<double>;
   kstTrkmDCABS        = new std::vector<double>;
@@ -365,6 +413,9 @@ void B0KstMuMuTreeContent::Init ()
   kstTrkmMuMatch      = new std::vector<std::string>;
   kstTrkmTrig         = new std::vector<std::string>;
   kstTrkmIso          = new std::vector<std::vector<float> >;
+  kstTrkmIsoPt        = new std::vector<std::vector<float> >;
+  kstTrkmIsoMom       = new std::vector<std::vector<float> >;
+  kstTrkmIsodR        = new std::vector<std::vector<float> >;
 
   // ### K*0 track+ ###
 //   kstTrkpHighPurity   = new std::vector<int>;
@@ -374,6 +425,12 @@ void B0KstMuMuTreeContent::Init ()
   kstTrkpPx           = new std::vector<double>;
   kstTrkpPy           = new std::vector<double>;
   kstTrkpPz           = new std::vector<double>;
+  kstTrkpPxxE         = new std::vector<double>;
+  kstTrkpPyyE         = new std::vector<double>;
+  kstTrkpPzzE         = new std::vector<double>;
+  kstTrkpPxyE         = new std::vector<double>;
+  kstTrkpPxzE         = new std::vector<double>;
+  kstTrkpPyzE         = new std::vector<double>;
   kstTrkpDCAVtx       = new std::vector<double>;
   kstTrkpDCAVtxE      = new std::vector<double>;
   kstTrkpDCABS        = new std::vector<double>;
@@ -393,6 +450,9 @@ void B0KstMuMuTreeContent::Init ()
   kstTrkpMuMatch      = new std::vector<std::string>;
   kstTrkpTrig         = new std::vector<std::string>;
   kstTrkpIso          = new std::vector<std::vector<float> >;
+  kstTrkpIsoPt        = new std::vector<std::vector<float> >;
+  kstTrkpIsoMom       = new std::vector<std::vector<float> >;
+  kstTrkpIsodR        = new std::vector<std::vector<float> >;
 
   // ### Matching Between Reconstructed and Generated ###
 //   truthMatchSignal = new std::vector<int>;
@@ -457,6 +517,12 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete kstPx;
   delete kstPy;
   delete kstPz;
+  delete kstPxxE;
+  delete kstPyyE;
+  delete kstPzzE;
+  delete kstPxyE;
+  delete kstPxzE;
+  delete kstPyzE;
 
   // ### K*0 Vtx ###
   delete kstVtxCL;
@@ -511,6 +577,9 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete mumNMatchStation;
   delete mumTrig;
   delete mumIso;
+  delete mumIsoPt;
+  delete mumIsoMom;
+  delete mumIsodR;
 
   // ### mu+ ###
   delete mupHighPurity;
@@ -541,6 +610,9 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete mupNMatchStation;
   delete mupTrig;
   delete mupIso;
+  delete mupIsoPt;
+  delete mupIsoMom;
+  delete mupIsodR;
       
   // ### K*0 track- ###
   delete kstTrkmHighPurity;
@@ -549,6 +621,12 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete kstTrkmPx;
   delete kstTrkmPy;
   delete kstTrkmPz;
+  delete kstTrkmPxxE;
+  delete kstTrkmPyyE;
+  delete kstTrkmPzzE;
+  delete kstTrkmPxyE;
+  delete kstTrkmPxzE;
+  delete kstTrkmPyzE;
   delete kstTrkmDCAVtx;
   delete kstTrkmDCAVtxE;
   delete kstTrkmDCABS;
@@ -568,6 +646,9 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete kstTrkmMuMatch;
   delete kstTrkmTrig;
   delete kstTrkmIso;
+  delete kstTrkmIsoPt;
+  delete kstTrkmIsoMom;
+  delete kstTrkmIsodR;
 
   // ### K*0 track+ ###
   delete kstTrkpHighPurity;
@@ -576,6 +657,12 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete kstTrkpPx;
   delete kstTrkpPy;
   delete kstTrkpPz;
+  delete kstTrkpPxxE;
+  delete kstTrkpPyyE;
+  delete kstTrkpPzzE;
+  delete kstTrkpPxyE;
+  delete kstTrkpPxzE;
+  delete kstTrkpPyzE;
   delete kstTrkpDCAVtx;
   delete kstTrkpDCAVtxE;
   delete kstTrkpDCABS;
@@ -595,6 +682,9 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete kstTrkpMuMatch;
   delete kstTrkpTrig;
   delete kstTrkpIso;
+  delete kstTrkpIsoPt;
+  delete kstTrkpIsoMom;
+  delete kstTrkpIsodR;
 
   // ### Matching Between Reconstructed and Generated ###
   delete truthMatchSignal;
@@ -752,6 +842,12 @@ void B0KstMuMuTreeContent::ClearVectors ()
   kstPx->clear();
   kstPy->clear();
   kstPz->clear();
+  kstPxxE->clear();
+  kstPyyE->clear();
+  kstPzzE->clear();
+  kstPxyE->clear();
+  kstPxzE->clear();
+  kstPyzE->clear();
 
   // ### K*0 Vtx ###
   kstVtxCL->clear();
@@ -806,6 +902,9 @@ void B0KstMuMuTreeContent::ClearVectors ()
   mumNMatchStation->clear();
   mumTrig->clear();
   mumIso->clear();
+  mumIsoPt->clear();
+  mumIsoMom->clear();
+  mumIsodR->clear();
 
   // ### mu+ ###
   mupHighPurity->clear();
@@ -836,6 +935,9 @@ void B0KstMuMuTreeContent::ClearVectors ()
   mupNMatchStation->clear();
   mupTrig->clear();
   mupIso->clear();
+  mupIsoPt->clear();
+  mupIsoMom->clear();
+  mupIsodR->clear();
 
   // ### K*0 track- ###
   kstTrkmHighPurity->clear();
@@ -844,6 +946,12 @@ void B0KstMuMuTreeContent::ClearVectors ()
   kstTrkmPx->clear();
   kstTrkmPy->clear();
   kstTrkmPz->clear();
+  kstTrkmPxxE->clear();
+  kstTrkmPyyE->clear();
+  kstTrkmPzzE->clear();
+  kstTrkmPxyE->clear();
+  kstTrkmPxzE->clear();
+  kstTrkmPyzE->clear();
   kstTrkmDCAVtx->clear();
   kstTrkmDCAVtxE->clear();
   kstTrkmDCABS->clear();
@@ -863,6 +971,9 @@ void B0KstMuMuTreeContent::ClearVectors ()
   kstTrkmMuMatch->clear();
   kstTrkmTrig->clear();
   kstTrkmIso->clear();
+  kstTrkmIsoPt->clear();
+  kstTrkmIsoMom->clear();
+  kstTrkmIsodR->clear();
 
   // ### K*0 track+ ###
   kstTrkpHighPurity->clear();
@@ -871,6 +982,12 @@ void B0KstMuMuTreeContent::ClearVectors ()
   kstTrkpPx->clear();
   kstTrkpPy->clear();
   kstTrkpPz->clear();
+  kstTrkpPxxE->clear();
+  kstTrkpPyyE->clear();
+  kstTrkpPzzE->clear();
+  kstTrkpPxyE->clear();
+  kstTrkpPxzE->clear();
+  kstTrkpPyzE->clear();
   kstTrkpDCAVtx->clear();
   kstTrkpDCAVtxE->clear();
   kstTrkpDCABS->clear();
@@ -890,6 +1007,9 @@ void B0KstMuMuTreeContent::ClearVectors ()
   kstTrkpMuMatch->clear();
   kstTrkpTrig->clear();
   kstTrkpIso->clear();
+  kstTrkpIsoPt->clear();
+  kstTrkpIsoMom->clear();
+  kstTrkpIsodR->clear();
 
   ClearVectorsMonteCarlo();
 }
@@ -987,6 +1107,12 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("kstPx",       &kstPx);
   theTree->Branch("kstPy",       &kstPy);
   theTree->Branch("kstPz",       &kstPz);
+  theTree->Branch("kstPxxE",     &kstPxxE);
+  theTree->Branch("kstPyyE",     &kstPyyE);
+  theTree->Branch("kstPzzE",     &kstPzzE);
+  theTree->Branch("kstPxyE",     &kstPxyE);
+  theTree->Branch("kstPxzE",     &kstPxzE);
+  theTree->Branch("kstPyzE",     &kstPyzE);
 
   // ### K*0 Vtx ###
   theTree->Branch("kstVtxCL", &kstVtxCL);
@@ -1041,6 +1167,9 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("mumNMatchStation", &mumNMatchStation);
   theTree->Branch("mumTrig",          &mumTrig);
   theTree->Branch("mumIso",           &mumIso);
+  theTree->Branch("mumIsoPt",         &mumIsoPt);
+  theTree->Branch("mumIsoMom",        &mumIsoMom);
+  theTree->Branch("mumIsodR",         &mumIsodR);
 
   // ### mu+ ###  
   theTree->Branch("mupHighPurity",    &mupHighPurity);
@@ -1071,6 +1200,9 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("mupNMatchStation", &mupNMatchStation);
   theTree->Branch("mupTrig",          &mupTrig);
   theTree->Branch("mupIso",           &mupIso);
+  theTree->Branch("mupIsoPt",         &mupIsoPt);
+  theTree->Branch("mupIsoMom",        &mupIsoMom);
+  theTree->Branch("mupIsodR",         &mupIsodR);
 
   // ### K*0 track- ###
   theTree->Branch("kstTrkmHighPurity",   &kstTrkmHighPurity);
@@ -1079,6 +1211,12 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("kstTrkmPx",           &kstTrkmPx);
   theTree->Branch("kstTrkmPy",           &kstTrkmPy);
   theTree->Branch("kstTrkmPz",           &kstTrkmPz);
+  theTree->Branch("kstTrkmPxxE",        &kstTrkmPxxE);
+  theTree->Branch("kstTrkmPyyE",        &kstTrkmPyyE);
+  theTree->Branch("kstTrkmPzzE",        &kstTrkmPzzE);
+  theTree->Branch("kstTrkmPxyE",        &kstTrkmPxyE);
+  theTree->Branch("kstTrkmPxzE",        &kstTrkmPxzE);
+  theTree->Branch("kstTrkmPyzE",        &kstTrkmPyzE);
   theTree->Branch("kstTrkmDCAVtx",       &kstTrkmDCAVtx);
   theTree->Branch("kstTrkmDCAVtxE",      &kstTrkmDCAVtxE);
   theTree->Branch("kstTrkmDCABS",        &kstTrkmDCABS);
@@ -1098,6 +1236,9 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("kstTrkmMuMatch",      &kstTrkmMuMatch);
   theTree->Branch("kstTrkmTrig",         &kstTrkmTrig);
   theTree->Branch("kstTrkmIso",          &kstTrkmIso);
+  theTree->Branch("kstTrkmIsoPt",        &kstTrkmIsoPt);
+  theTree->Branch("kstTrkmIsoMom",       &kstTrkmIsoMom);
+  theTree->Branch("kstTrkmIsodR",        &kstTrkmIsodR);
 
   // ### K*0 track+ ### 
   theTree->Branch("kstTrkpHighPurity",   &kstTrkpHighPurity);
@@ -1106,6 +1247,12 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("kstTrkpPx",           &kstTrkpPx);
   theTree->Branch("kstTrkpPy",           &kstTrkpPy);
   theTree->Branch("kstTrkpPz",           &kstTrkpPz);
+  theTree->Branch("kstTrkpPxxE",         &kstTrkpPxxE);
+  theTree->Branch("kstTrkpPyyE",         &kstTrkpPyyE);
+  theTree->Branch("kstTrkpPzzE",         &kstTrkpPzzE);
+  theTree->Branch("kstTrkpPxyE",         &kstTrkpPxyE);
+  theTree->Branch("kstTrkpPxzE",         &kstTrkpPxzE);
+  theTree->Branch("kstTrkpPyzE",         &kstTrkpPyzE);
   theTree->Branch("kstTrkpDCAVtx",       &kstTrkpDCAVtx);
   theTree->Branch("kstTrkpDCAVtxE",      &kstTrkpDCAVtxE);
   theTree->Branch("kstTrkpDCABS",        &kstTrkpDCABS);
@@ -1125,6 +1272,9 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("kstTrkpMuMatch",      &kstTrkpMuMatch);
   theTree->Branch("kstTrkpTrig",         &kstTrkpTrig);
   theTree->Branch("kstTrkpIso",          &kstTrkpIso);
+  theTree->Branch("kstTrkpIsoPt",        &kstTrkpIsoPt);
+  theTree->Branch("kstTrkpIsoMom",       &kstTrkpIsoMom);
+  theTree->Branch("kstTrkpIsodR",        &kstTrkpIsodR);
   
   // ### Generated Observables ###
   theTree->Branch("genSignal",        &genSignal,        "genSignal/I");
@@ -1274,6 +1424,12 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("kstPx",       &kstPx);
   theTree->SetBranchAddress("kstPy",       &kstPy);
   theTree->SetBranchAddress("kstPz",       &kstPz);
+  theTree->SetBranchAddress("kstPxxE",     &kstPxxE);
+  theTree->SetBranchAddress("kstPyyE",     &kstPyyE);
+  theTree->SetBranchAddress("kstPzzE",     &kstPzzE);
+  theTree->SetBranchAddress("kstPxyE",     &kstPxyE);
+  theTree->SetBranchAddress("kstPxzE",     &kstPxzE);
+  theTree->SetBranchAddress("kstPyzE",     &kstPyzE);
 
   // ### K*0 Vtx ###
   theTree->SetBranchAddress("kstVtxCL", &kstVtxCL);
@@ -1328,6 +1484,9 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("mumNMatchStation", &mumNMatchStation);
   theTree->SetBranchAddress("mumTrig",          &mumTrig);
   theTree->SetBranchAddress("mumIso",           &mumIso);
+  theTree->SetBranchAddress("mumIsoPt",         &mumIsoPt);
+  theTree->SetBranchAddress("mumIsoMom",        &mumIsoMom);
+  theTree->SetBranchAddress("mumIsodR",         &mumIsodR);
 
   // ### mu+ ###  
   theTree->SetBranchAddress("mupHighPurity",    &mupHighPurity);
@@ -1358,6 +1517,9 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("mupNMatchStation", &mupNMatchStation);
   theTree->SetBranchAddress("mupTrig",          &mupTrig);
   theTree->SetBranchAddress("mupIso",           &mupIso);
+  theTree->SetBranchAddress("mupIsoPt",         &mupIsoPt);
+  theTree->SetBranchAddress("mupIsoMom",        &mupIsoMom);
+  theTree->SetBranchAddress("mupIsodR",         &mupIsodR);
 
   // ### K*0 track- ###
   theTree->SetBranchAddress("kstTrkmHighPurity",   &kstTrkmHighPurity);
@@ -1366,6 +1528,12 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("kstTrkmPx",           &kstTrkmPx);
   theTree->SetBranchAddress("kstTrkmPy",           &kstTrkmPy);
   theTree->SetBranchAddress("kstTrkmPz",           &kstTrkmPz);
+  theTree->SetBranchAddress("kstTrkmPxxE",         &kstTrkmPxxE);
+  theTree->SetBranchAddress("kstTrkmPyyE",         &kstTrkmPyyE);
+  theTree->SetBranchAddress("kstTrkmPzzE",         &kstTrkmPzzE);
+  theTree->SetBranchAddress("kstTrkmPxyE",         &kstTrkmPxyE);
+  theTree->SetBranchAddress("kstTrkmPxzE",         &kstTrkmPxzE);
+  theTree->SetBranchAddress("kstTrkmPyzE",         &kstTrkmPyzE);
   theTree->SetBranchAddress("kstTrkmDCAVtx",       &kstTrkmDCAVtx);
   theTree->SetBranchAddress("kstTrkmDCAVtxE",      &kstTrkmDCAVtxE);
   theTree->SetBranchAddress("kstTrkmDCABS",        &kstTrkmDCABS);
@@ -1385,6 +1553,9 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("kstTrkmMuMatch",      &kstTrkmMuMatch);
   theTree->SetBranchAddress("kstTrkmTrig",         &kstTrkmTrig);
   theTree->SetBranchAddress("kstTrkmIso",          &kstTrkmIso);
+  theTree->SetBranchAddress("kstTrkmIsoPt",        &kstTrkmIsoPt);
+  theTree->SetBranchAddress("kstTrkmIsoMom",       &kstTrkmIsoMom);
+  theTree->SetBranchAddress("kstTrkmIsodR",        &kstTrkmIsodR);
 
   // ### K*0 track+ ### 
   theTree->SetBranchAddress("kstTrkpHighPurity",   &kstTrkpHighPurity);
@@ -1393,6 +1564,12 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("kstTrkpPx",           &kstTrkpPx);
   theTree->SetBranchAddress("kstTrkpPy",           &kstTrkpPy);
   theTree->SetBranchAddress("kstTrkpPz",           &kstTrkpPz);
+  theTree->SetBranchAddress("kstTrkpPxxE",         &kstTrkpPxxE);
+  theTree->SetBranchAddress("kstTrkpPyyE",         &kstTrkpPyyE);
+  theTree->SetBranchAddress("kstTrkpPzzE",         &kstTrkpPzzE);
+  theTree->SetBranchAddress("kstTrkpPxyE",         &kstTrkpPxyE);
+  theTree->SetBranchAddress("kstTrkpPxzE",         &kstTrkpPxzE);
+  theTree->SetBranchAddress("kstTrkpPyzE",         &kstTrkpPyzE);
   theTree->SetBranchAddress("kstTrkpDCAVtx",       &kstTrkpDCAVtx);
   theTree->SetBranchAddress("kstTrkpDCAVtxE",      &kstTrkpDCAVtxE);
   theTree->SetBranchAddress("kstTrkpDCABS",        &kstTrkpDCABS);
@@ -1412,6 +1589,9 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("kstTrkpMuMatch",      &kstTrkpMuMatch);
   theTree->SetBranchAddress("kstTrkpTrig",         &kstTrkpTrig);
   theTree->SetBranchAddress("kstTrkpIso",          &kstTrkpIso);
+  theTree->SetBranchAddress("kstTrkpIsoPt",        &kstTrkpIsoPt);
+  theTree->SetBranchAddress("kstTrkpIsoMom",       &kstTrkpIsoMom);
+  theTree->SetBranchAddress("kstTrkpIsodR",        &kstTrkpIsodR);
 
   // ### Generated Observables ###
   theTree->SetBranchAddress("genSignal",        &genSignal);
@@ -1654,6 +1834,12 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       kstPx->push_back(NTupleIn->kstPx->at(index));
       kstPy->push_back(NTupleIn->kstPy->at(index));
       kstPz->push_back(NTupleIn->kstPz->at(index));
+      kstPxxE->push_back(NTupleIn->kstPxxE->at(index));
+      kstPyyE->push_back(NTupleIn->kstPyyE->at(index));
+      kstPzzE->push_back(NTupleIn->kstPzzE->at(index));
+      kstPxyE->push_back(NTupleIn->kstPxyE->at(index));
+      kstPxzE->push_back(NTupleIn->kstPxzE->at(index));
+      kstPyzE->push_back(NTupleIn->kstPyzE->at(index));
       
       // ### K*0 Vtx ###
       kstVtxCL->push_back(NTupleIn->kstVtxCL->at(index));
@@ -1708,6 +1894,9 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       mumNMatchStation->push_back(NTupleIn->mumNMatchStation->at(index));
       mumTrig->push_back(NTupleIn->mumTrig->at(index));
       mumIso->push_back(NTupleIn->mumIso->at(index));
+      mumIsoPt->push_back(NTupleIn->mumIsoPt->at(index));
+      mumIsoMom->push_back(NTupleIn->mumIsoMom->at(index));
+      mumIsodR->push_back(NTupleIn->mumIsodR->at(index));
 
       // ### mu+ ###  
       mupHighPurity->push_back(NTupleIn->mupHighPurity->at(index));
@@ -1738,6 +1927,9 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       mupNMatchStation->push_back(NTupleIn->mupNMatchStation->at(index));
       mupTrig->push_back(NTupleIn->mupTrig->at(index));
       mupIso->push_back(NTupleIn->mupIso->at(index));
+      mupIsoPt->push_back(NTupleIn->mupIsoPt->at(index));
+      mupIsoMom->push_back(NTupleIn->mupIsoMom->at(index));
+      mupIsodR->push_back(NTupleIn->mupIsodR->at(index));
 
       // ### K*0 track- ###
       kstTrkmHighPurity->push_back(NTupleIn->kstTrkmHighPurity->at(index));
@@ -1746,6 +1938,12 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       kstTrkmPx->push_back(NTupleIn->kstTrkmPx->at(index));
       kstTrkmPy->push_back(NTupleIn->kstTrkmPy->at(index));
       kstTrkmPz->push_back(NTupleIn->kstTrkmPz->at(index));
+      kstTrkmPxxE->push_back(NTupleIn->kstTrkmPxxE->at(index));
+      kstTrkmPyyE->push_back(NTupleIn->kstTrkmPyyE->at(index));
+      kstTrkmPzzE->push_back(NTupleIn->kstTrkmPzzE->at(index));
+      kstTrkmPxyE->push_back(NTupleIn->kstTrkmPxyE->at(index));
+      kstTrkmPxzE->push_back(NTupleIn->kstTrkmPxzE->at(index));
+      kstTrkmPyzE->push_back(NTupleIn->kstTrkmPyzE->at(index));
       kstTrkmDCAVtx->push_back(NTupleIn->kstTrkmDCAVtx->at(index));
       kstTrkmDCAVtxE->push_back(NTupleIn->kstTrkmDCAVtxE->at(index));
       kstTrkmDCABS->push_back(NTupleIn->kstTrkmDCABS->at(index));
@@ -1765,6 +1963,9 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       kstTrkmMuMatch->push_back(NTupleIn->kstTrkmMuMatch->at(index));
       kstTrkmTrig->push_back(NTupleIn->kstTrkmTrig->at(index));
       kstTrkmIso->push_back(NTupleIn->kstTrkmIso->at(index));
+      kstTrkmIsoPt->push_back(NTupleIn->kstTrkmIsoPt->at(index));
+      kstTrkmIsoMom->push_back(NTupleIn->kstTrkmIsoMom->at(index));
+      kstTrkmIsodR->push_back(NTupleIn->kstTrkmIsodR->at(index));
 
       // ### K*0 track+ ###
       kstTrkpHighPurity->push_back(NTupleIn->kstTrkpHighPurity->at(index));
@@ -1773,6 +1974,12 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       kstTrkpPx->push_back(NTupleIn->kstTrkpPx->at(index));
       kstTrkpPy->push_back(NTupleIn->kstTrkpPy->at(index));
       kstTrkpPz->push_back(NTupleIn->kstTrkpPz->at(index));
+      kstTrkpPxxE->push_back(NTupleIn->kstTrkpPxxE->at(index));
+      kstTrkpPyyE->push_back(NTupleIn->kstTrkpPyyE->at(index));
+      kstTrkpPzzE->push_back(NTupleIn->kstTrkpPzzE->at(index));
+      kstTrkpPxyE->push_back(NTupleIn->kstTrkpPxyE->at(index));
+      kstTrkpPxzE->push_back(NTupleIn->kstTrkpPxzE->at(index));
+      kstTrkpPyzE->push_back(NTupleIn->kstTrkpPyzE->at(index));
       kstTrkpDCAVtx->push_back(NTupleIn->kstTrkpDCAVtx->at(index));
       kstTrkpDCAVtxE->push_back(NTupleIn->kstTrkpDCAVtxE->at(index));
       kstTrkpDCABS->push_back(NTupleIn->kstTrkpDCABS->at(index));
@@ -1792,6 +1999,9 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       kstTrkpMuMatch->push_back(NTupleIn->kstTrkpMuMatch->at(index));
       kstTrkpTrig->push_back(NTupleIn->kstTrkpTrig->at(index));
       kstTrkpIso->push_back(NTupleIn->kstTrkpIso->at(index));
+      kstTrkpIsoPt->push_back(NTupleIn->kstTrkpIsoPt->at(index));
+      kstTrkpIsoMom->push_back(NTupleIn->kstTrkpIsoMom->at(index));
+      kstTrkpIsodR->push_back(NTupleIn->kstTrkpIsodR->at(index));
   
       // ### Matching Between Reconstructed and Generated ###
       truthMatchSignal->push_back(NTupleIn->truthMatchSignal->at(index));
@@ -1845,6 +2055,12 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (kstPx->size() < upTo)       for (unsigned int i = kstPx->size(); i < upTo; i++)       kstPx->push_back(0);
   if (kstPy->size() < upTo)       for (unsigned int i = kstPy->size(); i < upTo; i++)       kstPy->push_back(0);
   if (kstPz->size() < upTo)       for (unsigned int i = kstPz->size(); i < upTo; i++)       kstPz->push_back(0);
+  if (kstPxxE->size() < upTo)     for (unsigned int i = kstPxxE->size(); i < upTo; i++)     kstPxxE->push_back(0);
+  if (kstPyyE->size() < upTo)     for (unsigned int i = kstPyyE->size(); i < upTo; i++)     kstPyyE->push_back(0);
+  if (kstPzzE->size() < upTo)     for (unsigned int i = kstPzzE->size(); i < upTo; i++)     kstPzzE->push_back(0);
+  if (kstPxyE->size() < upTo)     for (unsigned int i = kstPxyE->size(); i < upTo; i++)     kstPxyE->push_back(0);
+  if (kstPxzE->size() < upTo)     for (unsigned int i = kstPxzE->size(); i < upTo; i++)     kstPxzE->push_back(0);
+  if (kstPyzE->size() < upTo)     for (unsigned int i = kstPyzE->size(); i < upTo; i++)     kstPyzE->push_back(0);
 
   // ### K*0 Vtx ###
   if (kstVtxCL->size() < upTo) for (unsigned int i = kstVtxCL->size(); i < upTo; i++) kstVtxCL->push_back(0);
@@ -1899,6 +2115,9 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (mumNMatchStation->size() < upTo)   for (unsigned int i = mumNMatchStation->size(); i < upTo; i++)   mumNMatchStation->push_back(0);
   if (mumTrig->size() < upTo)            for (unsigned int i = mumTrig->size(); i < upTo; i++)            mumTrig->push_back("");
   if (mumIso->size() < upTo)             for (unsigned int i = mumIso->size(); i < upTo; i++)             mumIso->push_back(nullVec);
+  if (mumIsoPt->size() < upTo)           for (unsigned int i = mumIsoPt->size(); i < upTo; i++)           mumIsoPt->push_back(nullVec);
+  if (mumIsoMom->size() < upTo)          for (unsigned int i = mumIsoMom->size(); i < upTo; i++)          mumIsoMom->push_back(nullVec);
+  if (mumIsodR->size() < upTo)           for (unsigned int i = mumIsodR->size(); i < upTo; i++)           mumIsodR->push_back(nullVec);
 
   // ### mu+ ###  
   if (mupHighPurity->size() < upTo)      for (unsigned int i = mupHighPurity->size(); i < upTo; i++)      mupHighPurity->push_back(0);
@@ -1929,6 +2148,9 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (mupNMatchStation->size() < upTo)   for (unsigned int i = mupNMatchStation->size(); i < upTo; i++)   mupNMatchStation->push_back(0);
   if (mupTrig->size() < upTo)            for (unsigned int i = mupTrig->size(); i < upTo; i++)            mupTrig->push_back("");
   if (mupIso->size() < upTo)             for (unsigned int i = mupIso->size(); i < upTo; i++)             mupIso->push_back(nullVec);
+  if (mupIsoPt->size() < upTo)           for (unsigned int i = mupIsoPt->size(); i < upTo; i++)           mupIsoPt->push_back(nullVec);
+  if (mupIsoMom->size() < upTo)          for (unsigned int i = mupIsoMom->size(); i < upTo; i++)          mupIsoMom->push_back(nullVec);
+  if (mupIsodR->size() < upTo)           for (unsigned int i = mupIsodR->size(); i < upTo; i++)           mupIsodR->push_back(nullVec);
 
   // ### K*0 track- ###
   if (kstTrkmHighPurity->size() < upTo)   for (unsigned int i = kstTrkmHighPurity->size(); i < upTo; i++)   kstTrkmHighPurity->push_back(0);
@@ -1937,6 +2159,12 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (kstTrkmPx->size() < upTo)           for (unsigned int i = kstTrkmPx->size(); i < upTo; i++)           kstTrkmPx->push_back(0);
   if (kstTrkmPy->size() < upTo)           for (unsigned int i = kstTrkmPy->size(); i < upTo; i++)           kstTrkmPy->push_back(0);
   if (kstTrkmPz->size() < upTo)           for (unsigned int i = kstTrkmPz->size(); i < upTo; i++)           kstTrkmPz->push_back(0);
+  if (kstTrkmPxxE->size() < upTo)         for (unsigned int i = kstTrkmPxxE->size(); i < upTo; i++)         kstTrkmPxxE->push_back(0);
+  if (kstTrkmPyyE->size() < upTo)         for (unsigned int i = kstTrkmPyyE->size(); i < upTo; i++)         kstTrkmPyyE->push_back(0);
+  if (kstTrkmPzzE->size() < upTo)         for (unsigned int i = kstTrkmPzzE->size(); i < upTo; i++)         kstTrkmPzzE->push_back(0);
+  if (kstTrkmPxyE->size() < upTo)         for (unsigned int i = kstTrkmPxyE->size(); i < upTo; i++)         kstTrkmPxyE->push_back(0);
+  if (kstTrkmPxzE->size() < upTo)         for (unsigned int i = kstTrkmPxzE->size(); i < upTo; i++)         kstTrkmPxzE->push_back(0);
+  if (kstTrkmPyzE->size() < upTo)         for (unsigned int i = kstTrkmPyzE->size(); i < upTo; i++)         kstTrkmPyzE->push_back(0);
   if (kstTrkmDCAVtx->size() < upTo)       for (unsigned int i = kstTrkmDCAVtx->size(); i < upTo; i++)       kstTrkmDCAVtx->push_back(0);
   if (kstTrkmDCAVtxE->size() < upTo)      for (unsigned int i = kstTrkmDCAVtxE->size(); i < upTo; i++)      kstTrkmDCAVtxE->push_back(0);
   if (kstTrkmDCABS->size() < upTo)        for (unsigned int i = kstTrkmDCABS->size(); i < upTo; i++)        kstTrkmDCABS->push_back(0);
@@ -1956,6 +2184,9 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (kstTrkmMuMatch->size() < upTo)      for (unsigned int i = kstTrkmMuMatch->size(); i < upTo; i++)      kstTrkmMuMatch->push_back("");
   if (kstTrkmTrig->size() < upTo)         for (unsigned int i = kstTrkmTrig->size(); i < upTo; i++)         kstTrkmTrig->push_back("");
   if (kstTrkmIso->size() < upTo)          for (unsigned int i = kstTrkmIso->size(); i < upTo; i++)          kstTrkmIso->push_back(nullVec);
+  if (kstTrkmIsoPt->size() < upTo)        for (unsigned int i = kstTrkmIsoPt->size(); i < upTo; i++)        kstTrkmIsoPt->push_back(nullVec);
+  if (kstTrkmIsoMom->size() < upTo)       for (unsigned int i = kstTrkmIsoMom->size(); i < upTo; i++)       kstTrkmIsoMom->push_back(nullVec);
+  if (kstTrkmIsodR->size() < upTo)        for (unsigned int i = kstTrkmIsodR->size(); i < upTo; i++)        kstTrkmIsodR->push_back(nullVec);
  
   // ### K*0 track+ ###
   if (kstTrkpHighPurity->size() < upTo)   for (unsigned int i = kstTrkpHighPurity->size(); i < upTo; i++)   kstTrkpHighPurity->push_back(0);
@@ -1964,6 +2195,12 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (kstTrkpPx->size() < upTo)           for (unsigned int i = kstTrkpPx->size(); i < upTo; i++)           kstTrkpPx->push_back(0);
   if (kstTrkpPy->size() < upTo)           for (unsigned int i = kstTrkpPy->size(); i < upTo; i++)           kstTrkpPy->push_back(0);
   if (kstTrkpPz->size() < upTo)           for (unsigned int i = kstTrkpPz->size(); i < upTo; i++)           kstTrkpPz->push_back(0);
+  if (kstTrkpPxxE->size() < upTo)         for (unsigned int i = kstTrkpPxxE->size(); i < upTo; i++)         kstTrkpPxxE->push_back(0);
+  if (kstTrkpPyyE->size() < upTo)         for (unsigned int i = kstTrkpPyyE->size(); i < upTo; i++)         kstTrkpPyyE->push_back(0);
+  if (kstTrkpPzzE->size() < upTo)         for (unsigned int i = kstTrkpPzzE->size(); i < upTo; i++)         kstTrkpPzzE->push_back(0);
+  if (kstTrkpPxyE->size() < upTo)         for (unsigned int i = kstTrkpPxyE->size(); i < upTo; i++)         kstTrkpPxyE->push_back(0);
+  if (kstTrkpPxzE->size() < upTo)         for (unsigned int i = kstTrkpPxzE->size(); i < upTo; i++)         kstTrkpPxzE->push_back(0);
+  if (kstTrkpPyzE->size() < upTo)         for (unsigned int i = kstTrkpPyzE->size(); i < upTo; i++)         kstTrkpPyzE->push_back(0);
   if (kstTrkpDCAVtx->size() < upTo)       for (unsigned int i = kstTrkpDCAVtx->size(); i < upTo; i++)       kstTrkpDCAVtx->push_back(0);
   if (kstTrkpDCAVtxE->size() < upTo)      for (unsigned int i = kstTrkpDCAVtxE->size(); i < upTo; i++)      kstTrkpDCAVtxE->push_back(0);
   if (kstTrkpDCABS->size() < upTo)        for (unsigned int i = kstTrkpDCABS->size(); i < upTo; i++)        kstTrkpDCABS->push_back(0);
@@ -1983,6 +2220,9 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (kstTrkpMuMatch->size() < upTo)      for (unsigned int i = kstTrkpMuMatch->size(); i < upTo; i++)      kstTrkpMuMatch->push_back("");
   if (kstTrkpTrig->size() < upTo)         for (unsigned int i = kstTrkpTrig->size(); i < upTo; i++)         kstTrkpTrig->push_back("");
   if (kstTrkpIso->size() < upTo)          for (unsigned int i = kstTrkpIso->size(); i < upTo; i++)          kstTrkpIso->push_back(nullVec);
+  if (kstTrkpIsoPt->size() < upTo)        for (unsigned int i = kstTrkpIsoPt->size(); i < upTo; i++)        kstTrkpIsoPt->push_back(nullVec);
+  if (kstTrkpIsoMom->size() < upTo)       for (unsigned int i = kstTrkpIsoMom->size(); i < upTo; i++)       kstTrkpIsoMom->push_back(nullVec);
+  if (kstTrkpIsodR->size() < upTo)        for (unsigned int i = kstTrkpIsodR->size(); i < upTo; i++)        kstTrkpIsodR->push_back(nullVec);
   
   // ### Matching Between Reconstructed and Generated ###
   if (truthMatchSignal->size() < upTo) for (unsigned int i = truthMatchSignal->size(); i < upTo; i++) truthMatchSignal->push_back(0);
