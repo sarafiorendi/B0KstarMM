@@ -4,20 +4,16 @@
 runDataMC          = 1 # 1 = Data; 2 = MC (Reco + Gen); 3 = MC (Gen)
 useJSON            = False
 printMsg           = False
-run2016            = True
-HLT_LMNR           = False
-HLT_Jpsi           = True
-HLT_PsiPrime       = False
+HLT_LMNR           = True
+HLT_Jpsi           = False
 triggerProcessName = 'HLT' # 'GEN' or 'HLT' or 'RECO' or 'TEST' or ...
 
 print "\n@@@ CMSSW run configuration flags @@@"
 print "runDataMC          : ", runDataMC
 print "useJSON            : ", useJSON
 print "printMsg           : ", printMsg
-print "run2016            : ", run2016
 print "dataset LMNR       : ", HLT_LMNR
 print "dataset Jpsi       : ", HLT_Jpsi
-print "dataset PsiPrime   : ", HLT_PsiPrime
 print "triggerProcessName : ", triggerProcessName
 
 
@@ -38,26 +34,33 @@ process.MessageLogger.suppressWarning = cms.untracked.vstring('B0KstMuMu')
 ### GlobalTag ###
 #################
 if (runDataMC == 1):
-#     if (run2012not2011 == True):
-#     process.GlobalTag.globaltag = cms.string('80X_dataRun2_2016SeptRepro_v7') 
-    process.GlobalTag.globaltag = cms.string('80X_dataRun2_Prompt_v16')
+    process.GlobalTag.globaltag = cms.string('80X_dataRun2_2016SeptRepro_v7') 
+#     process.GlobalTag.globaltag = cms.string('80X_dataRun2_Prompt_v16')
 #     else:
 #         process.GlobalTag.globaltag = cms.string('START53_LV6::All')
 else:
-#     if (run2012not2011 == True):
+#     process.GlobalTag.globaltag = cms.string('80X_mcRun2_asymptotic_v14')
     process.GlobalTag.globaltag = cms.string('80X_mcRun2_asymptotic_2016_TrancheIV_v6')
-#     else:
-#         process.GlobalTag.globaltag = cms.string('FT_53_LV5_AN1::All')
 
 
 process.source = cms.Source('PoolSource',
                             duplicateCheckMode = cms.untracked.string('noDuplicateCheck'),
                             skipEvents = cms.untracked.uint32(0),
+#                             lumisToProcess = cms.untracked.VLuminosityBlockRange('280191:407',
+#                                                                                  '279794:208-279794:227',
+#                                                                                  '279823:172-279823:175'
+#                                                                                  ),
+#                             eventsToProcess = cms.untracked.VEventRange('274316:1297677022-274316:1297677030'),
                             fileNames = cms.untracked.vstring(
                               #readFiles
 #                               'file:/gwpool/users/fiorendi/p5prime/CMSSW_8_0_24/src/B0KstarMM/B0KstMuMu/plugins/0053C956-AC8E-E611-B7B8-003048FF9ABC.root'
 #                               'file:/gwpool/users/fiorendi/p5prime/CMSSW_8_0_24/src/B0KstarMM/B0KstMuMu/563B1859-919C-E611-ABCC-848F69FD457A.root'
-                              'root://cms-xrd-global.cern.ch//store/data/Run2016G/Charmonium/AOD/23Sep2016-v1/110000/0E66894A-E39B-E611-A30C-848F69FD45CB.root'
+                               'root://xrootd-cms.infn.it//store/data/Run2016G/DoubleMuonLowMass/AOD/23Sep2016-v1/120000/D450135F-B49E-E611-98EC-0CC47A4D7640.root',
+                               'root://xrootd-cms.infn.it//store/data/Run2016G/DoubleMuonLowMass/AOD/23Sep2016-v1/120000/721A04BC-AE9E-E611-8B63-0CC47A4C8E7E.root',
+                               'root://xrootd-cms.infn.it//store/data/Run2016G/DoubleMuonLowMass/AOD/23Sep2016-v1/120000/129926E3-B49E-E611-A71A-0025905B856E.root',
+                               'root://xrootd-cms.infn.it//store/data/Run2016G/DoubleMuonLowMass/AOD/23Sep2016-v1/120000/E4C5E05E-999E-E611-9224-0CC47A7C340E.root',
+                               'root://xrootd-cms.infn.it//store/data/Run2016G/DoubleMuonLowMass/AOD/23Sep2016-v1/120000/4EE61705-969E-E611-BD4B-0CC47A4D764C.root',
+#                               'root://cms-xrd-global.cern.ch//store/data/Run2016G/Charmonium/AOD/23Sep2016-v1/110000/0E66894A-E39B-E611-A30C-848F69FD45CB.root'
                              #'/store/data/Run2016G/DoubleMuonLowMass/AOD/23Sep2016-v1/100000/0080D7F4-928D-E611-B8F8-0CC47AD99044.root'
 
                             ))
@@ -69,10 +72,7 @@ process.source = cms.Source('PoolSource',
 # if (runDataMC == 1 and useJSON == True):
 #     import FWCore.PythonUtilities.LumiList as LumiList
 #     import FWCore.ParameterSet.Types as CfgTypes
-#     if (run2016 == True):
-#         myLumis = LumiList.LumiList(filename = 'Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON_MuonPhys.txt').getCMSSWString().split(',')
-#     else:
-#         myLumis = LumiList.LumiList(filename = 'Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON_MuonPhys.txt').getCMSSWString().split(',')
+#      myLumis = LumiList.LumiList(filename = 'Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON_MuonPhys.txt').getCMSSWString().split(',')
 #     process.source.lumisToProcess = CfgTypes.untracked(CfgTypes.VLuminosityBlockRange())
 #     process.source.lumisToProcess.extend(myLumis)
 
@@ -80,14 +80,10 @@ process.source = cms.Source('PoolSource',
 ###################
 ### Output file ###
 ###################
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(20))
 process.maxLuminosityBlocks = cms.untracked.PSet(input = cms.untracked.int32(-1))
 process.TFileService = cms.Service('TFileService', fileName = cms.string(
-    'B0ToKstMuMu.root'
-### GEN MC ###
-#    '/nfs/data36/cms/dinardo/B0ToKstMuMu_GEN_NoFilter_MC_NTuples/' + file
-#    '/nfs/data36/cms/dinardo/B0ToJPsiKst_GEN_NoFilter_MC_NTuples/' + file
-#    '/nfs/data36/cms/dinardo/B0ToPsi2SKst_GEN_NoFilter_MC_NTuples/' + file
+    'B0ToKstMuMu_todel.root'
     ), closeFileFast = cms.untracked.bool(True))
 
 
@@ -114,16 +110,16 @@ from PhysicsTools.PatAlgos.tools.coreTools  import *
 
 # import pdb ; pdb.set_trace()
 makeTrackCandidates(process,
-                    label        = 'TrackCands',                  # output collection
-                    tracks       = cms.InputTag('generalTracks'), # input track collection
-                    particleType = 'pi+',                         # particle type (for assigning a mass)
-                    preselection = 'pt > 0.5',                    # preselection cut on candidates
-                    selection    = 'pt > 0.5',                    # selection cut on candidates
-                    isolation    = {},                            # isolations to use (set to {} for None)
+                    label        = 'TrackCands',                   # output collection
+                    tracks       = cms.InputTag('generalTracks'),  # input track collection
+                    particleType = 'pi+',                          # particle type (for assigning a mass)
+                    preselection = 'pt > 0.7 && abs(eta()) < 2.5', # preselection cut on candidates
+                    selection    = 'pt > 0.7 && abs(eta()) < 2.5', # selection cut on candidates
+                    isolation    = {},                             # isolations to use (set to {} for None)
                     isoDeposits  = [],
-                    mcAs         = None)                          # replicate MC match as the one used for Muons
+                    mcAs         = None)                           # replicate MC match as the one used for Muons
 
-
+# abs(eta()) < 2.5 && trackHighPurity() > 0"
 removeMCMatching(process, ['All'], outputModules = [])
 
 
@@ -131,91 +127,37 @@ removeMCMatching(process, ['All'], outputModules = [])
 ### Do trigger matching for muons ###
 #####################################
 
-if (run2016 == True):
-    if (HLT_LMNR):
-        process.cleanMuonTriggerMatchHLT = cms.EDProducer(
-            'PATTriggerMatcherDRLessByR',
-            src                   = cms.InputTag('cleanPatMuons'),
-            matched               = cms.InputTag('patTrigger'),
-            matchedCuts           = cms.string('path("HLT_DoubleMu4_LowMassNonResonantTrk_Displaced_v*")'),
-            maxDeltaR             = cms.double(0.1),
-            resolveAmbiguities    = cms.bool(True),
-            resolveByMatchQuality = cms.bool(True))
-        process.cleanTrackTriggerMatchHLT = cms.EDProducer(
-            'PATTriggerMatcherDRLessByR',
-            src                   = cms.InputTag('cleanPatTrackCands'),
-            matched               = cms.InputTag('patTrigger'),
-            matchedCuts           = cms.string('path("HLT_DoubleMu4_LowMassNonResonantTrk_Displaced_v*")'),
-            maxDeltaR             = cms.double(0.1),
-            resolveAmbiguities    = cms.bool(True),
-            resolveByMatchQuality = cms.bool(True))
-    elif (HLT_Jpsi):
-        process.cleanMuonTriggerMatchHLT = cms.EDProducer(
-            'PATTriggerMatcherDRLessByR',
-            src                   = cms.InputTag('cleanPatMuons'),
-            matched               = cms.InputTag('patTrigger'),
-#             matchedCuts           = cms.string('path("HLT_DoubleMu4_JpsiTrk_Displaced_v*")'),
-            matchedCuts           = cms.string('path("HLT_DoubleMu4_JpsiTrk_Displaced_v*") || path("HLT_DoubleMu4_PsiPrimeTrk_Displaced_v*")'),
-            maxDeltaR             = cms.double(0.1),
-            resolveAmbiguities    = cms.bool(True),
-            resolveByMatchQuality = cms.bool(True))
-        process.cleanTrackTriggerMatchHLT = cms.EDProducer(
-            'PATTriggerMatcherDRLessByR',
-            src                   = cms.InputTag('cleanPatTrackCands'),
-            matched               = cms.InputTag('patTrigger'),
-            matchedCuts           = cms.string('path("HLT_DoubleMu4_JpsiTrk_Displaced_v*") || path("HLT_DoubleMu4_PsiPrimeTrk_Displaced_v*")'),
-#             matchedCuts           = cms.string('path("HLT_DoubleMu4_JpsiTrk_Displaced_v*")'),
-            maxDeltaR             = cms.double(0.1),
-            resolveAmbiguities    = cms.bool(True),
-            resolveByMatchQuality = cms.bool(True))
-#     elif (HLT_PsiPrime):
-#         process.cleanMuonTriggerMatchHLT = cms.EDProducer(
-#             'PATTriggerMatcherDRLessByR',
-#             src                   = cms.InputTag('cleanPatMuons'),
-#             matched               = cms.InputTag('patTrigger'),
-#             matchedCuts           = cms.string('path("HLT_DoubleMu4_PsiPrimeTrk_Displaced_v*")'),
-#             maxDeltaR             = cms.double(0.1),
-#             resolveAmbiguities    = cms.bool(True),
-#             resolveByMatchQuality = cms.bool(True))
-# 
-#         process.cleanTrackTriggerMatchHLT = cms.EDProducer(
-#             'PATTriggerMatcherDRLessByR',
-#             src                   = cms.InputTag('cleanPatTrackCands'),
-#             matched               = cms.InputTag('patTrigger'),
-#             matchedCuts           = cms.string('path("HLT_DoubleMu4_PsiPrimeTrk_Displaced_v*")'),
-#             maxDeltaR             = cms.double(0.1),
-#             resolveAmbiguities    = cms.bool(True),
-#             resolveByMatchQuality = cms.bool(True))
-else:
-    process.cleanMuonTriggerMatchHLT1 = cms.EDProducer(
+if (HLT_LMNR):
+    process.cleanMuonTriggerMatchHLT = cms.EDProducer(
         'PATTriggerMatcherDRLessByR',
         src                   = cms.InputTag('cleanPatMuons'),
         matched               = cms.InputTag('patTrigger'),
-        matchedCuts           = cms.string('path("HLT_Dimuon7_LowMass_Displaced_v*")'),
+        matchedCuts           = cms.string('path("HLT_DoubleMu4_LowMassNonResonantTrk_Displaced_v*")'),
         maxDeltaR             = cms.double(0.1),
         resolveAmbiguities    = cms.bool(True),
         resolveByMatchQuality = cms.bool(True))
-    process.cleanMuonTriggerMatchHLT2 = cms.EDProducer(
+    process.cleanTrackTriggerMatchHLT = cms.EDProducer(
         'PATTriggerMatcherDRLessByR',
-        src                   = cms.InputTag('cleanPatMuons'),
+        src                   = cms.InputTag('cleanPatTrackCands'),
         matched               = cms.InputTag('patTrigger'),
-        matchedCuts           = cms.string('path("HLT_DoubleMu4_LowMass_Displaced_v*")'),
+        matchedCuts           = cms.string('path("HLT_DoubleMu4_LowMassNonResonantTrk_Displaced_v*")'),
         maxDeltaR             = cms.double(0.1),
         resolveAmbiguities    = cms.bool(True),
         resolveByMatchQuality = cms.bool(True))
-    process.cleanMuonTriggerMatchHLT3 = cms.EDProducer(
+elif (HLT_Jpsi):
+    process.cleanMuonTriggerMatchHLT = cms.EDProducer(
         'PATTriggerMatcherDRLessByR',
         src                   = cms.InputTag('cleanPatMuons'),
         matched               = cms.InputTag('patTrigger'),
-        matchedCuts           = cms.string('path("HLT_DoubleMu4p5_LowMass_Displaced_v*")'),
+        matchedCuts           = cms.string('path("HLT_DoubleMu4_JpsiTrk_Displaced_v*") || path("HLT_DoubleMu4_PsiPrimeTrk_Displaced_v*")'),
         maxDeltaR             = cms.double(0.1),
         resolveAmbiguities    = cms.bool(True),
         resolveByMatchQuality = cms.bool(True))
-    process.cleanMuonTriggerMatchHLT4 = cms.EDProducer(
+    process.cleanTrackTriggerMatchHLT = cms.EDProducer(
         'PATTriggerMatcherDRLessByR',
-        src                   = cms.InputTag('cleanPatMuons'),
+        src                   = cms.InputTag('cleanPatTrackCands'),
         matched               = cms.InputTag('patTrigger'),
-        matchedCuts           = cms.string('path("HLT_DoubleMu5_LowMass_Displaced_v*")'),
+        matchedCuts           = cms.string('path("HLT_DoubleMu4_JpsiTrk_Displaced_v*") || path("HLT_DoubleMu4_PsiPrimeTrk_Displaced_v*")'),
         maxDeltaR             = cms.double(0.1),
         resolveAmbiguities    = cms.bool(True),
         resolveByMatchQuality = cms.bool(True))
@@ -225,10 +167,7 @@ else:
 ### Switch on PAT trigger info ###
 ##################################
 from PhysicsTools.PatAlgos.tools.trigTools import *
-if (run2016 == True):
-    switchOnTriggerMatchEmbedding(process, triggerMatchers = ['cleanMuonTriggerMatchHLT', 'cleanTrackTriggerMatchHLT' ], hltProcess = triggerProcessName, outputModule = '')
-else:
-    switchOnTriggerMatchEmbedding(process, triggerMatchers = ['cleanMuonTriggerMatchHLT1','cleanMuonTriggerMatchHLT2','cleanMuonTriggerMatchHLT3','cleanMuonTriggerMatchHLT4'], hltProcess = triggerProcessName, outputModule = '')
+switchOnTriggerMatchEmbedding(process, triggerMatchers = ['cleanMuonTriggerMatchHLT', 'cleanTrackTriggerMatchHLT' ], hltProcess = triggerProcessName, outputModule = '')
 
 
 #########################
@@ -296,7 +235,6 @@ process.B0KstMuMu = cms.EDAnalyzer('B0KstMuMu',
                                    TriggerResult    = cms.untracked.InputTag("TriggerResults::HLT"),
                                    PuInfoTag        = cms.untracked.InputTag("addPileupInfo"),
                                    GenFilterTag     = cms.untracked.InputTag("genFilterEfficiencyProducer"),
-                                   ParameterFile    = cms.untracked.string('ParameterFile.txt'),
                                    doGenReco        = cms.untracked.uint32(runDataMC),
                                    TriggerNames     = cms.vstring("HLT_DoubleMu4_LowMassNonResonantTrk_Displaced_v", 
                                                                   "HLT_DoubleMu4_JpsiTrk_Displaced_v",
