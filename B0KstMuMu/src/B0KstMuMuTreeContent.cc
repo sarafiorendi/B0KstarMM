@@ -9,6 +9,8 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   // ### Trigger ###
   TrigTable     = NULL;
   TrigPrescales = NULL;
+  L1Table       = NULL;
+  L1Prescales   = NULL;
 
   // ### B0 Mass ###
   bMass      = NULL;
@@ -115,8 +117,10 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   mumTrig          = NULL;
   mumIso           = NULL;
   mumIsoPt         = NULL;
-  mumIsoMom        = NULL;
   mumIsodR         = NULL;
+  mum_prefit_pt    = NULL;
+  mum_prefit_eta   = NULL;
+  mum_prefit_phi   = NULL;
 
   // ### mu+ ###
   mupHighPurity    = NULL;
@@ -148,8 +152,10 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   mupTrig          = NULL;
   mupIso           = NULL;
   mupIsoPt         = NULL;
-  mupIsoMom        = NULL;
   mupIsodR         = NULL;
+  mup_prefit_pt    = NULL;
+  mup_prefit_eta   = NULL;
+  mup_prefit_phi   = NULL;
 
   // ### K*0 track- ###
   kstTrkmHighPurity   = NULL;
@@ -184,8 +190,10 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   kstTrkmTrig         = NULL;
   kstTrkmIso          = NULL;
   kstTrkmIsoPt        = NULL;
-  kstTrkmIsoMom       = NULL;
   kstTrkmIsodR        = NULL;
+  kstTrkm_prefit_pt   = NULL;
+  kstTrkm_prefit_eta  = NULL;
+  kstTrkm_prefit_phi  = NULL;
 
   // ### K*0 track+ ###
   kstTrkpHighPurity   = NULL;
@@ -220,8 +228,16 @@ B0KstMuMuTreeContent::B0KstMuMuTreeContent ()
   kstTrkpTrig         = NULL;
   kstTrkpIso          = NULL;
   kstTrkpIsoPt        = NULL;
-  kstTrkpIsoMom       = NULL;
   kstTrkpIsodR        = NULL;
+  kstTrkp_prefit_pt   = NULL;
+  kstTrkp_prefit_eta  = NULL;
+  kstTrkp_prefit_phi  = NULL;
+  
+  bMinusVtxCL         = NULL;
+  bMinusCosAlphaBS    = NULL;     
+  bPlusVtxCL          = NULL;
+  bPlusCosAlphaBS     = NULL;    
+
 
   // ### Matching Between Reconstructed and Generated ###
   truthMatchSignal = NULL;
@@ -236,6 +252,8 @@ void B0KstMuMuTreeContent::Init ()
   // ### Trigger ###
   TrigTable     = new std::vector<std::string>;
   TrigPrescales = new std::vector<int>;
+  L1Table       = new std::vector<std::string>;
+  L1Prescales   = new std::vector<int>;
 
   // ### B0 Mass ###
   bMass      = new std::vector<double>;
@@ -343,8 +361,10 @@ void B0KstMuMuTreeContent::Init ()
   mumTrig          = new std::vector<std::string>;
   mumIso           = new std::vector<std::vector<float> >;
   mumIsoPt         = new std::vector<std::vector<float> >;
-  mumIsoMom        = new std::vector<std::vector<float> >;
   mumIsodR         = new std::vector<std::vector<float> >;
+  mum_prefit_pt    = new std::vector<double>;
+  mum_prefit_eta   = new std::vector<double>;
+  mum_prefit_phi   = new std::vector<double>;
 
   // ### mu+ ###
 //   mupHighPurity    = new std::vector<int>;
@@ -377,8 +397,10 @@ void B0KstMuMuTreeContent::Init ()
   mupTrig          = new std::vector<std::string>;
   mupIso           = new std::vector<std::vector<float> >;
   mupIsoPt         = new std::vector<std::vector<float> >;
-  mupIsoMom        = new std::vector<std::vector<float> >;
   mupIsodR         = new std::vector<std::vector<float> >;
+  mup_prefit_pt    = new std::vector<double>;
+  mup_prefit_eta   = new std::vector<double>;
+  mup_prefit_phi   = new std::vector<double>;
 
   // ### K*0 track- ###
 //   kstTrkmHighPurity   = new std::vector<int>;
@@ -414,8 +436,10 @@ void B0KstMuMuTreeContent::Init ()
   kstTrkmTrig         = new std::vector<std::string>;
   kstTrkmIso          = new std::vector<std::vector<float> >;
   kstTrkmIsoPt        = new std::vector<std::vector<float> >;
-  kstTrkmIsoMom       = new std::vector<std::vector<float> >;
   kstTrkmIsodR        = new std::vector<std::vector<float> >;
+  kstTrkm_prefit_pt   = new std::vector<double>;
+  kstTrkm_prefit_eta  = new std::vector<double>;
+  kstTrkm_prefit_phi  = new std::vector<double>;
 
   // ### K*0 track+ ###
 //   kstTrkpHighPurity   = new std::vector<int>;
@@ -451,8 +475,15 @@ void B0KstMuMuTreeContent::Init ()
   kstTrkpTrig         = new std::vector<std::string>;
   kstTrkpIso          = new std::vector<std::vector<float> >;
   kstTrkpIsoPt        = new std::vector<std::vector<float> >;
-  kstTrkpIsoMom       = new std::vector<std::vector<float> >;
   kstTrkpIsodR        = new std::vector<std::vector<float> >;
+  kstTrkp_prefit_pt   = new std::vector<double>;
+  kstTrkp_prefit_eta  = new std::vector<double>;
+  kstTrkp_prefit_phi  = new std::vector<double>;
+  
+  bMinusVtxCL         = new std::vector<double> ;
+  bMinusCosAlphaBS    = new std::vector<double> ;
+  bPlusVtxCL          = new std::vector<double> ;
+  bPlusCosAlphaBS     = new std::vector<double> ;
 
   // ### Matching Between Reconstructed and Generated ###
 //   truthMatchSignal = new std::vector<int>;
@@ -472,6 +503,8 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   // ### Trigger ###
   delete TrigTable;
   delete TrigPrescales;
+  delete L1Table;
+  delete L1Prescales;
 
   // ### B0 Mass ###
   delete bMass;
@@ -578,8 +611,10 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete mumTrig;
   delete mumIso;
   delete mumIsoPt;
-  delete mumIsoMom;
   delete mumIsodR;
+  delete mum_prefit_pt ;
+  delete mum_prefit_eta;
+  delete mum_prefit_phi;
 
   // ### mu+ ###
   delete mupHighPurity;
@@ -611,8 +646,10 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete mupTrig;
   delete mupIso;
   delete mupIsoPt;
-  delete mupIsoMom;
   delete mupIsodR;
+  delete mup_prefit_pt ;
+  delete mup_prefit_eta;
+  delete mup_prefit_phi;
       
   // ### K*0 track- ###
   delete kstTrkmHighPurity;
@@ -647,8 +684,10 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete kstTrkmTrig;
   delete kstTrkmIso;
   delete kstTrkmIsoPt;
-  delete kstTrkmIsoMom;
   delete kstTrkmIsodR;
+  delete kstTrkm_prefit_pt ;
+  delete kstTrkm_prefit_eta;
+  delete kstTrkm_prefit_phi;
 
   // ### K*0 track+ ###
   delete kstTrkpHighPurity;
@@ -683,8 +722,15 @@ B0KstMuMuTreeContent::~B0KstMuMuTreeContent ()
   delete kstTrkpTrig;
   delete kstTrkpIso;
   delete kstTrkpIsoPt;
-  delete kstTrkpIsoMom;
   delete kstTrkpIsodR;
+  delete kstTrkp_prefit_pt ;
+  delete kstTrkp_prefit_eta;
+  delete kstTrkp_prefit_phi;
+  
+  delete bMinusVtxCL      ;
+  delete bMinusCosAlphaBS ;
+  delete bPlusVtxCL       ;
+  delete bPlusCosAlphaBS  ;
 
   // ### Matching Between Reconstructed and Generated ###
   delete truthMatchSignal;
@@ -797,6 +843,8 @@ void B0KstMuMuTreeContent::ClearVectors ()
   // ### Trigger ###
   TrigTable->clear();
   TrigPrescales->clear();
+  L1Table->clear();
+  L1Prescales->clear();
 
   // ### B0 Mass ###
   bMass->clear();
@@ -903,8 +951,10 @@ void B0KstMuMuTreeContent::ClearVectors ()
   mumTrig->clear();
   mumIso->clear();
   mumIsoPt->clear();
-  mumIsoMom->clear();
   mumIsodR->clear();
+  mum_prefit_pt -> clear();
+  mum_prefit_eta-> clear();
+  mum_prefit_phi-> clear();
 
   // ### mu+ ###
   mupHighPurity->clear();
@@ -936,8 +986,10 @@ void B0KstMuMuTreeContent::ClearVectors ()
   mupTrig->clear();
   mupIso->clear();
   mupIsoPt->clear();
-  mupIsoMom->clear();
   mupIsodR->clear();
+  mup_prefit_pt -> clear();
+  mup_prefit_eta-> clear();
+  mup_prefit_phi-> clear();
 
   // ### K*0 track- ###
   kstTrkmHighPurity->clear();
@@ -972,8 +1024,10 @@ void B0KstMuMuTreeContent::ClearVectors ()
   kstTrkmTrig->clear();
   kstTrkmIso->clear();
   kstTrkmIsoPt->clear();
-  kstTrkmIsoMom->clear();
   kstTrkmIsodR->clear();
+  kstTrkm_prefit_pt -> clear();
+  kstTrkm_prefit_eta-> clear();
+  kstTrkm_prefit_phi-> clear();
 
   // ### K*0 track+ ###
   kstTrkpHighPurity->clear();
@@ -1008,8 +1062,15 @@ void B0KstMuMuTreeContent::ClearVectors ()
   kstTrkpTrig->clear();
   kstTrkpIso->clear();
   kstTrkpIsoPt->clear();
-  kstTrkpIsoMom->clear();
   kstTrkpIsodR->clear();
+  kstTrkp_prefit_pt -> clear();
+  kstTrkp_prefit_eta-> clear();
+  kstTrkp_prefit_phi-> clear();
+
+  bMinusVtxCL      ->clear();
+  bMinusCosAlphaBS ->clear();
+  bPlusVtxCL       ->clear();
+  bPlusCosAlphaBS  ->clear();
 
   ClearVectorsMonteCarlo();
 }
@@ -1052,6 +1113,8 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   // ### Trigger ###
   theTree->Branch("TrigTable",     &TrigTable);
   theTree->Branch("TrigPrescales", &TrigPrescales);
+  theTree->Branch("L1Table",       &L1Table);
+  theTree->Branch("L1Prescales",   &L1Prescales);
 
   theTree->Branch("nB", &nB, "nB/i");
 
@@ -1168,8 +1231,10 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("mumTrig",          &mumTrig);
   theTree->Branch("mumIso",           &mumIso);
   theTree->Branch("mumIsoPt",         &mumIsoPt);
-  theTree->Branch("mumIsoMom",        &mumIsoMom);
   theTree->Branch("mumIsodR",         &mumIsodR);
+  theTree->Branch("mum_prefit_pt" ,   &mum_prefit_pt);
+  theTree->Branch("mum_prefit_eta",   &mum_prefit_eta);
+  theTree->Branch("mum_prefit_phi",   &mum_prefit_phi);
 
   // ### mu+ ###  
   theTree->Branch("mupHighPurity",    &mupHighPurity);
@@ -1201,8 +1266,10 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("mupTrig",          &mupTrig);
   theTree->Branch("mupIso",           &mupIso);
   theTree->Branch("mupIsoPt",         &mupIsoPt);
-  theTree->Branch("mupIsoMom",        &mupIsoMom);
   theTree->Branch("mupIsodR",         &mupIsodR);
+  theTree->Branch("mup_prefit_pt" ,   &mup_prefit_pt);
+  theTree->Branch("mup_prefit_eta",   &mup_prefit_eta);
+  theTree->Branch("mup_prefit_phi",   &mup_prefit_phi);
 
   // ### K*0 track- ###
   theTree->Branch("kstTrkmHighPurity",   &kstTrkmHighPurity);
@@ -1237,8 +1304,10 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("kstTrkmTrig",         &kstTrkmTrig);
   theTree->Branch("kstTrkmIso",          &kstTrkmIso);
   theTree->Branch("kstTrkmIsoPt",        &kstTrkmIsoPt);
-  theTree->Branch("kstTrkmIsoMom",       &kstTrkmIsoMom);
   theTree->Branch("kstTrkmIsodR",        &kstTrkmIsodR);
+  theTree->Branch("kstTrkm_prefit_pt" ,   &kstTrkm_prefit_pt);
+  theTree->Branch("kstTrkm_prefit_eta",   &kstTrkm_prefit_eta);
+  theTree->Branch("kstTrkm_prefit_phi",   &kstTrkm_prefit_phi);
 
   // ### K*0 track+ ### 
   theTree->Branch("kstTrkpHighPurity",   &kstTrkpHighPurity);
@@ -1273,9 +1342,16 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   theTree->Branch("kstTrkpTrig",         &kstTrkpTrig);
   theTree->Branch("kstTrkpIso",          &kstTrkpIso);
   theTree->Branch("kstTrkpIsoPt",        &kstTrkpIsoPt);
-  theTree->Branch("kstTrkpIsoMom",       &kstTrkpIsoMom);
   theTree->Branch("kstTrkpIsodR",        &kstTrkpIsodR);
-  
+  theTree->Branch("kstTrkp_prefit_pt" ,  &kstTrkp_prefit_pt);
+  theTree->Branch("kstTrkp_prefit_eta",  &kstTrkp_prefit_eta);
+  theTree->Branch("kstTrkp_prefit_phi",  &kstTrkp_prefit_phi);
+
+  theTree->Branch("bMinusVtxCL",         &bMinusVtxCL     );
+  theTree->Branch("bMinusCosAlphaBS",    &bMinusCosAlphaBS);
+  theTree->Branch("bPlusVtxCL",          &bPlusVtxCL      );
+  theTree->Branch("bPlusCosAlphaBS",     &bPlusCosAlphaBS );
+
   // ### Generated Observables ###
   theTree->Branch("genSignal",        &genSignal,        "genSignal/I");
   theTree->Branch("genMuMuBG",        &genMuMuBG,        "genMuMuBG/I");
@@ -1369,6 +1445,8 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   // ### Trigger ###
   theTree->SetBranchAddress("TrigTable",     &TrigTable);
   theTree->SetBranchAddress("TrigPrescales", &TrigPrescales);
+  theTree->SetBranchAddress("L1Table",       &L1Table);
+  theTree->SetBranchAddress("L1Prescales",   &L1Prescales);
 
   theTree->SetBranchAddress("nB", &nB);
 
@@ -1485,8 +1563,10 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("mumTrig",          &mumTrig);
   theTree->SetBranchAddress("mumIso",           &mumIso);
   theTree->SetBranchAddress("mumIsoPt",         &mumIsoPt);
-  theTree->SetBranchAddress("mumIsoMom",        &mumIsoMom);
   theTree->SetBranchAddress("mumIsodR",         &mumIsodR);
+  theTree->SetBranchAddress("mum_prefit_pt" ,   &mum_prefit_pt);
+  theTree->SetBranchAddress("mum_prefit_eta",   &mum_prefit_eta);
+  theTree->SetBranchAddress("mum_prefit_phi",   &mum_prefit_phi);
 
   // ### mu+ ###  
   theTree->SetBranchAddress("mupHighPurity",    &mupHighPurity);
@@ -1518,8 +1598,10 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("mupTrig",          &mupTrig);
   theTree->SetBranchAddress("mupIso",           &mupIso);
   theTree->SetBranchAddress("mupIsoPt",         &mupIsoPt);
-  theTree->SetBranchAddress("mupIsoMom",        &mupIsoMom);
   theTree->SetBranchAddress("mupIsodR",         &mupIsodR);
+  theTree->SetBranchAddress("mup_prefit_pt" ,   &mup_prefit_pt);
+  theTree->SetBranchAddress("mup_prefit_eta",   &mup_prefit_eta);
+  theTree->SetBranchAddress("mup_prefit_phi",   &mup_prefit_phi);
 
   // ### K*0 track- ###
   theTree->SetBranchAddress("kstTrkmHighPurity",   &kstTrkmHighPurity);
@@ -1554,8 +1636,10 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("kstTrkmTrig",         &kstTrkmTrig);
   theTree->SetBranchAddress("kstTrkmIso",          &kstTrkmIso);
   theTree->SetBranchAddress("kstTrkmIsoPt",        &kstTrkmIsoPt);
-  theTree->SetBranchAddress("kstTrkmIsoMom",       &kstTrkmIsoMom);
   theTree->SetBranchAddress("kstTrkmIsodR",        &kstTrkmIsodR);
+  theTree->SetBranchAddress("kstTrkm_prefit_pt" ,  &kstTrkm_prefit_pt);
+  theTree->SetBranchAddress("kstTrkm_prefit_eta",  &kstTrkm_prefit_eta);
+  theTree->SetBranchAddress("kstTrkm_prefit_phi",  &kstTrkm_prefit_phi);
 
   // ### K*0 track+ ### 
   theTree->SetBranchAddress("kstTrkpHighPurity",   &kstTrkpHighPurity);
@@ -1590,8 +1674,15 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   theTree->SetBranchAddress("kstTrkpTrig",         &kstTrkpTrig);
   theTree->SetBranchAddress("kstTrkpIso",          &kstTrkpIso);
   theTree->SetBranchAddress("kstTrkpIsoPt",        &kstTrkpIsoPt);
-  theTree->SetBranchAddress("kstTrkpIsoMom",       &kstTrkpIsoMom);
   theTree->SetBranchAddress("kstTrkpIsodR",        &kstTrkpIsodR);
+  theTree->SetBranchAddress("kstTrkp_prefit_pt" ,  &kstTrkp_prefit_pt);
+  theTree->SetBranchAddress("kstTrkp_prefit_eta",  &kstTrkp_prefit_eta);
+  theTree->SetBranchAddress("kstTrkp_prefit_phi",  &kstTrkp_prefit_phi);
+
+  theTree->SetBranchAddress("bMinusVtxCL",         &bMinusVtxCL     );
+  theTree->SetBranchAddress("bMinusCosAlphaBS",    &bMinusCosAlphaBS);
+  theTree->SetBranchAddress("bPlusVtxCL",          &bPlusVtxCL      );
+  theTree->SetBranchAddress("bPlusCosAlphaBS",     &bPlusCosAlphaBS );
 
   // ### Generated Observables ###
   theTree->SetBranchAddress("genSignal",        &genSignal);
@@ -1895,8 +1986,10 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       mumTrig->push_back(NTupleIn->mumTrig->at(index));
       mumIso->push_back(NTupleIn->mumIso->at(index));
       mumIsoPt->push_back(NTupleIn->mumIsoPt->at(index));
-      mumIsoMom->push_back(NTupleIn->mumIsoMom->at(index));
       mumIsodR->push_back(NTupleIn->mumIsodR->at(index));
+      mum_prefit_pt  ->push_back(NTupleIn->mum_prefit_pt->at(index));
+      mum_prefit_eta ->push_back(NTupleIn->mum_prefit_eta->at(index));
+      mum_prefit_phi ->push_back(NTupleIn->mum_prefit_phi->at(index));
 
       // ### mu+ ###  
       mupHighPurity->push_back(NTupleIn->mupHighPurity->at(index));
@@ -1928,8 +2021,10 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       mupTrig->push_back(NTupleIn->mupTrig->at(index));
       mupIso->push_back(NTupleIn->mupIso->at(index));
       mupIsoPt->push_back(NTupleIn->mupIsoPt->at(index));
-      mupIsoMom->push_back(NTupleIn->mupIsoMom->at(index));
       mupIsodR->push_back(NTupleIn->mupIsodR->at(index));
+      mup_prefit_pt  ->push_back(NTupleIn->mup_prefit_pt->at(index));
+      mup_prefit_eta ->push_back(NTupleIn->mup_prefit_eta->at(index));
+      mup_prefit_phi ->push_back(NTupleIn->mup_prefit_phi->at(index));
 
       // ### K*0 track- ###
       kstTrkmHighPurity->push_back(NTupleIn->kstTrkmHighPurity->at(index));
@@ -1964,8 +2059,10 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       kstTrkmTrig->push_back(NTupleIn->kstTrkmTrig->at(index));
       kstTrkmIso->push_back(NTupleIn->kstTrkmIso->at(index));
       kstTrkmIsoPt->push_back(NTupleIn->kstTrkmIsoPt->at(index));
-      kstTrkmIsoMom->push_back(NTupleIn->kstTrkmIsoMom->at(index));
       kstTrkmIsodR->push_back(NTupleIn->kstTrkmIsodR->at(index));
+      kstTrkm_prefit_pt  ->push_back(NTupleIn->kstTrkm_prefit_pt->at(index));
+      kstTrkm_prefit_eta ->push_back(NTupleIn->kstTrkm_prefit_eta->at(index));
+      kstTrkm_prefit_phi ->push_back(NTupleIn->kstTrkm_prefit_phi->at(index));
 
       // ### K*0 track+ ###
       kstTrkpHighPurity->push_back(NTupleIn->kstTrkpHighPurity->at(index));
@@ -2000,9 +2097,16 @@ void B0KstMuMuTreeContent::CopyVectors (B0KstMuMuTreeContent* NTupleIn, int inde
       kstTrkpTrig->push_back(NTupleIn->kstTrkpTrig->at(index));
       kstTrkpIso->push_back(NTupleIn->kstTrkpIso->at(index));
       kstTrkpIsoPt->push_back(NTupleIn->kstTrkpIsoPt->at(index));
-      kstTrkpIsoMom->push_back(NTupleIn->kstTrkpIsoMom->at(index));
       kstTrkpIsodR->push_back(NTupleIn->kstTrkpIsodR->at(index));
-  
+      kstTrkp_prefit_pt  ->push_back(NTupleIn->kstTrkp_prefit_pt->at(index));
+      kstTrkp_prefit_eta ->push_back(NTupleIn->kstTrkp_prefit_eta->at(index));
+      kstTrkp_prefit_phi ->push_back(NTupleIn->kstTrkp_prefit_phi->at(index));
+
+      bMinusVtxCL     ->push_back(NTupleIn->bMinusVtxCL     ->at(index));
+      bMinusCosAlphaBS->push_back(NTupleIn->bMinusCosAlphaBS->at(index));
+      bPlusVtxCL      ->push_back(NTupleIn->bPlusVtxCL      ->at(index));
+      bPlusCosAlphaBS ->push_back(NTupleIn->bPlusCosAlphaBS ->at(index));
+
       // ### Matching Between Reconstructed and Generated ###
       truthMatchSignal->push_back(NTupleIn->truthMatchSignal->at(index));
       truthMatchMum->push_back(NTupleIn->truthMatchMum->at(index));
@@ -2116,8 +2220,10 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (mumTrig->size() < upTo)            for (unsigned int i = mumTrig->size(); i < upTo; i++)            mumTrig->push_back("");
   if (mumIso->size() < upTo)             for (unsigned int i = mumIso->size(); i < upTo; i++)             mumIso->push_back(nullVec);
   if (mumIsoPt->size() < upTo)           for (unsigned int i = mumIsoPt->size(); i < upTo; i++)           mumIsoPt->push_back(nullVec);
-  if (mumIsoMom->size() < upTo)          for (unsigned int i = mumIsoMom->size(); i < upTo; i++)          mumIsoMom->push_back(nullVec);
   if (mumIsodR->size() < upTo)           for (unsigned int i = mumIsodR->size(); i < upTo; i++)           mumIsodR->push_back(nullVec);
+  if (mum_prefit_pt ->size() < upTo)     for (unsigned int i = mum_prefit_pt ->size(); i < upTo; i++)     mum_prefit_pt ->push_back(0);
+  if (mum_prefit_eta->size() < upTo)     for (unsigned int i = mum_prefit_eta->size(); i < upTo; i++)     mum_prefit_eta->push_back(0);
+  if (mum_prefit_phi->size() < upTo)     for (unsigned int i = mum_prefit_phi->size(); i < upTo; i++)     mum_prefit_phi->push_back(0);
 
   // ### mu+ ###  
   if (mupHighPurity->size() < upTo)      for (unsigned int i = mupHighPurity->size(); i < upTo; i++)      mupHighPurity->push_back(0);
@@ -2149,8 +2255,10 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (mupTrig->size() < upTo)            for (unsigned int i = mupTrig->size(); i < upTo; i++)            mupTrig->push_back("");
   if (mupIso->size() < upTo)             for (unsigned int i = mupIso->size(); i < upTo; i++)             mupIso->push_back(nullVec);
   if (mupIsoPt->size() < upTo)           for (unsigned int i = mupIsoPt->size(); i < upTo; i++)           mupIsoPt->push_back(nullVec);
-  if (mupIsoMom->size() < upTo)          for (unsigned int i = mupIsoMom->size(); i < upTo; i++)          mupIsoMom->push_back(nullVec);
   if (mupIsodR->size() < upTo)           for (unsigned int i = mupIsodR->size(); i < upTo; i++)           mupIsodR->push_back(nullVec);
+  if (mup_prefit_pt ->size() < upTo)     for (unsigned int i = mup_prefit_pt ->size(); i < upTo; i++)     mup_prefit_pt ->push_back(0);
+  if (mup_prefit_eta->size() < upTo)     for (unsigned int i = mup_prefit_eta->size(); i < upTo; i++)     mup_prefit_eta->push_back(0);
+  if (mup_prefit_phi->size() < upTo)     for (unsigned int i = mup_prefit_phi->size(); i < upTo; i++)     mup_prefit_phi->push_back(0);
 
   // ### K*0 track- ###
   if (kstTrkmHighPurity->size() < upTo)   for (unsigned int i = kstTrkmHighPurity->size(); i < upTo; i++)   kstTrkmHighPurity->push_back(0);
@@ -2185,8 +2293,10 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (kstTrkmTrig->size() < upTo)         for (unsigned int i = kstTrkmTrig->size(); i < upTo; i++)         kstTrkmTrig->push_back("");
   if (kstTrkmIso->size() < upTo)          for (unsigned int i = kstTrkmIso->size(); i < upTo; i++)          kstTrkmIso->push_back(nullVec);
   if (kstTrkmIsoPt->size() < upTo)        for (unsigned int i = kstTrkmIsoPt->size(); i < upTo; i++)        kstTrkmIsoPt->push_back(nullVec);
-  if (kstTrkmIsoMom->size() < upTo)       for (unsigned int i = kstTrkmIsoMom->size(); i < upTo; i++)       kstTrkmIsoMom->push_back(nullVec);
   if (kstTrkmIsodR->size() < upTo)        for (unsigned int i = kstTrkmIsodR->size(); i < upTo; i++)        kstTrkmIsodR->push_back(nullVec);
+  if (kstTrkm_prefit_pt ->size() < upTo)  for (unsigned int i = kstTrkm_prefit_pt ->size(); i < upTo; i++)  kstTrkm_prefit_pt ->push_back(0);
+  if (kstTrkm_prefit_eta->size() < upTo)  for (unsigned int i = kstTrkm_prefit_eta->size(); i < upTo; i++)  kstTrkm_prefit_eta->push_back(0);
+  if (kstTrkm_prefit_phi->size() < upTo)  for (unsigned int i = kstTrkm_prefit_phi->size(); i < upTo; i++)  kstTrkm_prefit_phi->push_back(0);
  
   // ### K*0 track+ ###
   if (kstTrkpHighPurity->size() < upTo)   for (unsigned int i = kstTrkpHighPurity->size(); i < upTo; i++)   kstTrkpHighPurity->push_back(0);
@@ -2221,8 +2331,16 @@ void B0KstMuMuTreeContent::FillWithNull (unsigned int upTo)
   if (kstTrkpTrig->size() < upTo)         for (unsigned int i = kstTrkpTrig->size(); i < upTo; i++)         kstTrkpTrig->push_back("");
   if (kstTrkpIso->size() < upTo)          for (unsigned int i = kstTrkpIso->size(); i < upTo; i++)          kstTrkpIso->push_back(nullVec);
   if (kstTrkpIsoPt->size() < upTo)        for (unsigned int i = kstTrkpIsoPt->size(); i < upTo; i++)        kstTrkpIsoPt->push_back(nullVec);
-  if (kstTrkpIsoMom->size() < upTo)       for (unsigned int i = kstTrkpIsoMom->size(); i < upTo; i++)       kstTrkpIsoMom->push_back(nullVec);
   if (kstTrkpIsodR->size() < upTo)        for (unsigned int i = kstTrkpIsodR->size(); i < upTo; i++)        kstTrkpIsodR->push_back(nullVec);
+  if (kstTrkp_prefit_pt ->size() < upTo)  for (unsigned int i = kstTrkp_prefit_pt ->size(); i < upTo; i++)  kstTrkp_prefit_pt ->push_back(0);
+  if (kstTrkp_prefit_eta->size() < upTo)  for (unsigned int i = kstTrkp_prefit_eta->size(); i < upTo; i++)  kstTrkp_prefit_eta->push_back(0);
+  if (kstTrkp_prefit_phi->size() < upTo)  for (unsigned int i = kstTrkp_prefit_phi->size(); i < upTo; i++)  kstTrkp_prefit_phi->push_back(0);
+
+  if (bMinusVtxCL     ->size() < upTo)    for (unsigned int i = bMinusVtxCL     ->size(); i < upTo; i++)    bMinusVtxCL     ->push_back(0);
+  if (bMinusCosAlphaBS->size() < upTo)    for (unsigned int i = bMinusCosAlphaBS->size(); i < upTo; i++)    bMinusCosAlphaBS->push_back(0);
+  if (bPlusVtxCL      ->size() < upTo)    for (unsigned int i = bPlusVtxCL      ->size(); i < upTo; i++)    bPlusVtxCL      ->push_back(0);
+  if (bPlusCosAlphaBS ->size() < upTo)    for (unsigned int i = bPlusCosAlphaBS ->size(); i < upTo; i++)    bPlusCosAlphaBS ->push_back(0);
+  
   
   // ### Matching Between Reconstructed and Generated ###
   if (truthMatchSignal->size() < upTo) for (unsigned int i = truthMatchSignal->size(); i < upTo; i++) truthMatchSignal->push_back(0);
