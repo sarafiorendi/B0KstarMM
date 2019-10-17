@@ -235,6 +235,13 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
   if (printMsg) std::cout << "\n\n" << __LINE__ << " : @@@@@@ Start Analyzer @@@@@@" << std::endl;
 
+  NTuple->runN   = iEvent.id().run();
+  NTuple->ls     = (int)iEvent.id().luminosityBlock();
+  NTuple->eventN = (unsigned long int)iEvent.id().event();
+  
+//                    (int32_t)iEvent.id().event()   
+
+
   // Get Gen-Particles
   edm::Handle<reco::GenParticleCollection> genParticles;
   if ((doGenReco_ == 2) || (doGenReco_ == 3)) iEvent.getByToken(genParticlesToken_, genParticles);
@@ -1698,8 +1705,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	  } // End for mu-
 
 
-	NTuple->runN   = iEvent.id().run();
-	NTuple->eventN = iEvent.id().event();
     
     if (NTuple->nB > 0)
 	{
@@ -1724,9 +1729,6 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 	}
       else if (printMsg) std::cout << __LINE__ << " : @@@ No B0 --> K*0 (K pi) mu+ mu- candidate were found in the event @@@" << std::endl;
     } // End if doGenReco_ == 1 || doGenReco_ == 2
-
-
-
 
 
   // ###########################################
@@ -1927,8 +1929,13 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 
 	      bool foundSomething = false;
-	      if ((abs(FirstPart->pdgId()) == 511) && (isSignal == true) &&
-		       (((imum != -1) && (imup != -1) && (ikst != -1) && (ikst_trkm != -1) && (ikst_trkp != -1)) ))
+// 	      if ((abs(FirstPart->pdgId()) == 511) && (isSignal == true) &&
+// 		       (((imum != -1) && (imup != -1) && (ikst != -1) && (ikst_trkm != -1) && (ikst_trkp != -1)) ))
+
+              if ((abs(FirstPart->pdgId()) == 511) && (isSignal == true) &&
+              	       (((imum != -1) && (imup != -1) && (ikst != -1) && (ikst_trkm != -1) && (ikst_trkp != -1)) ||
+              	       ((NTuple->genSignal != 1) && (NTuple->genSignal != 2) &&
+		         (ikst != -1) && (ikst_trkm != -1) && (ikst_trkp != -1) && (ipsi != -1) && (ipsi_mum != -1) && (ipsi_mup != -1))))
 		{
 		  // ################################################################
 		  // # Found Signal B0/B0bar --> K*0/K*0bar (K pi) mu+ mu-          #
@@ -1991,13 +1998,11 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		{
 		  if (printMsg) std::cout << __LINE__ << " : @@@ Saving signal OR background compatible with signal @@@" << std::endl;
 
-
 		  // #############################
 		  // # Search for primary vertex #
 		  // #############################
 		  const reco::Candidate* PVtx = FirstPart;
 		  while (PVtx->numberOfMothers() > 0) PVtx = PVtx->mother(0);
-
 
 		  // ############################
 		  // # Generated Primary Vertex #
@@ -2005,8 +2010,11 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  NTuple->genPriVtxX = PVtx->vx();
 		  NTuple->genPriVtxY = PVtx->vy();
 		  NTuple->genPriVtxZ = PVtx->vz();
-
 		  
+		  if (printMsg) std::cout << __LINE__ << " :Filling with :"  << NTuple->genSignal  << std::endl;
+		  if (printMsg) std::cout << FirstPart->px() << std::endl;
+		  if (printMsg) std::cout << FirstPart->py() << std::endl;
+		  if (printMsg) std::cout << FirstPart->pz() << std::endl;
 		  // #####################
 		  // # Generated B0 Mass #
 		  // #####################
@@ -2015,14 +2023,12 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		  NTuple->genB0Py = FirstPart->py();
 		  NTuple->genB0Pz = FirstPart->pz();
 
-
 		  // ####################
 		  // # Generated B0 Vtx #
 		  // ####################
 		  NTuple->genB0VtxX = FirstPart->vx();
 		  NTuple->genB0VtxY = FirstPart->vy();
 		  NTuple->genB0VtxZ = FirstPart->vz();
-		  
 	
 		  if (NTuple->genSignal != 0)
 		    {
@@ -2032,8 +2038,7 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
 		      NTuple->genKstMass = genKst->mass();
 		      NTuple->genKstPx = genKst->px();
 		      NTuple->genKstPy = genKst->py();
-		      NTuple->genKstPz = genKst->pz();
-		      
+		      NTuple->genKstPz = genKst->pz();	      
 
 		      // #####################
 		      // # Generated K*0 Vtx #
@@ -2266,7 +2271,9 @@ void B0KstMuMu::analyze (const edm::Event& iEvent, const edm::EventSetup& iSetup
   // ###################
   // # Fill the ntuple #
   // ###################
-  if (printMsg) std::cout << __LINE__ << " : @@@ Filling the tree @@@" << std::endl;
+  if (printMsg) std::cout << __LINE__ << " : @@@ Filling the tree for event @@@" << std::endl;
+  if (printMsg) std::cout << iEvent.id().event() << std::endl;
+  
   theTree->Fill();
   NTuple->ClearNTuple();
 }

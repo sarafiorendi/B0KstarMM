@@ -56,7 +56,6 @@
 #include "TLorentzVector.h"
 #include "TTree.h"
 
-#include "ReadParameters.h"
 #include "Utils.h"
 #include "B0KstMuMuTreeContent.h"
 
@@ -161,8 +160,6 @@ class B0KstMuMu : public edm::EDAnalyzer
   double MAXB0PREMASS;
 
   bool printMsg;
-  
-  ReadParameters* ParameterFile;
   
   TTree* theTree;
   B0KstMuMuTreeContent* NTuple;

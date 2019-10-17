@@ -746,6 +746,7 @@ void B0KstMuMuTreeContent::ClearScalars ()
   // # Run Number, event number, #reco vtx and event weight #
   // ########################################################
   runN            = 0;
+  ls              = 0;
   eventN          = 0;
   recoVtxN        = 0;
   evWeight        = 1;
@@ -1103,7 +1104,8 @@ void B0KstMuMuTreeContent::MakeTreeBranches (TTree* theTree)
   // # Run Number, event number, #reco vtx and event weight #
   // ########################################################
   theTree->Branch("runN",            &runN,            "runN/i");
-  theTree->Branch("eventN",          &eventN,          "eventN/i");
+  theTree->Branch("ls",              &ls,              "ls/i");
+  theTree->Branch("eventN",          &eventN,          "eventN/l");
   theTree->Branch("recoVtxN",        &recoVtxN,        "recoVtxN/i");
   theTree->Branch("evWeight",        &evWeight,        "evWeight/D");
   theTree->Branch("evWeightE2",      &evWeightE2,      "evWeightE2/D");
@@ -1435,6 +1437,7 @@ void B0KstMuMuTreeContent::SetBranchAddresses (TTree* theTree)
   // # Run Number, event number, #reco vtx and event weight #
   // ########################################################
   theTree->SetBranchAddress("runN",            &runN);
+  theTree->SetBranchAddress("ls",              &ls);
   theTree->SetBranchAddress("eventN",          &eventN);
   theTree->SetBranchAddress("recoVtxN",        &recoVtxN);
   theTree->SetBranchAddress("evWeight",        &evWeight);
@@ -1780,6 +1783,7 @@ void B0KstMuMuTreeContent::CopyScalars (B0KstMuMuTreeContent* NTupleIn)
   // # Run Number, event number, #reco vtx and event weight #
   // ########################################################
   runN            = NTupleIn->runN;
+  ls              = NTupleIn->ls;
   eventN          = NTupleIn->eventN;
   recoVtxN        = NTupleIn->recoVtxN;
   evWeight        = NTupleIn->evWeight;

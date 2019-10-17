@@ -24,7 +24,7 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process('B0KSTMUMUNTUPLIZER')
 
 process.load('FWCore.MessageLogger.MessageLogger_cfi')
-process.load('Configuration.Geometry.GeometryIdeal_cff')
+process.load('Configuration.StandardSequences.GeometryDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.MessageLogger.suppressWarning = cms.untracked.vstring('B0KstMuMu')

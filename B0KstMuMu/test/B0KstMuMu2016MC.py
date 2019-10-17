@@ -28,7 +28,7 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process('B0KSTMUMUNTUPLIZER')
 
 process.load('FWCore.MessageLogger.MessageLogger_cfi')
-process.load('Configuration.Geometry.GeometryIdeal_cff')
+process.load('Configuration.StandardSequences.GeometryDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
@@ -62,15 +62,22 @@ process.source = cms.Source('PoolSource',
                             skipEvents = cms.untracked.uint32(0),
                             fileNames = cms.untracked.vstring(
                               #readFiles
+#                               'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16DR80Premix/BdToKstarMuMu_BMuonFilter_SoftQCDnonD_TuneCUEP8M1_13TeV-pythia8-evtgen/AODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/CE354D2F-2BB2-E611-9900-00266CF33130.root',
+#                               'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16DR80Premix/BdToKstarMuMu_BMuonFilter_SoftQCDnonD_TuneCUEP8M1_13TeV-pythia8-evtgen/AODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50001/96F36857-39B2-E611-B1C6-008CFA197A60.root',
+
+                              'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16DR80Premix/BdToJpsiKstar_BMuonFilter_SoftQCDnonD_TuneCUEP8M1_13TeV-pythia8-evtgen/AODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/90000/FEA44EDB-65E4-E611-826A-E0071B7A8590.root'
+                              
 #                               'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16DR80Premix/BsToJpsiPhi_BMuonFilter_SoftQCDnonD_TuneCUEP8M1_13TeV-pythia8-evtgen/AODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v2/80001/CAAA553F-0FE0-E611-B16E-1866DAEA6E00.root '
 #                               'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16DR80Premix/BsToJpsiPhi_BMuonFilter_SoftQCDnonD_TuneCUEP8M1_13TeV-pythia8-evtgen/AODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v2/80000/78073F47-E1DF-E611-90F7-24BE05C45BF1.root'
-#                               'root://xrootd-cms.infn.it//store/mc/RunIISummer16DR80Premix/BdToKstarMuMu_BMuonFilter_SoftQCDnonD_TuneCUEP8M1_13TeV-pythia8-evtgen/AODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/110000/14006155-1AB0-E611-BAA7-3417EBE645E2.root'
-                                '/store/mc/RunIISummer16DR80Premix/LambdaBToLambdaMuMu_SoftQCDnonDTest_TuneCUEP8M1_13TeV-pythia8-evtgen/AODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/90000/5A7783B6-E705-E711-8387-0242AC130002.root'
+#                               'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16DR80Premix/BdToKstarMuMu_BMuonFilter_SoftQCDnonD_TuneCUEP8M1_13TeV-pythia8-evtgen/AODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/110000/14006155-1AB0-E611-BAA7-3417EBE645E2.root'
+#                                 '/store/mc/RunIISummer16DR80Premix/LambdaBToLambdaMuMu_SoftQCDnonDTest_TuneCUEP8M1_13TeV-pythia8-evtgen/AODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/90000/5A7783B6-E705-E711-8387-0242AC130002.root'
 #                               'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16DR80Premix/BdToKstarMuMu_BMuonFilter_SoftQCDnonD_TuneCUEP8M1_13TeV-pythia8-evtgen/AODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/110000/00391B50-EEB1-E611-B785-0025905C3E68.root'
 #                               'file:/gwpool/users/fiorendi/p5prime/CMSSW_8_0_24/src/B0KstarMM/B0KstMuMu/563B1859-919C-E611-ABCC-848F69FD457A.root'
                              #'/store/data/Run2016G/DoubleMuonLowMass/AOD/23Sep2016-v1/100000/0080D7F4-928D-E611-B8F8-0CC47AD99044.root'
 
-                            ))
+                            ),
+#                             eventsToProcess = cms.untracked.VEventRange('1:2098289678', '1:726511005'),
+                            )
 
 
 ###################
